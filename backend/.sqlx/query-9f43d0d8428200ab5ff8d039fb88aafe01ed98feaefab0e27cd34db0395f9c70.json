@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT lift_id, participant_id, movement_name, max_weight,\n                            equipment_setting, updated_at\n                     FROM lifts\n                     WHERE participant_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "lift_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "participant_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "movement_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "max_weight",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 4,
+        "name": "equipment_setting",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "updated_at",
+        "type_info": "Timestamp"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "9f43d0d8428200ab5ff8d039fb88aafe01ed98feaefab0e27cd34db0395f9c70"
+}

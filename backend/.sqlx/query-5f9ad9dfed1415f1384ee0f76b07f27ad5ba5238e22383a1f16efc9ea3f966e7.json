@@ -1,0 +1,77 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT participant_id, competition_id, category_id, athlete_id, bodyweight, rank, is_disqualified,\n                        created_at, disqualified_reason, ris_score\n                 FROM competition_participants\n                 WHERE competition_id = $1 AND category_id = $2\n                 ORDER BY rank NULLS LAST",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "participant_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "competition_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "category_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "athlete_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 4,
+        "name": "bodyweight",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 5,
+        "name": "rank",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 6,
+        "name": "is_disqualified",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 8,
+        "name": "disqualified_reason",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "ris_score",
+        "type_info": "Numeric"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "5f9ad9dfed1415f1384ee0f76b07f27ad5ba5238e22383a1f16efc9ea3f966e7"
+}

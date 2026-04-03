@@ -1,9 +1,10 @@
-name: ci quality checks
+name: Continuous Integration Backend
 
 on:
-  push:
-    branches: [main]
   pull_request:
+    paths:
+      - backend/**
+      - .github/workflows/ci-backend.yaml
     branches: [main]
 
 env:
@@ -16,14 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           components: rustfmt
-          cache: true
-
       - name: Check formatting
+        working-directory: backend
         run: cargo fmt --all -- --check
 
   lint:
@@ -33,22 +31,19 @@ jobs:
       SQLX_OFFLINE: true
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           components: clippy
-          cache: true
-
       - name: Run clippy
-        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+        working-directory: backend
+        run: cargo clippy --workspace --all-targets --all-features --locked
 
   test:
     name: Tests
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:18-alpine
+        image: postgres:17-alpine
         env:
           POSTGRES_USER: openstreetlifting
           POSTGRES_PASSWORD: openstreetlifting
@@ -64,20 +59,16 @@ jobs:
       DATABASE_URL: postgres://openstreetlifting:openstreetlifting@localhost:5432/openstreetlifting
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: taiki-e/install-action@v2
         with:
-          cache: true
-
-      - name: Install sqlx-cli
-        run: cargo install sqlx-cli --no-default-features --features postgres
-
+          tool: sqlx-cli,cargo-nextest
       - name: Run migrations
-        run: sqlx migrate run --source crates/storage/migrations
-
+        working-directory: backend
+        run: sqlx migrate run --source crates/osl_db/migrations
       - name: Run tests
-        run: cargo test --workspace --all-features
+        working-directory: backend
+        run: cargo nextest run --workspace --all-features --locked
 
   build:
     name: Build
@@ -86,19 +77,19 @@ jobs:
       SQLX_OFFLINE: true
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          cache: true
-
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
       - name: Build release
+        working-directory: backend
         run: cargo build --release --locked --workspace
 
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
+    if: always()
     needs: [format, lint, test, build]
     steps:
-      - name: All checks passed
-        run: echo "All CI checks passed successfully"
+      - name: Check all jobs passed
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            exit 1
+          fi

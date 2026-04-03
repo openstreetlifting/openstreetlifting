@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT category_id as \"category_id: Uuid\" FROM categories WHERE name = $1 AND gender = $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "category_id: Uuid",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "4f5d21dc1fe996f2aad7119b532792b07cbf826745db30a095b42122ddbda23e"
+}
