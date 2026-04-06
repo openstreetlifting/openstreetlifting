@@ -1,6 +1,9 @@
 name: Continuous Integration Frontend
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     paths:
       - frontend/**
