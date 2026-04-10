@@ -1,4 +1,9 @@
-use axum::{Json, extract::{Path, State}};
+use crate::AppState;
+use crate::error::WebResult;
+use axum::{
+    Json,
+    extract::{Path, State},
+};
 use osl_db::{
     dto::ris::{
         ComputeRisRequest, ComputeRisResponse, GenderConstants, RisConstants, RisFormulaResponse,
@@ -8,8 +13,6 @@ use osl_db::{
     repository::ris::RisRepository,
 };
 use uuid::Uuid;
-use crate::AppState;
-use crate::error::WebResult;
 
 #[utoipa::path(
     get,

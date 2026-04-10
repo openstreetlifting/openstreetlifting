@@ -3,9 +3,9 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
+use osl_domain::error::StorageError;
 use serde_json::json;
 use std::fmt;
-use osl_domain::error::StorageError;
 
 /// Web layer errors
 #[derive(Debug)]

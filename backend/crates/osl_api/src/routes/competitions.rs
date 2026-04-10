@@ -1,4 +1,7 @@
-use axum::{Router, middleware, routing::{get, post}};
+use axum::{
+    Router, middleware,
+    routing::{get, post},
+};
 
 use crate::AppState;
 use crate::handlers::competitions::{
