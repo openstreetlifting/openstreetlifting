@@ -1510,7 +1510,7 @@ dependencies = [
 
 [[package]]
 name = "osl_api"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "axum",
@@ -1532,7 +1532,7 @@ dependencies = [
 
 [[package]]
 name = "osl_db"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "chrono",
  "osl_domain",
@@ -1546,7 +1546,7 @@ dependencies = [
 
 [[package]]
 name = "osl_domain"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "chrono",
  "rust_decimal",
@@ -1559,7 +1559,7 @@ dependencies = [
 
 [[package]]
 name = "osl_importer"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "async-trait",
  "chrono",

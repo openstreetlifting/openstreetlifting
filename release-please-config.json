@@ -1,7 +1,21 @@
 {
   "packages": {
-    ".": {
-      "release-type": "simple",
+    "backend": {
+      "release-type": "rust",
+      "component": "backend",
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "changelog-types": [
+        { "type": "feat", "section": "Features", "hidden": false },
+        { "type": "fix", "section": "Bug Fixes", "hidden": false },
+        { "type": "chore", "section": "Miscellaneous", "hidden": true },
+        { "type": "docs", "section": "Documentation", "hidden": false },
+        { "type": "data", "section": "Data", "hidden": false }
+      ]
+    },
+    "frontend": {
+      "release-type": "node",
+      "component": "frontend",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true,
       "changelog-types": [
