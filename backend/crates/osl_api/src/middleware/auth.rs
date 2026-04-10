@@ -1,20 +1,35 @@
-use actix_web::{Error, dev::ServiceRequest, error::ErrorUnauthorized};
-use actix_web_httpauth::extractors::bearer::BearerAuth;
+use axum::{
+    extract::{Request, State},
+    http::header::AUTHORIZATION,
+    middleware::Next,
+    response::Response,
+};
 use std::collections::HashSet;
 
-pub async fn api_key_validator(
-    req: ServiceRequest,
-    credentials: BearerAuth,
-) -> Result<ServiceRequest, (Error, ServiceRequest)> {
-    let api_keys = req
-        .app_data::<actix_web::web::Data<ApiKeys>>()
-        .expect("ApiKeys not configured");
+use crate::AppState;
+use crate::error::WebError;
 
-    if api_keys.is_valid(credentials.token()) {
-        Ok(req)
-    } else {
-        tracing::warn!("Invalid API key attempt");
-        Err((ErrorUnauthorized("Invalid API key"), req))
+pub async fn require_auth(
+    State(state): State<AppState>,
+    req: Request,
+    next: Next,
+) -> Result<Response, WebError> {
+    let auth_header = req
+        .headers()
+        .get(AUTHORIZATION)
+        .and_then(|v| v.to_str().ok());
+
+    match auth_header {
+        Some(header) if header.starts_with("Bearer ") => {
+            let token = &header[7..];
+            if state.api_keys.is_valid(token) {
+                Ok(next.run(req).await)
+            } else {
+                tracing::warn!("Invalid API key attempt");
+                Err(WebError::Unauthorized)
+            }
+        }
+        _ => Err(WebError::Unauthorized),
     }
 }
 

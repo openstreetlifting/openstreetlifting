@@ -1,13 +1,16 @@
-use actix_web::{HttpResponse, web};
-use storage::{
-    Database,
+use axum::{
+    Json,
+    extract::{Path, State},
+    http::StatusCode,
+    response::IntoResponse,
+};
+use osl_db::{
     dto::athlete::{
         AthleteDetailResponse, AthleteResponse, CreateAthleteRequest, UpdateAthleteRequest,
     },
     repository::athlete::AthleteRepository,
 };
-use validator::Validate;
-
+use crate::AppState;
 use crate::error::WebResult;
 
 #[utoipa::path(
@@ -18,13 +21,15 @@ use crate::error::WebResult;
     ),
     tag = "athletes"
 )]
-pub async fn list_athletes(db: web::Data<Database>) -> WebResult<HttpResponse> {
-    let repo = AthleteRepository::new(db.pool());
+pub async fn list_athletes(
+    State(state): State<AppState>,
+) -> WebResult<Json<Vec<AthleteResponse>>> {
+    let repo = AthleteRepository::new(state.db.pool());
     let athletes = repo.list().await?;
 
     let response: Vec<AthleteResponse> = athletes.into_iter().map(AthleteResponse::from).collect();
 
-    Ok(HttpResponse::Ok().json(response))
+    Ok(Json(response))
 }
 
 #[utoipa::path(
@@ -40,14 +45,13 @@ pub async fn list_athletes(db: web::Data<Database>) -> WebResult<HttpResponse> {
     tag = "athletes"
 )]
 pub async fn get_athlete(
-    db: web::Data<Database>,
-    path: web::Path<String>,
-) -> WebResult<HttpResponse> {
-    let slug = path.into_inner();
-    let repo = AthleteRepository::new(db.pool());
+    State(state): State<AppState>,
+    Path(slug): Path<String>,
+) -> WebResult<Json<AthleteResponse>> {
+    let repo = AthleteRepository::new(state.db.pool());
     let athlete = repo.find_by_slug(&slug).await?;
 
-    Ok(HttpResponse::Ok().json(AthleteResponse::from(athlete)))
+    Ok(Json(AthleteResponse::from(athlete)))
 }
 
 #[utoipa::path(
@@ -63,14 +67,13 @@ pub async fn get_athlete(
     tag = "athletes"
 )]
 pub async fn get_athlete_detailed(
-    db: web::Data<Database>,
-    path: web::Path<String>,
-) -> WebResult<HttpResponse> {
-    let slug = path.into_inner();
-    let repo = AthleteRepository::new(db.pool());
+    State(state): State<AppState>,
+    Path(slug): Path<String>,
+) -> WebResult<Json<AthleteDetailResponse>> {
+    let repo = AthleteRepository::new(state.db.pool());
     let athlete = repo.find_by_slug_detailed(&slug).await?;
 
-    Ok(HttpResponse::Ok().json(athlete))
+    Ok(Json(athlete))
 }
 
 #[utoipa::path(
@@ -88,17 +91,13 @@ pub async fn get_athlete_detailed(
     tag = "athletes"
 )]
 pub async fn create_athlete(
-    db: web::Data<Database>,
-    payload: web::Json<CreateAthleteRequest>,
-) -> WebResult<HttpResponse> {
-    let req = payload.into_inner();
-
-    req.validate()?;
-
-    let repo = AthleteRepository::new(db.pool());
+    State(state): State<AppState>,
+    Json(req): Json<CreateAthleteRequest>,
+) -> WebResult<impl IntoResponse> {
+    let repo = AthleteRepository::new(state.db.pool());
     let athlete = repo.create(&req).await?;
 
-    Ok(HttpResponse::Created().json(AthleteResponse::from(athlete)))
+    Ok((StatusCode::CREATED, Json(AthleteResponse::from(athlete))))
 }
 
 #[utoipa::path(
@@ -120,24 +119,17 @@ pub async fn create_athlete(
     tag = "athletes"
 )]
 pub async fn update_athlete(
-    db: web::Data<Database>,
-    path: web::Path<String>,
-    payload: web::Json<UpdateAthleteRequest>,
-) -> WebResult<HttpResponse> {
-    let slug = path.into_inner();
-    let update_req = payload.into_inner();
-
-    update_req.validate()?;
-
-    let repo = AthleteRepository::new(db.pool());
-
+    State(state): State<AppState>,
+    Path(slug): Path<String>,
+    Json(update_req): Json<UpdateAthleteRequest>,
+) -> WebResult<Json<AthleteResponse>> {
+    let repo = AthleteRepository::new(state.db.pool());
     let existing = repo.find_by_slug(&slug).await?;
-
     let updated = repo
         .update(existing.athlete_id, &existing, &update_req)
         .await?;
 
-    Ok(HttpResponse::Ok().json(AthleteResponse::from(updated)))
+    Ok(Json(AthleteResponse::from(updated)))
 }
 
 #[utoipa::path(
@@ -157,13 +149,12 @@ pub async fn update_athlete(
     tag = "athletes"
 )]
 pub async fn delete_athlete(
-    db: web::Data<Database>,
-    path: web::Path<String>,
-) -> WebResult<HttpResponse> {
-    let slug = path.into_inner();
-    let repo = AthleteRepository::new(db.pool());
+    State(state): State<AppState>,
+    Path(slug): Path<String>,
+) -> WebResult<StatusCode> {
+    let repo = AthleteRepository::new(state.db.pool());
     let athlete = repo.find_by_slug(&slug).await?;
     repo.delete(athlete.athlete_id).await?;
 
-    Ok(HttpResponse::NoContent().finish())
+    Ok(StatusCode::NO_CONTENT)
 }

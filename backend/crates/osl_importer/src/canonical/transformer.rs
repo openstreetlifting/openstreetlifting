@@ -1,7 +1,7 @@
 use super::models::*;
 use crate::{ImporterError, Result};
 use sqlx::PgPool;
-use storage::models::NormalizedAthleteName;
+use osl_domain::models::NormalizedAthleteName;
 use tracing::info;
 use uuid::Uuid;
 
@@ -448,7 +448,7 @@ impl<'a> CanonicalTransformer<'a> {
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
         let formula =
-            storage::services::ris_computation::get_formula_for_date(self.pool, competition_date)
+            osl_db::services::ris_computation::get_formula_for_date(self.pool, competition_date)
                 .await
                 .map_err(|e| {
                     ImporterError::TransformationError(format!(
@@ -480,13 +480,12 @@ impl<'a> CanonicalTransformer<'a> {
 
         for participant in participants {
             if let Some(bodyweight) = participant.bodyweight {
-                let ris_score = storage::services::ris_computation::compute_ris(
+                let ris_score = osl_domain::ris::compute_ris(
                     bodyweight,
                     participant.total,
                     &participant.gender,
                     &formula,
                 )
-                .await
                 .map_err(|e| {
                     ImporterError::TransformationError(format!(
                         "Failed to compute RIS for participant {}: {}",

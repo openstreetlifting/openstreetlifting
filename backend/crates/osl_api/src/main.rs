@@ -1,7 +1,8 @@
-use actix_cors::Cors;
-use actix_web::{App, HttpServer, web};
 use anyhow::Context;
-use storage::Database;
+use axum::Router;
+use std::sync::Arc;
+use osl_db::Database;
+use tower_http::cors::{Any, CorsLayer};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -13,6 +14,12 @@ mod routes;
 
 use config::Config;
 use middleware::auth::ApiKeys;
+
+#[derive(Clone)]
+pub struct AppState {
+    pub db: Arc<Database>,
+    pub api_keys: ApiKeys,
+}
 
 #[derive(OpenApi)]
 #[openapi(
@@ -34,41 +41,41 @@ use middleware::auth::ApiKeys;
     ),
     components(
         schemas(
-            storage::dto::competition::CreateCompetitionRequest,
-            storage::dto::competition::UpdateCompetitionRequest,
-            storage::dto::competition::CompetitionResponse,
-            storage::dto::competition::CompetitionListResponse,
-            storage::dto::competition::CompetitionDetailResponse,
-            storage::dto::competition::CategoryDetail,
-            storage::dto::competition::ParticipantDetail,
-            storage::dto::competition::LiftDetail,
-            storage::dto::competition::AttemptInfo,
-            storage::dto::competition::FederationInfo,
-            storage::dto::competition::CategoryInfo,
-            storage::dto::competition::AthleteInfo,
-            storage::dto::competition::MovementInfo,
-            storage::dto::athlete::CreateAthleteRequest,
-            storage::dto::athlete::UpdateAthleteRequest,
-            storage::dto::athlete::AthleteResponse,
-            storage::dto::athlete::AthleteDetailResponse,
-            storage::dto::athlete::AthleteCompetitionSummary,
-            storage::dto::athlete::PersonalRecord,
-            storage::dto::common::PaginationMeta,
-            storage::dto::ranking::GlobalRankingEntry,
-            storage::dto::ranking::AthleteInfo,
-            storage::dto::ranking::CompetitionInfo,
-            storage::models::Competition,
-            storage::models::Athlete,
-            storage::models::Category,
-            storage::models::Federation,
-            storage::models::Movement,
-            storage::models::Lift,
-            storage::models::Attempt,
-            storage::models::CompetitionParticipant,
-            storage::models::Record,
-            storage::models::Social,
-            storage::models::Rulebook,
-            storage::models::AthleteSocial,
+            osl_db::dto::competition::CreateCompetitionRequest,
+            osl_db::dto::competition::UpdateCompetitionRequest,
+            osl_db::dto::competition::CompetitionResponse,
+            osl_db::dto::competition::CompetitionListResponse,
+            osl_db::dto::competition::CompetitionDetailResponse,
+            osl_db::dto::competition::CategoryDetail,
+            osl_db::dto::competition::ParticipantDetail,
+            osl_db::dto::competition::LiftDetail,
+            osl_db::dto::competition::AttemptInfo,
+            osl_db::dto::competition::FederationInfo,
+            osl_db::dto::competition::CategoryInfo,
+            osl_db::dto::competition::AthleteInfo,
+            osl_db::dto::competition::MovementInfo,
+            osl_db::dto::athlete::CreateAthleteRequest,
+            osl_db::dto::athlete::UpdateAthleteRequest,
+            osl_db::dto::athlete::AthleteResponse,
+            osl_db::dto::athlete::AthleteDetailResponse,
+            osl_db::dto::athlete::AthleteCompetitionSummary,
+            osl_db::dto::athlete::PersonalRecord,
+            osl_db::dto::common::PaginationMeta,
+            osl_db::dto::ranking::GlobalRankingEntry,
+            osl_db::dto::ranking::AthleteInfo,
+            osl_db::dto::ranking::CompetitionInfo,
+            osl_db::models::Competition,
+            osl_db::models::Athlete,
+            osl_db::models::Category,
+            osl_db::models::Federation,
+            osl_db::models::Movement,
+            osl_db::models::Lift,
+            osl_db::models::Attempt,
+            osl_db::models::CompetitionParticipant,
+            osl_db::models::Record,
+            osl_db::models::Social,
+            osl_db::models::Rulebook,
+            osl_db::models::AthleteSocial,
         )
     ),
     tags(
@@ -135,39 +142,35 @@ async fn main() -> anyhow::Result<()> {
         .context("Failed to run migrations")?;
     tracing::info!("Database migrations completed successfully");
 
-    let db_data = web::Data::new(db);
-    let api_keys = web::Data::new(ApiKeys::from_comma_separated(&config.api_keys));
+    let state = AppState {
+        db: Arc::new(db),
+        api_keys: ApiKeys::from_comma_separated(&config.api_keys),
+    };
 
     let bind_address = format!("{}:{}", config.host, config.port);
     tracing::info!("Starting server at http://{}", bind_address);
-
     tracing::info!(
         "Swagger UI available at http://{}/swagger-ui/",
         bind_address
     );
 
-    let openapi = ApiDoc::openapi();
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods(Any)
+        .allow_headers(Any)
+        .max_age(std::time::Duration::from_secs(3600));
 
-    HttpServer::new(move || {
-        let cors = Cors::default()
-            .allow_any_origin()
-            .allow_any_method()
-            .allow_any_header()
-            .supports_credentials()
-            .max_age(3600);
+    let swagger_ui: Router<AppState> =
+        SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()).into();
 
-        App::new()
-            .wrap(cors)
-            .app_data(db_data.clone())
-            .app_data(api_keys.clone())
-            .service(
-                SwaggerUi::new("/swagger-ui/{_:.*}").url("/api-docs/openapi.json", openapi.clone()),
-            )
-            .configure(routes::configure)
-    })
-    .bind(&bind_address)?
-    .run()
-    .await?;
+    let app = Router::new()
+        .merge(swagger_ui)
+        .nest("/api", routes::api_router(state.clone()))
+        .layer(cors)
+        .with_state(state);
+
+    let listener = tokio::net::TcpListener::bind(&bind_address).await?;
+    axum::serve(listener, app).await?;
 
     Ok(())
 }

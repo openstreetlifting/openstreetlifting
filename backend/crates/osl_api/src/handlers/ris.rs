@@ -1,17 +1,14 @@
-use actix_web::{HttpResponse, web};
-use storage::{
-    Database,
+use axum::{Json, extract::{Path, State}};
+use osl_db::{
     dto::ris::{
         ComputeRisRequest, ComputeRisResponse, GenderConstants, RisConstants, RisFormulaResponse,
         RisScoreResponse,
     },
     models::RisFormulaVersion,
     repository::ris::RisRepository,
-    services::ris_computation,
 };
 use uuid::Uuid;
-use validator::Validate;
-
+use crate::AppState;
 use crate::error::WebResult;
 
 #[utoipa::path(
@@ -22,8 +19,10 @@ use crate::error::WebResult;
     ),
     tag = "ris"
 )]
-pub async fn list_ris_formulas(db: web::Data<Database>) -> WebResult<HttpResponse> {
-    let repo = RisRepository::new(db.pool());
+pub async fn list_ris_formulas(
+    State(state): State<AppState>,
+) -> WebResult<Json<Vec<RisFormulaResponse>>> {
+    let repo = RisRepository::new(state.db.pool());
     let formulas = repo.list_all_formulas().await?;
 
     let response: Vec<RisFormulaResponse> = formulas
@@ -31,7 +30,7 @@ pub async fn list_ris_formulas(db: web::Data<Database>) -> WebResult<HttpRespons
         .map(|f| formula_to_response(&f))
         .collect();
 
-    Ok(HttpResponse::Ok().json(response))
+    Ok(Json(response))
 }
 
 #[utoipa::path(
@@ -43,11 +42,13 @@ pub async fn list_ris_formulas(db: web::Data<Database>) -> WebResult<HttpRespons
     ),
     tag = "ris"
 )]
-pub async fn get_current_formula(db: web::Data<Database>) -> WebResult<HttpResponse> {
-    let repo = RisRepository::new(db.pool());
+pub async fn get_current_formula(
+    State(state): State<AppState>,
+) -> WebResult<Json<RisFormulaResponse>> {
+    let repo = RisRepository::new(state.db.pool());
     let formula = repo.get_current_formula().await?;
 
-    Ok(HttpResponse::Ok().json(formula_to_response(&formula)))
+    Ok(Json(formula_to_response(&formula)))
 }
 
 #[utoipa::path(
@@ -63,14 +64,13 @@ pub async fn get_current_formula(db: web::Data<Database>) -> WebResult<HttpRespo
     tag = "ris"
 )]
 pub async fn get_formula_by_year(
-    db: web::Data<Database>,
-    path: web::Path<i32>,
-) -> WebResult<HttpResponse> {
-    let year = path.into_inner();
-    let repo = RisRepository::new(db.pool());
+    State(state): State<AppState>,
+    Path(year): Path<i32>,
+) -> WebResult<Json<RisFormulaResponse>> {
+    let repo = RisRepository::new(state.db.pool());
     let formula = repo.get_formula_by_year(year).await?;
 
-    Ok(HttpResponse::Ok().json(formula_to_response(&formula)))
+    Ok(Json(formula_to_response(&formula)))
 }
 
 #[utoipa::path(
@@ -85,11 +85,10 @@ pub async fn get_formula_by_year(
     tag = "ris"
 )]
 pub async fn get_participant_ris_history(
-    db: web::Data<Database>,
-    path: web::Path<Uuid>,
-) -> WebResult<HttpResponse> {
-    let participant_id = path.into_inner();
-    let repo = RisRepository::new(db.pool());
+    State(state): State<AppState>,
+    Path(participant_id): Path<Uuid>,
+) -> WebResult<Json<Vec<RisScoreResponse>>> {
+    let repo = RisRepository::new(state.db.pool());
     let history = repo.get_participant_ris_history(participant_id).await?;
 
     let formulas = repo.list_all_formulas().await?;
@@ -109,7 +108,7 @@ pub async fn get_participant_ris_history(
         })
         .collect();
 
-    Ok(HttpResponse::Ok().json(response))
+    Ok(Json(response))
 }
 
 #[utoipa::path(
@@ -123,12 +122,10 @@ pub async fn get_participant_ris_history(
     tag = "ris"
 )]
 pub async fn compute_ris(
-    db: web::Data<Database>,
-    payload: web::Json<ComputeRisRequest>,
-) -> WebResult<HttpResponse> {
-    payload.validate()?;
-
-    let repo = RisRepository::new(db.pool());
+    State(state): State<AppState>,
+    Json(payload): Json<ComputeRisRequest>,
+) -> WebResult<Json<ComputeRisResponse>> {
+    let repo = RisRepository::new(state.db.pool());
     let formula = if let Some(year) = payload.formula_year {
         repo.get_formula_by_year(year).await?
     } else {
@@ -136,15 +133,14 @@ pub async fn compute_ris(
     };
 
     let ris_score =
-        ris_computation::compute_ris(payload.bodyweight, payload.total, &payload.gender, &formula)
-            .await?;
+        osl_domain::ris::compute_ris(payload.bodyweight, payload.total, &payload.gender, &formula)?;
 
     let response = ComputeRisResponse {
         ris_score,
         formula_year: formula.year,
     };
 
-    Ok(HttpResponse::Ok().json(response))
+    Ok(Json(response))
 }
 
 #[utoipa::path(
@@ -156,10 +152,12 @@ pub async fn compute_ris(
     ),
     tag = "ris"
 )]
-pub async fn recompute_all_ris(db: web::Data<Database>) -> WebResult<HttpResponse> {
-    let count = ris_computation::recompute_all_ris(db.pool(), None).await?;
+pub async fn recompute_all_ris(
+    State(state): State<AppState>,
+) -> WebResult<Json<serde_json::Value>> {
+    let count = osl_db::services::ris_computation::recompute_all_ris(state.db.pool(), None).await?;
 
-    Ok(HttpResponse::Ok().json(serde_json::json!({
+    Ok(Json(serde_json::json!({
         "recomputed_count": count,
         "message": format!("Successfully recomputed RIS for {} participants", count)
     })))
