@@ -1,7 +1,7 @@
 use anyhow::Context;
 use axum::Router;
-use std::sync::Arc;
 use osl_db::Database;
+use std::sync::Arc;
 use tower_http::cors::{Any, CorsLayer};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
@@ -160,8 +160,9 @@ async fn main() -> anyhow::Result<()> {
         .allow_headers(Any)
         .max_age(std::time::Duration::from_secs(3600));
 
-    let swagger_ui: Router<AppState> =
-        SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()).into();
+    let swagger_ui: Router<AppState> = SwaggerUi::new("/swagger-ui")
+        .url("/api-docs/openapi.json", ApiDoc::openapi())
+        .into();
 
     let app = Router::new()
         .merge(swagger_ui)

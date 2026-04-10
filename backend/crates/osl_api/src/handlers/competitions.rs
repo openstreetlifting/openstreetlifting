@@ -1,3 +1,5 @@
+use crate::AppState;
+use crate::error::{WebError, WebResult};
 use axum::{
     Json,
     extract::{Path, State},
@@ -11,8 +13,6 @@ use osl_db::{
     },
     repository::competition::CompetitionRepository,
 };
-use crate::AppState;
-use crate::error::{WebError, WebResult};
 
 #[utoipa::path(
     get,

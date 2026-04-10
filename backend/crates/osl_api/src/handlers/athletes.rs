@@ -1,3 +1,5 @@
+use crate::AppState;
+use crate::error::WebResult;
 use axum::{
     Json,
     extract::{Path, State},
@@ -10,8 +12,6 @@ use osl_db::{
     },
     repository::athlete::AthleteRepository,
 };
-use crate::AppState;
-use crate::error::WebResult;
 
 #[utoipa::path(
     get,
@@ -21,9 +21,7 @@ use crate::error::WebResult;
     ),
     tag = "athletes"
 )]
-pub async fn list_athletes(
-    State(state): State<AppState>,
-) -> WebResult<Json<Vec<AthleteResponse>>> {
+pub async fn list_athletes(State(state): State<AppState>) -> WebResult<Json<Vec<AthleteResponse>>> {
     let repo = AthleteRepository::new(state.db.pool());
     let athletes = repo.list().await?;
 

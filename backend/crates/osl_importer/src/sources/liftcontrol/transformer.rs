@@ -3,10 +3,10 @@ use super::movement_mapper::LiftControlMovementMapper;
 use super::spec::CompetitionMetadata;
 use crate::movement_mapper::MovementMapper;
 use crate::{ImporterError, Result};
+use osl_domain::models::NormalizedAthleteName;
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use std::collections::HashMap;
-use osl_domain::models::NormalizedAthleteName;
 use tracing::info;
 use uuid::Uuid;
 
