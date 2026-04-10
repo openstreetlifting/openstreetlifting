@@ -2,16 +2,18 @@
 
 # Stage 1: Dependencies
 FROM node:24-alpine AS deps
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 # Copy package files
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install all dependencies (we need devDependencies for building)
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Stage 2: Builder
 FROM node:24-alpine AS builder
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -22,7 +24,7 @@ COPY . .
 
 # Build the application
 ENV NODE_ENV=production
-RUN npm run build
+RUN pnpm build
 
 # Stage 3: Runner
 FROM node:24-alpine AS runner
