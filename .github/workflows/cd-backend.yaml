@@ -1,11 +1,10 @@
 name: CD Backend
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI Backend"]
+    types: [completed]
     branches: [main]
-    paths:
-      - backend/**
-      - .github/workflows/cd-backend.yaml
   release:
     types: [published]
 
@@ -21,6 +20,9 @@ jobs:
   build-and-push:
     name: Build & Push
     runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'release' ||
+      github.event.workflow_run.conclusion == 'success'
     steps:
       - uses: actions/checkout@v4
 
