@@ -1,8 +1,8 @@
 use sqlx::postgres::{PgPool, PgPoolOptions};
 
+pub use osl_domain::{error, models};
+
 pub mod dto;
-pub mod error;
-pub mod models;
 pub mod repository;
 pub mod services;
 

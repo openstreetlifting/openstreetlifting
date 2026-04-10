@@ -6,7 +6,7 @@ use crate::{ImporterError, Result};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use std::collections::HashMap;
-use storage::models::NormalizedAthleteName;
+use osl_domain::models::NormalizedAthleteName;
 use tracing::info;
 use uuid::Uuid;
 
@@ -497,7 +497,7 @@ impl<'a> LiftControlTransformer<'a> {
         let competition_date = self.metadata.start_date;
 
         let formula =
-            storage::services::ris_computation::get_formula_for_date(self.pool, competition_date)
+            osl_db::services::ris_computation::get_formula_for_date(self.pool, competition_date)
                 .await
                 .map_err(|e| {
                     ImporterError::TransformationError(format!(
@@ -529,13 +529,12 @@ impl<'a> LiftControlTransformer<'a> {
 
         for participant in participants {
             if let Some(bodyweight) = participant.bodyweight {
-                let ris_score = storage::services::ris_computation::compute_ris(
+                let ris_score = osl_domain::ris::compute_ris(
                     bodyweight,
                     participant.total,
                     &participant.gender,
                     &formula,
                 )
-                .await
                 .map_err(|e| {
                     ImporterError::TransformationError(format!(
                         "Failed to compute RIS for participant {}: {}",

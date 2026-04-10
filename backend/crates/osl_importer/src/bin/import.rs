@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use importer::{
+use osl_importer::{
     LiftControlCompetitionId, LiftControlRegistry,
     canonical::{
         models::CanonicalFormat, transformer::CanonicalTransformer, validator::CanonicalValidator,
@@ -69,7 +69,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| format!("import={},importer={}", log_level, log_level).into()),
+                .unwrap_or_else(|_| format!("import={},osl_importer={}", log_level, log_level).into()),
         )
         .with(tracing_subscriber::fmt::layer())
         .init();
@@ -299,7 +299,7 @@ fn parse_competition_id(
 }
 
 async fn export_to_canonical(
-    spec: &importer::LiftControlSpec,
+    spec: &osl_importer::LiftControlSpec,
     output_dir: PathBuf,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let client = LiftControlClient::new();

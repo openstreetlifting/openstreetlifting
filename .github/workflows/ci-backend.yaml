@@ -1,6 +1,10 @@
-name: Continuous Integration Backend
+name: CI Backend
 
 on:
+  push:
+    paths:
+      - backend/**
+      - .github/workflows/ci-backend.yaml
   pull_request:
     paths:
       - backend/**

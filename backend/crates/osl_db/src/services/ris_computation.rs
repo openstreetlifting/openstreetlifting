@@ -1,4 +1,5 @@
 use chrono::NaiveDate;
+use osl_domain::ris::compute_ris;
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -6,33 +7,6 @@ use uuid::Uuid;
 use crate::error::Result;
 use crate::models::{RisFormulaVersion, RisScoreHistory};
 use crate::repository::ris::RisRepository;
-
-pub async fn compute_ris(
-    bodyweight: Decimal,
-    total: Decimal,
-    gender: &str,
-    formula: &RisFormulaVersion,
-) -> Result<Decimal> {
-    let constants = formula.constants_for_gender(gender);
-
-    let bw_minus_v = bodyweight - constants.v;
-    let exp_arg = -constants.b * bw_minus_v;
-
-    let exp_term = decimal_exp(exp_arg);
-    let denominator_fraction =
-        (constants.k - constants.a) / (Decimal::ONE + constants.q * exp_term);
-    let denominator = constants.a + denominator_fraction;
-
-    let ris_score = (total * Decimal::from(100)) / denominator;
-
-    Ok(ris_score.round_dp(2))
-}
-
-fn decimal_exp(x: Decimal) -> Decimal {
-    let x_f64: f64 = x.to_string().parse().unwrap_or(0.0);
-    let result = x_f64.exp();
-    Decimal::from_f64_retain(result).unwrap_or(Decimal::ONE)
-}
 
 pub async fn get_formula_for_date(
     pool: &PgPool,
@@ -57,7 +31,7 @@ pub async fn compute_and_store_ris(
     let repo = RisRepository::new(pool);
     let formula = repo.get_current_formula().await?;
 
-    let ris_score = compute_ris(bodyweight, total, gender, &formula).await?;
+    let ris_score = compute_ris(bodyweight, total, gender, &formula)?;
 
     repo.upsert_ris_score(
         participant_id,
@@ -86,7 +60,7 @@ pub async fn compute_historical_ris(
     let mut results = Vec::new();
 
     for formula in formulas {
-        let ris_score = compute_ris(bodyweight, total, gender, &formula).await?;
+        let ris_score = compute_ris(bodyweight, total, gender, &formula)?;
         let score_history = repo
             .upsert_ris_score(
                 participant_id,
@@ -133,7 +107,7 @@ pub async fn recompute_all_ris(pool: &PgPool, formula_id: Option<Uuid>) -> Resul
     for participant in participants {
         if let Some(bodyweight) = participant.bodyweight {
             let ris_score =
-                compute_ris(bodyweight, participant.total, &participant.gender, &formula).await?;
+                compute_ris(bodyweight, participant.total, &participant.gender, &formula)?;
 
             repo.upsert_ris_score(
                 participant.participant_id,

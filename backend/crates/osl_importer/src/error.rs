@@ -14,7 +14,7 @@ pub enum ImporterError {
     DatabaseError(#[from] sqlx::Error),
 
     #[error("Storage error: {0}")]
-    StorageError(#[from] storage::error::StorageError),
+    StorageError(#[from] osl_domain::error::StorageError),
 
     #[error("Data transformation error: {0}")]
     TransformationError(String),
