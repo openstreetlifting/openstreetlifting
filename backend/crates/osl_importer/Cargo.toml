@@ -11,7 +11,7 @@ chrono.workspace       = true
 clap         = { version = "4.5.52", features = ["derive", "env"] }
 dotenvy.workspace      = true
 lazy_static  = "1.4"
-reqwest      = { version = "0.12.24", features = ["json"] }
+reqwest      = { version = "0.13.0", features = ["json"] }
 rust_decimal.workspace = true
 serde.workspace        = true
 serde_json.workspace   = true

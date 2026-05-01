@@ -11,4 +11,4 @@ serde.workspace        = true
 sqlx.workspace         = true
 utoipa.workspace       = true
 uuid.workspace         = true
-validator = { version = "0.18", features = ["derive"] }
+validator = { version = "0.20", features = ["derive"] }
