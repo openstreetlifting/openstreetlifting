@@ -1,6 +1,73 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
+  "extends": ["config:recommended"],
+
+  "timezone": "Europe/Paris",
+  "schedule": ["before 9am on Monday"],
+
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "assignees": ["dirdr"],
+  "labels": ["dependencies"],
+
+  "packageRules": [
+    {
+      "description": "Group and automerge frontend (npm/pnpm) patch + minor updates",
+      "groupName": "frontend dependencies",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["frontend/**"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "labels": ["dependencies", "frontend"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Frontend major updates — manual review required",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["frontend/**"],
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "frontend", "major"]
+    },
+
+    {
+      "description": "Group and automerge backend (Cargo) patch + minor updates",
+      "groupName": "backend dependencies (Cargo)",
+      "matchManagers": ["cargo"],
+      "matchFileNames": ["backend/**"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "labels": ["dependencies", "backend"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Backend Cargo major updates — manual review required",
+      "matchManagers": ["cargo"],
+      "matchFileNames": ["backend/**"],
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "backend", "major"]
+    },
+
+    {
+      "description": "Group Docker base image patch + minor updates",
+      "groupName": "docker base images",
+      "matchManagers": ["dockerfile"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "labels": ["dependencies", "docker"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Docker major image updates — manual review required",
+      "matchManagers": ["dockerfile"],
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "docker", "major"]
+    },
+
+    {
+      "description": "Group Helm chart dependency updates",
+      "groupName": "helm charts",
+      "matchManagers": ["helmv3"],
+      "labels": ["dependencies", "helm"]
+    }
   ]
 }
