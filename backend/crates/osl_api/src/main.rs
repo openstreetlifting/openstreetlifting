@@ -1,14 +1,25 @@
 use anyhow::Context;
-use axum::Router;
+use axum::{
+    Router,
+    http::{HeaderName, HeaderValue},
+};
 use osl_db::Database;
-use std::sync::Arc;
-use tower_http::cors::{Any, CorsLayer};
+use std::{sync::Arc, time::Duration};
+use tower::ServiceBuilder;
+use tower_http::{
+    compression::CompressionLayer,
+    cors::{Any, CorsLayer},
+    request_id::{MakeRequestId, PropagateRequestIdLayer, RequestId, SetRequestIdLayer},
+    timeout::TimeoutLayer,
+    trace::{DefaultOnResponse, TraceLayer},
+};
+use tracing::Level;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
+use uuid::Uuid;
 
 mod config;
 mod error;
-mod handlers;
 mod middleware;
 mod routes;
 
@@ -24,20 +35,20 @@ pub struct AppState {
 #[derive(OpenApi)]
 #[openapi(
     paths(
-        handlers::competitions::list_competitions,
-        handlers::competitions::list_competitions_detailed,
-        handlers::competitions::get_competition,
-        handlers::competitions::get_competition_detailed,
-        handlers::competitions::create_competition,
-        handlers::competitions::update_competition,
-        handlers::competitions::delete_competition,
-        handlers::athletes::list_athletes,
-        handlers::athletes::get_athlete,
-        handlers::athletes::get_athlete_detailed,
-        handlers::athletes::create_athlete,
-        handlers::athletes::update_athlete,
-        handlers::athletes::delete_athlete,
-        handlers::ranking::get_global_ranking,
+        routes::competitions::list_competitions,
+        routes::competitions::list_competitions_detailed,
+        routes::competitions::get_competition,
+        routes::competitions::get_competition_detailed,
+        routes::competitions::create_competition,
+        routes::competitions::update_competition,
+        routes::competitions::delete_competition,
+        routes::athletes::list_athletes,
+        routes::athletes::get_athlete,
+        routes::athletes::get_athlete_detailed,
+        routes::athletes::create_athlete,
+        routes::athletes::update_athlete,
+        routes::athletes::delete_athlete,
+        routes::ranking::get_global_ranking,
     ),
     components(
         schemas(
@@ -105,18 +116,41 @@ impl utoipa::Modify for SecurityAddon {
     }
 }
 
+#[derive(Clone, Default)]
+struct MakeRequestUuid;
+
+impl MakeRequestId for MakeRequestUuid {
+    fn make_request_id<B>(&mut self, _: &axum::http::Request<B>) -> Option<RequestId> {
+        let id = Uuid::new_v4().to_string();
+        HeaderValue::from_str(&id).ok().map(RequestId::new)
+    }
+}
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     dotenvy::dotenv().ok();
 
-    tracing_subscriber::fmt()
-        .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()),
-        )
-        .with_target(true)
-        .with_file(true)
-        .with_line_number(true)
-        .init();
+    let log_format = std::env::var("LOG_FORMAT").unwrap_or_default();
+    let filter = tracing_subscriber::EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| "info".into());
+
+    match log_format.as_str() {
+        "json" => {
+            tracing_subscriber::fmt()
+                .json()
+                .with_env_filter(filter)
+                .with_current_span(true)
+                .init();
+        }
+        _ => {
+            tracing_subscriber::fmt()
+                .with_env_filter(filter)
+                .with_target(true)
+                .with_file(true)
+                .with_line_number(true)
+                .init();
+        }
+    }
 
     tracing::info!("Starting OpenStreetLifting API");
 
@@ -125,11 +159,7 @@ async fn main() -> anyhow::Result<()> {
 
     tracing::info!(
         "Connecting to database at: {}",
-        config
-            .database_url
-            .split('@')
-            .next_back()
-            .unwrap_or("unknown")
+        config.database_url.split('@').next_back().unwrap_or("unknown")
     );
     let db = Database::new(&config.database_url)
         .await
@@ -137,9 +167,7 @@ async fn main() -> anyhow::Result<()> {
     tracing::info!("Database connection established");
 
     tracing::info!("Running database migrations");
-    db.run_migrations()
-        .await
-        .context("Failed to run migrations")?;
+    db.run_migrations().await.context("Failed to run migrations")?;
     tracing::info!("Database migrations completed successfully");
 
     let state = AppState {
@@ -149,29 +177,79 @@ async fn main() -> anyhow::Result<()> {
 
     let bind_address = format!("{}:{}", config.host, config.port);
     tracing::info!("Starting server at http://{}", bind_address);
-    tracing::info!(
-        "Swagger UI available at http://{}/swagger-ui/",
-        bind_address
-    );
+    tracing::info!("Swagger UI available at http://{}/swagger-ui/", bind_address);
+
+    let x_request_id = HeaderName::from_static("x-request-id");
 
     let cors = CorsLayer::new()
         .allow_origin(Any)
         .allow_methods(Any)
         .allow_headers(Any)
-        .max_age(std::time::Duration::from_secs(3600));
+        .max_age(Duration::from_secs(3600));
+
+    let middleware_stack = ServiceBuilder::new()
+        .layer(SetRequestIdLayer::new(x_request_id.clone(), MakeRequestUuid))
+        .layer(PropagateRequestIdLayer::new(x_request_id))
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(|req: &axum::http::Request<_>| {
+                    let rid = req
+                        .headers()
+                        .get("x-request-id")
+                        .and_then(|v| v.to_str().ok())
+                        .unwrap_or("unknown");
+                    tracing::info_span!(
+                        "http_request",
+                        method = %req.method(),
+                        uri = %req.uri().path(),
+                        request_id = %rid,
+                    )
+                })
+                .on_response(DefaultOnResponse::new().level(Level::INFO)),
+        )
+        .layer(TimeoutLayer::new(Duration::from_secs(30)))
+        .layer(cors)
+        .layer(CompressionLayer::new());
 
     let swagger_ui: Router<AppState> = SwaggerUi::new("/swagger-ui")
         .url("/api-docs/openapi.json", ApiDoc::openapi())
         .into();
 
     let app = Router::new()
+        .merge(routes::health::router())
         .merge(swagger_ui)
         .nest("/api", routes::api_router(state.clone()))
-        .layer(cors)
+        .layer(middleware_stack)
         .with_state(state);
 
     let listener = tokio::net::TcpListener::bind(&bind_address).await?;
-    axum::serve(listener, app).await?;
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await?;
 
     Ok(())
+}
+
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        tokio::signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl-C handler");
+    };
+
+    #[cfg(unix)]
+    let sigterm = async {
+        tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+            .expect("failed to install SIGTERM handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let sigterm = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c  => { tracing::info!("Received Ctrl-C, shutting down"); }
+        _ = sigterm => { tracing::info!("Received SIGTERM, shutting down"); }
+    }
 }

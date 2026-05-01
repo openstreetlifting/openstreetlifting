@@ -1,9 +1,5 @@
-use axum::{
-    extract::{Request, State},
-    http::header::AUTHORIZATION,
-    middleware::Next,
-    response::Response,
-};
+use axum::{extract::{Request, State}, middleware::Next, response::Response};
+use axum_extra::{TypedHeader, headers::{Authorization, authorization::Bearer}};
 use std::collections::HashSet;
 
 use crate::AppState;
@@ -11,25 +7,19 @@ use crate::error::WebError;
 
 pub async fn require_auth(
     State(state): State<AppState>,
+    authorization: Option<TypedHeader<Authorization<Bearer>>>,
     req: Request,
     next: Next,
 ) -> Result<Response, WebError> {
-    let auth_header = req
-        .headers()
-        .get(AUTHORIZATION)
-        .and_then(|v| v.to_str().ok());
-
-    match auth_header {
-        Some(header) if header.starts_with("Bearer ") => {
-            let token = &header[7..];
-            if state.api_keys.is_valid(token) {
-                Ok(next.run(req).await)
-            } else {
-                tracing::warn!("Invalid API key attempt");
-                Err(WebError::Unauthorized)
-            }
+    match authorization {
+        Some(TypedHeader(Authorization(bearer))) if state.api_keys.is_valid(bearer.token()) => {
+            Ok(next.run(req).await)
         }
-        _ => Err(WebError::Unauthorized),
+        Some(_) => {
+            tracing::warn!("Invalid API key attempt");
+            Err(WebError::Unauthorized)
+        }
+        None => Err(WebError::Unauthorized),
     }
 }
 
@@ -46,7 +36,6 @@ impl ApiKeys {
             .filter(|s| !s.is_empty())
             .map(String::from)
             .collect();
-
         Self { keys }
     }
 

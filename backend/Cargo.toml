@@ -4,3 +4,20 @@ resolver = "2"
 
 [workspace.package]
 version = "0.1.1"
+
+[workspace.dependencies]
+tokio        = { version = "1.51.1", features = ["full"] }
+serde        = { version = "1.0.228", features = ["derive"] }
+serde_json   = "1.0.149"
+sqlx = { version = "0.8.6", features = [
+  "runtime-tokio", "postgres", "migrate", "chrono", "rust_decimal", "uuid"
+] }
+chrono       = { version = "0.4", features = ["serde"] }
+rust_decimal = { version = "1.39", features = ["serde"] }
+uuid         = { version = "1.23.0", features = ["serde", "v4"] }
+utoipa       = { version = "5.4.0", features = ["chrono", "decimal", "uuid"] }
+tracing            = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+thiserror = "2.0.17"
+anyhow    = "1.0.102"
+dotenvy   = "0.15.7"

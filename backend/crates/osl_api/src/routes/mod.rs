@@ -4,6 +4,7 @@ use crate::AppState;
 
 pub mod athletes;
 pub mod competitions;
+pub mod health;
 pub mod ranking;
 pub mod ris;
 

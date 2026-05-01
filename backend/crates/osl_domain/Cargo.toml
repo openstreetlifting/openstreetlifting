@@ -4,15 +4,10 @@ edition = "2024"
 version.workspace = true
 
 [dependencies]
-chrono = { version = "0.4", features = ["serde"] }
-rust_decimal = { version = "1.38", features = ["serde"] }
-serde = { version = "1.0.228", features = ["derive"] }
-sqlx = { version = "0.8", features = [
-  "postgres",
-  "chrono",
-  "rust_decimal",
-  "uuid",
-] }
-thiserror = "2.0.17"
-utoipa = { version = "5.4.0", features = ["chrono", "decimal", "uuid"] }
-uuid = { version = "1.23.0", features = ["serde", "v4"] }
+chrono.workspace       = true
+rust_decimal.workspace = true
+serde.workspace        = true
+sqlx                   = { workspace = true, features = ["postgres", "chrono", "rust_decimal", "uuid"] }
+thiserror.workspace    = true
+utoipa.workspace       = true
+uuid.workspace         = true
