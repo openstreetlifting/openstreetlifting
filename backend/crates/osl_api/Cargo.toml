@@ -1,5 +1,9 @@
 [package]
 name = "osl_api"
+<<<<<<< Updated upstream
+=======
+version = "0.1.0"
+>>>>>>> Stashed changes
 edition = "2024"
 version.workspace = true
 
