@@ -1,4 +1,8 @@
-use axum::{Json, Router, extract::{Query, State}, routing::get};
+use axum::{
+    Json, Router,
+    extract::{Query, State},
+    routing::get,
+};
 use osl_db::{
     dto::{
         common::PaginatedResponse,

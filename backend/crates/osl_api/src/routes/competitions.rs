@@ -1,7 +1,8 @@
 use axum::{
-    Json, Router, middleware,
+    Json, Router,
     extract::{Path, State},
     http::StatusCode,
+    middleware,
     response::IntoResponse,
     routing::{get, post},
 };
@@ -22,7 +23,10 @@ pub fn router(state: AppState) -> Router<AppState> {
         .route("/competitions", get(list_competitions))
         .route("/competitions/detailed", get(list_competitions_detailed))
         .route("/competitions/{slug}", get(get_competition))
-        .route("/competitions/{slug}/detailed", get(get_competition_detailed));
+        .route(
+            "/competitions/{slug}/detailed",
+            get(get_competition_detailed),
+        );
 
     let protected = Router::new()
         .route("/competitions", post(create_competition))
@@ -48,7 +52,12 @@ pub async fn list_competitions(
 ) -> WebResult<Json<Vec<CompetitionResponse>>> {
     let repo = CompetitionRepository::new(state.db.pool());
     let competitions = repo.list().await?;
-    Ok(Json(competitions.into_iter().map(CompetitionResponse::from).collect()))
+    Ok(Json(
+        competitions
+            .into_iter()
+            .map(CompetitionResponse::from)
+            .collect(),
+    ))
 }
 
 #[utoipa::path(
@@ -81,7 +90,9 @@ pub async fn get_competition(
     Path(slug): Path<String>,
 ) -> WebResult<Json<CompetitionResponse>> {
     let repo = CompetitionRepository::new(state.db.pool());
-    Ok(Json(CompetitionResponse::from(repo.find_by_slug(&slug).await?)))
+    Ok(Json(CompetitionResponse::from(
+        repo.find_by_slug(&slug).await?,
+    )))
 }
 
 #[utoipa::path(
@@ -123,7 +134,10 @@ pub async fn create_competition(
         .map_err(|e| WebError::BadRequest(e.to_string()))?;
     let repo = CompetitionRepository::new(state.db.pool());
     let competition = repo.create(&req).await?;
-    Ok((StatusCode::CREATED, Json(CompetitionResponse::from(competition))))
+    Ok((
+        StatusCode::CREATED,
+        Json(CompetitionResponse::from(competition)),
+    ))
 }
 
 #[utoipa::path(
@@ -148,7 +162,9 @@ pub async fn update_competition(
 ) -> WebResult<Json<CompetitionResponse>> {
     let repo = CompetitionRepository::new(state.db.pool());
     let existing = repo.find_by_slug(&slug).await?;
-    let updated = repo.update(existing.competition_id, &existing, &update_req).await?;
+    let updated = repo
+        .update(existing.competition_id, &existing, &update_req)
+        .await?;
     Ok(Json(CompetitionResponse::from(updated)))
 }
 

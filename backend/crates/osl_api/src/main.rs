@@ -131,8 +131,8 @@ async fn main() -> anyhow::Result<()> {
     dotenvy::dotenv().ok();
 
     let log_format = std::env::var("LOG_FORMAT").unwrap_or_default();
-    let filter = tracing_subscriber::EnvFilter::try_from_default_env()
-        .unwrap_or_else(|_| "info".into());
+    let filter =
+        tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into());
 
     match log_format.as_str() {
         "json" => {
@@ -159,7 +159,11 @@ async fn main() -> anyhow::Result<()> {
 
     tracing::info!(
         "Connecting to database at: {}",
-        config.database_url.split('@').next_back().unwrap_or("unknown")
+        config
+            .database_url
+            .split('@')
+            .next_back()
+            .unwrap_or("unknown")
     );
     let db = Database::new(&config.database_url)
         .await
@@ -167,7 +171,9 @@ async fn main() -> anyhow::Result<()> {
     tracing::info!("Database connection established");
 
     tracing::info!("Running database migrations");
-    db.run_migrations().await.context("Failed to run migrations")?;
+    db.run_migrations()
+        .await
+        .context("Failed to run migrations")?;
     tracing::info!("Database migrations completed successfully");
 
     let state = AppState {
@@ -177,7 +183,10 @@ async fn main() -> anyhow::Result<()> {
 
     let bind_address = format!("{}:{}", config.host, config.port);
     tracing::info!("Starting server at http://{}", bind_address);
-    tracing::info!("Swagger UI available at http://{}/swagger-ui/", bind_address);
+    tracing::info!(
+        "Swagger UI available at http://{}/swagger-ui/",
+        bind_address
+    );
 
     let x_request_id = HeaderName::from_static("x-request-id");
 
@@ -188,7 +197,10 @@ async fn main() -> anyhow::Result<()> {
         .max_age(Duration::from_secs(3600));
 
     let middleware_stack = ServiceBuilder::new()
-        .layer(SetRequestIdLayer::new(x_request_id.clone(), MakeRequestUuid))
+        .layer(SetRequestIdLayer::new(
+            x_request_id.clone(),
+            MakeRequestUuid,
+        ))
         .layer(PropagateRequestIdLayer::new(x_request_id))
         .layer(
             TraceLayer::new_for_http()

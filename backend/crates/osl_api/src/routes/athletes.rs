@@ -1,7 +1,8 @@
 use axum::{
-    Json, Router, middleware,
+    Json, Router,
     extract::{Path, State},
     http::StatusCode,
+    middleware,
     response::IntoResponse,
     routing::{get, post},
 };
@@ -44,7 +45,9 @@ pub fn router(state: AppState) -> Router<AppState> {
 pub async fn list_athletes(State(state): State<AppState>) -> WebResult<Json<Vec<AthleteResponse>>> {
     let repo = AthleteRepository::new(state.db.pool());
     let athletes = repo.list().await?;
-    Ok(Json(athletes.into_iter().map(AthleteResponse::from).collect()))
+    Ok(Json(
+        athletes.into_iter().map(AthleteResponse::from).collect(),
+    ))
 }
 
 #[utoipa::path(
@@ -125,7 +128,9 @@ pub async fn update_athlete(
 ) -> WebResult<Json<AthleteResponse>> {
     let repo = AthleteRepository::new(state.db.pool());
     let existing = repo.find_by_slug(&slug).await?;
-    let updated = repo.update(existing.athlete_id, &existing, &update_req).await?;
+    let updated = repo
+        .update(existing.athlete_id, &existing, &update_req)
+        .await?;
     Ok(Json(AthleteResponse::from(updated)))
 }
 

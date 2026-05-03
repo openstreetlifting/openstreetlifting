@@ -1,5 +1,12 @@
-use axum::{extract::{Request, State}, middleware::Next, response::Response};
-use axum_extra::{TypedHeader, headers::{Authorization, authorization::Bearer}};
+use axum::{
+    extract::{Request, State},
+    middleware::Next,
+    response::Response,
+};
+use axum_extra::{
+    TypedHeader,
+    headers::{Authorization, authorization::Bearer},
+};
 use std::collections::HashSet;
 
 use crate::AppState;

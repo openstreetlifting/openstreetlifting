@@ -18,7 +18,10 @@ async fn readiness(State(state): State<AppState>) -> (StatusCode, Json<Value>) {
         Ok(_) => (StatusCode::OK, Json(json!({"status": "ok"}))),
         Err(e) => {
             tracing::error!("Readiness check failed: {}", e);
-            (StatusCode::SERVICE_UNAVAILABLE, Json(json!({"status": "unavailable"})))
+            (
+                StatusCode::SERVICE_UNAVAILABLE,
+                Json(json!({"status": "unavailable"})),
+            )
         }
     }
 }

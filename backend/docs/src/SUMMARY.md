@@ -1,3 +1,3 @@
 # Summary
 
-- [Canonical Format](./canonical-format.md)
+Welcome to the OpenStreetlifting documentation!

@@ -1,6 +1,7 @@
 use axum::{
-    Json, Router, middleware,
+    Json, Router,
     extract::{Path, State},
+    middleware,
     routing::{get, post},
 };
 use osl_db::{
@@ -24,8 +25,10 @@ pub fn router(state: AppState) -> Router<AppState> {
         .route("/ris/formulas/{year}", get(get_formula_by_year))
         .route("/ris/compute", post(compute_ris));
 
-    let participant_routes = Router::new()
-        .route("/participants/{participant_id}/ris-history", get(get_participant_ris_history));
+    let participant_routes = Router::new().route(
+        "/participants/{participant_id}/ris-history",
+        get(get_participant_ris_history),
+    );
 
     let admin_routes = Router::new()
         .route("/admin/ris/recompute-all", post(recompute_all_ris))
@@ -47,7 +50,12 @@ pub async fn list_ris_formulas(
 ) -> WebResult<Json<Vec<RisFormulaResponse>>> {
     let repo = RisRepository::new(state.db.pool());
     let formulas = repo.list_all_formulas().await?;
-    Ok(Json(formulas.into_iter().map(|f| formula_to_response(&f)).collect()))
+    Ok(Json(
+        formulas
+            .into_iter()
+            .map(|f| formula_to_response(&f))
+            .collect(),
+    ))
 }
 
 #[utoipa::path(
@@ -63,7 +71,9 @@ pub async fn get_current_formula(
     State(state): State<AppState>,
 ) -> WebResult<Json<RisFormulaResponse>> {
     let repo = RisRepository::new(state.db.pool());
-    Ok(Json(formula_to_response(&repo.get_current_formula().await?)))
+    Ok(Json(formula_to_response(
+        &repo.get_current_formula().await?,
+    )))
 }
 
 #[utoipa::path(
@@ -81,7 +91,9 @@ pub async fn get_formula_by_year(
     Path(year): Path<i32>,
 ) -> WebResult<Json<RisFormulaResponse>> {
     let repo = RisRepository::new(state.db.pool());
-    Ok(Json(formula_to_response(&repo.get_formula_by_year(year).await?)))
+    Ok(Json(formula_to_response(
+        &repo.get_formula_by_year(year).await?,
+    )))
 }
 
 #[utoipa::path(
@@ -100,8 +112,10 @@ pub async fn get_participant_ris_history(
     let repo = RisRepository::new(state.db.pool());
     let history = repo.get_participant_ris_history(participant_id).await?;
     let formulas = repo.list_all_formulas().await?;
-    let formula_map: std::collections::HashMap<Uuid, i32> =
-        formulas.into_iter().map(|f| (f.formula_id, f.year)).collect();
+    let formula_map: std::collections::HashMap<Uuid, i32> = formulas
+        .into_iter()
+        .map(|f| (f.formula_id, f.year))
+        .collect();
     let response = history
         .into_iter()
         .map(|h| RisScoreResponse {
@@ -137,7 +151,10 @@ pub async fn compute_ris(
     };
     let ris_score =
         osl_domain::ris::compute_ris(payload.bodyweight, payload.total, &payload.gender, &formula)?;
-    Ok(Json(ComputeRisResponse { ris_score, formula_year: formula.year }))
+    Ok(Json(ComputeRisResponse {
+        ris_score,
+        formula_year: formula.year,
+    }))
 }
 
 #[utoipa::path(
