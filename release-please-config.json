@@ -1,4 +1,5 @@
 {
+  "pull-request-title-pattern": "chore: release ${component} ${version}",
   "packages": {
     "backend": {
       "release-type": "rust",
