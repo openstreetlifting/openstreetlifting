@@ -6,10 +6,9 @@ members = [
   "crates/osl_importer",
 ]
 resolver = "2"
-shared-version = true
-tag-name = "backend-v{{version}}"
-tag-message = "backend release {{version}}"
-pre-release-commit-message = "chore(backend): release version {{version}}"
+
+[workspace.package]
+version = "0.1.1"
 
 
 [workspace.dependencies]
