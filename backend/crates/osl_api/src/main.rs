@@ -1,7 +1,7 @@
 use anyhow::Context;
 use axum::{
     Router,
-    http::{HeaderName, HeaderValue},
+    http::{HeaderName, HeaderValue, StatusCode},
 };
 use osl_db::Database;
 use std::{sync::Arc, time::Duration};
@@ -219,7 +219,10 @@ async fn main() -> anyhow::Result<()> {
                 })
                 .on_response(DefaultOnResponse::new().level(Level::INFO)),
         )
-        .layer(TimeoutLayer::new(Duration::from_secs(30)))
+        .layer(TimeoutLayer::with_status_code(
+            StatusCode::GATEWAY_TIMEOUT,
+            Duration::from_secs(30),
+        ))
         .layer(cors)
         .layer(CompressionLayer::new());
 
