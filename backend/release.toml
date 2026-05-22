@@ -1,0 +1,5 @@
+[workspace]
+shared-version = true
+tag-name = "backend-v{{version}}"
+tag-message = "backend release {{version}}"
+pre-release-commit-message = "chore(backend): release version {{version}}"
