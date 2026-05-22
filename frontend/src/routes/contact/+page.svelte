@@ -1,11 +1,6 @@
 <script lang="ts">
-  import { Card } from "$lib/components/ui";
-  import {
-    EmailIcon,
-    InstagramIcon,
-    GitHubIcon,
-    DiscordIcon,
-  } from "$lib/components/icons";
+  import { Card } from '$lib/components/ui';
+  import { EmailIcon, InstagramIcon, GitHubIcon, DiscordIcon } from '$lib/components/icons';
 </script>
 
 <svelte:head>
@@ -15,13 +10,11 @@
 
 <div class="mx-auto max-w-4xl px-6 py-16">
   <div class="mb-16 text-center">
-    <h1 class="mb-4 text-5xl font-light tracking-tight text-white">
-      Get in touch
-    </h1>
+    <h1 class="mb-4 text-5xl font-light tracking-tight text-white">Get in touch</h1>
     <p class="text-base font-light text-zinc-500">
-      If you have a question, want to help me, or simply want to connect, Reach
-      out through any of these channels. I'm a solo developer on this project, i
-      may take a little bit of time to respond.
+      If you have a question, want to help me, or simply want to connect, Reach out through any of
+      these channels. I'm a solo developer on this project, i may take a little bit of time to
+      respond.
     </p>
   </div>
 
@@ -39,9 +32,7 @@
           <div
             class="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-zinc-800/60 transition-all duration-200 group-hover:bg-zinc-700/60"
           >
-            <GitHubIcon
-              class="h-7 w-7 text-zinc-400 transition-colors group-hover:text-white"
-            />
+            <GitHubIcon class="h-7 w-7 text-zinc-400 transition-colors group-hover:text-white" />
           </div>
 
           <div class="space-y-3">
@@ -136,9 +127,7 @@
             <div
               class="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-zinc-800/60 transition-all duration-200 group-hover:bg-zinc-800/80 group-hover:shadow-lg group-hover:shadow-zinc-900/50"
             >
-              <EmailIcon
-                class="h-7 w-7 text-zinc-400 transition-colors group-hover:text-white"
-              />
+              <EmailIcon class="h-7 w-7 text-zinc-400 transition-colors group-hover:text-white" />
             </div>
 
             <div class="space-y-3">

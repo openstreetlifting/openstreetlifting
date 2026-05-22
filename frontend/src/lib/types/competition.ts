@@ -16,7 +16,7 @@ export interface Competition {
   name: string;
   created_at: string;
   slug: string;
-  status: "upcoming" | "ongoing" | "completed";
+  status: 'upcoming' | 'ongoing' | 'completed';
   venue: string | null;
   city: string | null;
   country: string | null;
@@ -27,7 +27,7 @@ export interface Competition {
 }
 
 export interface CompetitionFilters {
-  status?: "upcoming" | "ongoing" | "completed";
+  status?: 'upcoming' | 'ongoing' | 'completed';
   country?: string;
   search?: string;
 }

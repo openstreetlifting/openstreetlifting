@@ -1,5 +1,5 @@
-import { apiClient } from "../client";
-import type { AthleteDetail } from "$lib/types/athlete";
+import { apiClient } from '../client';
+import type { AthleteDetail } from '$lib/types/athlete';
 
 export const athletesService = {
   async getBySlug(slug: string): Promise<AthleteDetail> {

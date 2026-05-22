@@ -1,13 +1,13 @@
-import { config } from "$lib/config/env";
+import { config } from '$lib/config/env';
 
 export class ApiError extends Error {
   constructor(
     public status: number,
     public statusText: string,
-    message: string,
+    message: string
   ) {
     super(message);
-    this.name = "ApiError";
+    this.name = 'ApiError';
   }
 }
 
@@ -19,13 +19,10 @@ class ApiClient {
   private baseUrl: string;
 
   constructor(baseUrl: string) {
-    this.baseUrl = baseUrl.replace(/\/$/, ""); // Remove trailing slash
+    this.baseUrl = baseUrl.replace(/\/$/, ''); // Remove trailing slash
   }
 
-  private buildUrl(
-    path: string,
-    params?: Record<string, string | number | boolean>,
-  ): string {
+  private buildUrl(path: string, params?: Record<string, string | number | boolean>): string {
     const url = new URL(`${this.baseUrl}${path}`);
 
     if (params) {
@@ -63,9 +60,9 @@ class ApiClient {
     const url = this.buildUrl(path, options?.params);
     const response = await fetch(url, {
       ...options,
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...options?.headers,
       },
     });
@@ -73,17 +70,13 @@ class ApiClient {
     return this.handleResponse<T>(response);
   }
 
-  async post<T>(
-    path: string,
-    body?: unknown,
-    options?: RequestOptions,
-  ): Promise<T> {
+  async post<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
     const url = this.buildUrl(path, options?.params);
     const response = await fetch(url, {
       ...options,
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...options?.headers,
       },
       body: body ? JSON.stringify(body) : undefined,
@@ -92,17 +85,13 @@ class ApiClient {
     return this.handleResponse<T>(response);
   }
 
-  async put<T>(
-    path: string,
-    body?: unknown,
-    options?: RequestOptions,
-  ): Promise<T> {
+  async put<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
     const url = this.buildUrl(path, options?.params);
     const response = await fetch(url, {
       ...options,
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...options?.headers,
       },
       body: body ? JSON.stringify(body) : undefined,
@@ -111,17 +100,13 @@ class ApiClient {
     return this.handleResponse<T>(response);
   }
 
-  async patch<T>(
-    path: string,
-    body?: unknown,
-    options?: RequestOptions,
-  ): Promise<T> {
+  async patch<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
     const url = this.buildUrl(path, options?.params);
     const response = await fetch(url, {
       ...options,
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...options?.headers,
       },
       body: body ? JSON.stringify(body) : undefined,
@@ -134,9 +119,9 @@ class ApiClient {
     const url = this.buildUrl(path, options?.params);
     const response = await fetch(url, {
       ...options,
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...options?.headers,
       },
     });

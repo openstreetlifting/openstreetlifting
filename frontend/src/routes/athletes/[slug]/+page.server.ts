@@ -1,6 +1,6 @@
-import { athletesService } from "$lib/api";
-import type { PageServerLoad } from "./$types";
-import { error } from "@sveltejs/kit";
+import { athletesService } from '$lib/api';
+import type { PageServerLoad } from './$types';
+import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ params }) => {
   try {
@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ params }) => {
       athlete,
     };
   } catch (err) {
-    console.error("Failed to fetch athlete:", err);
-    throw error(404, "Athlete not found");
+    console.error('Failed to fetch athlete:', err);
+    throw error(404, 'Athlete not found');
   }
 };

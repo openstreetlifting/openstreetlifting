@@ -1,5 +1,5 @@
-import { apiClient } from "../client";
-import type { RankingsResponse, RankingFilters } from "$lib/types/ranking";
+import { apiClient } from '../client';
+import type { RankingsResponse, RankingFilters } from '$lib/types/ranking';
 
 export const rankingsService = {
   async getGlobalRankings(filters: RankingFilters): Promise<RankingsResponse> {
@@ -19,6 +19,6 @@ export const rankingsService = {
       params.movement = filters.movement;
     }
 
-    return apiClient.get<RankingsResponse>("/api/rankings/global", { params });
+    return apiClient.get<RankingsResponse>('/api/rankings/global', { params });
   },
 };

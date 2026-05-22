@@ -1,11 +1,6 @@
 <script lang="ts">
-  import { resolve } from "$app/paths";
-  import {
-    GitHubIcon,
-    InstagramIcon,
-    DiscordIcon,
-    EmailIcon,
-  } from "$lib/components/icons";
+  import { resolve } from '$app/paths';
+  import { GitHubIcon, InstagramIcon, DiscordIcon, EmailIcon } from '$lib/components/icons';
 </script>
 
 <footer class="border-t border-zinc-800/50 bg-zinc-950">
@@ -16,7 +11,7 @@
         <ul class="space-y-3">
           <li>
             <a
-              href={resolve("/")}
+              href={resolve('/')}
               class="text-sm font-light text-zinc-400 transition-colors hover:text-white"
             >
               Home
@@ -24,7 +19,7 @@
           </li>
           <li>
             <a
-              href={resolve("/rankings")}
+              href={resolve('/rankings')}
               class="text-sm font-light text-zinc-400 transition-colors hover:text-white"
             >
               Rankings
@@ -32,7 +27,7 @@
           </li>
           <li>
             <a
-              href={resolve("/competitions")}
+              href={resolve('/competitions')}
               class="text-sm font-light text-zinc-400 transition-colors hover:text-white"
             >
               Competitions
@@ -40,7 +35,7 @@
           </li>
           <li>
             <a
-              href={resolve("/athletes")}
+              href={resolve('/athletes')}
               class="text-sm font-light text-zinc-400 transition-colors hover:text-white"
             >
               Athletes
@@ -64,7 +59,7 @@
           </li>
           <li>
             <a
-              href={resolve("/contact")}
+              href={resolve('/contact')}
               class="text-sm font-light text-zinc-400 transition-colors hover:text-white"
             >
               Contact
@@ -78,7 +73,7 @@
         <ul class="space-y-3">
           <li>
             <a
-              href={resolve("/privacy")}
+              href={resolve('/privacy')}
               class="text-sm font-light text-zinc-400 transition-colors hover:text-white"
             >
               Privacy Policy

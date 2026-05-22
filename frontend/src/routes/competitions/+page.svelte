@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
-  import { Card, Breadcrumb } from "$lib/components/ui";
-  import { resolve } from "$app/paths";
+  import type { PageData } from './$types';
+  import { Card, Breadcrumb } from '$lib/components/ui';
+  import { resolve } from '$app/paths';
 
   let { data }: { data: PageData } = $props();
 
-  let searchQuery = $state("");
-  let statusFilter = $state<string>("all");
+  let searchQuery = $state('');
+  let statusFilter = $state<string>('all');
 
   let filteredCompetitions = $derived(() => {
     let result = data.competitions;
@@ -18,11 +18,11 @@
           comp.name.toLowerCase().includes(query) ||
           comp.city.toLowerCase().includes(query) ||
           comp.country.toLowerCase().includes(query) ||
-          comp.federation.name.toLowerCase().includes(query),
+          comp.federation.name.toLowerCase().includes(query)
       );
     }
 
-    if (statusFilter !== "all") {
+    if (statusFilter !== 'all') {
       result = result.filter((comp) => comp.status === statusFilter);
     }
 
@@ -36,20 +36,14 @@
 </svelte:head>
 
 <div class="mx-auto max-w-7xl px-6 py-12">
-  <Breadcrumb
-    items={[{ label: "Home", href: "/" }, { label: "Competitions" }]}
-  />
+  <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Competitions' }]} />
 
   <div class="mb-8">
     <h1 class="mb-4 text-5xl font-light text-white">Competitions</h1>
-    <p class="text-lg font-extralight text-zinc-400">
-      List of all availables competitions
-    </p>
+    <p class="text-lg font-extralight text-zinc-400">List of all availables competitions</p>
   </div>
 
-  <div
-    class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-  >
+  <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div class="relative flex-1">
       <svg
         class="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-zinc-500"
@@ -74,7 +68,7 @@
 
     <div class="flex gap-2">
       <button
-        onclick={() => (statusFilter = "all")}
+        onclick={() => (statusFilter = 'all')}
         class="rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none
 					{statusFilter === 'all'
           ? 'bg-white text-zinc-950'
@@ -83,7 +77,7 @@
         All
       </button>
       <button
-        onclick={() => (statusFilter = "upcoming")}
+        onclick={() => (statusFilter = 'upcoming')}
         class="rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none
 					{statusFilter === 'upcoming'
           ? 'bg-blue-500 text-white'
@@ -92,7 +86,7 @@
         Planned
       </button>
       <button
-        onclick={() => (statusFilter = "ongoing")}
+        onclick={() => (statusFilter = 'ongoing')}
         class="rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none
 					{statusFilter === 'ongoing'
           ? 'bg-purple-500 text-white'
@@ -101,7 +95,7 @@
         Ongoing
       </button>
       <button
-        onclick={() => (statusFilter = "completed")}
+        onclick={() => (statusFilter = 'completed')}
         class="rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none
 					{statusFilter === 'completed'
           ? 'bg-emerald-500 text-white'
@@ -122,15 +116,15 @@
     <Card class="p-8">
       <div class="text-center">
         <p class="text-zinc-400">
-          {searchQuery || statusFilter !== "all"
-            ? "No competitions match your filters"
-            : "No competitions found"}
+          {searchQuery || statusFilter !== 'all'
+            ? 'No competitions match your filters'
+            : 'No competitions found'}
         </p>
-        {#if searchQuery || statusFilter !== "all"}
+        {#if searchQuery || statusFilter !== 'all'}
           <button
             onclick={() => {
-              searchQuery = "";
-              statusFilter = "all";
+              searchQuery = '';
+              statusFilter = 'all';
             }}
             class="mt-4 text-sm text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
           >
@@ -156,9 +150,7 @@
                 >
                   {competition.name}
                 </h2>
-                <div
-                  class="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-zinc-500"
-                >
+                <div class="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-zinc-500">
                   <div class="flex items-center gap-1.5">
                     <svg
                       class="h-3.5 w-3.5"
@@ -174,24 +166,18 @@
                       />
                     </svg>
                     <span class="text-xs"
-                      >{new Date(competition.start_date).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        },
-                      )}</span
+                      >{new Date(competition.start_date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}</span
                     >
                     {#if competition.start_date !== competition.end_date}
                       <span class="text-xs"
-                        >- {new Date(competition.end_date).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                          },
-                        )}</span
+                        >- {new Date(competition.end_date).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                        })}</span
                       >
                     {/if}
                   </div>
@@ -233,8 +219,7 @@
                       />
                     </svg>
                     <span class="text-xs"
-                      >{competition.federation.name} ({competition.federation
-                        .abbreviation})</span
+                      >{competition.federation.name} ({competition.federation.abbreviation})</span
                     >
                   </div>
                   <div class="flex items-center gap-1.5">
@@ -252,15 +237,13 @@
                       />
                     </svg>
                     <span class="text-xs"
-                      >{competition.movements
-                        .map((m) => m.movement_name)
-                        .join(", ")}</span
+                      >{competition.movements.map((m) => m.movement_name).join(', ')}</span
                     >
                   </div>
                 </div>
               </div>
               <div class="flex flex-shrink-0 items-center">
-                {#if competition.status === "upcoming"}
+                {#if competition.status === 'upcoming'}
                   <span
                     class="inline-flex items-center gap-1.5 rounded-md border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-400"
                   >
@@ -269,7 +252,7 @@
                     </svg>
                     Planned
                   </span>
-                {:else if competition.status === "ongoing"}
+                {:else if competition.status === 'ongoing'}
                   <span
                     class="inline-flex items-center gap-1.5 rounded-md border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-xs font-medium text-purple-400"
                   >
@@ -278,7 +261,7 @@
                     </svg>
                     Ongoing
                   </span>
-                {:else if competition.status === "completed"}
+                {:else if competition.status === 'completed'}
                   <span
                     class="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400"
                   >
@@ -298,7 +281,7 @@
     {#if filteredCompetitions().length > 0}
       <div class="mt-8 text-center text-sm text-zinc-500">
         Showing {filteredCompetitions().length}
-        {#if searchQuery || statusFilter !== "all"}
+        {#if searchQuery || statusFilter !== 'all'}
           of {data.competitions.length}
         {/if}
         competitions

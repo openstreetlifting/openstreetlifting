@@ -1,4 +1,4 @@
-import type { AthleteInfo, CompetitionInfo } from "./competition";
+import type { AthleteInfo, CompetitionInfo } from './competition';
 
 export interface RankingEntry {
   rank: number;

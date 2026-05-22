@@ -1,6 +1,6 @@
-import { competitionsService } from "$lib/api";
-import type { PageServerLoad } from "./$types";
-import { error } from "@sveltejs/kit";
+import { competitionsService } from '$lib/api';
+import type { PageServerLoad } from './$types';
+import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ params }) => {
   try {
@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ params }) => {
       competition,
     };
   } catch (err) {
-    console.error("Failed to fetch competition:", err);
-    throw error(404, "Competition not found");
+    console.error('Failed to fetch competition:', err);
+    throw error(404, 'Competition not found');
   }
 };
