@@ -1,0 +1,20 @@
+name: release-backend
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo install cargo-release
+      - run: cargo release --workspace --no-confirm --execute
+        working-directory: backend
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}

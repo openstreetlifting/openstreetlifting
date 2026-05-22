@@ -1,16 +1,11 @@
-name: Release
-
+name: release-please
 on:
   push:
     branches: [main]
-
-permissions:
-  contents: write
-  pull-requests: write
-
+    paths:
+      - "frontend/**"
 jobs:
   release-please:
-    name: Release Please
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v5
