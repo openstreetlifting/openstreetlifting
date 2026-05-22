@@ -1,23 +1,29 @@
 [package]
 name = "osl_importer"
 edition = "2024"
-version.workspace = true
+version = "0.1.1"
 
 [dependencies]
-osl_db     = { path = "../osl_db" }
+osl_db = { path = "../osl_db" }
 osl_domain = { path = "../osl_domain" }
-async-trait  = "0.1.89"
-chrono.workspace       = true
-clap         = { version = "4.5.52", features = ["derive", "env"] }
-dotenvy.workspace      = true
-lazy_static  = "1.4"
-reqwest      = { version = "0.13.0", features = ["json"] }
+async-trait = "0.1.89"
+chrono.workspace = true
+clap = { version = "4.5.52", features = ["derive", "env"] }
+dotenvy.workspace = true
+lazy_static = "1.4"
+reqwest = { version = "0.13.0", features = ["json"] }
 rust_decimal.workspace = true
-serde.workspace        = true
-serde_json.workspace   = true
-sqlx         = { workspace = true, features = ["runtime-tokio", "postgres", "chrono", "rust_decimal", "uuid"] }
-thiserror.workspace    = true
-tokio.workspace        = true
-tracing.workspace      = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx = { workspace = true, features = [
+  "runtime-tokio",
+  "postgres",
+  "chrono",
+  "rust_decimal",
+  "uuid",
+] }
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
 tracing-subscriber.workspace = true
-uuid.workspace         = true
+uuid.workspace = true
