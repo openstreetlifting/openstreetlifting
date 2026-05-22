@@ -6,6 +6,8 @@ members = [
   "crates/osl_importer",
 ]
 resolver = "2"
+publish = false
+version = "0.1.1"
 
 
 [workspace.dependencies]
