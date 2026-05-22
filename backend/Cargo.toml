@@ -9,7 +9,7 @@ resolver = "2"
 
 [workspace.package]
 version = "0.1.1"
-
+publish = false
 
 [workspace.dependencies]
 tokio = { version = "1.51.1", features = ["full"] }
