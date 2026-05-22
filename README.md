@@ -20,4 +20,17 @@ Openstreetlifting is an **open**, **collaborative** project building a **permane
 
 ## Data sources and licensing
 
-## License
+## Licensing
+
+### Code
+
+All OpenStreetLifting code is free software licensed under AGPLv3.
+See LICENSE file.
+
+### Data
+
+OpenStreetLifting data is licensed under Creative Commons Attribution 4.0 (CC BY 4.0).
+<https://creativecommons.org/licenses/by/4.0/>
+
+If you use this data, please credit:
+OpenStreetLifting (openstreetlifting.org)
