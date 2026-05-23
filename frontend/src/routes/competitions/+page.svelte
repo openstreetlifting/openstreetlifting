@@ -40,7 +40,6 @@
 
   <div class="mb-8">
     <h1 class="mb-4 text-5xl font-light text-white">Competitions</h1>
-    <p class="text-lg font-extralight text-zinc-400">List of all availables competitions</p>
   </div>
 
   <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -220,24 +219,6 @@
                     </svg>
                     <span class="text-xs"
                       >{competition.federation.name} ({competition.federation.abbreviation})</span
-                    >
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <svg
-                      class="h-3.5 w-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
-                    <span class="text-xs"
-                      >{competition.movements.map((m) => m.movement_name).join(', ')}</span
                     >
                   </div>
                 </div>

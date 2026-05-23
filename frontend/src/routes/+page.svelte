@@ -2,6 +2,7 @@
   import type { PageData } from './$types';
   import { Card } from '$lib/components/ui';
   import { resolve } from '$app/paths';
+  import Logo from '$lib/components/ui/logo.svelte';
 
   let { data }: { data: PageData } = $props();
 </script>
@@ -14,7 +15,6 @@
 <div
   class="relative mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl flex-col justify-center px-4 py-8 sm:px-6 sm:py-12"
 >
-  <!-- Subtle ambient background glow - very minimal -->
   <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
     <div></div>
     <div
@@ -23,11 +23,7 @@
   </div>
 
   <div class="mb-12 text-left sm:mb-16">
-    <h1
-      class="hero-title max-w-5xl text-7xl font-light tracking-tight text-white sm:text-8xl lg:text-9xl"
-    >
-      OpenStreetlifting
-    </h1>
+    <Logo></Logo>
     <p
       class="mt-6 max-w-2xl text-xl leading-8 font-light text-zinc-500 sm:mt-8 sm:text-2xl sm:leading-9"
     >
@@ -60,32 +56,12 @@
           <div class="space-y-2">
             <h2 class="text-2xl font-medium text-white">Global Ranking</h2>
             <p class="leading-relaxed font-light text-zinc-500">
-              View worldwide rankings and compare performances across all athletes
+              View and Filter of worldwide rankings
             </p>
-            <div
-              class="flex items-center gap-2 pt-2 text-sm font-medium text-zinc-400 transition-colors group-hover:text-white"
-            >
-              <span>Explore rankings</span>
-              <svg
-                class="h-4 w-4 transition-transform group-hover:translate-x-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
-            </div>
           </div>
         </div>
       </Card>
     </a>
-
-    <!-- Competitions Card -->
     <a
       href={resolve('/competitions')}
       class="group block transition-all duration-200 hover:scale-[1.01]"
@@ -110,26 +86,8 @@
           <div class="space-y-2">
             <h2 class="text-2xl font-medium text-white">Competitions</h2>
             <p class="leading-relaxed font-light text-zinc-500">
-              Explore upcoming and past competitions from around the world
+              Explore upcoming and past competitions
             </p>
-            <div
-              class="flex items-center gap-2 pt-2 text-sm font-medium text-zinc-400 transition-colors group-hover:text-white"
-            >
-              <span>Browse competitions</span>
-              <svg
-                class="h-4 w-4 transition-transform group-hover:translate-x-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
-            </div>
           </div>
         </div>
       </Card>
@@ -138,20 +96,12 @@
 </div>
 
 <style lang="postcss">
-  /* Apple-style lettering glow - subtle and thin around letters */
-  .hero-title {
-    text-shadow:
-      0 0 15px rgba(59, 130, 246, 0.5),
-      0 0 30px rgba(147, 51, 234, 0.4),
-      0 0 45px rgba(236, 72, 153, 0.25);
-  }
-
   .keyword-glow {
     color: rgb(228 228 231);
     text-shadow:
-      0 0 10px rgba(59, 130, 246, 0.4),
-      0 0 20px rgba(147, 51, 234, 0.3),
-      0 0 30px rgba(236, 72, 153, 0.2);
+      0 0 10px rgba(239, 68, 68, 0.5),
+      0 0 20px rgba(220, 38, 38, 0.4),
+      0 0 30px rgba(185, 28, 28, 0.3);
   }
 
   /* Subtle ambient background - static */

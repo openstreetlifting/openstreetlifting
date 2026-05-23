@@ -126,9 +126,6 @@
 
   <div class="mb-8">
     <h1 class="mb-4 text-5xl font-light text-white">Global Rankings</h1>
-    <p class="text-lg font-extralight text-zinc-400">
-      World's best streetlifting performances across all movements
-    </p>
   </div>
 
   <div class="mb-6 flex flex-wrap gap-2">
