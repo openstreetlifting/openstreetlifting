@@ -1,0 +1,69 @@
+name: Release
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  retag:
+    name: Retag & Pin Chart
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          fetch-depth: 0
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq \
+            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Read current SHA tags from chart
+        id: tags
+        run: |
+          echo "frontend_sha=$(yq '.frontend.image.tag' charts/values.yaml)" >> "$GITHUB_OUTPUT"
+          echo "backend_sha=$(yq '.backend.image.tag' charts/values.yaml)" >> "$GITHUB_OUTPUT"
+          echo "semver=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Retag frontend image
+        run: |
+          docker buildx imagetools create \
+            -t ${{ env.REGISTRY }}/openstreetlifting/frontend:${{ steps.tags.outputs.semver }} \
+            -t ${{ env.REGISTRY }}/openstreetlifting/frontend:latest \
+            ${{ env.REGISTRY }}/openstreetlifting/frontend:${{ steps.tags.outputs.frontend_sha }}
+
+      - name: Retag backend image
+        run: |
+          docker buildx imagetools create \
+            -t ${{ env.REGISTRY }}/openstreetlifting/backend:${{ steps.tags.outputs.semver }} \
+            -t ${{ env.REGISTRY }}/openstreetlifting/backend:latest \
+            ${{ env.REGISTRY }}/openstreetlifting/backend:${{ steps.tags.outputs.backend_sha }}
+
+      - name: Pin chart to semver
+        run: |
+          yq -i ".frontend.image.tag = \"${{ steps.tags.outputs.semver }}\"" charts/values.yaml
+          yq -i ".backend.image.tag = \"${{ steps.tags.outputs.semver }}\"" charts/values.yaml
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@openstreetlifting.org"
+          git checkout main
+          git add charts/values.yaml
+          git commit \
+            -m "chore(release): pin images to ${{ steps.tags.outputs.semver }} [skip ci]"
+          git push origin main
