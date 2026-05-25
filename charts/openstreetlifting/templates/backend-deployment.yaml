@@ -28,7 +28,7 @@ spec:
             - configMapRef:
                 name: openstreetlifting-backend-config
             - secretRef:
-                name: openstreetlifting-backend-secret
+                name: osl-backend-secret
           livenessProbe:
             httpGet:
               path: /health
