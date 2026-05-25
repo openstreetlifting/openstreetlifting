@@ -1,4 +1,4 @@
-name: Run Release-Please
+name: Google Release-Please
 on:
   push:
     branches: [main]

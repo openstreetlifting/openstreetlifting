@@ -1,4 +1,4 @@
-name: "[Backend] Continuous Integration"
+name: "[Back] Continuous Integration"
 
 on:
   push:
