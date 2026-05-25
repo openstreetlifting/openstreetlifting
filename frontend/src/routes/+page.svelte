@@ -27,9 +27,10 @@
     <p
       class="mt-6 max-w-2xl text-xl leading-8 font-light text-zinc-500 sm:mt-8 sm:text-2xl sm:leading-9"
     >
-      OpenStreetlifting is an <span class="keyword-glow">open</span>, collaborative project building
-      a <span class="keyword-glow">permanent</span> and <span class="keyword-glow">traceable</span> archive
-      of all streetlifting data, accessible to everyone.
+      OpenStreetlifting is an <span class="keyword-glow">open</span>, project building a
+      <span class="keyword-glow">permanent</span>
+      and <span class="keyword-glow">traceable</span> archive of all streetlifting data, accessible to
+      everyone.
     </p>
   </div>
 
