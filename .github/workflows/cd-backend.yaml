@@ -1,7 +1,7 @@
 name: "[Back] Continuous Delivery"
 on:
   workflow_run:
-    workflows: ["[Back] Publish"]
+    workflows: ["[Back] Continuous Integration: Push Image to Registry"]
     types: [completed]
     branches: [main]
 
