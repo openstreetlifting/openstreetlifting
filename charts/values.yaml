@@ -1,18 +1,17 @@
 frontend:
   image:
     repository: ghcr.io/openstreetlifting/frontend
-    tag: sha-a10291e
+    tag: 0.1.1
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
     port: 3000
   env:
     backendUrl: "http://osl-backend:8080"
-
 backend:
   image:
     repository: ghcr.io/openstreetlifting/backend
-    tag: sha-a10291e
+    tag: 0.1.1
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -26,7 +25,6 @@ backend:
       name: "appdb"
       host: "localhost"
       port: "5432"
-
 ingress:
   frontendHost: "localhost"
   backendHost: "localhost"
