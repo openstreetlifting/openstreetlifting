@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3](https://github.com/openstreetlifting/openstreetlifting/compare/v0.1.2...v0.1.3) (2026-05-25)
+
+
+### Features
+
+* add guard to avoid image push without ci ([9735129](https://github.com/openstreetlifting/openstreetlifting/commit/9735129f3d2d324b6405df67eefb4dff631d4a5a))
+* **backend:** add ci rust cache directory ([1805488](https://github.com/openstreetlifting/openstreetlifting/commit/1805488a8def82975f5f8bdb98de6b1bd558a8d6))
+* harmonize CI and CD Execution in context ([d582397](https://github.com/openstreetlifting/openstreetlifting/commit/d582397f2648289520f85669f775f0d09842f547))
+
+
+### Bug Fixes
+
+* launch cd after push ci ([4e833a9](https://github.com/openstreetlifting/openstreetlifting/commit/4e833a9069b2c4534458a5b8672765bb32087b18))
+* make release please commit lock file to pr branhces ([8148477](https://github.com/openstreetlifting/openstreetlifting/commit/814847791579de1be35a9bdfc0905c3745977d94))
+* release please update cargo toml ([6cc0c57](https://github.com/openstreetlifting/openstreetlifting/commit/6cc0c576a31d2bfa6da1ab8f5d88f15bef5f6066))
+
 ## [0.1.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.1.1...v0.1.2) (2026-05-25)
 
 
