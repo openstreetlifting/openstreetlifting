@@ -22,11 +22,10 @@ jobs:
       - if: ${{ steps.release.outputs.pr }}
         name: Update Cargo.lock after version bump
         run: |
-          cd backend
-          cargo update --workspace
+          cargo update --workspace --manifest-path backend/Cargo.toml
           git config user.name "ci-bot"
           git config user.email "ci-bot@openstreetlifting.org"
-          git add Cargo.lock
+          git add backend/Cargo.lock
           git diff --cached --quiet || git commit \
-            -m "chore(backend): update Cargo.lock after version bump"
+            -m "chore(backend): update Cargo.lock after version bump [skip ci]"
           git push
