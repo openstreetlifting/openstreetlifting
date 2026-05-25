@@ -27,7 +27,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
         run: |
-          gh pr checkout ${{ steps.release.outputs.pr }}
+          gh pr checkout ${{ fromJson(steps.release.outputs.pr).number }}
           cargo update --workspace --manifest-path backend/Cargo.toml
           git config user.name "ci-bot"
           git config user.email "ci-bot@openstreetlifting.org"
