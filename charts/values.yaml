@@ -7,7 +7,7 @@ frontend:
   service:
     port: 3000
   env:
-    backendUrl: "http://osl-backend:8080"
+    backendUrl: "http://openstreetlifting-backend:8080"
 backend:
   image:
     repository: ghcr.io/openstreetlifting/backend
