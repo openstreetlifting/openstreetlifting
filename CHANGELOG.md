@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.1.1...v0.1.2) (2026-05-25)
+
+
+### Bug Fixes
+
+* cargo lock update after toml update ([7bef4b7](https://github.com/openstreetlifting/openstreetlifting/commit/7bef4b7a9fb4fa92ac07720ed58d6eb03fc8e330))
+* missing action checkout ([67a3b37](https://github.com/openstreetlifting/openstreetlifting/commit/67a3b377809628c53d27ee551bbe629bb96dd373))
+* path in release please rust toolchain ([032ab5e](https://github.com/openstreetlifting/openstreetlifting/commit/032ab5e9a777a4a2fd22eb92f675418ac5bdba3c))
+
 ## [0.1.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.1.0...v0.1.1) (2026-05-25)
 
 
