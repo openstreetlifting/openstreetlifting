@@ -72,5 +72,5 @@ jobs:
           git config user.email "ci-bot@openstreetlifting.org"
           git add charts/values.yaml
           git diff --cached --quiet || git commit \
-            -m "chore(deploy): bump frontend to ${{ needs.build-and-push.outputs.sha_tag }} [skip ci]"
+            -m "chore(deploy): bump frontend to ${{ needs.build-and-push.outputs.sha_tag }}"
           git push

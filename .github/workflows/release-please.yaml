@@ -15,3 +15,18 @@ jobs:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      - if: ${{ steps.release.outputs.pr }}
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - if: ${{ steps.release.outputs.pr }}
+        name: Update Cargo.lock after version bump
+        run: |
+          cd backend
+          cargo update --workspace
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@openstreetlifting.org"
+          git add Cargo.lock
+          git diff --cached --quiet || git commit \
+            -m "chore(backend): update Cargo.lock after version bump"
+          git push
