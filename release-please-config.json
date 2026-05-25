@@ -21,12 +21,12 @@
         },
         {
           "type": "yaml",
-          "path": "charts/osl/Chart.yaml",
+          "path": "charts/Chart.yaml",
           "jsonpath": "$.version"
         },
         {
           "type": "yaml",
-          "path": "charts/osl/Chart.yaml",
+          "path": "charts/Chart.yaml",
           "jsonpath": "$.appVersion"
         }
       ]
