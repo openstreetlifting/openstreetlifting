@@ -21,7 +21,7 @@ jobs:
     outputs:
       sha_tag: ${{ steps.sha_tag.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set SHA tag
         id: sha_tag
