@@ -1,4 +1,4 @@
-name: release-please
+name: Run Release-Please
 on:
   push:
     branches: [main]

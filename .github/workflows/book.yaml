@@ -1,4 +1,4 @@
-name: Deploy mdbook
+name: "[DOC] Deploy MdBook"
 
 on:
   workflow_dispatch:
