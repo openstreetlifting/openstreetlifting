@@ -65,7 +65,7 @@
     if (isLoading) return;
     isLoading = true;
     try {
-      const params = new URLSearchParams();
+      const params = new SvelteURLSearchParams();
       params.set('pagination', String(resetData ? 1 : currentPage + 1));
       params.set('movement', movementFilter);
       if (genderFilter) params.set('gender', genderFilter);
