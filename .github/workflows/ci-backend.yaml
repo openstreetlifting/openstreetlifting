@@ -1,5 +1,4 @@
 name: "[Back] Continuous Integration"
-
 on:
   push:
     paths:
@@ -10,11 +9,9 @@ on:
       - backend/**
       - .github/workflows/ci-backend.yaml
     branches: [main]
-
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
-
 jobs:
   format:
     name: Format
@@ -42,7 +39,7 @@ jobs:
           cache-workspaces: backend
       - name: Run clippy
         working-directory: backend
-        run: cargo clippy --workspace --all-targets --all-features
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
 
   test:
     name: Tests
@@ -78,25 +75,11 @@ jobs:
         working-directory: backend
         run: cargo nextest run --workspace --all-features
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    env:
-      SQLX_OFFLINE: true
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          cache-workspaces: backend
-      - name: Build release
-        working-directory: backend
-        run: cargo build --release --workspace
-
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
     if: always()
-    needs: [format, lint, test, build]
+    needs: [format, lint, test]
     steps:
       - name: Check all jobs passed
         run: |
