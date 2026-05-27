@@ -105,4 +105,5 @@ jobs:
           git add charts/values.yaml
           git diff --cached --quiet || git commit \
             -m "chore(deploy): bump images [skip ci]"
+          git pull --rebase
           git push
