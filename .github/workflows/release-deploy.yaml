@@ -1,4 +1,4 @@
-name: Release a new Version
+name: Deploy The Latest Version
 on:
   push:
     tags: ["v*.*.*"]

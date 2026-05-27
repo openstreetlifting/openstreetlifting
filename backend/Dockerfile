@@ -1,10 +1,9 @@
-FROM rust:1-slim-bookworm AS chef
+FROM rust:1.95.0-slim-bookworm AS chef
 RUN apt-get update && apt-get install -y --no-install-recommends \
   pkg-config \
   libssl-dev \
-  curl \
   && rm -rf /var/lib/apt/lists/*
-RUN cargo install cargo-chef
+RUN cargo install cargo-chef --locked --version 0.1.77
 WORKDIR /app
 
 FROM chef AS planner
@@ -26,8 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN useradd --no-create-home -u 1001 appuser
 WORKDIR /app
 ARG BIN
-COPY --from=builder /app/target/release/${BIN} /app/server
-RUN chown -R appuser:appuser /app
+COPY --chown=appuser:appuser --from=builder /app/target/release/${BIN} /app/server
 USER appuser
 EXPOSE 8080
 CMD ["/app/server"]
