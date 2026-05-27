@@ -42,7 +42,7 @@ jobs:
           cache-workspaces: backend
       - name: Run clippy
         working-directory: backend
-        run: cargo clippy --workspace --all-targets --all-features --locked
+        run: cargo clippy --workspace --all-targets --all-features
 
   test:
     name: Tests
@@ -76,7 +76,7 @@ jobs:
         run: sqlx migrate run --source crates/osl_db/migrations
       - name: Run tests
         working-directory: backend
-        run: cargo nextest run --workspace --all-features --locked
+        run: cargo nextest run --workspace --all-features
 
   build:
     name: Build
@@ -90,7 +90,7 @@ jobs:
           cache-workspaces: backend
       - name: Build release
         working-directory: backend
-        run: cargo build --release --locked --workspace
+        run: cargo build --release --workspace
 
   ci-success:
     name: CI Success

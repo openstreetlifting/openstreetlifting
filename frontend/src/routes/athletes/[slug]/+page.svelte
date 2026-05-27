@@ -67,7 +67,6 @@
     ]}
   />
 
-  <!-- Athlete Header -->
   <div class="mb-12">
     <div class="mb-4 flex items-center gap-4">
       <h1 class="text-5xl font-light text-white">
@@ -150,7 +149,6 @@
   <div>
     <h2 class="mb-4 text-2xl font-medium text-white">Competition History</h2>
     {#if athlete.competitions && athlete.competitions.length > 0}
-      <!-- Desktop Table -->
       <Card class="hidden p-6 md:block">
         <div class="overflow-x-auto">
           <table class="w-full text-sm">

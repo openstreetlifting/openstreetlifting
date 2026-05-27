@@ -41,17 +41,14 @@ impl NormalizedAthleteName {
         }
     }
 
-    /// Returns the first name for database storage
     pub fn database_first_name(&self) -> &str {
         &self.first_name
     }
 
-    /// Returns the last name for database storage
     pub fn database_last_name(&self) -> &str {
         &self.last_name
     }
 
-    /// Returns both parts as a tuple (first_name, last_name) for database storage
     pub fn as_database_tuple(&self) -> (&str, &str) {
         (&self.first_name, &self.last_name)
     }
