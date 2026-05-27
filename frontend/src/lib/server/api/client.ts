@@ -1,4 +1,4 @@
-import { config } from '$lib/config/env';
+import { config } from '$lib/server/config';
 
 export class ApiError extends Error {
   constructor(
@@ -19,7 +19,7 @@ class ApiClient {
   private baseUrl: string;
 
   constructor(baseUrl: string) {
-    this.baseUrl = baseUrl.replace(/\/$/, ''); // Remove trailing slash
+    this.baseUrl = baseUrl.replace(/\/$/, '');
   }
 
   private buildUrl(path: string, params?: Record<string, string | number | boolean>): string {
@@ -41,14 +41,11 @@ class ApiClient {
       try {
         const errorData = await response.json();
         errorMessage = errorData.message || errorData.error || errorMessage;
-      } catch {
-        // If parsing JSON fails, use the default error message
-      }
+      } catch {}
 
       throw new ApiError(response.status, response.statusText, errorMessage);
     }
 
-    // Handle 204 No Content
     if (response.status === 204) {
       return null as T;
     }
@@ -130,5 +127,4 @@ class ApiClient {
   }
 }
 
-// Export a singleton instance
 export const apiClient = new ApiClient(config.apiUrl);
