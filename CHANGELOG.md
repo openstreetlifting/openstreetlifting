@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.1.4...v0.2.0) (2026-05-27)
+
+
+### Features
+
+* **backend:** ci improvement ([0b4539a](https://github.com/openstreetlifting/openstreetlifting/commit/0b4539ad6dbc95ae29dc2312aa77fdf79e1ab82f))
+* dockerfile ([01eeac1](https://github.com/openstreetlifting/openstreetlifting/commit/01eeac181d2331953a506fbd4c20cb9f0adbea26))
+* **frontend:** new api and client architecture and fix backend var name ([729fbac](https://github.com/openstreetlifting/openstreetlifting/commit/729fbac5ee22f73a56d385bdd0fefa082fae6850))
+
+
+### Bug Fixes
+
+* change google release please behavior with patch ([9e0346c](https://github.com/openstreetlifting/openstreetlifting/commit/9e0346c01910fcacf535797fc6179d26964bd30b))
+* **frontend:** broken import ([b2b727d](https://github.com/openstreetlifting/openstreetlifting/commit/b2b727d8b6f8997a41f8f920b03a62118c4c56ab))
+* **frontend:** more forggoten import ([47331a3](https://github.com/openstreetlifting/openstreetlifting/commit/47331a33d6ee4050ecf4c8d0eb7c5e1b18d4c426))
+* **frontend:** wrong import declaration ([54adfcb](https://github.com/openstreetlifting/openstreetlifting/commit/54adfcb074f4765ddca9f56758e7969b76c7ec9d))
+* pull rebase before pushing to cd ([9b1634b](https://github.com/openstreetlifting/openstreetlifting/commit/9b1634bf0c11f6aded47a4714b3077b75bd13cee))
+* reactive params ([640e073](https://github.com/openstreetlifting/openstreetlifting/commit/640e0737971c0369467b6c69140ec209d5b5ec35))
+* target amd64 only ([2c2eca5](https://github.com/openstreetlifting/openstreetlifting/commit/2c2eca51532945d44d03f294d1ef0778655c1c3e))
+
 ## [0.1.4](https://github.com/openstreetlifting/openstreetlifting/compare/v0.1.3...v0.1.4) (2026-05-27)
 
 
