@@ -1,4 +1,4 @@
-import { competitionsService } from '$lib/api';
+import { competitionsService } from '$lib/server/api';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

@@ -1,4 +1,4 @@
-import { athletesService } from '$lib/api';
+import { athletesService } from '$lib/server/api';
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 

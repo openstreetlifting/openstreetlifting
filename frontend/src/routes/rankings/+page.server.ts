@@ -1,4 +1,4 @@
-import { rankingsService } from '$lib/api';
+import { rankingsService } from '$lib/server/api';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
