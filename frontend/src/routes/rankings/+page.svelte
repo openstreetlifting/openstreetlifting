@@ -2,7 +2,7 @@
   import type { PageData } from './$types';
   import { Card, Breadcrumb } from '$lib/components/ui';
   import { SortIcon } from '$lib/components/icons';
-  import { rankingsService } from '$lib/api';
+  import { rankingsService } from '$lib/server/api';
   import type { RankingEntry } from '$lib/types/ranking';
   import { resolve } from '$app/paths';
   import { page } from '$app/stores';
