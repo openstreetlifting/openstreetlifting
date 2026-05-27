@@ -1,4 +1,4 @@
-name: "[Front] Continuous Integration"
+name: "Frontend CI"
 
 on:
   push:

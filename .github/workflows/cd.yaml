@@ -1,8 +1,7 @@
 name: "Continuous Delivery"
 on:
   workflow_run:
-    workflows:
-      ["[Back] Continuous Integration", "[Front] Continuous Integration"]
+    workflows: ["Backend CI", "Frontend CI"]
     types: [completed]
 permissions:
   contents: write
@@ -16,7 +15,7 @@ jobs:
     if: |
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'main' &&
-      github.event.workflow_run.name == '[Back] Continuous Integration'
+      github.event.workflow_run.name == 'Backend CI'
     outputs:
       sha_tag: ${{ steps.sha_tag.outputs.tag }}
     steps:
@@ -49,7 +48,7 @@ jobs:
     if: |
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'main' &&
-      github.event.workflow_run.name == '[Front] Continuous Integration'
+      github.event.workflow_run.name == 'Frontend CI'
     outputs:
       sha_tag: ${{ steps.sha_tag.outputs.tag }}
     steps:

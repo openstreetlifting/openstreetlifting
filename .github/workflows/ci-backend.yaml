@@ -1,4 +1,4 @@
-name: "[Back] Continuous Integration"
+name: "Backend CI"
 on:
   push:
     paths:
