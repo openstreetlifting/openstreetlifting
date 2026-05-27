@@ -5,7 +5,7 @@
   import { resolve } from '$app/paths';
 
   let { data }: { data: PageData } = $props();
-  const { athlete } = data;
+  const { athlete } = $derived(data);
 
   function formatWeight(weight: string | null): string {
     if (!weight) return '-';

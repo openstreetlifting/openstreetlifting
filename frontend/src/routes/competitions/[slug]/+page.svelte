@@ -7,15 +7,13 @@
   import { SvelteMap } from 'svelte/reactivity';
 
   let { data }: { data: PageData } = $props();
-  const competition = data.competition;
+  const competition = $derived(data.competition);
 
   type SortKey = 'total' | 'ris_score' | 'bodyweight' | string;
   type SortDirection = 'asc' | 'desc';
 
-  // Store sort state per category (SvelteMap is already reactive)
   const categorySortState = new SvelteMap<string, { key: SortKey; direction: SortDirection }>();
 
-  // Active category tab - allow manual override, but default to first category
   let selectedCategoryId = $state<string | null>(null);
   const activeCategory = $derived(
     selectedCategoryId || competition.categories?.[0]?.category.category_id || ''
@@ -274,11 +272,11 @@
 												{participant.is_disqualified
                           ? 'opacity-50'
                           : rank === 1
-                            ? 'bg-gradient-to-r from-yellow-500/5 via-transparent to-transparent shadow-lg shadow-yellow-900/20'
+                            ? 'bg-linear-to-r from-yellow-500/5 via-transparent to-transparent shadow-lg shadow-yellow-900/20'
                             : rank === 2
-                              ? 'bg-gradient-to-r from-zinc-400/5 via-transparent to-transparent'
+                              ? 'bg-linear-to-r from-zinc-400/5 via-transparent to-transparent'
                               : rank === 3
-                                ? 'bg-gradient-to-r from-orange-700/5 via-transparent to-transparent'
+                                ? 'bg-linear-to-r from-orange-700/5 via-transparent to-transparent'
                                 : ''}"
                       >
                         <td class="px-4 py-3 text-white">

@@ -2,24 +2,30 @@
   import type { PageData } from './$types';
   import { Card, Breadcrumb } from '$lib/components/ui';
   import { SortIcon } from '$lib/components/icons';
-  import { rankingsService } from '$lib/server/api';
   import type { RankingEntry } from '$lib/types/ranking';
   import { resolve } from '$app/paths';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
 
   let { data }: { data: PageData } = $props();
 
-  let rankings = $state<RankingEntry[]>(data.initialRankings);
-  let currentPage = $state(data.pagination.page);
-  let totalPages = $state(data.pagination.total_pages);
-  let totalItems = $state(data.pagination.total_items);
+  let rankings = $state<RankingEntry[]>([]);
+  let currentPage = $state(1);
+  let totalPages = $state(1);
+  let totalItems = $state(0);
   let isLoading = $state(false);
 
-  let genderFilter = $state<string | null>($page.url.searchParams.get('gender') || null);
-  let countryFilter = $state<string>($page.url.searchParams.get('country') || '');
-  let movementFilter = $state<string>($page.url.searchParams.get('movement') || 'total');
+  $effect(() => {
+    rankings = data.initialRankings;
+    currentPage = data.pagination.page;
+    totalPages = data.pagination.total_pages;
+    totalItems = data.pagination.total_items;
+  });
+
+  let genderFilter = $state<string | null>(page.url.searchParams.get('gender') || null);
+  let countryFilter = $state<string>(page.url.searchParams.get('country') || '');
+  let movementFilter = $state<string>(page.url.searchParams.get('movement') || 'total');
 
   const movements = [
     { value: 'total', label: 'Total' },
@@ -57,26 +63,26 @@
 
   async function loadRankings(resetData = true) {
     if (isLoading) return;
-
     isLoading = true;
     try {
-      const response = await rankingsService.getGlobalRankings({
-        pagination: resetData ? 1 : currentPage + 1,
-        gender: genderFilter,
-        country: countryFilter || null,
-        movement: movementFilter,
-      });
+      const params = new URLSearchParams();
+      params.set('pagination', String(resetData ? 1 : currentPage + 1));
+      params.set('movement', movementFilter);
+      if (genderFilter) params.set('gender', genderFilter);
+      if (countryFilter) params.set('country', countryFilter);
+
+      const response = await fetch(`/api/rankings?${params}`);
+      const result = await response.json();
 
       if (resetData) {
-        rankings = response.data;
+        rankings = result.data;
         currentPage = 1;
       } else {
-        rankings = [...rankings, ...response.data];
+        rankings = [...rankings, ...result.data];
         currentPage += 1;
       }
-
-      totalPages = response.pagination.total_pages;
-      totalItems = response.pagination.total_items;
+      totalPages = result.pagination.total_pages;
+      totalItems = result.pagination.total_items;
     } catch (error) {
       console.error('Error loading rankings:', error);
     } finally {

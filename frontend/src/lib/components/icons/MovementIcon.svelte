@@ -1,26 +1,22 @@
 <script lang="ts">
   let { movement, class: className = '' }: { movement: string; class?: string } = $props();
 
-  const normalizedMovement = movement.toLowerCase().trim();
+  const normalizedMovement = $derived(movement.toLowerCase().trim());
 </script>
 
 {#if normalizedMovement.includes('muscle') && normalizedMovement.includes('up')}
-  <!-- Muscle-up Icon -->
   <svg class={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
     <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
   </svg>
 {:else if normalizedMovement.includes('pull') && normalizedMovement.includes('up')}
-  <!-- Pull-up Icon -->
   <svg class={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
     <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
   </svg>
 {:else if normalizedMovement.includes('dip')}
-  <!-- Dips Icon -->
   <svg class={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
     <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
   </svg>
 {:else if normalizedMovement.includes('squat')}
-  <!-- Squat Icon -->
   <svg class={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
     <path
       stroke-linecap="round"
@@ -29,7 +25,6 @@
     />
   </svg>
 {:else}
-  <!-- Default Icon -->
   <svg class={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
     <path
       stroke-linecap="round"

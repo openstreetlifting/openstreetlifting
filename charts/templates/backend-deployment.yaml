@@ -7,6 +7,7 @@ metadata:
     {{- include "openstreetlifting.labels" . | nindent 4 }}
     {{- include "openstreetlifting.backend.selectorLabels" . | nindent 4 }}
 spec:
+  revisionHistoryLimit: 2
   replicas: {{ .Values.backend.replicaCount }}
   selector:
     matchLabels:

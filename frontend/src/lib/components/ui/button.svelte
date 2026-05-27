@@ -39,7 +39,7 @@
     icon: 'h-10 w-10',
   };
 
-  const classes = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className || ''}`;
+  const classes = $derived(`${baseStyles} ${variants[variant]} ${sizes[size]} ${className || ''}`);
 </script>
 
 {#if href}
