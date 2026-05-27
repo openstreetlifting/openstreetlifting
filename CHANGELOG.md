@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4](https://github.com/openstreetlifting/openstreetlifting/compare/v0.1.3...v0.1.4) (2026-05-27)
+
+
+### Features
+
+* change welcoming sentence ([3f55fc8](https://github.com/openstreetlifting/openstreetlifting/commit/3f55fc8bce6464daa1a1a7bf6e59a6bedbb255aa))
+* documentation, github workflow ([7800fc3](https://github.com/openstreetlifting/openstreetlifting/commit/7800fc31112eb475e5f7fb454315250eeb8a0d84))
+* **frontend:** helm chart backend url values ([1e30f30](https://github.com/openstreetlifting/openstreetlifting/commit/1e30f309600de17bce28ae0a38e5f86e595ac586))
+* merge continuous delivery pipeline ([47ece34](https://github.com/openstreetlifting/openstreetlifting/commit/47ece3423448e54d352b9a18c6433ccf0bc6835c))
+* simplify backend and frontend continuous delivery ([a2576d3](https://github.com/openstreetlifting/openstreetlifting/commit/a2576d39180ec1aecded5065ab75fc27562051a2))
+
+
+### Bug Fixes
+
+* chart values backend intra url ([b32666c](https://github.com/openstreetlifting/openstreetlifting/commit/b32666cc46c22c1318c996dc233f67919ac64c32))
+* typo in release please workflow ([bbecfdd](https://github.com/openstreetlifting/openstreetlifting/commit/bbecfdd609480ff142d1cc99b0e9e16ae948ae7d))
+
 ## [0.1.3](https://github.com/openstreetlifting/openstreetlifting/compare/v0.1.2...v0.1.3) (2026-05-25)
 
 
