@@ -1625,7 +1625,7 @@ checksum = "7c87def4c32ab89d880effc9e097653c8da5d6ef28e6b539d313baaacfbafcbe"
 
 [[package]]
 name = "osl_api"
-version = "0.1.4"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -1648,7 +1648,7 @@ dependencies = [
 
 [[package]]
 name = "osl_db"
-version = "0.1.4"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "osl_domain",
@@ -1662,7 +1662,7 @@ dependencies = [
 
 [[package]]
 name = "osl_domain"
-version = "0.1.4"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "rust_decimal",
@@ -1675,7 +1675,7 @@ dependencies = [
 
 [[package]]
 name = "osl_importer"
-version = "0.1.4"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "chrono",
