@@ -19,7 +19,7 @@ jobs:
     outputs:
       sha_tag: ${{ steps.sha_tag.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
       - name: Set SHA tag
@@ -52,7 +52,7 @@ jobs:
     outputs:
       sha_tag: ${{ steps.sha_tag.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
       - name: Set SHA tag
@@ -80,7 +80,7 @@ jobs:
     needs: [build-backend, build-frontend]
     if: always() && !contains(needs.*.result, 'failure')
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
       - name: Install yq
