@@ -1,0 +1,15 @@
+pub mod athlete;
+pub mod athlete_social;
+pub mod attempt;
+pub mod category;
+pub mod competition;
+pub mod competition_movement;
+pub mod competition_participant;
+pub mod federation;
+pub mod lift;
+pub mod movement;
+pub mod record;
+pub mod ris_formula;
+pub mod ris_score;
+pub mod rulebook;
+pub mod social;
