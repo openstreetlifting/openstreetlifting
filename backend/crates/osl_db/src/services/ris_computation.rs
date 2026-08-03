@@ -1,24 +1,26 @@
 use chrono::NaiveDate;
+use osl_domain::RisFormula;
 use osl_domain::ris::compute_ris;
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::error::Result;
-use crate::models::{RisFormulaVersion, RisScoreHistory};
+use crate::params::RisScoreUpsert;
 use crate::repository::ris::RisRepository;
+use crate::rows::ris_score::RisScoreHistoryRow;
 
 pub async fn get_formula_for_date(
     pool: &PgPool,
     competition_date: NaiveDate,
-) -> Result<RisFormulaVersion> {
+) -> Result<RisFormula> {
     let repo = RisRepository::new(pool);
-    repo.get_formula_for_date(competition_date).await
+    Ok(repo.get_formula_for_date(competition_date).await?.into())
 }
 
-pub async fn get_current_formula(pool: &PgPool) -> Result<RisFormulaVersion> {
+pub async fn get_current_formula(pool: &PgPool) -> Result<RisFormula> {
     let repo = RisRepository::new(pool);
-    repo.get_current_formula().await
+    Ok(repo.get_current_formula().await?.into())
 }
 
 pub async fn compute_and_store_ris(
@@ -29,17 +31,17 @@ pub async fn compute_and_store_ris(
     gender: &str,
 ) -> Result<Decimal> {
     let repo = RisRepository::new(pool);
-    let formula = repo.get_current_formula().await?;
+    let formula: RisFormula = repo.get_current_formula().await?.into();
 
     let ris_score = compute_ris(bodyweight, total, gender, &formula)?;
 
-    repo.upsert_ris_score(
+    repo.upsert_ris_score(&RisScoreUpsert {
         participant_id,
-        formula.formula_id,
+        formula_id: formula.formula_id,
         ris_score,
         bodyweight,
-        total,
-    )
+        total_weight: total,
+    })
     .await?;
     repo.update_participant_current_ris(participant_id, ris_score)
         .await?;
@@ -53,22 +55,23 @@ pub async fn compute_historical_ris(
     bodyweight: Decimal,
     total: Decimal,
     gender: &str,
-) -> Result<Vec<RisScoreHistory>> {
+) -> Result<Vec<RisScoreHistoryRow>> {
     let repo = RisRepository::new(pool);
     let formulas = repo.list_all_formulas().await?;
 
     let mut results = Vec::new();
 
     for formula in formulas {
+        let formula: RisFormula = formula.into();
         let ris_score = compute_ris(bodyweight, total, gender, &formula)?;
         let score_history = repo
-            .upsert_ris_score(
+            .upsert_ris_score(&RisScoreUpsert {
                 participant_id,
-                formula.formula_id,
+                formula_id: formula.formula_id,
                 ris_score,
                 bodyweight,
-                total,
-            )
+                total_weight: total,
+            })
             .await?;
         results.push(score_history);
     }
@@ -79,10 +82,10 @@ pub async fn compute_historical_ris(
 pub async fn recompute_all_ris(pool: &PgPool, formula_id: Option<Uuid>) -> Result<u64> {
     let repo = RisRepository::new(pool);
 
-    let formula = if let Some(fid) = formula_id {
-        repo.get_formula_by_id(fid).await?
+    let formula: RisFormula = if let Some(fid) = formula_id {
+        repo.get_formula_by_id(fid).await?.into()
     } else {
-        repo.get_current_formula().await?
+        repo.get_current_formula().await?.into()
     };
 
     let participants = sqlx::query!(
@@ -109,13 +112,13 @@ pub async fn recompute_all_ris(pool: &PgPool, formula_id: Option<Uuid>) -> Resul
             let ris_score =
                 compute_ris(bodyweight, participant.total, &participant.gender, &formula)?;
 
-            repo.upsert_ris_score(
-                participant.participant_id,
-                formula.formula_id,
+            repo.upsert_ris_score(&RisScoreUpsert {
+                participant_id: participant.participant_id,
+                formula_id: formula.formula_id,
                 ris_score,
                 bodyweight,
-                participant.total,
-            )
+                total_weight: participant.total,
+            })
             .await?;
 
             repo.update_participant_current_ris(participant.participant_id, ris_score)

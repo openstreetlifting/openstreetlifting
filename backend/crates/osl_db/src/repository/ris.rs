@@ -4,7 +4,8 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
-use crate::models::{RisFormulaVersion, RisScoreHistory};
+use crate::params::RisScoreUpsert;
+use crate::rows::{ris_formula::RisFormulaVersionRow, ris_score::RisScoreHistoryRow};
 
 pub struct RisRepository<'a> {
     pool: &'a PgPool,
@@ -15,9 +16,9 @@ impl<'a> RisRepository<'a> {
         Self { pool }
     }
 
-    pub async fn get_formula_by_id(&self, formula_id: Uuid) -> Result<RisFormulaVersion> {
+    pub async fn get_formula_by_id(&self, formula_id: Uuid) -> Result<RisFormulaVersionRow> {
         let formula = sqlx::query_as!(
-            RisFormulaVersion,
+            RisFormulaVersionRow,
             r#"
             SELECT formula_id, year, effective_from, effective_until, is_current,
                    men_a, men_k, men_b, men_v, men_q,
@@ -35,9 +36,9 @@ impl<'a> RisRepository<'a> {
         Ok(formula)
     }
 
-    pub async fn get_formula_by_year(&self, year: i32) -> Result<RisFormulaVersion> {
+    pub async fn get_formula_by_year(&self, year: i32) -> Result<RisFormulaVersionRow> {
         let formula = sqlx::query_as!(
-            RisFormulaVersion,
+            RisFormulaVersionRow,
             r#"
             SELECT formula_id, year, effective_from, effective_until, is_current,
                    men_a, men_k, men_b, men_v, men_q,
@@ -55,9 +56,9 @@ impl<'a> RisRepository<'a> {
         Ok(formula)
     }
 
-    pub async fn get_current_formula(&self) -> Result<RisFormulaVersion> {
+    pub async fn get_current_formula(&self) -> Result<RisFormulaVersionRow> {
         let formula = sqlx::query_as!(
-            RisFormulaVersion,
+            RisFormulaVersionRow,
             r#"
             SELECT formula_id, year, effective_from, effective_until, is_current,
                    men_a, men_k, men_b, men_v, men_q,
@@ -75,9 +76,9 @@ impl<'a> RisRepository<'a> {
         Ok(formula)
     }
 
-    pub async fn get_formula_for_date(&self, date: NaiveDate) -> Result<RisFormulaVersion> {
+    pub async fn get_formula_for_date(&self, date: NaiveDate) -> Result<RisFormulaVersionRow> {
         let formula = sqlx::query_as!(
-            RisFormulaVersion,
+            RisFormulaVersionRow,
             r#"
             SELECT formula_id, year, effective_from, effective_until, is_current,
                    men_a, men_k, men_b, men_v, men_q,
@@ -98,9 +99,9 @@ impl<'a> RisRepository<'a> {
         Ok(formula)
     }
 
-    pub async fn list_all_formulas(&self) -> Result<Vec<RisFormulaVersion>> {
+    pub async fn list_all_formulas(&self) -> Result<Vec<RisFormulaVersionRow>> {
         let formulas = sqlx::query_as!(
-            RisFormulaVersion,
+            RisFormulaVersionRow,
             r#"
             SELECT formula_id, year, effective_from, effective_until, is_current,
                    men_a, men_k, men_b, men_v, men_q,
@@ -116,16 +117,9 @@ impl<'a> RisRepository<'a> {
         Ok(formulas)
     }
 
-    pub async fn upsert_ris_score(
-        &self,
-        participant_id: Uuid,
-        formula_id: Uuid,
-        ris_score: Decimal,
-        bodyweight: Decimal,
-        total_weight: Decimal,
-    ) -> Result<RisScoreHistory> {
+    pub async fn upsert_ris_score(&self, upsert: &RisScoreUpsert) -> Result<RisScoreHistoryRow> {
         let score_history = sqlx::query_as!(
-            RisScoreHistory,
+            RisScoreHistoryRow,
             r#"
             INSERT INTO ris_scores_history (participant_id, formula_id, ris_score, bodyweight, total_weight)
             VALUES ($1, $2, $3, $4, $5)
@@ -137,11 +131,11 @@ impl<'a> RisRepository<'a> {
                 computed_at = CURRENT_TIMESTAMP
             RETURNING ris_score_id, participant_id, formula_id, ris_score, bodyweight, total_weight, computed_at
             "#,
-            participant_id,
-            formula_id,
-            ris_score,
-            bodyweight,
-            total_weight
+            upsert.participant_id,
+            upsert.formula_id,
+            upsert.ris_score,
+            upsert.bodyweight,
+            upsert.total_weight
         )
         .fetch_one(self.pool)
         .await?;
@@ -152,9 +146,9 @@ impl<'a> RisRepository<'a> {
     pub async fn get_participant_ris_history(
         &self,
         participant_id: Uuid,
-    ) -> Result<Vec<RisScoreHistory>> {
+    ) -> Result<Vec<RisScoreHistoryRow>> {
         let history = sqlx::query_as!(
-            RisScoreHistory,
+            RisScoreHistoryRow,
             r#"
             SELECT ris_score_id, participant_id, formula_id, ris_score, bodyweight, total_weight, computed_at
             FROM ris_scores_history
@@ -173,9 +167,9 @@ impl<'a> RisRepository<'a> {
         &self,
         participant_id: Uuid,
         formula_id: Uuid,
-    ) -> Result<Option<RisScoreHistory>> {
+    ) -> Result<Option<RisScoreHistoryRow>> {
         let score = sqlx::query_as!(
-            RisScoreHistory,
+            RisScoreHistoryRow,
             r#"
             SELECT ris_score_id, participant_id, formula_id, ris_score, bodyweight, total_weight, computed_at
             FROM ris_scores_history

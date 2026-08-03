@@ -3,13 +3,16 @@ use sqlx::PgPool;
 use std::collections::HashMap;
 use uuid::Uuid;
 
-use crate::dto::competition::{
-    AthleteInfo, AttemptInfo, CategoryDetail, CategoryInfo, CompetitionDetailResponse,
-    CompetitionListResponse, CreateCompetitionRequest, FederationInfo, LiftDetail, MovementInfo,
+use crate::error::{Result, StorageError};
+use crate::params::{CompetitionUpdate, NewCompetition};
+use crate::projections::competition::{
+    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem, LiftDetail,
     ParticipantDetail,
 };
-use crate::error::{Result, StorageError};
-use crate::models::{Athlete, Category, Competition, CompetitionMovement, Federation, Lift};
+use crate::rows::{
+    athlete::AthleteRow, category::CategoryRow, competition::CompetitionRow,
+    competition_movement::CompetitionMovementRow, federation::FederationRow, lift::LiftRow,
+};
 
 pub struct CompetitionRepository<'a> {
     pool: &'a PgPool,
@@ -20,9 +23,9 @@ impl<'a> CompetitionRepository<'a> {
         Self { pool }
     }
 
-    pub async fn list(&self) -> Result<Vec<Competition>> {
+    pub async fn list(&self) -> Result<Vec<CompetitionRow>> {
         let competitions = sqlx::query_as!(
-            Competition,
+            CompetitionRow,
             r#"
             SELECT competition_id, name, created_at, slug, status, federation_id,
                    venue, city, country, start_date, end_date, number_of_judge
@@ -36,66 +39,45 @@ impl<'a> CompetitionRepository<'a> {
         Ok(competitions)
     }
 
-    pub async fn list_with_details(&self) -> Result<Vec<CompetitionListResponse>> {
+    pub async fn list_with_details(&self) -> Result<Vec<CompetitionListItem>> {
         let competitions = self.list().await?;
         let mut results = Vec::with_capacity(competitions.len());
 
-        for comp in competitions {
+        for competition in competitions {
             let federation = sqlx::query_as!(
-                Federation,
+                FederationRow,
                 "SELECT federation_id, name, rulebook_id, country, abbreviation
                  FROM federations
                  WHERE federation_id = $1",
-                comp.federation_id
+                competition.federation_id
             )
             .fetch_one(self.pool)
             .await?;
 
             let movements = sqlx::query_as!(
-                CompetitionMovement,
+                CompetitionMovementRow,
                 "SELECT competition_id, movement_name, is_required, display_order
                  FROM competition_movements
                  WHERE competition_id = $1
                  ORDER BY display_order",
-                comp.competition_id
+                competition.competition_id
             )
             .fetch_all(self.pool)
             .await?;
 
-            results.push(CompetitionListResponse {
-                competition_id: comp.competition_id,
-                name: comp.name,
-                created_at: comp.created_at,
-                slug: comp.slug,
-                status: comp.status,
-                venue: comp.venue,
-                city: comp.city,
-                country: comp.country,
-                start_date: comp.start_date,
-                end_date: comp.end_date,
-                federation: FederationInfo {
-                    federation_id: federation.federation_id,
-                    name: federation.name,
-                    abbreviation: federation.abbreviation,
-                    country: federation.country,
-                },
-                movements: movements
-                    .into_iter()
-                    .map(|m| MovementInfo {
-                        movement_name: m.movement_name,
-                        is_required: m.is_required,
-                        display_order: m.display_order,
-                    })
-                    .collect(),
+            results.push(CompetitionListItem {
+                competition,
+                federation,
+                movements,
             });
         }
 
         Ok(results)
     }
 
-    pub async fn find_by_id(&self, id: Uuid) -> Result<Competition> {
+    pub async fn find_by_id(&self, id: Uuid) -> Result<CompetitionRow> {
         let competition = sqlx::query_as!(
-            Competition,
+            CompetitionRow,
             r#"
             SELECT competition_id, name, created_at, slug, status, federation_id,
                    venue, city, country, start_date, end_date, number_of_judge
@@ -112,9 +94,9 @@ impl<'a> CompetitionRepository<'a> {
     }
 
     /// Get a competition by slug
-    pub async fn find_by_slug(&self, slug: &str) -> Result<Competition> {
+    pub async fn find_by_slug(&self, slug: &str) -> Result<CompetitionRow> {
         let competition = sqlx::query_as!(
-            Competition,
+            CompetitionRow,
             r#"
             SELECT competition_id, name, created_at, slug, status, federation_id,
                    venue, city, country, start_date, end_date, number_of_judge
@@ -130,12 +112,12 @@ impl<'a> CompetitionRepository<'a> {
         Ok(competition)
     }
 
-    pub async fn find_by_slug_detailed(&self, slug: &str) -> Result<CompetitionDetailResponse> {
+    pub async fn find_by_slug_detailed(&self, slug: &str) -> Result<CompetitionDetail> {
         let competition = self.find_by_slug(slug).await?;
         self.get_detailed_competition(competition).await
     }
 
-    pub async fn find_by_id_detailed(&self, id: Uuid) -> Result<CompetitionDetailResponse> {
+    pub async fn find_by_id_detailed(&self, id: Uuid) -> Result<CompetitionDetail> {
         let competition = self.find_by_id(id).await?;
         self.get_detailed_competition(competition).await
     }
@@ -179,15 +161,15 @@ impl<'a> CompetitionRepository<'a> {
 
     async fn get_detailed_competition(
         &self,
-        competition: Competition,
-    ) -> Result<CompetitionDetailResponse> {
+        competition: CompetitionRow,
+    ) -> Result<CompetitionDetail> {
         // Compute category rankings for all participants
         let ranking_map = self
             .compute_category_rankings(competition.competition_id)
             .await?;
 
         let federation = sqlx::query_as!(
-            Federation,
+            FederationRow,
             "SELECT federation_id, name, rulebook_id, country, abbreviation
              FROM federations
              WHERE federation_id = $1",
@@ -197,7 +179,7 @@ impl<'a> CompetitionRepository<'a> {
         .await?;
 
         let categories = sqlx::query_as!(
-            Category,
+            CategoryRow,
             "SELECT DISTINCT c.category_id, c.name, c.gender, c.weight_class_min, c.weight_class_max
              FROM categories c
              JOIN competition_participants cp ON c.category_id = cp.category_id
@@ -207,11 +189,9 @@ impl<'a> CompetitionRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        let mut category_map: HashMap<Uuid, (Category, Vec<ParticipantDetail>)> = HashMap::new();
+        let mut category_details = Vec::with_capacity(categories.len());
 
         for category in categories {
-            category_map.insert(category.category_id, (category.clone(), Vec::new()));
-
             let participants = sqlx::query!(
                 "SELECT participant_id, competition_id, category_id, athlete_id, bodyweight, rank, is_disqualified,
                         created_at, disqualified_reason, ris_score
@@ -224,9 +204,11 @@ impl<'a> CompetitionRepository<'a> {
             .fetch_all(self.pool)
             .await?;
 
+            let mut participant_details = Vec::with_capacity(participants.len());
+
             for participant in participants {
                 let athlete = sqlx::query_as!(
-                    Athlete,
+                    AthleteRow,
                     r#"SELECT athlete_id, first_name, last_name, gender, created_at,
                             nationality, country, profile_picture_url, slug,
                             COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
@@ -238,7 +220,7 @@ impl<'a> CompetitionRepository<'a> {
                 .await?;
 
                 let lifts = sqlx::query_as!(
-                    Lift,
+                    LiftRow,
                     "SELECT lift_id, participant_id, movement_name, max_weight,
                             equipment_setting, updated_at
                      FROM lifts
@@ -269,7 +251,7 @@ impl<'a> CompetitionRepository<'a> {
                         best_weight: lift.max_weight,
                         attempts: attempts
                             .into_iter()
-                            .map(|a| AttemptInfo {
+                            .map(|a| AttemptSummary {
                                 attempt_number: a.attempt_number,
                                 weight: a.weight,
                                 is_successful: a.is_successful,
@@ -283,16 +265,8 @@ impl<'a> CompetitionRepository<'a> {
                 // Get computed category rank for this participant
                 let rank = ranking_map.get(&participant.participant_id).copied();
 
-                let participant_detail = ParticipantDetail {
-                    athlete: AthleteInfo {
-                        athlete_id: athlete.athlete_id,
-                        first_name: athlete.first_name,
-                        last_name: athlete.last_name,
-                        gender: athlete.gender,
-                        nationality: athlete.nationality,
-                        country: athlete.country,
-                        slug: athlete.slug,
-                    },
+                participant_details.push(ParticipantDetail {
+                    athlete,
                     bodyweight: participant.bodyweight,
                     rank,
                     ris_score: participant.ris_score,
@@ -300,53 +274,27 @@ impl<'a> CompetitionRepository<'a> {
                     disqualified_reason: participant.disqualified_reason.clone(),
                     lifts: lift_details,
                     total,
-                };
-
-                if let Some((_, participants)) = category_map.get_mut(&category.category_id) {
-                    participants.push(participant_detail);
-                }
+                });
             }
-        }
 
-        let mut category_details: Vec<CategoryDetail> = category_map
-            .into_iter()
-            .map(|(_, (category, participants))| CategoryDetail {
-                category: CategoryInfo {
-                    category_id: category.category_id,
-                    name: category.name,
-                    gender: category.gender,
-                    weight_class_min: category.weight_class_min,
-                    weight_class_max: category.weight_class_max,
-                },
-                participants,
-            })
-            .collect();
+            category_details.push(CategoryParticipants {
+                category,
+                participants: participant_details,
+            });
+        }
 
         category_details.sort_by(|a, b| a.category.name.cmp(&b.category.name));
 
-        Ok(CompetitionDetailResponse {
-            competition_id: competition.competition_id,
-            name: competition.name,
-            slug: competition.slug,
-            status: competition.status,
-            venue: competition.venue,
-            city: competition.city,
-            country: competition.country,
-            start_date: competition.start_date,
-            end_date: competition.end_date,
-            federation: FederationInfo {
-                federation_id: federation.federation_id,
-                name: federation.name,
-                abbreviation: federation.abbreviation,
-                country: federation.country,
-            },
+        Ok(CompetitionDetail {
+            competition,
+            federation,
             categories: category_details,
         })
     }
 
-    pub async fn create(&self, req: &CreateCompetitionRequest) -> Result<Competition> {
+    pub async fn create(&self, new: &NewCompetition) -> Result<CompetitionRow> {
         let competition = sqlx::query_as!(
-            Competition,
+            CompetitionRow,
             r#"
             INSERT INTO competitions (
                 name, slug, status, federation_id, venue, city, country,
@@ -356,16 +304,16 @@ impl<'a> CompetitionRepository<'a> {
             RETURNING competition_id, name, created_at, slug, status, federation_id,
                       venue, city, country, start_date, end_date, number_of_judge
             "#,
-            req.name,
-            req.slug,
-            req.status,
-            req.federation_id,
-            req.venue,
-            req.city,
-            req.country,
-            req.start_date,
-            req.end_date,
-            req.number_of_judge
+            new.name,
+            new.slug,
+            new.status,
+            new.federation_id,
+            new.venue,
+            new.city,
+            new.country,
+            new.start_date,
+            new.end_date,
+            new.number_of_judge
         )
         .fetch_one(self.pool)
         .await
@@ -385,22 +333,22 @@ impl<'a> CompetitionRepository<'a> {
     pub async fn update(
         &self,
         id: Uuid,
-        existing: &Competition,
-        req: &crate::dto::competition::UpdateCompetitionRequest,
-    ) -> Result<Competition> {
-        let name = req.name.as_ref().unwrap_or(&existing.name);
-        let slug = req.slug.as_ref().unwrap_or(&existing.slug);
-        let status = req.status.as_ref().unwrap_or(&existing.status);
-        let federation_id = req.federation_id.unwrap_or(existing.federation_id);
-        let venue = req.venue.as_ref().or(existing.venue.as_ref());
-        let city = req.city.as_ref().or(existing.city.as_ref());
-        let country = req.country.as_ref().or(existing.country.as_ref());
-        let start_date = req.start_date.or(existing.start_date);
-        let end_date = req.end_date.or(existing.end_date);
-        let number_of_judge = req.number_of_judge.or(existing.number_of_judge);
+        existing: &CompetitionRow,
+        update: &CompetitionUpdate,
+    ) -> Result<CompetitionRow> {
+        let name = update.name.as_ref().unwrap_or(&existing.name);
+        let slug = update.slug.as_ref().unwrap_or(&existing.slug);
+        let status = update.status.as_ref().unwrap_or(&existing.status);
+        let federation_id = update.federation_id.unwrap_or(existing.federation_id);
+        let venue = update.venue.as_ref().or(existing.venue.as_ref());
+        let city = update.city.as_ref().or(existing.city.as_ref());
+        let country = update.country.as_ref().or(existing.country.as_ref());
+        let start_date = update.start_date.or(existing.start_date);
+        let end_date = update.end_date.or(existing.end_date);
+        let number_of_judge = update.number_of_judge.or(existing.number_of_judge);
 
         let competition = sqlx::query_as!(
-            Competition,
+            CompetitionRow,
             r#"
             UPDATE competitions
             SET

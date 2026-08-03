@@ -2,12 +2,10 @@ use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::dto::athlete::{
-    AthleteCompetitionSummary, AthleteDetailResponse, CreateAthleteRequest, PersonalRecord,
-    UpdateAthleteRequest,
-};
 use crate::error::{Result, StorageError};
-use crate::models::Athlete;
+use crate::params::{AthleteUpdate, NewAthlete};
+use crate::projections::athlete::{AthleteCompetitionRow, AthleteDetail, PersonalRecordRow};
+use crate::rows::athlete::AthleteRow;
 
 pub struct AthleteRepository<'a> {
     pool: &'a PgPool,
@@ -18,10 +16,9 @@ impl<'a> AthleteRepository<'a> {
         Self { pool }
     }
 
-    /// List all athletes
-    pub async fn list(&self) -> Result<Vec<Athlete>> {
+    pub async fn list(&self) -> Result<Vec<AthleteRow>> {
         let athletes = sqlx::query_as!(
-            Athlete,
+            AthleteRow,
             r#"
             SELECT athlete_id, first_name, last_name, gender, created_at,
                    nationality, country, profile_picture_url, slug,
@@ -36,11 +33,9 @@ impl<'a> AthleteRepository<'a> {
         Ok(athletes)
     }
 
-    /// Find athlete by slug (or check slug_history for redirects)
-    pub async fn find_by_slug(&self, slug: &str) -> Result<Athlete> {
-        // First try to find by current slug
+    pub async fn find_by_slug(&self, slug: &str) -> Result<AthleteRow> {
         let athlete = sqlx::query_as!(
-            Athlete,
+            AthleteRow,
             r#"
             SELECT athlete_id, first_name, last_name, gender, created_at,
                    nationality, country, profile_picture_url, slug,
@@ -57,9 +52,8 @@ impl<'a> AthleteRepository<'a> {
             return Ok(athlete);
         }
 
-        // If not found, check slug_history for redirect
         let athlete_from_history = sqlx::query_as!(
-            Athlete,
+            AthleteRow,
             r#"
             SELECT athlete_id, first_name, last_name, gender, created_at,
                    nationality, country, profile_picture_url, slug,
@@ -76,10 +70,9 @@ impl<'a> AthleteRepository<'a> {
         Ok(athlete_from_history)
     }
 
-    /// Find athlete by ID
-    pub async fn find_by_id(&self, id: Uuid) -> Result<Athlete> {
+    pub async fn find_by_id(&self, id: Uuid) -> Result<AthleteRow> {
         let athlete = sqlx::query_as!(
-            Athlete,
+            AthleteRow,
             r#"
             SELECT athlete_id, first_name, last_name, gender, created_at,
                    nationality, country, profile_picture_url, slug,
@@ -96,17 +89,14 @@ impl<'a> AthleteRepository<'a> {
         Ok(athlete)
     }
 
-    /// Get detailed athlete info with competition history
-    pub async fn find_by_slug_detailed(&self, slug: &str) -> Result<AthleteDetailResponse> {
+    pub async fn find_by_slug_detailed(&self, slug: &str) -> Result<AthleteDetail> {
         let athlete = self.find_by_slug(slug).await?;
         self.get_detailed_athlete(athlete).await
     }
 
-    /// Helper to build detailed athlete response
-    async fn get_detailed_athlete(&self, athlete: Athlete) -> Result<AthleteDetailResponse> {
-        // Get competition history
+    async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
         let competitions = sqlx::query_as!(
-            AthleteCompetitionSummary,
+            AthleteCompetitionRow,
             r#"
             SELECT
                 c.competition_id,
@@ -131,9 +121,8 @@ impl<'a> AthleteRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        // Get personal records
         let personal_records = sqlx::query_as!(
-            PersonalRecord,
+            PersonalRecordRow,
             r#"
             SELECT DISTINCT ON (l.movement_name)
                 l.movement_name,
@@ -164,23 +153,14 @@ impl<'a> AthleteRepository<'a> {
         .fetch_one(self.pool)
         .await?;
 
-        Ok(AthleteDetailResponse {
-            athlete_id: athlete.athlete_id,
-            first_name: athlete.first_name,
-            last_name: athlete.last_name,
-            slug: athlete.slug,
-            gender: athlete.gender,
-            nationality: athlete.nationality,
-            country: athlete.country,
-            profile_picture_url: athlete.profile_picture_url,
-            created_at: athlete.created_at,
+        Ok(AthleteDetail {
+            athlete,
             competitions,
             personal_records,
             total_competitions,
         })
     }
 
-    /// Generate unique slug from first and last name
     pub async fn generate_unique_slug(&self, first_name: &str, last_name: &str) -> Result<String> {
         let base_slug = format!("{}-{}", first_name, last_name)
             .to_lowercase()
@@ -216,14 +196,13 @@ impl<'a> AthleteRepository<'a> {
         Ok(final_slug)
     }
 
-    /// Create a new athlete
-    pub async fn create(&self, req: &CreateAthleteRequest) -> Result<Athlete> {
+    pub async fn create(&self, new: &NewAthlete) -> Result<AthleteRow> {
         let slug = self
-            .generate_unique_slug(&req.first_name, &req.last_name)
+            .generate_unique_slug(&new.first_name, &new.last_name)
             .await?;
 
         let athlete = sqlx::query_as!(
-            Athlete,
+            AthleteRow,
             r#"
             INSERT INTO athletes (first_name, last_name, gender, nationality, country, profile_picture_url, slug)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -231,12 +210,12 @@ impl<'a> AthleteRepository<'a> {
                       nationality, country, profile_picture_url, slug,
                       COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             "#,
-            req.first_name,
-            req.last_name,
-            req.gender,
-            req.nationality,
-            req.country,
-            req.profile_picture_url,
+            new.first_name,
+            new.last_name,
+            new.gender,
+            new.nationality,
+            new.country,
+            new.profile_picture_url,
             slug
         )
         .fetch_one(self.pool)
@@ -245,25 +224,23 @@ impl<'a> AthleteRepository<'a> {
         Ok(athlete)
     }
 
-    /// Update an existing athlete
     pub async fn update(
         &self,
         id: Uuid,
-        existing: &Athlete,
-        req: &UpdateAthleteRequest,
-    ) -> Result<Athlete> {
-        let first_name = req.first_name.as_ref().unwrap_or(&existing.first_name);
-        let last_name = req.last_name.as_ref().unwrap_or(&existing.last_name);
-        let gender = req.gender.as_ref().unwrap_or(&existing.gender);
-        let nationality = req.nationality.as_ref().or(existing.nationality.as_ref());
-        let country = req.country.as_ref().unwrap_or(&existing.country);
-        let profile_picture_url = req
+        existing: &AthleteRow,
+        update: &AthleteUpdate,
+    ) -> Result<AthleteRow> {
+        let first_name = update.first_name.as_ref().unwrap_or(&existing.first_name);
+        let last_name = update.last_name.as_ref().unwrap_or(&existing.last_name);
+        let gender = update.gender.as_ref().unwrap_or(&existing.gender);
+        let nationality = update.nationality.as_ref().or(existing.nationality.as_ref());
+        let country = update.country.as_ref().unwrap_or(&existing.country);
+        let profile_picture_url = update
             .profile_picture_url
             .as_ref()
             .or(existing.profile_picture_url.as_ref());
 
-        // Check if name changed - if so, generate new slug and store old one
-        let (slug, slug_history) = if req.first_name.is_some() || req.last_name.is_some() {
+        let (slug, slug_history) = if update.first_name.is_some() || update.last_name.is_some() {
             let new_slug = self.generate_unique_slug(first_name, last_name).await?;
             let mut history = existing.slug_history.0.clone();
             history.push(existing.slug.clone());
@@ -273,7 +250,7 @@ impl<'a> AthleteRepository<'a> {
         };
 
         let athlete = sqlx::query_as!(
-            Athlete,
+            AthleteRow,
             r#"
             UPDATE athletes
             SET first_name = $2,
@@ -306,7 +283,6 @@ impl<'a> AthleteRepository<'a> {
         Ok(athlete)
     }
 
-    /// Delete an athlete by ID
     pub async fn delete(&self, id: Uuid) -> Result<()> {
         let result = sqlx::query!("DELETE FROM athletes WHERE athlete_id = $1", id)
             .execute(self.pool)

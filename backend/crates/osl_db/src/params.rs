@@ -1,0 +1,102 @@
+//! Input types owned by osl_db.
+//!
+//! Repositories take these rather than API request DTOs, so osl_db stays
+//! independent of the HTTP layer. osl_api converts its validated request
+//! bodies into these on the way in.
+
+use chrono::NaiveDate;
+use rust_decimal::Decimal;
+use uuid::Uuid;
+
+#[derive(Debug, Clone)]
+pub struct NewAthlete {
+    pub first_name: String,
+    pub last_name: String,
+    pub gender: String,
+    pub nationality: Option<String>,
+    pub country: String,
+    pub profile_picture_url: Option<String>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct AthleteUpdate {
+    pub first_name: Option<String>,
+    pub last_name: Option<String>,
+    pub gender: Option<String>,
+    pub nationality: Option<String>,
+    pub country: Option<String>,
+    pub profile_picture_url: Option<String>,
+}
+
+#[derive(Debug, Clone)]
+pub struct NewCompetition {
+    pub name: String,
+    pub slug: String,
+    pub status: String,
+    pub federation_id: Uuid,
+    pub venue: Option<String>,
+    pub city: Option<String>,
+    pub country: Option<String>,
+    pub start_date: Option<NaiveDate>,
+    pub end_date: Option<NaiveDate>,
+    pub number_of_judge: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct CompetitionUpdate {
+    pub name: Option<String>,
+    pub slug: Option<String>,
+    pub status: Option<String>,
+    pub federation_id: Option<Uuid>,
+    pub venue: Option<String>,
+    pub city: Option<String>,
+    pub country: Option<String>,
+    pub start_date: Option<NaiveDate>,
+    pub end_date: Option<NaiveDate>,
+    pub number_of_judge: Option<i16>,
+}
+
+/// Movement the global ranking is sorted by.
+///
+/// Lives here rather than in osl_api because the variants map directly
+/// onto CTE column names in the ranking query.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum RankingMovement {
+    Muscleup,
+    Pullup,
+    Dips,
+    Squat,
+    #[default]
+    Total,
+}
+
+impl RankingMovement {
+    pub fn as_column(&self) -> &'static str {
+        match self {
+            Self::Muscleup => "muscleup",
+            Self::Pullup => "pullup",
+            Self::Dips => "dips",
+            Self::Squat => "squat",
+            Self::Total => "total",
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct RankingFilter {
+    pub gender: Option<String>,
+    pub country: Option<String>,
+    pub movement: RankingMovement,
+    pub offset: i64,
+    pub limit: i64,
+}
+
+/// Score to upsert into `ris_scores_history`.
+#[derive(Debug, Clone, Copy)]
+pub struct RisScoreUpsert {
+    pub participant_id: Uuid,
+    pub formula_id: Uuid,
+    pub ris_score: Decimal,
+    pub bodyweight: Decimal,
+    pub total_weight: Decimal,
+}
