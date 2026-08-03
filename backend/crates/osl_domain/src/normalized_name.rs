@@ -19,7 +19,7 @@ impl NormalizedAthleteName {
     /// # Examples
     ///
     /// ```
-    /// use osl_domain::models::NormalizedAthleteName;
+    /// use osl_domain::normalized_name::NormalizedAthleteName;
     ///
     /// let name1 = NormalizedAthleteName::new("john", "smith");
     /// let name2 = NormalizedAthleteName::new("JOHN", "SMITH");
