@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN useradd --no-create-home -u 1001 appuser
 WORKDIR /app
 ARG BIN
+ENV BIN=${BIN}
 COPY --chown=appuser:appuser --from=builder /app/target/release/${BIN} /app/server
 USER appuser
 EXPOSE 8080
