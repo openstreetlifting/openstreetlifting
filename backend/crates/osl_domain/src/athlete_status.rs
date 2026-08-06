@@ -9,9 +9,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum AthleteStatus {
-    /// The athlete completed the competition and their result stands.
     Competed,
-    /// The athlete was disqualified; the reason is carried alongside.
     Disqualified,
 }
 

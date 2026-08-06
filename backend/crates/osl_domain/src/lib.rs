@@ -1,6 +1,5 @@
 pub mod athlete_status;
 pub mod error;
-pub mod models;
 pub mod normalized_name;
 pub mod ris;
 pub mod weight_class;
