@@ -3,7 +3,7 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
-use crate::params::{AthleteUpdate, NewAthlete};
+use crate::params::{AthleteUpdate, NewAthlete, Page};
 use crate::projections::athlete::{AthleteCompetitionRow, AthleteDetail, PersonalRecordRow};
 use crate::rows::athlete::AthleteRow;
 
@@ -16,7 +16,8 @@ impl<'a> AthleteRepository<'a> {
         Self { pool }
     }
 
-    pub async fn list(&self) -> Result<Vec<AthleteRow>> {
+    /// Returns one page of athletes plus the unpaginated total.
+    pub async fn list(&self, page: &Page) -> Result<(Vec<AthleteRow>, i64)> {
         let athletes = sqlx::query_as!(
             AthleteRow,
             r#"
@@ -25,12 +26,19 @@ impl<'a> AthleteRepository<'a> {
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
             ORDER BY last_name, first_name
-            "#
+            LIMIT $1 OFFSET $2
+            "#,
+            page.limit,
+            page.offset
         )
         .fetch_all(self.pool)
         .await?;
 
-        Ok(athletes)
+        let total = sqlx::query_scalar!(r#"SELECT COUNT(*) as "count!" FROM athletes"#)
+            .fetch_one(self.pool)
+            .await?;
+
+        Ok((athletes, total))
     }
 
     pub async fn find_by_slug(&self, slug: &str) -> Result<AthleteRow> {

@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
   try {
-    const competitions = await competitionsService.getAll();
+    const { data: competitions } = await competitionsService.getAll();
 
     return {
       competitions,

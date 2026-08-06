@@ -6,27 +6,57 @@
       {
         "ordinal": 0,
         "name": "attempt_number",
-        "type_info": "Int2"
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "attempts",
+            "name": "attempt_number"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "weight",
-        "type_info": "Numeric"
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "attempts",
+            "name": "weight"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "is_successful",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "attempts",
+            "name": "is_successful"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "passing_judges",
-        "type_info": "Int2"
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "attempts",
+            "name": "passing_judges"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "no_rep_reason",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "attempts",
+            "name": "no_rep_reason"
+          }
+        }
       }
     ],
     "parameters": {

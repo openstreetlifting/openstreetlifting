@@ -12,6 +12,8 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+use crate::shared::query::Include;
+
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CreateCompetitionRequest {
     pub name: String,
@@ -23,8 +25,8 @@ pub struct CreateCompetitionRequest {
     pub venue: Option<String>,
     pub city: Option<String>,
     pub country: Option<String>,
-    pub start_date: Option<NaiveDate>,
-    pub end_date: Option<NaiveDate>,
+    pub start_date: NaiveDate,
+    pub end_date: NaiveDate,
     pub number_of_judge: Option<i16>,
 }
 
@@ -56,22 +58,15 @@ pub struct CompetitionResponse {
     pub start_date: Option<NaiveDate>,
     pub end_date: Option<NaiveDate>,
     pub number_of_judge: Option<i16>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct CompetitionListResponse {
-    pub competition_id: Uuid,
-    pub name: String,
-    pub created_at: chrono::NaiveDateTime,
-    pub slug: String,
-    pub status: String,
-    pub venue: Option<String>,
-    pub city: Option<String>,
-    pub country: Option<String>,
-    pub start_date: Option<NaiveDate>,
-    pub end_date: Option<NaiveDate>,
-    pub federation: FederationInfo,
-    pub movements: Vec<MovementInfo>,
+    /// Present only when requested via `?include=federation`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub federation: Option<FederationInfo>,
+    /// Present only when requested via `?include=movements`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub movements: Option<Vec<MovementInfo>>,
+    /// Present only when requested via `?include=results`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub categories: Option<Vec<CategoryDetail>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -87,21 +82,6 @@ pub struct MovementInfo {
     pub movement_name: String,
     pub is_required: bool,
     pub display_order: Option<i32>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct CompetitionDetailResponse {
-    pub competition_id: uuid::Uuid,
-    pub name: String,
-    pub slug: String,
-    pub status: String,
-    pub venue: Option<String>,
-    pub city: Option<String>,
-    pub country: Option<String>,
-    pub start_date: Option<chrono::NaiveDate>,
-    pub end_date: Option<chrono::NaiveDate>,
-    pub federation: FederationInfo,
-    pub categories: Vec<CategoryDetail>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -164,9 +144,7 @@ fn default_status() -> String {
 
 impl CreateCompetitionRequest {
     pub fn validate_dates(&self) -> Result<(), &'static str> {
-        if let (Some(end), Some(start)) = (self.end_date, self.start_date)
-            && end < start
-        {
+        if self.end_date < self.start_date {
             return Err("End date must be on or after start date");
         }
 
@@ -196,6 +174,9 @@ impl From<CompetitionRow> for CompetitionResponse {
             start_date: comp.start_date,
             end_date: comp.end_date,
             number_of_judge: comp.number_of_judge,
+            federation: None,
+            movements: None,
+            categories: None,
         }
     }
 }
@@ -293,52 +274,42 @@ impl From<CategoryParticipants> for CategoryDetail {
     }
 }
 
-impl From<CompetitionListItem> for CompetitionListResponse {
-    fn from(item: CompetitionListItem) -> Self {
+impl CompetitionResponse {
+    /// Builds a list entry, attaching only the sections the caller asked for.
+    pub fn from_list_item(item: CompetitionListItem, include: &Include) -> Self {
         let CompetitionListItem {
             competition,
             federation,
             movements,
         } = item;
 
-        Self {
-            competition_id: competition.competition_id,
-            name: competition.name,
-            created_at: competition.created_at,
-            slug: competition.slug,
-            status: competition.status,
-            venue: competition.venue,
-            city: competition.city,
-            country: competition.country,
-            start_date: competition.start_date,
-            end_date: competition.end_date,
-            federation: federation.into(),
-            movements: movements.into_iter().map(Into::into).collect(),
+        let mut response = Self::from(competition);
+        if include.has("federation") {
+            response.federation = Some(federation.into());
         }
+        if include.has("movements") {
+            response.movements = Some(movements.into_iter().map(Into::into).collect());
+        }
+        response
     }
-}
 
-impl From<CompetitionDetail> for CompetitionDetailResponse {
-    fn from(detail: CompetitionDetail) -> Self {
+    /// Builds a single competition, attaching only the sections the caller
+    /// asked for.
+    pub fn from_detail(detail: CompetitionDetail, include: &Include) -> Self {
         let CompetitionDetail {
             competition,
             federation,
             categories,
         } = detail;
 
-        Self {
-            competition_id: competition.competition_id,
-            name: competition.name,
-            slug: competition.slug,
-            status: competition.status,
-            venue: competition.venue,
-            city: competition.city,
-            country: competition.country,
-            start_date: competition.start_date,
-            end_date: competition.end_date,
-            federation: federation.into(),
-            categories: categories.into_iter().map(Into::into).collect(),
+        let mut response = Self::from(competition);
+        if include.has("federation") {
+            response.federation = Some(federation.into());
         }
+        if include.has("results") {
+            response.categories = Some(categories.into_iter().map(Into::into).collect());
+        }
+        response
     }
 }
 

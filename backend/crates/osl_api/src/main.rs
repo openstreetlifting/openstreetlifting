@@ -42,27 +42,28 @@ pub struct AppState {
 #[openapi(
     paths(
         competition::handlers::list_competitions,
-        competition::handlers::list_competitions_detailed,
         competition::handlers::get_competition,
-        competition::handlers::get_competition_detailed,
         competition::handlers::create_competition,
         competition::handlers::update_competition,
         competition::handlers::delete_competition,
         athlete::handlers::list_athletes,
         athlete::handlers::get_athlete,
-        athlete::handlers::get_athlete_detailed,
         athlete::handlers::create_athlete,
         athlete::handlers::update_athlete,
         athlete::handlers::delete_athlete,
         ranking::handler::get_global_ranking,
+        ris::handlers::list_ris_formulas,
+        ris::handlers::get_current_formula,
+        ris::handlers::get_formula_by_year,
+        ris::handlers::calculate_ris,
+        ris::handlers::get_participant_ris_scores,
+        ris::handlers::recompute_ris_scores,
     ),
     components(
         schemas(
             crate::competition::dto::CreateCompetitionRequest,
             crate::competition::dto::UpdateCompetitionRequest,
             crate::competition::dto::CompetitionResponse,
-            crate::competition::dto::CompetitionListResponse,
-            crate::competition::dto::CompetitionDetailResponse,
             crate::competition::dto::CategoryDetail,
             crate::competition::dto::ParticipantDetail,
             crate::competition::dto::LiftDetail,
@@ -74,21 +75,28 @@ pub struct AppState {
             crate::athlete::dto::CreateAthleteRequest,
             crate::athlete::dto::UpdateAthleteRequest,
             crate::athlete::dto::AthleteResponse,
-            crate::athlete::dto::AthleteDetailResponse,
             crate::athlete::dto::AthleteCompetitionSummary,
             crate::athlete::dto::PersonalRecord,
             crate::shared::dto::PaginationMeta,
             crate::shared::dto::PaginationParams,
+            crate::shared::query::Include,
             crate::ranking::dto::Movement,
             crate::ranking::dto::GlobalRankingEntry,
             crate::ranking::dto::AthleteInfo,
             crate::ranking::dto::CompetitionInfo,
+            crate::ris::dto::RisFormulaResponse,
+            crate::ris::dto::RisConstants,
+            crate::ris::dto::GenderConstants,
+            crate::ris::dto::RisScoreResponse,
+            crate::ris::dto::ComputeRisRequest,
+            crate::ris::dto::ComputeRisResponse,
         )
     ),
     tags(
         (name = "competitions", description = "Public competition endpoints"),
         (name = "athletes", description = "Public athlete endpoints"),
         (name = "rankings", description = "Public ranking endpoints"),
+        (name = "ris", description = "RIS formulas and score computation"),
     ),
     modifiers(&SecurityAddon)
 )]
@@ -229,7 +237,7 @@ async fn main() -> anyhow::Result<()> {
     let app = Router::new()
         .merge(health::routes::router())
         .merge(swagger_ui)
-        .nest("/api", router::api_router(state.clone()))
+        .nest("/api/v1", router::api_router(state.clone()))
         .layer(middleware_stack)
         .with_state(state);
 

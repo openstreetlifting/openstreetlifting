@@ -1,12 +1,34 @@
+use osl_db::params::Page;
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
-#[derive(Debug, Deserialize, IntoParams, ToSchema)]
+#[derive(Debug, Default, Deserialize, IntoParams, ToSchema)]
 pub struct PaginationParams {
-    #[serde(default = "default_page")]
+    #[serde(default = "default_page", deserialize_with = "number_from_query")]
     pub page: u32,
-    #[serde(default = "default_page_size")]
+    #[serde(default = "default_page_size", deserialize_with = "number_from_query")]
     pub page_size: u32,
+}
+
+/// Accepts a query value that arrives as either a number or a string.
+///
+/// `#[serde(flatten)]` makes serde_urlencoded hand every value over as a
+/// string, so a plain `u32` field rejects `?page=2` outright. Both call sites
+/// flatten these params, so both need this.
+fn number_from_query<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Result<u32, D::Error> {
+    use serde::de::Error;
+
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum NumberOrString {
+        Number(u32),
+        String(String),
+    }
+
+    match NumberOrString::deserialize(deserializer)? {
+        NumberOrString::Number(n) => Ok(n),
+        NumberOrString::String(s) => s.parse().map_err(D::Error::custom),
+    }
 }
 
 fn default_page() -> u32 {
@@ -34,6 +56,14 @@ impl PaginationParams {
 
     pub fn limit(&self) -> u32 {
         self.page_size
+    }
+
+    /// Resolves page numbers into the bounds repositories work in.
+    pub fn to_page(&self) -> Page {
+        Page {
+            limit: self.limit() as i64,
+            offset: self.offset() as i64,
+        }
     }
 }
 

@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ url }) => {
     const country = url.searchParams.get('country') || null;
 
     const initialData = await rankingsService.getGlobalRankings({
-      pagination: 1,
+      page: 1,
       movement,
       gender,
       country,

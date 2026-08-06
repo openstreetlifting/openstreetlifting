@@ -6,32 +6,68 @@
       {
         "ordinal": 0,
         "name": "lift_id",
-        "type_info": "Uuid"
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "lifts",
+            "name": "lift_id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "participant_id",
-        "type_info": "Uuid"
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "lifts",
+            "name": "participant_id"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "movement_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "lifts",
+            "name": "movement_name"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "max_weight",
-        "type_info": "Numeric"
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "lifts",
+            "name": "max_weight"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "equipment_setting",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "lifts",
+            "name": "equipment_setting"
+          }
+        }
       },
       {
         "ordinal": 5,
         "name": "updated_at",
-        "type_info": "Timestamp"
+        "type_info": "Timestamp",
+        "origin": {
+          "Table": {
+            "table": "lifts",
+            "name": "updated_at"
+          }
+        }
       }
     ],
     "parameters": {

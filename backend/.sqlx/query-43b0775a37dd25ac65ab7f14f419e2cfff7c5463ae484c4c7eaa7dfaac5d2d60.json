@@ -6,27 +6,57 @@
       {
         "ordinal": 0,
         "name": "movement_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "lifts",
+            "name": "movement_name"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "max_weight",
-        "type_info": "Numeric"
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "lifts",
+            "name": "max_weight"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "competition_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "name"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "competition_slug",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "slug"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "date",
-        "type_info": "Date"
+        "type_info": "Date",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "start_date"
+          }
+        }
       }
     ],
     "parameters": {
