@@ -1,9 +1,11 @@
 use sqlx::postgres::{PgPool, PgPoolOptions};
 
-pub use osl_domain::{error, models};
+pub use osl_domain::error;
 
-pub mod dto;
+pub mod params;
+pub mod projections;
 pub mod repository;
+pub mod rows;
 pub mod services;
 
 use error::Result;

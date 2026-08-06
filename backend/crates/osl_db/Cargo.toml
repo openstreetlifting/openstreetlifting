@@ -8,8 +8,5 @@ publish.workspace = true
 osl_domain = { path = "../osl_domain" }
 chrono.workspace = true
 rust_decimal.workspace = true
-serde.workspace = true
 sqlx.workspace = true
-utoipa.workspace = true
 uuid.workspace = true
-validator = { version = "0.21", features = ["derive"] }

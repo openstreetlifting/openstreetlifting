@@ -1,6 +1,6 @@
 use super::models::*;
 use crate::{ImporterError, Result};
-use osl_domain::models::NormalizedAthleteName;
+use osl_domain::NormalizedAthleteName;
 use sqlx::PgPool;
 use tracing::info;
 use uuid::Uuid;

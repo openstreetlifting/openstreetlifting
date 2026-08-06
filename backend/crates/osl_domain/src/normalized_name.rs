@@ -1,0 +1,100 @@
+/// Athlete name normalized to a single canonical form.
+///
+/// Sources spell the same athlete differently ("JOHN SMITH", "john smith"),
+/// which would otherwise create duplicate athletes on import. Name order is
+/// preserved as given; the database constraints do the actual deduplication.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NormalizedAthleteName {
+    first_name: String,
+    last_name: String,
+}
+
+impl NormalizedAthleteName {
+    /// # Examples
+    ///
+    /// ```
+    /// use osl_domain::normalized_name::NormalizedAthleteName;
+    ///
+    /// let name1 = NormalizedAthleteName::new("john", "smith");
+    /// let name2 = NormalizedAthleteName::new("JOHN", "SMITH");
+    /// let name3 = NormalizedAthleteName::new("John", "Smith");
+    ///
+    /// // All produce the same normalized form: "John" "Smith"
+    /// assert_eq!(name1.database_first_name(), "John");
+    /// assert_eq!(name1.database_last_name(), "Smith");
+    /// assert_eq!(name1, name2);
+    /// assert_eq!(name2, name3);
+    /// ```
+    pub fn new(first_name: impl Into<String>, last_name: impl Into<String>) -> Self {
+        let first_name = normalize_name_part(first_name.into());
+        let last_name = normalize_name_part(last_name.into());
+
+        Self {
+            first_name,
+            last_name,
+        }
+    }
+
+    pub fn database_first_name(&self) -> &str {
+        &self.first_name
+    }
+
+    pub fn database_last_name(&self) -> &str {
+        &self.last_name
+    }
+
+    pub fn as_database_tuple(&self) -> (&str, &str) {
+        (&self.first_name, &self.last_name)
+    }
+}
+
+fn normalize_name_part(name: String) -> String {
+    let trimmed = name.trim();
+    if trimmed.is_empty() {
+        return String::new();
+    }
+
+    let mut chars = trimmed.chars();
+    match chars.next() {
+        None => String::new(),
+        Some(first) => first.to_uppercase().collect::<String>() + &chars.as_str().to_lowercase(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_normalization_preserves_order() {
+        let name = NormalizedAthleteName::new("John", "Smith");
+        assert_eq!(name.database_first_name(), "John");
+        assert_eq!(name.database_last_name(), "Smith");
+    }
+
+    #[test]
+    fn test_normalization_title_case() {
+        let name1 = NormalizedAthleteName::new("john", "smith");
+        let name2 = NormalizedAthleteName::new("JOHN", "SMITH");
+        let name3 = NormalizedAthleteName::new("John", "Smith");
+
+        assert_eq!(name1.database_first_name(), "John");
+        assert_eq!(name1.database_last_name(), "Smith");
+        assert_eq!(name1, name2);
+        assert_eq!(name2, name3);
+    }
+
+    #[test]
+    fn test_normalization_trims_whitespace() {
+        let name = NormalizedAthleteName::new("  John  ", "  Smith  ");
+        assert_eq!(name.database_first_name(), "John");
+        assert_eq!(name.database_last_name(), "Smith");
+    }
+
+    #[test]
+    fn test_different_names_not_equal() {
+        let name1 = NormalizedAthleteName::new("John", "Smith");
+        let name2 = NormalizedAthleteName::new("Jane", "Smith");
+        assert_ne!(name1, name2);
+    }
+}

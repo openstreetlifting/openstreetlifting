@@ -1,31 +1,8 @@
-use chrono::NaiveDate;
-use rust_decimal::Decimal;
-use sqlx::{FromRow, PgPool, QueryBuilder};
-use uuid::Uuid;
+use sqlx::{PgPool, QueryBuilder};
 
-use crate::dto::ranking::{AthleteInfo, CompetitionInfo, GlobalRankingEntry, GlobalRankingFilter};
 use crate::error::Result;
-
-#[derive(FromRow)]
-struct RankingRow {
-    rank: i64,
-    athlete_id: Uuid,
-    first_name: String,
-    last_name: String,
-    slug: String,
-    country: String,
-    gender: String,
-    bodyweight: Option<Decimal>,
-    competition_id: Uuid,
-    competition_name: String,
-    start_date: Option<NaiveDate>,
-    muscleup: Decimal,
-    pullup: Decimal,
-    dips: Decimal,
-    squat: Decimal,
-    total: Decimal,
-    ris_score: Option<Decimal>,
-}
+use crate::params::RankingFilter;
+use crate::projections::ranking::RankingRow;
 
 pub struct RankingRepository<'a> {
     pool: &'a PgPool,
@@ -36,21 +13,18 @@ impl<'a> RankingRepository<'a> {
         Self { pool }
     }
 
+    /// Returns one page of the global ranking plus the unpaginated total.
     pub async fn get_global_ranking(
         &self,
-        filter: &GlobalRankingFilter,
-    ) -> Result<(Vec<GlobalRankingEntry>, i64)> {
-        let offset = filter.pagination.offset() as i64;
-        let limit = filter.pagination.limit() as i64;
-
+        filter: &RankingFilter,
+    ) -> Result<(Vec<RankingRow>, i64)> {
         let total_items = self.count_participants(filter).await?;
-
-        let entries = self.fetch_ranked_entries(filter, offset, limit).await?;
+        let entries = self.fetch_ranked_entries(filter).await?;
 
         Ok((entries, total_items))
     }
 
-    async fn count_participants(&self, filter: &GlobalRankingFilter) -> Result<i64> {
+    async fn count_participants(&self, filter: &RankingFilter) -> Result<i64> {
         let mut query = QueryBuilder::new(
             r#"
             SELECT COUNT(DISTINCT cp.participant_id)
@@ -79,12 +53,7 @@ impl<'a> RankingRepository<'a> {
         Ok(count)
     }
 
-    async fn fetch_ranked_entries(
-        &self,
-        filter: &GlobalRankingFilter,
-        offset: i64,
-        limit: i64,
-    ) -> Result<Vec<GlobalRankingEntry>> {
+    async fn fetch_ranked_entries(&self, filter: &RankingFilter) -> Result<Vec<RankingRow>> {
         let sort_column = filter.movement.as_column();
 
         let mut query = QueryBuilder::new(
@@ -147,43 +116,12 @@ impl<'a> RankingRepository<'a> {
             LIMIT
             "#,
         );
-        query.push_bind(limit);
+        query.push_bind(filter.limit);
         query.push(" OFFSET ");
-        query.push_bind(offset);
+        query.push_bind(filter.offset);
 
         let rows: Vec<RankingRow> = query.build_query_as().fetch_all(self.pool).await?;
 
-        let entries = rows
-            .into_iter()
-            .map(|row| GlobalRankingEntry {
-                rank: row.rank,
-                athlete: AthleteInfo {
-                    athlete_id: row.athlete_id,
-                    first_name: row.first_name,
-                    last_name: row.last_name,
-                    slug: row.slug,
-                    country: row.country,
-                    gender: row.gender,
-                    bodyweight: row.bodyweight.map(decimal_to_f64),
-                },
-                ris: row.ris_score.map(decimal_to_f64).unwrap_or(0.0),
-                total: decimal_to_f64(row.total),
-                muscleup: decimal_to_f64(row.muscleup),
-                pullup: decimal_to_f64(row.pullup),
-                dips: decimal_to_f64(row.dips),
-                squat: decimal_to_f64(row.squat),
-                competition: CompetitionInfo {
-                    competition_id: row.competition_id,
-                    name: row.competition_name,
-                    date: row.start_date,
-                },
-            })
-            .collect();
-
-        Ok(entries)
+        Ok(rows)
     }
-}
-
-fn decimal_to_f64(decimal: Decimal) -> f64 {
-    decimal.to_string().parse().unwrap_or(0.0)
 }

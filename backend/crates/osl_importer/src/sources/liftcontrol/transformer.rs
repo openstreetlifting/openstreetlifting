@@ -3,7 +3,7 @@ use super::movement_mapper::LiftControlMovementMapper;
 use super::spec::CompetitionMetadata;
 use crate::movement_mapper::MovementMapper;
 use crate::{ImporterError, Result};
-use osl_domain::models::NormalizedAthleteName;
+use osl_domain::NormalizedAthleteName;
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use std::collections::HashMap;
@@ -123,7 +123,6 @@ impl<'a> LiftControlTransformer<'a> {
 
             let canonical_name = canonical_movement.as_str();
 
-            // Insert into competition_movements using the movement name directly
             sqlx::query!(
                 r#"
                 INSERT INTO competition_movements (competition_id, movement_name, is_required, display_order)
@@ -388,7 +387,6 @@ impl<'a> LiftControlTransformer<'a> {
         let max_weight = convert_weight(context.movement_results.max);
         let settings = get_movement_settings(&context.movement.name, context.athlete_info);
 
-        // Get the participant_id from competition_participants
         let participant = sqlx::query!(
             r#"
             SELECT participant_id
@@ -402,7 +400,6 @@ impl<'a> LiftControlTransformer<'a> {
         .fetch_one(&mut **tx)
         .await?;
 
-        // Insert or update the lift
         sqlx::query!(
             r#"
             INSERT INTO lifts (participant_id, movement_name, max_weight, equipment_setting)
@@ -450,7 +447,6 @@ impl<'a> LiftControlTransformer<'a> {
 
         let weight = convert_weight(attempt.charge);
 
-        // Get the lift_id
         let lift = sqlx::query!(
             r#"
             SELECT lift_id

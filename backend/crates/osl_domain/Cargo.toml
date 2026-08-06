@@ -15,5 +15,4 @@ sqlx = { workspace = true, features = [
   "uuid",
 ] }
 thiserror.workspace = true
-utoipa.workspace = true
 uuid.workspace = true

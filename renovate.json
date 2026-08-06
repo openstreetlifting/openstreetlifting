@@ -28,6 +28,12 @@
       "matchUpdateTypes": ["major"],
       "labels": ["dependencies", "frontend", "major"]
     },
+    {
+      "description": "typescript-eslint only supports TypeScript <6.1, so TS 7 breaks the lint job. Unpin once https://github.com/typescript-eslint/typescript-eslint/issues/10940 ships.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7.0.0"
+    },
 
     {
       "description": "Group and automerge backend (Cargo) patch + minor updates",
