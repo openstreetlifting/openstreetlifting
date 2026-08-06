@@ -1,22 +1,13 @@
 use axum::{
-    Json, Router,
+    Json,
     extract::{Query, State},
-    routing::get,
 };
-use osl_db::{
-    dto::{
-        common::PaginatedResponse,
-        ranking::{GlobalRankingEntry, GlobalRankingFilter},
-    },
-    repository::ranking::RankingRepository,
-};
+use osl_db::repository::ranking::RankingRepository;
 
+use super::dto::{GlobalRankingEntry, GlobalRankingFilter};
 use crate::AppState;
 use crate::error::{WebError, WebResult};
-
-pub fn router() -> Router<AppState> {
-    Router::new().route("/rankings/global", get(get_global_ranking))
-}
+use crate::shared::dto::PaginatedResponse;
 
 #[utoipa::path(
     get,
@@ -33,12 +24,19 @@ pub async fn get_global_ranking(
     Query(filter): Query<GlobalRankingFilter>,
 ) -> WebResult<Json<PaginatedResponse<GlobalRankingEntry>>> {
     filter.validate().map_err(WebError::BadRequest)?;
+
     let repo = RankingRepository::new(state.db.pool());
-    let (entries, total_items) = repo.get_global_ranking(&filter).await?;
-    Ok(Json(PaginatedResponse::new(
+    let (rows, total_items) = repo.get_global_ranking(&filter.to_db_filter()).await?;
+
+    let entries: Vec<GlobalRankingEntry> =
+        rows.into_iter().map(GlobalRankingEntry::from).collect();
+
+    let response = PaginatedResponse::new(
         entries,
         filter.pagination.page,
         filter.pagination.page_size,
         total_items,
-    )))
+    );
+
+    Ok(Json(response))
 }

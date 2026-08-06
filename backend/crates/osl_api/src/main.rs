@@ -18,10 +18,16 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use uuid::Uuid;
 
+mod athlete;
+mod competition;
 mod config;
 mod error;
+mod health;
 mod middleware;
-mod routes;
+mod ranking;
+mod ris;
+mod router;
+mod shared;
 
 use config::Config;
 use middleware::auth::ApiKeys;
@@ -35,58 +41,46 @@ pub struct AppState {
 #[derive(OpenApi)]
 #[openapi(
     paths(
-        routes::competitions::list_competitions,
-        routes::competitions::list_competitions_detailed,
-        routes::competitions::get_competition,
-        routes::competitions::get_competition_detailed,
-        routes::competitions::create_competition,
-        routes::competitions::update_competition,
-        routes::competitions::delete_competition,
-        routes::athletes::list_athletes,
-        routes::athletes::get_athlete,
-        routes::athletes::get_athlete_detailed,
-        routes::athletes::create_athlete,
-        routes::athletes::update_athlete,
-        routes::athletes::delete_athlete,
-        routes::ranking::get_global_ranking,
+        competition::handlers::list_competitions,
+        competition::handlers::list_competitions_detailed,
+        competition::handlers::get_competition,
+        competition::handlers::get_competition_detailed,
+        competition::handlers::create_competition,
+        competition::handlers::update_competition,
+        competition::handlers::delete_competition,
+        athlete::handlers::list_athletes,
+        athlete::handlers::get_athlete,
+        athlete::handlers::get_athlete_detailed,
+        athlete::handlers::create_athlete,
+        athlete::handlers::update_athlete,
+        athlete::handlers::delete_athlete,
+        ranking::handler::get_global_ranking,
     ),
     components(
         schemas(
-            osl_db::dto::competition::CreateCompetitionRequest,
-            osl_db::dto::competition::UpdateCompetitionRequest,
-            osl_db::dto::competition::CompetitionResponse,
-            osl_db::dto::competition::CompetitionListResponse,
-            osl_db::dto::competition::CompetitionDetailResponse,
-            osl_db::dto::competition::CategoryDetail,
-            osl_db::dto::competition::ParticipantDetail,
-            osl_db::dto::competition::LiftDetail,
-            osl_db::dto::competition::AttemptInfo,
-            osl_db::dto::competition::FederationInfo,
-            osl_db::dto::competition::CategoryInfo,
-            osl_db::dto::competition::AthleteInfo,
-            osl_db::dto::competition::MovementInfo,
-            osl_db::dto::athlete::CreateAthleteRequest,
-            osl_db::dto::athlete::UpdateAthleteRequest,
-            osl_db::dto::athlete::AthleteResponse,
-            osl_db::dto::athlete::AthleteDetailResponse,
-            osl_db::dto::athlete::AthleteCompetitionSummary,
-            osl_db::dto::athlete::PersonalRecord,
-            osl_db::dto::common::PaginationMeta,
-            osl_db::dto::ranking::GlobalRankingEntry,
-            osl_db::dto::ranking::AthleteInfo,
-            osl_db::dto::ranking::CompetitionInfo,
-            osl_db::models::Competition,
-            osl_db::models::Athlete,
-            osl_db::models::Category,
-            osl_db::models::Federation,
-            osl_db::models::Movement,
-            osl_db::models::Lift,
-            osl_db::models::Attempt,
-            osl_db::models::CompetitionParticipant,
-            osl_db::models::Record,
-            osl_db::models::Social,
-            osl_db::models::Rulebook,
-            osl_db::models::AthleteSocial,
+            crate::competition::dto::CreateCompetitionRequest,
+            crate::competition::dto::UpdateCompetitionRequest,
+            crate::competition::dto::CompetitionResponse,
+            crate::competition::dto::CompetitionListResponse,
+            crate::competition::dto::CompetitionDetailResponse,
+            crate::competition::dto::CategoryDetail,
+            crate::competition::dto::ParticipantDetail,
+            crate::competition::dto::LiftDetail,
+            crate::competition::dto::AttemptInfo,
+            crate::competition::dto::FederationInfo,
+            crate::competition::dto::CategoryInfo,
+            crate::competition::dto::AthleteInfo,
+            crate::competition::dto::MovementInfo,
+            crate::athlete::dto::CreateAthleteRequest,
+            crate::athlete::dto::UpdateAthleteRequest,
+            crate::athlete::dto::AthleteResponse,
+            crate::athlete::dto::AthleteDetailResponse,
+            crate::athlete::dto::AthleteCompetitionSummary,
+            crate::athlete::dto::PersonalRecord,
+            crate::shared::dto::PaginationMeta,
+            crate::ranking::dto::GlobalRankingEntry,
+            crate::ranking::dto::AthleteInfo,
+            crate::ranking::dto::CompetitionInfo,
         )
     ),
     tags(
@@ -231,9 +225,9 @@ async fn main() -> anyhow::Result<()> {
         .into();
 
     let app = Router::new()
-        .merge(routes::health::router())
+        .merge(health::routes::router())
         .merge(swagger_ui)
-        .nest("/api", routes::api_router(state.clone()))
+        .nest("/api", router::api_router(state.clone()))
         .layer(middleware_stack)
         .with_state(state);
 

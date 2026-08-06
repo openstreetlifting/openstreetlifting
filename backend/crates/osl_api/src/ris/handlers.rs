@@ -1,41 +1,16 @@
-use axum::{
-    Json, Router,
-    extract::{Path, State},
-    middleware,
-    routing::{get, post},
-};
-use osl_db::{
-    dto::ris::{
-        ComputeRisRequest, ComputeRisResponse, GenderConstants, RisConstants, RisFormulaResponse,
-        RisScoreResponse,
-    },
-    models::RisFormulaVersion,
-    repository::ris::RisRepository,
-};
-use uuid::Uuid;
-
 use crate::AppState;
 use crate::error::WebResult;
-use crate::middleware::auth::require_auth;
+use axum::{
+    Json,
+    extract::{Path, State},
+};
+use osl_db::repository::ris::RisRepository;
+use osl_domain::RisFormula;
 
-pub fn router(state: AppState) -> Router<AppState> {
-    let ris_routes = Router::new()
-        .route("/ris/formulas", get(list_ris_formulas))
-        .route("/ris/formulas/current", get(get_current_formula))
-        .route("/ris/formulas/{year}", get(get_formula_by_year))
-        .route("/ris/compute", post(compute_ris));
-
-    let participant_routes = Router::new().route(
-        "/participants/{participant_id}/ris-history",
-        get(get_participant_ris_history),
-    );
-
-    let admin_routes = Router::new()
-        .route("/admin/ris/recompute-all", post(recompute_all_ris))
-        .route_layer(middleware::from_fn_with_state(state, require_auth));
-
-    ris_routes.merge(participant_routes).merge(admin_routes)
-}
+use super::dto::{
+    ComputeRisRequest, ComputeRisResponse, RisFormulaResponse, RisScoreResponse,
+};
+use uuid::Uuid;
 
 #[utoipa::path(
     get,
@@ -50,12 +25,13 @@ pub async fn list_ris_formulas(
 ) -> WebResult<Json<Vec<RisFormulaResponse>>> {
     let repo = RisRepository::new(state.db.pool());
     let formulas = repo.list_all_formulas().await?;
-    Ok(Json(
-        formulas
-            .into_iter()
-            .map(|f| formula_to_response(&f))
-            .collect(),
-    ))
+
+    let response: Vec<RisFormulaResponse> = formulas
+        .into_iter()
+        .map(|row| RisFormulaResponse::from(RisFormula::from(row)))
+        .collect();
+
+    Ok(Json(response))
 }
 
 #[utoipa::path(
@@ -71,15 +47,17 @@ pub async fn get_current_formula(
     State(state): State<AppState>,
 ) -> WebResult<Json<RisFormulaResponse>> {
     let repo = RisRepository::new(state.db.pool());
-    Ok(Json(formula_to_response(
-        &repo.get_current_formula().await?,
-    )))
+    let formula = RisFormula::from(repo.get_current_formula().await?);
+
+    Ok(Json(RisFormulaResponse::from(formula)))
 }
 
 #[utoipa::path(
     get,
     path = "/api/ris/formulas/{year}",
-    params(("year" = i32, Path, description = "Formula year")),
+    params(
+        ("year" = i32, Path, description = "Formula year")
+    ),
     responses(
         (status = 200, description = "RIS formula for specified year", body = RisFormulaResponse),
         (status = 404, description = "Formula not found for this year")
@@ -91,15 +69,17 @@ pub async fn get_formula_by_year(
     Path(year): Path<i32>,
 ) -> WebResult<Json<RisFormulaResponse>> {
     let repo = RisRepository::new(state.db.pool());
-    Ok(Json(formula_to_response(
-        &repo.get_formula_by_year(year).await?,
-    )))
+    let formula = RisFormula::from(repo.get_formula_by_year(year).await?);
+
+    Ok(Json(RisFormulaResponse::from(formula)))
 }
 
 #[utoipa::path(
     get,
     path = "/api/participants/{participant_id}/ris-history",
-    params(("participant_id" = Uuid, Path, description = "Participant ID")),
+    params(
+        ("participant_id" = Uuid, Path, description = "Participant ID")
+    ),
     responses(
         (status = 200, description = "RIS score history for participant", body = Vec<RisScoreResponse>)
     ),
@@ -111,12 +91,14 @@ pub async fn get_participant_ris_history(
 ) -> WebResult<Json<Vec<RisScoreResponse>>> {
     let repo = RisRepository::new(state.db.pool());
     let history = repo.get_participant_ris_history(participant_id).await?;
+
     let formulas = repo.list_all_formulas().await?;
     let formula_map: std::collections::HashMap<Uuid, i32> = formulas
         .into_iter()
         .map(|f| (f.formula_id, f.year))
         .collect();
-    let response = history
+
+    let response: Vec<RisScoreResponse> = history
         .into_iter()
         .map(|h| RisScoreResponse {
             formula_year: *formula_map.get(&h.formula_id).unwrap_or(&2025),
@@ -126,6 +108,7 @@ pub async fn get_participant_ris_history(
             computed_at: h.computed_at,
         })
         .collect();
+
     Ok(Json(response))
 }
 
@@ -144,17 +127,21 @@ pub async fn compute_ris(
     Json(payload): Json<ComputeRisRequest>,
 ) -> WebResult<Json<ComputeRisResponse>> {
     let repo = RisRepository::new(state.db.pool());
-    let formula = if let Some(year) = payload.formula_year {
-        repo.get_formula_by_year(year).await?
+    let formula: RisFormula = if let Some(year) = payload.formula_year {
+        repo.get_formula_by_year(year).await?.into()
     } else {
-        repo.get_current_formula().await?
+        repo.get_current_formula().await?.into()
     };
+
     let ris_score =
         osl_domain::ris::compute_ris(payload.bodyweight, payload.total, &payload.gender, &formula)?;
-    Ok(Json(ComputeRisResponse {
+
+    let response = ComputeRisResponse {
         ris_score,
         formula_year: formula.year,
-    }))
+    };
+
+    Ok(Json(response))
 }
 
 #[utoipa::path(
@@ -170,34 +157,9 @@ pub async fn recompute_all_ris(
     State(state): State<AppState>,
 ) -> WebResult<Json<serde_json::Value>> {
     let count = osl_db::services::ris_computation::recompute_all_ris(state.db.pool(), None).await?;
+
     Ok(Json(serde_json::json!({
         "recomputed_count": count,
         "message": format!("Successfully recomputed RIS for {} participants", count)
     })))
-}
-
-fn formula_to_response(formula: &RisFormulaVersion) -> RisFormulaResponse {
-    RisFormulaResponse {
-        formula_id: formula.formula_id,
-        year: formula.year,
-        is_current: formula.is_current,
-        effective_from: formula.effective_from,
-        effective_until: formula.effective_until,
-        constants: RisConstants {
-            men: GenderConstants {
-                a: formula.men_a,
-                k: formula.men_k,
-                b: formula.men_b,
-                v: formula.men_v,
-                q: formula.men_q,
-            },
-            women: GenderConstants {
-                a: formula.women_a,
-                k: formula.women_k,
-                b: formula.women_b,
-                v: formula.women_v,
-                q: formula.women_q,
-            },
-        },
-    }
 }

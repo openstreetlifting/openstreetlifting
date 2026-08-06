@@ -6,12 +6,12 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
-use osl_db::{
-    dto::competition::{
-        CompetitionDetailResponse, CompetitionListResponse, CompetitionResponse,
-        CreateCompetitionRequest, UpdateCompetitionRequest,
-    },
-    repository::competition::CompetitionRepository,
+use osl_db::params::{CompetitionUpdate, NewCompetition};
+use osl_db::repository::competition::CompetitionRepository;
+
+use super::dto::{
+    CompetitionDetailResponse, CompetitionListResponse, CompetitionResponse,
+    CreateCompetitionRequest, UpdateCompetitionRequest,
 };
 
 #[utoipa::path(
@@ -50,7 +50,12 @@ pub async fn list_competitions_detailed(
     let repo = CompetitionRepository::new(state.db.pool());
     let competitions = repo.list_with_details().await?;
 
-    Ok(Json(competitions))
+    let response: Vec<CompetitionListResponse> = competitions
+        .into_iter()
+        .map(CompetitionListResponse::from)
+        .collect();
+
+    Ok(Json(response))
 }
 
 #[utoipa::path(
@@ -92,9 +97,9 @@ pub async fn get_competition_detailed(
     Path(slug): Path<String>,
 ) -> WebResult<Json<CompetitionDetailResponse>> {
     let repo = CompetitionRepository::new(state.db.pool());
-    let competition = repo.find_by_slug_detailed(&slug).await?;
+    let detail = repo.find_by_slug_detailed(&slug).await?;
 
-    Ok(Json(competition))
+    Ok(Json(CompetitionDetailResponse::from(detail)))
 }
 
 #[utoipa::path(
@@ -120,7 +125,7 @@ pub async fn create_competition(
         .map_err(|e| WebError::BadRequest(e.to_string()))?;
 
     let repo = CompetitionRepository::new(state.db.pool());
-    let competition = repo.create(&req).await?;
+    let competition = repo.create(&NewCompetition::from(&req)).await?;
 
     Ok((
         StatusCode::CREATED,
@@ -155,7 +160,11 @@ pub async fn update_competition(
     let repo = CompetitionRepository::new(state.db.pool());
     let existing = repo.find_by_slug(&slug).await?;
     let updated = repo
-        .update(existing.competition_id, &existing, &update_req)
+        .update(
+            existing.competition_id,
+            &existing,
+            &CompetitionUpdate::from(&update_req),
+        )
         .await?;
 
     Ok(Json(CompetitionResponse::from(updated)))

@@ -1630,9 +1630,11 @@ dependencies = [
  "anyhow",
  "axum",
  "axum-extra",
+ "chrono",
  "dotenvy",
  "osl_db",
  "osl_domain",
+ "rust_decimal",
  "serde",
  "serde_json",
  "tokio",
@@ -1644,6 +1646,7 @@ dependencies = [
  "utoipa-axum",
  "utoipa-swagger-ui",
  "uuid",
+ "validator",
 ]
 
 [[package]]
