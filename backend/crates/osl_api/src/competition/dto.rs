@@ -11,38 +11,22 @@ use osl_db::rows::{
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
-use validator::Validate;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Validate, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CreateCompetitionRequest {
-    #[validate(length(
-        min = 1,
-        max = 255,
-        message = "Name must be between 1 and 255 characters"
-    ))]
     pub name: String,
 
-    #[validate(length(
-        min = 1,
-        max = 255,
-        message = "Slug must be between 1 and 255 characters"
-    ))]
-    #[validate(custom(function = "validate_slug"))]
     pub slug: String,
 
-    #[validate(custom(function = "validate_status"))]
     #[serde(default = "default_status")]
     pub status: String,
 
     pub federation_id: Uuid,
 
-    #[validate(length(max = 255))]
     pub venue: Option<String>,
 
-    #[validate(length(max = 255))]
     pub city: Option<String>,
 
-    #[validate(length(max = 255))]
     pub country: Option<String>,
 
     pub start_date: Option<NaiveDate>,
@@ -52,27 +36,20 @@ pub struct CreateCompetitionRequest {
     pub number_of_judge: Option<i16>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Validate, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct UpdateCompetitionRequest {
-    #[validate(length(min = 1, max = 255))]
     pub name: Option<String>,
 
-    #[validate(length(min = 1, max = 255))]
-    #[validate(custom(function = "validate_slug"))]
     pub slug: Option<String>,
 
-    #[validate(custom(function = "validate_status"))]
     pub status: Option<String>,
 
     pub federation_id: Option<Uuid>,
 
-    #[validate(length(max = 255))]
     pub venue: Option<String>,
 
-    #[validate(length(max = 255))]
     pub city: Option<String>,
 
-    #[validate(length(max = 255))]
     pub country: Option<String>,
 
     pub start_date: Option<NaiveDate>,
@@ -200,31 +177,6 @@ pub struct AttemptInfo {
 
 fn default_status() -> String {
     "draft".to_string()
-}
-
-fn validate_slug(slug: &str) -> Result<(), validator::ValidationError> {
-    let is_valid = slug
-        .chars()
-        .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-')
-        && !slug.starts_with('-')
-        && !slug.ends_with('-')
-        && !slug.contains("--");
-
-    if is_valid {
-        Ok(())
-    } else {
-        Err(validator::ValidationError::new("invalid_slug"))
-    }
-}
-
-fn validate_status(status: &str) -> Result<(), validator::ValidationError> {
-    const VALID_STATUSES: &[&str] = &["draft", "upcoming", "live", "completed", "cancelled"];
-
-    if VALID_STATUSES.contains(&status) {
-        Ok(())
-    } else {
-        Err(validator::ValidationError::new("invalid_status"))
-    }
 }
 
 impl CreateCompetitionRequest {

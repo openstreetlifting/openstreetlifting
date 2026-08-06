@@ -4,7 +4,6 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
-use validator::Validate;
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RisScoreResponse {
@@ -40,7 +39,7 @@ pub struct GenderConstants {
     pub q: Decimal,
 }
 
-#[derive(Debug, Clone, Deserialize, Validate, ToSchema)]
+#[derive(Debug, Clone, Deserialize, ToSchema)]
 pub struct ComputeRisRequest {
     pub bodyweight: Decimal,
     pub total: Decimal,

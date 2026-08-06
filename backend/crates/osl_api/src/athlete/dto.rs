@@ -5,7 +5,6 @@ use osl_db::rows::athlete::AthleteRow;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
-use validator::Validate;
 
 /// Response containing basic athlete information
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -63,69 +62,38 @@ pub struct PersonalRecord {
 }
 
 /// Request payload for creating a new athlete
-#[derive(Debug, Clone, Serialize, Deserialize, Validate, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CreateAthleteRequest {
-    #[validate(length(
-        min = 1,
-        max = 255,
-        message = "First name must be between 1 and 255 characters"
-    ))]
     pub first_name: String,
 
-    #[validate(length(
-        min = 1,
-        max = 255,
-        message = "Last name must be between 1 and 255 characters"
-    ))]
     pub last_name: String,
 
-    #[validate(custom(function = "validate_gender"))]
     pub gender: String,
 
-    #[validate(length(max = 255))]
     pub nationality: Option<String>,
 
-    #[validate(length(min = 1, max = 255, message = "Country is required"))]
     pub country: String,
 
-    #[validate(url)]
-    #[validate(length(max = 500))]
     pub profile_picture_url: Option<String>,
 }
 
 /// Request payload for updating an existing athlete
-#[derive(Debug, Clone, Serialize, Deserialize, Validate, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct UpdateAthleteRequest {
-    #[validate(length(min = 1, max = 255))]
     pub first_name: Option<String>,
 
-    #[validate(length(min = 1, max = 255))]
     pub last_name: Option<String>,
 
-    #[validate(custom(function = "validate_gender"))]
     pub gender: Option<String>,
 
-    #[validate(length(max = 255))]
     pub nationality: Option<String>,
 
-    #[validate(length(min = 1, max = 255))]
     pub country: Option<String>,
 
-    #[validate(url)]
-    #[validate(length(max = 500))]
     pub profile_picture_url: Option<String>,
 }
 
 // Validation helper
-fn validate_gender(gender: &str) -> Result<(), validator::ValidationError> {
-    const VALID_GENDERS: &[&str] = &["M", "F", "MX"];
-
-    if VALID_GENDERS.contains(&gender) {
-        Ok(())
-    } else {
-        Err(validator::ValidationError::new("invalid_gender"))
-    }
-}
 
 impl From<AthleteRow> for AthleteResponse {
     fn from(athlete: AthleteRow) -> Self {
