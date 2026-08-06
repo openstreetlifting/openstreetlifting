@@ -28,8 +28,7 @@ pub async fn get_global_ranking(
     let repo = RankingRepository::new(state.db.pool());
     let (rows, total_items) = repo.get_global_ranking(&filter.to_db_filter()).await?;
 
-    let entries: Vec<GlobalRankingEntry> =
-        rows.into_iter().map(GlobalRankingEntry::from).collect();
+    let entries: Vec<GlobalRankingEntry> = rows.into_iter().map(GlobalRankingEntry::from).collect();
 
     let response = PaginatedResponse::new(
         entries,

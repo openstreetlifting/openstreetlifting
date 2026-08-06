@@ -233,7 +233,10 @@ impl<'a> AthleteRepository<'a> {
         let first_name = update.first_name.as_ref().unwrap_or(&existing.first_name);
         let last_name = update.last_name.as_ref().unwrap_or(&existing.last_name);
         let gender = update.gender.as_ref().unwrap_or(&existing.gender);
-        let nationality = update.nationality.as_ref().or(existing.nationality.as_ref());
+        let nationality = update
+            .nationality
+            .as_ref()
+            .or(existing.nationality.as_ref());
         let country = update.country.as_ref().unwrap_or(&existing.country);
         let profile_picture_url = update
             .profile_picture_url

@@ -7,9 +7,7 @@ use axum::{
 use osl_db::repository::ris::RisRepository;
 use osl_domain::RisFormula;
 
-use super::dto::{
-    ComputeRisRequest, ComputeRisResponse, RisFormulaResponse, RisScoreResponse,
-};
+use super::dto::{ComputeRisRequest, ComputeRisResponse, RisFormulaResponse, RisScoreResponse};
 use uuid::Uuid;
 
 #[utoipa::path(
