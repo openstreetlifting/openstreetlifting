@@ -6,7 +6,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
-/// Response containing basic athlete information
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteResponse {
     pub athlete_id: Uuid,
@@ -20,7 +19,6 @@ pub struct AthleteResponse {
     pub created_at: NaiveDateTime,
 }
 
-/// Detailed athlete response with competition history
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteDetailResponse {
     pub athlete_id: Uuid,
@@ -37,7 +35,6 @@ pub struct AthleteDetailResponse {
     pub total_competitions: i64,
 }
 
-/// Summary of athlete's performance in a competition
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteCompetitionSummary {
     pub competition_id: Uuid,
@@ -51,7 +48,6 @@ pub struct AthleteCompetitionSummary {
     pub is_disqualified: bool,
 }
 
-/// Personal record for a specific movement
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct PersonalRecord {
     pub movement_name: String,
@@ -61,39 +57,25 @@ pub struct PersonalRecord {
     pub date: Option<chrono::NaiveDate>,
 }
 
-/// Request payload for creating a new athlete
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CreateAthleteRequest {
     pub first_name: String,
-
     pub last_name: String,
-
     pub gender: String,
-
     pub nationality: Option<String>,
-
     pub country: String,
-
     pub profile_picture_url: Option<String>,
 }
 
-/// Request payload for updating an existing athlete
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct UpdateAthleteRequest {
     pub first_name: Option<String>,
-
     pub last_name: Option<String>,
-
     pub gender: Option<String>,
-
     pub nationality: Option<String>,
-
     pub country: Option<String>,
-
     pub profile_picture_url: Option<String>,
 }
-
-// Validation helper
 
 impl From<AthleteRow> for AthleteResponse {
     fn from(athlete: AthleteRow) -> Self {

@@ -53,7 +53,6 @@ impl GlobalRankingFilter {
         Ok(())
     }
 
-    /// Translate the validated query string into the repository's filter.
     pub fn to_db_filter(&self) -> RankingFilter {
         RankingFilter {
             gender: self.gender.clone(),

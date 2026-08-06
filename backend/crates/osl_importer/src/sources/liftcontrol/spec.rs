@@ -160,16 +160,12 @@ impl std::str::FromStr for CompetitionId {
     }
 }
 
-// Implement Display for pretty printing
 impl std::fmt::Display for CompetitionId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.as_str())
     }
 }
 
-/// Registry of predefined LiftControl competitions.
-/// This provides a central place to define all importable competitions
-/// with their configuration (base slug + sub-slugs).
 pub struct LiftControlRegistry {
     competitions: HashMap<CompetitionId, CompetitionConfig>,
 }
@@ -180,8 +176,7 @@ impl LiftControlRegistry {
             competitions: HashMap::new(),
         };
 
-        // Register Annecy 4 Lift 2025
-        // has two open session (rest of for the moment closed)
+        // Only two sessions are public; the rest are still closed upstream.
         registry.register(CompetitionConfig::new(
             CompetitionId::Annecy4Lift2025,
             "annecy-4-lift-2025",

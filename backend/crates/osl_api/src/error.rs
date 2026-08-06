@@ -7,7 +7,6 @@ use osl_domain::error::StorageError;
 use serde_json::json;
 use std::fmt;
 
-/// Web layer errors
 #[derive(Debug)]
 pub enum WebError {
     Storage(StorageError),

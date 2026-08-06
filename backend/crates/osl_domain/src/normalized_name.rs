@@ -1,21 +1,15 @@
-/// A wrapper that normalizes athlete names for consistent database storage.
-/// Applies trimming and case normalization to prevent duplicates from inconsistent
-/// formatting (e.g., "JOHN SMITH", "john smith", "John Smith" are all normalized the same).
+/// Athlete name normalized to a single canonical form.
 ///
-/// The actual first name and last name order is preserved as provided.
-/// Duplicate prevention is handled by database constraints.
+/// Sources spell the same athlete differently ("JOHN SMITH", "john smith"),
+/// which would otherwise create duplicate athletes on import. Name order is
+/// preserved as given; the database constraints do the actual deduplication.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NormalizedAthleteName {
-    /// The athlete's first name (normalized to title case)
     first_name: String,
-    /// The athlete's last name (normalized to title case)
     last_name: String,
 }
 
 impl NormalizedAthleteName {
-    /// Creates a new normalized athlete name from first and last name.
-    /// Applies normalization: trims whitespace and converts to title case.
-    ///
     /// # Examples
     ///
     /// ```
@@ -54,14 +48,12 @@ impl NormalizedAthleteName {
     }
 }
 
-/// Normalizes a name part by trimming and converting to title case
 fn normalize_name_part(name: String) -> String {
     let trimmed = name.trim();
     if trimmed.is_empty() {
         return String::new();
     }
 
-    // Convert to title case: first letter uppercase, rest lowercase
     let mut chars = trimmed.chars();
     match chars.next() {
         None => String::new(),

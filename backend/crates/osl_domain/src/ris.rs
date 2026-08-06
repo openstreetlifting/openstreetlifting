@@ -22,7 +22,6 @@ pub struct RisFormula {
     pub women: FormulaConstants,
 }
 
-/// Formula constants for a specific gender.
 #[derive(Debug, Clone, Copy)]
 pub struct FormulaConstants {
     pub a: Decimal,
@@ -33,8 +32,6 @@ pub struct FormulaConstants {
 }
 
 impl RisFormula {
-    /// Get the formula constants for a specific gender.
-    ///
     /// Unknown genders fall back to the men's constants, preserving the
     /// behaviour the importer and API have relied on.
     pub fn constants_for_gender(&self, gender: &str) -> FormulaConstants {

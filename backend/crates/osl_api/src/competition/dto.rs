@@ -15,47 +15,30 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CreateCompetitionRequest {
     pub name: String,
-
     pub slug: String,
 
     #[serde(default = "default_status")]
     pub status: String,
-
     pub federation_id: Uuid,
-
     pub venue: Option<String>,
-
     pub city: Option<String>,
-
     pub country: Option<String>,
-
     pub start_date: Option<NaiveDate>,
-
     pub end_date: Option<NaiveDate>,
-
     pub number_of_judge: Option<i16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct UpdateCompetitionRequest {
     pub name: Option<String>,
-
     pub slug: Option<String>,
-
     pub status: Option<String>,
-
     pub federation_id: Option<Uuid>,
-
     pub venue: Option<String>,
-
     pub city: Option<String>,
-
     pub country: Option<String>,
-
     pub start_date: Option<NaiveDate>,
-
     pub end_date: Option<NaiveDate>,
-
     pub number_of_judge: Option<i16>,
 }
 

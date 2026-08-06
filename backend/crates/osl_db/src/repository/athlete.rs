@@ -141,7 +141,6 @@ impl<'a> AthleteRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        // Count total competitions
         let total_competitions = sqlx::query_scalar!(
             r#"
             SELECT COUNT(DISTINCT cp.competition_id)::bigint as "count!"

@@ -93,7 +93,6 @@ impl<'a> CompetitionRepository<'a> {
         Ok(competition)
     }
 
-    /// Get a competition by slug
     pub async fn find_by_slug(&self, slug: &str) -> Result<CompetitionRow> {
         let competition = sqlx::query_as!(
             CompetitionRow,
@@ -122,7 +121,6 @@ impl<'a> CompetitionRepository<'a> {
         self.get_detailed_competition(competition).await
     }
 
-    /// Compute category rankings for all participants in a competition
     async fn compute_category_rankings(&self, competition_id: Uuid) -> Result<HashMap<Uuid, i32>> {
         let rankings = sqlx::query!(
             r#"
@@ -163,7 +161,6 @@ impl<'a> CompetitionRepository<'a> {
         &self,
         competition: CompetitionRow,
     ) -> Result<CompetitionDetail> {
-        // Compute category rankings for all participants
         let ranking_map = self
             .compute_category_rankings(competition.competition_id)
             .await?;
@@ -262,7 +259,6 @@ impl<'a> CompetitionRepository<'a> {
                     });
                 }
 
-                // Get computed category rank for this participant
                 let rank = ranking_map.get(&participant.participant_id).copied();
 
                 participant_details.push(ParticipantDetail {
@@ -318,7 +314,6 @@ impl<'a> CompetitionRepository<'a> {
         .fetch_one(self.pool)
         .await
         .map_err(|e| {
-            // Handle unique constraint violations for slug
             if let sqlx::Error::Database(ref db_err) = e
                 && db_err.code().as_deref() == Some("23505")
             {
