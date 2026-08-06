@@ -1656,11 +1656,8 @@ dependencies = [
  "chrono",
  "osl_domain",
  "rust_decimal",
- "serde",
  "sqlx",
- "utoipa",
  "uuid",
- "validator",
 ]
 
 [[package]]
@@ -1672,7 +1669,6 @@ dependencies = [
  "serde",
  "sqlx",
  "thiserror",
- "utoipa",
  "uuid",
 ]
 
