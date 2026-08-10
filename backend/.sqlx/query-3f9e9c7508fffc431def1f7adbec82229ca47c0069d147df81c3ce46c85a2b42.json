@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            INSERT INTO competitions (\n                name, slug, status, federation_id, venue, city, country,\n                start_date, end_date, number_of_judge\n            )\n            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)\n            RETURNING competition_id, name, created_at, slug, status, federation_id,\n                      venue, city, country, start_date, end_date, number_of_judge\n            ",
+  "query": "\n            SELECT competition_id, name, created_at, slug, status, federation_id,\n                   venue, city, country, start_date, end_date, number_of_judge\n            FROM competitions\n            ORDER BY start_date DESC, created_at DESC\n            LIMIT $1 OFFSET $2\n            ",
   "describe": {
     "columns": [
       {
@@ -138,16 +138,8 @@
     ],
     "parameters": {
       "Left": [
-        "Varchar",
-        "Varchar",
-        "Varchar",
-        "Uuid",
-        "Varchar",
-        "Varchar",
-        "Varchar",
-        "Date",
-        "Date",
-        "Int2"
+        "Int8",
+        "Int8"
       ]
     },
     "nullable": [
@@ -165,5 +157,5 @@
       true
     ]
   },
-  "hash": "40ddde0b26472f5ef12240374f502d316ad09ab84f79ca8a4d956849f4da8e78"
+  "hash": "3f9e9c7508fffc431def1f7adbec82229ca47c0069d147df81c3ce46c85a2b42"
 }

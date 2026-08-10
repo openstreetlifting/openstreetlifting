@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
-use crate::params::{CompetitionUpdate, NewCompetition};
+use crate::params::{CompetitionUpdate, NewCompetition, Page};
 use crate::projections::competition::{
     AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem, LiftDetail,
     ParticipantDetail,
@@ -23,7 +23,8 @@ impl<'a> CompetitionRepository<'a> {
         Self { pool }
     }
 
-    pub async fn list(&self) -> Result<Vec<CompetitionRow>> {
+    /// Returns one page of competitions plus the unpaginated total.
+    pub async fn list(&self, page: &Page) -> Result<(Vec<CompetitionRow>, i64)> {
         let competitions = sqlx::query_as!(
             CompetitionRow,
             r#"
@@ -31,16 +32,23 @@ impl<'a> CompetitionRepository<'a> {
                    venue, city, country, start_date, end_date, number_of_judge
             FROM competitions
             ORDER BY start_date DESC, created_at DESC
-            "#
+            LIMIT $1 OFFSET $2
+            "#,
+            page.limit,
+            page.offset
         )
         .fetch_all(self.pool)
         .await?;
 
-        Ok(competitions)
+        let total = sqlx::query_scalar!(r#"SELECT COUNT(*) as "count!" FROM competitions"#)
+            .fetch_one(self.pool)
+            .await?;
+
+        Ok((competitions, total))
     }
 
-    pub async fn list_with_details(&self) -> Result<Vec<CompetitionListItem>> {
-        let competitions = self.list().await?;
+    pub async fn list_with_details(&self, page: &Page) -> Result<(Vec<CompetitionListItem>, i64)> {
+        let (competitions, total) = self.list(page).await?;
         let mut results = Vec::with_capacity(competitions.len());
 
         for competition in competitions {
@@ -72,7 +80,7 @@ impl<'a> CompetitionRepository<'a> {
             });
         }
 
-        Ok(results)
+        Ok((results, total))
     }
 
     pub async fn find_by_id(&self, id: Uuid) -> Result<CompetitionRow> {

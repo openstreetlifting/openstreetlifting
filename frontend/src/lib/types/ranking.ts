@@ -1,4 +1,5 @@
 import type { AthleteInfo, CompetitionInfo } from './competition';
+import type { Paginated } from './pagination';
 
 export interface RankingEntry {
   rank: number;
@@ -12,20 +13,12 @@ export interface RankingEntry {
   competition: CompetitionInfo;
 }
 
-export interface PaginationMeta {
-  page: number;
-  page_size: number;
-  total_items: number;
-  total_pages: number;
-}
+export type { PaginationMeta } from './pagination';
 
-export interface RankingsResponse {
-  data: RankingEntry[];
-  pagination: PaginationMeta;
-}
+export type RankingsResponse = Paginated<RankingEntry>;
 
 export interface RankingFilters {
-  pagination: number;
+  page: number;
   gender?: string | null;
   country?: string | null;
   movement?: string;

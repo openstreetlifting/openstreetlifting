@@ -6,47 +6,96 @@
       {
         "ordinal": 0,
         "name": "competition_id",
-        "type_info": "Uuid"
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "competition_id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "competition_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "name"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "competition_slug",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "slug"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "competition_date",
-        "type_info": "Date"
+        "type_info": "Date",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "start_date"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "category_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "categories",
+            "name": "name"
+          }
+        }
       },
       {
         "ordinal": 5,
         "name": "rank",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "rank"
+          }
+        }
       },
       {
         "ordinal": 6,
         "name": "total!: Decimal",
-        "type_info": "Numeric"
+        "type_info": "Numeric",
+        "origin": "Expression"
       },
       {
         "ordinal": 7,
         "name": "ris_score",
-        "type_info": "Numeric"
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "ris_score"
+          }
+        }
       },
       {
         "ordinal": 8,
         "name": "is_disqualified",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "is_disqualified"
+          }
+        }
       }
     ],
     "parameters": {

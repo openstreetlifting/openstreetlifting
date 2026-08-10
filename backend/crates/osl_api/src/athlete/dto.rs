@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+use crate::shared::query::Include;
+
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteResponse {
     pub athlete_id: Uuid,
@@ -17,22 +19,14 @@ pub struct AthleteResponse {
     pub country: String,
     pub profile_picture_url: Option<String>,
     pub created_at: NaiveDateTime,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct AthleteDetailResponse {
-    pub athlete_id: Uuid,
-    pub first_name: String,
-    pub last_name: String,
-    pub slug: String,
-    pub gender: String,
-    pub nationality: Option<String>,
-    pub country: String,
-    pub profile_picture_url: Option<String>,
-    pub created_at: NaiveDateTime,
-    pub competitions: Vec<AthleteCompetitionSummary>,
-    pub personal_records: Vec<PersonalRecord>,
-    pub total_competitions: i64,
+    /// Present only when requested via `?include=competitions`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub competitions: Option<Vec<AthleteCompetitionSummary>>,
+    /// Present only when requested via `?include=records`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub personal_records: Option<Vec<PersonalRecord>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_competitions: Option<i64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -89,6 +83,9 @@ impl From<AthleteRow> for AthleteResponse {
             country: athlete.country,
             profile_picture_url: athlete.profile_picture_url,
             created_at: athlete.created_at,
+            competitions: None,
+            personal_records: None,
+            total_competitions: None,
         }
     }
 }
@@ -121,8 +118,10 @@ impl From<PersonalRecordRow> for PersonalRecord {
     }
 }
 
-impl From<AthleteDetail> for AthleteDetailResponse {
-    fn from(detail: AthleteDetail) -> Self {
+impl AthleteResponse {
+    /// Builds the response from a fully-loaded detail, keeping only the
+    /// sections the caller asked for.
+    pub fn from_detail(detail: AthleteDetail, include: &Include) -> Self {
         let AthleteDetail {
             athlete,
             competitions,
@@ -130,20 +129,16 @@ impl From<AthleteDetail> for AthleteDetailResponse {
             total_competitions,
         } = detail;
 
-        Self {
-            athlete_id: athlete.athlete_id,
-            first_name: athlete.first_name,
-            last_name: athlete.last_name,
-            slug: athlete.slug,
-            gender: athlete.gender,
-            nationality: athlete.nationality,
-            country: athlete.country,
-            profile_picture_url: athlete.profile_picture_url,
-            created_at: athlete.created_at,
-            competitions: competitions.into_iter().map(Into::into).collect(),
-            personal_records: personal_records.into_iter().map(Into::into).collect(),
-            total_competitions,
+        let mut response = Self::from(athlete);
+        if include.has("competitions") {
+            response.competitions = Some(competitions.into_iter().map(Into::into).collect());
+            response.total_competitions = Some(total_competitions);
         }
+        if include.has("records") {
+            response.personal_records =
+                Some(personal_records.into_iter().map(Into::into).collect());
+        }
+        response
     }
 }
 

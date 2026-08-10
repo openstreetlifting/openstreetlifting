@@ -11,7 +11,7 @@ use crate::shared::dto::PaginatedResponse;
 
 #[utoipa::path(
     get,
-    path = "/api/rankings/global",
+    path = "/api/v1/rankings",
     params(GlobalRankingFilter),
     responses(
         (status = 200, description = "Global ranking retrieved successfully", body = PaginatedResponse<GlobalRankingEntry>),

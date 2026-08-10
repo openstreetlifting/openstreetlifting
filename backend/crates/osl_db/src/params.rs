@@ -8,6 +8,16 @@ use chrono::NaiveDate;
 use rust_decimal::Decimal;
 use uuid::Uuid;
 
+/// A slice of a collection, already resolved to SQL `LIMIT` / `OFFSET`.
+///
+/// The page-number arithmetic stays in osl_api; repositories only ever see
+/// the resolved bounds.
+#[derive(Debug, Clone, Copy)]
+pub struct Page {
+    pub limit: i64,
+    pub offset: i64,
+}
+
 #[derive(Debug, Clone)]
 pub struct NewAthlete {
     pub first_name: String,
@@ -37,8 +47,8 @@ pub struct NewCompetition {
     pub venue: Option<String>,
     pub city: Option<String>,
     pub country: Option<String>,
-    pub start_date: Option<NaiveDate>,
-    pub end_date: Option<NaiveDate>,
+    pub start_date: NaiveDate,
+    pub end_date: NaiveDate,
     pub number_of_judge: Option<i16>,
 }
 

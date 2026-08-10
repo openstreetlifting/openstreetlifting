@@ -12,7 +12,7 @@ use uuid::Uuid;
 
 #[utoipa::path(
     get,
-    path = "/api/ris/formulas",
+    path = "/api/v1/ris/formulas",
     responses(
         (status = 200, description = "List all RIS formula versions", body = Vec<RisFormulaResponse>)
     ),
@@ -34,7 +34,7 @@ pub async fn list_ris_formulas(
 
 #[utoipa::path(
     get,
-    path = "/api/ris/formulas/current",
+    path = "/api/v1/ris/formulas/current",
     responses(
         (status = 200, description = "Get the current active RIS formula", body = RisFormulaResponse),
         (status = 404, description = "No current formula found")
@@ -52,7 +52,7 @@ pub async fn get_current_formula(
 
 #[utoipa::path(
     get,
-    path = "/api/ris/formulas/{year}",
+    path = "/api/v1/ris/formulas/{year}",
     params(
         ("year" = i32, Path, description = "Formula year")
     ),
@@ -74,16 +74,16 @@ pub async fn get_formula_by_year(
 
 #[utoipa::path(
     get,
-    path = "/api/participants/{participant_id}/ris-history",
+    path = "/api/v1/participants/{participant_id}/ris-scores",
     params(
         ("participant_id" = Uuid, Path, description = "Participant ID")
     ),
     responses(
-        (status = 200, description = "RIS score history for participant", body = Vec<RisScoreResponse>)
+        (status = 200, description = "RIS scores for participant", body = Vec<RisScoreResponse>)
     ),
     tag = "ris"
 )]
-pub async fn get_participant_ris_history(
+pub async fn get_participant_ris_scores(
     State(state): State<AppState>,
     Path(participant_id): Path<Uuid>,
 ) -> WebResult<Json<Vec<RisScoreResponse>>> {
@@ -112,7 +112,7 @@ pub async fn get_participant_ris_history(
 
 #[utoipa::path(
     post,
-    path = "/api/ris/compute",
+    path = "/api/v1/ris/calculations",
     request_body = ComputeRisRequest,
     responses(
         (status = 200, description = "RIS computed successfully", body = ComputeRisResponse),
@@ -120,7 +120,7 @@ pub async fn get_participant_ris_history(
     ),
     tag = "ris"
 )]
-pub async fn compute_ris(
+pub async fn calculate_ris(
     State(state): State<AppState>,
     Json(payload): Json<ComputeRisRequest>,
 ) -> WebResult<Json<ComputeRisResponse>> {
@@ -144,14 +144,14 @@ pub async fn compute_ris(
 
 #[utoipa::path(
     post,
-    path = "/api/admin/ris/recompute-all",
+    path = "/api/v1/ris/recomputations",
     responses(
         (status = 200, description = "RIS scores recomputed successfully"),
         (status = 500, description = "Recomputation failed")
     ),
     tag = "ris"
 )]
-pub async fn recompute_all_ris(
+pub async fn recompute_ris_scores(
     State(state): State<AppState>,
 ) -> WebResult<Json<serde_json::Value>> {
     let count = osl_db::services::ris_computation::recompute_all_ris(state.db.pool(), None).await?;

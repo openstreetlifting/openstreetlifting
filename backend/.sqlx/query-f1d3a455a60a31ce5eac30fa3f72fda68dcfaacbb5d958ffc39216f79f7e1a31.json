@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT athlete_id, first_name, last_name, gender, created_at,\n                   nationality, country, profile_picture_url, slug,\n                   COALESCE(slug_history, '[]'::jsonb) as \"slug_history!: sqlx::types::Json<Vec<String>>\"\n            FROM athletes\n            WHERE slug_history @> to_jsonb($1::text)\n            ",
+  "query": "\n            SELECT athlete_id, first_name, last_name, gender, created_at,\n                   nationality, country, profile_picture_url, slug,\n                   COALESCE(slug_history, '[]'::jsonb) as \"slug_history!: sqlx::types::Json<Vec<String>>\"\n            FROM athletes\n            ORDER BY last_name, first_name\n            LIMIT $1 OFFSET $2\n            ",
   "describe": {
     "columns": [
       {
@@ -111,7 +111,8 @@
     ],
     "parameters": {
       "Left": [
-        "Text"
+        "Int8",
+        "Int8"
       ]
     },
     "nullable": [
@@ -127,5 +128,5 @@
       null
     ]
   },
-  "hash": "7e04c4f9ce4c7672d4f6e686bf7fcf27d0fff5d69a2b7ed413b3cd96dd788c2e"
+  "hash": "f1d3a455a60a31ce5eac30fa3f72fda68dcfaacbb5d958ffc39216f79f7e1a31"
 }
