@@ -5,12 +5,8 @@ use uuid::Uuid;
 use crate::error::Result;
 
 /// A versioned RIS (Relative Index for Streetlifting) formula.
-///
-/// Formula: RIS = Total × 100 / (A + (K - A) / (1 + Q · e^(-B · (BW - v))))
-///
-/// Constants are stored per gender. The persisted shape lives in `osl_db`
-/// as `RisFormulaVersionRow`, which flattens the two constant sets into
-/// `men_*` / `women_*` columns.
+/// Credit goes to https://warisradji.com/ris/
+/// As of 2026 RIS = Total × 100 / (A + (K - A) / (1 + Q · e^(-B · (BW - v))))
 #[derive(Debug, Clone)]
 pub struct RisFormula {
     pub formula_id: Uuid,
@@ -32,8 +28,6 @@ pub struct FormulaConstants {
 }
 
 impl RisFormula {
-    /// Unknown genders fall back to the men's constants, preserving the
-    /// behaviour the importer and API have relied on.
     pub fn constants_for_gender(&self, gender: &str) -> FormulaConstants {
         match gender.to_uppercase().as_str() {
             "F" | "FEMALE" | "WOMEN" => self.women,

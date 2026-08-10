@@ -3,8 +3,6 @@ use rust_decimal::Decimal;
 use sqlx::FromRow;
 use uuid::Uuid;
 
-/// One row of the global ranking CTE: athlete, competition, per-movement
-/// bests and the window-function rank.
 #[derive(Debug, FromRow)]
 pub struct RankingRow {
     pub rank: i64,
