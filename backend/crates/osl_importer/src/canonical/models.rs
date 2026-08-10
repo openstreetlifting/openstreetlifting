@@ -1,7 +1,10 @@
 use chrono::{DateTime, NaiveDate, Utc};
-use osl_domain::{AthleteStatus, SourceType, WeightClassSlug};
+use osl_domain::{AthleteStatus, WeightClassSlug};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+
+/// Format version this build reads and writes.
+pub const FORMAT_VERSION: &str = "1.1.0";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CanonicalFormat {
@@ -23,10 +26,31 @@ pub struct SourceMetadata {
 
     pub extracted_at: DateTime<Utc>,
 
+    /// Identifier of the producer, e.g. `liftcontrol-scraper@1.2.0`.
+    ///
+    /// Free text on purpose. This is the only field that names a specific
+    /// source, which is what keeps the rest of the format agnostic.
     pub extractor: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub original_filename: Option<String>,
+}
+
+/// How the data was obtained, not who published it.
+///
+/// Keyed on medium rather than vendor, so a new federation or platform costs
+/// no new variant: liftcontrol and any future results endpoint are both
+/// `Api`, an Instagram result card is `Image`. The producer names itself in
+/// `SourceMetadata::extractor`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceType {
+    Api,
+    Html,
+    Pdf,
+    Csv,
+    Image,
+    Manual,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

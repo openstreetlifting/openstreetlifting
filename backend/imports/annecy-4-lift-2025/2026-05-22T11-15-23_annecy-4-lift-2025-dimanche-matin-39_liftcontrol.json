@@ -1,7 +1,7 @@
 {
-  "format_version": "1.0.0",
   "source": {
-    "type": "liftcontrol",
+    "format_version": "1.1.0",
+    "type": "api",
     "url": "https://app.liftcontrol.com/contest/annecy-4-lift-2025-dimanche-matin",
     "extracted_at": "2026-05-22T11:15:23.829688Z",
     "extractor": "liftcontrol-api-v1"
@@ -48,6 +48,7 @@
     {
       "name": "Catégorie +87",
       "gender": "M",
+      "is_open_category": true,
       "athletes": [
         {
           "first_name": "Timothée",
@@ -55,8 +56,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "88.7",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -75,7 +75,7 @@
                   "attempt_number": 3,
                   "weight": "20",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -139,12 +139,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 330,
-            "reglage_dips": "12",
-            "reglage_squat": "10"
-          }
+          ]
         },
         {
           "first_name": "Tom",
@@ -152,8 +147,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "96.9",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -172,7 +166,7 @@
                   "attempt_number": 3,
                   "weight": "35",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -193,7 +187,7 @@
                   "attempt_number": 3,
                   "weight": "95",
                   "is_successful": false,
-                  "no_rep_reason": "Passage du menton"
+                  "judge_note": "Passage du menton"
                 }
               ]
             },
@@ -237,12 +231,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 328,
-            "reglage_dips": "15",
-            "reglage_squat": "12"
-          }
+          ]
         },
         {
           "first_name": "Alix",
@@ -250,8 +239,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "94.8",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -290,7 +278,7 @@
                   "attempt_number": 3,
                   "weight": "100",
                   "is_successful": true,
-                  "no_rep_reason": "Passage du menton"
+                  "judge_note": "Passage du menton"
                 }
               ]
             },
@@ -334,12 +322,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 327,
-            "reglage_dips": "13",
-            "reglage_squat": "13"
-          }
+          ]
         },
         {
           "first_name": "Loïck",
@@ -347,8 +330,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "92.1",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -427,16 +409,11 @@
                   "attempt_number": 3,
                   "weight": "185",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 333,
-            "reglage_dips": "12",
-            "reglage_squat": "13"
-          }
+          ]
         },
         {
           "first_name": "Alex",
@@ -444,8 +421,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "94.7",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -464,7 +440,7 @@
                   "attempt_number": 3,
                   "weight": "10",
                   "is_successful": false,
-                  "no_rep_reason": "Flexion de genoux"
+                  "judge_note": "Flexion de genoux"
                 }
               ]
             },
@@ -475,7 +451,7 @@
                   "attempt_number": 1,
                   "weight": "70",
                   "is_successful": true,
-                  "no_rep_reason": "Flexion de genoux"
+                  "judge_note": "Flexion de genoux"
                 },
                 {
                   "attempt_number": 2,
@@ -506,7 +482,7 @@
                   "attempt_number": 3,
                   "weight": "100",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -522,7 +498,7 @@
                   "attempt_number": 2,
                   "weight": "185",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 },
                 {
                   "attempt_number": 3,
@@ -531,12 +507,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 325,
-            "reglage_dips": "13",
-            "reglage_squat": "15"
-          }
+          ]
         },
         {
           "first_name": "Adrien",
@@ -544,8 +515,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "93.8",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -627,12 +597,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 331,
-            "reglage_dips": "14",
-            "reglage_squat": "16"
-          }
+          ]
         },
         {
           "first_name": "Antoine",
@@ -640,8 +605,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "88.2",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -660,7 +624,7 @@
                   "attempt_number": 3,
                   "weight": "10",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -681,7 +645,7 @@
                   "attempt_number": 3,
                   "weight": "50",
                   "is_successful": false,
-                  "no_rep_reason": "Passage du menton"
+                  "judge_note": "Passage du menton"
                 }
               ]
             },
@@ -702,7 +666,7 @@
                   "attempt_number": 3,
                   "weight": "80",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -726,12 +690,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 332,
-            "reglage_dips": "13",
-            "reglage_squat": "16"
-          }
+          ]
         },
         {
           "first_name": "Aghiles",
@@ -739,8 +698,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "94.7",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -779,7 +737,7 @@
                   "attempt_number": 3,
                   "weight": "76.25",
                   "is_successful": false,
-                  "no_rep_reason": "Passage du menton"
+                  "judge_note": "Passage du menton"
                 }
               ]
             },
@@ -800,7 +758,7 @@
                   "attempt_number": 3,
                   "weight": "147.5",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -824,12 +782,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 329,
-            "reglage_dips": "15",
-            "reglage_squat": "14"
-          }
+          ]
         },
         {
           "first_name": "Gwendal",
@@ -837,8 +790,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "88.8",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -847,7 +799,7 @@
                   "attempt_number": 1,
                   "weight": "15",
                   "is_successful": true,
-                  "no_rep_reason": "Flexion de genoux"
+                  "judge_note": "Flexion de genoux"
                 },
                 {
                   "attempt_number": 2,
@@ -858,7 +810,7 @@
                   "attempt_number": 3,
                   "weight": "22.5",
                   "is_successful": true,
-                  "no_rep_reason": "Flexion de genoux"
+                  "judge_note": "Flexion de genoux"
                 }
               ]
             },
@@ -899,7 +851,7 @@
                   "attempt_number": 3,
                   "weight": "135",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -920,16 +872,11 @@
                   "attempt_number": 3,
                   "weight": "200",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 326,
-            "reglage_dips": "9",
-            "reglage_squat": "15"
-          }
+          ]
         }
       ]
     },
@@ -944,8 +891,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "78.4",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -959,7 +905,7 @@
                   "attempt_number": 2,
                   "weight": "20",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 },
                 {
                   "attempt_number": 3,
@@ -985,7 +931,7 @@
                   "attempt_number": 3,
                   "weight": "62.5",
                   "is_successful": false,
-                  "no_rep_reason": "Non-respect des ordres"
+                  "judge_note": "Non-respect des ordres"
                 }
               ]
             },
@@ -996,7 +942,7 @@
                   "attempt_number": 1,
                   "weight": "95",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 },
                 {
                   "attempt_number": 2,
@@ -1030,12 +976,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 321,
-            "reglage_dips": "7",
-            "reglage_squat": "11"
-          }
+          ]
         },
         {
           "first_name": "Gaëtan",
@@ -1043,8 +984,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "74.9",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -1063,7 +1003,7 @@
                   "attempt_number": 3,
                   "weight": "27.5",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -1084,7 +1024,7 @@
                   "attempt_number": 3,
                   "weight": "70",
                   "is_successful": false,
-                  "no_rep_reason": "Passage du menton"
+                  "judge_note": "Passage du menton"
                 }
               ]
             },
@@ -1095,7 +1035,7 @@
                   "attempt_number": 1,
                   "weight": "92.5",
                   "is_successful": false,
-                  "no_rep_reason": "Amplitude hanches"
+                  "judge_note": "Amplitude hanches"
                 },
                 {
                   "attempt_number": 2,
@@ -1126,16 +1066,11 @@
                   "attempt_number": 3,
                   "weight": "200",
                   "is_successful": false,
-                  "no_rep_reason": "Barre tombée"
+                  "judge_note": "Barre tombée"
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 320,
-            "reglage_dips": "10",
-            "reglage_squat": "11"
-          }
+          ]
         },
         {
           "first_name": "Loyan",
@@ -1143,8 +1078,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "76.1",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -1158,13 +1092,13 @@
                   "attempt_number": 2,
                   "weight": "15",
                   "is_successful": false,
-                  "no_rep_reason": "Utilisation d’un False Grip"
+                  "judge_note": "Utilisation d’un False Grip"
                 },
                 {
                   "attempt_number": 3,
                   "weight": "15",
                   "is_successful": true,
-                  "no_rep_reason": "Utilisation d’un False Grip"
+                  "judge_note": "Utilisation d’un False Grip"
                 }
               ]
             },
@@ -1180,13 +1114,13 @@
                   "attempt_number": 2,
                   "weight": "55",
                   "is_successful": true,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 },
                 {
                   "attempt_number": 3,
                   "weight": "57.5",
                   "is_successful": true,
-                  "no_rep_reason": "Passage du menton"
+                  "judge_note": "Passage du menton"
                 }
               ]
             },
@@ -1230,12 +1164,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 314,
-            "reglage_dips": "11",
-            "reglage_squat": "15"
-          }
+          ]
         },
         {
           "first_name": "Richard",
@@ -1243,8 +1172,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "75.6",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -1253,7 +1181,7 @@
                   "attempt_number": 1,
                   "weight": "16.25",
                   "is_successful": false,
-                  "no_rep_reason": "Cassage des hanches"
+                  "judge_note": "Cassage des hanches"
                 },
                 {
                   "attempt_number": 2,
@@ -1284,7 +1212,7 @@
                   "attempt_number": 3,
                   "weight": "72.5",
                   "is_successful": false,
-                  "no_rep_reason": "Passage du menton"
+                  "judge_note": "Passage du menton"
                 }
               ]
             },
@@ -1305,7 +1233,7 @@
                   "attempt_number": 3,
                   "weight": "117.5",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -1329,12 +1257,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 319,
-            "reglage_dips": "13",
-            "reglage_squat": "12"
-          }
+          ]
         },
         {
           "first_name": "Anaël",
@@ -1342,8 +1265,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "79.2",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -1377,7 +1299,7 @@
                   "attempt_number": 2,
                   "weight": "60",
                   "is_successful": false,
-                  "no_rep_reason": "Non-respect des ordres"
+                  "judge_note": "Non-respect des ordres"
                 },
                 {
                   "attempt_number": 3,
@@ -1403,7 +1325,7 @@
                   "attempt_number": 3,
                   "weight": "100",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -1424,16 +1346,11 @@
                   "attempt_number": 3,
                   "weight": "200",
                   "is_successful": true,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 316,
-            "reglage_dips": "15",
-            "reglage_squat": "12"
-          }
+          ]
         },
         {
           "first_name": "Ilyes",
@@ -1441,8 +1358,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "75.5",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -1481,7 +1397,7 @@
                   "attempt_number": 3,
                   "weight": "60",
                   "is_successful": false,
-                  "no_rep_reason": "Passage du menton"
+                  "judge_note": "Passage du menton"
                 }
               ]
             },
@@ -1525,12 +1441,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 313,
-            "reglage_dips": "14",
-            "reglage_squat": "13"
-          }
+          ]
         },
         {
           "first_name": "Alexis",
@@ -1538,8 +1449,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "76.5",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -1578,7 +1488,7 @@
                   "attempt_number": 3,
                   "weight": "55",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -1622,12 +1532,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 323,
-            "reglage_dips": "9",
-            "reglage_squat": "13"
-          }
+          ]
         },
         {
           "first_name": "Hugo",
@@ -1635,8 +1540,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "74.6",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -1695,7 +1599,7 @@
                   "attempt_number": 3,
                   "weight": "90",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -1719,12 +1623,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 317,
-            "reglage_dips": "10",
-            "reglage_squat": "13"
-          }
+          ]
         },
         {
           "first_name": "François",
@@ -1732,8 +1631,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "76.2",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -1747,13 +1645,13 @@
                   "attempt_number": 2,
                   "weight": "10",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 },
                 {
                   "attempt_number": 3,
                   "weight": "10",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -1769,7 +1667,7 @@
                   "attempt_number": 2,
                   "weight": "55",
                   "is_successful": false,
-                  "no_rep_reason": "Non-respect des ordres"
+                  "judge_note": "Non-respect des ordres"
                 },
                 {
                   "attempt_number": 3,
@@ -1795,7 +1693,7 @@
                   "attempt_number": 3,
                   "weight": "90",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -1811,22 +1709,17 @@
                   "attempt_number": 2,
                   "weight": "172.5",
                   "is_successful": false,
-                  "no_rep_reason": "Non-respect des ordres"
+                  "judge_note": "Non-respect des ordres"
                 },
                 {
                   "attempt_number": 3,
                   "weight": "180",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 324,
-            "reglage_dips": "10",
-            "reglage_squat": "13"
-          }
+          ]
         },
         {
           "first_name": "Remy",
@@ -1834,8 +1727,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "77.9",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -1854,7 +1746,7 @@
                   "attempt_number": 3,
                   "weight": "20",
                   "is_successful": true,
-                  "no_rep_reason": "Flexion de genoux"
+                  "judge_note": "Flexion de genoux"
                 }
               ]
             },
@@ -1918,12 +1810,7 @@
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 310,
-            "reglage_dips": "13",
-            "reglage_squat": "11"
-          }
+          ]
         },
         {
           "first_name": "Morgan",
@@ -1931,8 +1818,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "77.6",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -1951,7 +1837,7 @@
                   "attempt_number": 3,
                   "weight": "20",
                   "is_successful": true,
-                  "no_rep_reason": "Flexion de genoux"
+                  "judge_note": "Flexion de genoux"
                 }
               ]
             },
@@ -1967,7 +1853,7 @@
                   "attempt_number": 2,
                   "weight": "60",
                   "is_successful": false,
-                  "no_rep_reason": "Non-respect des ordres"
+                  "judge_note": "Non-respect des ordres"
                 },
                 {
                   "attempt_number": 3,
@@ -1993,7 +1879,7 @@
                   "attempt_number": 3,
                   "weight": "100",
                   "is_successful": false,
-                  "no_rep_reason": "Amplitude épaules"
+                  "judge_note": "Amplitude épaules"
                 }
               ]
             },
@@ -2009,22 +1895,17 @@
                   "attempt_number": 2,
                   "weight": "167.5",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 },
                 {
                   "attempt_number": 3,
                   "weight": "180",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 322,
-            "reglage_dips": "12",
-            "reglage_squat": "12"
-          }
+          ]
         },
         {
           "first_name": "Nassim",
@@ -2032,8 +1913,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "76.2",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -2052,7 +1932,7 @@
                   "attempt_number": 3,
                   "weight": "31.25",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -2088,13 +1968,13 @@
                   "attempt_number": 2,
                   "weight": "92.5",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 },
                 {
                   "attempt_number": 3,
                   "weight": "92.5",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -2115,16 +1995,11 @@
                   "attempt_number": 3,
                   "weight": "217.5",
                   "is_successful": false,
-                  "no_rep_reason": "Barre tombée"
+                  "judge_note": "Barre tombée"
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 311,
-            "reglage_dips": "12",
-            "reglage_squat": "11"
-          }
+          ]
         },
         {
           "first_name": "Alexandre",
@@ -2132,8 +2007,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "78.2",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -2212,16 +2086,11 @@
                   "attempt_number": 3,
                   "weight": "182.5",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 312,
-            "reglage_dips": "12",
-            "reglage_squat": "11"
-          }
+          ]
         },
         {
           "first_name": "Noé",
@@ -2229,8 +2098,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "78.6",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -2249,7 +2117,7 @@
                   "attempt_number": 3,
                   "weight": "20",
                   "is_successful": true,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -2265,7 +2133,7 @@
                   "attempt_number": 2,
                   "weight": "60",
                   "is_successful": true,
-                  "no_rep_reason": "Passage du menton"
+                  "judge_note": "Passage du menton"
                 },
                 {
                   "attempt_number": 3,
@@ -2311,16 +2179,11 @@
                   "attempt_number": 3,
                   "weight": "205",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 315,
-            "reglage_dips": "10",
-            "reglage_squat": "11"
-          }
+          ]
         },
         {
           "first_name": "Thibault",
@@ -2328,8 +2191,7 @@
           "country": "FR",
           "nationality": "French",
           "bodyweight": "79.9",
-          "is_disqualified": false,
-          "disqualified_reason": "",
+          "status": "competed",
           "lifts": [
             {
               "movement": "Muscle-up",
@@ -2348,7 +2210,7 @@
                   "attempt_number": 3,
                   "weight": "28.5",
                   "is_successful": false,
-                  "no_rep_reason": "Positionnement non-conforme des poids"
+                  "judge_note": "Positionnement non-conforme des poids"
                 }
               ]
             },
@@ -2384,13 +2246,13 @@
                   "attempt_number": 2,
                   "weight": "100",
                   "is_successful": false,
-                  "no_rep_reason": "Amplitude hanches"
+                  "judge_note": "Amplitude hanches"
                 },
                 {
                   "attempt_number": 3,
                   "weight": "102.5",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             },
@@ -2406,27 +2268,19 @@
                   "attempt_number": 2,
                   "weight": "0.02",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 },
                 {
                   "attempt_number": 3,
                   "weight": "0.02",
                   "is_successful": false,
-                  "no_rep_reason": "[Autre]"
+                  "judge_note": "[Autre]"
                 }
               ]
             }
-          ],
-          "liftcontrol_athlete_metadata": {
-            "athlete_id": 318,
-            "reglage_dips": "12",
-            "reglage_squat": "13"
-          }
+          ]
         }
       ]
     }
-  ],
-  "liftcontrol_metadata": {
-    "contest_id": 39
-  }
+  ]
 }
