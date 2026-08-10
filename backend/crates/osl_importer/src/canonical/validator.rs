@@ -9,10 +9,10 @@ impl CanonicalValidator {
     pub fn validate(canonical: &CanonicalFormat) -> Result<ValidationReport> {
         let mut report = ValidationReport::default();
 
-        if canonical.source.format_version != FORMAT_VERSION {
+        if canonical.format_version != FORMAT_VERSION {
             report.errors.push(format!(
                 "Unsupported format version: {}. Expected {}",
-                canonical.source.format_version, FORMAT_VERSION
+                canonical.format_version, FORMAT_VERSION
             ));
         }
 
@@ -31,11 +31,6 @@ impl CanonicalValidator {
             report
                 .errors
                 .push("Competition slug is required".to_string());
-        }
-        if canonical.competition.country.is_empty() {
-            report
-                .errors
-                .push("Competition country is required".to_string());
         }
         if canonical.competition.end_date < canonical.competition.start_date {
             report
@@ -59,10 +54,14 @@ impl CanonicalValidator {
                 .warnings
                 .push("Competition city is not specified".to_string());
         }
-        if canonical.competition.number_of_judges.is_none() {
-            report
+        match canonical.competition.number_of_judges {
+            None => report
                 .warnings
-                .push("Number of judges is not specified".to_string());
+                .push("Number of judges is not specified".to_string()),
+            Some(judges) if judges != 1 && judges != 3 => report
+                .errors
+                .push(format!("Number of judges must be 1 or 3, got {}", judges)),
+            Some(_) => {}
         }
 
         if canonical.movements.is_empty() {
@@ -103,10 +102,14 @@ impl CanonicalValidator {
                     .errors
                     .push("Category name cannot be empty".to_string());
             }
-            if category.gender != "M" && category.gender != "F" {
+            if category.weight_class_slug.is_some()
+                && (category.weight_class_max.is_some() || category.is_open_category.is_some())
+            {
                 report.errors.push(format!(
-                    "Invalid gender in category '{}': '{}'. Must be 'M' or 'F'",
-                    category.name, category.gender
+                    "Category '{}' sets weight_class_slug and raw bounds. The slug already \
+                     carries them, so keep the slug for a standard class and the raw fields \
+                     only for a non standard one",
+                    category.name
                 ));
             }
 
@@ -132,12 +135,6 @@ impl CanonicalValidator {
                         category.name
                     ));
                 }
-                if athlete.country.is_empty() {
-                    report
-                        .errors
-                        .push(format!("Athlete '{}' has empty country", athlete_label));
-                }
-
                 if athlete.bodyweight.is_none() {
                     report
                         .warnings
@@ -217,13 +214,13 @@ mod tests {
         MovementData, SourceMetadata, SourceType,
     };
     use chrono::NaiveDate;
-    use osl_domain::AthleteStatus;
+    use osl_domain::{AthleteStatus, CountryCode, Gender, WeightClassSlug};
     use rust_decimal::Decimal;
 
     fn minimal() -> CanonicalFormat {
         CanonicalFormat {
+            format_version: FORMAT_VERSION.to_string(),
             source: SourceMetadata {
-                format_version: FORMAT_VERSION.to_string(),
                 r#type: SourceType::Image,
                 url: None,
                 extracted_at: chrono::Utc::now(),
@@ -243,7 +240,7 @@ mod tests {
                 end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
                 venue: None,
                 city: None,
-                country: "FR".to_string(),
+                country: CountryCode::parse("FR").unwrap(),
                 number_of_judges: Some(3),
                 status: None,
             },
@@ -254,7 +251,7 @@ mod tests {
             }],
             categories: vec![CategoryData {
                 name: "M-80".to_string(),
-                gender: "M".to_string(),
+                gender: Gender::M,
                 weight_class_slug: None,
                 weight_class_max: Some(Decimal::from(80)),
                 is_open_category: None,
@@ -262,7 +259,7 @@ mod tests {
                     first_name: "Adrien".to_string(),
                     last_name: "Pelfresne".to_string(),
                     gender: None,
-                    country: "FR".to_string(),
+                    country: CountryCode::parse("FR").unwrap(),
                     nationality: None,
                     team: None,
                     bodyweight: Some(Decimal::from(78)),
@@ -290,7 +287,7 @@ mod tests {
     #[test]
     fn older_format_version_is_rejected() {
         let mut canonical = minimal();
-        canonical.source.format_version = "1.0.0".to_string();
+        canonical.format_version = "1.1.0".to_string();
 
         let err = CanonicalValidator::validate(&canonical)
             .unwrap_err()
@@ -307,6 +304,37 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert!(err.contains("extractor is required"), "{err}");
+    }
+
+    #[test]
+    fn a_slug_alongside_raw_bounds_is_rejected() {
+        let mut canonical = minimal();
+        canonical.categories[0].weight_class_slug = Some(WeightClassSlug::M80);
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("weight_class_slug and raw bounds"), "{err}");
+    }
+
+    #[test]
+    fn a_slug_on_its_own_is_accepted() {
+        let mut canonical = minimal();
+        canonical.categories[0].weight_class_slug = Some(WeightClassSlug::M80);
+        canonical.categories[0].weight_class_max = None;
+
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
+    }
+
+    #[test]
+    fn judge_counts_the_schema_rejects_fail_validation() {
+        let mut canonical = minimal();
+        canonical.competition.number_of_judges = Some(2);
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("must be 1 or 3"), "{err}");
     }
 
     #[test]

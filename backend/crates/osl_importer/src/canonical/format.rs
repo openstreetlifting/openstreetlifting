@@ -80,7 +80,7 @@ mod tests {
         LiftData, MovementData, SourceMetadata, SourceType,
     };
     use chrono::NaiveDate;
-    use osl_domain::AthleteStatus;
+    use osl_domain::{AthleteStatus, CountryCode, Gender};
     use rust_decimal::Decimal;
     use std::str::FromStr;
 
@@ -89,7 +89,7 @@ mod tests {
             first_name: first.to_string(),
             last_name: last.to_string(),
             gender: None,
-            country: "FR".to_string(),
+            country: CountryCode::parse("FR").unwrap(),
             nationality: None,
             team: None,
             bodyweight: Some(Decimal::from_str("78.50").unwrap()),
@@ -120,8 +120,8 @@ mod tests {
 
     fn unsorted() -> CanonicalFormat {
         CanonicalFormat {
+            format_version: FORMAT_VERSION.to_string(),
             source: SourceMetadata {
-                format_version: FORMAT_VERSION.to_string(),
                 r#type: SourceType::Image,
                 url: None,
                 extracted_at: chrono::Utc::now(),
@@ -141,7 +141,7 @@ mod tests {
                 end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
                 venue: None,
                 city: None,
-                country: "FR".to_string(),
+                country: CountryCode::parse("FR").unwrap(),
                 number_of_judges: Some(3),
                 status: None,
             },
@@ -160,7 +160,7 @@ mod tests {
             categories: vec![
                 CategoryData {
                     name: "M-87".to_string(),
-                    gender: "M".to_string(),
+                    gender: Gender::M,
                     weight_class_slug: None,
                     weight_class_max: Some(Decimal::from_str("87.0").unwrap()),
                     is_open_category: None,
@@ -171,7 +171,7 @@ mod tests {
                 },
                 CategoryData {
                     name: "M-80".to_string(),
-                    gender: "M".to_string(),
+                    gender: Gender::M,
                     weight_class_slug: None,
                     weight_class_max: Some(Decimal::from(80)),
                     is_open_category: None,
