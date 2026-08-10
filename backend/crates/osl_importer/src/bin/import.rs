@@ -1,10 +1,6 @@
 use clap::{Parser, Subcommand};
-use osl_importer::{
-    LiftControlCompetitionId, LiftControlRegistry,
-    canonical::{
-        models::CanonicalFormat, transformer::CanonicalTransformer, validator::CanonicalValidator,
-    },
-    sources::liftcontrol::{LiftControlClient, LiftControlExporter},
+use osl_importer::canonical::{
+    models::CanonicalFormat, transformer::CanonicalTransformer, validator::CanonicalValidator,
 };
 use sqlx::postgres::PgPoolOptions;
 use std::path::PathBuf;
@@ -27,13 +23,6 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    LiftControl {
-        #[command(flatten)]
-        source: LiftControlSource,
-
-        #[arg(long, default_value = "./imports")]
-        output: PathBuf,
-    },
     Canonical {
         file: PathBuf,
 
@@ -47,16 +36,6 @@ enum Commands {
         #[arg(long)]
         validate_only: bool,
     },
-}
-
-#[derive(clap::Args)]
-#[group(required = true, multiple = false)]
-struct LiftControlSource {
-    #[arg(short, long)]
-    competition: Option<String>,
-
-    #[arg(short, long)]
-    list: bool,
 }
 
 #[tokio::main]
@@ -76,9 +55,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .init();
 
     match cli.command {
-        Commands::LiftControl { source, output } => {
-            handle_liftcontrol_export(source, output).await?;
-        }
         Commands::Canonical {
             file,
             validate_only,
@@ -92,37 +68,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             handle_bulk_import(directory, validate_only, &cli.database_url).await?;
         }
     }
-
-    Ok(())
-}
-
-async fn handle_liftcontrol_export(
-    source: LiftControlSource,
-    output: PathBuf,
-) -> Result<(), Box<dyn std::error::Error>> {
-    let registry = LiftControlRegistry::new();
-
-    if source.list {
-        list_competitions(&registry);
-        return Ok(());
-    }
-
-    let comp_name = source
-        .competition
-        .expect("Competition name is required (enforced by clap)");
-
-    let comp_id = parse_competition_id(&comp_name, &registry)?;
-    let spec = registry
-        .get_spec(comp_id)
-        .ok_or_else(|| format!("Competition '{}' not found in registry", comp_id))?;
-
-    tracing::info!(
-        "Exporting LiftControl competition: {} ({} sessions)",
-        spec.base_slug(),
-        spec.sub_slugs().len()
-    );
-
-    export_to_canonical(&spec, output).await?;
 
     Ok(())
 }
@@ -274,66 +219,6 @@ async fn process_canonical_file(
         let transformer = CanonicalTransformer::new(pool);
         transformer.import_to_database(canonical).await?;
     }
-
-    Ok(())
-}
-
-fn list_competitions(registry: &LiftControlRegistry) {
-    tracing::info!("Available predefined LiftControl competitions:");
-    for comp_id in registry.list_competitions() {
-        if let Some(config) = registry.get_config(comp_id) {
-            tracing::info!("  - {} ({} sessions)", comp_id, config.sub_slugs.len());
-        }
-    }
-}
-
-fn parse_competition_id(
-    comp_name: &str,
-    _registry: &LiftControlRegistry,
-) -> Result<LiftControlCompetitionId, String> {
-    comp_name.parse::<LiftControlCompetitionId>().map_err(|_| {
-        format!(
-            "Unknown competition '{}'. Use --list to see available competitions.",
-            comp_name
-        )
-    })
-}
-
-async fn export_to_canonical(
-    spec: &osl_importer::LiftControlSpec,
-    output_dir: PathBuf,
-) -> Result<(), Box<dyn std::error::Error>> {
-    let client = LiftControlClient::new();
-
-    for sub_slug in spec.sub_slugs() {
-        let sub_slug = sub_slug.trim();
-        if sub_slug.is_empty() {
-            continue;
-        }
-
-        tracing::info!("Fetching data for sub-slug: {}", sub_slug);
-        let api_response = client.fetch_live_general_table(sub_slug).await?;
-
-        tracing::info!("Competition status: {}", api_response.contest.status);
-
-        let exporter =
-            LiftControlExporter::new(spec.base_slug().to_string(), spec.metadata().clone());
-        let canonical = exporter.to_canonical(api_response)?;
-
-        let competition_dir = output_dir.join(spec.base_slug());
-        tokio::fs::create_dir_all(&competition_dir).await?;
-
-        let timestamp = chrono::Utc::now().format("%Y-%m-%dT%H-%M-%S");
-        let filename = format!("{}_{}_liftcontrol.json", timestamp, sub_slug);
-        let filepath = competition_dir.join(&filename);
-
-        let json = serde_json::to_string_pretty(&canonical)?;
-        tokio::fs::write(&filepath, json).await?;
-
-        tracing::info!("Exported to: {}", filepath.display());
-    }
-    tracing::info!("Review and edit if needed, then import with:");
-    tracing::info!("   cargo run --bin import -- canonical <path-to-json>");
 
     Ok(())
 }
