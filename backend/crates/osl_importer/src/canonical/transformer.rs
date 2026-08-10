@@ -1,6 +1,7 @@
 use super::models::*;
 use crate::{ImporterError, Result};
 use osl_domain::NormalizedAthleteName;
+use rust_decimal::Decimal;
 use sqlx::PgPool;
 use tracing::info;
 use uuid::Uuid;
@@ -176,7 +177,10 @@ impl<'a> CanonicalTransformer<'a> {
             "#,
             category.name,
             category.gender,
-            category.weight_class_min,
+            // The format states the upper bound only. A category's lower
+            // bound is the class below it, which needs the full ladder, so
+            // it stays null as it already was.
+            None as Option<Decimal>,
             category.weight_class_max
         )
         .fetch_one(&mut **tx)
@@ -196,7 +200,9 @@ impl<'a> CanonicalTransformer<'a> {
     ) -> Result<()> {
         let athlete_id = self.upsert_athlete(athlete, category, tx).await?;
 
-        let is_disqualified = athlete.is_disqualified.unwrap_or(false);
+        // The schema stores the outcome as a flag plus free text. Richer
+        // statuses need a status column, which 1.1.0 does not add.
+        let is_disqualified = athlete.status.is_disqualified();
 
         sqlx::query!(
             r#"
@@ -216,21 +222,14 @@ impl<'a> CanonicalTransformer<'a> {
             athlete.bodyweight,
             None as Option<i32>,
             is_disqualified,
-            athlete.disqualified_reason
+            athlete.status_reason
         )
         .execute(&mut **tx)
         .await?;
 
         for lift in &athlete.lifts {
-            self.import_lift(
-                competition_id,
-                category_id,
-                athlete_id,
-                lift,
-                athlete,
-                &mut *tx,
-            )
-            .await?;
+            self.import_lift(competition_id, category_id, athlete_id, lift, &mut *tx)
+                .await?;
         }
 
         Ok(())
@@ -333,7 +332,6 @@ impl<'a> CanonicalTransformer<'a> {
         category_id: Uuid,
         athlete_id: Uuid,
         lift: &LiftData,
-        athlete: &AthleteData,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
         let max_weight = lift
@@ -343,19 +341,10 @@ impl<'a> CanonicalTransformer<'a> {
             .map(|a| a.weight)
             .max();
 
-        let settings = if lift.movement == "Dips" {
-            athlete
-                .liftcontrol_athlete_metadata
-                .as_ref()
-                .and_then(|m| m.reglage_dips.clone())
-        } else if lift.movement == "Squat" {
-            athlete
-                .liftcontrol_athlete_metadata
-                .as_ref()
-                .and_then(|m| m.reglage_squat.clone())
-        } else {
-            None
-        };
+        // Equipment settings came from a liftcontrol-only field. Nothing in
+        // the agnostic format carries them, so the column stays empty until
+        // some source can express it.
+        let settings: Option<String> = None;
 
         let participant = sqlx::query!(
             r#"
@@ -432,7 +421,7 @@ impl<'a> CanonicalTransformer<'a> {
             attempt.weight,
             attempt.is_successful,
             None as Option<i16>,
-            attempt.no_rep_reason,
+            attempt.judge_note,
             "Canonical Importer"
         )
         .execute(&mut **tx)

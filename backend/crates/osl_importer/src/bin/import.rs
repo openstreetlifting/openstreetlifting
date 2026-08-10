@@ -85,7 +85,7 @@ async fn handle_canonical_import(
     tracing::info!(
         "Loaded competition: {} (v{})",
         canonical.competition.name,
-        canonical.format_version
+        canonical.source.format_version
     );
 
     tracing::info!("Validating canonical format...");

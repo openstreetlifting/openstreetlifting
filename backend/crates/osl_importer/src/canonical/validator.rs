@@ -1,4 +1,4 @@
-use super::models::CanonicalFormat;
+use super::models::{CanonicalFormat, FORMAT_VERSION};
 use crate::{ImporterError, Result};
 use std::collections::HashSet;
 use tracing::warn;
@@ -9,11 +9,17 @@ impl CanonicalValidator {
     pub fn validate(canonical: &CanonicalFormat) -> Result<ValidationReport> {
         let mut report = ValidationReport::default();
 
-        if canonical.format_version != "1.0.0" {
+        if canonical.source.format_version != FORMAT_VERSION {
             report.errors.push(format!(
-                "Unsupported format version: {}. Expected 1.0.0",
-                canonical.format_version
+                "Unsupported format version: {}. Expected {}",
+                canonical.source.format_version, FORMAT_VERSION
             ));
+        }
+
+        if canonical.source.extractor.is_empty() {
+            report
+                .errors
+                .push("Source extractor is required".to_string());
         }
 
         if canonical.competition.name.is_empty() {
@@ -200,5 +206,117 @@ impl ValidationReport {
         for warning in &self.warnings {
             warn!("{}", warning);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::canonical::models::{
+        AthleteData, AttemptData, CategoryData, CompetitionData, FederationData, LiftData,
+        MovementData, SourceMetadata, SourceType,
+    };
+    use chrono::NaiveDate;
+    use osl_domain::AthleteStatus;
+    use rust_decimal::Decimal;
+
+    fn minimal() -> CanonicalFormat {
+        CanonicalFormat {
+            source: SourceMetadata {
+                format_version: FORMAT_VERSION.to_string(),
+                r#type: SourceType::Image,
+                url: None,
+                extracted_at: chrono::Utc::now(),
+                extractor: "test-extractor@1.0.0".to_string(),
+                original_filename: None,
+            },
+            competition: CompetitionData {
+                name: "Test Open".to_string(),
+                slug: "test-open".to_string(),
+                federation: FederationData {
+                    name: "Test Federation".to_string(),
+                    slug: None,
+                    abbreviation: None,
+                    country: None,
+                },
+                start_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
+                end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
+                venue: None,
+                city: None,
+                country: "FR".to_string(),
+                number_of_judges: Some(3),
+                status: None,
+            },
+            movements: vec![MovementData {
+                name: "Squat".to_string(),
+                order: 1,
+                is_required: Some(true),
+            }],
+            categories: vec![CategoryData {
+                name: "M-80".to_string(),
+                gender: "M".to_string(),
+                weight_class_slug: None,
+                weight_class_max: Some(Decimal::from(80)),
+                is_open_category: None,
+                athletes: vec![AthleteData {
+                    first_name: "Adrien".to_string(),
+                    last_name: "Pelfresne".to_string(),
+                    gender: None,
+                    country: "FR".to_string(),
+                    nationality: None,
+                    team: None,
+                    bodyweight: Some(Decimal::from(78)),
+                    status: AthleteStatus::Competed,
+                    status_reason: None,
+                    lifts: vec![LiftData {
+                        movement: "Squat".to_string(),
+                        attempts: vec![AttemptData {
+                            attempt_number: 1,
+                            weight: Decimal::from(100),
+                            is_successful: true,
+                            judge_note: None,
+                        }],
+                    }],
+                }],
+            }],
+        }
+    }
+
+    #[test]
+    fn accepts_a_well_formed_file() {
+        assert!(CanonicalValidator::validate(&minimal()).is_ok());
+    }
+
+    #[test]
+    fn older_format_version_is_rejected() {
+        let mut canonical = minimal();
+        canonical.source.format_version = "1.0.0".to_string();
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("Unsupported format version"), "{err}");
+    }
+
+    #[test]
+    fn missing_extractor_is_rejected() {
+        let mut canonical = minimal();
+        canonical.source.extractor = String::new();
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("extractor is required"), "{err}");
+    }
+
+    #[test]
+    fn lift_for_an_undeclared_movement_is_rejected() {
+        let mut canonical = minimal();
+        canonical.categories[0].athletes[0].lifts[0].movement = "Bench".to_string();
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("unknown movement"), "{err}");
     }
 }
