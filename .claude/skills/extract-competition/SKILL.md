@@ -62,13 +62,13 @@ them loses real data.
 
 ## Format
 
-`format_version` is `1.1.0`. Required fields have no marker; `?` means
+`format_version` is `1.2.0`. Required fields have no marker; `?` means
 optional and should be omitted when unknown.
 
 ```jsonc
 {
+  "format_version": "1.2.0",
   "source": {
-    "format_version": "1.1.0",
     "type": "html",              // api | html | pdf | csv | image | manual
     "url": "https://...",        // ?
     "extracted_at": "2026-08-10T10:00:00Z",
@@ -88,7 +88,7 @@ optional and should be omitted when unknown.
     "end_date": "2025-11-02",
     "venue": "Oski Crossfit",    // ?
     "city": "Annecy",            // ?
-    "country": "France",
+    "country": "FR",             // ISO 3166-1 alpha-2
     "number_of_judges": 3,       // ? must be 1 or 3
     "status": "completed"        // ? draft|upcoming|live|completed|cancelled
   },
@@ -98,17 +98,17 @@ optional and should be omitted when unknown.
   "categories": [
     {
       "name": "Catégorie -80",
-      "gender": "M",             // M or F only
-      "weight_class_slug": "M-80",   // ? see list below
-      "weight_class_max": "80",      // ? decimal as a string
-      "is_open_category": true,      // ? for +87 style categories
+      "gender": "M",             // M, F or MX
+      "weight_class_slug": "M-80",   // ? standard class, see list below
+      "weight_class_max": "80",      // ? non standard class only
+      "is_open_category": true,      // ? non standard class only
       "athletes": [
         {
           "first_name": "Timothée",
           "last_name": "MERANDON",
           "gender": "M",         // ?
-          "country": "FR",
-          "nationality": "French",   // ?
+          "country": "FR",           // country represented, ISO alpha-2
+          "nationality": "FR",       // ? citizenship if it differs
           "team": "...",             // ?
           "bodyweight": "88.7",      // ?
           "status": "competed",      // competed | disqualified
@@ -134,15 +134,21 @@ optional and should be omitted when unknown.
 ```
 
 `weight_class_slug` is one of: `F-52` `F-57` `F-63` `F-70` `F+70` `M-66`
-`M-73` `M-80` `M-87` `M-94` `M-101` `M+101`.
+`M-73` `M-80` `M-87` `M-94` `M-101` `M+101`. It already carries the bounds,
+so a category using it must not also set `weight_class_max` or
+`is_open_category`. Use those two only for a class outside the standard
+ladder, such as a local meet running -75.
 
-Weights and bodyweights are JSON **strings**, not numbers.
+Weights and bodyweights are JSON **strings**, not numbers. Countries are ISO
+3166-1 alpha-2, so `FR` and never `France` or `FRA`.
 
 ### What the validator rejects
 
-Wrong `format_version`, empty `extractor`, a gender that is not `M` or `F`,
-`end_date` before `start_date`, a duplicate or unnamed movement, a movement
-`order` below 1, a lift naming a movement not in `movements`, a lift with no
+Wrong `format_version`, empty `extractor`, a country that is not two letters,
+a gender outside `M` `F` `MX`, a status outside the five listed, a judge count
+other than 1 or 3, `end_date` before `start_date`, a duplicate or unnamed
+movement, a movement `order` below 1, a weight class setting both the slug and
+the raw bounds, a lift naming a movement not in `movements`, a lift with no
 attempts, an `attempt_number` outside 1 to 3, a negative weight.
 
 ### What it only warns about

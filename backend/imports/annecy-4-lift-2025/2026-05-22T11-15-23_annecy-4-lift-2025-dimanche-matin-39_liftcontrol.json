@@ -1,6 +1,6 @@
 {
+  "format_version": "1.2.0",
   "source": {
-    "format_version": "1.1.0",
     "type": "api",
     "url": "https://app.liftcontrol.com/contest/annecy-4-lift-2025-dimanche-matin",
     "extracted_at": "2026-05-22T11:15:23.829688Z",
@@ -18,7 +18,7 @@
     "end_date": "2025-11-02",
     "venue": "Oski Crossfit",
     "city": "Annecy",
-    "country": "France",
+    "country": "FR",
     "number_of_judges": 3,
     "status": "completed"
   },
@@ -54,7 +54,7 @@
           "first_name": "Tom",
           "last_name": "Berthier",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "96.9",
           "status": "competed",
           "lifts": [
@@ -146,7 +146,7 @@
           "first_name": "Alix",
           "last_name": "DAVY",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "94.8",
           "status": "competed",
           "lifts": [
@@ -237,7 +237,7 @@
           "first_name": "Aghiles",
           "last_name": "HAMITI",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "94.7",
           "status": "competed",
           "lifts": [
@@ -329,7 +329,7 @@
           "first_name": "Timothée",
           "last_name": "MERANDON",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "88.7",
           "status": "competed",
           "lifts": [
@@ -420,7 +420,7 @@
           "first_name": "Gwendal",
           "last_name": "NADIYA",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "88.8",
           "status": "competed",
           "lifts": [
@@ -514,7 +514,7 @@
           "first_name": "Adrien",
           "last_name": "PELFRESNE",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "93.8",
           "status": "competed",
           "lifts": [
@@ -604,7 +604,7 @@
           "first_name": "Alex",
           "last_name": "PINOTTI",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "94.7",
           "status": "competed",
           "lifts": [
@@ -698,7 +698,7 @@
           "first_name": "Loïck",
           "last_name": "PIPOLO",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "92.1",
           "status": "competed",
           "lifts": [
@@ -789,7 +789,7 @@
           "first_name": "Antoine",
           "last_name": "REMBUR",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "88.2",
           "status": "competed",
           "lifts": [
@@ -889,7 +889,7 @@
           "first_name": "Nassim",
           "last_name": "AKEB",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "76.2",
           "status": "competed",
           "lifts": [
@@ -983,7 +983,7 @@
           "first_name": "Alexis",
           "last_name": "BONNAUD",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "76.5",
           "status": "competed",
           "lifts": [
@@ -1074,7 +1074,7 @@
           "first_name": "Remy",
           "last_name": "CARDY",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "77.9",
           "status": "competed",
           "lifts": [
@@ -1165,7 +1165,7 @@
           "first_name": "Morgan",
           "last_name": "CONTRUCCI",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "77.6",
           "status": "competed",
           "lifts": [
@@ -1260,7 +1260,7 @@
           "first_name": "Gregory",
           "last_name": "COSTE",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "78.4",
           "status": "competed",
           "lifts": [
@@ -1353,7 +1353,7 @@
           "first_name": "Thibault",
           "last_name": "DAUSQUE",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "79.9",
           "status": "competed",
           "lifts": [
@@ -1448,7 +1448,7 @@
           "first_name": "François",
           "last_name": "DELAVEAU",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "76.2",
           "status": "competed",
           "lifts": [
@@ -1544,7 +1544,7 @@
           "first_name": "Richard",
           "last_name": "Fanfano",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "75.6",
           "status": "competed",
           "lifts": [
@@ -1637,7 +1637,7 @@
           "first_name": "Anaël",
           "last_name": "GALOPIN",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "79.2",
           "status": "competed",
           "lifts": [
@@ -1730,7 +1730,7 @@
           "first_name": "Loyan",
           "last_name": "LANDES",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "76.1",
           "status": "competed",
           "lifts": [
@@ -1824,7 +1824,7 @@
           "first_name": "Noé",
           "last_name": "MASSIP",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "78.6",
           "status": "competed",
           "lifts": [
@@ -1917,7 +1917,7 @@
           "first_name": "Hugo",
           "last_name": "MEUNIER",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "74.6",
           "status": "competed",
           "lifts": [
@@ -2008,7 +2008,7 @@
           "first_name": "Gaëtan",
           "last_name": "Orru",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "74.9",
           "status": "competed",
           "lifts": [
@@ -2102,7 +2102,7 @@
           "first_name": "Ilyes",
           "last_name": "PELLETIER",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "75.5",
           "status": "competed",
           "lifts": [
@@ -2193,7 +2193,7 @@
           "first_name": "Alexandre",
           "last_name": "Thenoz",
           "country": "FR",
-          "nationality": "French",
+          "nationality": "FR",
           "bodyweight": "78.2",
           "status": "competed",
           "lifts": [

@@ -1,7 +1,6 @@
 use super::models::*;
 use crate::{ImporterError, Result};
 use osl_domain::NormalizedAthleteName;
-use rust_decimal::Decimal;
 use sqlx::PgPool;
 use tracing::info;
 use uuid::Uuid;
@@ -74,13 +73,13 @@ impl<'a> CanonicalTransformer<'a> {
             "#,
             competition.name,
             competition.slug,
-            competition.status.as_deref().unwrap_or("completed"),
+            competition.status.unwrap_or_default().as_str(),
             federation_id,
             competition.start_date,
             competition.end_date,
             competition.venue,
             competition.city,
-            competition.country,
+            competition.country.as_str(),
             competition.number_of_judges
         )
         .fetch_one(&mut **tx)
@@ -113,7 +112,7 @@ impl<'a> CanonicalTransformer<'a> {
             "#,
             federation.name,
             federation.abbreviation,
-            federation.country
+            federation.country.map(|c| c.as_str().to_owned())
         )
         .fetch_one(&mut **tx)
         .await
@@ -157,10 +156,12 @@ impl<'a> CanonicalTransformer<'a> {
         category: &CategoryData,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<Uuid> {
+        let gender = category.gender.as_str();
+
         let existing = sqlx::query_scalar!(
             r#"SELECT category_id as "category_id: Uuid" FROM categories WHERE name = $1 AND gender = $2"#,
             category.name,
-            category.gender
+            gender
         )
         .fetch_optional(&mut **tx)
         .await?;
@@ -169,6 +170,11 @@ impl<'a> CanonicalTransformer<'a> {
             return Ok(id);
         }
 
+        let (min, max) = match category.weight_class_slug.as_ref() {
+            Some(slug) => slug.bounds(),
+            None => (None, category.weight_class_max),
+        };
+
         let category_id = sqlx::query_scalar!(
             r#"
             INSERT INTO categories (name, gender, weight_class_min, weight_class_max)
@@ -176,12 +182,9 @@ impl<'a> CanonicalTransformer<'a> {
             RETURNING category_id as "category_id: Uuid"
             "#,
             category.name,
-            category.gender,
-            // The format states the upper bound only. A category's lower
-            // bound is the class below it, which needs the full ladder, so
-            // it stays null as it already was.
-            None as Option<Decimal>,
-            category.weight_class_max
+            gender,
+            min,
+            max
         )
         .fetch_one(&mut **tx)
         .await?;
@@ -241,7 +244,7 @@ impl<'a> CanonicalTransformer<'a> {
         category: &CategoryData,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<Uuid> {
-        let gender = athlete.gender.as_deref().unwrap_or(&category.gender);
+        let gender = athlete.gender.unwrap_or(category.gender).as_str();
 
         let normalized_name = NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name);
         let (db_first_name, db_last_name) = normalized_name.as_database_tuple();
@@ -254,7 +257,7 @@ impl<'a> CanonicalTransformer<'a> {
             db_first_name,
             db_last_name,
             gender,
-            athlete.country
+            athlete.country.as_str()
         )
         .fetch_optional(&mut **tx)
         .await?;
@@ -276,8 +279,8 @@ impl<'a> CanonicalTransformer<'a> {
             db_first_name,
             db_last_name,
             gender,
-            athlete.country,
-            athlete.nationality,
+            athlete.country.as_str(),
+            athlete.nationality.map(|c| c.as_str().to_owned()),
             slug
         )
         .fetch_one(&mut **tx)

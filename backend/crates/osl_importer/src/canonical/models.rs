@@ -1,13 +1,17 @@
 use chrono::{DateTime, NaiveDate, Utc};
-use osl_domain::{AthleteStatus, WeightClassSlug};
+use osl_domain::{AthleteStatus, CompetitionStatus, CountryCode, Gender, WeightClassSlug};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 /// Format version this build reads and writes.
-pub const FORMAT_VERSION: &str = "1.1.0";
+pub const FORMAT_VERSION: &str = "1.2.0";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CanonicalFormat {
+    /// First key of the document: a reader picks how to parse the rest from
+    /// it, so it cannot live inside a section that a later version may move.
+    pub format_version: String,
+
     pub source: SourceMetadata,
     pub competition: CompetitionData,
     pub movements: Vec<MovementData>,
@@ -16,8 +20,6 @@ pub struct CanonicalFormat {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SourceMetadata {
-    pub format_version: String,
-
     #[serde(rename = "type")]
     pub r#type: SourceType,
 
@@ -71,13 +73,13 @@ pub struct CompetitionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
-    pub country: String,
+    pub country: CountryCode,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub number_of_judges: Option<i16>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<CompetitionStatus>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -91,7 +93,7 @@ pub struct FederationData {
     pub abbreviation: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
+    pub country: Option<CountryCode>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -108,7 +110,7 @@ pub struct MovementData {
 pub struct CategoryData {
     pub name: String,
 
-    pub gender: String,
+    pub gender: Gender,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weight_class_slug: Option<WeightClassSlug>,
@@ -129,12 +131,14 @@ pub struct AthleteData {
     pub last_name: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub gender: Option<String>,
+    pub gender: Option<Gender>,
 
-    pub country: String,
+    /// Country the athlete represented at this competition.
+    pub country: CountryCode,
 
+    /// Citizenship, when it differs from `country` and is known.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub nationality: Option<String>,
+    pub nationality: Option<CountryCode>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub team: Option<String>,

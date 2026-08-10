@@ -47,6 +47,25 @@ impl WeightClassSlug {
             Self::MPlus101 => "M+101",
         }
     }
+
+    pub fn bounds(&self) -> (Option<Decimal>, Option<Decimal>) {
+        let (min, max) = match self {
+            Self::F52 => (None, Some(52)),
+            Self::F57 => (Some(52), Some(57)),
+            Self::F63 => (Some(57), Some(63)),
+            Self::F70 => (Some(63), Some(70)),
+            Self::FPlus70 => (Some(70), None),
+            Self::M66 => (None, Some(66)),
+            Self::M73 => (Some(66), Some(73)),
+            Self::M80 => (Some(73), Some(80)),
+            Self::M87 => (Some(80), Some(87)),
+            Self::M94 => (Some(87), Some(94)),
+            Self::M101 => (Some(94), Some(101)),
+            Self::MPlus101 => (Some(101), None),
+        };
+
+        (min.map(Decimal::from), max.map(Decimal::from))
+    }
 }
 
 impl std::fmt::Display for WeightClassSlug {
@@ -83,4 +102,33 @@ pub struct WeightClass {
     pub gender: String,
     pub limit_kg: Option<Decimal>,
     pub is_plus: bool,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn lightest_class_has_no_lower_bound() {
+        assert_eq!(
+            WeightClassSlug::M66.bounds(),
+            (None, Some(Decimal::from(66)))
+        );
+    }
+
+    #[test]
+    fn a_middle_class_starts_where_the_one_below_ends() {
+        assert_eq!(
+            WeightClassSlug::M80.bounds(),
+            (Some(Decimal::from(73)), Some(Decimal::from(80)))
+        );
+    }
+
+    #[test]
+    fn an_open_class_has_no_upper_bound() {
+        assert_eq!(
+            WeightClassSlug::MPlus101.bounds(),
+            (Some(Decimal::from(101)), None)
+        );
+    }
 }
