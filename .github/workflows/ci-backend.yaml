@@ -26,6 +26,25 @@ jobs:
         working-directory: backend
         run: cargo fmt --all -- --check
 
+  imports:
+    name: Import files
+    runs-on: ubuntu-latest
+    env:
+      SQLX_OFFLINE: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache-workspaces: backend
+      # Canonical files are reviewed as diffs, so an unformatted one makes a
+      # small change look like a rewrite.
+      - name: Check canonical files are formatted
+        working-directory: backend
+        run: cargo run -p osl_importer --bin import -- fmt --check
+      - name: Validate canonical files
+        working-directory: backend
+        run: cargo run -p osl_importer --bin import -- bulk-import --validate-only
+
   lint:
     name: Clippy
     runs-on: ubuntu-latest
@@ -79,7 +98,7 @@ jobs:
     name: CI Success
     runs-on: ubuntu-latest
     if: always()
-    needs: [format, lint, test]
+    needs: [format, imports, lint, test]
     steps:
       - name: Check all jobs passed
         run: |
