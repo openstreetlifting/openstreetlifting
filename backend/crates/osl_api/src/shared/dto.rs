@@ -10,11 +10,6 @@ pub struct PaginationParams {
     pub page_size: u32,
 }
 
-/// Accepts a query value that arrives as either a number or a string.
-///
-/// `#[serde(flatten)]` makes serde_urlencoded hand every value over as a
-/// string, so a plain `u32` field rejects `?page=2` outright. Both call sites
-/// flatten these params, so both need this.
 fn number_from_query<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Result<u32, D::Error> {
     use serde::de::Error;
 
@@ -58,7 +53,6 @@ impl PaginationParams {
         self.page_size
     }
 
-    /// Resolves page numbers into the bounds repositories work in.
     pub fn to_page(&self) -> Page {
         Page {
             limit: self.limit() as i64,

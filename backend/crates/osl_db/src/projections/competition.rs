@@ -5,7 +5,6 @@ use crate::rows::{
     competition_movement::CompetitionMovementRow, federation::FederationRow,
 };
 
-/// A competition plus the federation and movements the list view shows.
 #[derive(Debug)]
 pub struct CompetitionListItem {
     pub competition: CompetitionRow,
@@ -13,8 +12,6 @@ pub struct CompetitionListItem {
     pub movements: Vec<CompetitionMovementRow>,
 }
 
-/// The full competition tree: categories, their participants, and every
-/// lift and attempt underneath.
 #[derive(Debug)]
 pub struct CompetitionDetail {
     pub competition: CompetitionRow,
@@ -32,8 +29,7 @@ pub struct CategoryParticipants {
 pub struct ParticipantDetail {
     pub athlete: AthleteRow,
     pub bodyweight: Option<Decimal>,
-    /// Rank computed per category by the ranking window function, not the
-    /// stored `competition_participants.rank` column.
+    /// Rank computed per category by the ranking window function
     pub rank: Option<i32>,
     pub ris_score: Option<Decimal>,
     pub is_disqualified: bool,

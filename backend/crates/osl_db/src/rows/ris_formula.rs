@@ -4,10 +4,6 @@ use rust_decimal::Decimal;
 use sqlx::FromRow;
 use uuid::Uuid;
 
-/// Persisted shape of a RIS formula version.
-///
-/// The per-gender constants are flattened into `men_*` / `women_*`
-/// columns; `RisFormula` in osl_domain nests them instead.
 #[derive(Debug, FromRow)]
 pub struct RisFormulaVersionRow {
     pub formula_id: Uuid,
