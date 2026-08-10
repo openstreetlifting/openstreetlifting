@@ -36,8 +36,8 @@ jobs:
         run: |
           gh pr checkout ${{ fromJson(steps.release.outputs.pr).number }}
           cargo generate-lockfile --manifest-path backend/Cargo.toml
-          git config user.name "ci-bot"
-          git config user.email "ci-bot@openstreetlifting.org"
+          git config user.name "osl-ci[bot]"
+          git config user.email "315316499+osl-ci[bot]@users.noreply.github.com"
           git add backend/Cargo.lock
           git diff --cached --quiet || git commit \
             -m "chore(backend): update Cargo.lock after version bump [skip ci]"

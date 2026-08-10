@@ -65,8 +65,8 @@ jobs:
         run: |
           yq -i ".frontend.image.tag = \"${{ steps.tags.outputs.semver }}\"" charts/values.yaml
           yq -i ".backend.image.tag = \"${{ steps.tags.outputs.semver }}\"" charts/values.yaml
-          git config user.name "ci-bot"
-          git config user.email "ci-bot@openstreetlifting.org"
+          git config user.name "osl-ci[bot]"
+          git config user.email "315316499+osl-ci[bot]@users.noreply.github.com"
           git checkout main
           git add charts/values.yaml
           git commit \
