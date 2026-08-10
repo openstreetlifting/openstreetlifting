@@ -1,9 +1,10 @@
 use clap::{Parser, Subcommand};
 use osl_importer::canonical::{
-    models::CanonicalFormat, transformer::CanonicalTransformer, validator::CanonicalValidator,
+    format as canonical_format, models::CanonicalFormat, transformer::CanonicalTransformer,
+    validator::CanonicalValidator,
 };
 use sqlx::postgres::PgPoolOptions;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[derive(Parser)]
@@ -14,8 +15,9 @@ struct Cli {
     #[command(subcommand)]
     command: Commands,
 
+    /// Optional because `fmt` never touches the database.
     #[arg(long, env = "DATABASE_URL")]
-    database_url: String,
+    database_url: Option<String>,
 
     #[arg(short, long)]
     verbose: bool,
@@ -35,6 +37,16 @@ enum Commands {
 
         #[arg(long)]
         validate_only: bool,
+    },
+    /// Rewrite canonical files in their canonical shape.
+    Fmt {
+        /// Files or directories. Directories are searched for .json.
+        #[arg(default_value = "./imports")]
+        paths: Vec<PathBuf>,
+
+        /// Report files that would change instead of rewriting them.
+        #[arg(long)]
+        check: bool,
     },
 }
 
@@ -59,16 +71,82 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             file,
             validate_only,
         } => {
-            handle_canonical_import(file, validate_only, &cli.database_url).await?;
+            let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
+            handle_canonical_import(file, validate_only, database_url).await?;
         }
         Commands::BulkImport {
             directory,
             validate_only,
         } => {
-            handle_bulk_import(directory, validate_only, &cli.database_url).await?;
+            let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
+            handle_bulk_import(directory, validate_only, database_url).await?;
+        }
+        Commands::Fmt { paths, check } => {
+            handle_fmt(&paths, check).await?;
         }
     }
 
+    Ok(())
+}
+
+fn require_database_url(
+    database_url: Option<&str>,
+    validate_only: bool,
+) -> Result<&str, Box<dyn std::error::Error>> {
+    match database_url {
+        Some(url) => Ok(url),
+        None if validate_only => Ok(""),
+        None => Err("DATABASE_URL is required to import. Pass --validate-only to skip it".into()),
+    }
+}
+
+async fn handle_fmt(paths: &[PathBuf], check: bool) -> Result<(), Box<dyn std::error::Error>> {
+    let mut files = Vec::new();
+    for path in paths {
+        collect_json_files(path, &mut files).await?;
+    }
+    files.sort();
+
+    if files.is_empty() {
+        tracing::warn!("No JSON files found");
+        return Ok(());
+    }
+
+    let mut changed = Vec::new();
+    for file in &files {
+        let original = tokio::fs::read_to_string(file).await?;
+        let mut canonical: CanonicalFormat = serde_json::from_str(&original)?;
+        canonical_format::normalize(&mut canonical);
+        let formatted = canonical_format::to_string(&canonical)?;
+
+        if formatted == original {
+            continue;
+        }
+
+        changed.push(file.clone());
+        if !check {
+            tokio::fs::write(file, formatted).await?;
+        }
+    }
+
+    if changed.is_empty() {
+        tracing::info!("{} file(s) already formatted", files.len());
+        return Ok(());
+    }
+
+    for file in &changed {
+        tracing::info!("{}", file.display());
+    }
+
+    if check {
+        return Err(format!(
+            "{} file(s) are not formatted. Run `import fmt` to fix",
+            changed.len()
+        )
+        .into());
+    }
+
+    tracing::info!("Formatted {} file(s)", changed.len());
     Ok(())
 }
 
@@ -115,6 +193,30 @@ async fn handle_canonical_import(
     Ok(())
 }
 
+/// Gathers every .json under `path`, or `path` itself when it is a file.
+async fn collect_json_files(
+    path: &Path,
+    found: &mut Vec<PathBuf>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let mut pending = vec![path.to_path_buf()];
+
+    while let Some(current) = pending.pop() {
+        if !current.is_dir() {
+            if current.extension().is_some_and(|ext| ext == "json") {
+                found.push(current);
+            }
+            continue;
+        }
+
+        let mut entries = tokio::fs::read_dir(&current).await?;
+        while let Some(entry) = entries.next_entry().await? {
+            pending.push(entry.path());
+        }
+    }
+
+    Ok(())
+}
+
 async fn handle_bulk_import(
     directory: PathBuf,
     validate_only: bool,
@@ -126,22 +228,7 @@ async fn handle_bulk_import(
     );
 
     let mut json_files = Vec::new();
-    let mut entries = tokio::fs::read_dir(&directory).await?;
-
-    while let Some(entry) = entries.next_entry().await? {
-        let path = entry.path();
-        if path.is_dir() {
-            let mut sub_entries = tokio::fs::read_dir(&path).await?;
-            while let Some(sub_entry) = sub_entries.next_entry().await? {
-                let sub_path = sub_entry.path();
-                if sub_path.extension().is_some_and(|ext| ext == "json") {
-                    json_files.push(sub_path);
-                }
-            }
-        } else if path.extension().is_some_and(|ext| ext == "json") {
-            json_files.push(path);
-        }
-    }
+    collect_json_files(&directory, &mut json_files).await?;
 
     if json_files.is_empty() {
         tracing::warn!("No JSON files found in {}", directory.display());

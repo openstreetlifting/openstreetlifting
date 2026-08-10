@@ -51,97 +51,6 @@
       "is_open_category": true,
       "athletes": [
         {
-          "first_name": "Timothée",
-          "last_name": "MERANDON",
-          "country": "FR",
-          "nationality": "French",
-          "bodyweight": "88.7",
-          "status": "competed",
-          "lifts": [
-            {
-              "movement": "Muscle-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "12.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "16.25",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "20",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                }
-              ]
-            },
-            {
-              "movement": "Pull-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "55",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "62.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "68.75",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Dips",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "115",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "122.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "130",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Squat",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "190",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "202.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "215",
-                  "is_successful": true
-                }
-              ]
-            }
-          ]
-        },
-        {
           "first_name": "Tom",
           "last_name": "Berthier",
           "country": "FR",
@@ -325,11 +234,11 @@
           ]
         },
         {
-          "first_name": "Loïck",
-          "last_name": "PIPOLO",
+          "first_name": "Aghiles",
+          "last_name": "HAMITI",
           "country": "FR",
           "nationality": "French",
-          "bodyweight": "92.1",
+          "bodyweight": "94.7",
           "status": "competed",
           "lifts": [
             {
@@ -357,17 +266,110 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "67.5",
+                  "weight": "66.25",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "75",
+                  "weight": "73.75",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "80",
+                  "weight": "76.25",
+                  "is_successful": false,
+                  "judge_note": "Passage du menton"
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "132.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "145",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "147.5",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "225",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "235",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "242.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Timothée",
+          "last_name": "MERANDON",
+          "country": "FR",
+          "nationality": "French",
+          "bodyweight": "88.7",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "12.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "16.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "20",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "55",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "62.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "68.75",
                   "is_successful": true
                 }
               ]
@@ -377,17 +379,17 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "110",
+                  "weight": "115",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "120",
+                  "weight": "122.5",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "127.5",
+                  "weight": "130",
                   "is_successful": true
                 }
               ]
@@ -397,19 +399,202 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "162.5",
+                  "weight": "190",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "175",
+                  "weight": "202.5",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "185",
+                  "weight": "215",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Gwendal",
+          "last_name": "NADIYA",
+          "country": "FR",
+          "nationality": "French",
+          "bodyweight": "88.8",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "15",
+                  "is_successful": true,
+                  "judge_note": "Flexion de genoux"
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "15",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "22.5",
+                  "is_successful": true,
+                  "judge_note": "Flexion de genoux"
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "72.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "77.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "120",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "127.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "135",
                   "is_successful": false,
                   "judge_note": "[Autre]"
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "175",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "190",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "200",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Adrien",
+          "last_name": "PELFRESNE",
+          "country": "FR",
+          "nationality": "French",
+          "bodyweight": "93.8",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "7.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "10",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "55",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "61.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "92.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "102.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "110",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "152.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "162.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "175",
+                  "is_successful": true
                 }
               ]
             }
@@ -510,11 +695,11 @@
           ]
         },
         {
-          "first_name": "Adrien",
-          "last_name": "PELFRESNE",
+          "first_name": "Loïck",
+          "last_name": "PIPOLO",
           "country": "FR",
           "nationality": "French",
-          "bodyweight": "93.8",
+          "bodyweight": "92.1",
           "status": "competed",
           "lifts": [
             {
@@ -522,17 +707,17 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "5",
+                  "weight": "20",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "7.5",
+                  "weight": "25",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "10",
+                  "weight": "30",
                   "is_successful": true
                 }
               ]
@@ -542,17 +727,17 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "50",
+                  "weight": "67.5",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "55",
+                  "weight": "75",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "61.25",
+                  "weight": "80",
                   "is_successful": true
                 }
               ]
@@ -562,17 +747,17 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "92.5",
+                  "weight": "110",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "102.5",
+                  "weight": "120",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "110",
+                  "weight": "127.5",
                   "is_successful": true
                 }
               ]
@@ -582,18 +767,19 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "152.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
                   "weight": "162.5",
                   "is_successful": true
                 },
                 {
-                  "attempt_number": 3,
+                  "attempt_number": 2,
                   "weight": "175",
                   "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "185",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
                 }
               ]
             }
@@ -691,192 +877,6 @@
               ]
             }
           ]
-        },
-        {
-          "first_name": "Aghiles",
-          "last_name": "HAMITI",
-          "country": "FR",
-          "nationality": "French",
-          "bodyweight": "94.7",
-          "status": "competed",
-          "lifts": [
-            {
-              "movement": "Muscle-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "20",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "25",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "30",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Pull-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "66.25",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "73.75",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "76.25",
-                  "is_successful": false,
-                  "judge_note": "Passage du menton"
-                }
-              ]
-            },
-            {
-              "movement": "Dips",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "132.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "145",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "147.5",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                }
-              ]
-            },
-            {
-              "movement": "Squat",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "225",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "235",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "242.5",
-                  "is_successful": true
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "first_name": "Gwendal",
-          "last_name": "NADIYA",
-          "country": "FR",
-          "nationality": "French",
-          "bodyweight": "88.8",
-          "status": "competed",
-          "lifts": [
-            {
-              "movement": "Muscle-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "15",
-                  "is_successful": true,
-                  "judge_note": "Flexion de genoux"
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "15",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "22.5",
-                  "is_successful": true,
-                  "judge_note": "Flexion de genoux"
-                }
-              ]
-            },
-            {
-              "movement": "Pull-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "65",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "72.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "77.5",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Dips",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "120",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "127.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "135",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                }
-              ]
-            },
-            {
-              "movement": "Squat",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "175",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "190",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "200",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                }
-              ]
-            }
-          ]
         }
       ]
     },
@@ -886,11 +886,11 @@
       "weight_class_max": "80",
       "athletes": [
         {
-          "first_name": "Gregory",
-          "last_name": "COSTE",
+          "first_name": "Nassim",
+          "last_name": "AKEB",
           "country": "FR",
           "nationality": "French",
-          "bodyweight": "78.4",
+          "bodyweight": "76.2",
           "status": "competed",
           "lifts": [
             {
@@ -898,110 +898,17 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "15",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "20",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "20",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Pull-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "52.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "57.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "62.5",
-                  "is_successful": false,
-                  "judge_note": "Non-respect des ordres"
-                }
-              ]
-            },
-            {
-              "movement": "Dips",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "95",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "102.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "110",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Squat",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "205",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "215",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "230",
-                  "is_successful": true
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "first_name": "Gaëtan",
-          "last_name": "Orru",
-          "country": "FR",
-          "nationality": "French",
-          "bodyweight": "74.9",
-          "status": "competed",
-          "lifts": [
-            {
-              "movement": "Muscle-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "20",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
                   "weight": "25",
                   "is_successful": true
                 },
                 {
+                  "attempt_number": 2,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
                   "attempt_number": 3,
-                  "weight": "27.5",
+                  "weight": "31.25",
                   "is_successful": false,
                   "judge_note": "[Autre]"
                 }
@@ -1012,115 +919,18 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "62.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "68.25",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "70",
-                  "is_successful": false,
-                  "judge_note": "Passage du menton"
-                }
-              ]
-            },
-            {
-              "movement": "Dips",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "92.5",
-                  "is_successful": false,
-                  "judge_note": "Amplitude hanches"
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "100",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "103.75",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Squat",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "177.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "187.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "200",
-                  "is_successful": false,
-                  "judge_note": "Barre tombée"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "first_name": "Loyan",
-          "last_name": "LANDES",
-          "country": "FR",
-          "nationality": "French",
-          "bodyweight": "76.1",
-          "status": "competed",
-          "lifts": [
-            {
-              "movement": "Muscle-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "12.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "15",
-                  "is_successful": false,
-                  "judge_note": "Utilisation d’un False Grip"
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "15",
-                  "is_successful": true,
-                  "judge_note": "Utilisation d’un False Grip"
-                }
-              ]
-            },
-            {
-              "movement": "Pull-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "50",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "55",
-                  "is_successful": true,
-                  "judge_note": "[Autre]"
-                },
-                {
-                  "attempt_number": 3,
                   "weight": "57.5",
-                  "is_successful": true,
-                  "judge_note": "Passage du menton"
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "71.25",
+                  "is_successful": true
                 }
               ]
             },
@@ -1129,109 +939,18 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "70",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "75",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
                   "weight": "82.5",
                   "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Squat",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "100",
-                  "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "110",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "120",
-                  "is_successful": true
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "first_name": "Richard",
-          "last_name": "Fanfano",
-          "country": "FR",
-          "nationality": "French",
-          "bodyweight": "75.6",
-          "status": "competed",
-          "lifts": [
-            {
-              "movement": "Muscle-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "16.25",
+                  "weight": "92.5",
                   "is_successful": false,
-                  "judge_note": "Cassage des hanches"
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "21.25",
-                  "is_successful": true
+                  "judge_note": "[Autre]"
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "25",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Pull-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "57.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "66.25",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "72.5",
-                  "is_successful": false,
-                  "judge_note": "Passage du menton"
-                }
-              ]
-            },
-            {
-              "movement": "Dips",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "112.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "115",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "117.5",
+                  "weight": "92.5",
                   "is_successful": false,
                   "judge_note": "[Autre]"
                 }
@@ -1242,202 +961,19 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "155",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "167.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "170",
-                  "is_successful": true
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "first_name": "Anaël",
-          "last_name": "GALOPIN",
-          "country": "FR",
-          "nationality": "French",
-          "bodyweight": "79.2",
-          "status": "competed",
-          "lifts": [
-            {
-              "movement": "Muscle-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "10",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "10",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "15",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Pull-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "50",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "60",
-                  "is_successful": false,
-                  "judge_note": "Non-respect des ordres"
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "67.5",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Dips",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "85",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "95",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "100",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                }
-              ]
-            },
-            {
-              "movement": "Squat",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "187.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
                   "weight": "197.5",
                   "is_successful": true
                 },
                 {
-                  "attempt_number": 3,
-                  "weight": "200",
-                  "is_successful": true,
-                  "judge_note": "[Autre]"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "first_name": "Ilyes",
-          "last_name": "PELLETIER",
-          "country": "FR",
-          "nationality": "French",
-          "bodyweight": "75.5",
-          "status": "competed",
-          "lifts": [
-            {
-              "movement": "Muscle-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "15",
-                  "is_successful": true
-                },
-                {
                   "attempt_number": 2,
-                  "weight": "17.5",
+                  "weight": "207.5",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "20",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Pull-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "50",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "55",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "60",
+                  "weight": "217.5",
                   "is_successful": false,
-                  "judge_note": "Passage du menton"
-                }
-              ]
-            },
-            {
-              "movement": "Dips",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "95",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "103.75",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "107.5",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Squat",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "165",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "175",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "185",
-                  "is_successful": true
+                  "judge_note": "Barre tombée"
                 }
               ]
             }
@@ -1529,193 +1065,6 @@
                   "attempt_number": 3,
                   "weight": "162.5",
                   "is_successful": true
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "first_name": "Hugo",
-          "last_name": "MEUNIER",
-          "country": "FR",
-          "nationality": "French",
-          "bodyweight": "74.6",
-          "status": "competed",
-          "lifts": [
-            {
-              "movement": "Muscle-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "8.75",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "10",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Pull-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "42.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "50",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "53.75",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Dips",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "75",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "82.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "90",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                }
-              ]
-            },
-            {
-              "movement": "Squat",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "135",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "147.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "160",
-                  "is_successful": true
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "first_name": "François",
-          "last_name": "DELAVEAU",
-          "country": "FR",
-          "nationality": "French",
-          "bodyweight": "76.2",
-          "status": "competed",
-          "lifts": [
-            {
-              "movement": "Muscle-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "10",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "10",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                }
-              ]
-            },
-            {
-              "movement": "Pull-up",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "50",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "55",
-                  "is_successful": false,
-                  "judge_note": "Non-respect des ordres"
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "56.25",
-                  "is_successful": true
-                }
-              ]
-            },
-            {
-              "movement": "Dips",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "82.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "86.25",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "90",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
-                }
-              ]
-            },
-            {
-              "movement": "Squat",
-              "attempts": [
-                {
-                  "attempt_number": 1,
-                  "weight": "162.5",
-                  "is_successful": true
-                },
-                {
-                  "attempt_number": 2,
-                  "weight": "172.5",
-                  "is_successful": false,
-                  "judge_note": "Non-respect des ordres"
-                },
-                {
-                  "attempt_number": 3,
-                  "weight": "180",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
                 }
               ]
             }
@@ -1908,8 +1257,196 @@
           ]
         },
         {
-          "first_name": "Nassim",
-          "last_name": "AKEB",
+          "first_name": "Gregory",
+          "last_name": "COSTE",
+          "country": "FR",
+          "nationality": "French",
+          "bodyweight": "78.4",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "15",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "20",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "20",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "52.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "57.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "62.5",
+                  "is_successful": false,
+                  "judge_note": "Non-respect des ordres"
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "95",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "102.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "110",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "205",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "215",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "230",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Thibault",
+          "last_name": "DAUSQUE",
+          "country": "FR",
+          "nationality": "French",
+          "bodyweight": "79.9",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "20",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "28.5",
+                  "is_successful": false,
+                  "judge_note": "Positionnement non-conforme des poids"
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "71.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "95",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "100",
+                  "is_successful": false,
+                  "judge_note": "Amplitude hanches"
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "102.5",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "155",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "0.02",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "0.02",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "François",
+          "last_name": "DELAVEAU",
           "country": "FR",
           "nationality": "French",
           "bodyweight": "76.2",
@@ -1920,17 +1457,18 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "25",
+                  "weight": "5",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "30",
-                  "is_successful": true
+                  "weight": "10",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "31.25",
+                  "weight": "10",
                   "is_successful": false,
                   "judge_note": "[Autre]"
                 }
@@ -1941,17 +1479,18 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "57.5",
+                  "weight": "50",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "65",
-                  "is_successful": true
+                  "weight": "55",
+                  "is_successful": false,
+                  "judge_note": "Non-respect des ordres"
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "71.25",
+                  "weight": "56.25",
                   "is_successful": true
                 }
               ]
@@ -1966,13 +1505,12 @@
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "92.5",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
+                  "weight": "86.25",
+                  "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "92.5",
+                  "weight": "90",
                   "is_successful": false,
                   "judge_note": "[Autre]"
                 }
@@ -1983,30 +1521,31 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "197.5",
+                  "weight": "162.5",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "207.5",
-                  "is_successful": true
+                  "weight": "172.5",
+                  "is_successful": false,
+                  "judge_note": "Non-respect des ordres"
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "217.5",
+                  "weight": "180",
                   "is_successful": false,
-                  "judge_note": "Barre tombée"
+                  "judge_note": "[Autre]"
                 }
               ]
             }
           ]
         },
         {
-          "first_name": "Alexandre",
-          "last_name": "Thenoz",
+          "first_name": "Richard",
+          "last_name": "Fanfano",
           "country": "FR",
           "nationality": "French",
-          "bodyweight": "78.2",
+          "bodyweight": "75.6",
           "status": "competed",
           "lifts": [
             {
@@ -2014,17 +1553,18 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "17.5",
-                  "is_successful": true
+                  "weight": "16.25",
+                  "is_successful": false,
+                  "judge_note": "Cassage des hanches"
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "20",
+                  "weight": "21.25",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "22.5",
+                  "weight": "25",
                   "is_successful": true
                 }
               ]
@@ -2034,17 +1574,110 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "65",
+                  "weight": "57.5",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "71.25",
+                  "weight": "66.25",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "76.25",
+                  "weight": "72.5",
+                  "is_successful": false,
+                  "judge_note": "Passage du menton"
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "112.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "115",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "117.5",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "155",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "167.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "170",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Anaël",
+          "last_name": "GALOPIN",
+          "country": "FR",
+          "nationality": "French",
+          "bodyweight": "79.2",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "10",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "10",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "15",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "60",
+                  "is_successful": false,
+                  "judge_note": "Non-respect des ordres"
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "67.5",
                   "is_successful": true
                 }
               ]
@@ -2054,17 +1687,113 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "87.5",
+                  "weight": "85",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "96.25",
+                  "weight": "95",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "102.5",
+                  "weight": "100",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "187.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "197.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "200",
+                  "is_successful": true,
+                  "judge_note": "[Autre]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Loyan",
+          "last_name": "LANDES",
+          "country": "FR",
+          "nationality": "French",
+          "bodyweight": "76.1",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "12.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "15",
+                  "is_successful": false,
+                  "judge_note": "Utilisation d’un False Grip"
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "15",
+                  "is_successful": true,
+                  "judge_note": "Utilisation d’un False Grip"
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "55",
+                  "is_successful": true,
+                  "judge_note": "[Autre]"
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "57.5",
+                  "is_successful": true,
+                  "judge_note": "Passage du menton"
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "70",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "82.5",
                   "is_successful": true
                 }
               ]
@@ -2074,19 +1803,18 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "160",
+                  "weight": "100",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "172.5",
+                  "weight": "110",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "182.5",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
+                  "weight": "120",
+                  "is_successful": true
                 }
               ]
             }
@@ -2186,11 +1914,102 @@
           ]
         },
         {
-          "first_name": "Thibault",
-          "last_name": "DAUSQUE",
+          "first_name": "Hugo",
+          "last_name": "MEUNIER",
           "country": "FR",
           "nationality": "French",
-          "bodyweight": "79.9",
+          "bodyweight": "74.6",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "8.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "10",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "42.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "53.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "82.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "90",
+                  "is_successful": false,
+                  "judge_note": "[Autre]"
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "135",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "147.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "160",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Gaëtan",
+          "last_name": "Orru",
+          "country": "FR",
+          "nationality": "French",
+          "bodyweight": "74.9",
           "status": "competed",
           "lifts": [
             {
@@ -2208,9 +2027,193 @@
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "28.5",
+                  "weight": "27.5",
                   "is_successful": false,
-                  "judge_note": "Positionnement non-conforme des poids"
+                  "judge_note": "[Autre]"
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "62.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "68.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "70",
+                  "is_successful": false,
+                  "judge_note": "Passage du menton"
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "92.5",
+                  "is_successful": false,
+                  "judge_note": "Amplitude hanches"
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "100",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "103.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "177.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "187.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "200",
+                  "is_successful": false,
+                  "judge_note": "Barre tombée"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Ilyes",
+          "last_name": "PELLETIER",
+          "country": "FR",
+          "nationality": "French",
+          "bodyweight": "75.5",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "15",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "17.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "20",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "55",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "60",
+                  "is_successful": false,
+                  "judge_note": "Passage du menton"
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "95",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "103.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "107.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "165",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "175",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "185",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Alexandre",
+          "last_name": "Thenoz",
+          "country": "FR",
+          "nationality": "French",
+          "bodyweight": "78.2",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "17.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "20",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "22.5",
+                  "is_successful": true
                 }
               ]
             },
@@ -2229,7 +2232,7 @@
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "75",
+                  "weight": "76.25",
                   "is_successful": true
                 }
               ]
@@ -2239,20 +2242,18 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "95",
+                  "weight": "87.5",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "100",
-                  "is_successful": false,
-                  "judge_note": "Amplitude hanches"
+                  "weight": "96.25",
+                  "is_successful": true
                 },
                 {
                   "attempt_number": 3,
                   "weight": "102.5",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
+                  "is_successful": true
                 }
               ]
             },
@@ -2261,18 +2262,17 @@
               "attempts": [
                 {
                   "attempt_number": 1,
-                  "weight": "155",
+                  "weight": "160",
                   "is_successful": true
                 },
                 {
                   "attempt_number": 2,
-                  "weight": "0.02",
-                  "is_successful": false,
-                  "judge_note": "[Autre]"
+                  "weight": "172.5",
+                  "is_successful": true
                 },
                 {
                   "attempt_number": 3,
-                  "weight": "0.02",
+                  "weight": "182.5",
                   "is_successful": false,
                   "judge_note": "[Autre]"
                 }
