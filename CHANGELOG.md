@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.2.0...v0.3.0) (2026-08-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* **importer:** canonical format 1.2.0 ([#131](https://github.com/openstreetlifting/openstreetlifting/issues/131))
+* **importer:** canonical format 1.1.0 ([#124](https://github.com/openstreetlifting/openstreetlifting/issues/124))
+* **importer:** canonical json is the only ingest path ([#123](https://github.com/openstreetlifting/openstreetlifting/issues/123))
+* **api:** restful v1 surface ([#119](https://github.com/openstreetlifting/openstreetlifting/issues/119))
+
+### Features
+
+* **importer:** add import fmt ([#127](https://github.com/openstreetlifting/openstreetlifting/issues/127)) ([ac3e6ba](https://github.com/openstreetlifting/openstreetlifting/commit/ac3e6ba6255ef2fcba6f6908aac50c9c59b689ec))
+* **importer:** canonical format 1.1.0 ([#124](https://github.com/openstreetlifting/openstreetlifting/issues/124)) ([837a69a](https://github.com/openstreetlifting/openstreetlifting/commit/837a69aabdff67acbb3c9b831b5e35f7f1fff05b))
+* **importer:** canonical format 1.2.0 ([#131](https://github.com/openstreetlifting/openstreetlifting/issues/131)) ([f28703a](https://github.com/openstreetlifting/openstreetlifting/commit/f28703a21790161c76dc856bc68e88dc1e0779e3))
+* **skill:** add extract-competition skill ([#128](https://github.com/openstreetlifting/openstreetlifting/issues/128)) ([189b324](https://github.com/openstreetlifting/openstreetlifting/commit/189b3249ef3e45fa60848065ea611eb70d996ab9))
+
+
+### Bug Fixes
+
+* **deps:** update backend dependencies (cargo) ([#115](https://github.com/openstreetlifting/openstreetlifting/issues/115)) ([704e5a1](https://github.com/openstreetlifting/openstreetlifting/commit/704e5a1b7573b9199a4a059041d0add04844b603))
+* **deps:** update backend dependencies (cargo) to 0.7.0 ([#98](https://github.com/openstreetlifting/openstreetlifting/issues/98)) ([900f5fe](https://github.com/openstreetlifting/openstreetlifting/commit/900f5fe7d7ca353cf08ec01eed3e29350a81f181))
+
+
+### Refactoring
+
+* **api:** restful v1 surface ([#119](https://github.com/openstreetlifting/openstreetlifting/issues/119)) ([02f09be](https://github.com/openstreetlifting/openstreetlifting/commit/02f09be521e50025247a9772e159336df37e497e))
+* **backend:** enforce api / domain / storage boundaries ([#116](https://github.com/openstreetlifting/openstreetlifting/issues/116)) ([d85e004](https://github.com/openstreetlifting/openstreetlifting/commit/d85e0046fd0deafef39811b645fee765a5dbccb1))
+* **importer:** canonical json is the only ingest path ([#123](https://github.com/openstreetlifting/openstreetlifting/issues/123)) ([d6de6d2](https://github.com/openstreetlifting/openstreetlifting/commit/d6de6d213790c0d509f977ea718c542f68507286))
+
+
+### Documentation
+
+* **backend:** trim comments, fix stale test assertions ([#122](https://github.com/openstreetlifting/openstreetlifting/issues/122)) ([576bb40](https://github.com/openstreetlifting/openstreetlifting/commit/576bb4096f4ed4dcd26774104cc46329b2a535e7))
+
 ## [0.2.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.1.4...v0.2.0) (2026-05-27)
 
 
