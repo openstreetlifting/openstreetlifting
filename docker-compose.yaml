@@ -29,9 +29,8 @@ services:
     container_name: openstreetlifting_web_api
     restart: unless-stopped
     env_file:
-      - .env
+      - backend/.env
     environment:
-      DB_HOST: postgres
       HOST: 0.0.0.0
       DATABASE_URL: postgresql://${DB_USER:-appuser}:${DB_PASSWORD:-apppassword}@postgres:5432/${DB_NAME:-appdb}
     ports:
@@ -48,7 +47,7 @@ services:
       dockerfile: Dockerfile
     container_name: openstreetlifting_importer
     env_file:
-      - .env
+      - backend/.env
     environment:
       DATABASE_URL: postgresql://${DB_USER:-appuser}:${DB_PASSWORD:-apppassword}@postgres:5432/${DB_NAME:-appdb}
     networks:
