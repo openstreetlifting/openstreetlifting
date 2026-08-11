@@ -185,9 +185,11 @@ impl<'a> CompetitionRepository<'a> {
 
         let categories = sqlx::query_as!(
             CategoryRow,
-            "SELECT DISTINCT c.category_id, c.name, c.gender, c.weight_class_min, c.weight_class_max
+            "SELECT DISTINCT c.category_id, c.name, c.gender,
+                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
              FROM categories c
              JOIN competition_participants cp ON c.category_id = cp.category_id
+             JOIN weight_classes wc ON wc.weight_class_id = c.weight_class_id
              WHERE cp.competition_id = $1",
             competition.competition_id
         )

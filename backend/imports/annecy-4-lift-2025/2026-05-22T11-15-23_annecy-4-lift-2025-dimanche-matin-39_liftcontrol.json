@@ -883,7 +883,7 @@
     {
       "name": "Catégorie -80",
       "gender": "M",
-      "weight_class_max": "80",
+      "weight_class_slug": "M-80",
       "athletes": [
         {
           "first_name": "Nassim",

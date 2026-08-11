@@ -165,6 +165,45 @@ impl<'a> CanonicalTransformer<'a> {
         Ok(())
     }
 
+    /// Finds the weight class the category's bounds describe, creating it if
+    /// the meet runs one outside the standard ladder.
+    async fn resolve_weight_class(
+        &self,
+        category: &CategoryData,
+        tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
+    ) -> Result<Uuid> {
+        let (min, max) = match category.weight_class_slug.as_ref() {
+            Some(slug) => slug.bounds(),
+            None => (category.weight_class_min, category.weight_class_max),
+        };
+
+        if min.is_none() && max.is_none() {
+            return Err(ImporterError::TransformationError(format!(
+                "Category '{}' has no weight class. Set weight_class_slug, or \
+                 weight_class_min and weight_class_max",
+                category.name
+            )));
+        }
+
+        // The no-op SET is what makes RETURNING fire on an existing row.
+        let weight_class_id = sqlx::query_scalar!(
+            r#"
+            INSERT INTO weight_classes (gender, min_kg, max_kg)
+            VALUES ($1, $2, $3)
+            ON CONFLICT ON CONSTRAINT weight_class_bounds_unique
+            DO UPDATE SET gender = EXCLUDED.gender
+            RETURNING weight_class_id as "weight_class_id: Uuid"
+            "#,
+            category.gender.as_str(),
+            min,
+            max
+        )
+        .fetch_one(&mut **tx)
+        .await?;
+
+        Ok(weight_class_id)
+    }
+
     async fn upsert_category(
         &self,
         category: &CategoryData,
@@ -180,20 +219,12 @@ impl<'a> CanonicalTransformer<'a> {
         .fetch_optional(&mut **tx)
         .await?;
 
-        let (min, max) = match category.weight_class_slug.as_ref() {
-            Some(slug) => slug.bounds(),
-            None => (category.weight_class_min, category.weight_class_max),
-        };
+        let weight_class_id = self.resolve_weight_class(category, tx).await?;
 
         if let Some(id) = existing {
             sqlx::query!(
-                r#"
-                UPDATE categories
-                SET weight_class_min = $1, weight_class_max = $2
-                WHERE category_id = $3
-                "#,
-                min,
-                max,
+                r#"UPDATE categories SET weight_class_id = $1 WHERE category_id = $2"#,
+                weight_class_id,
                 id
             )
             .execute(&mut **tx)
@@ -204,14 +235,13 @@ impl<'a> CanonicalTransformer<'a> {
 
         let category_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO categories (name, gender, weight_class_min, weight_class_max)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO categories (name, gender, weight_class_id)
+            VALUES ($1, $2, $3)
             RETURNING category_id as "category_id: Uuid"
             "#,
             category.name,
             gender,
-            min,
-            max
+            weight_class_id
         )
         .fetch_one(&mut **tx)
         .await?;

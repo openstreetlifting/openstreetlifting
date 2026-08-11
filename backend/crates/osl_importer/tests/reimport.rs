@@ -99,7 +99,10 @@ async fn reimport_corrects_category_bounds(pool: PgPool) {
         .unwrap();
 
     let category = sqlx::query!(
-        r#"SELECT weight_class_min, weight_class_max FROM categories WHERE name = 'Test category'"#
+        r#"SELECT wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
+           FROM categories c
+           JOIN weight_classes wc USING (weight_class_id)
+           WHERE c.name = 'Test category'"#
     )
     .fetch_one(&pool)
     .await
@@ -118,7 +121,10 @@ async fn open_class_is_stored_as_a_lower_bound(pool: PgPool) {
         .unwrap();
 
     let category = sqlx::query!(
-        r#"SELECT weight_class_min, weight_class_max FROM categories WHERE name = 'Test category'"#
+        r#"SELECT wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
+           FROM categories c
+           JOIN weight_classes wc USING (weight_class_id)
+           WHERE c.name = 'Test category'"#
     )
     .fetch_one(&pool)
     .await

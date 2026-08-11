@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE categories SET weight_class_id = $1 WHERE category_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "30939151f2567cd540c00f633b7fb3aa2af80b9094ff868b08b6b7897ca159f9"
+}

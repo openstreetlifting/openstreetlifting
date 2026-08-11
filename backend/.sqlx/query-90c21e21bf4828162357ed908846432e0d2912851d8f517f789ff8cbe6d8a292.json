@@ -1,0 +1,30 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO weight_classes (gender, min_kg, max_kg)\n            VALUES ($1, $2, $3)\n            ON CONFLICT ON CONSTRAINT weight_class_bounds_unique\n            DO UPDATE SET gender = EXCLUDED.gender\n            RETURNING weight_class_id as \"weight_class_id: Uuid\"\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "weight_class_id: Uuid",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "weight_classes",
+            "name": "weight_class_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Numeric",
+        "Numeric"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "90c21e21bf4828162357ed908846432e0d2912851d8f517f789ff8cbe6d8a292"
+}
