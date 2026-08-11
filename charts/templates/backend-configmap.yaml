@@ -9,7 +9,3 @@ data:
   HOST: {{ .Values.backend.config.host | quote }}
   PORT: {{ .Values.backend.config.port | quote }}
   LOG_FORMAT: {{ .Values.backend.config.logFormat | quote }}
-  DB_USER: {{ .Values.backend.config.db.user | quote }}
-  DB_NAME: {{ .Values.backend.config.db.name | quote }}
-  DB_HOST: {{ .Values.backend.config.db.host | quote }}
-  DB_PORT: {{ .Values.backend.config.db.port | quote }}

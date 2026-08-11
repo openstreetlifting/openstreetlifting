@@ -30,6 +30,14 @@ spec:
                 name: openstreetlifting-backend-config
             - secretRef:
                 name: osl-backend-secret
+          env:
+            # Published by the Postgres operator, so a rotated password costs
+            # a pod restart and nothing else.
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.backend.database.secretName }}
+                  key: {{ .Values.backend.database.urlKey }}
           livenessProbe:
             httpGet:
               path: /health/live
