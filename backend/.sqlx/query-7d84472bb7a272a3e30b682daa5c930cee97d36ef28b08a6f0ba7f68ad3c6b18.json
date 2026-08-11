@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM lifts\n            WHERE participant_id = ANY($1::uuid[]) AND lift_id <> ALL($2::uuid[])\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "UuidArray",
+        "UuidArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "7d84472bb7a272a3e30b682daa5c930cee97d36ef28b08a6f0ba7f68ad3c6b18"
+}

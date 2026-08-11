@@ -4,6 +4,7 @@ use osl_importer::canonical::{
     validator::CanonicalValidator,
 };
 use sqlx::postgres::PgPoolOptions;
+use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -217,6 +218,57 @@ async fn collect_json_files(
     Ok(())
 }
 
+/// An import owns its whole competition and removes the rows its file does not
+/// list, so two files claiming one slug would each delete the other's results.
+/// Sessions of the same meet belong in one file, and that has to hold before
+/// anything is written.
+async fn ensure_one_file_per_competition(
+    files: &[PathBuf],
+) -> Result<(), Box<dyn std::error::Error>> {
+    let mut by_slug: BTreeMap<String, Vec<&PathBuf>> = BTreeMap::new();
+
+    for file in files {
+        // Unreadable and malformed files are the import loop's to report.
+        let Ok(content) = tokio::fs::read_to_string(file).await else {
+            continue;
+        };
+        let Ok(canonical) = serde_json::from_str::<CanonicalFormat>(&content) else {
+            continue;
+        };
+
+        by_slug
+            .entry(canonical.competition.slug)
+            .or_default()
+            .push(file);
+    }
+
+    let clashes: Vec<_> = by_slug
+        .iter()
+        .filter(|(_, files)| files.len() > 1)
+        .collect();
+
+    if clashes.is_empty() {
+        return Ok(());
+    }
+
+    for (slug, files) in &clashes {
+        tracing::error!(
+            "Competition '{}' is claimed by {} files:",
+            slug,
+            files.len()
+        );
+        for file in files.iter() {
+            tracing::error!("  {}", file.display());
+        }
+    }
+
+    Err(format!(
+        "{} competition slug(s) claimed by more than one file. Merge them into one file per competition",
+        clashes.len()
+    )
+    .into())
+}
+
 async fn handle_bulk_import(
     directory: PathBuf,
     validate_only: bool,
@@ -237,6 +289,8 @@ async fn handle_bulk_import(
 
     json_files.sort();
     tracing::info!("Found {} canonical JSON file(s)", json_files.len());
+
+    ensure_one_file_per_competition(&json_files).await?;
 
     let pool = if !validate_only {
         tracing::info!("Connecting to database...");
