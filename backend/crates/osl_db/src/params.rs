@@ -4,7 +4,6 @@
 //! independent of the HTTP layer. osl_api converts its validated request
 //! bodies into these on the way in.
 
-use chrono::NaiveDate;
 use rust_decimal::Decimal;
 use uuid::Uuid;
 
@@ -16,54 +15,6 @@ use uuid::Uuid;
 pub struct Page {
     pub limit: i64,
     pub offset: i64,
-}
-
-#[derive(Debug, Clone)]
-pub struct NewAthlete {
-    pub first_name: String,
-    pub last_name: String,
-    pub gender: String,
-    pub nationality: Option<String>,
-    pub country: String,
-    pub profile_picture_url: Option<String>,
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct AthleteUpdate {
-    pub first_name: Option<String>,
-    pub last_name: Option<String>,
-    pub gender: Option<String>,
-    pub nationality: Option<String>,
-    pub country: Option<String>,
-    pub profile_picture_url: Option<String>,
-}
-
-#[derive(Debug, Clone)]
-pub struct NewCompetition {
-    pub name: String,
-    pub slug: String,
-    pub status: String,
-    pub federation_id: Uuid,
-    pub venue: Option<String>,
-    pub city: Option<String>,
-    pub country: Option<String>,
-    pub start_date: NaiveDate,
-    pub end_date: NaiveDate,
-    pub number_of_judge: Option<i16>,
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct CompetitionUpdate {
-    pub name: Option<String>,
-    pub slug: Option<String>,
-    pub status: Option<String>,
-    pub federation_id: Option<Uuid>,
-    pub venue: Option<String>,
-    pub city: Option<String>,
-    pub country: Option<String>,
-    pub start_date: Option<NaiveDate>,
-    pub end_date: Option<NaiveDate>,
-    pub number_of_judge: Option<i16>,
 }
 
 /// Movement the global ranking is sorted by.

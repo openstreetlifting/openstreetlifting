@@ -5,7 +5,6 @@ pub struct Config {
     pub host: String,
     pub port: u16,
     pub database_url: String,
-    pub api_keys: String,
 }
 
 impl Config {
@@ -17,7 +16,6 @@ impl Config {
                 .parse()?,
             database_url: std::env::var("DATABASE_URL")
                 .context("Cannot load DATABASE_URL env variable")?,
-            api_keys: std::env::var("API_KEYS").unwrap_or_default(),
         })
     }
 }

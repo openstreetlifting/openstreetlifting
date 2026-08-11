@@ -1,5 +1,4 @@
 use chrono::NaiveDateTime;
-use osl_db::params::{AthleteUpdate, NewAthlete};
 use osl_db::projections::athlete::{AthleteCompetitionRow, AthleteDetail, PersonalRecordRow};
 use osl_db::rows::athlete::AthleteRow;
 use serde::{Deserialize, Serialize};
@@ -49,26 +48,6 @@ pub struct PersonalRecord {
     pub competition_name: String,
     pub competition_slug: String,
     pub date: Option<chrono::NaiveDate>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct CreateAthleteRequest {
-    pub first_name: String,
-    pub last_name: String,
-    pub gender: String,
-    pub nationality: Option<String>,
-    pub country: String,
-    pub profile_picture_url: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct UpdateAthleteRequest {
-    pub first_name: Option<String>,
-    pub last_name: Option<String>,
-    pub gender: Option<String>,
-    pub nationality: Option<String>,
-    pub country: Option<String>,
-    pub profile_picture_url: Option<String>,
 }
 
 impl From<AthleteRow> for AthleteResponse {
@@ -139,31 +118,5 @@ impl AthleteResponse {
                 Some(personal_records.into_iter().map(Into::into).collect());
         }
         response
-    }
-}
-
-impl From<&CreateAthleteRequest> for NewAthlete {
-    fn from(req: &CreateAthleteRequest) -> Self {
-        Self {
-            first_name: req.first_name.clone(),
-            last_name: req.last_name.clone(),
-            gender: req.gender.clone(),
-            nationality: req.nationality.clone(),
-            country: req.country.clone(),
-            profile_picture_url: req.profile_picture_url.clone(),
-        }
-    }
-}
-
-impl From<&UpdateAthleteRequest> for AthleteUpdate {
-    fn from(req: &UpdateAthleteRequest) -> Self {
-        Self {
-            first_name: req.first_name.clone(),
-            last_name: req.last_name.clone(),
-            gender: req.gender.clone(),
-            nationality: req.nationality.clone(),
-            country: req.country.clone(),
-            profile_picture_url: req.profile_picture_url.clone(),
-        }
     }
 }

@@ -3,14 +3,11 @@ use crate::error::{WebError, WebResult};
 use axum::{
     Json,
     extract::{Path, Query, State},
-    http::{StatusCode, header::LOCATION},
-    response::IntoResponse,
 };
-use osl_db::params::{CompetitionUpdate, NewCompetition};
 use osl_db::repository::competition::CompetitionRepository;
 use serde::Deserialize;
 
-use super::dto::{CompetitionResponse, CreateCompetitionRequest, UpdateCompetitionRequest};
+use super::dto::CompetitionResponse;
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
@@ -112,102 +109,4 @@ pub async fn get_competition(
 
     let competition = repo.find_by_slug(&slug).await?;
     Ok(Json(CompetitionResponse::from(competition)))
-}
-
-#[utoipa::path(
-    post,
-    path = "/api/v1/competitions",
-    request_body = CreateCompetitionRequest,
-    security(
-        ("bearer_auth" = [])
-    ),
-    responses(
-        (status = 201, description = "Competition created", body = CompetitionResponse,
-         headers(("Location" = String, description = "URL of the created competition"))),
-        (status = 400, description = "Validation error"),
-        (status = 401, description = "Unauthorized"),
-        (status = 409, description = "Slug already exists")
-    ),
-    tag = "competitions"
-)]
-pub async fn create_competition(
-    State(state): State<AppState>,
-    Json(req): Json<CreateCompetitionRequest>,
-) -> WebResult<impl IntoResponse> {
-    req.validate_dates()
-        .map_err(|e| WebError::BadRequest(e.to_string()))?;
-
-    let repo = CompetitionRepository::new(state.db.pool());
-    let competition = repo.create(&NewCompetition::from(&req)).await?;
-
-    let location = format!("/api/v1/competitions/{}", competition.slug);
-
-    Ok((
-        StatusCode::CREATED,
-        [(LOCATION, location)],
-        Json(CompetitionResponse::from(competition)),
-    ))
-}
-
-#[utoipa::path(
-    patch,
-    path = "/api/v1/competitions/{slug}",
-    params(
-        ("slug" = String, Path, description = "Competition slug")
-    ),
-    request_body = UpdateCompetitionRequest,
-    security(
-        ("bearer_auth" = [])
-    ),
-    responses(
-        (status = 200, description = "Competition updated", body = CompetitionResponse),
-        (status = 400, description = "Validation error"),
-        (status = 401, description = "Unauthorized"),
-        (status = 404, description = "Competition not found")
-    ),
-    tag = "competitions"
-)]
-pub async fn update_competition(
-    State(state): State<AppState>,
-    Path(slug): Path<String>,
-    Json(update_req): Json<UpdateCompetitionRequest>,
-) -> WebResult<Json<CompetitionResponse>> {
-    let repo = CompetitionRepository::new(state.db.pool());
-    let existing = repo.find_by_slug(&slug).await?;
-    let updated = repo
-        .update(
-            existing.competition_id,
-            &existing,
-            &CompetitionUpdate::from(&update_req),
-        )
-        .await?;
-
-    Ok(Json(CompetitionResponse::from(updated)))
-}
-
-#[utoipa::path(
-    delete,
-    path = "/api/v1/competitions/{slug}",
-    params(
-        ("slug" = String, Path, description = "Competition slug")
-    ),
-    security(
-        ("bearer_auth" = [])
-    ),
-    responses(
-        (status = 204, description = "Competition deleted"),
-        (status = 401, description = "Unauthorized"),
-        (status = 404, description = "Competition not found")
-    ),
-    tag = "competitions"
-)]
-pub async fn delete_competition(
-    State(state): State<AppState>,
-    Path(slug): Path<String>,
-) -> WebResult<StatusCode> {
-    let repo = CompetitionRepository::new(state.db.pool());
-    let competition = repo.find_by_slug(&slug).await?;
-    repo.delete(competition.competition_id).await?;
-
-    Ok(StatusCode::NO_CONTENT)
 }

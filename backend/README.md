@@ -43,12 +43,13 @@ cargo sqlx prepare --workspace
 | `DATABASE_URL` | PostgreSQL connection string | Required    |
 | `HOST`         | Server bind address          | `127.0.0.1` |
 | `PORT`         | Server port                  | `8080`      |
-| `API_KEYS`     | Comma-separated API keys     | Optional    |
 | `RUST_LOG`     | Logging level                | `info`      |
 
-## API keys
+## Writing data
 
-Some endpoints (usually modifying data need Bearer authentication, the API_KEYS env variable will be read as a comma seperated list of api keys, for local env you can put pretty much what you want.
+The API is read-only and needs no authentication. Competition data comes from
+the canonical files in `imports/`, loaded with the `import` binary. Correcting
+results means editing a file and importing it again.
 
 ## API Documentation
 

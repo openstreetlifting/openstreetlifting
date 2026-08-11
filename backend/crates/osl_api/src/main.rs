@@ -23,19 +23,16 @@ mod competition;
 mod config;
 mod error;
 mod health;
-mod middleware;
 mod ranking;
 mod ris;
 mod router;
 mod shared;
 
 use config::Config;
-use middleware::auth::ApiKeys;
 
 #[derive(Clone)]
 pub struct AppState {
     pub db: Arc<Database>,
-    pub api_keys: ApiKeys,
 }
 
 #[derive(OpenApi)]
@@ -43,26 +40,17 @@ pub struct AppState {
     paths(
         competition::handlers::list_competitions,
         competition::handlers::get_competition,
-        competition::handlers::create_competition,
-        competition::handlers::update_competition,
-        competition::handlers::delete_competition,
         athlete::handlers::list_athletes,
         athlete::handlers::get_athlete,
-        athlete::handlers::create_athlete,
-        athlete::handlers::update_athlete,
-        athlete::handlers::delete_athlete,
         ranking::handler::get_global_ranking,
         ris::handlers::list_ris_formulas,
         ris::handlers::get_current_formula,
         ris::handlers::get_formula_by_year,
         ris::handlers::calculate_ris,
         ris::handlers::get_participant_ris_scores,
-        ris::handlers::recompute_ris_scores,
     ),
     components(
         schemas(
-            crate::competition::dto::CreateCompetitionRequest,
-            crate::competition::dto::UpdateCompetitionRequest,
             crate::competition::dto::CompetitionResponse,
             crate::competition::dto::CategoryDetail,
             crate::competition::dto::ParticipantDetail,
@@ -72,8 +60,6 @@ pub struct AppState {
             crate::competition::dto::CategoryInfo,
             crate::competition::dto::AthleteInfo,
             crate::competition::dto::MovementInfo,
-            crate::athlete::dto::CreateAthleteRequest,
-            crate::athlete::dto::UpdateAthleteRequest,
             crate::athlete::dto::AthleteResponse,
             crate::athlete::dto::AthleteCompetitionSummary,
             crate::athlete::dto::PersonalRecord,
@@ -98,27 +84,8 @@ pub struct AppState {
         (name = "rankings", description = "Public ranking endpoints"),
         (name = "ris", description = "RIS formulas and score computation"),
     ),
-    modifiers(&SecurityAddon)
 )]
 struct ApiDoc;
-
-struct SecurityAddon;
-
-impl utoipa::Modify for SecurityAddon {
-    fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
-        if let Some(components) = openapi.components.as_mut() {
-            components.add_security_scheme(
-                "bearer_auth",
-                utoipa::openapi::security::SecurityScheme::Http(
-                    utoipa::openapi::security::HttpBuilder::new()
-                        .scheme(utoipa::openapi::security::HttpAuthScheme::Bearer)
-                        .bearer_format("API Key")
-                        .build(),
-                ),
-            )
-        }
-    }
-}
 
 #[derive(Clone, Default)]
 struct MakeRequestUuid;
@@ -180,10 +147,7 @@ async fn main() -> anyhow::Result<()> {
         .context("Failed to run migrations")?;
     tracing::info!("Database migrations completed successfully");
 
-    let state = AppState {
-        db: Arc::new(db),
-        api_keys: ApiKeys::from_comma_separated(&config.api_keys),
-    };
+    let state = AppState { db: Arc::new(db) };
 
     let bind_address = format!("{}:{}", config.host, config.port);
     tracing::info!("Starting server at http://{}", bind_address);
@@ -237,7 +201,7 @@ async fn main() -> anyhow::Result<()> {
     let app = Router::new()
         .merge(health::routes::router())
         .merge(swagger_ui)
-        .nest("/api/v1", router::api_router(state.clone()))
+        .nest("/api/v1", router::api_router())
         .layer(middleware_stack)
         .with_state(state);
 
