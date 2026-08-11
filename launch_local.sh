@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Postgres runs in a container so it matches CI. The backend and frontend run
-# natively, because a bind mounted target directory turns a 15 second
-# incremental build into a cold one.
+# Postgres in a container to match CI. The apps run natively, rebuilding Rust
+# in a container is too slow to work with.
 set -euo pipefail
 
 cd "$(dirname "$0")"
