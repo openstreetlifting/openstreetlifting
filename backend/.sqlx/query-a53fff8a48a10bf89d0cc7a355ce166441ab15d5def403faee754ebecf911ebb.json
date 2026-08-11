@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE athletes\n                SET nationality = COALESCE($1, nationality)\n                WHERE athlete_id = $2\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a53fff8a48a10bf89d0cc7a355ce166441ab15d5def403faee754ebecf911ebb"
+}

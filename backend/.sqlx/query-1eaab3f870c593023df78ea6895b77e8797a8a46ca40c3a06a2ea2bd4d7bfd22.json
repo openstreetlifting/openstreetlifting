@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT nationality FROM athletes WHERE last_name = 'Doe'",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "nationality",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "nationality"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "1eaab3f870c593023df78ea6895b77e8797a8a46ca40c3a06a2ea2bd4d7bfd22"
+}

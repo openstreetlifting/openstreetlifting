@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE federations\n                SET abbreviation = COALESCE($1, abbreviation),\n                    country = COALESCE($2, country)\n                WHERE federation_id = $3\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "db8f9ffc6f0b976803672ce3a74e2a4f401cc8746b6226a9f03c2cfd81134ade"
+}
