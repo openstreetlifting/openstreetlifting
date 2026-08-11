@@ -11,14 +11,34 @@ This Readme only cover developer documentation, if you want to know about the wh
 
 ## Run locally
 
-The project architecture is a monorepo, containing the Rust backend (ETL Pipeline, API, DB, Domain), and the Svelte Kit Frontend.
-You can either run the project by using the [docker compose](./docker-compose.yaml)
+Requires docker, rust with `sqlx-cli`, and pnpm.
+
+```sh
+cp backend/.env.example backend/.env
+docker compose up -d --wait postgres
+cd backend
+sqlx migrate run --source crates/osl_db/migrations
+cargo run -p osl_importer --bin import -- bulk-import
+cd ../frontend && pnpm install
+```
+
+```sh
+./launch_local.sh
+```
+
+API on <http://localhost:8080>, Swagger at `/swagger-ui/`, frontend on <http://localhost:5173>.
+
+Reset the database, then rerun the migration and import:
+
+```sh
+cd backend && sqlx database drop -y && sqlx database create
+```
+
+Everything in containers:
 
 ```sh
 docker compose up -d --build
 ```
-
-Or by running each service individually
 
 ## Contributing
 
