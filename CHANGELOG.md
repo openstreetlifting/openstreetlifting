@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.4.0...v0.5.0) (2026-08-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **domain:** record whether a RIS score is computed or reported ([#161](https://github.com/openstreetlifting/openstreetlifting/issues/161))
+
+### Features
+
+* **domain:** record whether a RIS score is computed or reported ([#161](https://github.com/openstreetlifting/openstreetlifting/issues/161)) ([05c7233](https://github.com/openstreetlifting/openstreetlifting/commit/05c723302cf03c0187a5ff55ec9891903a6f9589))
+
 ## [0.4.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.3.2...v0.4.0) (2026-08-11)
 
 
