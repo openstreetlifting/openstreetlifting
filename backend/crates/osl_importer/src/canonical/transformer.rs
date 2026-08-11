@@ -101,6 +101,20 @@ impl<'a> CanonicalTransformer<'a> {
         .await?;
 
         if let Some(id) = existing {
+            sqlx::query!(
+                r#"
+                UPDATE federations
+                SET abbreviation = COALESCE($1, abbreviation),
+                    country = COALESCE($2, country)
+                WHERE federation_id = $3
+                "#,
+                federation.abbreviation,
+                federation.country.map(|c| c.as_str().to_owned()),
+                id
+            )
+            .execute(&mut **tx)
+            .await?;
+
             return Ok(id);
         }
 
@@ -166,14 +180,27 @@ impl<'a> CanonicalTransformer<'a> {
         .fetch_optional(&mut **tx)
         .await?;
 
-        if let Some(id) = existing {
-            return Ok(id);
-        }
-
         let (min, max) = match category.weight_class_slug.as_ref() {
             Some(slug) => slug.bounds(),
             None => (None, category.weight_class_max),
         };
+
+        if let Some(id) = existing {
+            sqlx::query!(
+                r#"
+                UPDATE categories
+                SET weight_class_min = $1, weight_class_max = $2
+                WHERE category_id = $3
+                "#,
+                min,
+                max,
+                id
+            )
+            .execute(&mut **tx)
+            .await?;
+
+            return Ok(id);
+        }
 
         let category_id = sqlx::query_scalar!(
             r#"
@@ -263,6 +290,19 @@ impl<'a> CanonicalTransformer<'a> {
         .await?;
 
         if let Some(id) = existing {
+            // COALESCE because a missing nationality means unknown, not cleared.
+            sqlx::query!(
+                r#"
+                UPDATE athletes
+                SET nationality = COALESCE($1, nationality)
+                WHERE athlete_id = $2
+                "#,
+                athlete.nationality.map(|c| c.as_str().to_owned()),
+                id
+            )
+            .execute(&mut **tx)
+            .await?;
+
             return Ok(id);
         }
 
