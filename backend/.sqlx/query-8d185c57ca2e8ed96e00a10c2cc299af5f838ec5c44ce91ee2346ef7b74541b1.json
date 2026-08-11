@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT DISTINCT c.category_id, c.name, c.gender, c.weight_class_min, c.weight_class_max\n             FROM categories c\n             JOIN competition_participants cp ON c.category_id = cp.category_id\n             WHERE cp.competition_id = $1",
+  "query": "SELECT DISTINCT c.category_id, c.name, c.gender,\n                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max\n             FROM categories c\n             JOIN competition_participants cp ON c.category_id = cp.category_id\n             JOIN weight_classes wc ON wc.weight_class_id = c.weight_class_id\n             WHERE cp.competition_id = $1",
   "describe": {
     "columns": [
       {
@@ -42,8 +42,8 @@
         "type_info": "Numeric",
         "origin": {
           "Table": {
-            "table": "categories",
-            "name": "weight_class_min"
+            "table": "weight_classes",
+            "name": "min_kg"
           }
         }
       },
@@ -53,8 +53,8 @@
         "type_info": "Numeric",
         "origin": {
           "Table": {
-            "table": "categories",
-            "name": "weight_class_max"
+            "table": "weight_classes",
+            "name": "max_kg"
           }
         }
       }
@@ -72,5 +72,5 @@
       true
     ]
   },
-  "hash": "b10fbfeab89923869bd0eb5886f2816a5341b4f13c6b50d26434f4f4425c29b7"
+  "hash": "8d185c57ca2e8ed96e00a10c2cc299af5f838ec5c44ce91ee2346ef7b74541b1"
 }
