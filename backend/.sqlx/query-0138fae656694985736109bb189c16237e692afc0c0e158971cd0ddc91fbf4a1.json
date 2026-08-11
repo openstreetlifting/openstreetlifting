@@ -1,0 +1,37 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, venue, city, country, number_of_judge)\n            VALUES ($1, $2, COALESCE($3, 'completed'), $4, $5, $6, $7, $8, $9, $10)\n            ON CONFLICT (slug)\n            DO UPDATE SET\n                name = EXCLUDED.name,\n                status = COALESCE($3, competitions.status),\n                venue = EXCLUDED.venue,\n                city = EXCLUDED.city,\n                country = EXCLUDED.country,\n                number_of_judge = EXCLUDED.number_of_judge\n            RETURNING competition_id as \"competition_id: Uuid\"\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "competition_id: Uuid",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "competition_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Text",
+        "Uuid",
+        "Date",
+        "Date",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Int2"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "0138fae656694985736109bb189c16237e692afc0c0e158971cd0ddc91fbf4a1"
+}

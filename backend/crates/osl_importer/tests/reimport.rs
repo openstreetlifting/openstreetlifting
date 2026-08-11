@@ -1,6 +1,7 @@
 //! A canonical file is built up over several passes, so importing a corrected
 //! file has to land the correction rather than stop at the row already there.
 
+use osl_domain::CompetitionStatus;
 use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
@@ -63,6 +64,44 @@ fn canonical(weight_class: &str, nationality: Option<&str>) -> CanonicalFormat {
 
 fn slug(slug: &str) -> String {
     format!(r#""weight_class_slug": "{}","#, slug)
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn a_file_without_a_status_imports_as_completed(pool: PgPool) {
+    let transformer = CanonicalTransformer::new(&pool);
+
+    transformer
+        .import_to_database(canonical(&slug("M-73"), Some("FR")))
+        .await
+        .unwrap();
+
+    let status: String =
+        sqlx::query_scalar!(r#"SELECT status FROM competitions WHERE slug = 'test-open'"#)
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+    assert_eq!(status, "completed");
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn reimport_keeps_a_status_the_file_does_not_state(pool: PgPool) {
+    let transformer = CanonicalTransformer::new(&pool);
+
+    let mut cancelled = canonical(&slug("M-73"), Some("FR"));
+    cancelled.competition.status = Some(CompetitionStatus::Cancelled);
+    transformer.import_to_database(cancelled).await.unwrap();
+
+    transformer
+        .import_to_database(canonical(&slug("M-73"), Some("FR")))
+        .await
+        .unwrap();
+
+    let status: String =
+        sqlx::query_scalar!(r#"SELECT status FROM competitions WHERE slug = 'test-open'"#)
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+    assert_eq!(status, "cancelled");
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
