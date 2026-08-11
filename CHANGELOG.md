@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.3.2...v0.4.0) (2026-08-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **chart:** read DATABASE_URL from the postgres operator secret ([#156](https://github.com/openstreetlifting/openstreetlifting/issues/156))
+* **db:** categories reference weight_classes ([#148](https://github.com/openstreetlifting/openstreetlifting/issues/148))
+* **importer:** canonical format 1.3.0 with explicit weight class bounds ([#146](https://github.com/openstreetlifting/openstreetlifting/issues/146))
+
+### Features
+
+* **db:** add weight_classes table keyed on bounds ([#147](https://github.com/openstreetlifting/openstreetlifting/issues/147)) ([1a3e6bf](https://github.com/openstreetlifting/openstreetlifting/commit/1a3e6bf436daddf45ef3e0049fc14be327014a33))
+* **db:** categories reference weight_classes ([#148](https://github.com/openstreetlifting/openstreetlifting/issues/148)) ([cc09480](https://github.com/openstreetlifting/openstreetlifting/commit/cc094806ef670c03c9f46c33d94a81a480b2560d))
+* **importer:** canonical format 1.3.0 with explicit weight class bounds ([#146](https://github.com/openstreetlifting/openstreetlifting/issues/146)) ([17ba977](https://github.com/openstreetlifting/openstreetlifting/commit/17ba9770c761644f0a335f1f417d1dc72e155b10))
+
+
+### Bug Fixes
+
+* **importer:** apply corrections on re-import ([#141](https://github.com/openstreetlifting/openstreetlifting/issues/141)) ([44b0d05](https://github.com/openstreetlifting/openstreetlifting/commit/44b0d0598ec0cf53631b370150ad190d0df50f18))
+* **importer:** import competitions as completed when the file omits status ([#149](https://github.com/openstreetlifting/openstreetlifting/issues/149)) ([30ebc06](https://github.com/openstreetlifting/openstreetlifting/commit/30ebc066cc8627bc05d7f920454273a4af93c35c))
+
+
+### Chores
+
+* **chart:** read DATABASE_URL from the postgres operator secret ([#156](https://github.com/openstreetlifting/openstreetlifting/issues/156)) ([2339d54](https://github.com/openstreetlifting/openstreetlifting/commit/2339d545155e683c864610e24953dce9568805ce))
+
 ## [0.3.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.3.1...v0.3.2) (2026-08-10)
 
 
