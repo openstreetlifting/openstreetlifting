@@ -3,7 +3,7 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
-use crate::params::{AthleteUpdate, NewAthlete, Page};
+use crate::params::Page;
 use crate::projections::athlete::{AthleteCompetitionRow, AthleteDetail, PersonalRecordRow};
 use crate::rows::athlete::AthleteRow;
 
@@ -201,107 +201,5 @@ impl<'a> AthleteRepository<'a> {
         }
 
         Ok(final_slug)
-    }
-
-    pub async fn create(&self, new: &NewAthlete) -> Result<AthleteRow> {
-        let slug = self
-            .generate_unique_slug(&new.first_name, &new.last_name)
-            .await?;
-
-        let athlete = sqlx::query_as!(
-            AthleteRow,
-            r#"
-            INSERT INTO athletes (first_name, last_name, gender, nationality, country, profile_picture_url, slug)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING athlete_id, first_name, last_name, gender, created_at,
-                      nationality, country, profile_picture_url, slug,
-                      COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
-            "#,
-            new.first_name,
-            new.last_name,
-            new.gender,
-            new.nationality,
-            new.country,
-            new.profile_picture_url,
-            slug
-        )
-        .fetch_one(self.pool)
-        .await?;
-
-        Ok(athlete)
-    }
-
-    pub async fn update(
-        &self,
-        id: Uuid,
-        existing: &AthleteRow,
-        update: &AthleteUpdate,
-    ) -> Result<AthleteRow> {
-        let first_name = update.first_name.as_ref().unwrap_or(&existing.first_name);
-        let last_name = update.last_name.as_ref().unwrap_or(&existing.last_name);
-        let gender = update.gender.as_ref().unwrap_or(&existing.gender);
-        let nationality = update
-            .nationality
-            .as_ref()
-            .or(existing.nationality.as_ref());
-        let country = update.country.as_ref().unwrap_or(&existing.country);
-        let profile_picture_url = update
-            .profile_picture_url
-            .as_ref()
-            .or(existing.profile_picture_url.as_ref());
-
-        let (slug, slug_history) = if update.first_name.is_some() || update.last_name.is_some() {
-            let new_slug = self.generate_unique_slug(first_name, last_name).await?;
-            let mut history = existing.slug_history.0.clone();
-            history.push(existing.slug.clone());
-            (new_slug, sqlx::types::Json(history))
-        } else {
-            (existing.slug.clone(), existing.slug_history.clone())
-        };
-
-        let athlete = sqlx::query_as!(
-            AthleteRow,
-            r#"
-            UPDATE athletes
-            SET first_name = $2,
-                last_name = $3,
-                gender = $4,
-                nationality = $5,
-                country = $6,
-                profile_picture_url = $7,
-                slug = $8,
-                slug_history = $9
-            WHERE athlete_id = $1
-            RETURNING athlete_id, first_name, last_name, gender, created_at,
-                      nationality, country, profile_picture_url, slug,
-                      COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
-            "#,
-            id,
-            first_name,
-            last_name,
-            gender,
-            nationality,
-            country,
-            profile_picture_url,
-            slug,
-            slug_history as _
-        )
-        .fetch_optional(self.pool)
-        .await?
-        .ok_or(StorageError::NotFound)?;
-
-        Ok(athlete)
-    }
-
-    pub async fn delete(&self, id: Uuid) -> Result<()> {
-        let result = sqlx::query!("DELETE FROM athletes WHERE athlete_id = $1", id)
-            .execute(self.pool)
-            .await?;
-
-        if result.rows_affected() == 0 {
-            return Err(StorageError::NotFound);
-        }
-
-        Ok(())
     }
 }

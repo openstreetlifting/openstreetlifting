@@ -39,6 +39,11 @@ enum Commands {
         #[arg(long)]
         validate_only: bool,
     },
+    /// Recompute every stored RIS score against the current formula.
+    ///
+    /// Scores a source reported itself are left alone. Only needed after a
+    /// formula version changes; an import already scores what it touches.
+    RecomputeRis,
     /// Rewrite canonical files in their canonical shape.
     Fmt {
         /// Files or directories. Directories are searched for .json.
@@ -82,6 +87,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
             handle_bulk_import(directory, validate_only, database_url).await?;
         }
+        Commands::RecomputeRis => {
+            let database_url = require_database_url(cli.database_url.as_deref(), false)?;
+            handle_recompute_ris(database_url).await?;
+        }
         Commands::Fmt { paths, check } => {
             handle_fmt(&paths, check).await?;
         }
@@ -99,6 +108,19 @@ fn require_database_url(
         None if validate_only => Ok(""),
         None => Err("DATABASE_URL is required to import. Pass --validate-only to skip it".into()),
     }
+}
+
+async fn handle_recompute_ris(database_url: &str) -> Result<(), Box<dyn std::error::Error>> {
+    tracing::info!("Connecting to database...");
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect(database_url)
+        .await?;
+
+    let count = osl_db::services::ris_computation::recompute_all_ris(&pool, None).await?;
+    tracing::info!("✓ Recomputed RIS for {} participant(s)", count);
+
+    Ok(())
 }
 
 async fn handle_fmt(paths: &[PathBuf], check: bool) -> Result<(), Box<dyn std::error::Error>> {

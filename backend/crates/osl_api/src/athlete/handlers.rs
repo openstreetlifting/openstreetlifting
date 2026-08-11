@@ -3,14 +3,11 @@ use crate::error::{WebError, WebResult};
 use axum::{
     Json,
     extract::{Path, Query, State},
-    http::{StatusCode, header::LOCATION},
-    response::IntoResponse,
 };
-use osl_db::params::{AthleteUpdate, NewAthlete};
 use osl_db::repository::athlete::AthleteRepository;
 use serde::Deserialize;
 
-use super::dto::{AthleteResponse, CreateAthleteRequest, UpdateAthleteRequest};
+use super::dto::AthleteResponse;
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
@@ -85,98 +82,4 @@ pub async fn get_athlete(
 
     let athlete = repo.find_by_slug(&slug).await?;
     Ok(Json(AthleteResponse::from(athlete)))
-}
-
-#[utoipa::path(
-    post,
-    path = "/api/v1/athletes",
-    request_body = CreateAthleteRequest,
-    security(
-        ("bearer_auth" = [])
-    ),
-    responses(
-        (status = 201, description = "Athlete created", body = AthleteResponse,
-         headers(("Location" = String, description = "URL of the created athlete"))),
-        (status = 400, description = "Validation error"),
-        (status = 401, description = "Unauthorized")
-    ),
-    tag = "athletes"
-)]
-pub async fn create_athlete(
-    State(state): State<AppState>,
-    Json(req): Json<CreateAthleteRequest>,
-) -> WebResult<impl IntoResponse> {
-    let repo = AthleteRepository::new(state.db.pool());
-    let athlete = repo.create(&NewAthlete::from(&req)).await?;
-
-    let location = format!("/api/v1/athletes/{}", athlete.slug);
-
-    Ok((
-        StatusCode::CREATED,
-        [(LOCATION, location)],
-        Json(AthleteResponse::from(athlete)),
-    ))
-}
-
-#[utoipa::path(
-    patch,
-    path = "/api/v1/athletes/{slug}",
-    params(
-        ("slug" = String, Path, description = "Athlete slug")
-    ),
-    request_body = UpdateAthleteRequest,
-    security(
-        ("bearer_auth" = [])
-    ),
-    responses(
-        (status = 200, description = "Athlete updated", body = AthleteResponse),
-        (status = 400, description = "Validation error"),
-        (status = 401, description = "Unauthorized"),
-        (status = 404, description = "Athlete not found")
-    ),
-    tag = "athletes"
-)]
-pub async fn update_athlete(
-    State(state): State<AppState>,
-    Path(slug): Path<String>,
-    Json(update_req): Json<UpdateAthleteRequest>,
-) -> WebResult<Json<AthleteResponse>> {
-    let repo = AthleteRepository::new(state.db.pool());
-    let existing = repo.find_by_slug(&slug).await?;
-    let updated = repo
-        .update(
-            existing.athlete_id,
-            &existing,
-            &AthleteUpdate::from(&update_req),
-        )
-        .await?;
-
-    Ok(Json(AthleteResponse::from(updated)))
-}
-
-#[utoipa::path(
-    delete,
-    path = "/api/v1/athletes/{slug}",
-    params(
-        ("slug" = String, Path, description = "Athlete slug")
-    ),
-    security(
-        ("bearer_auth" = [])
-    ),
-    responses(
-        (status = 204, description = "Athlete deleted"),
-        (status = 401, description = "Unauthorized"),
-        (status = 404, description = "Athlete not found")
-    ),
-    tag = "athletes"
-)]
-pub async fn delete_athlete(
-    State(state): State<AppState>,
-    Path(slug): Path<String>,
-) -> WebResult<StatusCode> {
-    let repo = AthleteRepository::new(state.db.pool());
-    let athlete = repo.find_by_slug(&slug).await?;
-    repo.delete(athlete.athlete_id).await?;
-
-    Ok(StatusCode::NO_CONTENT)
 }

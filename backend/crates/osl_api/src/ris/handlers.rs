@@ -141,23 +141,3 @@ pub async fn calculate_ris(
 
     Ok(Json(response))
 }
-
-#[utoipa::path(
-    post,
-    path = "/api/v1/ris/recomputations",
-    responses(
-        (status = 200, description = "RIS scores recomputed successfully"),
-        (status = 500, description = "Recomputation failed")
-    ),
-    tag = "ris"
-)]
-pub async fn recompute_ris_scores(
-    State(state): State<AppState>,
-) -> WebResult<Json<serde_json::Value>> {
-    let count = osl_db::services::ris_computation::recompute_all_ris(state.db.pool(), None).await?;
-
-    Ok(Json(serde_json::json!({
-        "recomputed_count": count,
-        "message": format!("Successfully recomputed RIS for {} participants", count)
-    })))
-}

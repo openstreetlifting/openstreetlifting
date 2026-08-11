@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
-use crate::params::{CompetitionUpdate, NewCompetition, Page};
+use crate::params::Page;
 use crate::projections::competition::{
     AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem, LiftDetail,
     ParticipantDetail,
@@ -296,115 +296,5 @@ impl<'a> CompetitionRepository<'a> {
             federation,
             categories: category_details,
         })
-    }
-
-    pub async fn create(&self, new: &NewCompetition) -> Result<CompetitionRow> {
-        let competition = sqlx::query_as!(
-            CompetitionRow,
-            r#"
-            INSERT INTO competitions (
-                name, slug, status, federation_id, venue, city, country,
-                start_date, end_date, number_of_judge
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-            RETURNING competition_id, name, created_at, slug, status, federation_id,
-                      venue, city, country, start_date, end_date, number_of_judge
-            "#,
-            new.name,
-            new.slug,
-            new.status,
-            new.federation_id,
-            new.venue,
-            new.city,
-            new.country,
-            new.start_date,
-            new.end_date,
-            new.number_of_judge
-        )
-        .fetch_one(self.pool)
-        .await
-        .map_err(|e| {
-            if let sqlx::Error::Database(ref db_err) = e
-                && db_err.code().as_deref() == Some("23505")
-            {
-                return StorageError::ConstraintViolation("Slug already exists".to_string());
-            }
-            StorageError::from(e)
-        })?;
-
-        Ok(competition)
-    }
-
-    pub async fn update(
-        &self,
-        id: Uuid,
-        existing: &CompetitionRow,
-        update: &CompetitionUpdate,
-    ) -> Result<CompetitionRow> {
-        let name = update.name.as_ref().unwrap_or(&existing.name);
-        let slug = update.slug.as_ref().unwrap_or(&existing.slug);
-        let status = update.status.as_ref().unwrap_or(&existing.status);
-        let federation_id = update.federation_id.unwrap_or(existing.federation_id);
-        let venue = update.venue.as_ref().or(existing.venue.as_ref());
-        let city = update.city.as_ref().or(existing.city.as_ref());
-        let country = update.country.as_ref().or(existing.country.as_ref());
-        let start_date = update.start_date.or(existing.start_date);
-        let end_date = update.end_date.or(existing.end_date);
-        let number_of_judge = update.number_of_judge.or(existing.number_of_judge);
-
-        let competition = sqlx::query_as!(
-            CompetitionRow,
-            r#"
-            UPDATE competitions
-            SET
-                name = $2,
-                slug = $3,
-                status = $4,
-                federation_id = $5,
-                venue = $6,
-                city = $7,
-                country = $8,
-                start_date = $9,
-                end_date = $10,
-                number_of_judge = $11
-            WHERE competition_id = $1
-            RETURNING competition_id, name, created_at, slug, status, federation_id,
-                      venue, city, country, start_date, end_date, number_of_judge
-            "#,
-            id,
-            name,
-            slug,
-            status,
-            federation_id,
-            venue,
-            city,
-            country,
-            start_date,
-            end_date,
-            number_of_judge
-        )
-        .fetch_optional(self.pool)
-        .await?
-        .ok_or(StorageError::NotFound)?;
-
-        Ok(competition)
-    }
-
-    pub async fn delete(&self, id: Uuid) -> Result<()> {
-        let result = sqlx::query!(
-            r#"
-            DELETE FROM competitions
-            WHERE competition_id = $1
-            "#,
-            id
-        )
-        .execute(self.pool)
-        .await?;
-
-        if result.rows_affected() == 0 {
-            return Err(StorageError::NotFound);
-        }
-
-        Ok(())
     }
 }

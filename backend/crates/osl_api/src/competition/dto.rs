@@ -1,5 +1,4 @@
 use chrono::NaiveDate;
-use osl_db::params::{CompetitionUpdate, NewCompetition};
 use osl_db::projections::competition::{
     AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem,
     LiftDetail as DbLiftDetail, ParticipantDetail as DbParticipantDetail,
@@ -13,36 +12,6 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::shared::query::Include;
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct CreateCompetitionRequest {
-    pub name: String,
-    pub slug: String,
-
-    #[serde(default = "default_status")]
-    pub status: String,
-    pub federation_id: Uuid,
-    pub venue: Option<String>,
-    pub city: Option<String>,
-    pub country: Option<String>,
-    pub start_date: NaiveDate,
-    pub end_date: NaiveDate,
-    pub number_of_judge: Option<i16>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct UpdateCompetitionRequest {
-    pub name: Option<String>,
-    pub slug: Option<String>,
-    pub status: Option<String>,
-    pub federation_id: Option<Uuid>,
-    pub venue: Option<String>,
-    pub city: Option<String>,
-    pub country: Option<String>,
-    pub start_date: Option<NaiveDate>,
-    pub end_date: Option<NaiveDate>,
-    pub number_of_judge: Option<i16>,
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CompetitionResponse {
@@ -136,27 +105,6 @@ pub struct AttemptInfo {
     pub is_successful: bool,
     pub passing_judges: Option<i16>,
     pub no_rep_reason: Option<String>,
-}
-
-fn default_status() -> String {
-    "draft".to_string()
-}
-
-impl CreateCompetitionRequest {
-    pub fn validate_dates(&self) -> Result<(), &'static str> {
-        if self.end_date < self.start_date {
-            return Err("End date must be on or after start date");
-        }
-
-        if let Some(judges) = self.number_of_judge
-            && judges != 1
-            && judges != 3
-        {
-            return Err("Number of judges must be 1 or 3");
-        }
-
-        Ok(())
-    }
 }
 
 impl From<CompetitionRow> for CompetitionResponse {
@@ -310,39 +258,5 @@ impl CompetitionResponse {
             response.categories = Some(categories.into_iter().map(Into::into).collect());
         }
         response
-    }
-}
-
-impl From<&CreateCompetitionRequest> for NewCompetition {
-    fn from(req: &CreateCompetitionRequest) -> Self {
-        Self {
-            name: req.name.clone(),
-            slug: req.slug.clone(),
-            status: req.status.clone(),
-            federation_id: req.federation_id,
-            venue: req.venue.clone(),
-            city: req.city.clone(),
-            country: req.country.clone(),
-            start_date: req.start_date,
-            end_date: req.end_date,
-            number_of_judge: req.number_of_judge,
-        }
-    }
-}
-
-impl From<&UpdateCompetitionRequest> for CompetitionUpdate {
-    fn from(req: &UpdateCompetitionRequest) -> Self {
-        Self {
-            name: req.name.clone(),
-            slug: req.slug.clone(),
-            status: req.status.clone(),
-            federation_id: req.federation_id,
-            venue: req.venue.clone(),
-            city: req.city.clone(),
-            country: req.country.clone(),
-            start_date: req.start_date,
-            end_date: req.end_date,
-            number_of_judge: req.number_of_judge,
-        }
     }
 }
