@@ -117,7 +117,7 @@
     return String.fromCodePoint(...codePoints);
   }
 
-  function formatRIS(ris: number): string {
+  function formatRIS(ris: number | null): string {
     return ris && ris > 0 ? ris.toFixed(2) : '-';
   }
 </script>

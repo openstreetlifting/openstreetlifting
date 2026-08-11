@@ -96,6 +96,7 @@ mod tests {
             nationality: None,
             team: None,
             bodyweight: Some(Decimal::from_str("78.50").unwrap()),
+            ris: None,
             status: AthleteStatus::Competed,
             status_reason: None,
             lifts: movements

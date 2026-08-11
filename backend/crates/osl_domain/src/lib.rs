@@ -5,6 +5,7 @@ pub mod error;
 pub mod gender;
 pub mod normalized_name;
 pub mod ris;
+pub mod ris_source;
 pub mod weight_class;
 
 pub use athlete_status::AthleteStatus;
@@ -13,4 +14,5 @@ pub use country::CountryCode;
 pub use gender::Gender;
 pub use normalized_name::NormalizedAthleteName;
 pub use ris::{FormulaConstants, RisFormula};
+pub use ris_source::RisSource;
 pub use weight_class::{WeightClass, WeightClassSlug};

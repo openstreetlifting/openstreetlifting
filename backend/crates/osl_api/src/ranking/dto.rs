@@ -68,7 +68,9 @@ impl GlobalRankingFilter {
 pub struct GlobalRankingEntry {
     pub rank: i64,
     pub athlete: AthleteInfo,
-    pub ris: f64,
+    /// Absent when no score could be established, rather than zero.
+    pub ris: Option<f64>,
+    pub ris_source: Option<String>,
     pub total: f64,
     pub muscleup: f64,
     pub pullup: f64,
@@ -108,7 +110,8 @@ impl From<RankingRow> for GlobalRankingEntry {
                 gender: row.gender,
                 bodyweight: row.bodyweight.map(decimal_to_f64),
             },
-            ris: row.ris_score.map(decimal_to_f64).unwrap_or(0.0),
+            ris: row.ris_score.map(decimal_to_f64),
+            ris_source: row.ris_source,
             total: decimal_to_f64(row.total),
             muscleup: decimal_to_f64(row.muscleup),
             pullup: decimal_to_f64(row.pullup),

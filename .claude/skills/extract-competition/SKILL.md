@@ -62,12 +62,12 @@ them loses real data.
 
 ## Format
 
-`format_version` is `1.3.0`. Required fields have no marker; `?` means
+`format_version` is `1.4.0`. Required fields have no marker; `?` means
 optional and should be omitted when unknown.
 
 ```jsonc
 {
-  "format_version": "1.3.0",
+  "format_version": "1.4.0",
   "source": {
     "type": "html",              // api | html | pdf | csv | image | manual
     "url": "https://...",        // ?
@@ -109,6 +109,8 @@ optional and should be omitted when unknown.
           "nationality": "FR",       // ? citizenship if it differs
           "team": "...",             // ?
           "bodyweight": "88.7",      // ?
+          "ris": "84.21",            // ? only when the source gives a
+                                     //   score and no bodyweight
           "status": "competed",      // competed | disqualified
           "status_reason": "...",    // ? why disqualified
           "lifts": [
@@ -162,13 +164,14 @@ Wrong `format_version`, empty `extractor`, a country that is not two letters,
 a gender outside `M` `F` `MX`, a status outside the five listed, a judge count
 other than 1 or 3, `end_date` before `start_date`, a duplicate or unnamed
 movement, a movement `order` below 1, a category setting both the slug and the
-raw bounds, a `weight_class_min` above its `weight_class_max`, a lift naming a
+raw bounds, a `weight_class_min` above its `weight_class_max`, an athlete setting both
+`bodyweight` and `ris`, a lift naming a
 movement not in `movements`, a lift with no attempts, an `attempt_number`
 outside 1 to 3, a negative weight.
 
 ### What it only warns about
 
-Missing venue, city, judges or bodyweight. A category with no weight class at
+Missing venue, city or judges. An athlete with neither bodyweight nor ris. A category with no weight class at
 all. A category with no athletes. An athlete with no lifts. These are normal for a file still being built, so
 warnings are expected mid-construction and are not something to fix by
 inventing data.

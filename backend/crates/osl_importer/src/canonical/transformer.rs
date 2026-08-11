@@ -270,14 +270,16 @@ impl<'a> CanonicalTransformer<'a> {
         sqlx::query!(
             r#"
             INSERT INTO competition_participants
-                (competition_id, category_id, athlete_id, bodyweight, rank, is_disqualified, disqualified_reason)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+                (competition_id, category_id, athlete_id, bodyweight, rank, is_disqualified, disqualified_reason, ris_score, ris_source)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END)
             ON CONFLICT (competition_id, category_id, athlete_id)
             DO UPDATE SET
                 bodyweight = EXCLUDED.bodyweight,
                 rank = EXCLUDED.rank,
                 is_disqualified = EXCLUDED.is_disqualified,
-                disqualified_reason = EXCLUDED.disqualified_reason
+                disqualified_reason = EXCLUDED.disqualified_reason,
+                ris_score = EXCLUDED.ris_score,
+                ris_source = EXCLUDED.ris_source
             "#,
             competition_id,
             category_id,
@@ -285,7 +287,8 @@ impl<'a> CanonicalTransformer<'a> {
             athlete.bodyweight,
             None as Option<i32>,
             is_disqualified,
-            athlete.status_reason
+            athlete.status_reason,
+            athlete.ris
         )
         .execute(&mut **tx)
         .await?;
@@ -534,6 +537,7 @@ impl<'a> CanonicalTransformer<'a> {
             INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
             LEFT JOIN lifts l ON l.participant_id = cp.participant_id
             WHERE cp.competition_id = $1
+              AND cp.ris_source IS DISTINCT FROM 'reported'
             GROUP BY cp.participant_id, cp.athlete_id, cp.bodyweight, a.gender
             "#,
             competition_id
@@ -561,7 +565,7 @@ impl<'a> CanonicalTransformer<'a> {
                 sqlx::query!(
                     r#"
                     UPDATE competition_participants
-                    SET ris_score = $1
+                    SET ris_score = $1, ris_source = 'computed'
                     WHERE participant_id = $2
                     "#,
                     ris_score,

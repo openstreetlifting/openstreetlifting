@@ -4,7 +4,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 /// Format version this build reads and writes.
-pub const FORMAT_VERSION: &str = "1.3.0";
+pub const FORMAT_VERSION: &str = "1.4.0";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CanonicalFormat {
@@ -146,6 +146,11 @@ pub struct AthleteData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bodyweight: Option<Decimal>,
+
+    /// Score as the source stated it, for sources that publish a RIS but no
+    /// bodyweight. Never set alongside `bodyweight`, which we compute from.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ris: Option<Decimal>,
 
     pub status: AthleteStatus,
 

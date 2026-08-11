@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO competition_participants\n                (competition_id, category_id, athlete_id, bodyweight, rank, is_disqualified, disqualified_reason, ris_score, ris_source)\n            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END)\n            ON CONFLICT (competition_id, category_id, athlete_id)\n            DO UPDATE SET\n                bodyweight = EXCLUDED.bodyweight,\n                rank = EXCLUDED.rank,\n                is_disqualified = EXCLUDED.is_disqualified,\n                disqualified_reason = EXCLUDED.disqualified_reason,\n                ris_score = EXCLUDED.ris_score,\n                ris_source = EXCLUDED.ris_source\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Numeric",
+        "Int4",
+        "Bool",
+        "Text",
+        "Numeric"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "df02a0377b3d16abc8cbbc83cd91a2f19bba86073789b6ecccca0a7e6071a3bb"
+}
