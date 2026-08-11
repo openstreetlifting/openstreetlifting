@@ -99,9 +99,7 @@ optional and should be omitted when unknown.
     {
       "name": "Catégorie -80",
       "gender": "M",             // M, F or MX
-      "weight_class_slug": "M-80",   // ? standard class, see list below
-      "weight_class_max": "80",      // ? non standard class only
-      "is_open_category": true,      // ? non standard class only
+      "weight_class_slug": "M-80",   // standard class, see list below
       "athletes": [
         {
           "first_name": "Timothée",
@@ -128,6 +126,14 @@ optional and should be omitted when unknown.
           ]
         }
       ]
+    },
+    {
+      // A class outside the standard ladder: raw bounds instead of a slug.
+      "name": "Catégorie -75",
+      "gender": "M",
+      "weight_class_max": "75",
+      "is_open_category": false,   // ?
+      "athletes": []
     }
   ]
 }
