@@ -34,6 +34,9 @@ pub fn normalize(canonical: &mut CanonicalFormat) {
     canonical.categories.sort_by(|a, b| a.name.cmp(&b.name));
 
     for category in &mut canonical.categories {
+        if let Some(min) = category.weight_class_min.as_mut() {
+            *min = min.normalize();
+        }
         if let Some(max) = category.weight_class_max.as_mut() {
             *max = max.normalize();
         }
@@ -162,8 +165,8 @@ mod tests {
                     name: "M-87".to_string(),
                     gender: Gender::M,
                     weight_class_slug: None,
+                    weight_class_min: None,
                     weight_class_max: Some(Decimal::from_str("87.0").unwrap()),
-                    is_open_category: None,
                     athletes: vec![
                         athlete("Bob", "Zulu", &["Squat", "Muscle-up"]),
                         athlete("Alice", "Alpha", &["Squat", "Muscle-up"]),
@@ -173,8 +176,8 @@ mod tests {
                     name: "M-80".to_string(),
                     gender: Gender::M,
                     weight_class_slug: None,
+                    weight_class_min: None,
                     weight_class_max: Some(Decimal::from(80)),
-                    is_open_category: None,
                     athletes: vec![],
                 },
             ],

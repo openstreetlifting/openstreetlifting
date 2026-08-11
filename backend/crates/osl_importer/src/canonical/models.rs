@@ -4,7 +4,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 /// Format version this build reads and writes.
-pub const FORMAT_VERSION: &str = "1.2.0";
+pub const FORMAT_VERSION: &str = "1.3.0";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CanonicalFormat {
@@ -115,11 +115,12 @@ pub struct CategoryData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weight_class_slug: Option<WeightClassSlug>,
 
+    /// Lower bound, exclusive. Set on its own for an open class such as +87.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub weight_class_max: Option<Decimal>,
+    pub weight_class_min: Option<Decimal>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_open_category: Option<bool>,
+    pub weight_class_max: Option<Decimal>,
 
     pub athletes: Vec<AthleteData>,
 }

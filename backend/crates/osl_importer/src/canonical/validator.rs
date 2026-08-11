@@ -102,13 +102,33 @@ impl CanonicalValidator {
                     .errors
                     .push("Category name cannot be empty".to_string());
             }
-            if category.weight_class_slug.is_some()
-                && (category.weight_class_max.is_some() || category.is_open_category.is_some())
-            {
+            let has_raw_bounds =
+                category.weight_class_min.is_some() || category.weight_class_max.is_some();
+
+            if category.weight_class_slug.is_some() && has_raw_bounds {
                 report.errors.push(format!(
                     "Category '{}' sets weight_class_slug and raw bounds. The slug already \
-                     carries them, so keep the slug for a standard class and the raw fields \
+                     carries them, so keep the slug for a standard class and the raw bounds \
                      only for a non standard one",
+                    category.name
+                ));
+            }
+
+            if let (Some(min), Some(max)) = (category.weight_class_min, category.weight_class_max)
+                && min >= max
+            {
+                report.errors.push(format!(
+                    "Category '{}' has weight_class_min {} above weight_class_max {}",
+                    category.name, min, max
+                ));
+            }
+
+            // Without a bound the class limit lives only in the name, so it is
+            // lost as data. The +87 category was imported that way.
+            if category.weight_class_slug.is_none() && !has_raw_bounds {
+                report.warnings.push(format!(
+                    "Category '{}' has no weight class. Set weight_class_slug for a standard \
+                     class, or weight_class_min and weight_class_max for a non standard one",
                     category.name
                 ));
             }
@@ -253,8 +273,8 @@ mod tests {
                 name: "M-80".to_string(),
                 gender: Gender::M,
                 weight_class_slug: None,
+                weight_class_min: None,
                 weight_class_max: Some(Decimal::from(80)),
-                is_open_category: None,
                 athletes: vec![AthleteData {
                     first_name: "Adrien".to_string(),
                     last_name: "Pelfresne".to_string(),
