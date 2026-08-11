@@ -22,4 +22,5 @@ pub struct RankingRow {
     pub squat: Decimal,
     pub total: Decimal,
     pub ris_score: Option<Decimal>,
+    pub ris_source: Option<String>,
 }

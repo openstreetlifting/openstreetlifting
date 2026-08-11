@@ -76,12 +76,12 @@ impl<'a> RankingRepository<'a> {
                     COALESCE(MAX(CASE WHEN l.movement_name = 'Dips' THEN l.max_weight END), 0) as dips,
                     COALESCE(MAX(CASE WHEN l.movement_name = 'Squat' THEN l.max_weight END), 0) as squat,
                     COALESCE(SUM(l.max_weight), 0) as total,
-                    MAX(rsh.ris_score) as ris_score
+                    cp.ris_score,
+                    cp.ris_source
                 FROM competition_participants cp
                 INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
                 INNER JOIN competitions c ON cp.competition_id = c.competition_id
                 INNER JOIN lifts l ON cp.participant_id = l.participant_id
-                LEFT JOIN ris_scores_history rsh ON rsh.participant_id = cp.participant_id
                 WHERE 1=1
             "#,
         );
@@ -99,7 +99,8 @@ impl<'a> RankingRepository<'a> {
         query.push(
             r#"
                 GROUP BY cp.participant_id, a.athlete_id, a.first_name, a.last_name,
-                         a.slug, a.country, a.gender, cp.bodyweight, c.competition_id, c.name, c.start_date
+                         a.slug, a.country, a.gender, cp.bodyweight, cp.ris_score, cp.ris_source,
+                         c.competition_id, c.name, c.start_date
             ),
             ranked_movements AS (
                 SELECT *, ROW_NUMBER() OVER (ORDER BY

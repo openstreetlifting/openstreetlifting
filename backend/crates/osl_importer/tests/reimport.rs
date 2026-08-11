@@ -5,10 +5,16 @@ use osl_domain::CompetitionStatus;
 use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
+use std::str::FromStr;
 
 /// `weight_class` is the raw JSON for the class fields, so a test can pass a
 /// slug or raw bounds without a second fixture.
 fn canonical(weight_class: &str, nationality: Option<&str>) -> CanonicalFormat {
+    scored(weight_class, nationality, r#""bodyweight": "72.5","#)
+}
+
+/// `score` is the raw JSON for bodyweight or ris, so a test can pick which.
+fn scored(weight_class: &str, nationality: Option<&str>, score: &str) -> CanonicalFormat {
     let nationality = match nationality {
         Some(code) => format!(r#""nationality": "{}","#, code),
         None => String::new(),
@@ -16,7 +22,7 @@ fn canonical(weight_class: &str, nationality: Option<&str>) -> CanonicalFormat {
 
     serde_json::from_str(&format!(
         r#"{{
-          "format_version": "1.3.0",
+          "format_version": "1.4.0",
           "source": {{
             "type": "manual",
             "extracted_at": "2025-06-01T10:00:00Z",
@@ -42,7 +48,7 @@ fn canonical(weight_class: &str, nationality: Option<&str>) -> CanonicalFormat {
                   "last_name": "Doe",
                   "country": "FR",
                   {}
-                  "bodyweight": "72.5",
+                  {}
                   "status": "competed",
                   "lifts": [
                     {{
@@ -57,7 +63,7 @@ fn canonical(weight_class: &str, nationality: Option<&str>) -> CanonicalFormat {
             }}
           ]
         }}"#,
-        weight_class, nationality
+        weight_class, nationality, score
     ))
     .expect("fixture is a valid canonical file")
 }
@@ -190,4 +196,59 @@ async fn reimport_without_nationality_keeps_the_known_one(pool: PgPool) {
         .await
         .unwrap();
     assert_eq!(athlete.nationality.as_deref(), Some("FR"));
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn a_reported_score_is_kept_and_marked(pool: PgPool) {
+    let transformer = CanonicalTransformer::new(&pool);
+
+    transformer
+        .import_to_database(scored(&slug("M-73"), Some("FR"), r#""ris": "84.21","#))
+        .await
+        .unwrap();
+
+    let row =
+        sqlx::query!(r#"SELECT ris_score, ris_source, bodyweight FROM competition_participants"#)
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+
+    assert_eq!(row.ris_score, Some(Decimal::from_str("84.21").unwrap()));
+    assert_eq!(row.ris_source.as_deref(), Some("reported"));
+    assert_eq!(row.bodyweight, None);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn a_computed_score_is_marked_as_ours(pool: PgPool) {
+    let transformer = CanonicalTransformer::new(&pool);
+
+    transformer
+        .import_to_database(canonical(&slug("M-73"), Some("FR")))
+        .await
+        .unwrap();
+
+    let row = sqlx::query!(r#"SELECT ris_score, ris_source FROM competition_participants"#)
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+
+    assert!(row.ris_score.is_some());
+    assert_eq!(row.ris_source.as_deref(), Some("computed"));
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn a_recompute_leaves_a_reported_score_alone(pool: PgPool) {
+    let transformer = CanonicalTransformer::new(&pool);
+
+    let file = scored(&slug("M-73"), Some("FR"), r#""ris": "84.21","#);
+    transformer.import_to_database(file.clone()).await.unwrap();
+    transformer.import_to_database(file).await.unwrap();
+
+    let row = sqlx::query!(r#"SELECT ris_score, ris_source FROM competition_participants"#)
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+
+    assert_eq!(row.ris_score, Some(Decimal::from_str("84.21").unwrap()));
+    assert_eq!(row.ris_source.as_deref(), Some("reported"));
 }

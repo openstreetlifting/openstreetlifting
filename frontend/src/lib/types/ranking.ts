@@ -4,7 +4,8 @@ import type { Paginated } from './pagination';
 export interface RankingEntry {
   rank: number;
   athlete: AthleteInfo;
-  ris: number;
+  ris: number | null;
+  ris_source: 'computed' | 'reported' | null;
   total: number;
   muscleup: number;
   pullup: number;

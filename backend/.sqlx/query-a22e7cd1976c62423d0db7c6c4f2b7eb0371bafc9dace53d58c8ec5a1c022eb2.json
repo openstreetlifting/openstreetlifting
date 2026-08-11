@@ -1,0 +1,50 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT ris_score, ris_source, bodyweight FROM competition_participants",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "ris_score",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "ris_score"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "ris_source",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "ris_source"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "bodyweight",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "bodyweight"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "a22e7cd1976c62423d0db7c6c4f2b7eb0371bafc9dace53d58c8ec5a1c022eb2"
+}

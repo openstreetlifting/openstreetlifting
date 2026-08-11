@@ -155,10 +155,19 @@ impl CanonicalValidator {
                         category.name
                     ));
                 }
-                if athlete.bodyweight.is_none() {
-                    report
-                        .warnings
-                        .push(format!("Athlete '{}' is missing bodyweight", athlete_label));
+                match (athlete.bodyweight, athlete.ris) {
+                    (Some(_), Some(_)) => report.errors.push(format!(
+                        "Athlete '{}' sets both bodyweight and ris. We compute the score from \
+                         the bodyweight, so give ris only when the source states a score and \
+                         no bodyweight",
+                        athlete_label
+                    )),
+                    (None, None) => report.warnings.push(format!(
+                        "Athlete '{}' has neither bodyweight nor ris, so no score can be \
+                         recorded",
+                        athlete_label
+                    )),
+                    _ => {}
                 }
 
                 if athlete.lifts.is_empty() {
@@ -283,6 +292,7 @@ mod tests {
                     nationality: None,
                     team: None,
                     bodyweight: Some(Decimal::from(78)),
+                    ris: None,
                     status: AthleteStatus::Competed,
                     status_reason: None,
                     lifts: vec![LiftData {
