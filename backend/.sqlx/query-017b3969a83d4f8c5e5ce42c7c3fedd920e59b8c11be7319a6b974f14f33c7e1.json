@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM competition_movements\n            WHERE competition_id = $1 AND movement_name <> ALL($2::text[])\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "TextArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "017b3969a83d4f8c5e5ce42c7c3fedd920e59b8c11be7319a6b974f14f33c7e1"
+}

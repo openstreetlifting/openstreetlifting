@@ -9,6 +9,15 @@ pub struct CanonicalTransformer<'a> {
     pool: &'a PgPool,
 }
 
+/// Every row the file just wrote, so anything else belonging to the
+/// competition can be recognised as absent and removed.
+#[derive(Default)]
+struct ImportedFacts {
+    participants: Vec<Uuid>,
+    lifts: Vec<Uuid>,
+    attempts: Vec<Uuid>,
+}
+
 impl<'a> CanonicalTransformer<'a> {
     pub fn new(pool: &'a PgPool) -> Self {
         Self { pool }
@@ -24,6 +33,8 @@ impl<'a> CanonicalTransformer<'a> {
         self.upsert_competition_movements(competition_id, &canonical.movements, &mut tx)
             .await?;
 
+        let mut imported = ImportedFacts::default();
+
         for category in &canonical.categories {
             let category_id = self.upsert_category(category, &mut tx).await?;
 
@@ -33,18 +44,100 @@ impl<'a> CanonicalTransformer<'a> {
                     category,
                     competition_id,
                     category_id,
-                    &canonical.movements,
+                    &mut imported,
                     &mut tx,
                 )
                 .await?;
             }
         }
 
+        self.prune_absent_facts(competition_id, &canonical, &imported, &mut tx)
+            .await?;
+
         info!("Computing RIS scores for all participants...");
         self.compute_ris_for_competition(competition_id, canonical.competition.start_date, &mut tx)
             .await?;
 
         tx.commit().await?;
+        Ok(())
+    }
+
+    /// A canonical file is the whole truth about its competition, so a row it
+    /// no longer lists has been corrected away and must go. Only facts the
+    /// competition owns are pruned: athletes, categories, weight classes,
+    /// movements and federations are shared between competitions and stay.
+    ///
+    /// Order matters. Participants go first and take their lifts, attempts and
+    /// RIS history with them through the foreign keys, which leaves the later
+    /// statements looking only at the participants and lifts that survived.
+    async fn prune_absent_facts(
+        &self,
+        competition_id: Uuid,
+        canonical: &CanonicalFormat,
+        imported: &ImportedFacts,
+        tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
+    ) -> Result<()> {
+        let movement_names: Vec<String> = canonical
+            .movements
+            .iter()
+            .map(|movement| movement.name.clone())
+            .collect();
+
+        let movements = sqlx::query!(
+            r#"
+            DELETE FROM competition_movements
+            WHERE competition_id = $1 AND movement_name <> ALL($2::text[])
+            "#,
+            competition_id,
+            &movement_names
+        )
+        .execute(&mut **tx)
+        .await?
+        .rows_affected();
+
+        let participants = sqlx::query!(
+            r#"
+            DELETE FROM competition_participants
+            WHERE competition_id = $1 AND participant_id <> ALL($2::uuid[])
+            "#,
+            competition_id,
+            &imported.participants
+        )
+        .execute(&mut **tx)
+        .await?
+        .rows_affected();
+
+        let lifts = sqlx::query!(
+            r#"
+            DELETE FROM lifts
+            WHERE participant_id = ANY($1::uuid[]) AND lift_id <> ALL($2::uuid[])
+            "#,
+            &imported.participants,
+            &imported.lifts
+        )
+        .execute(&mut **tx)
+        .await?
+        .rows_affected();
+
+        let attempts = sqlx::query!(
+            r#"
+            DELETE FROM attempts
+            WHERE lift_id = ANY($1::uuid[]) AND attempt_id <> ALL($2::uuid[])
+            "#,
+            &imported.lifts,
+            &imported.attempts
+        )
+        .execute(&mut **tx)
+        .await?
+        .rows_affected();
+
+        if movements + participants + lifts + attempts > 0 {
+            info!(
+                "Pruned rows the file no longer lists: {} movement(s), {} participant(s), {} lift(s), {} attempt(s)",
+                movements, participants, lifts, attempts
+            );
+        }
+
         Ok(())
     }
 
@@ -258,7 +351,7 @@ impl<'a> CanonicalTransformer<'a> {
         category: &CategoryData,
         competition_id: Uuid,
         category_id: Uuid,
-        _movements: &[MovementData],
+        imported: &mut ImportedFacts,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
         let athlete_id = self.upsert_athlete(athlete, category, tx).await?;
@@ -267,7 +360,7 @@ impl<'a> CanonicalTransformer<'a> {
         // statuses need a status column, which 1.1.0 does not add.
         let is_disqualified = athlete.status.is_disqualified();
 
-        sqlx::query!(
+        let participant_id = sqlx::query_scalar!(
             r#"
             INSERT INTO competition_participants
                 (competition_id, category_id, athlete_id, bodyweight, rank, is_disqualified, disqualified_reason, ris_score, ris_source)
@@ -280,6 +373,7 @@ impl<'a> CanonicalTransformer<'a> {
                 disqualified_reason = EXCLUDED.disqualified_reason,
                 ris_score = EXCLUDED.ris_score,
                 ris_source = EXCLUDED.ris_source
+            RETURNING participant_id as "participant_id: Uuid"
             "#,
             competition_id,
             category_id,
@@ -290,11 +384,13 @@ impl<'a> CanonicalTransformer<'a> {
             athlete.status_reason,
             athlete.ris
         )
-        .execute(&mut **tx)
+        .fetch_one(&mut **tx)
         .await?;
 
+        imported.participants.push(participant_id);
+
         for lift in &athlete.lifts {
-            self.import_lift(competition_id, category_id, athlete_id, lift, &mut *tx)
+            self.import_lift(participant_id, lift, imported, &mut *tx)
                 .await?;
         }
 
@@ -407,10 +503,9 @@ impl<'a> CanonicalTransformer<'a> {
 
     async fn import_lift(
         &self,
-        competition_id: Uuid,
-        category_id: Uuid,
-        athlete_id: Uuid,
+        participant_id: Uuid,
         lift: &LiftData,
+        imported: &mut ImportedFacts,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
         let max_weight = lift
@@ -425,20 +520,7 @@ impl<'a> CanonicalTransformer<'a> {
         // some source can express it.
         let settings: Option<String> = None;
 
-        let participant = sqlx::query!(
-            r#"
-            SELECT participant_id
-            FROM competition_participants
-            WHERE competition_id = $1 AND category_id = $2 AND athlete_id = $3
-            "#,
-            competition_id,
-            category_id,
-            athlete_id
-        )
-        .fetch_one(&mut **tx)
-        .await?;
-
-        sqlx::query!(
+        let lift_id = sqlx::query_scalar!(
             r#"
             INSERT INTO lifts (participant_id, movement_name, max_weight, equipment_setting)
             VALUES ($1, $2, $3, $4)
@@ -447,18 +529,20 @@ impl<'a> CanonicalTransformer<'a> {
                 max_weight = EXCLUDED.max_weight,
                 equipment_setting = EXCLUDED.equipment_setting,
                 updated_at = CURRENT_TIMESTAMP
+            RETURNING lift_id as "lift_id: Uuid"
             "#,
-            participant.participant_id,
+            participant_id,
             lift.movement,
             max_weight,
             settings
         )
-        .execute(&mut **tx)
+        .fetch_one(&mut **tx)
         .await?;
 
+        imported.lifts.push(lift_id);
+
         for attempt in &lift.attempts {
-            self.import_attempt(participant.participant_id, &lift.movement, attempt, tx)
-                .await?;
+            self.import_attempt(lift_id, attempt, imported, tx).await?;
         }
 
         Ok(())
@@ -466,24 +550,12 @@ impl<'a> CanonicalTransformer<'a> {
 
     async fn import_attempt(
         &self,
-        participant_id: Uuid,
-        movement_name: &str,
+        lift_id: Uuid,
         attempt: &AttemptData,
+        imported: &mut ImportedFacts,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
-        let lift = sqlx::query!(
-            r#"
-            SELECT lift_id
-            FROM lifts
-            WHERE participant_id = $1 AND movement_name = $2
-            "#,
-            participant_id,
-            movement_name
-        )
-        .fetch_one(&mut **tx)
-        .await?;
-
-        sqlx::query!(
+        let attempt_id = sqlx::query_scalar!(
             r#"
             INSERT INTO attempts (lift_id, attempt_number, weight, is_successful, passing_judges, no_rep_reason, created_by)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -494,8 +566,9 @@ impl<'a> CanonicalTransformer<'a> {
                 passing_judges = EXCLUDED.passing_judges,
                 no_rep_reason = EXCLUDED.no_rep_reason,
                 created_by = EXCLUDED.created_by
+            RETURNING attempt_id as "attempt_id: Uuid"
             "#,
-            lift.lift_id,
+            lift_id,
             attempt.attempt_number,
             attempt.weight,
             attempt.is_successful,
@@ -503,8 +576,10 @@ impl<'a> CanonicalTransformer<'a> {
             attempt.judge_note,
             "Canonical Importer"
         )
-        .execute(&mut **tx)
+        .fetch_one(&mut **tx)
         .await?;
+
+        imported.attempts.push(attempt_id);
 
         Ok(())
     }

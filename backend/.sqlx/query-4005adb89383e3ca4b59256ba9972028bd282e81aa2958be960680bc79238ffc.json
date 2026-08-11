@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM competition_participants\n            WHERE competition_id = $1 AND participant_id <> ALL($2::uuid[])\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "UuidArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4005adb89383e3ca4b59256ba9972028bd282e81aa2958be960680bc79238ffc"
+}
