@@ -60,11 +60,11 @@ impl<'a> CanonicalTransformer<'a> {
         let competition_id = sqlx::query_scalar!(
             r#"
             INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, venue, city, country, number_of_judge)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            VALUES ($1, $2, COALESCE($3, 'completed'), $4, $5, $6, $7, $8, $9, $10)
             ON CONFLICT (slug)
             DO UPDATE SET
                 name = EXCLUDED.name,
-                status = EXCLUDED.status,
+                status = COALESCE($3, competitions.status),
                 venue = EXCLUDED.venue,
                 city = EXCLUDED.city,
                 country = EXCLUDED.country,
@@ -73,7 +73,10 @@ impl<'a> CanonicalTransformer<'a> {
             "#,
             competition.name,
             competition.slug,
-            competition.status.unwrap_or_default().as_str(),
+            // A canonical file describes a meet that has happened. A status the
+            // file does not state is unknown, so it must not overwrite one set
+            // deliberately on a re-import.
+            competition.status.map(|status| status.as_str()),
             federation_id,
             competition.start_date,
             competition.end_date,
