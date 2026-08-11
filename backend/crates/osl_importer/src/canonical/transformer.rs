@@ -182,7 +182,7 @@ impl<'a> CanonicalTransformer<'a> {
 
         let (min, max) = match category.weight_class_slug.as_ref() {
             Some(slug) => slug.bounds(),
-            None => (None, category.weight_class_max),
+            None => (category.weight_class_min, category.weight_class_max),
         };
 
         if let Some(id) = existing {

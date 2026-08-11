@@ -62,12 +62,12 @@ them loses real data.
 
 ## Format
 
-`format_version` is `1.2.0`. Required fields have no marker; `?` means
+`format_version` is `1.3.0`. Required fields have no marker; `?` means
 optional and should be omitted when unknown.
 
 ```jsonc
 {
-  "format_version": "1.2.0",
+  "format_version": "1.3.0",
   "source": {
     "type": "html",              // api | html | pdf | csv | image | manual
     "url": "https://...",        // ?
@@ -99,9 +99,7 @@ optional and should be omitted when unknown.
     {
       "name": "Catégorie -80",
       "gender": "M",             // M, F or MX
-      "weight_class_slug": "M-80",   // ? standard class, see list below
-      "weight_class_max": "80",      // ? non standard class only
-      "is_open_category": true,      // ? non standard class only
+      "weight_class_slug": "M-80",   // standard class, see list below
       "athletes": [
         {
           "first_name": "Timothée",
@@ -128,16 +126,32 @@ optional and should be omitted when unknown.
           ]
         }
       ]
+    },
+    {
+      // A class outside the standard ladder, stated as bounds.
+      "name": "Catégorie +87",
+      "gender": "M",
+      "weight_class_min": "87",      // above 87, no upper limit
+      "athletes": []
     }
   ]
 }
 ```
 
-`weight_class_slug` is one of: `F-52` `F-57` `F-63` `F-70` `F+70` `M-66`
-`M-73` `M-80` `M-87` `M-94` `M-101` `M+101`. It already carries the bounds,
-so a category using it must not also set `weight_class_max` or
-`is_open_category`. Use those two only for a class outside the standard
-ladder, such as a local meet running -75.
+Every category needs a weight class, in one of two ways.
+
+Use `weight_class_slug` for a standard class. It is one of `F-52` `F-57`
+`F-63` `F-70` `F+70` `M-66` `M-73` `M-80` `M-87` `M-94` `M-101` `M+101`, and
+it already carries the bounds, so a category using it must not also set
+`weight_class_min` or `weight_class_max`.
+
+Use the raw bounds for anything else: a meet running -75, or an open class
+like +87 that merges the top of the ladder. `weight_class_min` is the lower
+bound and `weight_class_max` the upper, and a class may set one or both.
+`-75` is `weight_class_max: "75"`, `+87` is `weight_class_min: "87"`.
+
+Read the bound off the category name, not off the athletes. A class called
++87 has a minimum of 87 even when the lightest athlete in it weighs 91.
 
 Weights and bodyweights are JSON **strings**, not numbers. Countries are ISO
 3166-1 alpha-2, so `FR` and never `France` or `FRA`.
@@ -147,14 +161,15 @@ Weights and bodyweights are JSON **strings**, not numbers. Countries are ISO
 Wrong `format_version`, empty `extractor`, a country that is not two letters,
 a gender outside `M` `F` `MX`, a status outside the five listed, a judge count
 other than 1 or 3, `end_date` before `start_date`, a duplicate or unnamed
-movement, a movement `order` below 1, a weight class setting both the slug and
-the raw bounds, a lift naming a movement not in `movements`, a lift with no
-attempts, an `attempt_number` outside 1 to 3, a negative weight.
+movement, a movement `order` below 1, a category setting both the slug and the
+raw bounds, a `weight_class_min` above its `weight_class_max`, a lift naming a
+movement not in `movements`, a lift with no attempts, an `attempt_number`
+outside 1 to 3, a negative weight.
 
 ### What it only warns about
 
-Missing venue, city, judges or bodyweight. A category with no athletes. An
-athlete with no lifts. These are normal for a file still being built, so
+Missing venue, city, judges or bodyweight. A category with no weight class at
+all. A category with no athletes. An athlete with no lifts. These are normal for a file still being built, so
 warnings are expected mid-construction and are not something to fix by
 inventing data.
 

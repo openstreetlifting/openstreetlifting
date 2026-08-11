@@ -5,7 +5,9 @@ use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTra
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 
-fn canonical(weight_class_slug: &str, nationality: Option<&str>) -> CanonicalFormat {
+/// `weight_class` is the raw JSON for the class fields, so a test can pass a
+/// slug or raw bounds without a second fixture.
+fn canonical(weight_class: &str, nationality: Option<&str>) -> CanonicalFormat {
     let nationality = match nationality {
         Some(code) => format!(r#""nationality": "{}","#, code),
         None => String::new(),
@@ -13,7 +15,7 @@ fn canonical(weight_class_slug: &str, nationality: Option<&str>) -> CanonicalFor
 
     serde_json::from_str(&format!(
         r#"{{
-          "format_version": "1.2.0",
+          "format_version": "1.3.0",
           "source": {{
             "type": "manual",
             "extracted_at": "2025-06-01T10:00:00Z",
@@ -32,7 +34,7 @@ fn canonical(weight_class_slug: &str, nationality: Option<&str>) -> CanonicalFor
             {{
               "name": "Test category",
               "gender": "M",
-              "weight_class_slug": "{}",
+              {}
               "athletes": [
                 {{
                   "first_name": "John",
@@ -54,9 +56,13 @@ fn canonical(weight_class_slug: &str, nationality: Option<&str>) -> CanonicalFor
             }}
           ]
         }}"#,
-        weight_class_slug, nationality
+        weight_class, nationality
     ))
     .expect("fixture is a valid canonical file")
+}
+
+fn slug(slug: &str) -> String {
+    format!(r#""weight_class_slug": "{}","#, slug)
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
@@ -64,11 +70,11 @@ async fn reimport_corrects_athlete_nationality(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
-        .import_to_database(canonical("M-73", Some("US")))
+        .import_to_database(canonical(&slug("M-73"), Some("US")))
         .await
         .unwrap();
     transformer
-        .import_to_database(canonical("M-73", Some("FR")))
+        .import_to_database(canonical(&slug("M-73"), Some("FR")))
         .await
         .unwrap();
 
@@ -84,11 +90,11 @@ async fn reimport_corrects_category_bounds(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
-        .import_to_database(canonical("M-73", Some("FR")))
+        .import_to_database(canonical(&slug("M-73"), Some("FR")))
         .await
         .unwrap();
     transformer
-        .import_to_database(canonical("M-80", Some("FR")))
+        .import_to_database(canonical(&slug("M-80"), Some("FR")))
         .await
         .unwrap();
 
@@ -103,15 +109,34 @@ async fn reimport_corrects_category_bounds(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
+async fn open_class_is_stored_as_a_lower_bound(pool: PgPool) {
+    let transformer = CanonicalTransformer::new(&pool);
+
+    transformer
+        .import_to_database(canonical(r#""weight_class_min": "87","#, Some("FR")))
+        .await
+        .unwrap();
+
+    let category = sqlx::query!(
+        r#"SELECT weight_class_min, weight_class_max FROM categories WHERE name = 'Test category'"#
+    )
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+    assert_eq!(category.weight_class_min, Some(Decimal::from(87)));
+    assert_eq!(category.weight_class_max, None);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
 async fn reimport_without_nationality_keeps_the_known_one(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
-        .import_to_database(canonical("M-73", Some("FR")))
+        .import_to_database(canonical(&slug("M-73"), Some("FR")))
         .await
         .unwrap();
     transformer
-        .import_to_database(canonical("M-73", None))
+        .import_to_database(canonical(&slug("M-73"), None))
         .await
         .unwrap();
 
