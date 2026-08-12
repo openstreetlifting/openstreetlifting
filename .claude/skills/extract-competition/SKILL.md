@@ -53,7 +53,8 @@ and explain it, or you drifted, which is a bug.
 
 **Stop and ask when the source is ambiguous.** Two posts disagreeing on a
 weight, a name you cannot spell with confidence, an athlete who might be the
-same person under a different spelling. Ask. Do not pick.
+same person under a different spelling. Check the API first (see below), and
+if it does not settle it, ask. Do not pick.
 
 **Read attempts literally.** A crossed-out or red attempt is
 `"is_successful": false`, not a missing attempt. Failed attempts matter: they
@@ -73,6 +74,43 @@ An athlete who missed every attempt in a movement still gets that movement,
 with all their failed attempts in it. Do not drop the movement and do not
 invent a zero for it: they contested it and lifted nothing, which is different
 from lifting their bodyweight.
+
+## Looking things up in the public API
+
+When a source leaves you unsure about an athlete, a competition, a federation
+or a spelling, query the project's own read-only API before asking the user:
+
+- Docs: <https://api.openstreetlifting.org/swagger-ui/>
+- Base: `https://api.openstreetlifting.org/api/v1`
+
+The endpoints that matter here:
+
+```
+GET /athletes?page=1&page_size=50
+GET /athletes/{slug}?include=competitions,records
+GET /competitions?page=1&page_size=50&include=federation,movements
+GET /competitions/{slug}?include=categories,results,federation,movements
+```
+
+Everything is a plain GET, no auth. Use it to answer questions like: is this
+athlete already known and how is their name spelled, does this competition
+already exist under a slug, which movements did this federation run last year,
+is the person in this post the same one who lifted in another meet.
+
+Two limits, both important.
+
+The API serves what has **already been imported**, which is a projection of
+the canonical files. It is not an independent record of the meet and it is not
+ground truth about this source. It tells you what the project already believes.
+
+So it never supplies a value. It can tell you that `Timothée MERANDON` is the
+existing spelling, or that a `-80` category already exists for this meet, or
+that two athletes really do share a name and need `disambiguation`. It cannot
+give you a bodyweight, an attempt or a country that your source does not show.
+Nothing read from the API gets written into the file as if the source had
+printed it. **Never invent a value** still holds, and an API lookup that
+contradicts the source is a reason to stop and ask, not to overwrite either
+one.
 
 ## Format
 

@@ -45,6 +45,13 @@ http:
       value: total
       type: query
       disabled: true
+    - name: event
+      value: ""
+      type: query
+      description: |-
+        Which event to rank totals within, defaulting to the four movements.
+        Ignored when ranking by a single movement.
+      disabled: true
   auth: inherit
 
 settings:
