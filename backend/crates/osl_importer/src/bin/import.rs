@@ -1,8 +1,10 @@
+use anyhow::{Context, Result, bail};
 use clap::{Parser, Subcommand};
 use osl_importer::canonical::{
     format as canonical_format, models::CanonicalFormat, transformer::CanonicalTransformer,
     validator::CanonicalValidator,
 };
+use osl_importer::sync::CompetitionSync;
 use sqlx::postgres::PgPoolOptions;
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
@@ -38,6 +40,16 @@ enum Commands {
 
         #[arg(long)]
         validate_only: bool,
+
+        /// Delete the competitions no file in the tree claims, and the athletes
+        /// they leave without a result. Reports what it would delete unless
+        /// `--yes` is passed, and needs the whole imports tree to be right.
+        #[arg(long)]
+        prune: bool,
+
+        /// Carry out the prune instead of only reporting it.
+        #[arg(long)]
+        yes: bool,
     },
     /// Recompute every stored RIS score against the current formula.
     ///
@@ -57,7 +69,7 @@ enum Commands {
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() -> Result<()> {
     dotenvy::dotenv().ok();
 
     let cli = Cli::parse();
@@ -83,9 +95,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::BulkImport {
             directory,
             validate_only,
+            prune,
+            yes,
         } => {
+            if prune && validate_only {
+                bail!("--prune writes to the database, so it cannot run with --validate-only");
+            }
+
             let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
-            handle_bulk_import(directory, validate_only, database_url).await?;
+            handle_bulk_import(directory, validate_only, prune, yes, database_url).await?;
         }
         Commands::RecomputeRis => {
             let database_url = require_database_url(cli.database_url.as_deref(), false)?;
@@ -99,23 +117,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn require_database_url(
-    database_url: Option<&str>,
-    validate_only: bool,
-) -> Result<&str, Box<dyn std::error::Error>> {
+fn require_database_url(database_url: Option<&str>, validate_only: bool) -> Result<&str> {
     match database_url {
         Some(url) => Ok(url),
         None if validate_only => Ok(""),
-        None => Err("DATABASE_URL is required to import. Pass --validate-only to skip it".into()),
+        None => bail!("DATABASE_URL is required to import. Pass --validate-only to skip it"),
     }
 }
 
-async fn handle_recompute_ris(database_url: &str) -> Result<(), Box<dyn std::error::Error>> {
+async fn handle_recompute_ris(database_url: &str) -> Result<()> {
     tracing::info!("Connecting to database...");
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(database_url)
-        .await?;
+        .await
+        .context("connecting to the database")?;
 
     let count = osl_db::services::ris_computation::recompute_all_ris(&pool, None).await?;
     tracing::info!("✓ Recomputed RIS for {} participant(s)", count);
@@ -123,7 +139,7 @@ async fn handle_recompute_ris(database_url: &str) -> Result<(), Box<dyn std::err
     Ok(())
 }
 
-async fn handle_fmt(paths: &[PathBuf], check: bool) -> Result<(), Box<dyn std::error::Error>> {
+async fn handle_fmt(paths: &[PathBuf], check: bool) -> Result<()> {
     let mut files = Vec::new();
     for path in paths {
         collect_json_files(path, &mut files).await?;
@@ -162,11 +178,10 @@ async fn handle_fmt(paths: &[PathBuf], check: bool) -> Result<(), Box<dyn std::e
     }
 
     if check {
-        return Err(format!(
+        bail!(
             "{} file(s) are not formatted. Run `import fmt` to fix",
             changed.len()
-        )
-        .into());
+        );
     }
 
     tracing::info!("Formatted {} file(s)", changed.len());
@@ -177,7 +192,7 @@ async fn handle_canonical_import(
     file: PathBuf,
     validate_only: bool,
     database_url: &str,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<()> {
     tracing::info!("Loading canonical JSON from: {}", file.display());
 
     let json_content = tokio::fs::read_to_string(&file).await?;
@@ -202,7 +217,8 @@ async fn handle_canonical_import(
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(database_url)
-        .await?;
+        .await
+        .context("connecting to the database")?;
 
     tracing::info!(
         "Importing {} categories to database...",
@@ -217,10 +233,7 @@ async fn handle_canonical_import(
 }
 
 /// Gathers every .json under `path`, or `path` itself when it is a file.
-async fn collect_json_files(
-    path: &Path,
-    found: &mut Vec<PathBuf>,
-) -> Result<(), Box<dyn std::error::Error>> {
+async fn collect_json_files(path: &Path, found: &mut Vec<PathBuf>) -> Result<()> {
     let mut pending = vec![path.to_path_buf()];
 
     while let Some(current) = pending.pop() {
@@ -240,13 +253,13 @@ async fn collect_json_files(
     Ok(())
 }
 
+/// The competitions this tree claims, which is also what a prune keeps.
+///
 /// An import owns its whole competition and removes the rows its file does not
 /// list, so two files claiming one slug would each delete the other's results.
 /// Sessions of the same meet belong in one file, and that has to hold before
 /// anything is written.
-async fn ensure_one_file_per_competition(
-    files: &[PathBuf],
-) -> Result<(), Box<dyn std::error::Error>> {
+async fn claimed_competition_slugs(files: &[PathBuf]) -> Result<Vec<String>> {
     let mut by_slug: BTreeMap<String, Vec<&PathBuf>> = BTreeMap::new();
 
     for file in files {
@@ -270,7 +283,7 @@ async fn ensure_one_file_per_competition(
         .collect();
 
     if clashes.is_empty() {
-        return Ok(());
+        return Ok(by_slug.into_keys().collect());
     }
 
     for (slug, files) in &clashes {
@@ -284,18 +297,19 @@ async fn ensure_one_file_per_competition(
         }
     }
 
-    Err(format!(
+    bail!(
         "{} competition slug(s) claimed by more than one file. Merge them into one file per competition",
         clashes.len()
     )
-    .into())
 }
 
 async fn handle_bulk_import(
     directory: PathBuf,
     validate_only: bool,
+    prune: bool,
+    yes: bool,
     database_url: &str,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<()> {
     tracing::info!(
         "Scanning directory for canonical JSON files: {}",
         directory.display()
@@ -312,7 +326,7 @@ async fn handle_bulk_import(
     json_files.sort();
     tracing::info!("Found {} canonical JSON file(s)", json_files.len());
 
-    ensure_one_file_per_competition(&json_files).await?;
+    let claimed_slugs = claimed_competition_slugs(&json_files).await?;
 
     let pool = if !validate_only {
         tracing::info!("Connecting to database...");
@@ -320,7 +334,8 @@ async fn handle_bulk_import(
             PgPoolOptions::new()
                 .max_connections(5)
                 .connect(database_url)
-                .await?,
+                .await
+                .context("connecting to the database")?,
         )
     } else {
         None
@@ -356,7 +371,59 @@ async fn handle_bulk_import(
     );
 
     if error_count > 0 {
-        return Err(format!("{} file(s) failed to import", error_count).into());
+        if prune {
+            tracing::warn!("Skipping the prune: a file that failed to import claims nothing");
+        }
+        bail!("{} file(s) failed to import", error_count);
+    }
+
+    if prune && let Some(pool) = pool.as_ref() {
+        handle_prune(pool, &claimed_slugs, yes).await?;
+    }
+
+    Ok(())
+}
+
+async fn handle_prune(pool: &sqlx::PgPool, claimed_slugs: &[String], yes: bool) -> Result<()> {
+    let sync = CompetitionSync::new(pool);
+
+    let plan = if yes {
+        sync.apply(claimed_slugs).await?
+    } else {
+        sync.dry_run(claimed_slugs).await?
+    };
+
+    if plan.is_empty() {
+        tracing::info!("Nothing to prune: every stored competition is claimed by a file");
+        return Ok(());
+    }
+
+    if !plan.competitions.is_empty() {
+        tracing::info!("Competitions no file claims:");
+        for competition in &plan.competitions {
+            tracing::info!("  {} ({})", competition.slug, competition.name);
+        }
+    }
+
+    if !plan.athletes.is_empty() {
+        tracing::info!("Athletes left without a result:");
+        for athlete in &plan.athletes {
+            tracing::info!("  {}", athlete);
+        }
+    }
+
+    if yes {
+        tracing::info!(
+            "Deleted {} competition(s) and {} athlete(s)",
+            plan.competitions.len(),
+            plan.athletes.len()
+        );
+    } else {
+        tracing::warn!(
+            "Would delete {} competition(s) and {} athlete(s). Pass --yes to carry it out",
+            plan.competitions.len(),
+            plan.athletes.len()
+        );
     }
 
     Ok(())
@@ -366,7 +433,7 @@ async fn process_canonical_file(
     file_path: &PathBuf,
     validate_only: bool,
     pool: Option<&sqlx::PgPool>,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<()> {
     let json_content = tokio::fs::read_to_string(file_path).await?;
     let canonical: CanonicalFormat = serde_json::from_str(&json_content)?;
 
