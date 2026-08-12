@@ -23,6 +23,11 @@ backend:
   database:
     secretName: osl-postgres-app
     urlKey: uri
+importer:
+  image:
+    repository: ghcr.io/openstreetlifting/importer
+    tag: sha-9df75f3
+    pullPolicy: IfNotPresent
 ingress:
   frontendHost: "localhost"
   backendHost: "localhost"

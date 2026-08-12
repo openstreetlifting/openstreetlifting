@@ -45,6 +45,7 @@ jobs:
         run: |
           echo "frontend_sha=$(yq '.frontend.image.tag' charts/values.yaml)" >> "$GITHUB_OUTPUT"
           echo "backend_sha=$(yq '.backend.image.tag' charts/values.yaml)" >> "$GITHUB_OUTPUT"
+          echo "importer_sha=$(yq '.importer.image.tag' charts/values.yaml)" >> "$GITHUB_OUTPUT"
           echo "semver=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
       - name: Retag frontend image
@@ -61,10 +62,18 @@ jobs:
             -t ${{ env.REGISTRY }}/openstreetlifting/backend:latest \
             ${{ env.REGISTRY }}/openstreetlifting/backend:${{ steps.tags.outputs.backend_sha }}
 
+      - name: Retag importer image
+        run: |
+          docker buildx imagetools create \
+            -t ${{ env.REGISTRY }}/openstreetlifting/importer:${{ steps.tags.outputs.semver }} \
+            -t ${{ env.REGISTRY }}/openstreetlifting/importer:latest \
+            ${{ env.REGISTRY }}/openstreetlifting/importer:${{ steps.tags.outputs.importer_sha }}
+
       - name: Pin chart to semver
         run: |
           yq -i ".frontend.image.tag = \"${{ steps.tags.outputs.semver }}\"" charts/values.yaml
           yq -i ".backend.image.tag = \"${{ steps.tags.outputs.semver }}\"" charts/values.yaml
+          yq -i ".importer.image.tag = \"${{ steps.tags.outputs.semver }}\"" charts/values.yaml
           git config user.name "osl-ci[bot]"
           git config user.email "315316499+osl-ci[bot]@users.noreply.github.com"
           git checkout main
