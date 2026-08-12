@@ -1,7 +1,7 @@
 frontend:
   image:
     repository: ghcr.io/openstreetlifting/frontend
-    tag: 0.6.0
+    tag: sha-f572f83
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
