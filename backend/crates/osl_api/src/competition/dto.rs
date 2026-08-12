@@ -94,7 +94,9 @@ pub struct AthleteInfo {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct LiftDetail {
     pub movement_name: String,
-    pub best_weight: rust_decimal::Decimal,
+    /// Best successful attempt. Zero is a bodyweight-only lift, and absent
+    /// means the movement was contested with no attempt succeeding.
+    pub best_weight: Option<rust_decimal::Decimal>,
     pub attempts: Vec<AttemptInfo>,
 }
 

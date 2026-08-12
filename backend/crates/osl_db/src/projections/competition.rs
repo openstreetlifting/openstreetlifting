@@ -41,7 +41,9 @@ pub struct ParticipantDetail {
 #[derive(Debug)]
 pub struct LiftDetail {
     pub movement_name: String,
-    pub best_weight: Decimal,
+    /// Best successful attempt. 0 is a bodyweight-only lift, and None means
+    /// the movement was contested with no attempt succeeding.
+    pub best_weight: Option<Decimal>,
     pub attempts: Vec<AttemptSummary>,
 }
 

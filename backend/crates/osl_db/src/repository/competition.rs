@@ -251,7 +251,7 @@ impl<'a> CompetitionRepository<'a> {
                     .fetch_all(self.pool)
                     .await?;
 
-                    total += lift.max_weight;
+                    total += lift.max_weight.unwrap_or(Decimal::ZERO);
 
                     lift_details.push(LiftDetail {
                         movement_name: lift.movement_name.clone(),
