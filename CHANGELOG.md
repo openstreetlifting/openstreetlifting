@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.6.0...v0.7.0) (2026-08-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **rankings:** stop giving disqualified lifters a place ([#236](https://github.com/openstreetlifting/openstreetlifting/issues/236))
+* **rankings:** rank totals within one event ([#228](https://github.com/openstreetlifting/openstreetlifting/issues/228))
+
+### Features
+
+* **importer:** delete the competitions no file claims ([#241](https://github.com/openstreetlifting/openstreetlifting/issues/241)) ([4f6ca6c](https://github.com/openstreetlifting/openstreetlifting/commit/4f6ca6cc3e8db1c03a6af677e01aa54c1b0078cb))
+* **rankings:** rank totals within one event ([#228](https://github.com/openstreetlifting/openstreetlifting/issues/228)) ([d7f3344](https://github.com/openstreetlifting/openstreetlifting/commit/d7f33449b269b6745ef1e99b0dcf8cf9bb7e56d3))
+
+
+### Bug Fixes
+
+* **db:** store a bodyweight lift and a bombed movement ([#231](https://github.com/openstreetlifting/openstreetlifting/issues/231)) ([bf16c65](https://github.com/openstreetlifting/openstreetlifting/commit/bf16c654b4f46942872643b4fd0b84fa1d2e44bd))
+* **rankings:** stop giving disqualified lifters a place ([#236](https://github.com/openstreetlifting/openstreetlifting/issues/236)) ([9df75f3](https://github.com/openstreetlifting/openstreetlifting/commit/9df75f30a8754034938f73fefe718c2d5a6314bd))
+
 ## [0.6.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.5.0...v0.6.0) (2026-08-12)
 
 
