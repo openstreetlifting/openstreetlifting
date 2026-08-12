@@ -52,7 +52,7 @@ export interface Attempt {
 
 export interface Lift {
   movement_name: string;
-  best_weight: string;
+  best_weight: string | null;
   attempts: Attempt[];
 }
 
@@ -60,7 +60,7 @@ export interface Participant {
   athlete: AthleteInfo;
   bodyweight: string | null;
   rank: number | null;
-  total: string;
+  total: string | null;
   ris_score: string | null;
   is_disqualified: boolean;
   disqualified_reason: string | null;

@@ -77,7 +77,7 @@ pub struct ParticipantDetail {
     pub is_disqualified: bool,
     pub disqualified_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,
-    pub total: rust_decimal::Decimal,
+    pub total: Option<rust_decimal::Decimal>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]

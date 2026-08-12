@@ -141,6 +141,7 @@ impl<'a> CompetitionRepository<'a> {
                 FROM competition_participants cp
                 LEFT JOIN lifts l ON l.participant_id = cp.participant_id
                 WHERE cp.competition_id = $1
+                  AND NOT cp.is_disqualified
                 GROUP BY cp.participant_id, cp.category_id, cp.bodyweight
             )
             SELECT
@@ -278,10 +279,12 @@ impl<'a> CompetitionRepository<'a> {
                     ris_score: participant.ris_score,
                     is_disqualified: participant.is_disqualified,
                     disqualified_reason: participant.disqualified_reason.clone(),
+                    total: (!lift_details.is_empty()).then_some(total),
                     lifts: lift_details,
-                    total,
                 });
             }
+
+            participant_details.sort_by_key(|p| (p.rank.is_none(), p.rank));
 
             category_details.push(CategoryParticipants {
                 category,

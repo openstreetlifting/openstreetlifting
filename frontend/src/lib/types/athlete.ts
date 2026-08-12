@@ -20,7 +20,7 @@ export interface AthleteCompetitionSummary {
   competition_date: string | null;
   category_name: string;
   rank: number | null;
-  total: string;
+  total: string | null;
   ris_score: string | null;
   is_disqualified: boolean;
 }

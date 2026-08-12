@@ -36,7 +36,7 @@ pub struct AthleteCompetitionSummary {
     pub competition_date: Option<chrono::NaiveDate>,
     pub category_name: String,
     pub rank: Option<i32>,
-    pub total: rust_decimal::Decimal,
+    pub total: Option<rust_decimal::Decimal>,
     pub ris_score: Option<rust_decimal::Decimal>,
     pub is_disqualified: bool,
 }

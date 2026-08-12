@@ -35,7 +35,7 @@ pub struct ParticipantDetail {
     pub is_disqualified: bool,
     pub disqualified_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,
-    pub total: Decimal,
+    pub total: Option<Decimal>,
 }
 
 #[derive(Debug)]
