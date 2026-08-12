@@ -1,0 +1,23 @@
+{{- if .Values.importer.job.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: openstreetlifting-importer-
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openstreetlifting.labels" . | nindent 4 }}
+    {{- include "openstreetlifting.importer.selectorLabels" . | nindent 4 }}
+  annotations:
+    # This one is created by hand and lives outside git, so Argo CD must not
+    # treat it as drift and prune it out from under a running import.
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+spec:
+  backoffLimit: {{ .Values.importer.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.importer.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        {{- include "openstreetlifting.importer.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- include "openstreetlifting.importer.podSpec" . | nindent 6 }}
+{{- end }}

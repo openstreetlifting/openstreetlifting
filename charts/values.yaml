@@ -28,6 +28,22 @@ importer:
     repository: ghcr.io/openstreetlifting/importer
     tag: sha-9df75f3
     pullPolicy: IfNotPresent
+  # Every deploy makes the database match the canonical files, deletions
+  # included. Drop --yes to have a release only report what it would remove.
+  args: ["bulk-import", "--prune", "--yes"]
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 86400
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+  # Rendered on demand for a run outside a deploy, never installed with the
+  # release.
+  job:
+    enabled: false
 ingress:
   frontendHost: "localhost"
   backendHost: "localhost"

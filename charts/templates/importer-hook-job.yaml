@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: openstreetlifting-import
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openstreetlifting.labels" . | nindent 4 }}
+    {{- include "openstreetlifting.importer.selectorLabels" . | nindent 4 }}
+  annotations:
+    # Argo CD turns this into a PostSync hook, which waits for the rest of the
+    # release to report healthy. That is what keeps the import behind the new
+    # backend, which is the only thing that runs migrations.
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: {{ .Values.importer.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.importer.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        {{- include "openstreetlifting.importer.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- include "openstreetlifting.importer.podSpec" . | nindent 6 }}
