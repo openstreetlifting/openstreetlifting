@@ -30,6 +30,10 @@ WORKDIR /app
 ARG BIN
 ENV BIN=${BIN}
 COPY --chown=appuser:appuser --from=builder /app/target/release/${BIN} /app/server
+# The canonical files are the data, so the importer image carries the whole tree
+# it is expected to reconcile against. Shipping a partial one would make a prune
+# delete competitions that only look unclaimed.
+COPY --chown=appuser:appuser --from=builder /app/imports /app/imports
 USER appuser
 EXPOSE 8080
-CMD ["/app/server"]
+ENTRYPOINT ["/app/server"]
