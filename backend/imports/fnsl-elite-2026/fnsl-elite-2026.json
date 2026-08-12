@@ -1,0 +1,5017 @@
+{
+  "format_version": "1.5.0",
+  "source": {
+    "type": "image",
+    "extracted_at": "2026-08-12T10:20:00Z",
+    "extractor": "extract-competition-skill"
+  },
+  "competition": {
+    "name": "FNSL Elite 2026",
+    "slug": "fnsl-elite-2026",
+    "federation": {
+      "name": "FNSL",
+      "country": "FR"
+    },
+    "start_date": "2026-05-15",
+    "end_date": "2026-05-17",
+    "city": "Sevran",
+    "country": "FR"
+  },
+  "movements": [
+    {
+      "name": "Muscle-up",
+      "order": 1,
+      "is_required": true
+    },
+    {
+      "name": "Pull-up",
+      "order": 2,
+      "is_required": true
+    },
+    {
+      "name": "Dips",
+      "order": 3,
+      "is_required": true
+    },
+    {
+      "name": "Squat",
+      "order": 4,
+      "is_required": true
+    }
+  ],
+  "categories": [
+    {
+      "name": "Men -101kg",
+      "gender": "M",
+      "weight_class_slug": "M-101",
+      "athletes": [
+        {
+          "first_name": "Tom",
+          "last_name": "Berthier",
+          "country": "FR",
+          "ris": "21.06",
+          "status": "disqualified",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "20",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "30",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "85",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "90",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "90",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "160",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "170",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "170",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "260",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "260",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "260",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Christian Kevin",
+          "last_name": "Bikai",
+          "country": "CM",
+          "ris": "100.85",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "17.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "21.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "81.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "83.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "160",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "167.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "175",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "250",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "265",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "277.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Marco",
+          "last_name": "De Vita",
+          "country": "IT",
+          "ris": "75.70",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "13.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "18.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "21.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "55",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "70",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "66.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "205",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "255",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "257.5",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Etienne",
+          "last_name": "Guillou",
+          "country": "FR",
+          "ris": "94.68",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "2.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "7.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "12.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "55",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "71.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "120",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "135",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "142.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "275",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "300",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "302.5",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Marc",
+          "last_name": "Yeurc'h",
+          "country": "FR",
+          "ris": "0.00",
+          "status": "disqualified",
+          "lifts": []
+        }
+      ]
+    },
+    {
+      "name": "Men -66kg",
+      "gender": "M",
+      "weight_class_slug": "M-66",
+      "athletes": [
+        {
+          "first_name": "Thomas",
+          "last_name": "Gerbaud",
+          "country": "FR",
+          "ris": "100.04",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "33.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "70",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "80",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "100",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "105",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "110",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "180",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "190",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "197.5",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Florent",
+          "last_name": "Geschlecht",
+          "country": "FR",
+          "ris": "105.83",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "27.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "32.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "36.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "90",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "95",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "100",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "120",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "127.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "132.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "180",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "180",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "190",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Romain",
+          "last_name": "Iardin",
+          "country": "FR",
+          "ris": "91.91",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "32.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "57.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "67.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "112.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "112.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "112.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "160",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "170",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "175",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Ankidini",
+          "last_name": "Moirabou",
+          "country": "FR",
+          "ris": "96.77",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "13.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "17.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "20",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "57.5",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "60",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "62.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "95",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "103.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "106.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "202.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "211",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "212.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Ronan",
+          "last_name": "Pouillot",
+          "country": "FR",
+          "ris": "89.85",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "27.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "32.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "33.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "72.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "78.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "81.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "105",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "111.25",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "111.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "150",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "160",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "160",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Cyril",
+          "last_name": "brau",
+          "country": "FR",
+          "ris": "100.23",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "27.5",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "27.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "60",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "66.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "115",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "122.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "127.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "200",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "207.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "210",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Men -73kg",
+      "gender": "M",
+      "weight_class_slug": "M-73",
+      "athletes": [
+        {
+          "first_name": "Thavisay",
+          "last_name": "CHANTHABOUN",
+          "country": "FR",
+          "ris": "97.16",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "18.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "18.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "23.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "80",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "81.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "130",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "137.5",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "137.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "210",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "220",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "230",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Lionel",
+          "last_name": "Da Silva",
+          "country": "PT",
+          "ris": "108.08",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "40",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "43.75",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "45",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "85",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "91.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "93.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "130",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "137.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "137.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "212.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "220",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "227.5",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Ibrahim Claret",
+          "last_name": "Donan",
+          "country": "DZ",
+          "ris": "90.83",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "35",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "35",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "72.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "77.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "77.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "120",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "125",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "130",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "185",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "192.5",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "192.5",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Enzo",
+          "last_name": "Ingrassia",
+          "country": "FR",
+          "ris": "103.05",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "22.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "27.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "32.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "57.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "66.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "70",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "115",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "122.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "130",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "225",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "235",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "240",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Théo",
+          "last_name": "Langard",
+          "country": "FR",
+          "ris": "99.81",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "35",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "40",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "77.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "82.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "86.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "115",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "120",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "125",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "205",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "212.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "217.5",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Maxence",
+          "last_name": "Reverdy",
+          "country": "FR",
+          "ris": "95.18",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "26.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "32.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "72.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "77.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "80",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "112.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "122.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "130",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "185",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "197.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "207.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Men -80kg",
+      "gender": "M",
+      "weight_class_slug": "M-80",
+      "athletes": [
+        {
+          "first_name": "Stan",
+          "last_name": "Cohéléach",
+          "country": "FR",
+          "ris": "94.24",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "27.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "30",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "62.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "72.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "76.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "125",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "132.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "137.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "200",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "212.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "217.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Georges",
+          "last_name": "Louvel",
+          "country": "FR",
+          "ris": "98.92",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "18.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "23.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "27.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "70",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "76.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "80",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "127.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "135",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "140",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "230",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "245",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "250.5",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Jean-rodrigue",
+          "last_name": "PERLE",
+          "country": "FR",
+          "ris": "104.65",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "37.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "41.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "45",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "97.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "102.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "105",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "136.25",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "140",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "145",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "212.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "220",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "225",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Faris",
+          "last_name": "TAIEB",
+          "country": "FR",
+          "ris": "91.65",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "20",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "71.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "120",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "125",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "127.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "225",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "230",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "235",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Maxime",
+          "last_name": "poitevin",
+          "country": "FR",
+          "ris": "107.11",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "22.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "26.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "26.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "86.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "92.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "96.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "140",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "150",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "152.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "235",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "242.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "245",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Men -87kg",
+      "gender": "M",
+      "weight_class_slug": "M-87",
+      "athletes": [
+        {
+          "first_name": "Max",
+          "last_name": "Amblard",
+          "country": "FR",
+          "ris": "94.88",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "20",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "70",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "76.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "78.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "110",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "117.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "123.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "255",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "265",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "275",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Enzo",
+          "last_name": "Chartier",
+          "country": "FR",
+          "ris": "102.11",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "20",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "27.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "80",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "85",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "140",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "150",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "155",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "242.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "255",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "262.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Aubin",
+          "last_name": "Chevillard",
+          "country": "FR",
+          "ris": "108.67",
+          "status": "disqualified",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "41.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "45",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "48.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "100",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "105",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "108.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "150",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "158.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "163.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "212.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "222.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "227.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Sofian",
+          "last_name": "Drancourt",
+          "country": "FR",
+          "ris": "95.10",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "20",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "21.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "27.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "80",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "85",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "90",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "122.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "130",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "135",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "210",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "220",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "230",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Lucien",
+          "last_name": "Memery",
+          "country": "FR",
+          "ris": "100.07",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "20",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "30",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "77.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "83.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "87.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "145",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "150",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "155",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "242.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "255",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "265",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Clément",
+          "last_name": "VYSAVAT",
+          "country": "FR",
+          "ris": "96.69",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "18.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "27.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "60",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "68.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "71.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "155",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "165",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "170",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "210",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "220",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "235",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "hussain",
+          "last_name": "jhangir",
+          "country": "FR",
+          "ris": "96.51",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "17.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "22.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "22.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "70",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "77.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "81.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "145",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "160",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "165",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "230",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "245",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "265",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Men -94kg",
+      "gender": "M",
+      "weight_class_slug": "M-94",
+      "athletes": [
+        {
+          "first_name": "Ludovic",
+          "last_name": "Adamantium",
+          "country": "FR",
+          "ris": "97.37",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "40",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "45",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "53.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "115",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "125",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "130",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "135",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "147.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "160",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "185",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "200",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "220",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "José",
+          "last_name": "D'ALMEIDA",
+          "country": "FR",
+          "ris": "26.36",
+          "status": "disqualified",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "33.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "35",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "40",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "90",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "95",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "100",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "145",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "145",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "145",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "245",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "245",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "245",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Alix",
+          "last_name": "DAVY",
+          "country": "FR",
+          "ris": "94.63",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "33.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "82.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "92.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "97.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "145",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "155",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "162.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "220",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "230",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "235",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Kevin",
+          "last_name": "GOGO",
+          "country": "FR",
+          "ris": "104.56",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "27.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "32.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "35",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "80",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "87.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "91.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "160",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "165",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "172.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "242.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "255",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "262.5",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Théo",
+          "last_name": "Goutte-toquet",
+          "country": "FR",
+          "ris": "105.86",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "21.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "26.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "28.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "83.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "92.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "96.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "162.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "175",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "183",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "237.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "252.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "262.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Aghiles",
+          "last_name": "HAMITI",
+          "country": "DZ",
+          "ris": "91.92",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "32.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "70",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "72.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "80",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "140",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "150",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "150",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "227.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "240",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "250",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Dylan",
+          "last_name": "Heurteux",
+          "country": "FR",
+          "ris": "107.02",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "37.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "43.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "47.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "92.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "105",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "107.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "162.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "172.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "180",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "240",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "255",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "255",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Women -52kg",
+      "gender": "F",
+      "weight_class_slug": "F-52",
+      "athletes": [
+        {
+          "first_name": "Agathe",
+          "last_name": "Casanova",
+          "country": "FR",
+          "ris": "104.27",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "8.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "12.5",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "13.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "32.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "55",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "60",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "65",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "122.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "127.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "137.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Ludivine",
+          "last_name": "Compain",
+          "country": "FR",
+          "ris": "110.93",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "13.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "17.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "20",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "35",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "37.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "56.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "61.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "63.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "135",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "140",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "142.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Feriel",
+          "last_name": "MESROUR",
+          "country": "FR",
+          "ris": "85.45",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "10",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "13.75",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "13.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "27.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "35",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "41.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "55",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "60",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "65",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "85",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "92.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "100",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Audrey",
+          "last_name": "Morin",
+          "country": "FR",
+          "ris": "102.72",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "8.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "12.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "15",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "26.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "33.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "47.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "51.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "55",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "130",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "135",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "140",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Camille",
+          "last_name": "Seychelles",
+          "country": "FR",
+          "ris": "106.75",
+          "status": "disqualified",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "7.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "10",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "13.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "35",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "37.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "70",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "77.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "130",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "135",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "135",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Clara",
+          "last_name": "Torriani",
+          "country": "FR",
+          "ris": "97.90",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "10",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "13.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "16.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "35",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "40",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "47.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "55",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "60",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "107.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "112.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "120",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Women -57kg",
+      "gender": "F",
+      "weight_class_slug": "F-57",
+      "athletes": [
+        {
+          "first_name": "Marion",
+          "last_name": "Canipel",
+          "country": "FR",
+          "ris": "99.60",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "12.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "16.25",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "16.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "37.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "42.5",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "42.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "47.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "53.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "60",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "127.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "137.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "150",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Marianne",
+          "last_name": "D",
+          "country": "FR",
+          "ris": "70.33",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "7.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "11.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "12.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "20",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "23.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "26.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "52.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "55",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "100",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "110",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "110",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Coralie",
+          "last_name": "Goedaer Dupas",
+          "country": "FR",
+          "ris": "75.68",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "10",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "13.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "15",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "26.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "31.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "33.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "35",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "40",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "43.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "105",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "110",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "110",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Iylia",
+          "last_name": "ammour",
+          "country": "FR",
+          "ris": "113.66",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "20",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "27.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "55",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "60",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "70",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "77.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "140",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "145",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "147.5",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Women -63kg",
+      "gender": "F",
+      "weight_class_slug": "F-63",
+      "athletes": [
+        {
+          "first_name": "Alice",
+          "last_name": "Couque",
+          "country": "FR",
+          "ris": "89.59",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "10",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "15",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "16.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "33.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "35",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "40",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "55",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "140",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "150",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "158",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Anne Sophie",
+          "last_name": "Gherardi",
+          "country": "FR",
+          "ris": "89.49",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "8.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "12.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "15",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "31.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "36.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "37.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "52.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "60",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "62.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "122.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "130",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "132.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Amelia",
+          "last_name": "Jezequel",
+          "country": "FR",
+          "ris": "83.62",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "2.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "6.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "8.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "32.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "36.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "40",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "46.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "52.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "125",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "132.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "140",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Krystelle",
+          "last_name": "Leanderson",
+          "country": "FR",
+          "ris": "85.75",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "2.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "7.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "32.5",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "32.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "36.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "47.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "55",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "130",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "140",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "142.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Chloé",
+          "last_name": "Rossignol",
+          "country": "FR",
+          "ris": "78.00",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "6.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "10",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "12.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "31.25",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "47.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "52.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "57.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "115",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "122.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "122.5",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Women -70kg",
+      "gender": "F",
+      "weight_class_slug": "F-70",
+      "athletes": [
+        {
+          "first_name": "Myriam",
+          "last_name": "Chebira",
+          "country": "FR",
+          "ris": "103.53",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "7.5",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "7.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "11.25",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "40",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "45",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "48.75",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "67.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "80.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "150",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "160",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "165",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Adèle",
+          "last_name": "Guglielmetti",
+          "country": "FR",
+          "ris": "88.49",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "0",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "2.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "27.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "32.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "37.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "56.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "60",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "135",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "147.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "150",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Guilhemette",
+          "last_name": "Miche de Malleray",
+          "country": "FR",
+          "ris": "101.04",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "7.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "10",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "15",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "42.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "46.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "48.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "60",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "67.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "75.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "135",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "147.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "160",
+                  "is_successful": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Swann",
+          "last_name": "Nguyen",
+          "country": "FR",
+          "ris": "89.48",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "0",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "2.5",
+                  "is_successful": false
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "2.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "30",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "35",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "65",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "70",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "72.5",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "137.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "142.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "150",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "first_name": "Juliette",
+          "last_name": "Roux",
+          "country": "FR",
+          "ris": "78.87",
+          "status": "competed",
+          "lifts": [
+            {
+              "movement": "Muscle-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "2.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "6.25",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "8.75",
+                  "is_successful": false
+                }
+              ]
+            },
+            {
+              "movement": "Pull-up",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "27.5",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "33.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "37.5",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Dips",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "43.75",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "50",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "55",
+                  "is_successful": true
+                }
+              ]
+            },
+            {
+              "movement": "Squat",
+              "attempts": [
+                {
+                  "attempt_number": 1,
+                  "weight": "105",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 2,
+                  "weight": "115",
+                  "is_successful": true
+                },
+                {
+                  "attempt_number": 3,
+                  "weight": "122.5",
+                  "is_successful": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
