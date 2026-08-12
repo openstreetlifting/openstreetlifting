@@ -91,6 +91,7 @@ mod tests {
         AthleteData {
             first_name: first.to_string(),
             last_name: last.to_string(),
+            disambiguation: None,
             gender: None,
             country: CountryCode::parse("FR").unwrap(),
             nationality: None,

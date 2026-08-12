@@ -15,4 +15,5 @@ sqlx = { workspace = true, features = [
   "uuid",
 ] }
 thiserror.workspace = true
+unicode-normalization = "0.1"
 uuid.workspace = true

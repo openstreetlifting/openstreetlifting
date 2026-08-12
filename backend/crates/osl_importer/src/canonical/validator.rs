@@ -1,6 +1,7 @@
 use super::models::{CanonicalFormat, FORMAT_VERSION};
 use crate::{ImporterError, Result};
-use std::collections::HashSet;
+use osl_domain::NormalizedAthleteName;
+use std::collections::{HashMap, HashSet};
 use tracing::warn;
 
 pub struct CanonicalValidator;
@@ -176,6 +177,16 @@ impl CanonicalValidator {
                         .push(format!("Athlete '{}' has no lifts", athlete_label));
                 }
 
+                if let Some(disambiguation) = athlete.disambiguation
+                    && disambiguation < 1
+                {
+                    report.errors.push(format!(
+                        "Athlete '{}' has disambiguation {}. It numbers people sharing a name, \
+                         so it starts at 1",
+                        athlete_label, disambiguation
+                    ));
+                }
+
                 for lift in &athlete.lifts {
                     if !movement_names.contains(&lift.movement) {
                         report.errors.push(format!(
@@ -209,6 +220,8 @@ impl CanonicalValidator {
             }
         }
 
+        Self::check_athlete_identities(canonical, &mut report);
+
         if !report.errors.is_empty() {
             Err(ImporterError::ValidationError(format!(
                 "Validation failed with {} error(s): {}",
@@ -217,6 +230,47 @@ impl CanonicalValidator {
             )))
         } else {
             Ok(report)
+        }
+    }
+
+    /// Two entries that fold to one identity are either the same person, which
+    /// is fine when they entered two categories, or two people who need a
+    /// disambiguation number. Within a single category they can only be a
+    /// duplicated row.
+    fn check_athlete_identities(canonical: &CanonicalFormat, report: &mut ValidationReport) {
+        let mut seen: HashMap<(String, Option<i16>), Vec<&str>> = HashMap::new();
+
+        for category in &canonical.categories {
+            let mut seen_in_category = HashSet::new();
+
+            for athlete in &category.athletes {
+                let identity = NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name)
+                    .match_name();
+
+                if !seen_in_category.insert((identity.clone(), athlete.disambiguation)) {
+                    report.errors.push(format!(
+                        "Category '{}' lists '{} {}' twice. Remove the duplicate, or set \
+                         disambiguation if these are two different people",
+                        category.name, athlete.first_name, athlete.last_name
+                    ));
+                }
+
+                seen.entry((identity, athlete.disambiguation))
+                    .or_default()
+                    .push(&category.name);
+            }
+        }
+
+        for ((identity, disambiguation), categories) in seen {
+            if categories.len() > 1 && disambiguation.is_none() {
+                report.warnings.push(format!(
+                    "'{}' appears in {} categories ({}) and will import as one athlete. Set \
+                     disambiguation if these are different people",
+                    identity,
+                    categories.len(),
+                    categories.join(", ")
+                ));
+            }
         }
     }
 }
@@ -287,6 +341,7 @@ mod tests {
                 athletes: vec![AthleteData {
                     first_name: "Adrien".to_string(),
                     last_name: "Pelfresne".to_string(),
+                    disambiguation: None,
                     gender: None,
                     country: CountryCode::parse("FR").unwrap(),
                     nationality: None,

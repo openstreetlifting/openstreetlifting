@@ -4,7 +4,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 /// Format version this build reads and writes.
-pub const FORMAT_VERSION: &str = "1.4.0";
+pub const FORMAT_VERSION: &str = "1.5.0";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CanonicalFormat {
@@ -130,6 +130,13 @@ pub struct AthleteData {
     pub first_name: String,
 
     pub last_name: String,
+
+    /// Separates two different people who genuinely share a name, gender and
+    /// country. Set it on the second one onwards, never on someone whose name
+    /// is simply spelled inconsistently: that is one person and matching
+    /// already handles it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disambiguation: Option<i16>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<Gender>,

@@ -408,28 +408,39 @@ impl<'a> CanonicalTransformer<'a> {
         let normalized_name = NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name);
         let (db_first_name, db_last_name) = normalized_name.as_database_tuple();
 
+        // The folded name is what decides who this is. The stored name keeps
+        // whatever spelling the file used, so the page shows the accents.
+        let match_key = normalized_name.match_name();
+
         let existing = sqlx::query_scalar!(
             r#"
             SELECT athlete_id as "athlete_id: Uuid" FROM athletes
-            WHERE first_name = $1 AND last_name = $2 AND gender = $3 AND country = $4
+            WHERE match_key = $1
+              AND gender = $2
+              AND country = $3
+              AND disambiguation IS NOT DISTINCT FROM $4
             "#,
-            db_first_name,
-            db_last_name,
+            match_key,
             gender,
-            athlete.country.as_str()
+            athlete.country.as_str(),
+            athlete.disambiguation
         )
         .fetch_optional(&mut **tx)
         .await?;
 
         if let Some(id) = existing {
             // COALESCE because a missing nationality means unknown, not cleared.
+            // match_key is rewritten so a row backfilled by the migration takes
+            // the importer's fold, which is the authority.
             sqlx::query!(
                 r#"
                 UPDATE athletes
-                SET nationality = COALESCE($1, nationality)
-                WHERE athlete_id = $2
+                SET nationality = COALESCE($1, nationality),
+                    match_key = $2
+                WHERE athlete_id = $3
                 "#,
                 athlete.nationality.map(|c| c.as_str().to_owned()),
+                match_key,
                 id
             )
             .execute(&mut **tx)
@@ -438,14 +449,14 @@ impl<'a> CanonicalTransformer<'a> {
             return Ok(id);
         }
 
-        let slug = self
-            .generate_unique_slug(db_first_name, db_last_name, &mut *tx)
-            .await?;
+        // Slugs come from the folded name, so a URL never carries an accent.
+        // Only new athletes get one, so existing links do not move.
+        let slug = self.generate_unique_slug(&match_key, &mut *tx).await?;
 
         let athlete_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO athletes (first_name, last_name, gender, country, nationality, slug)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            INSERT INTO athletes (first_name, last_name, gender, country, nationality, slug, match_key, disambiguation)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING athlete_id as "athlete_id: Uuid"
             "#,
             db_first_name,
@@ -453,7 +464,9 @@ impl<'a> CanonicalTransformer<'a> {
             gender,
             athlete.country.as_str(),
             athlete.nationality.map(|c| c.as_str().to_owned()),
-            slug
+            slug,
+            match_key,
+            athlete.disambiguation
         )
         .fetch_one(&mut **tx)
         .await?;
@@ -463,14 +476,12 @@ impl<'a> CanonicalTransformer<'a> {
 
     async fn generate_unique_slug(
         &self,
-        first_name: &str,
-        last_name: &str,
+        match_key: &str,
         tx: &mut sqlx::PgConnection,
     ) -> Result<String> {
-        let base_slug = format!("{}-{}", first_name, last_name)
-            .to_lowercase()
+        let base_slug = match_key
             .chars()
-            .filter(|c| c.is_alphanumeric() || *c == '-')
+            .map(|c| if c.is_alphanumeric() { c } else { '-' })
             .collect::<String>()
             .split('-')
             .filter(|s| !s.is_empty())

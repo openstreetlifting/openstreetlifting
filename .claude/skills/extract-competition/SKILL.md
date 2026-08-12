@@ -62,12 +62,12 @@ them loses real data.
 
 ## Format
 
-`format_version` is `1.4.0`. Required fields have no marker; `?` means
+`format_version` is `1.5.0`. Required fields have no marker; `?` means
 optional and should be omitted when unknown.
 
 ```jsonc
 {
-  "format_version": "1.4.0",
+  "format_version": "1.5.0",
   "source": {
     "type": "html",              // api | html | pdf | csv | image | manual
     "url": "https://...",        // ?
@@ -104,6 +104,8 @@ optional and should be omitted when unknown.
         {
           "first_name": "Timothée",
           "last_name": "MERANDON",
+          "disambiguation": 2,       // ? only to separate two real people
+                                     //   who share a name, see below
           "gender": "M",         // ?
           "country": "FR",           // country represented, ISO alpha-2
           "nationality": "FR",       // ? citizenship if it differs
@@ -157,6 +159,22 @@ Read the bound off the category name, not off the athletes. A class called
 
 Weights and bodyweights are JSON **strings**, not numbers. Countries are ISO
 3166-1 alpha-2, so `FR` and never `France` or `FRA`.
+
+### Names and who is who
+
+Write the name the way the source spells it. Matching already ignores accents,
+capitalisation and punctuation, so `MERANDON`, `Mérandon` and `merandon` are
+one person however the source wrote it, and so are `Jean-Luc` and `Jean Luc`.
+Never "fix" a name to make it match one you have seen before.
+
+`disambiguation` is for the opposite case: two **different** people who share a
+name, gender and country. Leave the first without it and number the rest from
+2, the way OpenPowerlifting writes `John Doe #1` and `John Doe #2`. Without it
+they merge into one athlete and their results pool together.
+
+Only reach for it when the source makes clear these are two people, such as two
+entries in one category with different bodyweights and different results. Two
+spellings of one name are not that. If you cannot tell, stop and ask.
 
 ### What the validator rejects
 
