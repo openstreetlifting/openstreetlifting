@@ -34,7 +34,7 @@ fn athlete(first_name: &str, last_name: &str, lifts: Vec<Value>) -> Value {
 /// One category holding whichever athletes the case needs.
 fn file(slug: &str, athletes: Vec<Value>) -> CanonicalFormat {
     let document = json!({
-        "format_version": "1.4.0",
+        "format_version": "1.5.0",
         "source": {
             "type": "manual",
             "extracted_at": "2026-01-01T00:00:00Z",
@@ -238,9 +238,43 @@ async fn a_movement_dropped_from_the_file_is_removed(pool: PgPool) {
     );
 }
 
+/// The same two lifters, contesting all four movements so the meet is a full
+/// event and therefore actually gets a RIS.
+fn four_lifts() -> Vec<Value> {
+    vec![
+        lift("Muscle-up", vec![attempt(1, 60, true)]),
+        lift("Pull-up", vec![attempt(1, 90, true)]),
+        lift("Dips", vec![attempt(1, 100, true)]),
+        lift("Squat", vec![attempt(1, 150, true)]),
+    ]
+}
+
+fn two_lifters_full_event() -> Vec<Value> {
+    vec![
+        athlete("Ada", "Lovelace", four_lifts()),
+        athlete("Grace", "Hopper", four_lifts()),
+    ]
+}
+
+fn full_event_file(slug: &str, athletes: Vec<Value>) -> CanonicalFormat {
+    let mut canonical = file(slug, athletes);
+    canonical.movements = serde_json::from_value(json!([
+        { "name": "Muscle-up", "order": 1 },
+        { "name": "Pull-up", "order": 2 },
+        { "name": "Dips", "order": 3 },
+        { "name": "Squat", "order": 4 },
+    ]))
+    .unwrap();
+    canonical
+}
+
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn ris_history_goes_with_the_participant(pool: PgPool) {
-    import(&pool, file("test-meet", two_lifters())).await;
+    import(
+        &pool,
+        full_event_file("test-meet", two_lifters_full_event()),
+    )
+    .await;
     let scored: i64 = count(&pool, "SELECT COUNT(*) FROM ris_scores_history").await;
     assert_eq!(scored, 2, "both lifters should have been scored");
 
@@ -253,12 +287,9 @@ async fn ris_history_goes_with_the_participant(pool: PgPool) {
     .await
     .unwrap();
 
-    let remaining = vec![athlete(
-        "Ada",
-        "Lovelace",
-        vec![lift("Muscle-up", vec![attempt(1, 60, true)])],
-    )];
-    import(&pool, file("test-meet", remaining)).await;
+    // Still the full event, so only the dropped lifter changes.
+    let remaining = vec![athlete("Ada", "Lovelace", four_lifts())];
+    import(&pool, full_event_file("test-meet", remaining)).await;
 
     let orphaned: i64 =
         sqlx::query_scalar("SELECT COUNT(*) FROM ris_scores_history WHERE participant_id = $1")

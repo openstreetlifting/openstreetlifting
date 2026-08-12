@@ -99,7 +99,9 @@
     await loadRankings(false);
   }
 
-  function formatWeight(weight: number): string {
+  // Null means the meet did not contest the movement, which reads as a dash
+  // rather than a zero.
+  function formatWeight(weight: number | null): string {
     return weight && weight > 0 ? `${weight} kg` : '-';
   }
 

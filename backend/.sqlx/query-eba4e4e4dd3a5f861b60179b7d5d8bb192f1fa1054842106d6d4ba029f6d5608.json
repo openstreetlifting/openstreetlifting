@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE competitions\n            SET event_code = (\n                SELECT string_agg(m.code, '' ORDER BY m.display_order)\n                FROM competition_movements cm\n                JOIN movements m ON m.name = cm.movement_name\n                WHERE cm.competition_id = $1\n            )\n            WHERE competition_id = $1\n            RETURNING event_code\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "event_code",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "event_code"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "eba4e4e4dd3a5f861b60179b7d5d8bb192f1fa1054842106d6d4ba029f6d5608"
+}

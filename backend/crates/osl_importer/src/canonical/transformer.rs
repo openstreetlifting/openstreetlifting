@@ -54,12 +54,54 @@ impl<'a> CanonicalTransformer<'a> {
         self.prune_absent_facts(competition_id, &canonical, &imported, &mut tx)
             .await?;
 
-        info!("Computing RIS scores for all participants...");
-        self.compute_ris_for_competition(competition_id, canonical.competition.start_date, &mut tx)
+        // After the prune, so the event reflects the movements that survived.
+        let event_code = self.refresh_event_code(competition_id, &mut tx).await?;
+
+        if osl_domain::is_full_event(event_code.as_deref()) {
+            info!("Computing RIS scores for all participants...");
+            self.compute_ris_for_competition(
+                competition_id,
+                canonical.competition.start_date,
+                &mut tx,
+            )
             .await?;
+        } else {
+            info!(
+                "Event {} is not the full four movements, so no RIS is computed",
+                event_code.as_deref().unwrap_or("(none)")
+            );
+        }
 
         tx.commit().await?;
         Ok(())
+    }
+
+    /// Rewrites the competition's event from the movements it actually has, so
+    /// a file that drops a movement changes the event rather than leaving a
+    /// stale one behind.
+    async fn refresh_event_code(
+        &self,
+        competition_id: Uuid,
+        tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
+    ) -> Result<Option<String>> {
+        let event_code = sqlx::query_scalar!(
+            r#"
+            UPDATE competitions
+            SET event_code = (
+                SELECT string_agg(m.code, '' ORDER BY m.display_order)
+                FROM competition_movements cm
+                JOIN movements m ON m.name = cm.movement_name
+                WHERE cm.competition_id = $1
+            )
+            WHERE competition_id = $1
+            RETURNING event_code
+            "#,
+            competition_id
+        )
+        .fetch_one(&mut **tx)
+        .await?;
+
+        Ok(event_code)
     }
 
     /// A canonical file is the whole truth about its competition, so a row it
