@@ -134,7 +134,8 @@ impl<'a> AthleteRepository<'a> {
             r#"
             SELECT DISTINCT ON (l.movement_name)
                 l.movement_name,
-                l.max_weight,
+                -- Not null thanks to the filter below, which sqlx cannot infer.
+                l.max_weight as "max_weight!",
                 c.name as competition_name,
                 c.slug as competition_slug,
                 c.start_date as date
@@ -142,6 +143,9 @@ impl<'a> AthleteRepository<'a> {
             JOIN competition_participants cp ON l.participant_id = cp.participant_id
             JOIN competitions c ON cp.competition_id = c.competition_id
             WHERE cp.athlete_id = $1
+              -- A movement where every attempt failed is not a record, and
+              -- DESC would otherwise sort its NULL to the front and pick it.
+              AND l.max_weight IS NOT NULL
             ORDER BY l.movement_name, l.max_weight DESC
             "#,
             athlete.athlete_id

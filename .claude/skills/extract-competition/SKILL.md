@@ -60,6 +60,20 @@ same person under a different spelling. Ask. Do not pick.
 are part of the result and they affect nothing in the total, but removing
 them loses real data.
 
+**Zero is a weight, not a blank.** A muscle-up, pull-up or dip with no added
+weight is a real lift, and a source may write it as `0 kg`. A successful 0 kg
+attempt is recorded like any other, with `"weight": "0"`.
+
+A source may also print `0 kg` to mean the opposite: nothing was lifted, or
+the athlete never competed. That is not an attempt and is not written to the
+file at all. Tell them apart the same way as any other attempt, by whether the
+source marks it successful. If the source gives you no way to tell, ask.
+
+An athlete who missed every attempt in a movement still gets that movement,
+with all their failed attempts in it. Do not drop the movement and do not
+invent a zero for it: they contested it and lifted nothing, which is different
+from lifting their bodyweight.
+
 ## Format
 
 `format_version` is `1.5.0`. Required fields have no marker; `?` means
@@ -185,7 +199,7 @@ movement, a movement `order` below 1, a category setting both the slug and the
 raw bounds, a `weight_class_min` above its `weight_class_max`, an athlete setting both
 `bodyweight` and `ris`, a lift naming a
 movement not in `movements`, a lift with no attempts, an `attempt_number`
-outside 1 to 3, a negative weight.
+outside 1 to 3, a negative weight. Zero is allowed: it is a bodyweight-only lift.
 
 ### What it only warns about
 
