@@ -48,6 +48,9 @@ pub struct RankingFilter {
     pub gender: Option<String>,
     pub country: Option<String>,
     pub movement: RankingMovement,
+    /// Which event a total is ranked within. Ignored when ranking by a single
+    /// movement, since those compare across events.
+    pub event: String,
     pub offset: i64,
     pub limit: i64,
 }

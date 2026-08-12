@@ -37,6 +37,9 @@ pub struct GlobalRankingFilter {
     pub country: Option<String>,
     #[serde(default)]
     pub movement: Movement,
+    /// Which event to rank totals within, defaulting to the four movements.
+    /// Ignored when ranking by a single movement.
+    pub event: Option<String>,
 }
 
 impl GlobalRankingFilter {
@@ -58,6 +61,10 @@ impl GlobalRankingFilter {
             gender: self.gender.clone(),
             country: self.country.clone(),
             movement: self.movement.into(),
+            event: self
+                .event
+                .clone()
+                .unwrap_or_else(|| osl_domain::FULL_EVENT.to_string()),
             offset: self.pagination.offset() as i64,
             limit: self.pagination.limit() as i64,
         }
@@ -71,11 +78,16 @@ pub struct GlobalRankingEntry {
     /// Absent when no score could be established, rather than zero.
     pub ris: Option<f64>,
     pub ris_source: Option<String>,
-    pub total: f64,
-    pub muscleup: f64,
-    pub pullup: f64,
-    pub dips: f64,
-    pub squat: f64,
+    /// Absent outside the four-movement event, where a total is not
+    /// comparable and no RIS is computed.
+    pub total: Option<f64>,
+    /// Absent when the competition did not contest the movement.
+    pub muscleup: Option<f64>,
+    pub pullup: Option<f64>,
+    pub dips: Option<f64>,
+    pub squat: Option<f64>,
+    /// Which movements the competition contested, e.g. `MPDS` for all four.
+    pub event: Option<String>,
     pub competition: CompetitionInfo,
 }
 
@@ -112,11 +124,12 @@ impl From<RankingRow> for GlobalRankingEntry {
             },
             ris: row.ris_score.map(decimal_to_f64),
             ris_source: row.ris_source,
-            total: decimal_to_f64(row.total),
-            muscleup: decimal_to_f64(row.muscleup),
-            pullup: decimal_to_f64(row.pullup),
-            dips: decimal_to_f64(row.dips),
-            squat: decimal_to_f64(row.squat),
+            total: row.total.map(decimal_to_f64),
+            muscleup: row.muscleup.map(decimal_to_f64),
+            pullup: row.pullup.map(decimal_to_f64),
+            dips: row.dips.map(decimal_to_f64),
+            squat: row.squat.map(decimal_to_f64),
+            event: row.event_code,
             competition: CompetitionInfo {
                 competition_id: row.competition_id,
                 name: row.competition_name,

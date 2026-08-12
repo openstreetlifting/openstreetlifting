@@ -22,7 +22,7 @@ fn scored(weight_class: &str, nationality: Option<&str>, score: &str) -> Canonic
 
     serde_json::from_str(&format!(
         r#"{{
-          "format_version": "1.4.0",
+          "format_version": "1.5.0",
           "source": {{
             "type": "manual",
             "extracted_at": "2025-06-01T10:00:00Z",
@@ -36,7 +36,12 @@ fn scored(weight_class: &str, nationality: Option<&str>, score: &str) -> Canonic
             "end_date": "2025-06-01",
             "country": "FR"
           }},
-          "movements": [{{ "name": "Pull-up", "order": 1 }}],
+          "movements": [
+            {{ "name": "Muscle-up", "order": 1 }},
+            {{ "name": "Pull-up", "order": 2 }},
+            {{ "name": "Dips", "order": 3 }},
+            {{ "name": "Squat", "order": 4 }}
+          ],
           "categories": [
             {{
               "name": "Test category",
@@ -52,9 +57,27 @@ fn scored(weight_class: &str, nationality: Option<&str>, score: &str) -> Canonic
                   "status": "competed",
                   "lifts": [
                     {{
+                      "movement": "Muscle-up",
+                      "attempts": [
+                        {{ "attempt_number": 1, "weight": "50", "is_successful": true }}
+                      ]
+                    }},
+                    {{
                       "movement": "Pull-up",
                       "attempts": [
                         {{ "attempt_number": 1, "weight": "60", "is_successful": true }}
+                      ]
+                    }},
+                    {{
+                      "movement": "Dips",
+                      "attempts": [
+                        {{ "attempt_number": 1, "weight": "80", "is_successful": true }}
+                      ]
+                    }},
+                    {{
+                      "movement": "Squat",
+                      "attempts": [
+                        {{ "attempt_number": 1, "weight": "120", "is_successful": true }}
                       ]
                     }}
                   ]

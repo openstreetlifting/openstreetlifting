@@ -6,11 +6,15 @@ export interface RankingEntry {
   athlete: AthleteInfo;
   ris: number | null;
   ris_source: 'computed' | 'reported' | null;
-  total: number;
-  muscleup: number;
-  pullup: number;
-  dips: number;
-  squat: number;
+  /** Absent outside the four-movement event, where a total does not compare. */
+  total: number | null;
+  /** Absent when the competition did not contest the movement. */
+  muscleup: number | null;
+  pullup: number | null;
+  dips: number | null;
+  squat: number | null;
+  /** Which movements the competition contested, e.g. `MPDS` for all four. */
+  event: string | null;
   competition: CompetitionInfo;
 }
 
@@ -23,4 +27,6 @@ export interface RankingFilters {
   gender?: string | null;
   country?: string | null;
   movement?: string;
+  /** Which event to rank totals within. Ignored for single-movement boards. */
+  event?: string | null;
 }

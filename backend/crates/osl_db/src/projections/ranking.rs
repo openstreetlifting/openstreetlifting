@@ -16,11 +16,15 @@ pub struct RankingRow {
     pub competition_id: Uuid,
     pub competition_name: String,
     pub start_date: Option<NaiveDate>,
-    pub muscleup: Decimal,
-    pub pullup: Decimal,
-    pub dips: Decimal,
-    pub squat: Decimal,
-    pub total: Decimal,
+    /// Absent when the meet did not contest the movement, rather than zero.
+    pub muscleup: Option<Decimal>,
+    pub pullup: Option<Decimal>,
+    pub dips: Option<Decimal>,
+    pub squat: Option<Decimal>,
+    /// The sum of what this athlete contested, so it only compares with
+    /// another total from the same event.
+    pub total: Option<Decimal>,
+    pub event_code: Option<String>,
     pub ris_score: Option<Decimal>,
     pub ris_source: Option<String>,
 }
