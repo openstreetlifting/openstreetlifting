@@ -1,0 +1,189 @@
+info:
+  name: get_global_ranking
+  type: http
+  seq: 1
+  tags:
+    - rankings
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/rankings"
+  params:
+    - name: page
+      value: "0"
+      type: query
+      disabled: true
+    - name: page_size
+      value: "0"
+      type: query
+      disabled: true
+    - name: gender
+      value: ""
+      type: query
+      disabled: true
+    - name: country
+      value: ""
+      type: query
+      disabled: true
+    - name: movement
+      value: muscleup
+      type: query
+      disabled: true
+    - name: movement
+      value: pullup
+      type: query
+      disabled: true
+    - name: movement
+      value: dips
+      type: query
+      disabled: true
+    - name: movement
+      value: squat
+      type: query
+      disabled: true
+    - name: movement
+      value: total
+      type: query
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Global ranking retrieved successfully
+    request:
+      url: "{{baseUrl}}/api/v1/rankings"
+      method: GET
+      params:
+        - name: page
+          value: "0"
+          type: query
+          disabled: true
+        - name: page_size
+          value: "0"
+          type: query
+          disabled: true
+        - name: gender
+          value: ""
+          type: query
+          disabled: true
+        - name: country
+          value: ""
+          type: query
+          disabled: true
+        - name: movement
+          value: muscleup
+          type: query
+          disabled: true
+        - name: movement
+          value: pullup
+          type: query
+          disabled: true
+        - name: movement
+          value: dips
+          type: query
+          disabled: true
+        - name: movement
+          value: squat
+          type: query
+          disabled: true
+        - name: movement
+          value: total
+          type: query
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "data": [
+              {
+                "athlete": {
+                  "athlete_id": "",
+                  "bodyweight": "",
+                  "country": "",
+                  "first_name": "",
+                  "gender": "",
+                  "last_name": "",
+                  "slug": ""
+                },
+                "competition": {
+                  "competition_id": "",
+                  "date": "",
+                  "name": ""
+                },
+                "dips": 0,
+                "muscleup": 0,
+                "pullup": 0,
+                "rank": 0,
+                "ris": "",
+                "ris_source": "",
+                "squat": 0,
+                "total": 0
+              }
+            ],
+            "pagination": {
+              "page": 0,
+              "page_size": 0,
+              "total_items": 0,
+              "total_pages": 0
+            }
+          }
+  - name: 400 Response
+    description: Invalid query parameters
+    request:
+      url: "{{baseUrl}}/api/v1/rankings"
+      method: GET
+      params:
+        - name: page
+          value: "0"
+          type: query
+          disabled: true
+        - name: page_size
+          value: "0"
+          type: query
+          disabled: true
+        - name: gender
+          value: ""
+          type: query
+          disabled: true
+        - name: country
+          value: ""
+          type: query
+          disabled: true
+        - name: movement
+          value: muscleup
+          type: query
+          disabled: true
+        - name: movement
+          value: pullup
+          type: query
+          disabled: true
+        - name: movement
+          value: dips
+          type: query
+          disabled: true
+        - name: movement
+          value: squat
+          type: query
+          disabled: true
+        - name: movement
+          value: total
+          type: query
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""

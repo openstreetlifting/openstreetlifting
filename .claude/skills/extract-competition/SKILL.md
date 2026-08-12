@@ -111,7 +111,7 @@ optional and should be omitted when unknown.
   ],
   "categories": [
     {
-      "name": "Catégorie -80",
+      "name": "Men -80kg",       // always English, see below
       "gender": "M",             // M, F or MX
       "weight_class_slug": "M-80",   // standard class, see list below
       "athletes": [
@@ -147,7 +147,7 @@ optional and should be omitted when unknown.
     },
     {
       // A class outside the standard ladder, stated as bounds.
-      "name": "Catégorie +87",
+      "name": "Men +87kg",
       "gender": "M",
       "weight_class_min": "87",      // above 87, no upper limit
       "athletes": []
@@ -155,6 +155,12 @@ optional and should be omitted when unknown.
   ]
 }
 ```
+
+Category names are always written in English, whatever language the source
+uses, as `Men -80kg`, `Women -52kg`, `Men +87kg`. A French sheet listing
+`Catégorie -80` or `Femme -52kg` still becomes `Men -80kg` and `Women -52kg`.
+Translate the label only, never the class itself: the bound and the gender
+stay exactly what the source printed.
 
 Every category needs a weight class, in one of two ways.
 

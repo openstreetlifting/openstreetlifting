@@ -1,0 +1,74 @@
+info:
+  name: delete_competition
+  type: http
+  seq: 4
+  tags:
+    - competitions
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/api/v1/competitions/:slug"
+  params:
+    - name: slug
+      value: canadian-nationals-2026
+      type: path
+      description: Competition slug
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: Competition deleted
+    request:
+      url: "{{baseUrl}}/api/v1/competitions/:slug"
+      method: DELETE
+      params:
+        - name: slug
+          value: ""
+          type: path
+          description: Competition slug
+    response:
+      status: 204
+      statusText: No Content
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/api/v1/competitions/:slug"
+      method: DELETE
+      params:
+        - name: slug
+          value: ""
+          type: path
+          description: Competition slug
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 404 Response
+    description: Competition not found
+    request:
+      url: "{{baseUrl}}/api/v1/competitions/:slug"
+      method: DELETE
+      params:
+        - name: slug
+          value: ""
+          type: path
+          description: Competition slug
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: text
+        data: ""

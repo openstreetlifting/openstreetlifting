@@ -1,0 +1,67 @@
+info:
+  name: get_current_formula
+  type: http
+  seq: 4
+  tags:
+    - ris
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/ris/formulas/current"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Get the current active RIS formula
+    request:
+      url: "{{baseUrl}}/api/v1/ris/formulas/current"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "constants": {
+              "men": {
+                "a": "",
+                "b": "",
+                "k": "",
+                "q": "",
+                "v": ""
+              },
+              "women": {
+                "a": "",
+                "b": "",
+                "k": "",
+                "q": "",
+                "v": ""
+              }
+            },
+            "effective_from": "",
+            "effective_until": "",
+            "formula_id": "",
+            "is_current": false,
+            "year": 0
+          }
+  - name: 404 Response
+    description: No current formula found
+    request:
+      url: "{{baseUrl}}/api/v1/ris/formulas/current"
+      method: GET
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: text
+        data: ""

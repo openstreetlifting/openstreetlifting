@@ -1,0 +1,41 @@
+info:
+  name: recompute_ris_scores
+  type: http
+  seq: 6
+  tags:
+    - ris
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/ris/recomputations"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: RIS scores recomputed successfully
+    request:
+      url: "{{baseUrl}}/api/v1/ris/recomputations"
+      method: POST
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""
+  - name: 500 Response
+    description: Recomputation failed
+    request:
+      url: "{{baseUrl}}/api/v1/ris/recomputations"
+      method: POST
+    response:
+      status: 500
+      statusText: Internal Server Error
+      body:
+        type: text
+        data: ""

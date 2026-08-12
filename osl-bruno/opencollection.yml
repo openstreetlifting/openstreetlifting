@@ -1,0 +1,28 @@
+opencollection: 1.0.0
+
+info:
+  name: osl-bruno
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git
+    openapi:
+      - sourceUrl: https://api.openstreetlifting.org/api-docs/openapi.json
+        groupBy: tags
+        lastSyncDate: 2026-08-11T20:25:48.219Z
+        specHash: ba5550b922190fda9f892f7a765ea8c2
+        autoCheck: true
+        autoCheckInterval: 5

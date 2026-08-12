@@ -1,0 +1,115 @@
+info:
+  name: create_athlete
+  type: http
+  seq: 2
+  tags:
+    - athletes
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/athletes"
+  body:
+    type: json
+    data: |-
+      {
+        "country": "",
+        "first_name": "",
+        "gender": "",
+        "last_name": "",
+        "nationality": "",
+        "profile_picture_url": ""
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Athlete created
+    request:
+      url: "{{baseUrl}}/api/v1/athletes"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "country": "",
+            "first_name": "",
+            "gender": "",
+            "last_name": "",
+            "nationality": "",
+            "profile_picture_url": ""
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "athlete_id": "",
+            "competitions": "",
+            "country": "",
+            "created_at": "",
+            "first_name": "",
+            "gender": "",
+            "last_name": "",
+            "nationality": "",
+            "personal_records": "",
+            "profile_picture_url": "",
+            "slug": "",
+            "total_competitions": ""
+          }
+  - name: 400 Response
+    description: Validation error
+    request:
+      url: "{{baseUrl}}/api/v1/athletes"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "country": "",
+            "first_name": "",
+            "gender": "",
+            "last_name": "",
+            "nationality": "",
+            "profile_picture_url": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/api/v1/athletes"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "country": "",
+            "first_name": "",
+            "gender": "",
+            "last_name": "",
+            "nationality": "",
+            "profile_picture_url": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""

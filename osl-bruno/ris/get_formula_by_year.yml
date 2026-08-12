@@ -1,0 +1,82 @@
+info:
+  name: get_formula_by_year
+  type: http
+  seq: 5
+  tags:
+    - ris
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/ris/formulas/:year"
+  params:
+    - name: year
+      value: ""
+      type: path
+      description: Formula year
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: RIS formula for specified year
+    request:
+      url: "{{baseUrl}}/api/v1/ris/formulas/:year"
+      method: GET
+      params:
+        - name: year
+          value: ""
+          type: path
+          description: Formula year
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "constants": {
+              "men": {
+                "a": "",
+                "b": "",
+                "k": "",
+                "q": "",
+                "v": ""
+              },
+              "women": {
+                "a": "",
+                "b": "",
+                "k": "",
+                "q": "",
+                "v": ""
+              }
+            },
+            "effective_from": "",
+            "effective_until": "",
+            "formula_id": "",
+            "is_current": false,
+            "year": 0
+          }
+  - name: 404 Response
+    description: Formula not found for this year
+    request:
+      url: "{{baseUrl}}/api/v1/ris/formulas/:year"
+      method: GET
+      params:
+        - name: year
+          value: ""
+          type: path
+          description: Formula year
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: text
+        data: ""
