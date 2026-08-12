@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.5.0...v0.6.0) (2026-08-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **importer:** match athletes on a folded name ([#225](https://github.com/openstreetlifting/openstreetlifting/issues/225))
+* **api:** remove the write endpoints ([#176](https://github.com/openstreetlifting/openstreetlifting/issues/176))
+
+### Features
+
+* **api:** remove the write endpoints ([#176](https://github.com/openstreetlifting/openstreetlifting/issues/176)) ([de05842](https://github.com/openstreetlifting/openstreetlifting/commit/de058427b0769f4b8dc81c4b5a7945b9a333caa1))
+* **importer:** delete rows a canonical file no longer lists ([#167](https://github.com/openstreetlifting/openstreetlifting/issues/167)) ([e34bdba](https://github.com/openstreetlifting/openstreetlifting/commit/e34bdbad6a281bee44dc6bac149ddcc4809b415b))
+* **importer:** match athletes on a folded name ([#225](https://github.com/openstreetlifting/openstreetlifting/issues/225)) ([ab5def2](https://github.com/openstreetlifting/openstreetlifting/commit/ab5def24c3490ad1db74ce0bf5bd6c1795d34ead))
+
 ## [0.5.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.4.0...v0.5.0) (2026-08-11)
 
 
