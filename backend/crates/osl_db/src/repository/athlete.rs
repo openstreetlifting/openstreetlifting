@@ -113,7 +113,9 @@ impl<'a> AthleteRepository<'a> {
                 c.start_date as competition_date,
                 cat.name as category_name,
                 cp.rank,
-                COALESCE(SUM(l.max_weight), 0) as "total!: Decimal",
+                CASE WHEN COUNT(l.lift_id) = 0 THEN NULL
+                     ELSE COALESCE(SUM(l.max_weight), 0)
+                END as "total: Decimal",
                 cp.ris_score,
                 cp.is_disqualified
             FROM competition_participants cp
@@ -146,6 +148,7 @@ impl<'a> AthleteRepository<'a> {
               -- A movement where every attempt failed is not a record, and
               -- DESC would otherwise sort its NULL to the front and pick it.
               AND l.max_weight IS NOT NULL
+              AND NOT cp.is_disqualified
             ORDER BY l.movement_name, l.max_weight DESC
             "#,
             athlete.athlete_id

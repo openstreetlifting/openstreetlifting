@@ -28,6 +28,10 @@
       year: 'numeric',
     });
 
+  const contestedMovements = (participants: Participant[]): string[] => [
+    ...new Set(participants.flatMap((p) => p.lifts.map((l) => l.movement_name))),
+  ];
+
   const getSortState = (categoryId: string): { key: SortKey; direction: SortDirection } =>
     categorySortState.get(categoryId) ?? { key: 'rank', direction: 'asc' };
 
@@ -58,8 +62,8 @@
         valueA = a.rank;
         valueB = b.rank;
       } else if (key === 'total') {
-        valueA = parseFloat(a.total) || 0;
-        valueB = parseFloat(b.total) || 0;
+        valueA = parseFloat(a.total || '0') || 0;
+        valueB = parseFloat(b.total || '0') || 0;
       } else if (key === 'ris_score') {
         valueA = parseFloat(a.ris_score || '0') || 0;
         valueB = parseFloat(b.ris_score || '0') || 0;
@@ -193,6 +197,7 @@
 
             <!-- Participants -->
             {#if categoryDetail.participants?.length}
+              {@const movements = contestedMovements(categoryDetail.participants)}
               <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                   <thead class="sticky top-0 z-10">
@@ -223,17 +228,17 @@
                           class="ml-1"
                         />
                       </th>
-                      {#each categoryDetail.participants[0]?.lifts || [] as lift (lift.movement_name)}
+                      {#each movements as movementName (movementName)}
                         <th
                           class="cursor-pointer px-4 py-3 text-center font-medium text-zinc-400 transition-colors select-none hover:text-white"
                           onclick={() =>
-                            toggleSort(categoryDetail.category.category_id, lift.movement_name)}
+                            toggleSort(categoryDetail.category.category_id, movementName)}
                         >
-                          {lift.movement_name}
+                          {movementName}
                           <SortIcon
                             direction={getSortDirection(
                               categoryDetail.category.category_id,
-                              lift.movement_name
+                              movementName
                             )}
                             class="ml-1"
                           />
@@ -310,27 +315,34 @@
                         <td class="px-4 py-3 text-zinc-400"
                           >{formatWeight(participant.bodyweight)}</td
                         >
-                        {#each participant.lifts as lift (lift.movement_name)}
+                        {#each movements as movementName (movementName)}
+                          {@const lift = participant.lifts.find(
+                            (l) => l.movement_name === movementName
+                          )}
                           <td class="px-4 py-3">
-                            <div class="flex flex-col items-center gap-1">
-                              <div class="font-medium text-white">
-                                {formatWeight(lift.best_weight)}
+                            {#if lift}
+                              <div class="flex flex-col items-center gap-1">
+                                <div class="font-medium text-white">
+                                  {formatWeight(lift.best_weight)}
+                                </div>
+                                <div class="flex gap-1">
+                                  {#each lift.attempts as attempt (attempt.attempt_number)}
+                                    <span
+                                      class="flex h-5 w-5 items-center justify-center rounded text-xs {attempt.is_successful
+                                        ? 'bg-emerald-500/20 text-emerald-400'
+                                        : 'bg-red-500/20 text-red-400'}"
+                                      title="{attempt.weight}kg - {attempt.is_successful
+                                        ? 'Success'
+                                        : attempt.no_rep_reason || 'Failed'}"
+                                    >
+                                      {attempt.attempt_number}
+                                    </span>
+                                  {/each}
+                                </div>
                               </div>
-                              <div class="flex gap-1">
-                                {#each lift.attempts as attempt (attempt.attempt_number)}
-                                  <span
-                                    class="flex h-5 w-5 items-center justify-center rounded text-xs {attempt.is_successful
-                                      ? 'bg-emerald-500/20 text-emerald-400'
-                                      : 'bg-red-500/20 text-red-400'}"
-                                    title="{attempt.weight}kg - {attempt.is_successful
-                                      ? 'Success'
-                                      : attempt.no_rep_reason || 'Failed'}"
-                                  >
-                                    {attempt.attempt_number}
-                                  </span>
-                                {/each}
-                              </div>
-                            </div>
+                            {:else}
+                              <div class="text-center text-zinc-500">-</div>
+                            {/if}
                           </td>
                         {/each}
                         <td class="px-4 py-3 font-medium text-white">

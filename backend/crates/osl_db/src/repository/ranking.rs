@@ -24,12 +24,6 @@ impl<'a> RankingRepository<'a> {
         Ok((entries, total_items))
     }
 
-    /// Every result with its per-movement bests, before anything is excluded.
-    ///
-    /// A movement nobody contested is NULL rather than 0, so "did not do this
-    /// lift" stops looking like "lifted nothing". `total` is the sum of what
-    /// the athlete actually did, which only means something next to another
-    /// total from the same event.
     fn movement_weights(filter: &RankingFilter) -> QueryBuilder<Postgres> {
         let mut query = QueryBuilder::new(
             r#"
@@ -58,7 +52,7 @@ impl<'a> RankingRepository<'a> {
                 INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
                 INNER JOIN competitions c ON cp.competition_id = c.competition_id
                 INNER JOIN lifts l ON cp.participant_id = l.participant_id
-                WHERE 1=1
+                WHERE NOT cp.is_disqualified
             "#,
         );
 

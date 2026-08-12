@@ -12,7 +12,7 @@ pub struct AthleteCompetitionRow {
     pub competition_date: Option<chrono::NaiveDate>,
     pub category_name: String,
     pub rank: Option<i32>,
-    pub total: Decimal,
+    pub total: Option<Decimal>,
     pub ris_score: Option<Decimal>,
     pub is_disqualified: bool,
 }
