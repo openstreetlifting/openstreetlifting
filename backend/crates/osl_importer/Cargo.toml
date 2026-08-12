@@ -7,6 +7,7 @@ publish.workspace = true
 [dependencies]
 osl_db = { path = "../osl_db" }
 osl_domain = { path = "../osl_domain" }
+anyhow.workspace = true
 chrono.workspace = true
 clap = { version = "4.5.52", features = ["derive", "env"] }
 dotenvy.workspace = true

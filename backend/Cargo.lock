@@ -1362,6 +1362,7 @@ dependencies = [
 name = "osl_importer"
 version = "0.6.0"
 dependencies = [
+ "anyhow",
  "chrono",
  "clap",
  "dotenvy",
