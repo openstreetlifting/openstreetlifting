@@ -1,6 +1,8 @@
-# Openstreetlifting
+# OpenStreetlifting
 
-Openstreetlifting is an **open**, **collaborative** project building a **permanent** and **traceable** archive of all Streetlifting data, freely accessible to everyone.
+<img src="images/logowidth.png">
+
+OpenStreetlifting is an **open**, **collaborative** project building a **permanent** and **traceable** archive of all Streetlifting data, freely accessible to everyone.
 
 ![CI Backend](https://github.com/openstreetlifting/openstreetlifting/actions/workflows/ci-backend.yaml/badge.svg)
 ![CI Frontend](https://github.com/openstreetlifting/openstreetlifting/actions/workflows/ci-frontend.yaml/badge.svg)
@@ -9,9 +11,20 @@ Openstreetlifting is an **open**, **collaborative** project building a **permane
 
 This Readme only cover developer documentation, if you want to know about the why and the how, please consider the [book](https://docs.openstreetlifting.org)
 
+## Get data
+
+There are multiple way to get data from the OpenStreetlifting project
+
+1. Consult the [website](https://openstreetlifting.org) where you can download csv for individuals meet
+2. Download the full collection (COMING SOON)
+3. Use the API [swagger](https://api.openstreetlifting.org/swagger-ui/)
+
 ## Run locally
 
-Requires docker, rust with `sqlx-cli`, and pnpm.
+The easiest way to run locally is through the `launch_local.sh` script, which require docker for postgres, rust and pnpm.
+To run the database migration, you will need to install [https://crates.io/crates/sqlx-cli](sqlx-cli).
+
+First time launch, boot up the database, run the migration and import some datas.
 
 ```sh
 cp backend/.env.example backend/.env
@@ -22,76 +35,45 @@ cargo run -p osl_importer --bin import -- bulk-import
 cd ../frontend && pnpm install
 ```
 
+Then, once the environment is ready, you can simply use the script.
+
 ```sh
 ./launch_local.sh
 ```
 
 API on <http://localhost:8080>, Swagger at `/swagger-ui/`, frontend on <http://localhost:5173>.
 
-Reset the database, then rerun the migration and import:
-
-```sh
-cd backend && sqlx database drop -y && sqlx database create
-```
-
-Everything in containers:
-
-```sh
-docker compose up -d --build
-```
-
 ## Contributing
 
 Contributions are welcome, whether you are fixing a bug, improving the codebase, or adding missing competition data.
-For code contributions, fork the repository, create a branch from main, and open a pull request. Commits must follow the Conventional Commits specification, as releases are automated via google release-please.
+For code contributions, fork the repository, create a branch from main, and open a pull request.
+
 For data contributions, the entry point is the [canonical format](https://docs.openstreetlifting.org). If you have results from a competition that is not yet in the archive, create a canonical JSON file under backend/imports/{competition-slug}/ following the existing structure and open a pull request.
 
-## Importing in the cluster
-
-The canonical files are the data, so every deploy makes the database match them.
-The chart runs an import Job as a `post-upgrade` hook, which Argo CD runs as a
-PostSync once the release is healthy, so the import lands behind the backend that
-applies migrations. The importer image carries the whole `backend/imports` tree,
-which is why a merged data pull request reaches production on its own. Deletions
-are included: a competition no file claims is removed, along with the athletes
-that leaves without a result.
-
-To have a release import without deleting, drop `--yes` from `importer.args` and
-it only reports what it would remove.
-
-To run an import outside a deploy, render the on demand Job:
-
-```sh
-helm template charts -s templates/importer-job.yaml \
-  --set importer.job.enabled=true \
-  | kubectl create -f -
-```
-
-Any other importer command works the same way, for example a single file:
-
-```sh
-helm template charts -s templates/importer-job.yaml \
-  --set importer.job.enabled=true \
-  --set-json 'importer.args=["canonical","imports/fnsl-elite-2026/fnsl-elite-2026.json"]' \
-  | kubectl create -f -
-```
+Please note that I'm using Github issues to track identified work, whereas it is code or data. This can be a good starting point if you want to help me!
 
 ## Data Correction
 
-All competition data in this archive is versioned and traceable. If you spot an error, a wrong lift result, an incorrect athlete name, a missing competition, you can report or fix it directly.
-To report an error, open an issue and include the competition slug, the athlete name, and a description of what is wrong. A source reference (official result sheet, video, federation website) is appreciated.
+All competition data in this archive is versioned and traceable. If you spot an error, a wrong lift result, an incorrect athlete name, a missing competition, you can report or fix it directly (see the Contributing section above).
+
+To report an error, open an issue and include the competition slug, the athlete name, and a description of what is wrong. A source reference (official result sheet, video, federation website) is appreciated. You can also contact me at [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org) I will do my best to correct the issue quickly
 
 ## Licensing
 
 ### Code
 
-All OpenStreetLifting code is free software licensed under AGPLv3.
-See LICENSE file.
+OpenStreetlifting code is free software licensed under AGPLv3.
+See [LICENSE](./LICENSE) file.
 
 ### Data
 
-OpenStreetLifting data is licensed under Creative Commons Attribution 4.0 (CC BY 4.0).
-<https://creativecommons.org/licenses/by/4.0/>
+OpenStreetlifting data is licensed under Creative Commons Attribution 4.0 (CC BY 4.0).
+See [LICENSE-DATA](./LICENSE-DATA) file.
 
-If you use this data, please credit:
-OpenStreetLifting (openstreetlifting.org)
+> [!important]
+> If you use any of the data, you need to credit the project:
+> Data is coming from the OpenStreetlifting project [openstreetlifting.org](https://openstreetlifting.org)
+
+## versions
+
+You can look at the [changelog](./CHANGELOG.md) to list all the versions of the website, and the api.
