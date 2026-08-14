@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.7.0...v0.8.0) (2026-08-14)
+
+
+### Features
+
+* **canonical:** accept a stated best lift without attempts ([#385](https://github.com/openstreetlifting/openstreetlifting/issues/385)) ([686b581](https://github.com/openstreetlifting/openstreetlifting/commit/686b581c30ec220550877a9b76619147bf4701d8))
+* **chart:** import the canonical files on every deploy ([#243](https://github.com/openstreetlifting/openstreetlifting/issues/243)) ([8c2e75c](https://github.com/openstreetlifting/openstreetlifting/commit/8c2e75c68abc4ce5d37f6679970f4a18f4f9be17))
+
 ## [0.7.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.6.0...v0.7.0) (2026-08-12)
 
 
