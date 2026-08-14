@@ -74,10 +74,7 @@ fn stated_best_lifter() -> Value {
 async fn a_stated_best_lift_is_stored_as_max_weight(pool: PgPool) {
     import(&pool, meet("test-meet", vec![stated_best_lifter()])).await;
 
-    assert_eq!(
-        best(&pool, "Card", "Squat").await,
-        Some(Decimal::from(200))
-    );
+    assert_eq!(best(&pool, "Card", "Squat").await, Some(Decimal::from(200)));
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
