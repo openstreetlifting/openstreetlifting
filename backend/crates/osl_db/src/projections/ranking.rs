@@ -13,9 +13,13 @@ pub struct RankingRow {
     pub country: String,
     pub gender: String,
     pub bodyweight: Option<Decimal>,
+    pub category_name: String,
     pub competition_id: Uuid,
     pub competition_name: String,
+    pub competition_slug: String,
     pub start_date: Option<NaiveDate>,
+    pub federation_name: String,
+    pub federation_abbreviation: Option<String>,
     /// Absent when the meet did not contest the movement, rather than zero.
     pub muscleup: Option<Decimal>,
     pub pullup: Option<Decimal>,

@@ -27,8 +27,9 @@ pub enum RankingMovement {
     Pullup,
     Dips,
     Squat,
-    #[default]
     Total,
+    #[default]
+    Ris,
 }
 
 impl RankingMovement {
@@ -39,6 +40,26 @@ impl RankingMovement {
             Self::Dips => "dips",
             Self::Squat => "squat",
             Self::Total => "total",
+            Self::Ris => "ris_score",
+        }
+    }
+}
+
+/// Which way the ranking runs. Best-first is the natural reading of a
+/// leaderboard, so it is the default; worst-first is there for anyone who
+/// wants to see who has the most room to grow.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum SortDirection {
+    #[default]
+    Desc,
+    Asc,
+}
+
+impl SortDirection {
+    pub fn as_sql(&self) -> &'static str {
+        match self {
+            Self::Desc => "DESC",
+            Self::Asc => "ASC",
         }
     }
 }
@@ -48,9 +69,16 @@ pub struct RankingFilter {
     pub gender: Option<String>,
     pub country: Option<String>,
     pub movement: RankingMovement,
+    pub direction: SortDirection,
     /// Which event a total is ranked within. Ignored when ranking by a single
     /// movement, since those compare across events.
     pub event: String,
+    /// Weight class suffix, e.g. `-73kg`, matched against the category name
+    /// regardless of gender.
+    pub category: Option<String>,
+    pub year: Option<i32>,
+    /// Narrows the ranking to one competition, e.g. for a per-meet leaderboard.
+    pub competition_id: Option<Uuid>,
     pub offset: i64,
     pub limit: i64,
 }

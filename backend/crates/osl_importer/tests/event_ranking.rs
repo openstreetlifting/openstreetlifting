@@ -3,7 +3,7 @@
 //! a muscle-up is a muscle-up whatever else the meet ran, so those boards span
 //! every event.
 
-use osl_db::params::{RankingFilter, RankingMovement};
+use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
 use serde_json::{Value, json};
@@ -89,7 +89,11 @@ fn filter(movement: RankingMovement) -> RankingFilter {
         gender: None,
         country: None,
         movement,
+        direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.to_string(),
+        category: None,
+        year: None,
+        competition_id: None,
         offset: 0,
         limit: 50,
     }

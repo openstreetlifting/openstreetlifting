@@ -4,7 +4,7 @@
 //! where every attempt failed is not a lift at all. Both contribute nothing to
 //! the total, so only the stored value tells them apart: 0 against NULL.
 
-use osl_db::params::{RankingFilter, RankingMovement};
+use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
 use rust_decimal::Decimal;
@@ -176,6 +176,10 @@ async fn a_bodyweight_lifter_still_appears_on_that_movement(pool: PgPool) {
         country: None,
         movement: RankingMovement::Muscleup,
         event: osl_domain::FULL_EVENT.to_string(),
+        direction: SortDirection::Desc,
+        category: None,
+        year: None,
+        competition_id: None,
         offset: 0,
         limit: 50,
     };
@@ -202,6 +206,10 @@ async fn a_bomber_is_left_off_that_movements_board(pool: PgPool) {
         country: None,
         movement: RankingMovement::Dips,
         event: osl_domain::FULL_EVENT.to_string(),
+        direction: SortDirection::Desc,
+        category: None,
+        year: None,
+        competition_id: None,
         offset: 0,
         limit: 50,
     };

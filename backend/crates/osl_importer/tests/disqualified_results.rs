@@ -3,7 +3,7 @@
 //! It keeps its lifts in the category and takes no place, so the lifters behind
 //! it move up, and no board or personal record ever sees it.
 
-use osl_db::params::{RankingFilter, RankingMovement};
+use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::{
     athlete::AthleteRepository, competition::CompetitionRepository, ranking::RankingRepository,
 };
@@ -59,7 +59,11 @@ async fn board(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
         gender: None,
         country: None,
         movement,
+        direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.to_string(),
+        category: None,
+        year: None,
+        competition_id: None,
         offset: 0,
         limit: 50,
     };

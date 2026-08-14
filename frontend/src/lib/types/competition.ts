@@ -97,5 +97,6 @@ export interface CompetitionDetail {
 export interface CompetitionInfo {
   competition_id: string;
   name: string;
+  slug: string;
   date: string | null;
 }

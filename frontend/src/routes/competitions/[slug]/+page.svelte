@@ -1,91 +1,127 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import type { Participant } from '$lib/types/competition';
-  import { Card, Breadcrumb } from '$lib/components/ui';
+  import type { RankingEntry } from '$lib/types/ranking';
+  import { Card, Breadcrumb, Pagination } from '$lib/components/ui';
   import { SortIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
-  import { SvelteMap } from 'svelte/reactivity';
+  import { page } from '$app/state';
+  import { goto } from '$app/navigation';
+  import { SvelteURLSearchParams } from 'svelte/reactivity';
+  import { formatDate, getCountryFlag } from '$lib/utils';
+  import { RANKING_MOVEMENTS, RANKING_GENDERS } from '$lib/constants/ranking';
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
 
-  type SortKey = 'total' | 'ris_score' | 'bodyweight' | string;
-  type SortDirection = 'asc' | 'desc';
+  let rankings = $state<RankingEntry[]>([]);
+  let currentPage = $state(1);
+  let totalPages = $state(1);
+  let totalItems = $state(0);
+  let isLoading = $state(false);
 
-  const categorySortState = new SvelteMap<string, { key: SortKey; direction: SortDirection }>();
+  $effect(() => {
+    rankings = data.initialRankings;
+    currentPage = data.pagination.page;
+    totalPages = data.pagination.total_pages;
+    totalItems = data.pagination.total_items;
+  });
 
-  let selectedCategoryId = $state<string | null>(null);
-  const activeCategory = $derived(
-    selectedCategoryId || competition.categories?.[0]?.category.category_id || ''
+  let genderFilter = $state<string | null>(page.url.searchParams.get('gender') || null);
+  let categoryFilter = $state<string | null>(page.url.searchParams.get('category') || null);
+  let movementFilter = $state<string>(page.url.searchParams.get('movement') || 'ris');
+  let sortDirection = $state<'asc' | 'desc'>(
+    page.url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc'
   );
 
-  const formatWeight = (weight: string | null): string => (weight ? `${weight} kg` : '-');
+  const movements = RANKING_MOVEMENTS;
+  const genders = RANKING_GENDERS;
 
-  const formatDate = (dateString: string): string =>
-    new Date(dateString).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    });
-
-  const contestedMovements = (participants: Participant[]): string[] => [
-    ...new Set(participants.flatMap((p) => p.lifts.map((l) => l.movement_name))),
-  ];
-
-  const getSortState = (categoryId: string): { key: SortKey; direction: SortDirection } =>
-    categorySortState.get(categoryId) ?? { key: 'rank', direction: 'asc' };
-
-  function toggleSort(categoryId: string, key: SortKey) {
-    const current = { ...getSortState(categoryId) };
-
-    if (current.key === key) {
-      current.direction = current.direction === 'desc' ? 'asc' : 'desc';
+  function sortBy(value: string) {
+    if (movementFilter === value) {
+      sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
     } else {
-      current.direction = key === 'rank' ? 'asc' : 'desc';
+      movementFilter = value;
+      sortDirection = 'desc';
+    }
+    handleFilterChange();
+  }
+
+  function updateURL(targetPage: number) {
+    const params = new SvelteURLSearchParams();
+
+    if (movementFilter !== 'ris') {
+      params.set('movement', movementFilter);
     }
 
-    current.key = key;
-    categorySortState.set(categoryId, current);
+    if (sortDirection !== 'desc') {
+      params.set('direction', sortDirection);
+    }
+
+    if (genderFilter) {
+      params.set('gender', genderFilter);
+    }
+
+    if (categoryFilter) {
+      params.set('category', categoryFilter);
+    }
+
+    if (targetPage > 1) {
+      params.set('page', String(targetPage));
+    }
+
+    const queryString = params.toString();
+    const path = queryString
+      ? `/competitions/${competition.slug}?${queryString}`
+      : `/competitions/${competition.slug}`;
+    goto(resolve(path), { replaceState: true, keepFocus: true, noScroll: true });
   }
 
-  function sortParticipants(participants: Participant[], categoryId: string) {
-    const { key, direction } = getSortState(categoryId);
+  async function loadRankings(targetPage: number) {
+    if (isLoading) return;
+    isLoading = true;
+    try {
+      const params = new SvelteURLSearchParams();
+      params.set('page', String(targetPage));
+      params.set('movement', movementFilter);
+      params.set('direction', sortDirection);
+      params.set('competition_id', competition.competition_id);
+      if (genderFilter) params.set('gender', genderFilter);
+      if (categoryFilter) params.set('category', categoryFilter);
 
-    return [...participants].sort((a, b) => {
-      let valueA: number;
-      let valueB: number;
+      const response = await fetch(`/api/rankings?${params}`);
+      const result = await response.json();
 
-      if (key === 'rank') {
-        // Rank: null/undefined go last, then sort by numeric value
-        if (a.rank == null) return 1;
-        if (b.rank == null) return -1;
-        valueA = a.rank;
-        valueB = b.rank;
-      } else if (key === 'total') {
-        valueA = parseFloat(a.total || '0') || 0;
-        valueB = parseFloat(b.total || '0') || 0;
-      } else if (key === 'ris_score') {
-        valueA = parseFloat(a.ris_score || '0') || 0;
-        valueB = parseFloat(b.ris_score || '0') || 0;
-      } else if (key === 'bodyweight') {
-        valueA = parseFloat(a.bodyweight || '0') || 0;
-        valueB = parseFloat(a.bodyweight || '0') || 0;
-      } else {
-        // Sort by movement name (key is the movement name)
-        const liftA = a.lifts.find((l) => l.movement_name === key);
-        const liftB = b.lifts.find((l) => l.movement_name === key);
-        valueA = parseFloat(liftA?.best_weight || '0');
-        valueB = parseFloat(liftB?.best_weight || '0');
-      }
-
-      return direction === 'desc' ? valueB - valueA : valueA - valueB;
-    });
+      rankings = result.data;
+      currentPage = result.pagination.page;
+      totalPages = result.pagination.total_pages;
+      totalItems = result.pagination.total_items;
+    } catch (error) {
+      console.error('Error loading rankings:', error);
+    } finally {
+      isLoading = false;
+    }
   }
 
-  const getSortDirection = (categoryId: string, key: SortKey): 'none' | 'asc' | 'desc' => {
-    const { key: currentKey, direction } = getSortState(categoryId);
-    return currentKey !== key ? 'none' : direction;
-  };
+  async function handleFilterChange() {
+    updateURL(1);
+    await loadRankings(1);
+  }
+
+  async function goToPage(targetPage: number) {
+    if (targetPage < 1 || targetPage > totalPages || targetPage === currentPage) return;
+    updateURL(targetPage);
+    await loadRankings(targetPage);
+  }
+
+  // Null means the meet did not contest the movement, which reads as a dash
+  // rather than a zero.
+  function formatWeight(weight: number | null): string {
+    return weight && weight > 0 ? `${weight}` : '-';
+  }
+
+  function formatRIS(ris: number | null): string {
+    return ris && ris > 0 ? ris.toFixed(2) : '-';
+  }
 </script>
 
 <svelte:head>
@@ -93,7 +129,7 @@
   <meta name="description" content="Results and details for {competition.name}" />
 </svelte:head>
 
-<div class="mx-auto max-w-7xl px-6 py-12">
+<div class="mx-auto max-w-[var(--content-max-width)] px-6 py-12">
   <Breadcrumb
     items={[
       { label: 'Home', href: '/' },
@@ -154,220 +190,138 @@
     </div>
   </div>
 
-  <!-- Categories -->
-  {#if competition.categories?.length}
-    <!-- Category Tabs -->
-    {#if competition.categories.length > 1}
-      <div class="mb-6 border-b border-zinc-800">
-        <nav class="-mb-px flex gap-2 overflow-x-auto" aria-label="Category tabs">
-          {#each competition.categories as categoryDetail (categoryDetail.category.category_id)}
-            <button
-              onclick={() => (selectedCategoryId = categoryDetail.category.category_id)}
-              class="border-b-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none
-								{activeCategory === categoryDetail.category.category_id
-                ? 'border-white text-white'
-                : 'border-transparent text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'}"
-            >
-              {categoryDetail.category.name}
-            </button>
-          {/each}
-        </nav>
-      </div>
-    {/if}
-
-    <!-- Category Content -->
-    <div>
-      {#each competition.categories as categoryDetail (categoryDetail.category.category_id)}
-        {#if activeCategory === categoryDetail.category.category_id}
-          <Card class="p-6">
-            <!-- Category Header -->
-            <div class="mb-6">
-              <h2 class="mb-2 text-2xl font-medium text-white">{categoryDetail.category.name}</h2>
-              <div class="flex flex-wrap gap-4 text-sm text-zinc-400">
-                <span>Gender: {categoryDetail.category.gender}</span>
-                {#if categoryDetail.category.weight_class_min || categoryDetail.category.weight_class_max}
-                  <span>
-                    Weight Class:
-                    {categoryDetail.category.weight_class_min || '0'}kg -
-                    {categoryDetail.category.weight_class_max || '∞'}kg
-                  </span>
-                {/if}
-              </div>
-            </div>
-
-            <!-- Participants -->
-            {#if categoryDetail.participants?.length}
-              {@const movements = contestedMovements(categoryDetail.participants)}
-              <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                  <thead class="sticky top-0 z-10">
-                    <tr class="border-b border-zinc-800 bg-zinc-900 shadow-lg shadow-zinc-950/50">
-                      <th
-                        class="cursor-pointer px-4 py-3 text-left font-medium text-zinc-400 transition-colors select-none hover:text-white"
-                        onclick={() => toggleSort(categoryDetail.category.category_id, 'rank')}
-                      >
-                        Rank
-                        <SortIcon
-                          direction={getSortDirection(categoryDetail.category.category_id, 'rank')}
-                          class="ml-1"
-                        />
-                      </th>
-                      <th class="px-4 py-3 text-left font-medium text-zinc-400">Athlete</th>
-                      <th class="px-4 py-3 text-left font-medium text-zinc-400">Country</th>
-                      <th
-                        class="cursor-pointer px-4 py-3 text-left font-medium text-zinc-400 transition-colors select-none hover:text-white"
-                        onclick={() =>
-                          toggleSort(categoryDetail.category.category_id, 'bodyweight')}
-                      >
-                        Bodyweight
-                        <SortIcon
-                          direction={getSortDirection(
-                            categoryDetail.category.category_id,
-                            'bodyweight'
-                          )}
-                          class="ml-1"
-                        />
-                      </th>
-                      {#each movements as movementName (movementName)}
-                        <th
-                          class="cursor-pointer px-4 py-3 text-center font-medium text-zinc-400 transition-colors select-none hover:text-white"
-                          onclick={() =>
-                            toggleSort(categoryDetail.category.category_id, movementName)}
-                        >
-                          {movementName}
-                          <SortIcon
-                            direction={getSortDirection(
-                              categoryDetail.category.category_id,
-                              movementName
-                            )}
-                            class="ml-1"
-                          />
-                        </th>
-                      {/each}
-                      <th
-                        class="cursor-pointer px-4 py-3 text-left font-medium text-zinc-400 transition-colors select-none hover:text-white"
-                        onclick={() => toggleSort(categoryDetail.category.category_id, 'total')}
-                      >
-                        Total
-                        <SortIcon
-                          direction={getSortDirection(categoryDetail.category.category_id, 'total')}
-                          class="ml-1"
-                        />
-                      </th>
-                      <th
-                        class="cursor-pointer px-4 py-3 text-left font-medium text-zinc-400 transition-colors select-none hover:text-white"
-                        onclick={() => toggleSort(categoryDetail.category.category_id, 'ris_score')}
-                      >
-                        RIS Score
-                        <SortIcon
-                          direction={getSortDirection(
-                            categoryDetail.category.category_id,
-                            'ris_score'
-                          )}
-                          class="ml-1"
-                        />
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {#each sortParticipants(categoryDetail.participants, categoryDetail.category.category_id) as participant (participant.athlete.athlete_id)}
-                      {@const rank = participant.rank}
-                      <tr
-                        class="border-b border-zinc-800/50 transition-colors hover:bg-zinc-900/30
-												{participant.is_disqualified
-                          ? 'opacity-50'
-                          : rank === 1
-                            ? 'bg-linear-to-r from-yellow-500/5 via-transparent to-transparent shadow-lg shadow-yellow-900/20'
-                            : rank === 2
-                              ? 'bg-linear-to-r from-zinc-400/5 via-transparent to-transparent'
-                              : rank === 3
-                                ? 'bg-linear-to-r from-orange-700/5 via-transparent to-transparent'
-                                : ''}"
-                      >
-                        <td class="px-4 py-3 text-white">
-                          {#if participant.is_disqualified}
-                            <span class="text-red-400">DQ</span>
-                          {:else if rank === 1}
-                            <span class="font-semibold text-yellow-400">🥇 {rank}</span>
-                          {:else if rank === 2}
-                            <span class="font-semibold text-zinc-300">🥈 {rank}</span>
-                          {:else if rank === 3}
-                            <span class="font-semibold text-orange-400">🥉 {rank}</span>
-                          {:else}
-                            {rank || '-'}
-                          {/if}
-                        </td>
-                        <td class="px-4 py-3 text-white">
-                          <a
-                            href={resolve(`/athletes/${participant.athlete.slug}`)}
-                            class="hover:text-zinc-300 hover:underline"
-                          >
-                            {participant.athlete.first_name}
-                            {participant.athlete.last_name}
-                          </a>
-                          {#if participant.is_disqualified && participant.disqualified_reason}
-                            <span class="ml-2 text-xs text-red-400"
-                              >({participant.disqualified_reason})</span
-                            >
-                          {/if}
-                        </td>
-                        <td class="px-4 py-3 text-zinc-400">{participant.athlete.country}</td>
-                        <td class="px-4 py-3 text-zinc-400"
-                          >{formatWeight(participant.bodyweight)}</td
-                        >
-                        {#each movements as movementName (movementName)}
-                          {@const lift = participant.lifts.find(
-                            (l) => l.movement_name === movementName
-                          )}
-                          <td class="px-4 py-3">
-                            {#if lift}
-                              <div class="flex flex-col items-center gap-1">
-                                <div class="font-medium text-white">
-                                  {formatWeight(lift.best_weight)}
-                                </div>
-                                <div class="flex gap-1">
-                                  {#each lift.attempts as attempt (attempt.attempt_number)}
-                                    <span
-                                      class="flex h-5 w-5 items-center justify-center rounded text-xs {attempt.is_successful
-                                        ? 'bg-emerald-500/20 text-emerald-400'
-                                        : 'bg-red-500/20 text-red-400'}"
-                                      title="{attempt.weight}kg - {attempt.is_successful
-                                        ? 'Success'
-                                        : attempt.no_rep_reason || 'Failed'}"
-                                    >
-                                      {attempt.attempt_number}
-                                    </span>
-                                  {/each}
-                                </div>
-                              </div>
-                            {:else}
-                              <div class="text-center text-zinc-500">-</div>
-                            {/if}
-                          </td>
-                        {/each}
-                        <td class="px-4 py-3 font-medium text-white">
-                          {formatWeight(participant.total)}
-                        </td>
-                        <td class="px-4 py-3 text-zinc-400">
-                          {participant.ris_score || '-'}
-                        </td>
-                      </tr>
-                    {/each}
-                  </tbody>
-                </table>
-              </div>
-            {:else}
-              <p class="text-center text-zinc-500">No participants in this category</p>
-            {/if}
-          </Card>
-        {/if}
+  <div
+    class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/30 p-3"
+  >
+    <select
+      bind:value={genderFilter}
+      onchange={() => {
+        categoryFilter = null;
+        handleFilterChange();
+      }}
+      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+    >
+      {#each genders as gender (gender.label)}
+        <option value={gender.value}>{gender.label}</option>
       {/each}
-    </div>
-  {:else}
+    </select>
+
+    <select
+      bind:value={categoryFilter}
+      onchange={handleFilterChange}
+      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+    >
+      <option value={null}>All Classes</option>
+      {#each data.classes as classOption (classOption)}
+        <option value={classOption}>{classOption}</option>
+      {/each}
+    </select>
+  </div>
+
+  {#if rankings.length === 0 && !isLoading}
     <Card class="p-8">
-      <p class="text-center text-zinc-400">
-        No categories or results available for this competition
-      </p>
+      <div class="text-center">
+        <p class="text-zinc-400">No results found for the selected filters</p>
+        <button
+          onclick={() => {
+            genderFilter = null;
+            categoryFilter = null;
+            movementFilter = 'ris';
+            sortDirection = 'desc';
+            handleFilterChange();
+          }}
+          class="mt-4 text-sm text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+        >
+          Clear filters
+        </button>
+      </div>
     </Card>
+  {:else}
+    {#snippet paginationBar()}
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <span class="text-sm text-zinc-500">
+          Page {currentPage} of {totalPages} &middot; {totalItems} athletes
+        </span>
+        <Pagination page={currentPage} {totalPages} disabled={isLoading} onNavigate={goToPage} />
+      </div>
+    {/snippet}
+
+    <div class="mb-3">
+      {@render paginationBar()}
+    </div>
+
+    <Card class="p-4">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="sticky top-0 z-10">
+            <tr class="border-b border-zinc-800 bg-zinc-900 shadow-lg shadow-zinc-950/50">
+              <th class="px-3 py-2 text-left font-medium text-zinc-400">Rank</th>
+              <th class="px-3 py-2 text-left font-medium text-zinc-400">Athlete</th>
+              <th class="px-3 py-2 text-left font-medium text-zinc-400">Country</th>
+              <th class="px-3 py-2 text-left font-medium text-zinc-400">Sex</th>
+              <th class="px-3 py-2 text-left font-medium text-zinc-400">Class</th>
+              {#each movements as movement (movement.value)}
+                <th
+                  class="cursor-pointer px-3 py-2 text-left font-medium transition-colors select-none hover:text-white {movementFilter ===
+                  movement.value
+                    ? 'text-white'
+                    : 'text-zinc-400'}"
+                  onclick={() => sortBy(movement.value)}
+                >
+                  {movement.label}
+                  <SortIcon
+                    direction={movementFilter === movement.value ? sortDirection : 'none'}
+                    class="ml-1"
+                  />
+                </th>
+              {/each}
+              <th
+                class="cursor-pointer px-3 py-2 text-left font-medium text-zinc-400 transition-colors select-none hover:text-white"
+                onclick={() => sortBy('ris')}
+              >
+                RIS
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
+              <tr
+                class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
+              >
+                <td class="px-3 py-2 text-white">
+                  {entry.rank}
+                </td>
+                <td class="px-3 py-2 text-white">
+                  <a
+                    href={resolve(`/athletes/${entry.athlete.slug}`)}
+                    class="underline hover:text-zinc-300"
+                  >
+                    {entry.athlete.first_name}
+                    {entry.athlete.last_name}
+                  </a>
+                </td>
+                <td class="px-3 py-2">
+                  <span class="text-lg" title={entry.athlete.country}>
+                    {getCountryFlag(entry.athlete.country)}
+                  </span>
+                </td>
+                <td class="px-3 py-2 text-zinc-400">{entry.athlete.gender}</td>
+                <td class="px-3 py-2 text-zinc-400">{entry.category}</td>
+                <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.muscleup)}</td>
+                <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.pullup)}</td>
+                <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.dips)}</td>
+                <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.squat)}</td>
+                <td class="px-3 py-2 font-medium text-zinc-400">{formatWeight(entry.total)}</td>
+                <td class="px-3 py-2 font-medium text-zinc-400">{formatRIS(entry.ris)}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+
+    <div class="mt-3">
+      {@render paginationBar()}
+    </div>
   {/if}
 </div>
