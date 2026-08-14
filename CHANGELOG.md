@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.8.0...v0.9.0) (2026-08-14)
+
+
+### Features
+
+* **frontend:** rank the home page by RIS, not a splash screen ([#386](https://github.com/openstreetlifting/openstreetlifting/issues/386)) ([7be7be5](https://github.com/openstreetlifting/openstreetlifting/commit/7be7be5511c8fd551bc95b97d1c1c37bcfa5bedd))
+* **frontend:** render country flags as self-hosted SVGs ([#390](https://github.com/openstreetlifting/openstreetlifting/issues/390)) ([f59ec28](https://github.com/openstreetlifting/openstreetlifting/commit/f59ec281f90024857af40b1719a7fceb3a9849a2))
+
+
+### Bug Fixes
+
+* **canonical:** correct Lylia Ammour's first name in FNSL Elite 2026 ([#391](https://github.com/openstreetlifting/openstreetlifting/issues/391)) ([cf7864d](https://github.com/openstreetlifting/openstreetlifting/commit/cf7864d1a8019d50ec17dff16719da7099ca5deb))
+
 ## [0.8.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.7.0...v0.8.0) (2026-08-14)
 
 
