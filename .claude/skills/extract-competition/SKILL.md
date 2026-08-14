@@ -114,7 +114,7 @@ one.
 
 ## Format
 
-`format_version` is `1.5.0`. Required fields have no marker; `?` means
+`format_version` is `1.6.0`. Required fields have no marker; `?` means
 optional and should be omitted when unknown.
 
 ```jsonc

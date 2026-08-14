@@ -6,15 +6,31 @@ use tracing::warn;
 
 pub struct CanonicalValidator;
 
+/// Every change to the format bumps the minor version. Only a change that
+/// invalidates existing files, such as requiring a field that used to be
+/// optional, bumps the major version and is called out with `!` in the
+/// commit that makes it. A minor bump alone stays readable by a file written
+/// against an earlier minor, since it can only add optional shape.
+fn parse_version(version: &str) -> Option<(u32, u32)> {
+    let mut parts = version.split('.');
+    let major = parts.next()?.parse().ok()?;
+    let minor = parts.next()?.parse().ok()?;
+    Some((major, minor))
+}
+
 impl CanonicalValidator {
     pub fn validate(canonical: &CanonicalFormat) -> Result<ValidationReport> {
         let mut report = ValidationReport::default();
 
-        if canonical.format_version != FORMAT_VERSION {
-            report.errors.push(format!(
-                "Unsupported format version: {}. Expected {}",
+        let current =
+            parse_version(FORMAT_VERSION).expect("FORMAT_VERSION is a valid major.minor.patch");
+
+        match parse_version(&canonical.format_version) {
+            Some((major, minor)) if major == current.0 && minor <= current.1 => {}
+            _ => report.errors.push(format!(
+                "Unsupported format version: {}. This importer reads up to {}",
                 canonical.format_version, FORMAT_VERSION
-            ));
+            )),
         }
 
         if canonical.source.extractor.is_empty() {
@@ -387,9 +403,28 @@ mod tests {
     }
 
     #[test]
-    fn older_format_version_is_rejected() {
+    fn an_older_minor_version_is_accepted() {
         let mut canonical = minimal();
         canonical.format_version = "1.1.0".to_string();
+
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
+    }
+
+    #[test]
+    fn a_newer_minor_version_is_rejected() {
+        let mut canonical = minimal();
+        canonical.format_version = "1.99.0".to_string();
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("Unsupported format version"), "{err}");
+    }
+
+    #[test]
+    fn a_different_major_version_is_rejected() {
+        let mut canonical = minimal();
+        canonical.format_version = "2.0.0".to_string();
 
         let err = CanonicalValidator::validate(&canonical)
             .unwrap_err()
