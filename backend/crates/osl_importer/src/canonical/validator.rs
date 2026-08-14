@@ -195,14 +195,23 @@ impl CanonicalValidator {
                         ));
                     }
 
-                    if lift.attempts.is_empty() {
-                        report.errors.push(format!(
-                            "Athlete '{}' has lift '{}' with no attempts",
+                    let has_attempts = lift.attempts.as_ref().is_some_and(|a| !a.is_empty());
+
+                    match (has_attempts, lift.best_lift.is_some()) {
+                        (true, true) => report.errors.push(format!(
+                            "Athlete '{}' has lift '{}' with both attempts and best_lift. Give \
+                             attempts when the source lists them, and best_lift only when it \
+                             states just the best weight",
                             athlete_label, lift.movement
-                        ));
+                        )),
+                        (false, false) => report.errors.push(format!(
+                            "Athlete '{}' has lift '{}' with neither attempts nor best_lift",
+                            athlete_label, lift.movement
+                        )),
+                        _ => {}
                     }
 
-                    for attempt in &lift.attempts {
+                    for attempt in lift.attempts.iter().flatten() {
                         if attempt.attempt_number < 1 || attempt.attempt_number > 3 {
                             report.errors.push(format!(
                                 "Athlete '{}', movement '{}': invalid attempt_number {}. Must be 1-3",
@@ -215,6 +224,13 @@ impl CanonicalValidator {
                                 athlete_label, lift.movement, attempt.attempt_number
                             ));
                         }
+                    }
+
+                    if lift.best_lift.is_some_and(|w| w.is_sign_negative()) {
+                        report.errors.push(format!(
+                            "Athlete '{}', movement '{}': negative best_lift",
+                            athlete_label, lift.movement
+                        ));
                     }
                 }
             }
@@ -352,12 +368,13 @@ mod tests {
                     status_reason: None,
                     lifts: vec![LiftData {
                         movement: "Squat".to_string(),
-                        attempts: vec![AttemptData {
+                        attempts: Some(vec![AttemptData {
                             attempt_number: 1,
                             weight: Decimal::from(100),
                             is_successful: true,
                             judge_note: None,
-                        }],
+                        }]),
+                        best_lift: None,
                     }],
                 }],
             }],
@@ -431,5 +448,36 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert!(err.contains("unknown movement"), "{err}");
+    }
+
+    #[test]
+    fn a_best_lift_on_its_own_is_accepted() {
+        let mut canonical = minimal();
+        canonical.categories[0].athletes[0].lifts[0].attempts = None;
+        canonical.categories[0].athletes[0].lifts[0].best_lift = Some(Decimal::from(100));
+
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
+    }
+
+    #[test]
+    fn a_best_lift_alongside_attempts_is_rejected() {
+        let mut canonical = minimal();
+        canonical.categories[0].athletes[0].lifts[0].best_lift = Some(Decimal::from(100));
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("both attempts and best_lift"), "{err}");
+    }
+
+    #[test]
+    fn a_lift_with_neither_attempts_nor_best_lift_is_rejected() {
+        let mut canonical = minimal();
+        canonical.categories[0].athletes[0].lifts[0].attempts = None;
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("neither attempts nor best_lift"), "{err}");
     }
 }

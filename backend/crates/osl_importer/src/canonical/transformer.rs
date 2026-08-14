@@ -561,12 +561,14 @@ impl<'a> CanonicalTransformer<'a> {
         imported: &mut ImportedFacts,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
-        let max_weight = lift
-            .attempts
-            .iter()
-            .filter(|a| a.is_successful)
-            .map(|a| a.weight)
-            .max();
+        let max_weight = match &lift.attempts {
+            Some(attempts) => attempts
+                .iter()
+                .filter(|a| a.is_successful)
+                .map(|a| a.weight)
+                .max(),
+            None => lift.best_lift,
+        };
 
         // Equipment settings came from a liftcontrol-only field. Nothing in
         // the agnostic format carries them, so the column stays empty until
@@ -594,7 +596,7 @@ impl<'a> CanonicalTransformer<'a> {
 
         imported.lifts.push(lift_id);
 
-        for attempt in &lift.attempts {
+        for attempt in lift.attempts.iter().flatten() {
             self.import_attempt(lift_id, attempt, imported, tx).await?;
         }
 

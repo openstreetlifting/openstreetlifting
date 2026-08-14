@@ -242,8 +242,13 @@ other than 1 or 3, `end_date` before `start_date`, a duplicate or unnamed
 movement, a movement `order` below 1, a category setting both the slug and the
 raw bounds, a `weight_class_min` above its `weight_class_max`, an athlete setting both
 `bodyweight` and `ris`, a lift naming a
-movement not in `movements`, a lift with no attempts, an `attempt_number`
-outside 1 to 3, a negative weight. Zero is allowed: it is a bodyweight-only lift.
+movement not in `movements`, a lift setting both `attempts` and `best_lift`, a lift
+with neither, an `attempt_number` outside 1 to 3, a negative weight. Zero is
+allowed: it is a bodyweight-only lift.
+
+A source that only prints a best lift per movement, with no attempt breakdown,
+is not a reason to invent an attempt. Write `best_lift` instead and omit
+`attempts` for that lift.
 
 ### What it only warns about
 
