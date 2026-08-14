@@ -4,7 +4,7 @@ use axum::{
 };
 use osl_db::repository::ranking::RankingRepository;
 
-use super::dto::{ClassesFilter, GlobalRankingEntry, GlobalRankingFilter};
+use super::dto::{ClassesFilter, CountriesFilter, GlobalRankingEntry, GlobalRankingFilter};
 use crate::AppState;
 use crate::error::{WebError, WebResult};
 use crate::shared::dto::PaginatedResponse;
@@ -28,6 +28,25 @@ pub async fn list_ranking_classes(
         .await?;
 
     Ok(Json(classes))
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/rankings/countries",
+    params(CountriesFilter),
+    responses(
+        (status = 200, description = "Distinct countries athletes have competed under, optionally narrowed to one competition", body = Vec<String>),
+    ),
+    tag = "rankings"
+)]
+pub async fn list_ranking_countries(
+    State(state): State<AppState>,
+    Query(filter): Query<CountriesFilter>,
+) -> WebResult<Json<Vec<String>>> {
+    let repo = RankingRepository::new(state.db.pool());
+    let countries = repo.list_distinct_countries(filter.competition_id).await?;
+
+    Ok(Json(countries))
 }
 
 #[utoipa::path(

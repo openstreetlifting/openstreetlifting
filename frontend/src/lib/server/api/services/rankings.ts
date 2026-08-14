@@ -51,4 +51,10 @@ export const rankingsService = {
   async getRankingYears(): Promise<number[]> {
     return apiClient.get<number[]>('/api/v1/rankings/years');
   },
+
+  async getRankingCountries(competitionId?: string | null): Promise<string[]> {
+    const params: Record<string, string> = {};
+    if (competitionId) params.competition_id = competitionId;
+    return apiClient.get<string[]>('/api/v1/rankings/countries', { params });
+  },
 };

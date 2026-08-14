@@ -15,10 +15,12 @@ export const load: PageServerLoad = async ({ params, url }) => {
   const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
   const gender = url.searchParams.get('gender') || null;
   const category = url.searchParams.get('category') || null;
+  const country = url.searchParams.get('country') || null;
   const page = Number(url.searchParams.get('page') ?? 1) || 1;
 
-  const [classes, rankings] = await Promise.all([
+  const [classes, countries, rankings] = await Promise.all([
     rankingsService.getRankingClasses(gender, competition.competition_id).catch(() => []),
+    rankingsService.getRankingCountries(competition.competition_id).catch(() => []),
     rankingsService
       .getGlobalRankings({
         page,
@@ -26,6 +28,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
         direction,
         gender,
         category,
+        country,
         competition_id: competition.competition_id,
       })
       .catch(() => ({
@@ -37,6 +40,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   return {
     competition,
     classes,
+    countries,
     initialRankings: rankings.data,
     pagination: rankings.pagination,
   };

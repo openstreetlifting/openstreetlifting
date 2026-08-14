@@ -12,6 +12,11 @@ pub struct ClassesFilter {
     pub competition_id: Option<Uuid>,
 }
 
+#[derive(Debug, Deserialize, IntoParams)]
+pub struct CountriesFilter {
+    pub competition_id: Option<Uuid>,
+}
+
 #[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum Movement {
