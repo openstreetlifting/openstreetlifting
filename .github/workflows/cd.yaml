@@ -113,7 +113,7 @@ jobs:
     needs: [build-backend, build-importer, build-frontend]
     if: always() && !contains(needs.*.result, 'failure')
     steps:
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_PLEASE_APP_ID }}
