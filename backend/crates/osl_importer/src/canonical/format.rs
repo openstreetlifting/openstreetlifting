@@ -59,9 +59,15 @@ pub fn normalize(canonical: &mut CanonicalFormat) {
             });
 
             for lift in &mut athlete.lifts {
-                lift.attempts.sort_by_key(|a| a.attempt_number);
-                for attempt in &mut lift.attempts {
-                    attempt.weight = attempt.weight.normalize();
+                if let Some(best_lift) = lift.best_lift.as_mut() {
+                    *best_lift = best_lift.normalize();
+                }
+
+                if let Some(attempts) = lift.attempts.as_mut() {
+                    attempts.sort_by_key(|a| a.attempt_number);
+                    for attempt in attempts {
+                        attempt.weight = attempt.weight.normalize();
+                    }
                 }
             }
         }
@@ -104,7 +110,7 @@ mod tests {
                 .iter()
                 .map(|m| LiftData {
                     movement: (*m).to_string(),
-                    attempts: vec![
+                    attempts: Some(vec![
                         AttemptData {
                             attempt_number: 3,
                             weight: Decimal::from_str("100.00").unwrap(),
@@ -117,7 +123,8 @@ mod tests {
                             is_successful: true,
                             judge_note: None,
                         },
-                    ],
+                    ]),
+                    best_lift: None,
                 })
                 .collect(),
         }
@@ -223,6 +230,7 @@ mod tests {
         let numbers: Vec<_> = athlete.lifts[0]
             .attempts
             .iter()
+            .flatten()
             .map(|a| a.attempt_number)
             .collect();
         assert_eq!(numbers, vec![1, 3]);

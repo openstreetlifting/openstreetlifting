@@ -6,15 +6,31 @@ use tracing::warn;
 
 pub struct CanonicalValidator;
 
+/// Every change to the format bumps the minor version. Only a change that
+/// invalidates existing files, such as requiring a field that used to be
+/// optional, bumps the major version and is called out with `!` in the
+/// commit that makes it. A minor bump alone stays readable by a file written
+/// against an earlier minor, since it can only add optional shape.
+fn parse_version(version: &str) -> Option<(u32, u32)> {
+    let mut parts = version.split('.');
+    let major = parts.next()?.parse().ok()?;
+    let minor = parts.next()?.parse().ok()?;
+    Some((major, minor))
+}
+
 impl CanonicalValidator {
     pub fn validate(canonical: &CanonicalFormat) -> Result<ValidationReport> {
         let mut report = ValidationReport::default();
 
-        if canonical.format_version != FORMAT_VERSION {
-            report.errors.push(format!(
-                "Unsupported format version: {}. Expected {}",
+        let current =
+            parse_version(FORMAT_VERSION).expect("FORMAT_VERSION is a valid major.minor.patch");
+
+        match parse_version(&canonical.format_version) {
+            Some((major, minor)) if major == current.0 && minor <= current.1 => {}
+            _ => report.errors.push(format!(
+                "Unsupported format version: {}. This importer reads up to {}",
                 canonical.format_version, FORMAT_VERSION
-            ));
+            )),
         }
 
         if canonical.source.extractor.is_empty() {
@@ -195,14 +211,23 @@ impl CanonicalValidator {
                         ));
                     }
 
-                    if lift.attempts.is_empty() {
-                        report.errors.push(format!(
-                            "Athlete '{}' has lift '{}' with no attempts",
+                    let has_attempts = lift.attempts.as_ref().is_some_and(|a| !a.is_empty());
+
+                    match (has_attempts, lift.best_lift.is_some()) {
+                        (true, true) => report.errors.push(format!(
+                            "Athlete '{}' has lift '{}' with both attempts and best_lift. Give \
+                             attempts when the source lists them, and best_lift only when it \
+                             states just the best weight",
                             athlete_label, lift.movement
-                        ));
+                        )),
+                        (false, false) => report.errors.push(format!(
+                            "Athlete '{}' has lift '{}' with neither attempts nor best_lift",
+                            athlete_label, lift.movement
+                        )),
+                        _ => {}
                     }
 
-                    for attempt in &lift.attempts {
+                    for attempt in lift.attempts.iter().flatten() {
                         if attempt.attempt_number < 1 || attempt.attempt_number > 3 {
                             report.errors.push(format!(
                                 "Athlete '{}', movement '{}': invalid attempt_number {}. Must be 1-3",
@@ -215,6 +240,13 @@ impl CanonicalValidator {
                                 athlete_label, lift.movement, attempt.attempt_number
                             ));
                         }
+                    }
+
+                    if lift.best_lift.is_some_and(|w| w.is_sign_negative()) {
+                        report.errors.push(format!(
+                            "Athlete '{}', movement '{}': negative best_lift",
+                            athlete_label, lift.movement
+                        ));
                     }
                 }
             }
@@ -352,12 +384,13 @@ mod tests {
                     status_reason: None,
                     lifts: vec![LiftData {
                         movement: "Squat".to_string(),
-                        attempts: vec![AttemptData {
+                        attempts: Some(vec![AttemptData {
                             attempt_number: 1,
                             weight: Decimal::from(100),
                             is_successful: true,
                             judge_note: None,
-                        }],
+                        }]),
+                        best_lift: None,
                     }],
                 }],
             }],
@@ -370,9 +403,28 @@ mod tests {
     }
 
     #[test]
-    fn older_format_version_is_rejected() {
+    fn an_older_minor_version_is_accepted() {
         let mut canonical = minimal();
         canonical.format_version = "1.1.0".to_string();
+
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
+    }
+
+    #[test]
+    fn a_newer_minor_version_is_rejected() {
+        let mut canonical = minimal();
+        canonical.format_version = "1.99.0".to_string();
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("Unsupported format version"), "{err}");
+    }
+
+    #[test]
+    fn a_different_major_version_is_rejected() {
+        let mut canonical = minimal();
+        canonical.format_version = "2.0.0".to_string();
 
         let err = CanonicalValidator::validate(&canonical)
             .unwrap_err()
@@ -431,5 +483,36 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert!(err.contains("unknown movement"), "{err}");
+    }
+
+    #[test]
+    fn a_best_lift_on_its_own_is_accepted() {
+        let mut canonical = minimal();
+        canonical.categories[0].athletes[0].lifts[0].attempts = None;
+        canonical.categories[0].athletes[0].lifts[0].best_lift = Some(Decimal::from(100));
+
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
+    }
+
+    #[test]
+    fn a_best_lift_alongside_attempts_is_rejected() {
+        let mut canonical = minimal();
+        canonical.categories[0].athletes[0].lifts[0].best_lift = Some(Decimal::from(100));
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("both attempts and best_lift"), "{err}");
+    }
+
+    #[test]
+    fn a_lift_with_neither_attempts_nor_best_lift_is_rejected() {
+        let mut canonical = minimal();
+        canonical.categories[0].athletes[0].lifts[0].attempts = None;
+
+        let err = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("neither attempts nor best_lift"), "{err}");
     }
 }

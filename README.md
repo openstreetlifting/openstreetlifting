@@ -22,7 +22,7 @@ There are multiple way to get data from the OpenStreetlifting project
 ## Run locally
 
 The easiest way to run locally is through the `launch_local.sh` script, which require docker for postgres, rust and pnpm.
-To run the database migration, you will need to install [https://crates.io/crates/sqlx-cli](sqlx-cli).
+To run the database migration, you will need to install [sqlx-cli](https://crates.io/crates/sqlx-cli).
 
 First time launch, boot up the database, run the migration and import some datas.
 

@@ -4,7 +4,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 /// Format version this build reads and writes.
-pub const FORMAT_VERSION: &str = "1.5.0";
+pub const FORMAT_VERSION: &str = "1.6.0";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CanonicalFormat {
@@ -170,7 +170,15 @@ pub struct AthleteData {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LiftData {
     pub movement: String,
-    pub attempts: Vec<AttemptData>,
+
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attempts: Option<Vec<AttemptData>>,
+
+    /// Best weight as the source stated it, for sources that publish only a
+    /// best lift per movement. Never set alongside `attempts`, which we
+    /// derive it from.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub best_lift: Option<Decimal>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
