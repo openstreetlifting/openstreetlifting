@@ -1,7 +1,7 @@
 frontend:
   image:
     repository: ghcr.io/openstreetlifting/frontend
-    tag: sha-aae1f35
+    tag: 0.8.0
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -11,7 +11,7 @@ frontend:
 backend:
   image:
     repository: ghcr.io/openstreetlifting/backend
-    tag: sha-8c2e75c
+    tag: 0.8.0
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -26,7 +26,7 @@ backend:
 importer:
   image:
     repository: ghcr.io/openstreetlifting/importer
-    tag: sha-8c2e75c
+    tag: 0.8.0
     pullPolicy: IfNotPresent
   # Every deploy makes the database match the canonical files, deletions
   # included. Drop --yes to have a release only report what it would remove.
