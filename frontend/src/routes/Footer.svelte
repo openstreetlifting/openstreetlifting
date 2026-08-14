@@ -4,7 +4,7 @@
 </script>
 
 <footer class="border-t border-zinc-800/50 bg-zinc-950">
-  <div class="mx-auto max-w-7xl px-6 py-16">
+  <div class="mx-auto max-w-[var(--content-max-width)] px-6 py-16">
     <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
       <div>
         <h3 class="mb-4 text-sm font-medium text-white">Index</h3>
@@ -12,14 +12,6 @@
           <li>
             <a
               href={resolve('/')}
-              class="text-sm font-light text-zinc-400 transition-colors hover:text-white"
-            >
-              Home
-            </a>
-          </li>
-          <li>
-            <a
-              href={resolve('/rankings')}
               class="text-sm font-light text-zinc-400 transition-colors hover:text-white"
             >
               Rankings

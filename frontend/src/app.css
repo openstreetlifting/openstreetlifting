@@ -6,3 +6,10 @@
 @theme {
   --font-family-sans: 'Inter', sans-serif;
 }
+
+:root {
+  /* Shared page width for the header, footer, and full-width content pages
+     (rankings, athletes, competitions). Narrow prose pages (contact,
+     privacy) intentionally use their own max-w-4xl instead. */
+  --content-max-width: 100rem;
+}

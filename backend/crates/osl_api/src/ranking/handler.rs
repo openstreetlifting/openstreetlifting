@@ -4,10 +4,46 @@ use axum::{
 };
 use osl_db::repository::ranking::RankingRepository;
 
-use super::dto::{GlobalRankingEntry, GlobalRankingFilter};
+use super::dto::{ClassesFilter, GlobalRankingEntry, GlobalRankingFilter};
 use crate::AppState;
 use crate::error::{WebError, WebResult};
 use crate::shared::dto::PaginatedResponse;
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/rankings/classes",
+    params(ClassesFilter),
+    responses(
+        (status = 200, description = "Distinct weight classes, optionally narrowed to one gender", body = Vec<String>),
+    ),
+    tag = "rankings"
+)]
+pub async fn list_ranking_classes(
+    State(state): State<AppState>,
+    Query(filter): Query<ClassesFilter>,
+) -> WebResult<Json<Vec<String>>> {
+    let repo = RankingRepository::new(state.db.pool());
+    let classes = repo
+        .list_distinct_classes(filter.gender.as_deref(), filter.competition_id)
+        .await?;
+
+    Ok(Json(classes))
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/rankings/years",
+    responses(
+        (status = 200, description = "Distinct competition years, most recent first", body = Vec<i32>),
+    ),
+    tag = "rankings"
+)]
+pub async fn list_ranking_years(State(state): State<AppState>) -> WebResult<Json<Vec<i32>>> {
+    let repo = RankingRepository::new(state.db.pool());
+    let years = repo.list_distinct_years().await?;
+
+    Ok(Json(years))
+}
 
 #[utoipa::path(
     get,

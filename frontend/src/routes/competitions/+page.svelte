@@ -5,28 +5,11 @@
 
   let { data }: { data: PageData } = $props();
 
-  let searchQuery = $state('');
   let statusFilter = $state<string>('all');
 
   let filteredCompetitions = $derived(() => {
-    let result = data.competitions;
-
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(
-        (comp) =>
-          comp.name.toLowerCase().includes(query) ||
-          comp.city.toLowerCase().includes(query) ||
-          comp.country.toLowerCase().includes(query) ||
-          comp.federation.name.toLowerCase().includes(query)
-      );
-    }
-
-    if (statusFilter !== 'all') {
-      result = result.filter((comp) => comp.status === statusFilter);
-    }
-
-    return result;
+    if (statusFilter === 'all') return data.competitions;
+    return data.competitions.filter((comp) => comp.status === statusFilter);
   });
 </script>
 
@@ -35,36 +18,14 @@
   <meta name="description" content="List of availables competitions" />
 </svelte:head>
 
-<div class="mx-auto max-w-7xl px-6 py-12">
+<div class="mx-auto max-w-[var(--content-max-width)] px-6 py-12">
   <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Competitions' }]} />
 
   <div class="mb-8">
     <h1 class="mb-4 text-5xl font-light text-white">Competitions</h1>
   </div>
 
-  <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div class="relative flex-1">
-      <svg
-        class="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-zinc-500"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-        />
-      </svg>
-      <input
-        type="text"
-        bind:value={searchQuery}
-        placeholder="Search competitions, cities, or federations..."
-        class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 py-2.5 pr-4 pl-10 text-sm text-white placeholder-zinc-500 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
-      />
-    </div>
-
+  <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
     <div class="flex gap-2">
       <button
         onclick={() => (statusFilter = 'all')}
@@ -115,16 +76,11 @@
     <Card class="p-8">
       <div class="text-center">
         <p class="text-zinc-400">
-          {searchQuery || statusFilter !== 'all'
-            ? 'No competitions match your filters'
-            : 'No competitions found'}
+          {statusFilter !== 'all' ? 'No competitions match your filters' : 'No competitions found'}
         </p>
-        {#if searchQuery || statusFilter !== 'all'}
+        {#if statusFilter !== 'all'}
           <button
-            onclick={() => {
-              searchQuery = '';
-              statusFilter = 'all';
-            }}
+            onclick={() => (statusFilter = 'all')}
             class="mt-4 text-sm text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
           >
             Clear filters
@@ -262,7 +218,7 @@
     {#if filteredCompetitions().length > 0}
       <div class="mt-8 text-center text-sm text-zinc-500">
         Showing {filteredCompetitions().length}
-        {#if searchQuery || statusFilter !== 'all'}
+        {#if statusFilter !== 'all'}
           of {data.competitions.length}
         {/if}
         competitions

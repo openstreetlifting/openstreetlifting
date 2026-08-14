@@ -5,7 +5,7 @@
 </script>
 
 <header class="bg-zinc-950">
-  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+  <nav class="mx-auto flex max-w-[var(--content-max-width)] items-center justify-between px-6 py-4">
     <a
       href={resolve('/')}
       class="text-lg font-light text-white transition-colors hover:text-zinc-200"
