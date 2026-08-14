@@ -4,3 +4,4 @@ export { default as CardContent } from './card-content.svelte';
 export { default as Button } from './button.svelte';
 export { default as Breadcrumb } from './breadcrumb.svelte';
 export { default as Pagination } from './pagination.svelte';
+export { default as Flag } from './flag.svelte';

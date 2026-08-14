@@ -214,4 +214,30 @@ impl<'a> RankingRepository<'a> {
 
         Ok(years)
     }
+
+    /// Distinct countries athletes have actually competed under, alphabetical.
+    /// An optional competition narrows it to who competed at that meet.
+    pub async fn list_distinct_countries(
+        &self,
+        competition_id: Option<Uuid>,
+    ) -> Result<Vec<String>> {
+        let mut query = QueryBuilder::new(
+            r#"
+            SELECT DISTINCT a.country
+            FROM athletes a
+            INNER JOIN competition_participants cp ON cp.athlete_id = a.athlete_id
+            "#,
+        );
+
+        if let Some(competition_id) = competition_id {
+            query.push(" WHERE cp.competition_id = ");
+            query.push_bind(competition_id);
+        }
+
+        query.push(" ORDER BY a.country ");
+
+        let countries: Vec<String> = query.build_query_scalar().fetch_all(self.pool).await?;
+
+        Ok(countries)
+    }
 }

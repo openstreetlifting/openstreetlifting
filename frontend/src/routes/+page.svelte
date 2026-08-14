@@ -1,119 +1,23 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Pagination } from '$lib/components/ui';
+  import { Card, Pagination, Flag } from '$lib/components/ui';
   import { SortIcon } from '$lib/components/icons';
-  import type { RankingEntry } from '$lib/types/ranking';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
-  import { goto } from '$app/navigation';
-  import { SvelteURLSearchParams } from 'svelte/reactivity';
-  import { formatDate, getCountryFlag } from '$lib/utils';
+  import { formatDate, countryName } from '$lib/utils';
   import { RANKING_MOVEMENTS, RANKING_GENDERS } from '$lib/constants/ranking';
+  import { RankingsTable } from '$lib/state/rankings-table.svelte';
 
   let { data }: { data: PageData } = $props();
 
-  let rankings = $state<RankingEntry[]>([]);
-  let currentPage = $state(1);
-  let totalPages = $state(1);
-  let totalItems = $state(0);
-  let isLoading = $state(false);
+  const table = new RankingsTable({ basePath: '/', includeYear: true, initialUrl: page.url });
 
   $effect(() => {
-    rankings = data.initialRankings;
-    currentPage = data.pagination.page;
-    totalPages = data.pagination.total_pages;
-    totalItems = data.pagination.total_items;
+    table.syncFromData(data);
   });
-
-  let genderFilter = $state<string | null>(page.url.searchParams.get('gender') || null);
-  let categoryFilter = $state<string | null>(page.url.searchParams.get('category') || null);
-  let yearFilter = $state<number | null>(Number(page.url.searchParams.get('year')) || null);
-  let movementFilter = $state<string>(page.url.searchParams.get('movement') || 'ris');
-  let sortDirection = $state<'asc' | 'desc'>(
-    page.url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc'
-  );
 
   const movements = RANKING_MOVEMENTS;
   const genders = RANKING_GENDERS;
-
-  function sortBy(value: string) {
-    if (movementFilter === value) {
-      sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
-    } else {
-      movementFilter = value;
-      sortDirection = 'desc';
-    }
-    handleFilterChange();
-  }
-
-  function updateURL(targetPage: number) {
-    const params = new SvelteURLSearchParams();
-
-    if (movementFilter !== 'ris') {
-      params.set('movement', movementFilter);
-    }
-
-    if (sortDirection !== 'desc') {
-      params.set('direction', sortDirection);
-    }
-
-    if (genderFilter) {
-      params.set('gender', genderFilter);
-    }
-
-    if (categoryFilter) {
-      params.set('category', categoryFilter);
-    }
-
-    if (yearFilter) {
-      params.set('year', String(yearFilter));
-    }
-
-    if (targetPage > 1) {
-      params.set('page', String(targetPage));
-    }
-
-    const queryString = params.toString();
-    const path = queryString ? `/?${queryString}` : '/';
-    goto(resolve(path), { replaceState: true, keepFocus: true, noScroll: true });
-  }
-
-  async function loadRankings(targetPage: number) {
-    if (isLoading) return;
-    isLoading = true;
-    try {
-      const params = new SvelteURLSearchParams();
-      params.set('page', String(targetPage));
-      params.set('movement', movementFilter);
-      params.set('direction', sortDirection);
-      if (genderFilter) params.set('gender', genderFilter);
-      if (categoryFilter) params.set('category', categoryFilter);
-      if (yearFilter) params.set('year', String(yearFilter));
-
-      const response = await fetch(`/api/rankings?${params}`);
-      const result = await response.json();
-
-      rankings = result.data;
-      currentPage = result.pagination.page;
-      totalPages = result.pagination.total_pages;
-      totalItems = result.pagination.total_items;
-    } catch (error) {
-      console.error('Error loading rankings:', error);
-    } finally {
-      isLoading = false;
-    }
-  }
-
-  async function handleFilterChange() {
-    updateURL(1);
-    await loadRankings(1);
-  }
-
-  async function goToPage(targetPage: number) {
-    if (targetPage < 1 || targetPage > totalPages || targetPage === currentPage) return;
-    updateURL(targetPage);
-    await loadRankings(targetPage);
-  }
 
   // Null means the meet did not contest the movement, which reads as a dash
   // rather than a zero.
@@ -140,10 +44,10 @@
     class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/30 p-3"
   >
     <select
-      bind:value={genderFilter}
+      bind:value={table.genderFilter}
       onchange={() => {
-        categoryFilter = null;
-        handleFilterChange();
+        table.categoryFilter = null;
+        table.handleFilterChange();
       }}
       class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
     >
@@ -153,8 +57,8 @@
     </select>
 
     <select
-      bind:value={categoryFilter}
-      onchange={handleFilterChange}
+      bind:value={table.categoryFilter}
+      onchange={() => table.handleFilterChange()}
       class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
     >
       <option value={null}>All Classes</option>
@@ -164,13 +68,24 @@
     </select>
 
     <select
-      bind:value={yearFilter}
-      onchange={handleFilterChange}
+      bind:value={table.yearFilter}
+      onchange={() => table.handleFilterChange()}
       class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
     >
       <option value={null}>All Years</option>
       {#each data.years as yearOption (yearOption)}
         <option value={yearOption}>{yearOption}</option>
+      {/each}
+    </select>
+
+    <select
+      bind:value={table.countryFilter}
+      onchange={() => table.handleFilterChange()}
+      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+    >
+      <option value={null}>All Countries</option>
+      {#each data.countries as countryOption (countryOption)}
+        <option value={countryOption}>{countryName(countryOption)}</option>
       {/each}
     </select>
   </div>
@@ -181,19 +96,12 @@
         <p class="text-red-400">{data.error}</p>
       </div>
     </Card>
-  {:else if rankings.length === 0 && !isLoading}
+  {:else if table.rankings.length === 0 && !table.isLoading}
     <Card class="p-8">
       <div class="text-center">
         <p class="text-zinc-400">No rankings found for the selected filters</p>
         <button
-          onclick={() => {
-            genderFilter = null;
-            categoryFilter = null;
-            yearFilter = null;
-            movementFilter = 'ris';
-            sortDirection = 'desc';
-            handleFilterChange();
-          }}
+          onclick={() => table.clearFilters()}
           class="mt-4 text-sm text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
         >
           Clear filters
@@ -204,9 +112,14 @@
     {#snippet paginationBar()}
       <div class="flex flex-wrap items-center justify-between gap-3">
         <span class="text-sm text-zinc-500">
-          Page {currentPage} of {totalPages} &middot; {totalItems} athletes
+          Page {table.currentPage} of {table.totalPages} &middot; {table.totalItems} athletes
         </span>
-        <Pagination page={currentPage} {totalPages} disabled={isLoading} onNavigate={goToPage} />
+        <Pagination
+          page={table.currentPage}
+          totalPages={table.totalPages}
+          disabled={table.isLoading}
+          onNavigate={(target) => table.goToPage(target)}
+        />
       </div>
     {/snippet}
 
@@ -229,29 +142,31 @@
               <th class="px-3 py-2 text-left font-medium text-zinc-400">Class</th>
               {#each movements as movement (movement.value)}
                 <th
-                  class="cursor-pointer px-3 py-2 text-left font-medium transition-colors select-none hover:text-white {movementFilter ===
+                  class="cursor-pointer px-3 py-2 text-left font-medium transition-colors select-none hover:text-white {table.movementFilter ===
                   movement.value
                     ? 'text-white'
                     : 'text-zinc-400'}"
-                  onclick={() => sortBy(movement.value)}
+                  onclick={() => table.sortBy(movement.value)}
                 >
                   {movement.label}
                   <SortIcon
-                    direction={movementFilter === movement.value ? sortDirection : 'none'}
+                    direction={table.movementFilter === movement.value
+                      ? table.sortDirection
+                      : 'none'}
                     class="ml-1"
                   />
                 </th>
               {/each}
               <th
                 class="cursor-pointer px-3 py-2 text-left font-medium text-zinc-400 transition-colors select-none hover:text-white"
-                onclick={() => sortBy('ris')}
+                onclick={() => table.sortBy('ris')}
               >
                 RIS
               </th>
             </tr>
           </thead>
           <tbody>
-            {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
+            {#each table.rankings as entry (entry.rank + entry.athlete.athlete_id)}
               <tr
                 class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
               >
@@ -268,9 +183,7 @@
                   </a>
                 </td>
                 <td class="px-3 py-2">
-                  <span class="text-lg" title={entry.athlete.country}>
-                    {getCountryFlag(entry.athlete.country)}
-                  </span>
+                  <Flag countryCode={entry.athlete.country} />
                 </td>
                 <td class="px-3 py-2 text-zinc-400">
                   <a

@@ -6,8 +6,12 @@ export function formatDate(dateString: string | null): string {
   return `${day}-${month}-${date.getFullYear()}`;
 }
 
-export function getCountryFlag(countryCode: string): string {
-  if (!countryCode || countryCode.length !== 2) return '';
-  const codePoints = [...countryCode.toUpperCase()].map((char) => 127397 + char.charCodeAt(0));
-  return String.fromCodePoint(...codePoints);
+const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+
+export function countryName(countryCode: string): string {
+  try {
+    return regionNames.of(countryCode.toUpperCase()) ?? countryCode;
+  } catch {
+    return countryCode;
+  }
 }

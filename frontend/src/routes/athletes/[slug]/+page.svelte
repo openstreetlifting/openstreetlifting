@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import type { PersonalRecord } from '$lib/types/athlete';
-  import { Card, Breadcrumb } from '$lib/components/ui';
+  import { Card, Breadcrumb, Flag } from '$lib/components/ui';
   import { resolve } from '$app/paths';
-  import { formatDate, getCountryFlag } from '$lib/utils';
+  import { formatDate } from '$lib/utils';
 
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
@@ -59,9 +59,7 @@
         {athlete.first_name}
         {athlete.last_name}
       </h1>
-      <span class="text-4xl" title={athlete.country}>
-        {getCountryFlag(athlete.country)}
-      </span>
+      <Flag countryCode={athlete.country} class="text-3xl" />
     </div>
 
     <div class="flex flex-wrap gap-x-6 gap-y-3 text-base text-zinc-400">

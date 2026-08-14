@@ -8,9 +8,10 @@ const description =
 export const load: PageServerLoad = async ({ url }) => {
   const gender = url.searchParams.get('gender') || null;
 
-  const [classes, years] = await Promise.all([
+  const [classes, years, countries] = await Promise.all([
     rankingsService.getRankingClasses(gender).catch(() => []),
     rankingsService.getRankingYears().catch(() => []),
+    rankingsService.getRankingCountries().catch(() => []),
   ]);
 
   try {
@@ -38,6 +39,7 @@ export const load: PageServerLoad = async ({ url }) => {
       pagination: initialData.pagination,
       classes,
       years,
+      countries,
     };
   } catch (error) {
     console.error('Error loading rankings:', error);
@@ -54,6 +56,7 @@ export const load: PageServerLoad = async ({ url }) => {
       },
       classes,
       years,
+      countries,
     };
   }
 };
