@@ -88,6 +88,7 @@ fn filter(movement: RankingMovement) -> RankingFilter {
     RankingFilter {
         gender: None,
         country: None,
+        name: None,
         movement,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.to_string(),

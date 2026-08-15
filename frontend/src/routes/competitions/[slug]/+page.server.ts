@@ -16,6 +16,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   const gender = url.searchParams.get('gender') || null;
   const category = url.searchParams.get('category') || null;
   const country = url.searchParams.get('country') || null;
+  const q = url.searchParams.get('q') || null;
   const page = Number(url.searchParams.get('page') ?? 1) || 1;
 
   const [classes, countries, rankings] = await Promise.all([
@@ -29,6 +30,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
         gender,
         category,
         country,
+        q,
         competition_id: competition.competition_id,
       })
       .catch(() => ({

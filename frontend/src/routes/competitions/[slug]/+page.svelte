@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Breadcrumb, Pagination, Flag } from '$lib/components/ui';
+  import { Card, Breadcrumb, Pagination, Flag, SearchInput } from '$lib/components/ui';
   import { SortIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
@@ -104,6 +104,24 @@
   <div
     class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/30 p-3"
   >
+    <div class="w-full sm:w-64">
+      <SearchInput
+        bind:value={table.searchFilter}
+        placeholder="Search an athlete"
+        onSearch={() => table.handleFilterChange()}
+      />
+    </div>
+
+    <select
+      bind:value={table.countryFilter}
+      onchange={() => table.handleFilterChange()}
+      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+    >
+      <option value={null}>All Countries</option>
+      {#each data.countries as countryOption (countryOption)}
+        <option value={countryOption}>{countryName(countryOption)}</option>
+      {/each}
+    </select>
     <select
       bind:value={table.genderFilter}
       onchange={() => {
@@ -116,7 +134,6 @@
         <option value={gender.value}>{gender.label}</option>
       {/each}
     </select>
-
     <select
       bind:value={table.categoryFilter}
       onchange={() => table.handleFilterChange()}
@@ -125,17 +142,6 @@
       <option value={null}>All Classes</option>
       {#each data.classes as classOption (classOption)}
         <option value={classOption}>{classOption}</option>
-      {/each}
-    </select>
-
-    <select
-      bind:value={table.countryFilter}
-      onchange={() => table.handleFilterChange()}
-      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
-    >
-      <option value={null}>All Countries</option>
-      {#each data.countries as countryOption (countryOption)}
-        <option value={countryOption}>{countryName(countryOption)}</option>
       {/each}
     </select>
   </div>
@@ -178,7 +184,6 @@
             <tr class="border-b border-zinc-800 bg-zinc-900 shadow-lg shadow-zinc-950/50">
               <th class="px-3 py-2 text-left font-medium text-zinc-400">Rank</th>
               <th class="px-3 py-2 text-left font-medium text-zinc-400">Athlete</th>
-              <th class="px-3 py-2 text-left font-medium text-zinc-400">Country</th>
               <th class="px-3 py-2 text-left font-medium text-zinc-400">Sex</th>
               <th class="px-3 py-2 text-left font-medium text-zinc-400">Class</th>
               {#each movements as movement (movement.value)}
@@ -217,14 +222,14 @@
                 <td class="px-3 py-2 text-white">
                   <a
                     href={resolve(`/athletes/${entry.athlete.slug}`)}
-                    class="underline hover:text-zinc-300"
+                    class="inline-flex items-center gap-2.5 hover:text-zinc-300"
                   >
-                    {entry.athlete.first_name}
-                    {entry.athlete.last_name}
+                    <Flag countryCode={entry.athlete.country} class="-ml-1 shrink-0" />
+                    <span class="underline">
+                      {entry.athlete.first_name}
+                      {entry.athlete.last_name}
+                    </span>
                   </a>
-                </td>
-                <td class="px-3 py-2">
-                  <Flag countryCode={entry.athlete.country} />
                 </td>
                 <td class="px-3 py-2 text-zinc-400">{entry.athlete.gender}</td>
                 <td class="px-3 py-2 text-zinc-400">{entry.category}</td>

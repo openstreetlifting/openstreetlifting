@@ -29,6 +29,7 @@ export class RankingsTable {
   genderFilter = $state<string | null>(null);
   categoryFilter = $state<string | null>(null);
   countryFilter = $state<string | null>(null);
+  searchFilter = $state('');
   yearFilter = $state<number | null>(null);
   movementFilter = $state('ris');
   sortDirection = $state<'asc' | 'desc'>('desc');
@@ -46,6 +47,7 @@ export class RankingsTable {
     this.genderFilter = params.get('gender') || null;
     this.categoryFilter = params.get('category') || null;
     this.countryFilter = params.get('country') || null;
+    this.searchFilter = params.get('q') ?? '';
     this.yearFilter = this.includeYear ? Number(params.get('year')) || null : null;
     this.movementFilter = params.get('movement') || 'ris';
     this.sortDirection = params.get('direction') === 'asc' ? 'asc' : 'desc';
@@ -59,6 +61,10 @@ export class RankingsTable {
     this.totalItems = data.pagination.total_items;
   }
 
+  private get searchQuery(): string {
+    return this.searchFilter.trim();
+  }
+
   private buildFilterParams(targetPage: number): SvelteURLSearchParams {
     const params = new SvelteURLSearchParams();
     params.set('page', String(targetPage));
@@ -68,6 +74,7 @@ export class RankingsTable {
     if (this.categoryFilter) params.set('category', this.categoryFilter);
     if (this.includeYear && this.yearFilter) params.set('year', String(this.yearFilter));
     if (this.countryFilter) params.set('country', this.countryFilter);
+    if (this.searchQuery) params.set('q', this.searchQuery);
     for (const [key, value] of Object.entries(this.fixedParams)) params.set(key, value);
     return params;
   }
@@ -80,6 +87,7 @@ export class RankingsTable {
     if (this.categoryFilter) params.set('category', this.categoryFilter);
     if (this.includeYear && this.yearFilter) params.set('year', String(this.yearFilter));
     if (this.countryFilter) params.set('country', this.countryFilter);
+    if (this.searchQuery) params.set('q', this.searchQuery);
     if (targetPage > 1) params.set('page', String(targetPage));
 
     const queryString = params.toString();
@@ -133,6 +141,7 @@ export class RankingsTable {
     this.categoryFilter = null;
     this.countryFilter = null;
     this.yearFilter = null;
+    this.searchFilter = '';
     this.movementFilter = 'ris';
     this.sortDirection = 'desc';
     await this.handleFilterChange();

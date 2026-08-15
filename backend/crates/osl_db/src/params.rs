@@ -68,6 +68,7 @@ impl SortDirection {
 pub struct RankingFilter {
     pub gender: Option<String>,
     pub country: Option<String>,
+    pub name: Option<String>,
     pub movement: RankingMovement,
     pub direction: SortDirection,
     /// Which event a total is ranked within. Ignored when ranking by a single

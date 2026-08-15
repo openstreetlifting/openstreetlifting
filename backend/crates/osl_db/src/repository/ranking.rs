@@ -9,6 +9,13 @@ pub struct RankingRepository<'a> {
     pool: &'a PgPool,
 }
 
+fn escape_like(pattern: &str) -> String {
+    pattern
+        .replace('\\', "\\\\")
+        .replace('%', "\\%")
+        .replace('_', "\\_")
+}
+
 impl<'a> RankingRepository<'a> {
     pub fn new(pool: &'a PgPool) -> Self {
         Self { pool }
@@ -71,6 +78,12 @@ impl<'a> RankingRepository<'a> {
         if let Some(ref country) = filter.country {
             query.push(" AND a.country = ");
             query.push_bind(country);
+        }
+
+        if let Some(ref name) = filter.name {
+            query.push(" AND (a.first_name || ' ' || a.last_name) ILIKE '%' || ");
+            query.push_bind(escape_like(name));
+            query.push(" || '%' ");
         }
 
         if let Some(ref category) = filter.category {
