@@ -114,12 +114,12 @@ one.
 
 ## Format
 
-`format_version` is `1.6.0`. Required fields have no marker; `?` means
+`format_version` is `1.7.0`. Required fields have no marker; `?` means
 optional and should be omitted when unknown.
 
 ```jsonc
 {
-  "format_version": "1.5.0",
+  "format_version": "1.7.0",
   "source": {
     "type": "html",              // api | html | pdf | csv | image | manual
     "url": "https://...",        // ?
@@ -138,10 +138,9 @@ optional and should be omitted when unknown.
     },
     "start_date": "2025-11-01",
     "end_date": "2025-11-02",
-    "venue": "Oski Crossfit",    // ?
     "city": "Annecy",            // ?
+    "region": "Haute-Savoie",    // ? ISO 3166-2 subdivision name
     "country": "FR",             // ISO 3166-1 alpha-2
-    "number_of_judges": 3,       // ? must be 1 or 3
     "status": "completed"        // ? draft|upcoming|live|completed|cancelled
   },
   "movements": [
@@ -237,8 +236,7 @@ spellings of one name are not that. If you cannot tell, stop and ask.
 ### What the validator rejects
 
 Wrong `format_version`, empty `extractor`, a country that is not two letters,
-a gender outside `M` `F` `MX`, a status outside the five listed, a judge count
-other than 1 or 3, `end_date` before `start_date`, a duplicate or unnamed
+a gender outside `M` `F` `MX`, a status outside the five listed, `end_date` before `start_date`, a duplicate or unnamed
 movement, a movement `order` below 1, a category setting both the slug and the
 raw bounds, a `weight_class_min` above its `weight_class_max`, an athlete setting both
 `bodyweight` and `ris`, a lift naming a
@@ -252,7 +250,7 @@ is not a reason to invent an attempt. Write `best_lift` instead and omit
 
 ### What it only warns about
 
-Missing venue, city or judges. An athlete with neither bodyweight nor ris. A category with no weight class at
+Missing city. An athlete with neither bodyweight nor ris. A category with no weight class at
 all. A category with no athletes. An athlete with no lifts. These are normal for a file still being built, so
 warnings are expected mid-construction and are not something to fix by
 inventing data.

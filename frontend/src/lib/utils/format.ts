@@ -6,6 +6,10 @@ export function formatDate(dateString: string | null): string {
   return `${day}-${month}-${date.getFullYear()}`;
 }
 
+export function formatLocation(...parts: (string | null | undefined)[]): string {
+  return parts.filter(Boolean).join(', ');
+}
+
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 
 export function countryName(countryCode: string): string {

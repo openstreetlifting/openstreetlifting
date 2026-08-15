@@ -61,24 +61,10 @@ impl CanonicalValidator {
                 .push("Federation name is required".to_string());
         }
 
-        if canonical.competition.venue.is_none() {
-            report
-                .warnings
-                .push("Competition venue is not specified".to_string());
-        }
         if canonical.competition.city.is_none() {
             report
                 .warnings
                 .push("Competition city is not specified".to_string());
-        }
-        match canonical.competition.number_of_judges {
-            None => report
-                .warnings
-                .push("Number of judges is not specified".to_string()),
-            Some(judges) if judges != 1 && judges != 3 => report
-                .errors
-                .push(format!("Number of judges must be 1 or 3, got {}", judges)),
-            Some(_) => {}
         }
 
         if canonical.movements.is_empty() {
@@ -353,10 +339,9 @@ mod tests {
                 },
                 start_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
                 end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
-                venue: None,
                 city: None,
+                region: None,
                 country: CountryCode::parse("FR").unwrap(),
-                number_of_judges: Some(3),
                 status: None,
             },
             movements: vec![MovementData {
@@ -461,17 +446,6 @@ mod tests {
         canonical.categories[0].weight_class_max = None;
 
         assert!(CanonicalValidator::validate(&canonical).is_ok());
-    }
-
-    #[test]
-    fn judge_counts_the_schema_rejects_fail_validation() {
-        let mut canonical = minimal();
-        canonical.competition.number_of_judges = Some(2);
-
-        let err = CanonicalValidator::validate(&canonical)
-            .unwrap_err()
-            .to_string();
-        assert!(err.contains("must be 1 or 3"), "{err}");
     }
 
     #[test]

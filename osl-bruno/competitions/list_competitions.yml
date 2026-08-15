@@ -70,11 +70,10 @@ examples:
                 "federation_id": "",
                 "movements": "",
                 "name": "",
-                "number_of_judge": "",
+                "region": "",
                 "slug": "",
                 "start_date": "",
-                "status": "",
-                "venue": ""
+                "status": ""
               }
             ],
             "pagination": {

@@ -9,10 +9,9 @@ pub struct CompetitionRow {
     pub slug: String,
     pub status: String,
     pub federation_id: Uuid,
-    pub venue: Option<String>,
     pub city: Option<String>,
+    pub region: Option<String>,
     pub country: Option<String>,
     pub start_date: Option<chrono::NaiveDate>,
     pub end_date: Option<chrono::NaiveDate>,
-    pub number_of_judge: Option<i16>,
 }

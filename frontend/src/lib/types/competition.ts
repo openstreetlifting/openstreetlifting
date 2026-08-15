@@ -17,8 +17,8 @@ export interface Competition {
   created_at: string;
   slug: string;
   status: 'upcoming' | 'ongoing' | 'completed';
-  venue: string | null;
   city: string | null;
+  region: string | null;
   country: string | null;
   start_date: string | null;
   end_date: string | null;
@@ -85,8 +85,8 @@ export interface CompetitionDetail {
   name: string;
   slug: string;
   status: string;
-  venue: string | null;
   city: string | null;
+  region: string | null;
   country: string | null;
   start_date: string | null;
   end_date: string | null;
