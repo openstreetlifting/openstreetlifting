@@ -1312,7 +1312,7 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
 name = "osl_api"
-version = "0.9.0"
+version = "0.10.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -1337,7 +1337,7 @@ dependencies = [
 
 [[package]]
 name = "osl_db"
-version = "0.9.0"
+version = "0.10.0"
 dependencies = [
  "chrono",
  "osl_domain",
@@ -1348,7 +1348,7 @@ dependencies = [
 
 [[package]]
 name = "osl_domain"
-version = "0.9.0"
+version = "0.10.0"
 dependencies = [
  "chrono",
  "rust_decimal",
@@ -1361,7 +1361,7 @@ dependencies = [
 
 [[package]]
 name = "osl_importer"
-version = "0.9.0"
+version = "0.10.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2542,9 +2542,9 @@ dependencies = [
 
 [[package]]
 name = "uuid"
-version = "1.24.0"
+version = "1.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf3923a6f5c4c6382e0b653c4117f48d631ea17f38ed86e2a828e6f7412f5239"
+checksum = "2cefc03fd367c0c6d4305de1b312cf00248c4114f4a0418ce6a6af769e3b0bd9"
 dependencies = [
  "getrandom 0.4.3",
  "js-sys",
