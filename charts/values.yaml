@@ -1,17 +1,27 @@
+# Anything other than "production" is treated as a pre-release environment and
+# shows the commit in the footer instead of a version.
+environment: ""
 frontend:
   image:
     repository: ghcr.io/openstreetlifting/frontend
-    tag: sha-e056175
+    tag: ""
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
     port: 3000
   env:
     backendUrl: "http://openstreetlifting-backend:8080"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 backend:
   image:
     repository: ghcr.io/openstreetlifting/backend
-    tag: sha-e056175
+    tag: ""
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -23,10 +33,22 @@ backend:
   database:
     secretName: osl-postgres-app
     urlKey: uri
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  existingSecret: osl-backend-secret
+  # Sealed against one cluster's key and one namespace, so only a deployment
+  # repository can fill this in.
+  sealedSecret:
+    encryptedData: {}
 importer:
   image:
     repository: ghcr.io/openstreetlifting/importer
-    tag: sha-e056175
+    tag: ""
     pullPolicy: IfNotPresent
   # Every deploy makes the database match the canonical files, deletions
   # included. Drop --yes to have a release only report what it would remove.
@@ -45,6 +67,7 @@ importer:
   job:
     enabled: false
 ingress:
-  frontendHost: "localhost"
-  backendHost: "localhost"
+  frontendHost: ""
+  backendHost: ""
   tls: false
+  noindex: false

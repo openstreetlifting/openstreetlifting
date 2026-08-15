@@ -1,0 +1,13 @@
+{{- if .Values.ingress.noindex }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: openstreetlifting-noindex
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openstreetlifting.labels" . | nindent 4 }}
+spec:
+  headers:
+    customResponseHeaders:
+      X-Robots-Tag: "noindex, nofollow"
+{{- end }}

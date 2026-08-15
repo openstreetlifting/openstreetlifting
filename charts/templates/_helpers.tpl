@@ -1,7 +1,10 @@
+{{- define "openstreetlifting.image" -}}
+{{ .image.repository }}:{{ .image.tag | default .chart.AppVersion }}
+{{- end }}
+
 {{- define "openstreetlifting.labels" -}}
 helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "openstreetlifting.frontend.selectorLabels" -}}
@@ -23,7 +26,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 restartPolicy: Never
 containers:
   - name: importer
-    image: "{{ .Values.importer.image.repository }}:{{ .Values.importer.image.tag }}"
+    image: "{{ include "openstreetlifting.image" (dict "image" .Values.importer.image "chart" .Chart) }}"
     imagePullPolicy: {{ .Values.importer.image.pullPolicy }}
     args:
       {{- toYaml .Values.importer.args | nindent 6 }}

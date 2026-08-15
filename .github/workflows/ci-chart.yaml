@@ -1,0 +1,47 @@
+name: "Chart CI"
+
+on:
+  push:
+    paths:
+      - charts/**
+      - .github/workflows/ci-chart.yaml
+  pull_request:
+    paths:
+      - charts/**
+      - .github/workflows/ci-chart.yaml
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Helm
+        run: curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      - name: Install kubeconform
+        run: |
+          curl -fsSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz \
+            | tar xz -C /usr/local/bin
+      - name: Lint chart
+        run: helm lint charts/
+      # The chart is published for self-hosters, so it has to render without a
+      # deployment repository supplying values.
+      - name: Validate default rendering
+        run: |
+          helm template charts/ \
+            | kubeconform -strict -summary -skip SealedSecret,Middleware
+      - name: Package chart
+        run: helm package charts/ --destination dist/
+
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [lint]
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            exit 1
+          fi

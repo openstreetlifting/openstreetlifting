@@ -1,29 +1,33 @@
-name: Deploy The Latest Version
+name: "Release to Production"
 on:
   push:
     tags: ["v*.*.*"]
 
 permissions:
-  contents: write
+  contents: read
   packages: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
 
 env:
   REGISTRY: ghcr.io
+  IAC_REPO: dirdr/adrien_kubernetes_cluster
 
 jobs:
-  retag:
-    name: Retag & Pin Chart
+  promote:
+    name: Promote Staging to Production
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/create-github-app-token@v3
-        id: app-token
-        with:
-          app-id: ${{ secrets.RELEASE_PLEASE_APP_ID }}
-          private-key: ${{ secrets.RELEASE_PLEASE_PRIVATE_KEY }}
       - uses: actions/checkout@v7
+
+      - name: Checkout deployment repository
+        uses: actions/checkout@v7
         with:
-          token: ${{ steps.app-token.outputs.token }}
-          fetch-depth: 0
+          repository: ${{ env.IAC_REPO }}
+          ssh-key: ${{ secrets.IAC_DEPLOY_KEY }}
+          path: iac
 
       - uses: docker/setup-buildx-action@v4
 
@@ -40,44 +44,69 @@ jobs:
             https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod +x /usr/local/bin/yq
 
-      - name: Read current SHA tags from chart
+      - name: Install Helm
+        run: curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      # Production runs whatever staging has been running, so the promotion
+      # source is the staging values file rather than a fresh build.
+      - name: Read the tags staging is running
         id: tags
         run: |
-          echo "frontend_sha=$(yq '.frontend.image.tag' charts/values.yaml)" >> "$GITHUB_OUTPUT"
-          echo "backend_sha=$(yq '.backend.image.tag' charts/values.yaml)" >> "$GITHUB_OUTPUT"
-          echo "importer_sha=$(yq '.importer.image.tag' charts/values.yaml)" >> "$GITHUB_OUTPUT"
-          echo "semver=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          VALUES=iac/helm/openstreetlifting/values-staging.yaml
+          {
+            echo "frontend_sha=$(yq '.frontend.image.tag' $VALUES)"
+            echo "backend_sha=$(yq '.backend.image.tag' $VALUES)"
+            echo "importer_sha=$(yq '.importer.image.tag' $VALUES)"
+            echo "semver=${GITHUB_REF_NAME#v}"
+          } >> "$GITHUB_OUTPUT"
 
-      - name: Retag frontend image
+      - name: Retag images
+        env:
+          SEMVER: ${{ steps.tags.outputs.semver }}
         run: |
-          docker buildx imagetools create \
-            -t ${{ env.REGISTRY }}/openstreetlifting/frontend:${{ steps.tags.outputs.semver }} \
-            -t ${{ env.REGISTRY }}/openstreetlifting/frontend:latest \
-            ${{ env.REGISTRY }}/openstreetlifting/frontend:${{ steps.tags.outputs.frontend_sha }}
+          retag() {
+            docker buildx imagetools create \
+              -t "${{ env.REGISTRY }}/openstreetlifting/$1:$SEMVER" \
+              -t "${{ env.REGISTRY }}/openstreetlifting/$1:latest" \
+              "${{ env.REGISTRY }}/openstreetlifting/$1:$2"
+          }
+          retag frontend "${{ steps.tags.outputs.frontend_sha }}"
+          retag backend "${{ steps.tags.outputs.backend_sha }}"
+          retag importer "${{ steps.tags.outputs.importer_sha }}"
 
-      - name: Retag backend image
+      - name: Point production at the release
+        working-directory: iac
+        env:
+          SEMVER: ${{ steps.tags.outputs.semver }}
         run: |
-          docker buildx imagetools create \
-            -t ${{ env.REGISTRY }}/openstreetlifting/backend:${{ steps.tags.outputs.semver }} \
-            -t ${{ env.REGISTRY }}/openstreetlifting/backend:latest \
-            ${{ env.REGISTRY }}/openstreetlifting/backend:${{ steps.tags.outputs.backend_sha }}
+          VALUES=helm/openstreetlifting/values-production.yaml
+          for component in frontend backend importer; do
+            yq -i ".$component.image.tag = \"$SEMVER\"" "$VALUES"
+          done
+          yq -i \
+            "(.spec.sources[] | select(.ref != \"values\") | .targetRevision) = \"$GITHUB_REF_NAME\"" \
+            apps/openstreetlifting.yaml
 
-      - name: Retag importer image
+      - name: Commit
+        working-directory: iac
         run: |
-          docker buildx imagetools create \
-            -t ${{ env.REGISTRY }}/openstreetlifting/importer:${{ steps.tags.outputs.semver }} \
-            -t ${{ env.REGISTRY }}/openstreetlifting/importer:latest \
-            ${{ env.REGISTRY }}/openstreetlifting/importer:${{ steps.tags.outputs.importer_sha }}
-
-      - name: Pin chart to semver
-        run: |
-          yq -i ".frontend.image.tag = \"${{ steps.tags.outputs.semver }}\"" charts/values.yaml
-          yq -i ".backend.image.tag = \"${{ steps.tags.outputs.semver }}\"" charts/values.yaml
-          yq -i ".importer.image.tag = \"${{ steps.tags.outputs.semver }}\"" charts/values.yaml
           git config user.name "osl-ci[bot]"
           git config user.email "315316499+osl-ci[bot]@users.noreply.github.com"
-          git checkout main
-          git add charts/values.yaml
-          git commit \
-            -m "chore(release): pin images to ${{ steps.tags.outputs.semver }}"
-          git push origin main
+          git add helm/openstreetlifting/values-production.yaml apps/openstreetlifting.yaml
+          git diff --cached --quiet || git commit \
+            -m "chore(production): release ${{ steps.tags.outputs.semver }}" \
+            -m "Promotes the images staging validated."
+          git pull --rebase
+          git push
+
+      # Last, because Argo CD reads the chart from git. This artifact only
+      # serves self-hosters, so a registry failure must not block the deploy.
+      - name: Publish chart
+        run: |
+          helm registry login ${{ env.REGISTRY }} \
+            --username ${{ github.actor }} \
+            --password ${{ secrets.GITHUB_TOKEN }}
+          helm package charts/ --destination dist/
+          helm push \
+            "dist/openstreetlifting-${{ steps.tags.outputs.semver }}.tgz" \
+            oci://${{ env.REGISTRY }}/openstreetlifting/charts

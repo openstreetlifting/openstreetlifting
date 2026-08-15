@@ -1,6 +1,7 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
   import { GitHubIcon, InstagramIcon, DiscordIcon, EmailIcon } from '$lib/components/icons';
+  import { buildInfo } from '$lib/version';
 </script>
 
 <footer class="border-t border-zinc-800/50 bg-zinc-950">
@@ -113,7 +114,9 @@
         </div>
       </div>
     </div>
-    <div class="mt-12 border-t border-zinc-800/50 pt-8">
+    <div
+      class="mt-12 flex flex-col gap-3 border-t border-zinc-800/50 pt-8 sm:flex-row sm:items-center sm:justify-between"
+    >
       <p class="text-sm font-light text-zinc-500">
         Code licensed under
         <a
@@ -129,6 +132,30 @@
           rel="noopener noreferrer"
           class="text-zinc-400 transition-colors hover:text-white">CC BY 4.0</a
         >
+      </p>
+      <p class="font-mono text-xs font-light text-zinc-600">
+        {#if buildInfo.label}
+          <span class="text-zinc-500">{buildInfo.label}</span>
+        {/if}
+        {#if buildInfo.version}
+          <a
+            href="https://github.com/openstreetlifting/openstreetlifting/releases/tag/v{buildInfo.version}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="transition-colors hover:text-white">v{buildInfo.version}</a
+          >
+        {/if}
+        {#if buildInfo.shortSha}
+          {#if buildInfo.label || buildInfo.version}<span aria-hidden="true">·</span>{/if}
+          <a
+            href="https://github.com/openstreetlifting/openstreetlifting/commit/{buildInfo.sha}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="transition-colors hover:text-white">{buildInfo.shortSha}</a
+          >
+        {:else if !buildInfo.label && !buildInfo.version}
+          dev
+        {/if}
       </p>
     </div>
   </div>

@@ -8,6 +8,9 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
+    {{- if .Values.ingress.noindex }}
+    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-openstreetlifting-noindex@kubernetescrd
+    {{- end }}
 spec:
   ingressClassName: traefik
   rules:
