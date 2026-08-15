@@ -4,7 +4,7 @@
   import { SortIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
-  import { formatDate, countryName } from '$lib/utils';
+  import { formatDate, formatLocation, countryName } from '$lib/utils';
   import { RANKING_MOVEMENTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
 
@@ -83,7 +83,7 @@
             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
           />
         </svg>
-        <span>{competition.venue}, {competition.city}, {competition.country}</span>
+        <span>{formatLocation(competition.country, competition.region, competition.city)}</span>
       </div>
 
       <div class="flex items-center gap-2">

@@ -151,10 +151,9 @@ mod tests {
                 },
                 start_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
                 end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
-                venue: None,
                 city: None,
+                region: None,
                 country: CountryCode::parse("FR").unwrap(),
-                number_of_judges: Some(3),
                 status: None,
             },
             movements: vec![

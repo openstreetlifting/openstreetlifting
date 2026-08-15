@@ -2,6 +2,7 @@
   import type { PageData } from './$types';
   import { Card, Breadcrumb } from '$lib/components/ui';
   import { resolve } from '$app/paths';
+  import { formatLocation } from '$lib/utils';
 
   let { data }: { data: PageData } = $props();
 
@@ -156,7 +157,11 @@
                       />
                     </svg>
                     <span class="truncate text-xs"
-                      >{competition.venue}, {competition.city}, {competition.country}</span
+                      >{formatLocation(
+                        competition.country,
+                        competition.region,
+                        competition.city
+                      )}</span
                     >
                   </div>
                   <div class="flex items-center gap-1.5">

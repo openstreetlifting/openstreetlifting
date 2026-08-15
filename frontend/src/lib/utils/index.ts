@@ -1,2 +1,2 @@
 export { cn } from './cn.js';
-export { formatDate, countryName } from './format.js';
+export { formatDate, formatLocation, countryName } from './format.js';

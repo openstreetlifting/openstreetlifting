@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT competition_id, name, created_at, slug, status, federation_id,\n                   venue, city, country, start_date, end_date, number_of_judge\n            FROM competitions\n            WHERE slug = $1\n            ",
+  "query": "\n            SELECT competition_id, name, created_at, slug, status, federation_id,\n                   city, region, country, start_date, end_date\n            FROM competitions\n            WHERE slug = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -71,23 +71,23 @@
       },
       {
         "ordinal": 6,
-        "name": "venue",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "competitions",
-            "name": "venue"
-          }
-        }
-      },
-      {
-        "ordinal": 7,
         "name": "city",
         "type_info": "Varchar",
         "origin": {
           "Table": {
             "table": "competitions",
             "name": "city"
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "region",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "region"
           }
         }
       },
@@ -123,17 +123,6 @@
             "name": "end_date"
           }
         }
-      },
-      {
-        "ordinal": 11,
-        "name": "number_of_judge",
-        "type_info": "Int2",
-        "origin": {
-          "Table": {
-            "table": "competitions",
-            "name": "number_of_judge"
-          }
-        }
       }
     ],
     "parameters": {
@@ -152,9 +141,8 @@
       true,
       true,
       false,
-      false,
-      true
+      false
     ]
   },
-  "hash": "117acfd106344c63850cfc6bd62a294080459a14bb951ff83a65f73a3af6b27d"
+  "hash": "05e72d01a651b2401066516fb0d346cb51b6b18cd5dbbc63609a4e51640bd6e2"
 }

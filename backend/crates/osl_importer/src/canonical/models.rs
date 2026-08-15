@@ -4,7 +4,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 /// Format version this build reads and writes.
-pub const FORMAT_VERSION: &str = "1.6.0";
+pub const FORMAT_VERSION: &str = "1.7.0";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CanonicalFormat {
@@ -68,15 +68,12 @@ pub struct CompetitionData {
     pub end_date: NaiveDate,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub venue: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
-    pub country: CountryCode,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub number_of_judges: Option<i16>,
+    pub country: CountryCode,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<CompetitionStatus>,

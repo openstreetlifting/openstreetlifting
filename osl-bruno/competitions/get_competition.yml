@@ -60,11 +60,10 @@ examples:
             "federation_id": "",
             "movements": "",
             "name": "",
-            "number_of_judge": "",
+            "region": "",
             "slug": "",
             "start_date": "",
-            "status": "",
-            "venue": ""
+            "status": ""
           }
   - name: 400 Response
     description: Unknown include value

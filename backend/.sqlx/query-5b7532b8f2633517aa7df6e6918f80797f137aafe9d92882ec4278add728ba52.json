@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT competition_id, name, created_at, slug, status, federation_id,\n                   venue, city, country, start_date, end_date, number_of_judge\n            FROM competitions\n            WHERE competition_id = $1\n            ",
+  "query": "\n            SELECT competition_id, name, created_at, slug, status, federation_id,\n                   city, region, country, start_date, end_date\n            FROM competitions\n            ORDER BY start_date DESC, created_at DESC\n            LIMIT $1 OFFSET $2\n            ",
   "describe": {
     "columns": [
       {
@@ -71,23 +71,23 @@
       },
       {
         "ordinal": 6,
-        "name": "venue",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "competitions",
-            "name": "venue"
-          }
-        }
-      },
-      {
-        "ordinal": 7,
         "name": "city",
         "type_info": "Varchar",
         "origin": {
           "Table": {
             "table": "competitions",
             "name": "city"
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "region",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "region"
           }
         }
       },
@@ -123,22 +123,12 @@
             "name": "end_date"
           }
         }
-      },
-      {
-        "ordinal": 11,
-        "name": "number_of_judge",
-        "type_info": "Int2",
-        "origin": {
-          "Table": {
-            "table": "competitions",
-            "name": "number_of_judge"
-          }
-        }
       }
     ],
     "parameters": {
       "Left": [
-        "Uuid"
+        "Int8",
+        "Int8"
       ]
     },
     "nullable": [
@@ -152,9 +142,8 @@
       true,
       true,
       false,
-      false,
-      true
+      false
     ]
   },
-  "hash": "0f61702084c6191473b395a9f351ed64b678972f229da3bffb616575cee9bbdd"
+  "hash": "5b7532b8f2633517aa7df6e6918f80797f137aafe9d92882ec4278add728ba52"
 }

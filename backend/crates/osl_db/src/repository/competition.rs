@@ -29,7 +29,7 @@ impl<'a> CompetitionRepository<'a> {
             CompetitionRow,
             r#"
             SELECT competition_id, name, created_at, slug, status, federation_id,
-                   venue, city, country, start_date, end_date, number_of_judge
+                   city, region, country, start_date, end_date
             FROM competitions
             ORDER BY start_date DESC, created_at DESC
             LIMIT $1 OFFSET $2
@@ -88,7 +88,7 @@ impl<'a> CompetitionRepository<'a> {
             CompetitionRow,
             r#"
             SELECT competition_id, name, created_at, slug, status, federation_id,
-                   venue, city, country, start_date, end_date, number_of_judge
+                   city, region, country, start_date, end_date
             FROM competitions
             WHERE competition_id = $1
             "#,
@@ -106,7 +106,7 @@ impl<'a> CompetitionRepository<'a> {
             CompetitionRow,
             r#"
             SELECT competition_id, name, created_at, slug, status, federation_id,
-                   venue, city, country, start_date, end_date, number_of_judge
+                   city, region, country, start_date, end_date
             FROM competitions
             WHERE slug = $1
             "#,

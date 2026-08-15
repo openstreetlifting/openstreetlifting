@@ -194,16 +194,15 @@ impl<'a> CanonicalTransformer<'a> {
 
         let competition_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, venue, city, country, number_of_judge)
-            VALUES ($1, $2, COALESCE($3, 'completed'), $4, $5, $6, $7, $8, $9, $10)
+            INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, city, region, country)
+            VALUES ($1, $2, COALESCE($3, 'completed'), $4, $5, $6, $7, $8, $9)
             ON CONFLICT (slug)
             DO UPDATE SET
                 name = EXCLUDED.name,
                 status = COALESCE($3, competitions.status),
-                venue = EXCLUDED.venue,
                 city = EXCLUDED.city,
-                country = EXCLUDED.country,
-                number_of_judge = EXCLUDED.number_of_judge
+                region = EXCLUDED.region,
+                country = EXCLUDED.country
             RETURNING competition_id as "competition_id: Uuid"
             "#,
             competition.name,
@@ -215,10 +214,9 @@ impl<'a> CanonicalTransformer<'a> {
             federation_id,
             competition.start_date,
             competition.end_date,
-            competition.venue,
             competition.city,
-            competition.country.as_str(),
-            competition.number_of_judges
+            competition.region,
+            competition.country.as_str()
         )
         .fetch_one(&mut **tx)
         .await?;
