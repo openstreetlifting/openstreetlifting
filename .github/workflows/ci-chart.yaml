@@ -1,10 +1,6 @@
 name: "Chart CI"
 
 on:
-  push:
-    paths:
-      - charts/**
-      - .github/workflows/ci-chart.yaml
   pull_request:
     paths:
       - charts/**
