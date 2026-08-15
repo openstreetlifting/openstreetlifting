@@ -174,6 +174,7 @@ async fn a_bodyweight_lifter_still_appears_on_that_movement(pool: PgPool) {
     let filter = RankingFilter {
         gender: None,
         country: None,
+        name: None,
         movement: RankingMovement::Muscleup,
         event: osl_domain::FULL_EVENT.to_string(),
         direction: SortDirection::Desc,
@@ -204,6 +205,7 @@ async fn a_bomber_is_left_off_that_movements_board(pool: PgPool) {
     let filter = RankingFilter {
         gender: None,
         country: None,
+        name: None,
         movement: RankingMovement::Dips,
         event: osl_domain::FULL_EVENT.to_string(),
         direction: SortDirection::Desc,

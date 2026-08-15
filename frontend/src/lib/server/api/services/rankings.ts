@@ -15,6 +15,10 @@ export const rankingsService = {
       params.country = filters.country;
     }
 
+    if (filters.q) {
+      params.q = filters.q;
+    }
+
     if (filters.movement) {
       params.movement = filters.movement;
     }

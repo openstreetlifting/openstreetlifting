@@ -65,6 +65,8 @@ pub struct GlobalRankingFilter {
     pub pagination: crate::shared::dto::PaginationParams,
     pub gender: Option<String>,
     pub country: Option<String>,
+    /// Case insensitive substring of the athlete's full name.
+    pub q: Option<String>,
     #[serde(default)]
     pub movement: Movement,
     #[serde(default)]
@@ -97,6 +99,12 @@ impl GlobalRankingFilter {
         RankingFilter {
             gender: self.gender.clone(),
             country: self.country.clone(),
+            name: self
+                .q
+                .as_deref()
+                .map(str::trim)
+                .filter(|query| !query.is_empty())
+                .map(str::to_string),
             movement: self.movement.into(),
             direction: self.direction.into(),
             event: self

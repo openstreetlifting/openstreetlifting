@@ -4,3 +4,4 @@ export { default as EmailIcon } from './EmailIcon.svelte';
 export { default as DiscordIcon } from './DiscordIcon.svelte';
 export { default as SortIcon } from './SortIcon.svelte';
 export { default as MovementIcon } from './MovementIcon.svelte';
+export { default as SearchIcon } from './SearchIcon.svelte';

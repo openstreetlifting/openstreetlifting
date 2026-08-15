@@ -33,6 +33,8 @@ export interface RankingFilters {
   page: number;
   gender?: string | null;
   country?: string | null;
+  /** Case insensitive substring of the athlete's full name. */
+  q?: string | null;
   movement?: string;
   direction?: 'asc' | 'desc';
   /** Which event to rank totals within. Ignored for single-movement boards. */

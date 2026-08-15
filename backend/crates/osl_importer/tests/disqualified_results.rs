@@ -58,6 +58,7 @@ async fn board(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
     let filter = RankingFilter {
         gender: None,
         country: None,
+        name: None,
         movement,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.to_string(),
