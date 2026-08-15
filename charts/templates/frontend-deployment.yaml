@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          image: "{{ include "openstreetlifting.image" (dict "image" .Values.frontend.image "chart" .Chart) }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:
             - name: http
@@ -30,6 +30,10 @@ spec:
               value: {{ .Values.frontend.env.backendUrl | quote }}
             - name: PORT
               value: {{ .Values.frontend.service.port | quote }}
+            - name: PUBLIC_APP_VERSION
+              value: {{ .Chart.AppVersion | quote }}
+            - name: PUBLIC_ENVIRONMENT
+              value: {{ .Values.environment | quote }}
           livenessProbe:
             httpGet:
               path: /
@@ -43,9 +47,4 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
+            {{- toYaml .Values.frontend.resources | nindent 12 }}

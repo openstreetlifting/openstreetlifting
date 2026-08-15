@@ -22,6 +22,9 @@ RUN pnpm build
 FROM node:24-alpine AS runner
 WORKDIR /app
 
+ARG GIT_SHA=""
+ENV PUBLIC_GIT_SHA=$GIT_SHA
+
 ENV NODE_ENV=production
 ENV PORT=3000
 

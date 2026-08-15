@@ -1,31 +1,55 @@
-name: "Continuous Delivery"
+name: "Deploy to Staging"
 on:
-  workflow_run:
-    workflows: ["Backend CI", "Frontend CI"]
-    types: [completed]
+  push:
+    branches: [main]
+
 permissions:
-  contents: write
+  contents: read
   packages: write
+
+# Shared with the release workflow, so a promotion never reads the staging
+# values file while a build is rewriting it.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
 env:
   REGISTRY: ghcr.io
+  IAC_REPO: dirdr/adrien_kubernetes_cluster
+
 jobs:
-  build-backend:
-    name: Build & Push Backend
+  changes:
+    name: Detect Changes
     runs-on: ubuntu-latest
-    if: |
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main' &&
-      github.event.workflow_run.name == 'Backend CI'
+    # A release commit only bumps version strings. Its images are promoted from
+    # staging by the release workflow rather than rebuilt here.
+    if: "${{ !startsWith(github.event.head_commit.message, 'chore(main): release') }}"
     outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
       sha_tag: ${{ steps.sha_tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v3
+        id: filter
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
       - name: Set SHA tag
         id: sha_tag
         run: |
-          echo "tag=sha-$(echo '${{ github.event.workflow_run.head_sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          echo "tag=sha-$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+
+  build-backend:
+    name: Build & Push Backend
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    steps:
+      - uses: actions/checkout@v7
       - uses: docker/setup-buildx-action@v4
       - uses: docker/login-action@v4
         with:
@@ -37,7 +61,7 @@ jobs:
           context: backend
           push: true
           platforms: linux/amd64
-          tags: ${{ env.REGISTRY }}/openstreetlifting/backend:${{ steps.sha_tag.outputs.tag }}
+          tags: ${{ env.REGISTRY }}/openstreetlifting/backend:${{ needs.changes.outputs.sha_tag }}
           cache-from: type=gha,scope=backend
           cache-to: type=gha,scope=backend,mode=max
           build-args: BIN=osl_api
@@ -45,20 +69,10 @@ jobs:
   build-importer:
     name: Build & Push Importer
     runs-on: ubuntu-latest
-    if: |
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main' &&
-      github.event.workflow_run.name == 'Backend CI'
-    outputs:
-      sha_tag: ${{ steps.sha_tag.outputs.tag }}
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-      - name: Set SHA tag
-        id: sha_tag
-        run: |
-          echo "tag=sha-$(echo '${{ github.event.workflow_run.head_sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
       - uses: docker/setup-buildx-action@v4
       - uses: docker/login-action@v4
         with:
@@ -70,7 +84,7 @@ jobs:
           context: backend
           push: true
           platforms: linux/amd64
-          tags: ${{ env.REGISTRY }}/openstreetlifting/importer:${{ steps.sha_tag.outputs.tag }}
+          tags: ${{ env.REGISTRY }}/openstreetlifting/importer:${{ needs.changes.outputs.sha_tag }}
           cache-from: type=gha,scope=importer
           cache-to: type=gha,scope=importer,mode=max
           build-args: BIN=import
@@ -78,20 +92,10 @@ jobs:
   build-frontend:
     name: Build & Push Frontend
     runs-on: ubuntu-latest
-    if: |
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main' &&
-      github.event.workflow_run.name == 'Frontend CI'
-    outputs:
-      sha_tag: ${{ steps.sha_tag.outputs.tag }}
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-      - name: Set SHA tag
-        id: sha_tag
-        run: |
-          echo "tag=sha-$(echo '${{ github.event.workflow_run.head_sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
       - uses: docker/setup-buildx-action@v4
       - uses: docker/login-action@v4
         with:
@@ -102,50 +106,56 @@ jobs:
         with:
           context: frontend
           push: true
-          platforms: linux/amd64,
-          tags: ${{ env.REGISTRY }}/openstreetlifting/frontend:${{ steps.sha_tag.outputs.tag }}
+          platforms: linux/amd64
+          tags: ${{ env.REGISTRY }}/openstreetlifting/frontend:${{ needs.changes.outputs.sha_tag }}
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,scope=frontend,mode=max
+          build-args: |
+            GIT_SHA=${{ github.sha }}
 
-  update-chart:
-    name: Update Chart
+  update-staging:
+    name: Update Staging Values
     runs-on: ubuntu-latest
-    needs: [build-backend, build-importer, build-frontend]
-    if: always() && !contains(needs.*.result, 'failure')
+    needs: [changes, build-backend, build-importer, build-frontend]
+    if: |
+      always() &&
+      needs.changes.result == 'success' &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled') &&
+      (needs.build-backend.result == 'success' ||
+       needs.build-importer.result == 'success' ||
+       needs.build-frontend.result == 'success')
     steps:
-      - uses: actions/create-github-app-token@v3
-        id: app-token
-        with:
-          app-id: ${{ secrets.RELEASE_PLEASE_APP_ID }}
-          private-key: ${{ secrets.RELEASE_PLEASE_PRIVATE_KEY }}
       - uses: actions/checkout@v7
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          repository: ${{ env.IAC_REPO }}
+          ssh-key: ${{ secrets.IAC_DEPLOY_KEY }}
       - name: Install yq
         run: |
           sudo wget -qO /usr/local/bin/yq \
             https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod +x /usr/local/bin/yq
-      - name: Bump image tags in chart
+      - name: Bump image tags
+        env:
+          SHA_TAG: ${{ needs.changes.outputs.sha_tag }}
+          VALUES: helm/openstreetlifting/values-staging.yaml
         run: |
           if [[ "${{ needs.build-backend.result }}" == "success" ]]; then
-            yq -i ".backend.image.tag = \"${{ needs.build-backend.outputs.sha_tag }}\"" \
-              charts/values.yaml
+            yq -i ".backend.image.tag = \"$SHA_TAG\"" "$VALUES"
           fi
           if [[ "${{ needs.build-importer.result }}" == "success" ]]; then
-            yq -i ".importer.image.tag = \"${{ needs.build-importer.outputs.sha_tag }}\"" \
-              charts/values.yaml
+            yq -i ".importer.image.tag = \"$SHA_TAG\"" "$VALUES"
           fi
           if [[ "${{ needs.build-frontend.result }}" == "success" ]]; then
-            yq -i ".frontend.image.tag = \"${{ needs.build-frontend.outputs.sha_tag }}\"" \
-              charts/values.yaml
+            yq -i ".frontend.image.tag = \"$SHA_TAG\"" "$VALUES"
           fi
       - name: Commit
         run: |
           git config user.name "osl-ci[bot]"
           git config user.email "315316499+osl-ci[bot]@users.noreply.github.com"
-          git add charts/values.yaml
+          git add helm/openstreetlifting/values-staging.yaml
           git diff --cached --quiet || git commit \
-            -m "chore(deploy): bump images [skip ci]"
+            -m "chore(staging): deploy ${{ needs.changes.outputs.sha_tag }}" \
+            -m "From openstreetlifting@${{ github.sha }}"
           git pull --rebase
           git push

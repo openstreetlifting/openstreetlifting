@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          image: "{{ include "openstreetlifting.image" (dict "image" .Values.backend.image "chart" .Chart) }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           ports:
             - name: http
@@ -28,8 +28,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: openstreetlifting-backend-config
+            {{- if .Values.backend.existingSecret }}
             - secretRef:
-                name: osl-backend-secret
+                name: {{ .Values.backend.existingSecret }}
+            {{- end }}
           env:
             # Published by the Postgres operator, so a rotated password costs
             # a pod restart and nothing else.
@@ -51,9 +53,4 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           resources:
-            requests:
-              cpu: 50m
-              memory: 64Mi
-            limits:
-              cpu: 500m
-              memory: 256Mi
+            {{- toYaml .Values.backend.resources | nindent 12 }}
