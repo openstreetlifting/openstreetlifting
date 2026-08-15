@@ -1,9 +1,5 @@
 name: "Backend CI"
 on:
-  push:
-    paths:
-      - backend/**
-      - .github/workflows/ci-backend.yaml
   pull_request:
     paths:
       - backend/**
