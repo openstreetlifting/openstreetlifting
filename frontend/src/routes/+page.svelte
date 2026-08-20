@@ -1,22 +1,22 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import { Card, Pagination, Flag, SearchInput, Table } from '$lib/components/ui';
-  import { SortIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
-  import { page } from '$app/state';
+  import { page, navigating } from '$app/state';
   import { formatDate, countryName } from '$lib/utils';
-  import { RANKING_MOVEMENTS, RANKING_GENDERS } from '$lib/constants/ranking';
+  import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
 
   let { data }: { data: PageData } = $props();
 
   const table = new RankingsTable({ basePath: '/', includeYear: true, initialUrl: page.url });
 
-  $effect(() => {
-    table.syncFromData(data);
-  });
+  const rankings = $derived(data.initialRankings);
+  const pagination = $derived(data.pagination);
+  const busy = $derived(navigating.to?.url.pathname === page.url.pathname);
 
   const movements = RANKING_MOVEMENTS;
+  const sorts = RANKING_SORTS;
   const genders = RANKING_GENDERS;
 
   // Null means the meet did not contest the movement, which reads as a dash
@@ -93,6 +93,20 @@
         <option value={classOption}>{classOption}</option>
       {/each}
     </select>
+
+    <div class="flex items-center gap-2 sm:ml-auto">
+      <label for="sort-by" class="text-sm text-zinc-500">Sort by</label>
+      <select
+        id="sort-by"
+        bind:value={table.movementFilter}
+        onchange={() => table.handleFilterChange()}
+        class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+      >
+        {#each sorts as sort (sort.value)}
+          <option value={sort.value}>{sort.label}</option>
+        {/each}
+      </select>
+    </div>
   </div>
 
   {#if data.error}
@@ -101,7 +115,7 @@
         <p class="text-red-400">{data.error}</p>
       </div>
     </Card>
-  {:else if table.rankings.length === 0 && !table.isLoading}
+  {:else if rankings.length === 0 && !busy}
     <Card class="p-8">
       <div class="text-center">
         <p class="text-zinc-400">No rankings found for the selected filters</p>
@@ -117,12 +131,12 @@
     {#snippet paginationBar()}
       <div class="flex flex-wrap items-center justify-between gap-3">
         <span class="text-sm text-zinc-500">
-          Page {table.currentPage} of {table.totalPages} &middot; {table.totalItems} athletes
+          Page {pagination.page} of {pagination.total_pages} &middot; {pagination.total_items} athletes
         </span>
         <Pagination
-          page={table.currentPage}
-          totalPages={table.totalPages}
-          disabled={table.isLoading}
+          page={pagination.page}
+          totalPages={pagination.total_pages}
+          disabled={busy}
           onNavigate={(target) => table.goToPage(target)}
         />
       </div>
@@ -132,7 +146,7 @@
       {@render paginationBar()}
     </div>
 
-    <Table>
+    <Table {busy}>
       {#snippet head()}
         <th class="px-3 py-2 text-left font-medium text-zinc-400">Rank</th>
         <th class="px-3 py-2 text-left font-medium text-zinc-400">Athlete</th>
@@ -143,29 +157,24 @@
         <th class="px-3 py-2 text-left font-medium text-zinc-400">Class</th>
         {#each movements as movement (movement.value)}
           <th
-            class="cursor-pointer px-3 py-2 text-left font-medium transition-colors select-none hover:text-white {table.movementFilter ===
-            movement.value
+            class="px-3 py-2 text-left font-medium {table.movementFilter === movement.value
               ? 'text-white'
               : 'text-zinc-400'}"
-            onclick={() => table.sortBy(movement.value)}
           >
             {movement.label}
-            <SortIcon
-              direction={table.movementFilter === movement.value ? table.sortDirection : 'none'}
-              class="ml-1"
-            />
           </th>
         {/each}
         <th
-          class="cursor-pointer px-3 py-2 text-left font-medium text-zinc-400 transition-colors select-none hover:text-white"
-          onclick={() => table.sortBy('ris')}
+          class="px-3 py-2 text-left font-medium {table.movementFilter === 'ris'
+            ? 'text-white'
+            : 'text-zinc-400'}"
         >
           RIS
         </th>
       {/snippet}
 
       {#snippet body()}
-        {#each table.rankings as entry (entry.rank + entry.athlete.athlete_id)}
+        {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
           <tr
             class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
           >
