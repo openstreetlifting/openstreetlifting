@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Breadcrumb } from '$lib/components/ui';
+  import { Card, Breadcrumb, Table } from '$lib/components/ui';
   import { resolve } from '$app/paths';
-  import { formatLocation } from '$lib/utils';
+  import { formatDate, formatLocation } from '$lib/utils';
 
   let { data }: { data: PageData } = $props();
 
@@ -23,7 +23,7 @@
   <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Competitions' }]} />
 
   <div class="mb-8">
-    <h1 class="mb-4 text-5xl font-light text-white">Competitions</h1>
+    <h1 class="mb-4 text-4xl font-light tracking-tight text-white">Competitions</h1>
   </div>
 
   <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
@@ -90,135 +90,74 @@
       </div>
     </Card>
   {:else}
-    <div class="grid grid-cols-1 gap-3">
-      {#each filteredCompetitions() as competition (competition.slug)}
-        <a
-          href={resolve(`/competitions/${competition.slug}`)}
-          class="group block rounded-xl focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
-        >
-          <Card
-            class="cursor-pointer p-5 transition-all duration-150 hover:border-zinc-700/60 hover:bg-zinc-900/60"
+    <Table>
+      {#snippet head()}
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Competition</th>
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Date</th>
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Location</th>
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Federation</th>
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Status</th>
+      {/snippet}
+
+      {#snippet body()}
+        {#each filteredCompetitions() as competition (competition.slug)}
+          <tr
+            class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
           >
-            <div class="flex items-center justify-between gap-6">
-              <div class="min-w-0 flex-1">
-                <h2
-                  class="mb-2 text-base font-medium text-white transition-colors group-hover:text-zinc-100"
+            <td class="px-3 py-2 text-white">
+              <a
+                href={resolve(`/competitions/${competition.slug}`)}
+                class="underline hover:text-zinc-300"
+              >
+                {competition.name}
+              </a>
+            </td>
+            <td class="px-3 py-2 whitespace-nowrap text-zinc-400">
+              {formatDate(competition.start_date)}
+              {#if competition.end_date && competition.end_date !== competition.start_date}
+                - {formatDate(competition.end_date)}
+              {/if}
+            </td>
+            <td class="px-3 py-2 text-zinc-400">
+              {formatLocation(competition.country, competition.region, competition.city)}
+            </td>
+            <td class="px-3 py-2 text-zinc-400" title={competition.federation.name}>
+              {competition.federation.abbreviation || competition.federation.name}
+            </td>
+            <td class="px-3 py-2">
+              {#if competition.status === 'upcoming'}
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-md border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-400"
                 >
-                  {competition.name}
-                </h2>
-                <div class="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-zinc-500">
-                  <div class="flex items-center gap-1.5">
-                    <svg
-                      class="h-3.5 w-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <span class="text-xs"
-                      >{new Date(competition.start_date).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}</span
-                    >
-                    {#if competition.start_date !== competition.end_date}
-                      <span class="text-xs"
-                        >- {new Date(competition.end_date).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                        })}</span
-                      >
-                    {/if}
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <svg
-                      class="h-3.5 w-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    <span class="truncate text-xs"
-                      >{formatLocation(
-                        competition.country,
-                        competition.region,
-                        competition.city
-                      )}</span
-                    >
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <svg
-                      class="h-3.5 w-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
-                      />
-                    </svg>
-                    <span class="text-xs"
-                      >{competition.federation.name} ({competition.federation.abbreviation})</span
-                    >
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-shrink-0 items-center">
-                {#if competition.status === 'upcoming'}
-                  <span
-                    class="inline-flex items-center gap-1.5 rounded-md border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-400"
-                  >
-                    <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
-                      <circle cx="4" cy="4" r="3" />
-                    </svg>
-                    Planned
-                  </span>
-                {:else if competition.status === 'ongoing'}
-                  <span
-                    class="inline-flex items-center gap-1.5 rounded-md border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-xs font-medium text-purple-400"
-                  >
-                    <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
-                      <circle cx="4" cy="4" r="3" />
-                    </svg>
-                    Ongoing
-                  </span>
-                {:else if competition.status === 'completed'}
-                  <span
-                    class="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400"
-                  >
-                    <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
-                      <circle cx="4" cy="4" r="3" />
-                    </svg>
-                    Completed
-                  </span>
-                {/if}
-              </div>
-            </div>
-          </Card>
-        </a>
-      {/each}
-    </div>
+                  <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
+                    <circle cx="4" cy="4" r="3" />
+                  </svg>
+                  Planned
+                </span>
+              {:else if competition.status === 'ongoing'}
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-md border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-xs font-medium text-purple-400"
+                >
+                  <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
+                    <circle cx="4" cy="4" r="3" />
+                  </svg>
+                  Ongoing
+                </span>
+              {:else if competition.status === 'completed'}
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400"
+                >
+                  <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
+                    <circle cx="4" cy="4" r="3" />
+                  </svg>
+                  Completed
+                </span>
+              {/if}
+            </td>
+          </tr>
+        {/each}
+      {/snippet}
+    </Table>
 
     {#if filteredCompetitions().length > 0}
       <div class="mt-8 text-center text-sm text-zinc-500">

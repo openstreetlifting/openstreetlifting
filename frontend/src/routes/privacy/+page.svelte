@@ -8,7 +8,7 @@
 
 <div class="mx-auto max-w-4xl px-6 py-16">
   <div class="mb-16">
-    <h1 class="mb-4 text-5xl font-light tracking-tight text-white">Privacy Policy</h1>
+    <h1 class="mb-4 text-4xl font-light tracking-tight text-white">Privacy Policy</h1>
     <p class="text-base font-light text-zinc-500">
       Last updated: {new Date().toLocaleDateString('en-US', {
         year: 'numeric',

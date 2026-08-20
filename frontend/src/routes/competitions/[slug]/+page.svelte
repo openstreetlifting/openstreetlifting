@@ -49,7 +49,7 @@
 
   <!-- Competition Header -->
   <div class="mb-12">
-    <h1 class="mb-4 text-5xl font-light text-white">{competition.name}</h1>
+    <h1 class="mb-4 text-4xl font-light tracking-tight text-white">{competition.name}</h1>
 
     <div class="flex flex-wrap gap-x-6 gap-y-3 text-base text-zinc-400">
       <div class="flex items-center gap-2">

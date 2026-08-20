@@ -2,6 +2,12 @@
   import { page } from '$app/state';
   import { resolve } from '$app/paths';
   import { GitHubIcon, InstagramIcon } from '$lib/components/icons';
+
+  const linkClass = 'text-sm font-medium transition-colors hover:text-white';
+
+  function isActive(path: string): boolean {
+    return path === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(path);
+  }
 </script>
 
 <header class="bg-zinc-950">
@@ -10,66 +16,88 @@
       <img src="/logowidth.png" alt="OpenStreetlifting" class="h-8 w-auto" />
     </a>
 
-    <div class="flex items-center gap-4">
-      <ul class="flex gap-6">
-        <li>
-          <a
-            href={resolve('/')}
-            class="text-sm font-medium transition-colors hover:text-white"
-            class:text-white={page.url.pathname === '/'}
-            class:text-zinc-400={page.url.pathname !== '/'}
-            aria-current={page.url.pathname === '/' ? 'page' : undefined}
-          >
-            Home
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://docs.openstreetlifting.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm font-medium text-zinc-400 transition-colors hover:text-white"
-          >
-            Docs
-          </a>
-        </li>
-        <li>
-          <a
-            href={resolve('/contact')}
-            class="text-sm font-medium transition-colors hover:text-white"
-            class:text-white={page.url.pathname === '/contact'}
-            class:text-zinc-400={page.url.pathname !== '/contact'}
-            aria-current={page.url.pathname === '/contact' ? 'page' : undefined}
-          >
-            Contact
-          </a>
-        </li>
-      </ul>
+    <!-- Records and FAQ are announced but muted until the routes exist. -->
+    {#snippet comingSoon(label: string)}
+      <li>
+        <span
+          class="cursor-not-allowed text-sm font-medium text-zinc-600"
+          aria-disabled="true"
+          title="Coming soon"
+        >
+          {label}
+        </span>
+      </li>
+    {/snippet}
 
-      <div class="flex items-center gap-3">
-        <!-- GitHub Link -->
+    <ul class="flex items-center gap-6">
+      <li>
         <a
-          href="https://github.com/openstreetlifting/openstreetlifting_backend"
+          href={resolve('/')}
+          class={linkClass}
+          class:text-white={isActive('/')}
+          class:text-zinc-400={!isActive('/')}
+          aria-current={isActive('/') ? 'page' : undefined}
+        >
+          Rankings
+        </a>
+      </li>
+      <li>
+        <a
+          href={resolve('/competitions')}
+          class={linkClass}
+          class:text-white={isActive('/competitions')}
+          class:text-zinc-400={!isActive('/competitions')}
+          aria-current={isActive('/competitions') ? 'page' : undefined}
+        >
+          Competitions
+        </a>
+      </li>
+      {@render comingSoon('Records')}
+      {@render comingSoon('FAQ')}
+      <li>
+        <a
+          href="https://docs.openstreetlifting.org/"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-zinc-400 transition-colors hover:text-white"
+          class="{linkClass} text-zinc-400"
+        >
+          Docs
+        </a>
+      </li>
+      <li>
+        <a
+          href={resolve('/contact')}
+          class={linkClass}
+          class:text-white={isActive('/contact')}
+          class:text-zinc-400={!isActive('/contact')}
+          aria-current={isActive('/contact') ? 'page' : undefined}
+        >
+          Contact
+        </a>
+      </li>
+      <li>
+        <a
+          href="https://github.com/openstreetlifting/openstreetlifting"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block text-zinc-400 transition-colors hover:text-white"
           aria-label="GitHub"
         >
           <GitHubIcon />
         </a>
-
-        <!-- Instagram Link -->
+      </li>
+      <li>
         <a
           href="https://www.instagram.com/openstreetlifting"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-zinc-400 transition-colors hover:text-pink-500"
+          class="block text-zinc-400 transition-colors hover:text-pink-500"
           aria-label="Instagram"
         >
           <InstagramIcon />
         </a>
-      </div>
-    </div>
+      </li>
+    </ul>
   </nav>
   <div class="h-px bg-zinc-800/50"></div>
 </header>

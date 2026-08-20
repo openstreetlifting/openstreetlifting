@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Pagination, Flag, SearchInput } from '$lib/components/ui';
+  import { Card, Pagination, Flag, SearchInput, Table } from '$lib/components/ui';
   import { SortIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
@@ -37,7 +37,7 @@
 
 <div class="mx-auto max-w-[var(--content-max-width)] px-6 py-12">
   <div class="mb-6">
-    <h1 class="mb-4 text-2xl font-medium text-white">Rankings</h1>
+    <h1 class="mb-4 text-4xl font-light tracking-tight text-white">Rankings</h1>
   </div>
 
   <div
@@ -132,89 +132,82 @@
       {@render paginationBar()}
     </div>
 
-    <Card class="p-4">
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="sticky top-0 z-10">
-            <tr class="border-b border-zinc-800 bg-zinc-900 shadow-lg shadow-zinc-950/50">
-              <th class="px-3 py-2 text-left font-medium text-zinc-400">Rank</th>
-              <th class="px-3 py-2 text-left font-medium text-zinc-400">Athlete</th>
-              <th class="px-3 py-2 text-left font-medium text-zinc-400">Competition</th>
-              <th class="px-3 py-2 text-left font-medium text-zinc-400">Federation</th>
-              <th class="px-3 py-2 text-left font-medium text-zinc-400">Date</th>
-              <th class="px-3 py-2 text-left font-medium text-zinc-400">Sex</th>
-              <th class="px-3 py-2 text-left font-medium text-zinc-400">Class</th>
-              {#each movements as movement (movement.value)}
-                <th
-                  class="cursor-pointer px-3 py-2 text-left font-medium transition-colors select-none hover:text-white {table.movementFilter ===
-                  movement.value
-                    ? 'text-white'
-                    : 'text-zinc-400'}"
-                  onclick={() => table.sortBy(movement.value)}
-                >
-                  {movement.label}
-                  <SortIcon
-                    direction={table.movementFilter === movement.value
-                      ? table.sortDirection
-                      : 'none'}
-                    class="ml-1"
-                  />
-                </th>
-              {/each}
-              <th
-                class="cursor-pointer px-3 py-2 text-left font-medium text-zinc-400 transition-colors select-none hover:text-white"
-                onclick={() => table.sortBy('ris')}
+    <Table>
+      {#snippet head()}
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Rank</th>
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Athlete</th>
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Competition</th>
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Federation</th>
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Date</th>
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Sex</th>
+        <th class="px-3 py-2 text-left font-medium text-zinc-400">Class</th>
+        {#each movements as movement (movement.value)}
+          <th
+            class="cursor-pointer px-3 py-2 text-left font-medium transition-colors select-none hover:text-white {table.movementFilter ===
+            movement.value
+              ? 'text-white'
+              : 'text-zinc-400'}"
+            onclick={() => table.sortBy(movement.value)}
+          >
+            {movement.label}
+            <SortIcon
+              direction={table.movementFilter === movement.value ? table.sortDirection : 'none'}
+              class="ml-1"
+            />
+          </th>
+        {/each}
+        <th
+          class="cursor-pointer px-3 py-2 text-left font-medium text-zinc-400 transition-colors select-none hover:text-white"
+          onclick={() => table.sortBy('ris')}
+        >
+          RIS
+        </th>
+      {/snippet}
+
+      {#snippet body()}
+        {#each table.rankings as entry (entry.rank + entry.athlete.athlete_id)}
+          <tr
+            class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
+          >
+            <td class="px-3 py-2 text-white">
+              {entry.rank}
+            </td>
+            <td class="px-3 py-2 text-white">
+              <a
+                href={resolve(`/athletes/${entry.athlete.slug}`)}
+                class="inline-flex items-center gap-2.5 hover:text-zinc-300"
               >
-                RIS
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each table.rankings as entry (entry.rank + entry.athlete.athlete_id)}
-              <tr
-                class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
+                <Flag countryCode={entry.athlete.country} class="-ml-1 shrink-0" />
+                <span class="underline">
+                  {entry.athlete.first_name}
+                  {entry.athlete.last_name}
+                </span>
+              </a>
+            </td>
+            <td class="px-3 py-2 text-zinc-400">
+              <a
+                href={resolve(`/competitions/${entry.competition.slug}`)}
+                class="underline hover:text-zinc-300"
               >
-                <td class="px-3 py-2 text-white">
-                  {entry.rank}
-                </td>
-                <td class="px-3 py-2 text-white">
-                  <a
-                    href={resolve(`/athletes/${entry.athlete.slug}`)}
-                    class="inline-flex items-center gap-2.5 hover:text-zinc-300"
-                  >
-                    <Flag countryCode={entry.athlete.country} class="-ml-1 shrink-0" />
-                    <span class="underline">
-                      {entry.athlete.first_name}
-                      {entry.athlete.last_name}
-                    </span>
-                  </a>
-                </td>
-                <td class="px-3 py-2 text-zinc-400">
-                  <a
-                    href={resolve(`/competitions/${entry.competition.slug}`)}
-                    class="underline hover:text-zinc-300"
-                  >
-                    {entry.competition.name}
-                  </a>
-                </td>
-                <td class="px-3 py-2 text-zinc-400" title={entry.federation.name}>
-                  {entry.federation.abbreviation || entry.federation.name}
-                </td>
-                <td class="px-3 py-2 text-zinc-400">{formatDate(entry.competition.date)}</td>
-                <td class="px-3 py-2 text-zinc-400">{entry.athlete.gender}</td>
-                <td class="px-3 py-2 text-zinc-400">{entry.category}</td>
-                <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.muscleup)}</td>
-                <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.pullup)}</td>
-                <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.dips)}</td>
-                <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.squat)}</td>
-                <td class="px-3 py-2 font-medium text-zinc-400">{formatWeight(entry.total)}</td>
-                <td class="px-3 py-2 font-medium text-zinc-400">{formatRIS(entry.ris)}</td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
-    </Card>
+                {entry.competition.name}
+              </a>
+            </td>
+            <td class="px-3 py-2 text-zinc-400" title={entry.federation.name}>
+              {entry.federation.abbreviation || entry.federation.name}
+            </td>
+            <td class="px-3 py-2 text-zinc-400">{formatDate(entry.competition.date)}</td>
+            <td class="px-3 py-2 text-zinc-400">{entry.athlete.gender}</td>
+            <td class="px-3 py-2 text-zinc-400">{entry.category}</td>
+            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.muscleup)}</td>
+            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.pullup)}</td>
+            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.dips)}</td>
+            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.squat)}</td>
+            <td class="px-3 py-2 font-medium text-zinc-400">{formatWeight(entry.total)}</td>
+            <td class="px-3 py-2 font-medium text-zinc-400">{formatRIS(entry.ris)}</td>
+          </tr>
+        {/each}
+      {/snippet}
+    </Table>
 
     <div class="mt-3">
       {@render paginationBar()}

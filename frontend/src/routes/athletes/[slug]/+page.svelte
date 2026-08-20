@@ -55,7 +55,7 @@
 
   <div class="mb-12">
     <div class="mb-4 flex items-center gap-4">
-      <h1 class="text-5xl font-light text-white">
+      <h1 class="text-4xl font-light tracking-tight text-white">
         {athlete.first_name}
         {athlete.last_name}
       </h1>

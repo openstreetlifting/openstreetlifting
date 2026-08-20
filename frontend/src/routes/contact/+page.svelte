@@ -10,7 +10,7 @@
 
 <div class="mx-auto max-w-4xl px-6 py-16">
   <div class="mb-16 text-center">
-    <h1 class="mb-4 text-5xl font-light tracking-tight text-white">Get in touch</h1>
+    <h1 class="mb-4 text-4xl font-light tracking-tight text-white">Get in touch</h1>
     <p class="text-base font-light text-zinc-500">
       If you have a question, want to help me, or simply want to connect, Reach out through any of
       these channels. I'm a solo developer on this project, i may take a little bit of time to
