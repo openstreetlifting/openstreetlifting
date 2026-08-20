@@ -114,7 +114,7 @@
     <select
       bind:value={table.countryFilter}
       onchange={() => table.handleFilterChange()}
-      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+      class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
     >
       <option value={null}>All Countries</option>
       {#each data.countries as countryOption (countryOption)}
@@ -127,7 +127,7 @@
         table.categoryFilter = null;
         table.handleFilterChange();
       }}
-      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+      class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
     >
       {#each genders as gender (gender.label)}
         <option value={gender.value}>{gender.label}</option>
@@ -136,7 +136,7 @@
     <select
       bind:value={table.categoryFilter}
       onchange={() => table.handleFilterChange()}
-      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+      class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
     >
       <option value={null}>All Classes</option>
       {#each data.classes as classOption (classOption)}
@@ -144,13 +144,13 @@
       {/each}
     </select>
 
-    <div class="flex items-center gap-2 sm:ml-auto">
+    <div class="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
       <label for="sort-by" class="text-sm text-zinc-500">Sort by</label>
       <select
         id="sort-by"
         bind:value={table.movementFilter}
         onchange={() => table.handleFilterChange()}
-        class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+        class="flex-1 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:flex-none"
       >
         {#each sorts as sort (sort.value)}
           <option value={sort.value}>{sort.label}</option>
