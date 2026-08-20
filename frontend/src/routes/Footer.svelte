@@ -5,7 +5,7 @@
 </script>
 
 <footer class="border-t border-zinc-800/50 bg-zinc-950">
-  <div class="mx-auto max-w-[var(--content-max-width)] px-6 py-16">
+  <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-10 sm:px-6 sm:py-16">
     <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
       <div>
         <h3 class="mb-4 text-sm font-medium text-white">Index</h3>

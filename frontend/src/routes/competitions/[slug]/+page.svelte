@@ -37,7 +37,7 @@
   <meta name="description" content="Results and details for {competition.name}" />
 </svelte:head>
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-6 py-12">
+<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
       { label: 'Home', href: '/' },
@@ -48,7 +48,9 @@
 
   <!-- Competition Header -->
   <div class="mb-12">
-    <h1 class="mb-4 text-4xl font-light tracking-tight text-white">{competition.name}</h1>
+    <h1 class="mb-4 text-3xl font-light tracking-tight text-white sm:text-4xl">
+      {competition.name}
+    </h1>
 
     <div class="flex flex-wrap gap-x-6 gap-y-3 text-base text-zinc-400">
       <div class="flex items-center gap-2">

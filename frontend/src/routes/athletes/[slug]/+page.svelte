@@ -44,7 +44,7 @@
   />
 </svelte:head>
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-6 py-12">
+<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
       { label: 'Home', href: '/' },
@@ -55,7 +55,7 @@
 
   <div class="mb-12">
     <div class="mb-4 flex items-center gap-4">
-      <h1 class="text-4xl font-light tracking-tight text-white">
+      <h1 class="text-3xl font-light tracking-tight text-white sm:text-4xl">
         {athlete.first_name}
         {athlete.last_name}
       </h1>
@@ -104,7 +104,7 @@
 
   {#if athlete.personal_records && athlete.personal_records.length > 0}
     <div class="mb-8">
-      <h2 class="mb-4 text-2xl font-medium text-white">Personal Records</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Personal Records</h2>
       <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {#each sortPersonalRecords(athlete.personal_records) as pr (pr.movement_name)}
           <Card
@@ -131,7 +131,7 @@
   {/if}
 
   <div>
-    <h2 class="mb-4 text-2xl font-medium text-white">Competition History</h2>
+    <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Competition History</h2>
     {#if athlete.competitions && athlete.competitions.length > 0}
       <Card class="hidden p-4 md:block">
         <div class="overflow-x-auto">

@@ -5,7 +5,7 @@
   let { head, body, busy = false }: { head: Snippet; body: Snippet; busy?: boolean } = $props();
 </script>
 
-<Card class="p-4">
+<Card class="p-2 sm:p-4">
   <div class="overflow-x-auto">
     <table class="w-full text-sm transition-opacity {busy ? 'opacity-50' : ''}" aria-busy={busy}>
       <thead class="sticky top-0 z-10">

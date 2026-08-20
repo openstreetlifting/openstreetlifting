@@ -32,10 +32,10 @@
   });
 
   const buttonBase =
-    'inline-flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:pointer-events-none disabled:opacity-40';
+    'inline-flex h-9 min-w-9 items-center justify-center rounded-md px-2 text-sm font-medium sm:px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:pointer-events-none disabled:opacity-40';
 </script>
 
-<nav aria-label="Pagination" class="flex items-center justify-center gap-1">
+<nav aria-label="Pagination" class="flex flex-wrap items-center justify-center gap-1">
   <button
     type="button"
     class="{buttonBase} gap-1 border border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
@@ -45,7 +45,7 @@
     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
-    Previous
+    <span class="hidden sm:inline">Previous</span>
   </button>
 
   {#each items as item, index (index)}
@@ -74,7 +74,7 @@
     disabled={disabled || page >= totalPages}
     onclick={() => onNavigate(page + 1)}
   >
-    Next
+    <span class="hidden sm:inline">Next</span>
     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
     </svg>

@@ -35,9 +35,9 @@
   <meta name="description" content={data.description} />
 </svelte:head>
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-6 py-12">
+<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <div class="mb-6">
-    <h1 class="mb-4 text-4xl font-light tracking-tight text-white">Rankings</h1>
+    <h1 class="mb-4 text-3xl font-light tracking-tight text-white sm:text-4xl">Rankings</h1>
   </div>
 
   <div

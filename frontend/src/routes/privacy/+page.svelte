@@ -6,9 +6,9 @@
   />
 </svelte:head>
 
-<div class="mx-auto max-w-4xl px-6 py-16">
+<div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
   <div class="mb-16">
-    <h1 class="mb-4 text-4xl font-light tracking-tight text-white">Privacy Policy</h1>
+    <h1 class="mb-4 text-3xl font-light tracking-tight text-white sm:text-4xl">Privacy Policy</h1>
     <p class="text-base font-light text-zinc-500">
       Last updated: {new Date().toLocaleDateString('en-US', {
         year: 'numeric',
@@ -20,7 +20,7 @@
 
   <div class="prose max-w-none prose-invert">
     <section class="mb-12">
-      <h2 class="mb-4 text-2xl font-medium text-white">Introduction</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Introduction</h2>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         OpenStreetlifting is an open source project committed to protecting your privacy. This
         policy explains how we collect, use, and protect your personal data in compliance with the
@@ -30,7 +30,7 @@
     </section>
 
     <section class="mb-12">
-      <h2 class="mb-4 text-2xl font-medium text-white">Data Controller</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Data Controller</h2>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         The data controller responsible for your personal data is the OpenStreetlifting project. For
         any privacy-related inquiries, you can contact us at:
@@ -44,7 +44,7 @@
     </section>
 
     <section class="mb-12">
-      <h2 class="mb-4 text-2xl font-medium text-white">Data We Collect</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Data We Collect</h2>
       <h3 class="mb-3 text-xl font-medium text-white">Analytics Data</h3>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         We use Umami Analytics, a privacy-focused, open source analytics platform that respects your
@@ -75,7 +75,7 @@
     </section>
 
     <section class="mb-12">
-      <h2 class="mb-4 text-2xl font-medium text-white">Legal Basis for Processing</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Legal Basis for Processing</h2>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         We process your data based on the following legal grounds:
       </p>
@@ -92,7 +92,7 @@
     </section>
 
     <section class="mb-12">
-      <h2 class="mb-4 text-2xl font-medium text-white">Data Sharing</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Data Sharing</h2>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         All competition and athlete data submitted to OpenStreetlifting is publicly available as
         part of our open database. We do not sell, rent, or share personal data with third parties
@@ -101,7 +101,7 @@
     </section>
 
     <section class="mb-12">
-      <h2 class="mb-4 text-2xl font-medium text-white">Your Rights Under GDPR</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Your Rights Under GDPR</h2>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         As a user in the European Union, you have the following rights:
       </p>
@@ -144,7 +144,7 @@
     </section>
 
     <section class="mb-12">
-      <h2 class="mb-4 text-2xl font-medium text-white">Data Retention</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Data Retention</h2>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         Anonymous analytics data is retained indefinitely for statistical purposes. User-submitted
         competition and athlete data becomes part of our permanent public archive, as this is the
@@ -153,7 +153,7 @@
     </section>
 
     <section class="mb-12">
-      <h2 class="mb-4 text-2xl font-medium text-white">Cookies</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Cookies</h2>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         This website does not use cookies. Umami Analytics operates without cookies and does not
         require cookie consent banners.
@@ -161,7 +161,7 @@
     </section>
 
     <section class="mb-12">
-      <h2 class="mb-4 text-2xl font-medium text-white">Changes to This Policy</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Changes to This Policy</h2>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         We may update this privacy policy from time to time. Any changes will be posted on this page
         with an updated revision date.
@@ -169,7 +169,7 @@
     </section>
 
     <section class="mb-12">
-      <h2 class="mb-4 text-2xl font-medium text-white">Contact Us</h2>
+      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Contact Us</h2>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         If you have any questions about this privacy policy or our data practices, please contact
         us:
