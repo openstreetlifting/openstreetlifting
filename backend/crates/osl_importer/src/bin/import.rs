@@ -277,6 +277,8 @@ async fn claimed_competition_slugs(files: &[PathBuf]) -> Result<Vec<String>> {
             .push(file);
     }
 
+    misplaced_files(&by_slug)?;
+
     let clashes: Vec<_> = by_slug
         .iter()
         .filter(|(_, files)| files.len() > 1)
@@ -300,6 +302,43 @@ async fn claimed_competition_slugs(files: &[PathBuf]) -> Result<Vec<String>> {
     bail!(
         "{} competition slug(s) claimed by more than one file. Merge them into one file per competition",
         clashes.len()
+    )
+}
+
+/// The competition page links to its canonical file at
+/// `imports/{slug}/{slug}.json`, so a file stored anywhere else would publish a
+/// dead link. The path is part of the contract, not a habit.
+fn misplaced_files(by_slug: &BTreeMap<String, Vec<&PathBuf>>) -> Result<()> {
+    let misplaced: Vec<_> = by_slug
+        .iter()
+        .flat_map(|(slug, files)| files.iter().map(move |file| (slug, *file)))
+        .filter(|(slug, file)| {
+            let stem = file.file_stem().and_then(|name| name.to_str());
+            let directory = file
+                .parent()
+                .and_then(|parent| parent.file_name())
+                .and_then(|name| name.to_str());
+            stem != Some(slug.as_str()) || directory != Some(slug.as_str())
+        })
+        .collect();
+
+    if misplaced.is_empty() {
+        return Ok(());
+    }
+
+    for (slug, file) in &misplaced {
+        tracing::error!(
+            "Competition '{}' should live at {}/{}.json, found {}",
+            slug,
+            slug,
+            slug,
+            file.display()
+        );
+    }
+
+    bail!(
+        "{} canonical file(s) are not stored as {{slug}}/{{slug}}.json",
+        misplaced.len()
     )
 }
 
