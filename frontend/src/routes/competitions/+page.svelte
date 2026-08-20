@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Breadcrumb, Table } from '$lib/components/ui';
+  import { Card, Breadcrumb, Table, TABLE_CELL, TABLE_HEAD_CELL } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { formatDate, formatLocation } from '$lib/utils';
 
@@ -12,6 +12,11 @@
     if (statusFilter === 'all') return data.competitions;
     return data.competitions.filter((comp) => comp.status === statusFilter);
   });
+
+  function competitionDates(start: string | null, end: string | null): string {
+    const from = formatDate(start);
+    return end && end !== start ? `${from} - ${formatDate(end)}` : from;
+  }
 </script>
 
 <svelte:head>
@@ -19,15 +24,15 @@
   <meta name="description" content="List of availables competitions" />
 </svelte:head>
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-6 py-12">
+<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Competitions' }]} />
 
   <div class="mb-8">
-    <h1 class="mb-4 text-4xl font-light tracking-tight text-white">Competitions</h1>
+    <h1 class="mb-4 text-3xl font-light tracking-tight text-white sm:text-4xl">Competitions</h1>
   </div>
 
   <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
-    <div class="flex gap-2">
+    <div class="flex flex-wrap gap-2">
       <button
         onclick={() => (statusFilter = 'all')}
         class="rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none
@@ -90,74 +95,108 @@
       </div>
     </Card>
   {:else}
-    <Table>
-      {#snippet head()}
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Competition</th>
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Date</th>
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Location</th>
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Federation</th>
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Status</th>
-      {/snippet}
+    {#snippet statusBadge(status: string)}
+      {#if status === 'upcoming'}
+        <span
+          class="inline-flex items-center gap-1.5 rounded-md border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-400"
+        >
+          <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
+            <circle cx="4" cy="4" r="3" />
+          </svg>
+          Planned
+        </span>
+      {:else if status === 'ongoing'}
+        <span
+          class="inline-flex items-center gap-1.5 rounded-md border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-xs font-medium text-purple-400"
+        >
+          <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
+            <circle cx="4" cy="4" r="3" />
+          </svg>
+          Ongoing
+        </span>
+      {:else if status === 'completed'}
+        <span
+          class="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400"
+        >
+          <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
+            <circle cx="4" cy="4" r="3" />
+          </svg>
+          Completed
+        </span>
+      {/if}
+    {/snippet}
 
-      {#snippet body()}
-        {#each filteredCompetitions() as competition (competition.slug)}
-          <tr
-            class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
-          >
-            <td class="px-3 py-2 text-white">
-              <a
-                href={resolve(`/competitions/${competition.slug}`)}
-                class="underline hover:text-zinc-300"
-              >
-                {competition.name}
-              </a>
-            </td>
-            <td class="px-3 py-2 whitespace-nowrap text-zinc-400">
-              {formatDate(competition.start_date)}
-              {#if competition.end_date && competition.end_date !== competition.start_date}
-                - {formatDate(competition.end_date)}
+    <!-- A 5 column table does not fit a phone, so the same rows read as cards there,
+         matching how the athlete page shows competition history. -->
+    <div class="grid gap-3 md:hidden">
+      {#each filteredCompetitions() as competition (competition.slug)}
+        <a
+          href={resolve(`/competitions/${competition.slug}`)}
+          class="block rounded-xl focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+        >
+          <Card class="p-4">
+            <h2 class="mb-2 text-base font-medium text-white">{competition.name}</h2>
+            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
+              <span>{competitionDates(competition.start_date, competition.end_date)}</span>
+              {#if formatLocation(competition.country, competition.region, competition.city)}
+                <span aria-hidden="true">&middot;</span>
+                <span
+                  >{formatLocation(competition.country, competition.region, competition.city)}</span
+                >
               {/if}
-            </td>
-            <td class="px-3 py-2 text-zinc-400">
-              {formatLocation(competition.country, competition.region, competition.city)}
-            </td>
-            <td class="px-3 py-2 text-zinc-400" title={competition.federation.name}>
-              {competition.federation.abbreviation || competition.federation.name}
-            </td>
-            <td class="px-3 py-2">
-              {#if competition.status === 'upcoming'}
-                <span
-                  class="inline-flex items-center gap-1.5 rounded-md border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-400"
+              <span aria-hidden="true">&middot;</span>
+              <span title={competition.federation.name}>
+                {competition.federation.abbreviation || competition.federation.name}
+              </span>
+            </div>
+            <div class="mt-3">
+              {@render statusBadge(competition.status)}
+            </div>
+          </Card>
+        </a>
+      {/each}
+    </div>
+
+    <div class="hidden md:block">
+      <Table>
+        {#snippet head()}
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Competition</th>
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Date</th>
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Location</th>
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Federation</th>
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Status</th>
+        {/snippet}
+
+        {#snippet body()}
+          {#each filteredCompetitions() as competition (competition.slug)}
+            <tr
+              class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
+            >
+              <td class="{TABLE_CELL} text-white">
+                <a
+                  href={resolve(`/competitions/${competition.slug}`)}
+                  class="underline hover:text-zinc-300"
                 >
-                  <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
-                    <circle cx="4" cy="4" r="3" />
-                  </svg>
-                  Planned
-                </span>
-              {:else if competition.status === 'ongoing'}
-                <span
-                  class="inline-flex items-center gap-1.5 rounded-md border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-xs font-medium text-purple-400"
-                >
-                  <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
-                    <circle cx="4" cy="4" r="3" />
-                  </svg>
-                  Ongoing
-                </span>
-              {:else if competition.status === 'completed'}
-                <span
-                  class="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400"
-                >
-                  <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
-                    <circle cx="4" cy="4" r="3" />
-                  </svg>
-                  Completed
-                </span>
-              {/if}
-            </td>
-          </tr>
-        {/each}
-      {/snippet}
-    </Table>
+                  {competition.name}
+                </a>
+              </td>
+              <td class="{TABLE_CELL} whitespace-nowrap text-zinc-400">
+                {competitionDates(competition.start_date, competition.end_date)}
+              </td>
+              <td class="{TABLE_CELL} text-zinc-400">
+                {formatLocation(competition.country, competition.region, competition.city)}
+              </td>
+              <td class="{TABLE_CELL} text-zinc-400" title={competition.federation.name}>
+                {competition.federation.abbreviation || competition.federation.name}
+              </td>
+              <td class={TABLE_CELL}>
+                {@render statusBadge(competition.status)}
+              </td>
+            </tr>
+          {/each}
+        {/snippet}
+      </Table>
+    </div>
 
     {#if filteredCompetitions().length > 0}
       <div class="mt-8 text-center text-sm text-zinc-500">

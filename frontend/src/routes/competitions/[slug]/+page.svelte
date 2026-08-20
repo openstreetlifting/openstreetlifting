@@ -1,6 +1,15 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Breadcrumb, Pagination, Flag, SearchInput, Table } from '$lib/components/ui';
+  import {
+    Card,
+    Breadcrumb,
+    Pagination,
+    Flag,
+    SearchInput,
+    Table,
+    TABLE_CELL,
+    TABLE_HEAD_CELL,
+  } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { formatDate, formatLocation, countryName } from '$lib/utils';
@@ -37,7 +46,7 @@
   <meta name="description" content="Results and details for {competition.name}" />
 </svelte:head>
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-6 py-12">
+<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
       { label: 'Home', href: '/' },
@@ -48,7 +57,9 @@
 
   <!-- Competition Header -->
   <div class="mb-12">
-    <h1 class="mb-4 text-4xl font-light tracking-tight text-white">{competition.name}</h1>
+    <h1 class="mb-4 text-3xl font-light tracking-tight text-white sm:text-4xl">
+      {competition.name}
+    </h1>
 
     <div class="flex flex-wrap gap-x-6 gap-y-3 text-base text-zinc-400">
       <div class="flex items-center gap-2">
@@ -112,7 +123,7 @@
     <select
       bind:value={table.countryFilter}
       onchange={() => table.handleFilterChange()}
-      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+      class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
     >
       <option value={null}>All Countries</option>
       {#each data.countries as countryOption (countryOption)}
@@ -125,7 +136,7 @@
         table.categoryFilter = null;
         table.handleFilterChange();
       }}
-      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+      class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
     >
       {#each genders as gender (gender.label)}
         <option value={gender.value}>{gender.label}</option>
@@ -134,7 +145,7 @@
     <select
       bind:value={table.categoryFilter}
       onchange={() => table.handleFilterChange()}
-      class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+      class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
     >
       <option value={null}>All Classes</option>
       {#each data.classes as classOption (classOption)}
@@ -142,13 +153,13 @@
       {/each}
     </select>
 
-    <div class="flex items-center gap-2 sm:ml-auto">
+    <div class="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
       <label for="sort-by" class="text-sm text-zinc-500">Sort by</label>
       <select
         id="sort-by"
         bind:value={table.movementFilter}
         onchange={() => table.handleFilterChange()}
-        class="rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+        class="flex-1 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:flex-none"
       >
         {#each sorts as sort (sort.value)}
           <option value={sort.value}>{sort.label}</option>
@@ -190,13 +201,13 @@
 
     <Table {busy}>
       {#snippet head()}
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Rank</th>
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Athlete</th>
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Sex</th>
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Class</th>
+        <th class="{TABLE_HEAD_CELL} text-zinc-400">Rank</th>
+        <th class="{TABLE_HEAD_CELL} text-zinc-400">Athlete</th>
+        <th class="{TABLE_HEAD_CELL} text-zinc-400">Sex</th>
+        <th class="{TABLE_HEAD_CELL} text-zinc-400">Class</th>
         {#each movements as movement (movement.value)}
           <th
-            class="px-3 py-2 text-left font-medium {table.movementFilter === movement.value
+            class="{TABLE_HEAD_CELL} {table.movementFilter === movement.value
               ? 'text-white'
               : 'text-zinc-400'}"
           >
@@ -204,7 +215,7 @@
           </th>
         {/each}
         <th
-          class="px-3 py-2 text-left font-medium {table.movementFilter === 'ris'
+          class="{TABLE_HEAD_CELL} {table.movementFilter === 'ris'
             ? 'text-white'
             : 'text-zinc-400'}"
         >
@@ -217,29 +228,29 @@
           <tr
             class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
           >
-            <td class="px-3 py-2 text-white">
+            <td class="{TABLE_CELL} text-white">
               {entry.rank}
             </td>
-            <td class="px-3 py-2 text-white">
+            <td class="{TABLE_CELL} text-white">
               <a
                 href={resolve(`/athletes/${entry.athlete.slug}`)}
-                class="inline-flex items-center gap-2.5 hover:text-zinc-300"
+                class="inline-flex max-w-[8rem] items-center gap-2.5 hover:text-zinc-300 sm:max-w-none"
               >
                 <Flag countryCode={entry.athlete.country} class="-ml-1 shrink-0" />
-                <span class="underline">
+                <span class="truncate underline">
                   {entry.athlete.first_name}
                   {entry.athlete.last_name}
                 </span>
               </a>
             </td>
-            <td class="px-3 py-2 text-zinc-400">{entry.athlete.gender}</td>
-            <td class="px-3 py-2 text-zinc-400">{entry.category}</td>
-            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.muscleup)}</td>
-            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.pullup)}</td>
-            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.dips)}</td>
-            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.squat)}</td>
-            <td class="px-3 py-2 font-medium text-zinc-400">{formatWeight(entry.total)}</td>
-            <td class="px-3 py-2 font-medium text-zinc-400">{formatRIS(entry.ris)}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{entry.athlete.gender}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{entry.category}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.muscleup)}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.pullup)}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.dips)}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.squat)}</td>
+            <td class="{TABLE_CELL} font-medium text-zinc-400">{formatWeight(entry.total)}</td>
+            <td class="{TABLE_CELL} font-medium text-zinc-400">{formatRIS(entry.ris)}</td>
           </tr>
         {/each}
       {/snippet}
