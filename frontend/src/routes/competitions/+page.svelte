@@ -95,34 +95,13 @@
       </div>
     </Card>
   {:else}
-    {#snippet statusBadge(status: string)}
+    {#snippet statusText(status: string)}
       {#if status === 'upcoming'}
-        <span
-          class="inline-flex items-center gap-1.5 rounded-md border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-400"
-        >
-          <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
-            <circle cx="4" cy="4" r="3" />
-          </svg>
-          Planned
-        </span>
+        <span class="text-blue-400">Planned</span>
       {:else if status === 'ongoing'}
-        <span
-          class="inline-flex items-center gap-1.5 rounded-md border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-xs font-medium text-purple-400"
-        >
-          <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
-            <circle cx="4" cy="4" r="3" />
-          </svg>
-          Ongoing
-        </span>
+        <span class="text-purple-400">Ongoing</span>
       {:else if status === 'completed'}
-        <span
-          class="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400"
-        >
-          <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 8 8">
-            <circle cx="4" cy="4" r="3" />
-          </svg>
-          Completed
-        </span>
+        <span class="text-emerald-400">Completed</span>
       {/if}
     {/snippet}
 
@@ -150,7 +129,7 @@
               </span>
             </div>
             <div class="mt-3">
-              {@render statusBadge(competition.status)}
+              {@render statusText(competition.status)}
             </div>
           </Card>
         </a>
@@ -190,7 +169,7 @@
                 {competition.federation.abbreviation || competition.federation.name}
               </td>
               <td class={TABLE_CELL}>
-                {@render statusBadge(competition.status)}
+                {@render statusText(competition.status)}
               </td>
             </tr>
           {/each}

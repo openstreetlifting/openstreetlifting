@@ -13,11 +13,26 @@
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { formatDate, formatLocation, countryName } from '$lib/utils';
+  import { GitHubIcon } from '$lib/components/icons';
   import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
+
+  // Canonical files live at imports/{slug}/{slug}.json, which the importer enforces.
+  const editUrl = $derived(
+    `https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/imports/${competition.slug}/${competition.slug}.json`
+  );
+
+  // Most federations are known by an acronym alone, so there is nothing to put
+  // in brackets after it.
+  const federationLabel = $derived(
+    competition.federation.abbreviation &&
+      competition.federation.abbreviation !== competition.federation.name
+      ? `${competition.federation.name} (${competition.federation.abbreviation})`
+      : competition.federation.name
+  );
 
   const table = new RankingsTable({
     basePath: `/competitions/${data.competition.slug}`,
@@ -101,12 +116,24 @@
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+            d="M12 3l7 3v6c0 4.2-2.9 7.4-7 8.4-4.1-1-7-4.2-7-8.4V6l7-3z"
           />
         </svg>
-        <span>{competition.federation.name} ({competition.federation.abbreviation})</span>
+        <span>{federationLabel}</span>
       </div>
     </div>
+
+    <!-- eslint-disable svelte/no-navigation-without-resolve -- absolute GitHub URL, not an app route -->
+    <a
+      href={editUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-6 inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+    >
+      <GitHubIcon class="h-4 w-4" />
+      Edit on GitHub
+    </a>
+    <!-- eslint-enable svelte/no-navigation-without-resolve -->
   </div>
 
   <div
