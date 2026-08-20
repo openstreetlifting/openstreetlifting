@@ -37,8 +37,8 @@
       </p>
       <p class="leading-relaxed font-light text-zinc-400">
         Email: <a
-          href="mailto:adrien.pelfresne@gmail.com"
-          class="text-zinc-300 transition-colors hover:text-white">adrien.pelfresne@gmail.com</a
+          href="mailto:contact@openstreetlifting.org"
+          class="text-zinc-300 transition-colors hover:text-white">contact@openstreetlifting.org</a
         >
       </p>
     </section>
@@ -137,8 +137,8 @@
       </ul>
       <p class="mb-4 leading-relaxed font-light text-zinc-400">
         To exercise any of these rights, please contact us at <a
-          href="mailto:adrien.pelfresne@gmail.com"
-          class="text-zinc-300 transition-colors hover:text-white">adrien.pelfresne@gmail.com</a
+          href="mailto:contact@openstreetlifting.org"
+          class="text-zinc-300 transition-colors hover:text-white">contact@openstreetlifting.org</a
         >.
       </p>
     </section>
@@ -177,8 +177,9 @@
       <ul class="space-y-2 text-zinc-400">
         <li class="font-light">
           Email: <a
-            href="mailto:adrien.pelfresne@gmail.com"
-            class="text-zinc-300 transition-colors hover:text-white">adrien.pelfresne@gmail.com</a
+            href="mailto:contact@openstreetlifting.org"
+            class="text-zinc-300 transition-colors hover:text-white"
+            >contact@openstreetlifting.org</a
           >
         </li>
         <li class="font-light">
