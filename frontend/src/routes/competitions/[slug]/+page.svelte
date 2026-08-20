@@ -113,10 +113,11 @@
 
       <div class="flex items-center gap-2">
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <circle cx="12" cy="9" r="6" />
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            d="M12 3l7 3v6c0 4.2-2.9 7.4-7 8.4-4.1-1-7-4.2-7-8.4V6l7-3z"
+            d="M15.5 13.9 17 22l-5-3-5 3 1.5-8.1"
           />
         </svg>
         <span>{federationLabel}</span>
