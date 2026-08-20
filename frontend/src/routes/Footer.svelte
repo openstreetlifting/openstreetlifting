@@ -105,7 +105,7 @@
             <DiscordIcon />
           </a>
           <a
-            href="mailto:adrien.pelfresne@gmail.com"
+            href="mailto:contact@openstreetlifting.org"
             class="text-zinc-400 transition-colors hover:text-white"
             aria-label="Email"
           >

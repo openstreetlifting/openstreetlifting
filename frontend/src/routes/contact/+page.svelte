@@ -56,10 +56,10 @@
       </a>
     </li>
     <li>
-      <a href="mailto:adrien.pelfresne@gmail.com" class={rowClass}>
+      <a href="mailto:contact@openstreetlifting.org" class={rowClass}>
         <EmailIcon class="h-5 w-5 shrink-0" />
         <span class="text-white">Email</span>
-        <span class="ml-auto truncate">adrien.pelfresne@gmail.com</span>
+        <span class="ml-auto truncate">contact@openstreetlifting.org</span>
       </a>
     </li>
   </ul>
