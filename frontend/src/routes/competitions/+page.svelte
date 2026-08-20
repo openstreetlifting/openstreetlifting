@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Breadcrumb, Table } from '$lib/components/ui';
+  import { Card, Breadcrumb, Table, TABLE_CELL, TABLE_HEAD_CELL } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { formatDate, formatLocation } from '$lib/utils';
 
@@ -160,11 +160,11 @@
     <div class="hidden md:block">
       <Table>
         {#snippet head()}
-          <th class="px-3 py-2 text-left font-medium text-zinc-400">Competition</th>
-          <th class="px-3 py-2 text-left font-medium text-zinc-400">Date</th>
-          <th class="px-3 py-2 text-left font-medium text-zinc-400">Location</th>
-          <th class="px-3 py-2 text-left font-medium text-zinc-400">Federation</th>
-          <th class="px-3 py-2 text-left font-medium text-zinc-400">Status</th>
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Competition</th>
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Date</th>
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Location</th>
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Federation</th>
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Status</th>
         {/snippet}
 
         {#snippet body()}
@@ -172,7 +172,7 @@
             <tr
               class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
             >
-              <td class="px-3 py-2 text-white">
+              <td class="{TABLE_CELL} text-white">
                 <a
                   href={resolve(`/competitions/${competition.slug}`)}
                   class="underline hover:text-zinc-300"
@@ -180,16 +180,16 @@
                   {competition.name}
                 </a>
               </td>
-              <td class="px-3 py-2 whitespace-nowrap text-zinc-400">
+              <td class="{TABLE_CELL} whitespace-nowrap text-zinc-400">
                 {competitionDates(competition.start_date, competition.end_date)}
               </td>
-              <td class="px-3 py-2 text-zinc-400">
+              <td class="{TABLE_CELL} text-zinc-400">
                 {formatLocation(competition.country, competition.region, competition.city)}
               </td>
-              <td class="px-3 py-2 text-zinc-400" title={competition.federation.name}>
+              <td class="{TABLE_CELL} text-zinc-400" title={competition.federation.name}>
                 {competition.federation.abbreviation || competition.federation.name}
               </td>
-              <td class="px-3 py-2">
+              <td class={TABLE_CELL}>
                 {@render statusBadge(competition.status)}
               </td>
             </tr>

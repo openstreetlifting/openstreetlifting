@@ -1,6 +1,15 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Breadcrumb, Pagination, Flag, SearchInput, Table } from '$lib/components/ui';
+  import {
+    Card,
+    Breadcrumb,
+    Pagination,
+    Flag,
+    SearchInput,
+    Table,
+    TABLE_CELL,
+    TABLE_HEAD_CELL,
+  } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { formatDate, formatLocation, countryName } from '$lib/utils';
@@ -192,13 +201,13 @@
 
     <Table {busy}>
       {#snippet head()}
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Rank</th>
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Athlete</th>
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Sex</th>
-        <th class="px-3 py-2 text-left font-medium text-zinc-400">Class</th>
+        <th class="{TABLE_HEAD_CELL} text-zinc-400">Rank</th>
+        <th class="{TABLE_HEAD_CELL} text-zinc-400">Athlete</th>
+        <th class="{TABLE_HEAD_CELL} text-zinc-400">Sex</th>
+        <th class="{TABLE_HEAD_CELL} text-zinc-400">Class</th>
         {#each movements as movement (movement.value)}
           <th
-            class="px-3 py-2 text-left font-medium {table.movementFilter === movement.value
+            class="{TABLE_HEAD_CELL} {table.movementFilter === movement.value
               ? 'text-white'
               : 'text-zinc-400'}"
           >
@@ -206,7 +215,7 @@
           </th>
         {/each}
         <th
-          class="px-3 py-2 text-left font-medium {table.movementFilter === 'ris'
+          class="{TABLE_HEAD_CELL} {table.movementFilter === 'ris'
             ? 'text-white'
             : 'text-zinc-400'}"
         >
@@ -219,29 +228,29 @@
           <tr
             class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
           >
-            <td class="px-3 py-2 text-white">
+            <td class="{TABLE_CELL} text-white">
               {entry.rank}
             </td>
-            <td class="px-3 py-2 text-white">
+            <td class="{TABLE_CELL} text-white">
               <a
                 href={resolve(`/athletes/${entry.athlete.slug}`)}
-                class="inline-flex items-center gap-2.5 hover:text-zinc-300"
+                class="inline-flex max-w-[8rem] items-center gap-2.5 hover:text-zinc-300 sm:max-w-none"
               >
                 <Flag countryCode={entry.athlete.country} class="-ml-1 shrink-0" />
-                <span class="underline">
+                <span class="truncate underline">
                   {entry.athlete.first_name}
                   {entry.athlete.last_name}
                 </span>
               </a>
             </td>
-            <td class="px-3 py-2 text-zinc-400">{entry.athlete.gender}</td>
-            <td class="px-3 py-2 text-zinc-400">{entry.category}</td>
-            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.muscleup)}</td>
-            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.pullup)}</td>
-            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.dips)}</td>
-            <td class="px-3 py-2 text-zinc-400">{formatWeight(entry.squat)}</td>
-            <td class="px-3 py-2 font-medium text-zinc-400">{formatWeight(entry.total)}</td>
-            <td class="px-3 py-2 font-medium text-zinc-400">{formatRIS(entry.ris)}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{entry.athlete.gender}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{entry.category}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.muscleup)}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.pullup)}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.dips)}</td>
+            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.squat)}</td>
+            <td class="{TABLE_CELL} font-medium text-zinc-400">{formatWeight(entry.total)}</td>
+            <td class="{TABLE_CELL} font-medium text-zinc-400">{formatRIS(entry.ris)}</td>
           </tr>
         {/each}
       {/snippet}

@@ -6,4 +6,4 @@ export { default as Breadcrumb } from './breadcrumb.svelte';
 export { default as Pagination } from './pagination.svelte';
 export { default as Flag } from './flag.svelte';
 export { default as SearchInput } from './search-input.svelte';
-export { default as Table } from './table.svelte';
+export { default as Table, TABLE_CELL, TABLE_HEAD_CELL } from './table.svelte';
