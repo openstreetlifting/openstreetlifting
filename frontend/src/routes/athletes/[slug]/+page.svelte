@@ -148,7 +148,7 @@
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
-              <tr class="border-b border-zinc-800 bg-[#732734]">
+              <tr class="border-b border-zinc-800">
                 <th class="px-3 py-2 text-left font-medium text-zinc-400">Competition</th>
                 <th class="px-3 py-2 text-left font-medium text-zinc-400">Date</th>
                 <th class="px-3 py-2 text-left font-medium text-zinc-400">Category</th>
