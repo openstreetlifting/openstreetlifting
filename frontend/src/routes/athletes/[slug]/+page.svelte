@@ -62,9 +62,8 @@
       </h1>
 
       {#if athlete.instagram_handle}
-        <!-- eslint-disable svelte/no-navigation-without-resolve -- absolute Instagram URL, not an app route -->
         <a
-          href="https://www.instagram.com/{athlete.instagram_handle}"
+          href={`https://www.instagram.com/${athlete.instagram_handle}`}
           target="_blank"
           rel="noopener noreferrer"
           class="text-zinc-400 transition-colors hover:text-white"
@@ -73,7 +72,6 @@
         >
           <InstagramIcon />
         </a>
-        <!-- eslint-enable svelte/no-navigation-without-resolve -->
       {/if}
     </div>
 

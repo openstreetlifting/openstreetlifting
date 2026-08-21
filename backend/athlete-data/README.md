@@ -1,7 +1,5 @@
 # Athlete data
 
-Facts about athletes. Competition results belong in `imports/`.
-
 ## social-instagram.csv
 
 ```csv

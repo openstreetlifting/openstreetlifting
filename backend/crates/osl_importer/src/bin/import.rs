@@ -52,8 +52,6 @@ enum Commands {
         yes: bool,
     },
     /// Attach Instagram handles to athletes from a Name,Instagram file.
-    ///
-    /// The file is the whole truth: a handle it no longer lists is removed.
     Instagram {
         #[arg(default_value = "./athlete-data/social-instagram.csv")]
         file: PathBuf,
@@ -62,9 +60,6 @@ enum Commands {
         validate_only: bool,
     },
     /// Recompute every stored RIS score against the current formula.
-    ///
-    /// Scores a source reported itself are left alone. Only needed after a
-    /// formula version changes; an import already scores what it touches.
     RecomputeRis,
     /// Rewrite canonical files in their canonical shape.
     Fmt {
@@ -145,7 +140,7 @@ fn require_database_url(database_url: Option<&str>, validate_only: bool) -> Resu
 async fn handle_instagram(file: PathBuf, validate_only: bool, database_url: &str) -> Result<()> {
     if validate_only {
         let count = osl_importer::social::validate_file(&file)?;
-        tracing::info!("✓ {} handle(s) in {}", count, file.display());
+        tracing::info!("{} handle(s) in {}", count, file.display());
         return Ok(());
     }
 
@@ -157,7 +152,7 @@ async fn handle_instagram(file: PathBuf, validate_only: bool, database_url: &str
         .context("connecting to the database")?;
 
     let report = osl_importer::social::load_instagram_handles(&file, &pool).await?;
-    tracing::info!("✓ Attached {} handle(s)", report.matched);
+    tracing::info!("Attached {} handle(s)", report.matched);
 
     Ok(())
 }
