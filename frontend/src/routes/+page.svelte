@@ -207,11 +207,11 @@
                     href={`https://www.instagram.com/${entry.athlete.instagram_handle}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="shrink-0 text-zinc-500 transition-colors hover:text-white"
+                    class="inline-flex shrink-0 items-center text-white transition-colors hover:text-zinc-300"
                     aria-label="{entry.athlete.first_name} {entry.athlete.last_name} on Instagram"
                     title="@{entry.athlete.instagram_handle}"
                   >
-                    <InstagramIcon class="h-3.5 w-3.5" />
+                    <InstagramIcon class="h-4 w-4" />
                   </a>
                 {/if}
               </span>

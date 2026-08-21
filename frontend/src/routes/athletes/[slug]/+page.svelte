@@ -66,7 +66,7 @@
           href={`https://www.instagram.com/${athlete.instagram_handle}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="text-zinc-400 transition-colors hover:text-white"
+          class="inline-flex items-center text-white transition-colors hover:text-zinc-300"
           aria-label="{athlete.first_name} {athlete.last_name} on Instagram"
           title="@{athlete.instagram_handle}"
         >
@@ -148,7 +148,7 @@
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
-              <tr class="border-b border-zinc-800">
+              <tr class="border-b border-zinc-800 bg-[#732734]">
                 <th class="px-3 py-2 text-left font-medium text-zinc-400">Competition</th>
                 <th class="px-3 py-2 text-left font-medium text-zinc-400">Date</th>
                 <th class="px-3 py-2 text-left font-medium text-zinc-400">Category</th>
