@@ -51,10 +51,15 @@ enum Commands {
         #[arg(long)]
         yes: bool,
     },
+    /// Attach Instagram handles to athletes from a Name,Instagram file.
+    Instagram {
+        #[arg(default_value = "./athlete-data/social-instagram.csv")]
+        file: PathBuf,
+
+        #[arg(long)]
+        validate_only: bool,
+    },
     /// Recompute every stored RIS score against the current formula.
-    ///
-    /// Scores a source reported itself are left alone. Only needed after a
-    /// formula version changes; an import already scores what it touches.
     RecomputeRis,
     /// Rewrite canonical files in their canonical shape.
     Fmt {
@@ -105,6 +110,13 @@ async fn main() -> Result<()> {
             let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
             handle_bulk_import(directory, validate_only, prune, yes, database_url).await?;
         }
+        Commands::Instagram {
+            file,
+            validate_only,
+        } => {
+            let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
+            handle_instagram(file, validate_only, database_url).await?;
+        }
         Commands::RecomputeRis => {
             let database_url = require_database_url(cli.database_url.as_deref(), false)?;
             handle_recompute_ris(database_url).await?;
@@ -123,6 +135,26 @@ fn require_database_url(database_url: Option<&str>, validate_only: bool) -> Resu
         None if validate_only => Ok(""),
         None => bail!("DATABASE_URL is required to import. Pass --validate-only to skip it"),
     }
+}
+
+async fn handle_instagram(file: PathBuf, validate_only: bool, database_url: &str) -> Result<()> {
+    if validate_only {
+        let count = osl_importer::social::validate_file(&file)?;
+        tracing::info!("{} handle(s) in {}", count, file.display());
+        return Ok(());
+    }
+
+    tracing::info!("Connecting to database...");
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect(database_url)
+        .await
+        .context("connecting to the database")?;
+
+    let report = osl_importer::social::load_instagram_handles(&file, &pool).await?;
+    tracing::info!("Attached {} handle(s)", report.matched);
+
+    Ok(())
 }
 
 async fn handle_recompute_ris(database_url: &str) -> Result<()> {

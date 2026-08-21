@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT social_id as \"social_id: Uuid\" FROM socials WHERE name = 'instagram'",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "social_id: Uuid",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "socials",
+            "name": "social_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "c134b2065b71281255bcdfdeba0d8eadb1a1f6e1a5726c92d9036047e9d1b971"
+}

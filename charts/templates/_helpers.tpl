@@ -23,19 +23,20 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "openstreetlifting.importer.podSpec" -}}
+{{- $root := .root -}}
 restartPolicy: Never
 containers:
   - name: importer
-    image: "{{ include "openstreetlifting.image" (dict "image" .Values.importer.image "chart" .Chart) }}"
-    imagePullPolicy: {{ .Values.importer.image.pullPolicy }}
+    image: "{{ include "openstreetlifting.image" (dict "image" $root.Values.importer.image "chart" $root.Chart) }}"
+    imagePullPolicy: {{ $root.Values.importer.image.pullPolicy }}
     args:
-      {{- toYaml .Values.importer.args | nindent 6 }}
+      {{- toYaml .args | nindent 6 }}
     env:
       - name: DATABASE_URL
         valueFrom:
           secretKeyRef:
-            name: {{ .Values.backend.database.secretName }}
-            key: {{ .Values.backend.database.urlKey }}
+            name: {{ $root.Values.backend.database.secretName }}
+            key: {{ $root.Values.backend.database.urlKey }}
     resources:
-      {{- toYaml .Values.importer.resources | nindent 6 }}
+      {{- toYaml $root.Values.importer.resources | nindent 6 }}
 {{- end }}

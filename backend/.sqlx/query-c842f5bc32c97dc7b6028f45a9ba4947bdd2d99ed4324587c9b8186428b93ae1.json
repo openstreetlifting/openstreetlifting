@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM athlete_socials WHERE social_id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c842f5bc32c97dc7b6028f45a9ba4947bdd2d99ed4324587c9b8186428b93ae1"
+}

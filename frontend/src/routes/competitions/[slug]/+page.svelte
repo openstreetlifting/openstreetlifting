@@ -21,9 +21,7 @@
   const competition = $derived(data.competition);
 
   // Canonical files live at imports/{slug}/{slug}.json, which the importer enforces.
-  const editUrl = $derived(
-    `https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/imports/${competition.slug}/${competition.slug}.json`
-  );
+  const editPath = $derived(`${competition.slug}/${competition.slug}.json`);
 
   // Most federations are known by an acronym alone, so there is nothing to put
   // in brackets after it.
@@ -64,7 +62,7 @@
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
-      { label: 'Home', href: '/' },
+      { label: 'Rankings', href: '/' },
       { label: 'Competitions', href: '/competitions' },
       { label: competition.name },
     ]}
@@ -124,9 +122,8 @@
       </div>
     </div>
 
-    <!-- eslint-disable svelte/no-navigation-without-resolve -- absolute GitHub URL, not an app route -->
     <a
-      href={editUrl}
+      href={`https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/imports/${editPath}`}
       target="_blank"
       rel="noopener noreferrer"
       class="mt-6 inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
@@ -134,7 +131,6 @@
       <GitHubIcon class="h-4 w-4" />
       Edit on GitHub
     </a>
-    <!-- eslint-enable svelte/no-navigation-without-resolve -->
   </div>
 
   <div

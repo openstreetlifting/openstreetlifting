@@ -32,4 +32,5 @@ pub struct AthleteDetail {
     pub competitions: Vec<AthleteCompetitionRow>,
     pub personal_records: Vec<PersonalRecordRow>,
     pub total_competitions: i64,
+    pub instagram_handle: Option<String>,
 }

@@ -25,7 +25,7 @@
 </svelte:head>
 
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
-  <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Competitions' }]} />
+  <Breadcrumb items={[{ label: 'Rankings', href: '/' }, { label: 'Competitions' }]} />
 
   <div class="mb-8">
     <h1 class="mb-4 text-3xl font-light tracking-tight text-white sm:text-4xl">Competitions</h1>

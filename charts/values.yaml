@@ -53,6 +53,7 @@ importer:
   # Every deploy makes the database match the canonical files, deletions
   # included. Drop --yes to have a release only report what it would remove.
   args: ["bulk-import", "--prune", "--yes"]
+  instagramArgs: ["instagram"]
   backoffLimit: 1
   ttlSecondsAfterFinished: 86400
   resources:

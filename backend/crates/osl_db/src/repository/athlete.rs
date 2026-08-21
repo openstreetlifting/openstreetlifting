@@ -167,11 +167,25 @@ impl<'a> AthleteRepository<'a> {
         .fetch_one(self.pool)
         .await?;
 
+        let instagram_handle = sqlx::query_scalar!(
+            r#"
+            SELECT ats.handle
+            FROM athlete_socials ats
+            JOIN socials s ON s.social_id = ats.social_id
+            WHERE ats.athlete_id = $1
+              AND s.name = 'instagram'
+            "#,
+            athlete.athlete_id
+        )
+        .fetch_optional(self.pool)
+        .await?;
+
         Ok(AthleteDetail {
             athlete,
             competitions,
             personal_records,
             total_competitions,
+            instagram_handle,
         })
     }
 

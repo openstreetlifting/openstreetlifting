@@ -17,6 +17,8 @@ pub struct AthleteResponse {
     pub nationality: Option<String>,
     pub country: String,
     pub profile_picture_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instagram_handle: Option<String>,
     pub created_at: NaiveDateTime,
     /// Present only when requested via `?include=competitions`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -61,6 +63,7 @@ impl From<AthleteRow> for AthleteResponse {
             nationality: athlete.nationality,
             country: athlete.country,
             profile_picture_url: athlete.profile_picture_url,
+            instagram_handle: None,
             created_at: athlete.created_at,
             competitions: None,
             personal_records: None,
@@ -106,9 +109,11 @@ impl AthleteResponse {
             competitions,
             personal_records,
             total_competitions,
+            instagram_handle,
         } = detail;
 
         let mut response = Self::from(athlete);
+        response.instagram_handle = instagram_handle;
         if include.has("competitions") {
             response.competitions = Some(competitions.into_iter().map(Into::into).collect());
             response.total_competitions = Some(total_competitions);

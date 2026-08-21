@@ -40,6 +40,9 @@ jobs:
       - name: Validate canonical files
         working-directory: backend
         run: cargo run -p osl_importer --bin import -- bulk-import --validate-only
+      - name: Validate athlete social handles
+        working-directory: backend
+        run: cargo run -p osl_importer --bin import -- instagram --validate-only
 
   lint:
     name: Clippy

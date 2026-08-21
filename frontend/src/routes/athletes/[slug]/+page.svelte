@@ -2,6 +2,7 @@
   import type { PageData } from './$types';
   import type { PersonalRecord } from '$lib/types/athlete';
   import { Card, Breadcrumb, Flag } from '$lib/components/ui';
+  import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
   import { formatDate } from '$lib/utils';
 
@@ -47,19 +48,31 @@
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
-      { label: 'Home', href: '/' },
-      { label: 'Athletes' },
+      { label: 'Rankings', href: '/' },
       { label: `${athlete.first_name} ${athlete.last_name}` },
     ]}
   />
 
   <div class="mb-12">
     <div class="mb-4 flex items-center gap-4">
+      <Flag countryCode={athlete.country} class="text-xl" />
       <h1 class="text-3xl font-light tracking-tight text-white sm:text-4xl">
         {athlete.first_name}
         {athlete.last_name}
       </h1>
-      <Flag countryCode={athlete.country} class="text-3xl" />
+
+      {#if athlete.instagram_handle}
+        <a
+          href={`https://www.instagram.com/${athlete.instagram_handle}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-zinc-400 transition-colors hover:text-white"
+          aria-label="{athlete.first_name} {athlete.last_name} on Instagram"
+          title="@{athlete.instagram_handle}"
+        >
+          <InstagramIcon />
+        </a>
+      {/if}
     </div>
 
     <div class="flex flex-wrap gap-x-6 gap-y-3 text-base text-zinc-400">
@@ -107,9 +120,7 @@
       <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Personal Records</h2>
       <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {#each sortPersonalRecords(athlete.personal_records) as pr (pr.movement_name)}
-          <Card
-            class="p-6 transition-all duration-200 hover:scale-[1.02] hover:border-zinc-700/60 hover:shadow-lg hover:shadow-zinc-900/50"
-          >
+          <Card class="p-6 transition-colors hover:border-zinc-700/60">
             <div class="mb-2 text-sm font-medium text-zinc-400">{pr.movement_name}</div>
             <div class="mb-2 text-3xl font-semibold text-white">{formatWeight(pr.max_weight)}</div>
             <div class="text-xs text-zinc-500">

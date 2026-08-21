@@ -1,16 +1,16 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: openstreetlifting-import
+  name: openstreetlifting-instagram
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "openstreetlifting.labels" . | nindent 4 }}
     {{- include "openstreetlifting.importer.selectorLabels" . | nindent 4 }}
   annotations:
-    # Argo CD turns this into a PostSync hook, which waits for the rest of the
-    # release to report healthy. That is what keeps the import behind the new
-    # backend, which is the only thing that runs migrations.
+    # A handle can only attach to an athlete an import has already created, so
+    # the weight keeps this behind openstreetlifting-import.
     helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "1"
     helm.sh/hook-delete-policy: before-hook-creation
 spec:
   backoffLimit: {{ .Values.importer.backoffLimit }}
@@ -20,4 +20,4 @@ spec:
       labels:
         {{- include "openstreetlifting.importer.selectorLabels" . | nindent 8 }}
     spec:
-      {{- include "openstreetlifting.importer.podSpec" (dict "root" . "args" .Values.importer.args) | nindent 6 }}
+      {{- include "openstreetlifting.importer.podSpec" (dict "root" . "args" .Values.importer.instagramArgs) | nindent 6 }}

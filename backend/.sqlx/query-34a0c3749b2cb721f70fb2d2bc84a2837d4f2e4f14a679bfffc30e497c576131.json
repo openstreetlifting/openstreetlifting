@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT ats.handle\n            FROM athlete_socials ats\n            JOIN socials s ON s.social_id = ats.social_id\n            WHERE ats.athlete_id = $1\n              AND s.name = 'instagram'\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "handle",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athlete_socials",
+            "name": "handle"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "34a0c3749b2cb721f70fb2d2bc84a2837d4f2e4f14a679bfffc30e497c576131"
+}
