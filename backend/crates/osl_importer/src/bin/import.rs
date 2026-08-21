@@ -119,7 +119,7 @@ async fn main() -> Result<()> {
             file,
             validate_only,
         } => {
-            let database_url = require_database_url(cli.database_url.as_deref(), false)?;
+            let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
             handle_instagram(file, validate_only, database_url).await?;
         }
         Commands::RecomputeRis => {
@@ -143,6 +143,12 @@ fn require_database_url(database_url: Option<&str>, validate_only: bool) -> Resu
 }
 
 async fn handle_instagram(file: PathBuf, validate_only: bool, database_url: &str) -> Result<()> {
+    if validate_only {
+        let count = osl_importer::social::validate_file(&file)?;
+        tracing::info!("✓ {} handle(s) in {}", count, file.display());
+        return Ok(());
+    }
+
     tracing::info!("Connecting to database...");
     let pool = PgPoolOptions::new()
         .max_connections(5)
@@ -150,13 +156,8 @@ async fn handle_instagram(file: PathBuf, validate_only: bool, database_url: &str
         .await
         .context("connecting to the database")?;
 
-    let report = osl_importer::social::load_instagram_handles(&file, &pool, validate_only).await?;
-
-    if validate_only {
-        tracing::info!("✓ {} handle(s) resolve to an athlete", report.matched);
-    } else {
-        tracing::info!("✓ Attached {} handle(s)", report.matched);
-    }
+    let report = osl_importer::social::load_instagram_handles(&file, &pool).await?;
+    tracing::info!("✓ Attached {} handle(s)", report.matched);
 
     Ok(())
 }

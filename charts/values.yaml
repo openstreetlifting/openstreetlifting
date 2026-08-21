@@ -53,6 +53,10 @@ importer:
   # Every deploy makes the database match the canonical files, deletions
   # included. Drop --yes to have a release only report what it would remove.
   args: ["bulk-import", "--prune", "--yes"]
+  # Runs after the import, since a handle can only attach to an athlete that
+  # already exists. The file is the whole truth, so a handle it no longer lists
+  # comes off the site here.
+  instagramArgs: ["instagram"]
   backoffLimit: 1
   ttlSecondsAfterFinished: 86400
   resources:

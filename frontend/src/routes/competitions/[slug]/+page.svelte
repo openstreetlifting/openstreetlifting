@@ -64,7 +64,7 @@
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
-      { label: 'Home', href: '/' },
+      { label: 'Rankings', href: '/' },
       { label: 'Competitions', href: '/competitions' },
       { label: competition.name },
     ]}

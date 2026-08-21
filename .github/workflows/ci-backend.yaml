@@ -40,6 +40,11 @@ jobs:
       - name: Validate canonical files
         working-directory: backend
         run: cargo run -p osl_importer --bin import -- bulk-import --validate-only
+      # Only the shape of the file. Whether a name resolves to an athlete needs
+      # the database, so the deploy job is what catches that.
+      - name: Validate athlete social handles
+        working-directory: backend
+        run: cargo run -p osl_importer --bin import -- instagram --validate-only
 
   lint:
     name: Clippy

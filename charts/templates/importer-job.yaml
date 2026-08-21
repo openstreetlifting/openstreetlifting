@@ -19,5 +19,5 @@ spec:
       labels:
         {{- include "openstreetlifting.importer.selectorLabels" . | nindent 8 }}
     spec:
-      {{- include "openstreetlifting.importer.podSpec" . | nindent 6 }}
+      {{- include "openstreetlifting.importer.podSpec" (dict "root" . "args" .Values.importer.args) | nindent 6 }}
 {{- end }}

@@ -90,7 +90,7 @@
             href="https://www.instagram.com/openstreetlifting"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-zinc-400 transition-colors hover:text-pink-500"
+            class="text-zinc-400 transition-colors hover:text-white"
             aria-label="Instagram"
           >
             <InstagramIcon />

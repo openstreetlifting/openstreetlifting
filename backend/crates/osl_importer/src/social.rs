@@ -21,11 +21,11 @@ pub struct InstagramReport {
     pub ambiguous: Vec<String>,
 }
 
-pub async fn load_instagram_handles(
-    file: &Path,
-    pool: &PgPool,
-    validate_only: bool,
-) -> Result<InstagramReport> {
+pub fn validate_file(file: &Path) -> Result<usize> {
+    Ok(read_file(file)?.len())
+}
+
+pub async fn load_instagram_handles(file: &Path, pool: &PgPool) -> Result<InstagramReport> {
     let records = read_file(file)?;
 
     let athletes =
@@ -67,10 +67,6 @@ pub async fn load_instagram_handles(
             report.unknown.len(),
             report.ambiguous.len()
         );
-    }
-
-    if validate_only {
-        return Ok(report);
     }
 
     let mut tx = pool.begin().await?;
@@ -124,14 +120,23 @@ fn read_file(file: &Path) -> Result<Vec<InstagramRecord>> {
             bail!("'{}' is listed twice", first);
         }
 
+        let handle = record.instagram.trim_start_matches('@');
+        if handle.is_empty() || handle.len() > 30 {
+            bail!("'{}' is not an Instagram handle", record.instagram);
+        }
+        if !handle
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '_')
+        {
+            bail!("'{}' is not an Instagram handle", record.instagram);
+        }
+
         records.push(record);
     }
 
     Ok(records)
 }
 
-/// The file names an athlete the way a reader would, and the importer decides
-/// identity on the folded name, so both go through the same fold.
 fn match_key(full_name: &str) -> String {
     let mut parts = full_name.trim().splitn(2, char::is_whitespace);
     let first = parts.next().unwrap_or_default();
