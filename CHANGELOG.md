@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.10.0...v0.11.0) (2026-08-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* **canonical:** replace venue and judge count with region ([#402](https://github.com/openstreetlifting/openstreetlifting/issues/402))
+
+### Features
+
+* **athletes:** link an athlete's Instagram from a checked in file ([#412](https://github.com/openstreetlifting/openstreetlifting/issues/412)) ([03a9de0](https://github.com/openstreetlifting/openstreetlifting/commit/03a9de0d993e6307cbf080d7f50c287393cf6b88))
+* **canonical:** replace venue and judge count with region ([#402](https://github.com/openstreetlifting/openstreetlifting/issues/402)) ([fc47f11](https://github.com/openstreetlifting/openstreetlifting/commit/fc47f1181c94e0936267b11d9f69a2cc6f106f3b))
+* **competitions:** link the canonical file from the competition page ([#409](https://github.com/openstreetlifting/openstreetlifting/issues/409)) ([4ef0e9b](https://github.com/openstreetlifting/openstreetlifting/commit/4ef0e9b2c1e7f79db5debeace990b9f189d2075f))
+* **rankings:** make the instagram icon white and use [#732734](https://github.com/openstreetlifting/openstreetlifting/issues/732734) for table headers ([80967f8](https://github.com/openstreetlifting/openstreetlifting/commit/80967f8145d1b8c4498eddb3c92fb134d2f4724a))
+* **rankings:** search by athlete name ([#398](https://github.com/openstreetlifting/openstreetlifting/issues/398)) ([8a8bbc5](https://github.com/openstreetlifting/openstreetlifting/commit/8a8bbc5d1ba25be8cdf7dc6c584ac38c365c69ce))
+* **rankings:** show the instagram icon next to an athlete's name ([2c3caaa](https://github.com/openstreetlifting/openstreetlifting/commit/2c3caaa5bfa821ff132d6eff25b198e150d0eefe))
+* **rankings:** sort with a dropdown and drop the double fetch ([#406](https://github.com/openstreetlifting/openstreetlifting/issues/406)) ([fbcbc71](https://github.com/openstreetlifting/openstreetlifting/commit/fbcbc716dc4e0c1df4c92ffa24799346e109371a))
+
+
+### Bug Fixes
+
+* **frontend:** adapt the layout to phone widths ([#407](https://github.com/openstreetlifting/openstreetlifting/issues/407)) ([646f037](https://github.com/openstreetlifting/openstreetlifting/commit/646f037d0cfe54f0441365e97c21ff9d9f198d42))
+* **frontend:** render in Inter instead of the system font ([#400](https://github.com/openstreetlifting/openstreetlifting/issues/400)) ([1aa6987](https://github.com/openstreetlifting/openstreetlifting/commit/1aa69870859b2f8bc5406dcea3c51dabab5b3e9d))
+
 ## [0.10.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.9.0...v0.10.0) (2026-08-15)
 
 
