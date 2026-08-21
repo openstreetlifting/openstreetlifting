@@ -53,6 +53,7 @@ impl<'a> RankingRepository<'a> {
                     c.event_code,
                     f.name as federation_name,
                     f.abbreviation as federation_abbreviation,
+                    ats.handle as instagram_handle,
                     MAX(CASE WHEN l.movement_name = 'Muscle-up' THEN l.max_weight END) as muscleup,
                     MAX(CASE WHEN l.movement_name = 'Pull-up' THEN l.max_weight END) as pullup,
                     MAX(CASE WHEN l.movement_name = 'Dips' THEN l.max_weight END) as dips,
@@ -66,6 +67,9 @@ impl<'a> RankingRepository<'a> {
                 INNER JOIN lifts l ON cp.participant_id = l.participant_id
                 INNER JOIN categories cat ON cp.category_id = cat.category_id
                 INNER JOIN federations f ON c.federation_id = f.federation_id
+                LEFT JOIN athlete_socials ats
+                    ON ats.athlete_id = a.athlete_id
+                   AND ats.social_id = (SELECT social_id FROM socials WHERE name = 'instagram')
                 WHERE NOT cp.is_disqualified
             "#,
         );
@@ -105,7 +109,8 @@ impl<'a> RankingRepository<'a> {
             r#"
                 GROUP BY cp.participant_id, a.athlete_id, a.first_name, a.last_name,
                          a.slug, a.country, a.gender, cp.bodyweight, cat.name, cp.ris_score, cp.ris_source,
-                         c.competition_id, c.name, c.slug, c.start_date, c.event_code, f.name, f.abbreviation
+                         c.competition_id, c.name, c.slug, c.start_date, c.event_code, f.name, f.abbreviation,
+                         ats.handle
             ),
             "#,
         );

@@ -12,6 +12,7 @@ pub struct RankingRow {
     pub slug: String,
     pub country: String,
     pub gender: String,
+    pub instagram_handle: Option<String>,
     pub bodyweight: Option<Decimal>,
     pub category_name: String,
     pub competition_id: Uuid,

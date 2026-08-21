@@ -40,6 +40,7 @@ export interface AthleteInfo {
   country: string;
   slug: string;
   bodyweight?: number | null;
+  instagram_handle?: string | null;
 }
 
 export interface Attempt {

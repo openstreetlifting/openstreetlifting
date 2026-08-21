@@ -9,6 +9,7 @@
     TABLE_CELL,
     TABLE_HEAD_CELL,
   } from '$lib/components/ui';
+  import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { formatDate, countryName } from '$lib/utils';
@@ -190,16 +191,30 @@
               {entry.rank}
             </td>
             <td class="{TABLE_CELL} text-white">
-              <a
-                href={resolve(`/athletes/${entry.athlete.slug}`)}
-                class="inline-flex max-w-[8rem] items-center gap-2.5 hover:text-zinc-300 sm:max-w-none"
-              >
-                <Flag countryCode={entry.athlete.country} class="-ml-1 shrink-0" />
-                <span class="truncate underline">
-                  {entry.athlete.first_name}
-                  {entry.athlete.last_name}
-                </span>
-              </a>
+              <span class="inline-flex items-center gap-1.5">
+                <a
+                  href={resolve(`/athletes/${entry.athlete.slug}`)}
+                  class="inline-flex max-w-[8rem] items-center gap-2.5 hover:text-zinc-300 sm:max-w-none"
+                >
+                  <Flag countryCode={entry.athlete.country} class="-ml-1 shrink-0" />
+                  <span class="truncate underline">
+                    {entry.athlete.first_name}
+                    {entry.athlete.last_name}
+                  </span>
+                </a>
+                {#if entry.athlete.instagram_handle}
+                  <a
+                    href={`https://www.instagram.com/${entry.athlete.instagram_handle}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="shrink-0 text-zinc-500 transition-colors hover:text-white"
+                    aria-label="{entry.athlete.first_name} {entry.athlete.last_name} on Instagram"
+                    title="@{entry.athlete.instagram_handle}"
+                  >
+                    <InstagramIcon class="h-3.5 w-3.5" />
+                  </a>
+                {/if}
+              </span>
             </td>
             <td class="{TABLE_CELL} text-zinc-400">
               <a

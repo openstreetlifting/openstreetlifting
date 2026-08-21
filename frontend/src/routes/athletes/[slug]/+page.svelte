@@ -70,7 +70,7 @@
           aria-label="{athlete.first_name} {athlete.last_name} on Instagram"
           title="@{athlete.instagram_handle}"
         >
-          <InstagramIcon />
+          <InstagramIcon class="h-7 w-7 sm:h-9 sm:w-9" />
         </a>
       {/if}
     </div>

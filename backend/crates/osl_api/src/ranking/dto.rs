@@ -151,6 +151,8 @@ pub struct AthleteInfo {
     pub country: String,
     pub gender: String,
     pub bodyweight: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instagram_handle: Option<String>,
 }
 
 #[derive(Debug, Serialize, ToSchema)]
@@ -179,6 +181,7 @@ impl From<RankingRow> for GlobalRankingEntry {
                 country: row.country,
                 gender: row.gender,
                 bodyweight: row.bodyweight.map(decimal_to_f64),
+                instagram_handle: row.instagram_handle,
             },
             category: weight_class(&row.category_name),
             ris: row.ris_score.map(decimal_to_f64),
