@@ -7,6 +7,7 @@ export interface AthleteDetail {
   nationality: string | null;
   country: string;
   profile_picture_url: string | null;
+  instagram_handle: string | null;
   created_at: string;
   competitions: AthleteCompetitionSummary[];
   personal_records: PersonalRecord[];

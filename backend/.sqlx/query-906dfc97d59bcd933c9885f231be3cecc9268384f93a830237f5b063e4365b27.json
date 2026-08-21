@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT athlete_id as \"athlete_id: Uuid\", match_key FROM athletes",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "athlete_id: Uuid",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "athlete_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "match_key",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "match_key"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "906dfc97d59bcd933c9885f231be3cecc9268384f93a830237f5b063e4365b27"
+}

@@ -2,6 +2,7 @@
   import type { PageData } from './$types';
   import type { PersonalRecord } from '$lib/types/athlete';
   import { Card, Breadcrumb, Flag } from '$lib/components/ui';
+  import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
   import { formatDate } from '$lib/utils';
 
@@ -60,6 +61,21 @@
         {athlete.last_name}
       </h1>
       <Flag countryCode={athlete.country} class="text-3xl" />
+
+      {#if athlete.instagram_handle}
+        <!-- eslint-disable svelte/no-navigation-without-resolve -- absolute Instagram URL, not an app route -->
+        <a
+          href="https://www.instagram.com/{athlete.instagram_handle}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-zinc-400 transition-colors hover:text-pink-500"
+          aria-label="{athlete.first_name} {athlete.last_name} on Instagram"
+          title="@{athlete.instagram_handle}"
+        >
+          <InstagramIcon />
+        </a>
+        <!-- eslint-enable svelte/no-navigation-without-resolve -->
+      {/if}
     </div>
 
     <div class="flex flex-wrap gap-x-6 gap-y-3 text-base text-zinc-400">
