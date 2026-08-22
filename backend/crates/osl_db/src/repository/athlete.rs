@@ -22,7 +22,7 @@ impl<'a> AthleteRepository<'a> {
             AthleteRow,
             r#"
             SELECT athlete_id, first_name, last_name, gender, created_at,
-                   nationality, country, profile_picture_url, slug,
+                   country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
             ORDER BY last_name, first_name
@@ -46,7 +46,7 @@ impl<'a> AthleteRepository<'a> {
             AthleteRow,
             r#"
             SELECT athlete_id, first_name, last_name, gender, created_at,
-                   nationality, country, profile_picture_url, slug,
+                   country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
             WHERE slug = $1
@@ -64,7 +64,7 @@ impl<'a> AthleteRepository<'a> {
             AthleteRow,
             r#"
             SELECT athlete_id, first_name, last_name, gender, created_at,
-                   nationality, country, profile_picture_url, slug,
+                   country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
             WHERE slug_history @> to_jsonb($1::text)
@@ -83,7 +83,7 @@ impl<'a> AthleteRepository<'a> {
             AthleteRow,
             r#"
             SELECT athlete_id, first_name, last_name, gender, created_at,
-                   nationality, country, profile_picture_url, slug,
+                   country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
             WHERE athlete_id = $1

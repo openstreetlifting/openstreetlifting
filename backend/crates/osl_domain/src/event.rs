@@ -12,6 +12,8 @@
 //! muscle-up is a muscle-up whatever else the meet ran, so those compare
 //! freely across events.
 
+use crate::movement::Movement;
+
 /// The full four movements, in display order. The letters come from
 /// `movements.code` in the database.
 pub const FULL_EVENT: &str = "MPDS";
@@ -31,6 +33,35 @@ pub const FULL_EVENT: &str = "MPDS";
 /// ```
 pub fn is_full_event(event_code: Option<&str>) -> bool {
     event_code == Some(FULL_EVENT)
+}
+
+/// The movements an event code names, rejecting a code whose letters are
+/// unknown, repeated or out of display order. One set of movements therefore
+/// has exactly one spelling, which is what lets `event_code` be compared as a
+/// string.
+pub fn movements(event_code: &str) -> Result<Vec<Movement>, String> {
+    if event_code.is_empty() {
+        return Err("event is empty, expected letters from MPDS".to_string());
+    }
+
+    let mut movements: Vec<Movement> = Vec::new();
+
+    for code in event_code.chars() {
+        let movement = Movement::from_code(code)
+            .ok_or_else(|| format!("unknown movement '{code}', expected letters from MPDS"))?;
+
+        if let Some(previous) = movements.last()
+            && previous.display_order() >= movement.display_order()
+        {
+            return Err(format!(
+                "event '{event_code}' is out of order, write its letters as they appear in MPDS"
+            ));
+        }
+
+        movements.push(movement);
+    }
+
+    Ok(movements)
 }
 
 #[cfg(test)]
@@ -55,5 +86,28 @@ mod tests {
         // Order is fixed by display_order, so a reordered code is not the
         // full event and must not be treated as one.
         assert!(!is_full_event(Some("SDPM")));
+    }
+
+    #[test]
+    fn the_full_event_is_every_movement() {
+        let codes: String = Movement::ALL.iter().map(|m| m.code()).collect();
+        assert_eq!(codes, FULL_EVENT);
+        assert_eq!(movements(FULL_EVENT).unwrap(), Movement::ALL.to_vec());
+    }
+
+    #[test]
+    fn a_repeated_movement_is_rejected() {
+        assert!(movements("MM").is_err());
+    }
+
+    #[test]
+    fn an_out_of_order_event_is_rejected() {
+        assert!(movements("SDPM").is_err());
+        assert!(movements("SP").is_err());
+    }
+
+    #[test]
+    fn a_letter_outside_the_four_is_rejected() {
+        assert!(movements("B").is_err());
     }
 }

@@ -1,7 +1,7 @@
 use anyhow::{Context, Result, bail};
 use clap::{Parser, Subcommand};
 use osl_importer::canonical::{
-    format as canonical_format, models::CanonicalFormat, transformer::CanonicalTransformer,
+    entries, format as canonical_format, meet, store, transformer::CanonicalTransformer,
     validator::CanonicalValidator,
 };
 use osl_importer::sync::CompetitionSync;
@@ -29,13 +29,13 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     Canonical {
-        file: PathBuf,
+        directory: PathBuf,
 
         #[arg(long)]
         validate_only: bool,
     },
     BulkImport {
-        #[arg(long, default_value = "./imports")]
+        #[arg(long, default_value = "./data/competitions")]
         directory: PathBuf,
 
         #[arg(long)]
@@ -53,7 +53,7 @@ enum Commands {
     },
     /// Attach Instagram handles to athletes from a Name,Instagram file.
     Instagram {
-        #[arg(default_value = "./athlete-data/social-instagram.csv")]
+        #[arg(default_value = "./data/athletes/instagram.csv")]
         file: PathBuf,
 
         #[arg(long)]
@@ -63,8 +63,8 @@ enum Commands {
     RecomputeRis,
     /// Rewrite canonical files in their canonical shape.
     Fmt {
-        /// Files or directories. Directories are searched for .json.
-        #[arg(default_value = "./imports")]
+        /// Competition directories, or a tree to search for them.
+        #[arg(default_value = "./data/competitions")]
         paths: Vec<PathBuf>,
 
         /// Report files that would change instead of rewriting them.
@@ -91,11 +91,11 @@ async fn main() -> Result<()> {
 
     match cli.command {
         Commands::Canonical {
-            file,
+            directory,
             validate_only,
         } => {
             let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
-            handle_canonical_import(file, validate_only, database_url).await?;
+            handle_canonical_import(directory, validate_only, database_url).await?;
         }
         Commands::BulkImport {
             directory,
@@ -172,63 +172,76 @@ async fn handle_recompute_ris(database_url: &str) -> Result<()> {
 }
 
 async fn handle_fmt(paths: &[PathBuf], check: bool) -> Result<()> {
-    let mut files = Vec::new();
+    let mut directories = Vec::new();
     for path in paths {
-        collect_json_files(path, &mut files).await?;
+        collect_competitions(path, &mut directories)?;
     }
-    files.sort();
+    directories.sort();
 
-    if files.is_empty() {
-        tracing::warn!("No JSON files found");
+    if directories.is_empty() {
+        tracing::warn!("No competition directories found");
         return Ok(());
     }
 
     let mut changed = Vec::new();
-    for file in &files {
-        let original = tokio::fs::read_to_string(file).await?;
-        let mut canonical: CanonicalFormat = serde_json::from_str(&original)?;
-        canonical_format::normalize(&mut canonical);
-        let formatted = canonical_format::to_string(&canonical)?;
-
-        if formatted == original {
+    for directory in &directories {
+        if is_formatted(directory)? {
             continue;
         }
 
-        changed.push(file.clone());
+        changed.push(directory.clone());
         if !check {
-            tokio::fs::write(file, formatted).await?;
+            let mut canonical = store::read(directory)?;
+            canonical_format::normalize(&mut canonical);
+            store::write(directory, &canonical)?;
         }
     }
 
     if changed.is_empty() {
-        tracing::info!("{} file(s) already formatted", files.len());
+        tracing::info!("{} competition(s) already formatted", directories.len());
         return Ok(());
     }
 
-    for file in &changed {
-        tracing::info!("{}", file.display());
+    for directory in &changed {
+        tracing::info!("{}", directory.display());
     }
 
     if check {
         bail!(
-            "{} file(s) are not formatted. Run `import fmt` to fix",
+            "{} competition(s) are not formatted. Run `import fmt` to fix",
             changed.len()
         );
     }
 
-    tracing::info!("Formatted {} file(s)", changed.len());
+    tracing::info!("Formatted {} competition(s)", changed.len());
     Ok(())
 }
 
+fn is_formatted(directory: &Path) -> Result<bool> {
+    let mut canonical = store::read(directory)?;
+    canonical_format::normalize(&mut canonical);
+    let (meet_text, entries_text) = store::render(&canonical)?;
+
+    if std::fs::read_to_string(directory.join(meet::FILE_NAME))? != meet_text {
+        return Ok(false);
+    }
+
+    let entries_path = directory.join(entries::FILE_NAME);
+
+    match entries_text {
+        Some(entries_text) => Ok(std::fs::read_to_string(&entries_path)? == entries_text),
+        None => Ok(!entries_path.exists()),
+    }
+}
+
 async fn handle_canonical_import(
-    file: PathBuf,
+    directory: PathBuf,
     validate_only: bool,
     database_url: &str,
 ) -> Result<()> {
-    tracing::info!("Loading canonical JSON from: {}", file.display());
+    tracing::info!("Loading competition from: {}", directory.display());
 
-    let json_content = tokio::fs::read_to_string(&file).await?;
-    let canonical: CanonicalFormat = serde_json::from_str(&json_content)?;
+    let canonical = store::read(&directory)?;
 
     tracing::info!(
         "Loaded competition: {} (v{})",
@@ -239,7 +252,7 @@ async fn handle_canonical_import(
     tracing::info!("Validating canonical format...");
     let validation_report = CanonicalValidator::validate(&canonical)?;
     validation_report.log_warnings();
-    tracing::info!("✓ Validation successful!");
+    tracing::info!("\u{2713} Validation successful!");
 
     if validate_only {
         return Ok(());
@@ -259,26 +272,28 @@ async fn handle_canonical_import(
     let transformer = CanonicalTransformer::new(&pool);
     transformer.import_to_database(canonical).await?;
 
-    tracing::info!("✓ Import completed successfully!");
+    tracing::info!("\u{2713} Import completed successfully!");
 
     Ok(())
 }
 
-/// Gathers every .json under `path`, or `path` itself when it is a file.
-async fn collect_json_files(path: &Path, found: &mut Vec<PathBuf>) -> Result<()> {
+/// Gathers every competition directory under `path`, or `path` itself when it
+/// is one.
+fn collect_competitions(path: &Path, found: &mut Vec<PathBuf>) -> Result<()> {
     let mut pending = vec![path.to_path_buf()];
 
     while let Some(current) = pending.pop() {
         if !current.is_dir() {
-            if current.extension().is_some_and(|ext| ext == "json") {
-                found.push(current);
-            }
             continue;
         }
 
-        let mut entries = tokio::fs::read_dir(&current).await?;
-        while let Some(entry) = entries.next_entry().await? {
-            pending.push(entry.path());
+        if store::is_competition_directory(&current) {
+            found.push(current);
+            continue;
+        }
+
+        for entry in std::fs::read_dir(&current)? {
+            pending.push(entry?.path());
         }
     }
 
@@ -287,90 +302,41 @@ async fn collect_json_files(path: &Path, found: &mut Vec<PathBuf>) -> Result<()>
 
 /// The competitions this tree claims, which is also what a prune keeps.
 ///
-/// An import owns its whole competition and removes the rows its file does not
-/// list, so two files claiming one slug would each delete the other's results.
-/// Sessions of the same meet belong in one file, and that has to hold before
-/// anything is written.
-async fn claimed_competition_slugs(files: &[PathBuf]) -> Result<Vec<String>> {
+/// An import owns its whole competition and removes the rows its files do not
+/// list, so two directories claiming one slug would each delete the other's
+/// results. Sessions of the same meet belong in one directory, and that has to
+/// hold before anything is written.
+fn claimed_competition_slugs(directories: &[PathBuf]) -> Result<Vec<String>> {
     let mut by_slug: BTreeMap<String, Vec<&PathBuf>> = BTreeMap::new();
 
-    for file in files {
-        // Unreadable and malformed files are the import loop's to report.
-        let Ok(content) = tokio::fs::read_to_string(file).await else {
-            continue;
-        };
-        let Ok(canonical) = serde_json::from_str::<CanonicalFormat>(&content) else {
-            continue;
-        };
-
-        by_slug
-            .entry(canonical.competition.slug)
-            .or_default()
-            .push(file);
+    for directory in directories {
+        let slug = store::slug_of(directory)?;
+        by_slug.entry(slug).or_default().push(directory);
     }
-
-    misplaced_files(&by_slug)?;
 
     let clashes: Vec<_> = by_slug
         .iter()
-        .filter(|(_, files)| files.len() > 1)
+        .filter(|(_, directories)| directories.len() > 1)
         .collect();
 
     if clashes.is_empty() {
         return Ok(by_slug.into_keys().collect());
     }
 
-    for (slug, files) in &clashes {
+    for (slug, directories) in &clashes {
         tracing::error!(
-            "Competition '{}' is claimed by {} files:",
+            "Competition '{}' is claimed by {} directories:",
             slug,
-            files.len()
+            directories.len()
         );
-        for file in files.iter() {
-            tracing::error!("  {}", file.display());
+        for directory in directories.iter() {
+            tracing::error!("  {}", directory.display());
         }
     }
 
     bail!(
-        "{} competition slug(s) claimed by more than one file. Merge them into one file per competition",
+        "{} competition slug(s) claimed by more than one directory. Merge them into one directory per competition",
         clashes.len()
-    )
-}
-
-/// The competition page links to its canonical file at
-/// `imports/{slug}/{slug}.json`, so a file stored anywhere else would publish a
-/// dead link. The path is part of the contract, not a habit.
-fn misplaced_files(by_slug: &BTreeMap<String, Vec<&PathBuf>>) -> Result<()> {
-    let misplaced: Vec<_> = by_slug
-        .iter()
-        .flat_map(|(slug, files)| files.iter().map(move |file| (slug, *file)))
-        .filter(|(slug, file)| {
-            let stem = file.file_stem().and_then(|name| name.to_str());
-            let directory = file
-                .parent()
-                .and_then(|parent| parent.file_name())
-                .and_then(|name| name.to_str());
-            stem != Some(slug.as_str()) || directory != Some(slug.as_str())
-        })
-        .collect();
-
-    if misplaced.is_empty() {
-        return Ok(());
-    }
-
-    for (slug, file) in &misplaced {
-        tracing::error!(
-            "Competition '{}' should live at {}/{}.json, found {}",
-            slug,
-            slug,
-            slug,
-            file.display()
-        );
-    }
-
-    bail!(
-        "{} canonical file(s) are not stored as {{slug}}/{{slug}}.json",
-        misplaced.len()
     )
 }
 
@@ -382,22 +348,22 @@ async fn handle_bulk_import(
     database_url: &str,
 ) -> Result<()> {
     tracing::info!(
-        "Scanning directory for canonical JSON files: {}",
+        "Scanning directory for competitions: {}",
         directory.display()
     );
 
-    let mut json_files = Vec::new();
-    collect_json_files(&directory, &mut json_files).await?;
+    let mut competitions = Vec::new();
+    collect_competitions(&directory, &mut competitions)?;
 
-    if json_files.is_empty() {
-        tracing::warn!("No JSON files found in {}", directory.display());
+    if competitions.is_empty() {
+        tracing::warn!("No competitions found in {}", directory.display());
         return Ok(());
     }
 
-    json_files.sort();
-    tracing::info!("Found {} canonical JSON file(s)", json_files.len());
+    competitions.sort();
+    tracing::info!("Found {} competition(s)", competitions.len());
 
-    let claimed_slugs = claimed_competition_slugs(&json_files).await?;
+    let claimed_slugs = claimed_competition_slugs(&competitions)?;
 
     let pool = if !validate_only {
         tracing::info!("Connecting to database...");
@@ -415,22 +381,22 @@ async fn handle_bulk_import(
     let mut success_count = 0;
     let mut error_count = 0;
 
-    for (idx, file_path) in json_files.iter().enumerate() {
+    for (idx, competition) in competitions.iter().enumerate() {
         tracing::info!(
             "[{}/{}] Processing: {}",
             idx + 1,
-            json_files.len(),
-            file_path.display()
+            competitions.len(),
+            competition.display()
         );
 
-        match process_canonical_file(file_path, validate_only, pool.as_ref()).await {
+        match process_competition(competition, validate_only, pool.as_ref()).await {
             Ok(_) => {
                 success_count += 1;
-                tracing::info!("  ✓ Success");
+                tracing::info!("  \u{2713} Success");
             }
             Err(e) => {
                 error_count += 1;
-                tracing::error!("  ✗ Error: {}", e);
+                tracing::error!("  \u{2717} Error: {}", e);
             }
         }
     }
@@ -443,9 +409,11 @@ async fn handle_bulk_import(
 
     if error_count > 0 {
         if prune {
-            tracing::warn!("Skipping the prune: a file that failed to import claims nothing");
+            tracing::warn!(
+                "Skipping the prune: a competition that failed to import claims nothing"
+            );
         }
-        bail!("{} file(s) failed to import", error_count);
+        bail!("{} competition(s) failed to import", error_count);
     }
 
     if prune && let Some(pool) = pool.as_ref() {
@@ -500,13 +468,13 @@ async fn handle_prune(pool: &sqlx::PgPool, claimed_slugs: &[String], yes: bool) 
     Ok(())
 }
 
-async fn process_canonical_file(
-    file_path: &PathBuf,
+async fn process_competition(
+    directory: &Path,
     validate_only: bool,
     pool: Option<&sqlx::PgPool>,
 ) -> Result<()> {
-    let json_content = tokio::fs::read_to_string(file_path).await?;
-    let canonical: CanonicalFormat = serde_json::from_str(&json_content)?;
+    let canonical = store::read(directory)?;
+    store::check_location(directory, &canonical)?;
 
     let validation_report = CanonicalValidator::validate(&canonical)?;
 

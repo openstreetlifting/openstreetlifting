@@ -52,6 +52,4 @@ pub struct AttemptSummary {
     pub attempt_number: i16,
     pub weight: Decimal,
     pub is_successful: bool,
-    pub passing_judges: Option<i16>,
-    pub no_rep_reason: Option<String>,
 }

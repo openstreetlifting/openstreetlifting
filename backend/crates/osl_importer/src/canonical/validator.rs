@@ -1,6 +1,7 @@
 use super::models::{CanonicalFormat, FORMAT_VERSION};
 use crate::{ImporterError, Result};
-use osl_domain::NormalizedAthleteName;
+use osl_domain::{CompetitionStatus, NormalizedAthleteName};
+use rust_decimal::Decimal;
 use std::collections::{HashMap, HashSet};
 use tracing::warn;
 
@@ -33,12 +34,6 @@ impl CanonicalValidator {
             )),
         }
 
-        if canonical.source.extractor.is_empty() {
-            report
-                .errors
-                .push("Source extractor is required".to_string());
-        }
-
         if canonical.competition.name.is_empty() {
             report
                 .errors
@@ -67,177 +62,8 @@ impl CanonicalValidator {
                 .push("Competition city is not specified".to_string());
         }
 
-        if canonical.movements.is_empty() {
-            report
-                .errors
-                .push("At least one movement is required".to_string());
-        }
-
-        let mut movement_names = HashSet::new();
-        for movement in &canonical.movements {
-            if movement.name.is_empty() {
-                report
-                    .errors
-                    .push("Movement name cannot be empty".to_string());
-            }
-            if movement.order < 1 {
-                report.errors.push(format!(
-                    "Movement '{}' has invalid order: {}. Order must be >= 1",
-                    movement.name, movement.order
-                ));
-            }
-            if !movement_names.insert(&movement.name) {
-                report
-                    .errors
-                    .push(format!("Duplicate movement name: '{}'", movement.name));
-            }
-        }
-
-        if canonical.categories.is_empty() {
-            report
-                .errors
-                .push("At least one category is required".to_string());
-        }
-
-        for category in &canonical.categories {
-            if category.name.is_empty() {
-                report
-                    .errors
-                    .push("Category name cannot be empty".to_string());
-            }
-            let has_raw_bounds =
-                category.weight_class_min.is_some() || category.weight_class_max.is_some();
-
-            if category.weight_class_slug.is_some() && has_raw_bounds {
-                report.errors.push(format!(
-                    "Category '{}' sets weight_class_slug and raw bounds. The slug already \
-                     carries them, so keep the slug for a standard class and the raw bounds \
-                     only for a non standard one",
-                    category.name
-                ));
-            }
-
-            if let (Some(min), Some(max)) = (category.weight_class_min, category.weight_class_max)
-                && min >= max
-            {
-                report.errors.push(format!(
-                    "Category '{}' has weight_class_min {} above weight_class_max {}",
-                    category.name, min, max
-                ));
-            }
-
-            // Without a bound the class limit lives only in the name, so it is
-            // lost as data. The +87 category was imported that way.
-            if category.weight_class_slug.is_none() && !has_raw_bounds {
-                report.warnings.push(format!(
-                    "Category '{}' has no weight class. Set weight_class_slug for a standard \
-                     class, or weight_class_min and weight_class_max for a non standard one",
-                    category.name
-                ));
-            }
-
-            if category.athletes.is_empty() {
-                report
-                    .warnings
-                    .push(format!("Category '{}' has no athletes", category.name));
-            }
-
-            for (idx, athlete) in category.athletes.iter().enumerate() {
-                let athlete_label =
-                    format!("{}. {} {}", idx + 1, athlete.first_name, athlete.last_name);
-
-                if athlete.first_name.is_empty() {
-                    report.errors.push(format!(
-                        "Athlete in category '{}' has empty first_name",
-                        category.name
-                    ));
-                }
-                if athlete.last_name.is_empty() {
-                    report.errors.push(format!(
-                        "Athlete in category '{}' has empty last_name",
-                        category.name
-                    ));
-                }
-                match (athlete.bodyweight, athlete.ris) {
-                    (Some(_), Some(_)) => report.errors.push(format!(
-                        "Athlete '{}' sets both bodyweight and ris. We compute the score from \
-                         the bodyweight, so give ris only when the source states a score and \
-                         no bodyweight",
-                        athlete_label
-                    )),
-                    (None, None) => report.warnings.push(format!(
-                        "Athlete '{}' has neither bodyweight nor ris, so no score can be \
-                         recorded",
-                        athlete_label
-                    )),
-                    _ => {}
-                }
-
-                if athlete.lifts.is_empty() {
-                    report
-                        .warnings
-                        .push(format!("Athlete '{}' has no lifts", athlete_label));
-                }
-
-                if let Some(disambiguation) = athlete.disambiguation
-                    && disambiguation < 1
-                {
-                    report.errors.push(format!(
-                        "Athlete '{}' has disambiguation {}. It numbers people sharing a name, \
-                         so it starts at 1",
-                        athlete_label, disambiguation
-                    ));
-                }
-
-                for lift in &athlete.lifts {
-                    if !movement_names.contains(&lift.movement) {
-                        report.errors.push(format!(
-                            "Athlete '{}' has lift for unknown movement: '{}'",
-                            athlete_label, lift.movement
-                        ));
-                    }
-
-                    let has_attempts = lift.attempts.as_ref().is_some_and(|a| !a.is_empty());
-
-                    match (has_attempts, lift.best_lift.is_some()) {
-                        (true, true) => report.errors.push(format!(
-                            "Athlete '{}' has lift '{}' with both attempts and best_lift. Give \
-                             attempts when the source lists them, and best_lift only when it \
-                             states just the best weight",
-                            athlete_label, lift.movement
-                        )),
-                        (false, false) => report.errors.push(format!(
-                            "Athlete '{}' has lift '{}' with neither attempts nor best_lift",
-                            athlete_label, lift.movement
-                        )),
-                        _ => {}
-                    }
-
-                    for attempt in lift.attempts.iter().flatten() {
-                        if attempt.attempt_number < 1 || attempt.attempt_number > 3 {
-                            report.errors.push(format!(
-                                "Athlete '{}', movement '{}': invalid attempt_number {}. Must be 1-3",
-                                athlete_label, lift.movement, attempt.attempt_number
-                            ));
-                        }
-                        if attempt.weight.is_sign_negative() {
-                            report.errors.push(format!(
-                                "Athlete '{}', movement '{}', attempt {}: negative weight",
-                                athlete_label, lift.movement, attempt.attempt_number
-                            ));
-                        }
-                    }
-
-                    if lift.best_lift.is_some_and(|w| w.is_sign_negative()) {
-                        report.errors.push(format!(
-                            "Athlete '{}', movement '{}': negative best_lift",
-                            athlete_label, lift.movement
-                        ));
-                    }
-                }
-            }
-        }
-
+        Self::check_announcement(canonical, &mut report);
+        Self::check_athletes(canonical, &mut report);
         Self::check_athlete_identities(canonical, &mut report);
 
         if !report.errors.is_empty() {
@@ -248,6 +74,95 @@ impl CanonicalValidator {
             )))
         } else {
             Ok(report)
+        }
+    }
+
+    /// A meet with no entries.csv is an announcement, and one with entries is a
+    /// result. Letting the two drift apart would either hide results behind an
+    /// upcoming status on re-import, or publish an empty competition as though
+    /// it had been lifted.
+    fn check_announcement(canonical: &CanonicalFormat, report: &mut ValidationReport) {
+        let announced = canonical.competition.status == Some(CompetitionStatus::Upcoming);
+
+        if canonical.categories.is_empty() {
+            if !announced {
+                report.errors.push(
+                    "No entries.csv, so this is an announcement and needs status = \"upcoming\""
+                        .to_string(),
+                );
+            }
+            return;
+        }
+
+        if announced {
+            report.errors.push(
+                "entries.csv lists results, so status cannot be \"upcoming\". Move it to \
+                 \"completed\" in the same edit"
+                    .to_string(),
+            );
+        }
+
+        if canonical.movements.is_empty() {
+            report
+                .errors
+                .push("entries.csv lists results, so event is required".to_string());
+        }
+    }
+
+    fn check_athletes(canonical: &CanonicalFormat, report: &mut ValidationReport) {
+        for category in &canonical.categories {
+            for athlete in &category.athletes {
+                let label = format!("{} {}", athlete.first_name, athlete.last_name);
+
+                match (athlete.bodyweight, athlete.ris) {
+                    (Some(_), Some(_)) => report.errors.push(format!(
+                        "Athlete '{label}' sets both bodyweight and ris. We compute the score \
+                         from the bodyweight, so give ris only when the source states a score \
+                         and no bodyweight"
+                    )),
+                    (None, None) => report.warnings.push(format!(
+                        "Athlete '{label}' has neither bodyweight nor ris, so no score can be \
+                         recorded"
+                    )),
+                    _ => {}
+                }
+
+                if athlete.bodyweight.is_some_and(|w| w <= Decimal::ZERO) {
+                    report.errors.push(format!(
+                        "Athlete '{label}' has a bodyweight of zero or less"
+                    ));
+                }
+
+                if athlete.ris.is_some_and(|r| r < Decimal::ZERO) {
+                    report
+                        .errors
+                        .push(format!("Athlete '{label}' has a negative ris"));
+                }
+
+                if athlete.lifts.is_empty() {
+                    report
+                        .warnings
+                        .push(format!("Athlete '{label}' has no lifts"));
+                }
+
+                if let Some(disambiguation) = athlete.disambiguation
+                    && disambiguation < 1
+                {
+                    report.errors.push(format!(
+                        "Athlete '{label}' has disambiguation {disambiguation}. It numbers \
+                         people sharing a name, so it starts at 1"
+                    ));
+                }
+
+                for lift in &athlete.lifts {
+                    if lift.best_lift.is_some_and(|w| w < Decimal::ZERO) {
+                        report.errors.push(format!(
+                            "Athlete '{label}', movement '{}': negative best lift",
+                            lift.movement
+                        ));
+                    }
+                }
+            }
         }
     }
 
@@ -312,181 +227,195 @@ mod tests {
     use super::*;
     use crate::canonical::models::{
         AthleteData, AttemptData, CategoryData, CompetitionData, FederationData, LiftData,
-        MovementData, SourceMetadata, SourceType,
     };
     use chrono::NaiveDate;
-    use osl_domain::{AthleteStatus, CountryCode, Gender, WeightClassSlug};
+    use osl_domain::{AthleteStatus, CountryCode, Gender, Movement, WeightClassSlug};
     use rust_decimal::Decimal;
 
-    fn minimal() -> CanonicalFormat {
+    fn announced() -> CanonicalFormat {
         CanonicalFormat {
             format_version: FORMAT_VERSION.to_string(),
-            source: SourceMetadata {
-                r#type: SourceType::Image,
-                url: None,
-                extracted_at: chrono::Utc::now(),
-                extractor: "test-extractor@1.0.0".to_string(),
-                original_filename: None,
-            },
+            sources: Vec::new(),
             competition: CompetitionData {
                 name: "Test Open".to_string(),
                 slug: "test-open".to_string(),
                 federation: FederationData {
                     name: "Test Federation".to_string(),
-                    slug: None,
                     abbreviation: None,
                     country: None,
                 },
                 start_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
                 end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
-                city: None,
+                city: Some("Paris".to_string()),
                 region: None,
                 country: CountryCode::parse("FR").unwrap(),
-                status: None,
+                status: Some(CompetitionStatus::Upcoming),
             },
-            movements: vec![MovementData {
-                name: "Squat".to_string(),
-                order: 1,
-                is_required: Some(true),
-            }],
-            categories: vec![CategoryData {
-                name: "M-80".to_string(),
-                gender: Gender::M,
-                weight_class_slug: None,
-                weight_class_min: None,
-                weight_class_max: Some(Decimal::from(80)),
-                athletes: vec![AthleteData {
-                    first_name: "Adrien".to_string(),
-                    last_name: "Pelfresne".to_string(),
-                    disambiguation: None,
-                    gender: None,
-                    country: CountryCode::parse("FR").unwrap(),
-                    nationality: None,
-                    team: None,
-                    bodyweight: Some(Decimal::from(78)),
-                    ris: None,
-                    status: AthleteStatus::Competed,
-                    status_reason: None,
-                    lifts: vec![LiftData {
-                        movement: "Squat".to_string(),
-                        attempts: Some(vec![AttemptData {
-                            attempt_number: 1,
-                            weight: Decimal::from(100),
-                            is_successful: true,
-                            judge_note: None,
-                        }]),
-                        best_lift: None,
-                    }],
-                }],
+            movements: Vec::new(),
+            categories: Vec::new(),
+        }
+    }
+
+    fn athlete(first: &str, last: &str) -> AthleteData {
+        AthleteData {
+            first_name: first.to_string(),
+            last_name: last.to_string(),
+            disambiguation: None,
+            gender: Some(Gender::M),
+            country: CountryCode::parse("FR").unwrap(),
+            bodyweight: Some(Decimal::from(80)),
+            ris: None,
+            status: AthleteStatus::Competed,
+            status_reason: None,
+            lifts: vec![LiftData {
+                movement: Movement::Squat,
+                attempts: Some(vec![AttemptData {
+                    attempt_number: 1,
+                    weight: Decimal::from(100),
+                    is_successful: true,
+                }]),
+                best_lift: None,
             }],
         }
     }
 
+    fn completed() -> CanonicalFormat {
+        let mut canonical = announced();
+        canonical.competition.status = Some(CompetitionStatus::Completed);
+        canonical.movements = vec![Movement::Squat];
+        canonical.categories = vec![CategoryData {
+            name: "Men -80kg".to_string(),
+            gender: Gender::M,
+            weight_class_slug: Some(WeightClassSlug::M80),
+            weight_class_min: None,
+            weight_class_max: None,
+            athletes: vec![athlete("Alice", "Alpha")],
+        }];
+        canonical
+    }
+
     #[test]
     fn accepts_a_well_formed_file() {
-        assert!(CanonicalValidator::validate(&minimal()).is_ok());
+        assert!(CanonicalValidator::validate(&completed()).is_ok());
+    }
+
+    #[test]
+    fn accepts_an_announcement() {
+        assert!(CanonicalValidator::validate(&announced()).is_ok());
     }
 
     #[test]
     fn an_older_minor_version_is_accepted() {
-        let mut canonical = minimal();
-        canonical.format_version = "1.1.0".to_string();
-
+        let mut canonical = completed();
+        canonical.format_version = "2.0.0".to_string();
         assert!(CanonicalValidator::validate(&canonical).is_ok());
     }
 
     #[test]
     fn a_newer_minor_version_is_rejected() {
-        let mut canonical = minimal();
-        canonical.format_version = "1.99.0".to_string();
-
-        let err = CanonicalValidator::validate(&canonical)
-            .unwrap_err()
-            .to_string();
-        assert!(err.contains("Unsupported format version"), "{err}");
+        let mut canonical = completed();
+        canonical.format_version = "2.99.0".to_string();
+        assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
     fn a_different_major_version_is_rejected() {
-        let mut canonical = minimal();
-        canonical.format_version = "2.0.0".to_string();
-
-        let err = CanonicalValidator::validate(&canonical)
-            .unwrap_err()
-            .to_string();
-        assert!(err.contains("Unsupported format version"), "{err}");
+        let mut canonical = completed();
+        canonical.format_version = "1.8.0".to_string();
+        assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
-    fn missing_extractor_is_rejected() {
-        let mut canonical = minimal();
-        canonical.source.extractor = String::new();
-
-        let err = CanonicalValidator::validate(&canonical)
-            .unwrap_err()
-            .to_string();
-        assert!(err.contains("extractor is required"), "{err}");
+    fn an_end_date_before_the_start_is_rejected() {
+        let mut canonical = completed();
+        canonical.competition.end_date = NaiveDate::from_ymd_opt(2025, 12, 31).unwrap();
+        assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
-    fn a_slug_alongside_raw_bounds_is_rejected() {
-        let mut canonical = minimal();
-        canonical.categories[0].weight_class_slug = Some(WeightClassSlug::M80);
-
-        let err = CanonicalValidator::validate(&canonical)
-            .unwrap_err()
-            .to_string();
-        assert!(err.contains("weight_class_slug and raw bounds"), "{err}");
+    fn an_announcement_without_an_upcoming_status_is_rejected() {
+        let mut canonical = announced();
+        canonical.competition.status = Some(CompetitionStatus::Completed);
+        assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
-    fn a_slug_on_its_own_is_accepted() {
-        let mut canonical = minimal();
-        canonical.categories[0].weight_class_slug = Some(WeightClassSlug::M80);
-        canonical.categories[0].weight_class_max = None;
+    fn an_announcement_without_any_status_is_rejected() {
+        let mut canonical = announced();
+        canonical.competition.status = None;
+        assert!(CanonicalValidator::validate(&canonical).is_err());
+    }
 
+    #[test]
+    fn results_under_an_upcoming_status_are_rejected() {
+        let mut canonical = completed();
+        canonical.competition.status = Some(CompetitionStatus::Upcoming);
+        assert!(CanonicalValidator::validate(&canonical).is_err());
+    }
+
+    #[test]
+    fn results_without_an_event_are_rejected() {
+        let mut canonical = completed();
+        canonical.movements.clear();
+        assert!(CanonicalValidator::validate(&canonical).is_err());
+    }
+
+    #[test]
+    fn an_announcement_may_omit_its_event() {
+        let mut canonical = announced();
+        canonical.movements.clear();
         assert!(CanonicalValidator::validate(&canonical).is_ok());
     }
 
     #[test]
-    fn lift_for_an_undeclared_movement_is_rejected() {
-        let mut canonical = minimal();
-        canonical.categories[0].athletes[0].lifts[0].movement = "Bench".to_string();
-
-        let err = CanonicalValidator::validate(&canonical)
-            .unwrap_err()
-            .to_string();
-        assert!(err.contains("unknown movement"), "{err}");
+    fn both_bodyweight_and_ris_is_rejected() {
+        let mut canonical = completed();
+        canonical.categories[0].athletes[0].ris = Some(Decimal::from(90));
+        assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
-    fn a_best_lift_on_its_own_is_accepted() {
-        let mut canonical = minimal();
+    fn neither_bodyweight_nor_ris_only_warns() {
+        let mut canonical = completed();
+        canonical.categories[0].athletes[0].bodyweight = None;
+
+        let report = CanonicalValidator::validate(&canonical).unwrap();
+        assert!(report.warnings.iter().any(|w| w.contains("neither")));
+    }
+
+    #[test]
+    fn a_disambiguation_below_one_is_rejected() {
+        let mut canonical = completed();
+        canonical.categories[0].athletes[0].disambiguation = Some(0);
+        assert!(CanonicalValidator::validate(&canonical).is_err());
+    }
+
+    #[test]
+    fn the_same_athlete_twice_in_one_category_is_rejected() {
+        let mut canonical = completed();
+        canonical.categories[0]
+            .athletes
+            .push(athlete("Alice", "Alpha"));
+        assert!(CanonicalValidator::validate(&canonical).is_err());
+    }
+
+    #[test]
+    fn the_same_athlete_in_two_categories_only_warns() {
+        let mut canonical = completed();
+        let mut second = canonical.categories[0].clone();
+        second.name = "Men -87kg".to_string();
+        second.weight_class_slug = Some(WeightClassSlug::M87);
+        canonical.categories.push(second);
+
+        let report = CanonicalValidator::validate(&canonical).unwrap();
+        assert!(report.warnings.iter().any(|w| w.contains("2 categories")));
+    }
+
+    #[test]
+    fn a_negative_best_lift_is_rejected() {
+        let mut canonical = completed();
         canonical.categories[0].athletes[0].lifts[0].attempts = None;
-        canonical.categories[0].athletes[0].lifts[0].best_lift = Some(Decimal::from(100));
-
-        assert!(CanonicalValidator::validate(&canonical).is_ok());
-    }
-
-    #[test]
-    fn a_best_lift_alongside_attempts_is_rejected() {
-        let mut canonical = minimal();
-        canonical.categories[0].athletes[0].lifts[0].best_lift = Some(Decimal::from(100));
-
-        let err = CanonicalValidator::validate(&canonical)
-            .unwrap_err()
-            .to_string();
-        assert!(err.contains("both attempts and best_lift"), "{err}");
-    }
-
-    #[test]
-    fn a_lift_with_neither_attempts_nor_best_lift_is_rejected() {
-        let mut canonical = minimal();
-        canonical.categories[0].athletes[0].lifts[0].attempts = None;
-
-        let err = CanonicalValidator::validate(&canonical)
-            .unwrap_err()
-            .to_string();
-        assert!(err.contains("neither attempts nor best_lift"), "{err}");
+        canonical.categories[0].athletes[0].lifts[0].best_lift = Some(Decimal::from(-10));
+        assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 }

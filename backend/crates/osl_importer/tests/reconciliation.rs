@@ -3,71 +3,32 @@
 //! down what a re-import deletes — and, just as importantly, what it leaves
 //! alone once a row is shared with another competition.
 
-use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
-use serde_json::{Value, json};
+use osl_domain::Movement;
+use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-fn attempt(number: i16, weight: i32, is_successful: bool) -> Value {
-    json!({
-        "attempt_number": number,
-        "weight": weight,
-        "is_successful": is_successful,
-    })
-}
+mod common;
 
-fn lift(movement: &str, attempts: Vec<Value>) -> Value {
-    json!({ "movement": movement, "attempts": attempts })
-}
+use common::{attempts, import, men_80, weighing};
 
-fn athlete(first_name: &str, last_name: &str, lifts: Vec<Value>) -> Value {
-    json!({
-        "first_name": first_name,
-        "last_name": last_name,
-        "country": "FR",
-        "bodyweight": 79,
-        "status": "competed",
-        "lifts": lifts,
+fn athlete(
+    first_name: &str,
+    last_name: &str,
+    lifts: Vec<(Movement, Vec<(&str, bool)>)>,
+) -> AthleteData {
+    let lifter = weighing(common::athlete(first_name, last_name), "79");
+
+    lifts.into_iter().fold(lifter, |lifter, (movement, cells)| {
+        attempts(lifter, movement, &cells)
     })
 }
 
 /// One category holding whichever athletes the case needs.
-fn file(slug: &str, athletes: Vec<Value>) -> CanonicalFormat {
-    let document = json!({
-        "format_version": "1.5.0",
-        "source": {
-            "type": "manual",
-            "extracted_at": "2026-01-01T00:00:00Z",
-            "extractor": "reconciliation-test",
-        },
-        "competition": {
-            "name": slug,
-            "slug": slug,
-            "federation": { "name": "Test Federation" },
-            "start_date": "2026-01-01",
-            "end_date": "2026-01-01",
-            "country": "FR",
-        },
-        "movements": [
-            { "name": "Muscle-up", "order": 1 },
-            { "name": "Pull-up", "order": 2 },
-        ],
-        "categories": [{
-            "name": "Men -80kg",
-            "gender": "M",
-            "weight_class_slug": "M-80",
-            "athletes": athletes,
-        }],
-    });
-
-    serde_json::from_value(document).expect("test document should be a valid canonical file")
-}
-
-async fn import(pool: &PgPool, canonical: CanonicalFormat) {
-    CanonicalTransformer::new(pool)
-        .import_to_database(canonical)
-        .await
-        .expect("import should succeed");
+fn file(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
+    let mut canonical = common::meet(slug, vec![men_80(athletes)]);
+    canonical.movements = vec![Movement::MuscleUp, Movement::PullUp];
+    canonical
 }
 
 async fn count(pool: &PgPool, query: &'static str) -> i64 {
@@ -87,17 +48,17 @@ async fn athlete_exists(pool: &PgPool, last_name: &str) -> bool {
     found > 0
 }
 
-fn two_lifters() -> Vec<Value> {
+fn two_lifters() -> Vec<AthleteData> {
     vec![
         athlete(
             "Ada",
             "Lovelace",
-            vec![lift("Muscle-up", vec![attempt(1, 60, true)])],
+            vec![(Movement::MuscleUp, vec![("60", true)])],
         ),
         athlete(
             "Grace",
             "Hopper",
-            vec![lift("Muscle-up", vec![attempt(1, 70, true)])],
+            vec![(Movement::MuscleUp, vec![("70", true)])],
         ),
     ]
 }
@@ -122,7 +83,7 @@ async fn an_athlete_dropped_from_the_file_loses_their_participation(pool: PgPool
     let remaining = vec![athlete(
         "Ada",
         "Lovelace",
-        vec![lift("Muscle-up", vec![attempt(1, 60, true)])],
+        vec![(Movement::MuscleUp, vec![("60", true)])],
     )];
     import(&pool, file("test-meet", remaining)).await;
 
@@ -141,8 +102,8 @@ async fn a_lift_dropped_from_the_file_is_removed(pool: PgPool) {
         "Ada",
         "Lovelace",
         vec![
-            lift("Muscle-up", vec![attempt(1, 60, true)]),
-            lift("Pull-up", vec![attempt(1, 40, true)]),
+            (Movement::MuscleUp, vec![("60", true)]),
+            (Movement::PullUp, vec![("40", true)]),
         ],
     )];
     import(&pool, file("test-meet", both)).await;
@@ -151,7 +112,7 @@ async fn a_lift_dropped_from_the_file_is_removed(pool: PgPool) {
     let one = vec![athlete(
         "Ada",
         "Lovelace",
-        vec![lift("Muscle-up", vec![attempt(1, 60, true)])],
+        vec![(Movement::MuscleUp, vec![("60", true)])],
     )];
     import(&pool, file("test-meet", one)).await;
 
@@ -164,13 +125,9 @@ async fn an_attempt_dropped_from_the_file_is_removed(pool: PgPool) {
     let three = vec![athlete(
         "Ada",
         "Lovelace",
-        vec![lift(
-            "Muscle-up",
-            vec![
-                attempt(1, 60, true),
-                attempt(2, 65, true),
-                attempt(3, 70, false),
-            ],
+        vec![(
+            Movement::MuscleUp,
+            vec![("60", true), ("65", true), ("70", false)],
         )],
     )];
     import(&pool, file("test-meet", three)).await;
@@ -180,10 +137,7 @@ async fn an_attempt_dropped_from_the_file_is_removed(pool: PgPool) {
     let two = vec![athlete(
         "Ada",
         "Lovelace",
-        vec![lift(
-            "Muscle-up",
-            vec![attempt(1, 60, true), attempt(2, 65, true)],
-        )],
+        vec![(Movement::MuscleUp, vec![("60", true), ("65", true)])],
     )];
     import(&pool, file("test-meet", two)).await;
 
@@ -201,7 +155,7 @@ async fn pruning_one_competition_leaves_the_others_alone(pool: PgPool) {
     let remaining = vec![athlete(
         "Ada",
         "Lovelace",
-        vec![lift("Muscle-up", vec![attempt(1, 60, true)])],
+        vec![(Movement::MuscleUp, vec![("60", true)])],
     )];
     import(&pool, file("first-meet", remaining)).await;
 
@@ -229,7 +183,7 @@ async fn a_movement_dropped_from_the_file_is_removed(pool: PgPool) {
     let mut canonical = file("test-meet", two_lifters());
     canonical
         .movements
-        .retain(|movement| movement.name == "Muscle-up");
+        .retain(|movement| *movement == Movement::MuscleUp);
     import(&pool, canonical).await;
 
     assert_eq!(
@@ -240,31 +194,25 @@ async fn a_movement_dropped_from_the_file_is_removed(pool: PgPool) {
 
 /// The same two lifters, contesting all four movements so the meet is a full
 /// event and therefore actually gets a RIS.
-fn four_lifts() -> Vec<Value> {
+fn four_lifts() -> Vec<(Movement, Vec<(&'static str, bool)>)> {
     vec![
-        lift("Muscle-up", vec![attempt(1, 60, true)]),
-        lift("Pull-up", vec![attempt(1, 90, true)]),
-        lift("Dips", vec![attempt(1, 100, true)]),
-        lift("Squat", vec![attempt(1, 150, true)]),
+        (Movement::MuscleUp, vec![("60", true)]),
+        (Movement::PullUp, vec![("90", true)]),
+        (Movement::Dips, vec![("100", true)]),
+        (Movement::Squat, vec![("150", true)]),
     ]
 }
 
-fn two_lifters_full_event() -> Vec<Value> {
+fn two_lifters_full_event() -> Vec<AthleteData> {
     vec![
         athlete("Ada", "Lovelace", four_lifts()),
         athlete("Grace", "Hopper", four_lifts()),
     ]
 }
 
-fn full_event_file(slug: &str, athletes: Vec<Value>) -> CanonicalFormat {
+fn full_event_file(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
     let mut canonical = file(slug, athletes);
-    canonical.movements = serde_json::from_value(json!([
-        { "name": "Muscle-up", "order": 1 },
-        { "name": "Pull-up", "order": 2 },
-        { "name": "Dips", "order": 3 },
-        { "name": "Squat", "order": 4 },
-    ]))
-    .unwrap();
+    canonical.movements = Movement::ALL.to_vec();
     canonical
 }
 

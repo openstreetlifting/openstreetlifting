@@ -7,52 +7,13 @@ use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::{
     athlete::AthleteRepository, competition::CompetitionRepository, ranking::RankingRepository,
 };
-use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
+use osl_importer::canonical::models::AthleteData;
 use rust_decimal::Decimal;
-use serde_json::{Value, json};
 use sqlx::PgPool;
 
-fn lift(movement: &str, weight: i32) -> Value {
-    json!({
-        "movement": movement,
-        "attempts": [{ "attempt_number": 1, "weight": weight, "is_successful": true }],
-    })
-}
+mod common;
 
-fn athlete(first: &str, last: &str, status: &str, lifts: Vec<Value>) -> Value {
-    json!({
-        "first_name": first, "last_name": last, "country": "FR",
-        "bodyweight": 80, "status": status, "lifts": lifts,
-    })
-}
-
-fn meet(slug: &str, athletes: Vec<Value>) -> CanonicalFormat {
-    serde_json::from_value(json!({
-        "format_version": "1.5.0",
-        "source": { "type": "manual", "extracted_at": "2026-01-01T00:00:00Z", "extractor": "disqualification-test" },
-        "competition": {
-            "name": slug, "slug": slug,
-            "federation": { "name": "Test Federation" },
-            "start_date": "2026-01-01", "end_date": "2026-01-01", "country": "FR",
-        },
-        "movements": [
-            { "name": "Muscle-up", "order": 1 }, { "name": "Pull-up", "order": 2 },
-            { "name": "Dips", "order": 3 }, { "name": "Squat", "order": 4 },
-        ],
-        "categories": [{
-            "name": "Men -80kg", "gender": "M", "weight_class_slug": "M-80",
-            "athletes": athletes,
-        }],
-    }))
-    .expect("test document should be a valid canonical file")
-}
-
-async fn import(pool: &PgPool, canonical: CanonicalFormat) {
-    CanonicalTransformer::new(pool)
-        .import_to_database(canonical)
-        .await
-        .expect("import should succeed");
-}
+use common::{athlete, disqualified as thrown_out, import, lifting, meet, men_80};
 
 async fn board(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
     let filter = RankingFilter {
@@ -77,42 +38,29 @@ async fn board(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
 }
 
 /// The biggest total of the day, thrown out.
-fn disqualified() -> Value {
-    athlete(
-        "Dan",
-        "Disqualified",
-        "disqualified",
-        vec![
-            lift("Muscle-up", 50),
-            lift("Pull-up", 90),
-            lift("Dips", 130),
-            lift("Squat", 200),
-        ],
+fn disqualified() -> AthleteData {
+    thrown_out(
+        lifting(athlete("Dan", "Disqualified"), ["50", "90", "130", "200"]),
+        None,
     )
 }
 
-fn clean() -> Value {
-    athlete(
-        "Clara",
-        "Clean",
-        "competed",
-        vec![
-            lift("Muscle-up", 30),
-            lift("Pull-up", 80),
-            lift("Dips", 120),
-            lift("Squat", 180),
-        ],
-    )
+fn clean() -> AthleteData {
+    lifting(athlete("Clara", "Clean"), ["30", "80", "120", "180"])
 }
 
 /// Printed as three zeros by the source, which meant he never turned up.
-fn absent() -> Value {
-    athlete("Noe", "Absent", "disqualified", vec![])
+fn absent() -> AthleteData {
+    thrown_out(athlete("Noe", "Absent"), None)
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_disqualified_lifter_takes_no_place(pool: PgPool) {
-    import(&pool, meet("test-meet", vec![disqualified(), clean()])).await;
+    import(
+        &pool,
+        meet("test-meet", vec![men_80(vec![disqualified(), clean()])]),
+    )
+    .await;
 
     let detail = CompetitionRepository::new(&pool)
         .find_by_slug_detailed("test-meet")
@@ -134,7 +82,11 @@ async fn a_disqualified_lifter_takes_no_place(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_disqualified_result_reaches_no_board(pool: PgPool) {
-    import(&pool, meet("test-meet", vec![disqualified(), clean()])).await;
+    import(
+        &pool,
+        meet("test-meet", vec![men_80(vec![disqualified(), clean()])]),
+    )
+    .await;
 
     let (names, count) = board(&pool, RankingMovement::Total).await;
     assert_eq!(names, vec!["Clean"], "a thrown-out total is not a total");
@@ -150,7 +102,7 @@ async fn a_disqualified_result_reaches_no_board(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_disqualified_lift_is_not_a_personal_record(pool: PgPool) {
-    import(&pool, meet("test-meet", vec![disqualified()])).await;
+    import(&pool, meet("test-meet", vec![men_80(vec![disqualified()])])).await;
 
     let detail = AthleteRepository::new(&pool)
         .find_by_slug_detailed("dan-disqualified")
@@ -170,7 +122,11 @@ async fn a_disqualified_lift_is_not_a_personal_record(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn somebody_who_never_lifted_has_no_total(pool: PgPool) {
-    import(&pool, meet("test-meet", vec![clean(), absent()])).await;
+    import(
+        &pool,
+        meet("test-meet", vec![men_80(vec![clean(), absent()])]),
+    )
+    .await;
 
     let detail = CompetitionRepository::new(&pool)
         .find_by_slug_detailed("test-meet")

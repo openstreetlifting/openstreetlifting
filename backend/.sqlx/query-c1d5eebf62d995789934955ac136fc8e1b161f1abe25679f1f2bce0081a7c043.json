@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO competition_movements (competition_id, movement_name, display_order)\n                VALUES ($1, $2, $3)\n                ON CONFLICT (competition_id, movement_name)\n                DO UPDATE SET\n                    display_order = EXCLUDED.display_order\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Varchar",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c1d5eebf62d995789934955ac136fc8e1b161f1abe25679f1f2bce0081a7c043"
+}

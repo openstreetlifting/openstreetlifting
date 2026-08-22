@@ -2,51 +2,28 @@
 //! the data. What it must not take with it is the reference data and the
 //! athletes who lifted somewhere else too.
 
-use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
+use osl_domain::Movement;
+use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use osl_importer::sync::CompetitionSync;
-use serde_json::{Value, json};
 use sqlx::PgPool;
 
-fn lift(movement: &str, weight: i32) -> Value {
-    json!({
-        "movement": movement,
-        "attempts": [{ "attempt_number": 1, "weight": weight, "is_successful": true }],
-    })
+mod common;
+
+use common::{attempts, import, men_80};
+
+fn athlete(first: &str, last: &str) -> AthleteData {
+    let lifter = attempts(
+        common::athlete(first, last),
+        Movement::MuscleUp,
+        &[("40", true)],
+    );
+    attempts(lifter, Movement::PullUp, &[("90", true)])
 }
 
-fn athlete(first: &str, last: &str) -> Value {
-    json!({
-        "first_name": first, "last_name": last, "country": "FR",
-        "bodyweight": 80, "status": "competed",
-        "lifts": [lift("Muscle-up", 40), lift("Pull-up", 90)],
-    })
-}
-
-fn meet(slug: &str, athletes: Vec<Value>) -> CanonicalFormat {
-    serde_json::from_value(json!({
-        "format_version": "1.5.0",
-        "source": { "type": "manual", "extracted_at": "2026-01-01T00:00:00Z", "extractor": "file-deletion-test" },
-        "competition": {
-            "name": slug, "slug": slug,
-            "federation": { "name": "Test Federation" },
-            "start_date": "2026-01-01", "end_date": "2026-01-01", "country": "FR",
-        },
-        "movements": [
-            { "name": "Muscle-up", "order": 1 }, { "name": "Pull-up", "order": 2 },
-        ],
-        "categories": [{
-            "name": "Men -80kg", "gender": "M", "weight_class_slug": "M-80",
-            "athletes": athletes,
-        }],
-    }))
-    .expect("test document should be a valid canonical file")
-}
-
-async fn import(pool: &PgPool, canonical: CanonicalFormat) {
-    CanonicalTransformer::new(pool)
-        .import_to_database(canonical)
-        .await
-        .expect("import should succeed");
+fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
+    let mut canonical = common::meet(slug, vec![men_80(athletes)]);
+    canonical.movements = vec![Movement::MuscleUp, Movement::PullUp];
+    canonical
 }
 
 /// One meet whose file is still there, one whose file was deleted, and a lifter

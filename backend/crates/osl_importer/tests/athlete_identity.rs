@@ -2,63 +2,28 @@
 //! spelled three ways stays one athlete and two people sharing a name stay two.
 //! Both failures used to be silent, which is why they are pinned down here.
 
-use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
-use serde_json::{Value, json};
+use osl_domain::Movement;
+use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use sqlx::PgPool;
 
-fn athlete(first: &str, last: &str, disambiguation: Option<i16>) -> Value {
-    let mut entry = json!({
-        "first_name": first,
-        "last_name": last,
-        "country": "FR",
-        "bodyweight": 79,
-        "status": "competed",
-        "lifts": [{
-            "movement": "Muscle-up",
-            "attempts": [{ "attempt_number": 1, "weight": 60, "is_successful": true }],
-        }],
-    });
+mod common;
 
-    if let Some(number) = disambiguation {
-        entry["disambiguation"] = json!(number);
+use common::{attempts, from, import, men_80, numbered, weighing};
+
+fn athlete(first: &str, last: &str, disambiguation: Option<i16>) -> AthleteData {
+    let lifter = weighing(common::athlete(first, last), "79");
+    let lifter = attempts(lifter, Movement::MuscleUp, &[("60", true)]);
+
+    match disambiguation {
+        Some(number) => numbered(lifter, number),
+        None => lifter,
     }
-
-    entry
 }
 
-fn file(slug: &str, athletes: Vec<Value>) -> CanonicalFormat {
-    let document = json!({
-        "format_version": "1.5.0",
-        "source": {
-            "type": "manual",
-            "extracted_at": "2026-01-01T00:00:00Z",
-            "extractor": "athlete-identity-test",
-        },
-        "competition": {
-            "name": slug,
-            "slug": slug,
-            "federation": { "name": "Test Federation" },
-            "start_date": "2026-01-01",
-            "end_date": "2026-01-01",
-            "country": "FR",
-        },
-        "movements": [{ "name": "Muscle-up", "order": 1 }],
-        "categories": [{
-            "name": "Men -80kg",
-            "gender": "M",
-            "weight_class_slug": "M-80",
-            "athletes": athletes,
-        }],
-    });
-
-    serde_json::from_value(document).expect("test document should be a valid canonical file")
-}
-
-async fn import(pool: &PgPool, canonical: CanonicalFormat) {
-    CanonicalTransformer::new(pool)
-        .import_to_database(canonical)
-        .await
-        .expect("import should succeed");
+fn file(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
+    let mut canonical = common::meet(slug, vec![men_80(athletes)]);
+    canonical.movements = vec![Movement::MuscleUp];
+    canonical
 }
 
 async fn athlete_count(pool: &PgPool) -> i64 {
@@ -213,10 +178,8 @@ async fn the_database_refuses_a_duplicate_identity(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn athletes_from_different_countries_stay_apart(pool: PgPool) {
-    let mut spanish = athlete("Jose", "Garcia", None);
-    spanish["country"] = json!("ES");
-    let mut mexican = athlete("Jose", "Garcia", None);
-    mexican["country"] = json!("MX");
+    let spanish = from(athlete("Jose", "Garcia", None), "ES");
+    let mexican = from(athlete("Jose", "Garcia", None), "MX");
 
     import(&pool, file("meet-one", vec![spanish, mexican])).await;
 
