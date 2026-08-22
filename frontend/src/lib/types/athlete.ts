@@ -4,7 +4,6 @@ export interface AthleteDetail {
   last_name: string;
   slug: string;
   gender: string;
-  nationality: string | null;
   country: string;
   profile_picture_url: string | null;
   instagram_handle: string | null;

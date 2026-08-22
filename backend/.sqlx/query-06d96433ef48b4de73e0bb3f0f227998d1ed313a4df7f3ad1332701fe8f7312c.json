@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT athlete_id, first_name, last_name, gender, created_at,\n                   nationality, country, profile_picture_url, slug,\n                   COALESCE(slug_history, '[]'::jsonb) as \"slug_history!: sqlx::types::Json<Vec<String>>\"\n            FROM athletes\n            WHERE slug_history @> to_jsonb($1::text)\n            ",
+  "query": "\n            SELECT athlete_id, first_name, last_name, gender, created_at,\n                   country, profile_picture_url, slug,\n                   COALESCE(slug_history, '[]'::jsonb) as \"slug_history!: sqlx::types::Json<Vec<String>>\"\n            FROM athletes\n            WHERE athlete_id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -60,17 +60,6 @@
       },
       {
         "ordinal": 5,
-        "name": "nationality",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "athletes",
-            "name": "nationality"
-          }
-        }
-      },
-      {
-        "ordinal": 6,
         "name": "country",
         "type_info": "Varchar",
         "origin": {
@@ -81,7 +70,7 @@
         }
       },
       {
-        "ordinal": 7,
+        "ordinal": 6,
         "name": "profile_picture_url",
         "type_info": "Varchar",
         "origin": {
@@ -92,7 +81,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 7,
         "name": "slug",
         "type_info": "Varchar",
         "origin": {
@@ -103,7 +92,7 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 8,
         "name": "slug_history!: sqlx::types::Json<Vec<String>>",
         "type_info": "Jsonb",
         "origin": "Expression"
@@ -111,7 +100,7 @@
     ],
     "parameters": {
       "Left": [
-        "Text"
+        "Uuid"
       ]
     },
     "nullable": [
@@ -120,12 +109,11 @@
       false,
       false,
       false,
-      true,
       false,
       true,
       false,
       null
     ]
   },
-  "hash": "7e04c4f9ce4c7672d4f6e686bf7fcf27d0fff5d69a2b7ed413b3cd96dd788c2e"
+  "hash": "06d96433ef48b4de73e0bb3f0f227998d1ed313a4df7f3ad1332701fe8f7312c"
 }

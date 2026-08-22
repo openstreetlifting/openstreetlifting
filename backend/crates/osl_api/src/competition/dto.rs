@@ -48,7 +48,6 @@ pub struct FederationInfo {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct MovementInfo {
     pub movement_name: String,
-    pub is_required: bool,
     pub display_order: Option<i32>,
 }
 
@@ -85,7 +84,6 @@ pub struct AthleteInfo {
     pub first_name: String,
     pub last_name: String,
     pub gender: String,
-    pub nationality: Option<String>,
     pub country: String,
     pub slug: String,
 }
@@ -104,8 +102,6 @@ pub struct AttemptInfo {
     pub attempt_number: i16,
     pub weight: rust_decimal::Decimal,
     pub is_successful: bool,
-    pub passing_judges: Option<i16>,
-    pub no_rep_reason: Option<String>,
 }
 
 impl From<CompetitionRow> for CompetitionResponse {
@@ -144,7 +140,6 @@ impl From<CompetitionMovementRow> for MovementInfo {
     fn from(row: CompetitionMovementRow) -> Self {
         Self {
             movement_name: row.movement_name,
-            is_required: row.is_required,
             display_order: row.display_order,
         }
     }
@@ -169,7 +164,6 @@ impl From<AthleteRow> for AthleteInfo {
             first_name: row.first_name,
             last_name: row.last_name,
             gender: row.gender,
-            nationality: row.nationality,
             country: row.country,
             slug: row.slug,
         }
@@ -182,8 +176,6 @@ impl From<AttemptSummary> for AttemptInfo {
             attempt_number: row.attempt_number,
             weight: row.weight,
             is_successful: row.is_successful,
-            passing_judges: row.passing_judges,
-            no_rep_reason: row.no_rep_reason,
         }
     }
 }

@@ -1,6 +1,6 @@
 use super::models::*;
 use crate::{ImporterError, Result};
-use osl_domain::NormalizedAthleteName;
+use osl_domain::{Movement, NormalizedAthleteName};
 use sqlx::PgPool;
 use tracing::info;
 use uuid::Uuid;
@@ -122,7 +122,7 @@ impl<'a> CanonicalTransformer<'a> {
         let movement_names: Vec<String> = canonical
             .movements
             .iter()
-            .map(|movement| movement.name.clone())
+            .map(|movement| movement.name().to_string())
             .collect();
 
         let movements = sqlx::query!(
@@ -276,23 +276,21 @@ impl<'a> CanonicalTransformer<'a> {
     async fn upsert_competition_movements(
         &self,
         competition_id: Uuid,
-        movements: &[MovementData],
+        movements: &[Movement],
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
         for movement in movements {
             sqlx::query!(
                 r#"
-                INSERT INTO competition_movements (competition_id, movement_name, is_required, display_order)
-                VALUES ($1, $2, $3, $4)
+                INSERT INTO competition_movements (competition_id, movement_name, display_order)
+                VALUES ($1, $2, $3)
                 ON CONFLICT (competition_id, movement_name)
                 DO UPDATE SET
-                    is_required = EXCLUDED.is_required,
                     display_order = EXCLUDED.display_order
                 "#,
                 competition_id,
-                movement.name,
-                movement.is_required.unwrap_or(true),
-                movement.order as i32
+                movement.name(),
+                movement.display_order() as i32
             )
             .execute(&mut **tx)
             .await?;
@@ -469,17 +467,14 @@ impl<'a> CanonicalTransformer<'a> {
         .await?;
 
         if let Some(id) = existing {
-            // COALESCE because a missing nationality means unknown, not cleared.
             // match_key is rewritten so a row backfilled by the migration takes
             // the importer's fold, which is the authority.
             sqlx::query!(
                 r#"
                 UPDATE athletes
-                SET nationality = COALESCE($1, nationality),
-                    match_key = $2
-                WHERE athlete_id = $3
+                SET match_key = $1
+                WHERE athlete_id = $2
                 "#,
-                athlete.nationality.map(|c| c.as_str().to_owned()),
                 match_key,
                 id
             )
@@ -495,15 +490,14 @@ impl<'a> CanonicalTransformer<'a> {
 
         let athlete_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO athletes (first_name, last_name, gender, country, nationality, slug, match_key, disambiguation)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            INSERT INTO athletes (first_name, last_name, gender, country, slug, match_key, disambiguation)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING athlete_id as "athlete_id: Uuid"
             "#,
             db_first_name,
             db_last_name,
             gender,
             athlete.country.as_str(),
-            athlete.nationality.map(|c| c.as_str().to_owned()),
             slug,
             match_key,
             athlete.disambiguation
@@ -568,26 +562,19 @@ impl<'a> CanonicalTransformer<'a> {
             None => lift.best_lift,
         };
 
-        // Equipment settings came from a liftcontrol-only field. Nothing in
-        // the agnostic format carries them, so the column stays empty until
-        // some source can express it.
-        let settings: Option<String> = None;
-
         let lift_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO lifts (participant_id, movement_name, max_weight, equipment_setting)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO lifts (participant_id, movement_name, max_weight)
+            VALUES ($1, $2, $3)
             ON CONFLICT (participant_id, movement_name)
             DO UPDATE SET
                 max_weight = EXCLUDED.max_weight,
-                equipment_setting = EXCLUDED.equipment_setting,
                 updated_at = CURRENT_TIMESTAMP
             RETURNING lift_id as "lift_id: Uuid"
             "#,
             participant_id,
-            lift.movement,
-            max_weight,
-            settings
+            lift.movement.name(),
+            max_weight
         )
         .fetch_one(&mut **tx)
         .await?;
@@ -610,14 +597,12 @@ impl<'a> CanonicalTransformer<'a> {
     ) -> Result<()> {
         let attempt_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO attempts (lift_id, attempt_number, weight, is_successful, passing_judges, no_rep_reason, created_by)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            INSERT INTO attempts (lift_id, attempt_number, weight, is_successful, created_by)
+            VALUES ($1, $2, $3, $4, $5)
             ON CONFLICT (lift_id, attempt_number)
             DO UPDATE SET
                 weight = EXCLUDED.weight,
                 is_successful = EXCLUDED.is_successful,
-                passing_judges = EXCLUDED.passing_judges,
-                no_rep_reason = EXCLUDED.no_rep_reason,
                 created_by = EXCLUDED.created_by
             RETURNING attempt_id as "attempt_id: Uuid"
             "#,
@@ -625,8 +610,6 @@ impl<'a> CanonicalTransformer<'a> {
             attempt.attempt_number,
             attempt.weight,
             attempt.is_successful,
-            None as Option<i16>,
-            attempt.judge_note,
             "Canonical Importer"
         )
         .fetch_one(&mut **tx)

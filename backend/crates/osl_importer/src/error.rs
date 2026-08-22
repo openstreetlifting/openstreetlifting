@@ -4,9 +4,6 @@ pub type Result<T> = std::result::Result<T, ImporterError>;
 
 #[derive(Error, Debug)]
 pub enum ImporterError {
-    #[error("Failed to parse JSON: {0}")]
-    ParseError(#[from] serde_json::Error),
-
     #[error("Database error: {0}")]
     DatabaseError(#[from] sqlx::Error),
 

@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO attempts (lift_id, attempt_number, weight, is_successful, created_by)\n            VALUES ($1, $2, $3, $4, $5)\n            ON CONFLICT (lift_id, attempt_number)\n            DO UPDATE SET\n                weight = EXCLUDED.weight,\n                is_successful = EXCLUDED.is_successful,\n                created_by = EXCLUDED.created_by\n            RETURNING attempt_id as \"attempt_id: Uuid\"\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "attempt_id: Uuid",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "attempts",
+            "name": "attempt_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int2",
+        "Numeric",
+        "Bool",
+        "Varchar"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "f4a15d46c24c57a0ef603619d7f259a8c43a033c66f4496fa8798fb2f4b00ca2"
+}

@@ -1,98 +1,58 @@
 //! A canonical file is built up over several passes, so importing a corrected
 //! file has to land the correction rather than stop at the row already there.
 
-use osl_domain::CompetitionStatus;
-use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
+use osl_domain::{CompetitionStatus, Gender, Movement, WeightClassSlug};
+use osl_importer::canonical::models::{CanonicalFormat, CategoryData};
+use osl_importer::canonical::transformer::CanonicalTransformer;
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use std::str::FromStr;
 
-/// `weight_class` is the raw JSON for the class fields, so a test can pass a
-/// slug or raw bounds without a second fixture.
-fn canonical(weight_class: &str, nationality: Option<&str>) -> CanonicalFormat {
-    scored(weight_class, nationality, r#""bodyweight": "72.5","#)
+mod common;
+
+use common::{attempts, decimal};
+
+enum Class {
+    Slug(WeightClassSlug),
+    Open(&'static str),
 }
 
-/// `score` is the raw JSON for bodyweight or ris, so a test can pick which.
-fn scored(weight_class: &str, nationality: Option<&str>, score: &str) -> CanonicalFormat {
-    let nationality = match nationality {
-        Some(code) => format!(r#""nationality": "{}","#, code),
-        None => String::new(),
+fn canonical(class: Class) -> CanonicalFormat {
+    fixture(class, None)
+}
+
+fn fixture(class: Class, ris: Option<&str>) -> CanonicalFormat {
+    let mut lifter = common::athlete("John", "Doe");
+    lifter.bodyweight = Some(decimal("72.5"));
+
+    if let Some(ris) = ris {
+        lifter.bodyweight = None;
+        lifter.ris = Some(decimal(ris));
+    }
+
+    let lifter = attempts(lifter, Movement::MuscleUp, &[("50", true)]);
+    let lifter = attempts(lifter, Movement::PullUp, &[("60", true)]);
+    let lifter = attempts(lifter, Movement::Dips, &[("80", true)]);
+    let lifter = attempts(lifter, Movement::Squat, &[("120", true)]);
+
+    let (weight_class_slug, weight_class_min) = match class {
+        Class::Slug(slug) => (Some(slug), None),
+        Class::Open(min) => (None, Some(decimal(min))),
     };
 
-    serde_json::from_str(&format!(
-        r#"{{
-          "format_version": "1.5.0",
-          "source": {{
-            "type": "manual",
-            "extracted_at": "2025-06-01T10:00:00Z",
-            "extractor": "test"
-          }},
-          "competition": {{
-            "name": "Test Open",
-            "slug": "test-open",
-            "federation": {{ "name": "Test Federation" }},
-            "start_date": "2025-06-01",
-            "end_date": "2025-06-01",
-            "country": "FR"
-          }},
-          "movements": [
-            {{ "name": "Muscle-up", "order": 1 }},
-            {{ "name": "Pull-up", "order": 2 }},
-            {{ "name": "Dips", "order": 3 }},
-            {{ "name": "Squat", "order": 4 }}
-          ],
-          "categories": [
-            {{
-              "name": "Test category",
-              "gender": "M",
-              {}
-              "athletes": [
-                {{
-                  "first_name": "John",
-                  "last_name": "Doe",
-                  "country": "FR",
-                  {}
-                  {}
-                  "status": "competed",
-                  "lifts": [
-                    {{
-                      "movement": "Muscle-up",
-                      "attempts": [
-                        {{ "attempt_number": 1, "weight": "50", "is_successful": true }}
-                      ]
-                    }},
-                    {{
-                      "movement": "Pull-up",
-                      "attempts": [
-                        {{ "attempt_number": 1, "weight": "60", "is_successful": true }}
-                      ]
-                    }},
-                    {{
-                      "movement": "Dips",
-                      "attempts": [
-                        {{ "attempt_number": 1, "weight": "80", "is_successful": true }}
-                      ]
-                    }},
-                    {{
-                      "movement": "Squat",
-                      "attempts": [
-                        {{ "attempt_number": 1, "weight": "120", "is_successful": true }}
-                      ]
-                    }}
-                  ]
-                }}
-              ]
-            }}
-          ]
-        }}"#,
-        weight_class, nationality, score
-    ))
-    .expect("fixture is a valid canonical file")
-}
+    let category = CategoryData {
+        name: "Test category".to_string(),
+        gender: Gender::M,
+        weight_class_slug,
+        weight_class_min,
+        weight_class_max: None,
+        athletes: vec![lifter],
+    };
 
-fn slug(slug: &str) -> String {
-    format!(r#""weight_class_slug": "{}","#, slug)
+    let mut canonical = common::meet("test-open", vec![category]);
+    canonical.competition.name = "Test Open".to_string();
+    canonical.competition.status = None;
+    canonical
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
@@ -100,7 +60,7 @@ async fn a_file_without_a_status_imports_as_completed(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
-        .import_to_database(canonical(&slug("M-73"), Some("FR")))
+        .import_to_database(canonical(Class::Slug(WeightClassSlug::M73)))
         .await
         .unwrap();
 
@@ -116,12 +76,12 @@ async fn a_file_without_a_status_imports_as_completed(pool: PgPool) {
 async fn reimport_keeps_a_status_the_file_does_not_state(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
-    let mut cancelled = canonical(&slug("M-73"), Some("FR"));
+    let mut cancelled = canonical(Class::Slug(WeightClassSlug::M73));
     cancelled.competition.status = Some(CompetitionStatus::Cancelled);
     transformer.import_to_database(cancelled).await.unwrap();
 
     transformer
-        .import_to_database(canonical(&slug("M-73"), Some("FR")))
+        .import_to_database(canonical(Class::Slug(WeightClassSlug::M73)))
         .await
         .unwrap();
 
@@ -134,35 +94,15 @@ async fn reimport_keeps_a_status_the_file_does_not_state(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn reimport_corrects_athlete_nationality(pool: PgPool) {
-    let transformer = CanonicalTransformer::new(&pool);
-
-    transformer
-        .import_to_database(canonical(&slug("M-73"), Some("US")))
-        .await
-        .unwrap();
-    transformer
-        .import_to_database(canonical(&slug("M-73"), Some("FR")))
-        .await
-        .unwrap();
-
-    let athlete = sqlx::query!(r#"SELECT nationality FROM athletes WHERE last_name = 'Doe'"#)
-        .fetch_one(&pool)
-        .await
-        .unwrap();
-    assert_eq!(athlete.nationality.as_deref(), Some("FR"));
-}
-
-#[sqlx::test(migrations = "../osl_db/migrations")]
 async fn reimport_corrects_category_bounds(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
-        .import_to_database(canonical(&slug("M-73"), Some("FR")))
+        .import_to_database(canonical(Class::Slug(WeightClassSlug::M73)))
         .await
         .unwrap();
     transformer
-        .import_to_database(canonical(&slug("M-80"), Some("FR")))
+        .import_to_database(canonical(Class::Slug(WeightClassSlug::M80)))
         .await
         .unwrap();
 
@@ -184,7 +124,7 @@ async fn open_class_is_stored_as_a_lower_bound(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
-        .import_to_database(canonical(r#""weight_class_min": "87","#, Some("FR")))
+        .import_to_database(canonical(Class::Open("87")))
         .await
         .unwrap();
 
@@ -202,31 +142,11 @@ async fn open_class_is_stored_as_a_lower_bound(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn reimport_without_nationality_keeps_the_known_one(pool: PgPool) {
-    let transformer = CanonicalTransformer::new(&pool);
-
-    transformer
-        .import_to_database(canonical(&slug("M-73"), Some("FR")))
-        .await
-        .unwrap();
-    transformer
-        .import_to_database(canonical(&slug("M-73"), None))
-        .await
-        .unwrap();
-
-    let athlete = sqlx::query!(r#"SELECT nationality FROM athletes WHERE last_name = 'Doe'"#)
-        .fetch_one(&pool)
-        .await
-        .unwrap();
-    assert_eq!(athlete.nationality.as_deref(), Some("FR"));
-}
-
-#[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_reported_score_is_kept_and_marked(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
-        .import_to_database(scored(&slug("M-73"), Some("FR"), r#""ris": "84.21","#))
+        .import_to_database(fixture(Class::Slug(WeightClassSlug::M73), Some("84.21")))
         .await
         .unwrap();
 
@@ -246,7 +166,7 @@ async fn a_computed_score_is_marked_as_ours(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
-        .import_to_database(canonical(&slug("M-73"), Some("FR")))
+        .import_to_database(canonical(Class::Slug(WeightClassSlug::M73)))
         .await
         .unwrap();
 
@@ -263,7 +183,7 @@ async fn a_computed_score_is_marked_as_ours(pool: PgPool) {
 async fn a_recompute_leaves_a_reported_score_alone(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
-    let file = scored(&slug("M-73"), Some("FR"), r#""ris": "84.21","#);
+    let file = fixture(Class::Slug(WeightClassSlug::M73), Some("84.21"));
     transformer.import_to_database(file.clone()).await.unwrap();
     transformer.import_to_database(file).await.unwrap();
 

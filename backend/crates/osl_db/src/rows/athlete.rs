@@ -8,7 +8,6 @@ pub struct AthleteRow {
     pub last_name: String,
     pub gender: String,
     pub created_at: chrono::NaiveDateTime,
-    pub nationality: Option<String>,
     pub country: String,
     pub profile_picture_url: Option<String>,
     pub slug: String,

@@ -1,6 +1,6 @@
 # Athlete data
 
-## social-instagram.csv
+## instagram.csv
 
 ```csv
 Name,Instagram

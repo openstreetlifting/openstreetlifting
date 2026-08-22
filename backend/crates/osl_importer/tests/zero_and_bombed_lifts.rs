@@ -6,53 +6,25 @@
 
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
-use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
+use osl_domain::Movement;
+use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use rust_decimal::Decimal;
-use serde_json::{Value, json};
 use sqlx::PgPool;
 
-fn lift(movement: &str, attempts: Vec<(&str, bool)>) -> Value {
-    json!({
-        "movement": movement,
-        "attempts": attempts.iter().enumerate().map(|(i, (w, ok))| json!({
-            "attempt_number": i as i16 + 1, "weight": w, "is_successful": ok
-        })).collect::<Vec<_>>(),
-    })
+mod common;
+
+use common::{attempts, import, men_80};
+
+fn athlete(first: &str, last: &str, lifts: Vec<(Movement, Vec<(&str, bool)>)>) -> AthleteData {
+    lifts
+        .into_iter()
+        .fold(common::athlete(first, last), |lifter, (movement, cells)| {
+            attempts(lifter, movement, &cells)
+        })
 }
 
-fn athlete(first: &str, last: &str, lifts: Vec<Value>) -> Value {
-    json!({
-        "first_name": first, "last_name": last, "country": "FR",
-        "bodyweight": 80, "status": "competed", "lifts": lifts,
-    })
-}
-
-fn meet(slug: &str, athletes: Vec<Value>) -> CanonicalFormat {
-    serde_json::from_value(json!({
-        "format_version": "1.5.0",
-        "source": { "type": "manual", "extracted_at": "2026-01-01T00:00:00Z", "extractor": "zero-lift-test" },
-        "competition": {
-            "name": slug, "slug": slug,
-            "federation": { "name": "Test Federation" },
-            "start_date": "2026-01-01", "end_date": "2026-01-01", "country": "FR",
-        },
-        "movements": [
-            { "name": "Muscle-up", "order": 1 }, { "name": "Pull-up", "order": 2 },
-            { "name": "Dips", "order": 3 }, { "name": "Squat", "order": 4 },
-        ],
-        "categories": [{
-            "name": "Men -80kg", "gender": "M", "weight_class_slug": "M-80",
-            "athletes": athletes,
-        }],
-    }))
-    .expect("test document should be a valid canonical file")
-}
-
-async fn import(pool: &PgPool, canonical: CanonicalFormat) {
-    CanonicalTransformer::new(pool)
-        .import_to_database(canonical)
-        .await
-        .expect("import should succeed");
+fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
+    common::meet(slug, vec![men_80(athletes)])
 }
 
 async fn best(pool: &PgPool, last_name: &str, movement: &str) -> Option<Decimal> {
@@ -70,33 +42,42 @@ async fn best(pool: &PgPool, last_name: &str, movement: &str) -> Option<Decimal>
 }
 
 /// Lifted bodyweight and nothing more, then missed twice going up.
-fn bodyweight_lifter() -> Value {
+fn bodyweight_lifter() -> AthleteData {
     athlete(
         "Swann",
         "Bodyweight",
         vec![
-            lift(
-                "Muscle-up",
+            (
+                Movement::MuscleUp,
                 vec![("0", true), ("2.5", false), ("2.5", false)],
             ),
-            lift("Pull-up", vec![("30", true)]),
-            lift("Dips", vec![("70", true)]),
-            lift("Squat", vec![("150", true)]),
+            (Movement::PullUp, vec![("30", true)]),
+            (Movement::Dips, vec![("70", true)]),
+            (Movement::Squat, vec![("150", true)]),
         ],
     )
 }
 
 /// Made two movements, missed every attempt in the other two.
-fn bomber() -> Value {
+fn bomber() -> AthleteData {
     athlete(
         "Tom",
         "Bombed",
         vec![
-            lift("Muscle-up", vec![("20", true), ("25", true), ("30", false)]),
-            lift("Pull-up", vec![("85", false), ("90", false), ("90", true)]),
-            lift("Dips", vec![("160", false), ("170", false), ("170", false)]),
-            lift(
-                "Squat",
+            (
+                Movement::MuscleUp,
+                vec![("20", true), ("25", true), ("30", false)],
+            ),
+            (
+                Movement::PullUp,
+                vec![("85", false), ("90", false), ("90", true)],
+            ),
+            (
+                Movement::Dips,
+                vec![("160", false), ("170", false), ("170", false)],
+            ),
+            (
+                Movement::Squat,
                 vec![("260", false), ("260", false), ("260", false)],
             ),
         ],

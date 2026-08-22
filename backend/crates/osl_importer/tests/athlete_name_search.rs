@@ -1,65 +1,19 @@
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
-use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
-use serde_json::{Value, json};
+use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-fn lift(movement: &str, weight: i32) -> Value {
-    json!({
-        "movement": movement,
-        "attempts": [{ "attempt_number": 1, "weight": weight, "is_successful": true }],
-    })
+mod common;
+
+use common::{import, lifting, men_80};
+
+fn athlete(first: &str, last: &str) -> AthleteData {
+    lifting(common::athlete(first, last), ["50", "90", "100", "150"])
 }
 
-fn athlete(first: &str, last: &str) -> Value {
-    json!({
-        "first_name": first,
-        "last_name": last,
-        "country": "FR",
-        "bodyweight": 80,
-        "status": "competed",
-        "lifts": [
-            lift("Muscle-up", 50),
-            lift("Pull-up", 90),
-            lift("Dips", 100),
-            lift("Squat", 150),
-        ],
-    })
-}
-
-fn meet(slug: &str, athletes: Vec<Value>) -> CanonicalFormat {
-    let movements: Vec<Value> = ["Muscle-up", "Pull-up", "Dips", "Squat"]
-        .iter()
-        .enumerate()
-        .map(|(index, name)| json!({ "name": name, "order": index as i16 + 1 }))
-        .collect();
-
-    let document = json!({
-        "format_version": "1.5.0",
-        "source": {
-            "type": "manual",
-            "extracted_at": "2026-01-01T00:00:00Z",
-            "extractor": "athlete-name-search-test",
-        },
-        "competition": {
-            "name": slug,
-            "slug": slug,
-            "federation": { "name": "Test Federation" },
-            "start_date": "2026-01-01",
-            "end_date": "2026-01-01",
-            "country": "FR",
-        },
-        "movements": movements,
-        "categories": [{
-            "name": "Men -80kg",
-            "gender": "M",
-            "weight_class_slug": "M-80",
-            "athletes": athletes,
-        }],
-    });
-
-    serde_json::from_value(document).expect("test document should be a valid canonical file")
+fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
+    common::meet(slug, vec![men_80(athletes)])
 }
 
 fn filter(name: Option<&str>) -> RankingFilter {
@@ -79,17 +33,18 @@ fn filter(name: Option<&str>) -> RankingFilter {
 }
 
 async fn seed(pool: &PgPool) {
-    CanonicalTransformer::new(pool)
-        .import_to_database(meet(
+    import(
+        pool,
+        meet(
             "search-meet",
             vec![
                 athlete("Jean", "Dupont"),
                 athlete("Marie", "Dupont"),
                 athlete("Pierre", "Martin"),
             ],
-        ))
-        .await
-        .expect("import should succeed");
+        ),
+    )
+    .await;
 }
 
 async fn search(pool: &PgPool, filter: &RankingFilter) -> (Vec<String>, i64) {

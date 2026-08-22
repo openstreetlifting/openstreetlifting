@@ -5,83 +5,32 @@
 
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
-use osl_importer::canonical::{models::CanonicalFormat, transformer::CanonicalTransformer};
-use serde_json::{Value, json};
+use osl_domain::Movement;
+use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use sqlx::PgPool;
 
-fn lift(movement: &str, weight: i32) -> Value {
-    json!({
-        "movement": movement,
-        "attempts": [{ "attempt_number": 1, "weight": weight, "is_successful": true }],
-    })
-}
+mod common;
 
-fn athlete(first: &str, last: &str, lifts: Vec<Value>) -> Value {
-    json!({
-        "first_name": first,
-        "last_name": last,
-        "country": "FR",
-        "bodyweight": 80,
-        "status": "competed",
-        "lifts": lifts,
-    })
-}
+use common::{attempts, import, lifting, men_80};
 
-/// A competition contesting exactly the movements given.
-fn meet(slug: &str, movements: &[&str], athletes: Vec<Value>) -> CanonicalFormat {
-    let declared: Vec<Value> = movements
-        .iter()
-        .enumerate()
-        .map(|(index, name)| json!({ "name": name, "order": index as i16 + 1 }))
-        .collect();
-
-    let document = json!({
-        "format_version": "1.5.0",
-        "source": {
-            "type": "manual",
-            "extracted_at": "2026-01-01T00:00:00Z",
-            "extractor": "event-ranking-test",
-        },
-        "competition": {
-            "name": slug,
-            "slug": slug,
-            "federation": { "name": "Test Federation" },
-            "start_date": "2026-01-01",
-            "end_date": "2026-01-01",
-            "country": "FR",
-        },
-        "movements": declared,
-        "categories": [{
-            "name": "Men -80kg",
-            "gender": "M",
-            "weight_class_slug": "M-80",
-            "athletes": athletes,
-        }],
-    });
-
-    serde_json::from_value(document).expect("test document should be a valid canonical file")
-}
-
-const ALL_FOUR: &[&str] = &["Muscle-up", "Pull-up", "Dips", "Squat"];
-
-fn four_lift_athlete(first: &str, last: &str, muscleup: i32) -> Value {
-    athlete(
-        first,
-        last,
-        vec![
-            lift("Muscle-up", muscleup),
-            lift("Pull-up", 90),
-            lift("Dips", 100),
-            lift("Squat", 150),
-        ],
+fn athlete(first: &str, last: &str, lifts: Vec<(Movement, &str)>) -> AthleteData {
+    lifts.into_iter().fold(
+        common::athlete(first, last),
+        |lifter, (movement, weight)| attempts(lifter, movement, &[(weight, true)]),
     )
 }
 
-async fn import(pool: &PgPool, canonical: CanonicalFormat) {
-    CanonicalTransformer::new(pool)
-        .import_to_database(canonical)
-        .await
-        .expect("import should succeed");
+/// A competition contesting exactly the movements given.
+fn meet(slug: &str, movements: &[Movement], athletes: Vec<AthleteData>) -> CanonicalFormat {
+    let mut canonical = common::meet(slug, vec![men_80(athletes)]);
+    canonical.movements = movements.to_vec();
+    canonical
+}
+
+const ALL_FOUR: &[Movement] = &Movement::ALL;
+
+fn four_lift_athlete(first: &str, last: &str, muscleup: &str) -> AthleteData {
+    lifting(common::athlete(first, last), [muscleup, "90", "100", "150"])
 }
 
 fn filter(movement: RankingMovement) -> RankingFilter {
@@ -116,7 +65,7 @@ async fn seed_both_events(pool: &PgPool) {
         meet(
             "four-lift-meet",
             ALL_FOUR,
-            vec![four_lift_athlete("Ada", "Fourlift", 50)],
+            vec![four_lift_athlete("Ada", "Fourlift", "50")],
         ),
     )
     .await;
@@ -125,8 +74,12 @@ async fn seed_both_events(pool: &PgPool) {
         pool,
         meet(
             "muscle-up-only",
-            &["Muscle-up"],
-            vec![athlete("Grace", "Specialist", vec![lift("Muscle-up", 70)])],
+            &[Movement::MuscleUp],
+            vec![athlete(
+                "Grace",
+                "Specialist",
+                vec![(Movement::MuscleUp, "70")],
+            )],
         ),
     )
     .await;
@@ -230,14 +183,14 @@ async fn a_three_movement_meet_is_its_own_event(pool: PgPool) {
         &pool,
         meet(
             "three-lift-meet",
-            &["Muscle-up", "Pull-up", "Dips"],
+            &[Movement::MuscleUp, Movement::PullUp, Movement::Dips],
             vec![athlete(
                 "Alan",
                 "Threelift",
                 vec![
-                    lift("Muscle-up", 60),
-                    lift("Pull-up", 95),
-                    lift("Dips", 110),
+                    (Movement::MuscleUp, "60"),
+                    (Movement::PullUp, "95"),
+                    (Movement::Dips, "110"),
                 ],
             )],
         ),
@@ -261,7 +214,7 @@ async fn dropping_a_movement_from_the_file_changes_the_event(pool: PgPool) {
         meet(
             "shrinking-meet",
             ALL_FOUR,
-            vec![four_lift_athlete("Ada", "Fourlift", 50)],
+            vec![four_lift_athlete("Ada", "Fourlift", "50")],
         ),
     )
     .await;
@@ -271,14 +224,14 @@ async fn dropping_a_movement_from_the_file_changes_the_event(pool: PgPool) {
         &pool,
         meet(
             "shrinking-meet",
-            &["Muscle-up", "Pull-up", "Dips"],
+            &[Movement::MuscleUp, Movement::PullUp, Movement::Dips],
             vec![athlete(
                 "Ada",
                 "Fourlift",
                 vec![
-                    lift("Muscle-up", 50),
-                    lift("Pull-up", 90),
-                    lift("Dips", 100),
+                    (Movement::MuscleUp, "50"),
+                    (Movement::PullUp, "90"),
+                    (Movement::Dips, "100"),
                 ],
             )],
         ),

@@ -64,7 +64,7 @@ impl<'a> CompetitionRepository<'a> {
 
             let movements = sqlx::query_as!(
                 CompetitionMovementRow,
-                "SELECT competition_id, movement_name, is_required, display_order
+                "SELECT competition_id, movement_name, display_order
                  FROM competition_movements
                  WHERE competition_id = $1
                  ORDER BY display_order",
@@ -218,7 +218,7 @@ impl<'a> CompetitionRepository<'a> {
                 let athlete = sqlx::query_as!(
                     AthleteRow,
                     r#"SELECT athlete_id, first_name, last_name, gender, created_at,
-                            nationality, country, profile_picture_url, slug,
+                            country, profile_picture_url, slug,
                             COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
                      FROM athletes
                      WHERE athlete_id = $1"#,
@@ -229,8 +229,7 @@ impl<'a> CompetitionRepository<'a> {
 
                 let lifts = sqlx::query_as!(
                     LiftRow,
-                    "SELECT lift_id, participant_id, movement_name, max_weight,
-                            equipment_setting, updated_at
+                    "SELECT lift_id, participant_id, movement_name, max_weight, updated_at
                      FROM lifts
                      WHERE participant_id = $1",
                     participant.participant_id
@@ -243,7 +242,7 @@ impl<'a> CompetitionRepository<'a> {
 
                 for lift in lifts {
                     let attempts = sqlx::query!(
-                        "SELECT attempt_number, weight, is_successful, passing_judges, no_rep_reason
+                        "SELECT attempt_number, weight, is_successful
                          FROM attempts
                          WHERE lift_id = $1
                          ORDER BY attempt_number",
@@ -263,8 +262,6 @@ impl<'a> CompetitionRepository<'a> {
                                 attempt_number: a.attempt_number,
                                 weight: a.weight,
                                 is_successful: a.is_successful,
-                                passing_judges: a.passing_judges,
-                                no_rep_reason: a.no_rep_reason,
                             })
                             .collect(),
                     });

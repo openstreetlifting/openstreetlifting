@@ -7,7 +7,6 @@ export interface Federation {
 
 export interface Movement {
   movement_name: string;
-  is_required: boolean;
   display_order: number | null;
 }
 
@@ -47,8 +46,6 @@ export interface Attempt {
   attempt_number: number;
   weight: string;
   is_successful: boolean;
-  passing_judges: number | null;
-  no_rep_reason: string | null;
 }
 
 export interface Lift {
