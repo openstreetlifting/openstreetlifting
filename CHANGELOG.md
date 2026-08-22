@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.11.0...v0.12.0) (2026-08-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **importer:** replace canonical JSON with meet.toml and entries.csv ([#420](https://github.com/openstreetlifting/openstreetlifting/issues/420))
+
+### Features
+
+* **importer:** replace canonical JSON with meet.toml and entries.csv ([#420](https://github.com/openstreetlifting/openstreetlifting/issues/420)) ([2768098](https://github.com/openstreetlifting/openstreetlifting/commit/2768098385fe2fe586c21c27d71f857a2fd193e0))
+
 ## [0.11.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.10.0...v0.11.0) (2026-08-21)
 
 
