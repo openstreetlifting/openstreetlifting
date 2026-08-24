@@ -1,9 +1,9 @@
 use chrono::Datelike;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
 use osl_domain::{
-    AthleteStatus, CountryCode, Gender, Movement, WeightClass, WeightClassSlug, event,
+    AthleteStatus, CountryCode, Gender, Movement, WeightClass, WeightClassSlug, event, slugify,
 };
 use rust_decimal::Decimal;
 
@@ -26,25 +26,27 @@ pub fn slug_of(directory: &Path) -> Result<String> {
 }
 
 /// The competition page links to its files at
-/// data/competitions/{year}/{slug}/, so a directory stored anywhere else would
-/// publish a dead link. The path is part of the contract, not a habit.
+/// data/competitions/{federation}/{year}/{slug}/, so a directory stored
+/// anywhere else would publish a dead link. The path is part of the contract,
+/// not a habit.
 pub fn check_location(directory: &Path, canonical: &CanonicalFormat) -> Result<()> {
-    let year = canonical.competition.start_date.year().to_string();
+    let expected = expected_location(canonical);
 
-    let parent = directory
-        .parent()
-        .and_then(|parent| parent.file_name())
-        .and_then(|name| name.to_str());
-
-    if parent == Some(year.as_str()) {
+    if directory.ends_with(&expected) {
         return Ok(());
     }
 
     Err(ImporterError::ValidationError(format!(
-        "{} starts in {year}, so it belongs in {year}/{}",
+        "{} belongs in data/competitions/{}",
         directory.display(),
-        canonical.competition.slug
+        expected.display()
     )))
+}
+
+fn expected_location(canonical: &CanonicalFormat) -> PathBuf {
+    PathBuf::from(slugify(&canonical.competition.federation.name))
+        .join(canonical.competition.start_date.year().to_string())
+        .join(&canonical.competition.slug)
 }
 
 pub fn is_competition_directory(path: &Path) -> bool {

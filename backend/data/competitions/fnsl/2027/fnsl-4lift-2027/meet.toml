@@ -1,0 +1,14 @@
+format_version = "2.0.0"
+event = "MPDS"
+sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
+
+[competition]
+name = "4Lift"
+start_date = "2027-11-20"
+end_date = "2027-11-21"
+country = "FR"
+status = "upcoming"
+
+[federation]
+name = "FNSL"
+country = "FR"

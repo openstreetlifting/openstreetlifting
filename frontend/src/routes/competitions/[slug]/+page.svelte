@@ -12,7 +12,7 @@
   } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
-  import { formatDate, formatLocation, countryName } from '$lib/utils';
+  import { formatDate, formatLocation, countryName, slugify } from '$lib/utils';
   import { GitHubIcon } from '$lib/components/icons';
   import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
@@ -20,10 +20,19 @@
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
 
-  // Files live at data/competitions/{year}/{slug}/, which the importer enforces.
+  const published = $derived(competition.categories.length > 0);
+
+  // Files live at data/competitions/{federation}/{year}/{slug}/, which the
+  // importer enforces. The year is read off the string rather than a Date, so a
+  // viewer west of UTC does not shift a January meet into the previous year.
   const editPath = $derived(
     competition.start_date
-      ? `${new Date(competition.start_date).getFullYear()}/${competition.slug}/entries.csv`
+      ? [
+          slugify(competition.federation.name),
+          competition.start_date.slice(0, 4),
+          competition.slug,
+          published ? 'entries.csv' : 'meet.toml',
+        ].join('/')
       : null
   );
 
@@ -139,66 +148,76 @@
     {/if}
   </div>
 
-  <div
-    class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/30 p-3"
-  >
-    <div class="w-full sm:w-64">
-      <SearchInput
-        bind:value={table.searchFilter}
-        placeholder="Search an athlete"
-        onSearch={() => table.handleFilterChange()}
-      />
-    </div>
+  {#if published}
+    <div
+      class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/30 p-3"
+    >
+      <div class="w-full sm:w-64">
+        <SearchInput
+          bind:value={table.searchFilter}
+          placeholder="Search an athlete"
+          onSearch={() => table.handleFilterChange()}
+        />
+      </div>
 
-    <select
-      bind:value={table.countryFilter}
-      onchange={() => table.handleFilterChange()}
-      class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
-    >
-      <option value={null}>All Countries</option>
-      {#each data.countries as countryOption (countryOption)}
-        <option value={countryOption}>{countryName(countryOption)}</option>
-      {/each}
-    </select>
-    <select
-      bind:value={table.genderFilter}
-      onchange={() => {
-        table.categoryFilter = null;
-        table.handleFilterChange();
-      }}
-      class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
-    >
-      {#each genders as gender (gender.label)}
-        <option value={gender.value}>{gender.label}</option>
-      {/each}
-    </select>
-    <select
-      bind:value={table.categoryFilter}
-      onchange={() => table.handleFilterChange()}
-      class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
-    >
-      <option value={null}>All Classes</option>
-      {#each data.classes as classOption (classOption)}
-        <option value={classOption}>{classOption}</option>
-      {/each}
-    </select>
-
-    <div class="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
-      <label for="sort-by" class="text-sm text-zinc-500">Sort by</label>
       <select
-        id="sort-by"
-        bind:value={table.movementFilter}
+        bind:value={table.countryFilter}
         onchange={() => table.handleFilterChange()}
-        class="flex-1 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:flex-none"
+        class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
       >
-        {#each sorts as sort (sort.value)}
-          <option value={sort.value}>{sort.label}</option>
+        <option value={null}>All Countries</option>
+        {#each data.countries as countryOption (countryOption)}
+          <option value={countryOption}>{countryName(countryOption)}</option>
         {/each}
       </select>
-    </div>
-  </div>
+      <select
+        bind:value={table.genderFilter}
+        onchange={() => {
+          table.categoryFilter = null;
+          table.handleFilterChange();
+        }}
+        class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
+      >
+        {#each genders as gender (gender.label)}
+          <option value={gender.value}>{gender.label}</option>
+        {/each}
+      </select>
+      <select
+        bind:value={table.categoryFilter}
+        onchange={() => table.handleFilterChange()}
+        class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
+      >
+        <option value={null}>All Classes</option>
+        {#each data.classes as classOption (classOption)}
+          <option value={classOption}>{classOption}</option>
+        {/each}
+      </select>
 
-  {#if rankings.length === 0 && !busy}
+      <div class="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
+        <label for="sort-by" class="text-sm text-zinc-500">Sort by</label>
+        <select
+          id="sort-by"
+          bind:value={table.movementFilter}
+          onchange={() => table.handleFilterChange()}
+          class="flex-1 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:flex-none"
+        >
+          {#each sorts as sort (sort.value)}
+            <option value={sort.value}>{sort.label}</option>
+          {/each}
+        </select>
+      </div>
+    </div>
+  {/if}
+
+  {#if !published}
+    <div class="border-l-2 border-zinc-700 py-1 pl-5">
+      <p class="text-lg text-white">This meet has not been lifted yet.</p>
+      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+        {competition.name} is scheduled for {formatDate(competition.start_date)}. There is nothing
+        to rank until the platform closes, and the results will land on this page once they are in.
+      </p>
+    </div>
+  {:else if rankings.length === 0 && !busy}
     <Card class="p-8">
       <div class="text-center">
         <p class="text-zinc-400">No results found for the selected filters</p>

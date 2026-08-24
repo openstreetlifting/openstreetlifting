@@ -10,12 +10,14 @@ export interface Movement {
   display_order: number | null;
 }
 
+export type CompetitionStatus = 'draft' | 'upcoming' | 'live' | 'completed' | 'cancelled';
+
 export interface Competition {
   competition_id: string;
   name: string;
   created_at: string;
   slug: string;
-  status: 'upcoming' | 'ongoing' | 'completed';
+  status: CompetitionStatus;
   city: string | null;
   region: string | null;
   country: string | null;
@@ -26,9 +28,10 @@ export interface Competition {
 }
 
 export interface CompetitionFilters {
-  status?: 'upcoming' | 'ongoing' | 'completed';
+  status?: CompetitionStatus;
   country?: string;
   search?: string;
+  page?: number;
 }
 
 export interface AthleteInfo {
@@ -83,7 +86,7 @@ export interface CompetitionDetail {
   competition_id: string;
   name: string;
   slug: string;
-  status: string;
+  status: CompetitionStatus;
   city: string | null;
   region: string | null;
   country: string | null;

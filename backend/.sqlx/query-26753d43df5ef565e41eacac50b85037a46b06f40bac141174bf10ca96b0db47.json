@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT COUNT(*) as \"count!\" FROM competitions",
+  "query": "SELECT COUNT(*) as \"count!\" FROM competitions WHERE $1::text IS NULL OR status = $1",
   "describe": {
     "columns": [
       {
@@ -11,11 +11,13 @@
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Text"
+      ]
     },
     "nullable": [
       null
     ]
   },
-  "hash": "54f67542b31a200ccc16b226a0f781dc7a79cbdb3d345538ee7b944b6dbb42b0"
+  "hash": "26753d43df5ef565e41eacac50b85037a46b06f40bac141174bf10ca96b0db47"
 }

@@ -1,0 +1,15 @@
+format_version = "2.0.0"
+sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
+
+[competition]
+name = "Interrégionale Sud-Est"
+start_date = "2027-05-01"
+end_date = "2027-05-02"
+city = "Lyon"
+region = "Auvergne-Rhône-Alpes"
+country = "FR"
+status = "upcoming"
+
+[federation]
+name = "FNSL"
+country = "FR"

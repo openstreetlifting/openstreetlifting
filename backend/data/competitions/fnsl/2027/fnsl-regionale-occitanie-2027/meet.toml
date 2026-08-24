@@ -1,0 +1,15 @@
+format_version = "2.0.0"
+sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
+
+[competition]
+name = "Régionale Occitanie"
+start_date = "2027-02-20"
+end_date = "2027-02-21"
+city = "Montpellier"
+region = "Occitanie"
+country = "FR"
+status = "upcoming"
+
+[federation]
+name = "FNSL"
+country = "FR"

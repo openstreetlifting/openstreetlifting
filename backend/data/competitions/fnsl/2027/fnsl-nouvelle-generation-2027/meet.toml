@@ -1,0 +1,13 @@
+format_version = "2.0.0"
+sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
+
+[competition]
+name = "Nouvelle Génération"
+start_date = "2027-11-06"
+end_date = "2027-11-07"
+country = "FR"
+status = "upcoming"
+
+[federation]
+name = "FNSL"
+country = "FR"

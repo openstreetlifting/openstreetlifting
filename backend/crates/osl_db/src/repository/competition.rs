@@ -25,32 +25,46 @@ impl<'a> CompetitionRepository<'a> {
         Self { pool }
     }
 
-    /// Returns one page of competitions plus the unpaginated total.
-    pub async fn list(&self, page: &Page) -> Result<(Vec<CompetitionRow>, i64)> {
+    /// The status is filtered here rather than on the page, so the total the
+    /// pager divides counts the same rows it pages through.
+    pub async fn list(
+        &self,
+        page: &Page,
+        status: Option<&str>,
+    ) -> Result<(Vec<CompetitionRow>, i64)> {
         let competitions = sqlx::query_as!(
             CompetitionRow,
             r#"
             SELECT competition_id, name, created_at, slug, status, federation_id,
                    city, region, country, start_date, end_date
             FROM competitions
+            WHERE $3::text IS NULL OR status = $3
             ORDER BY start_date DESC, created_at DESC
             LIMIT $1 OFFSET $2
             "#,
             page.limit,
-            page.offset
+            page.offset,
+            status
         )
         .fetch_all(self.pool)
         .await?;
 
-        let total = sqlx::query_scalar!(r#"SELECT COUNT(*) as "count!" FROM competitions"#)
-            .fetch_one(self.pool)
-            .await?;
+        let total = sqlx::query_scalar!(
+            r#"SELECT COUNT(*) as "count!" FROM competitions WHERE $1::text IS NULL OR status = $1"#,
+            status
+        )
+        .fetch_one(self.pool)
+        .await?;
 
         Ok((competitions, total))
     }
 
-    pub async fn list_with_details(&self, page: &Page) -> Result<(Vec<CompetitionListItem>, i64)> {
-        let (competitions, total) = self.list(page).await?;
+    pub async fn list_with_details(
+        &self,
+        page: &Page,
+        status: Option<&str>,
+    ) -> Result<(Vec<CompetitionListItem>, i64)> {
+        let (competitions, total) = self.list(page, status).await?;
         let mut results = Vec::with_capacity(competitions.len());
 
         for competition in competitions {
