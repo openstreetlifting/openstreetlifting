@@ -1,3 +1,4 @@
+use osl_domain::Gender;
 use rust_decimal::Decimal;
 use sqlx::FromRow;
 use uuid::Uuid;
@@ -10,7 +11,10 @@ pub struct AthleteCompetitionRow {
     pub competition_name: String,
     pub competition_slug: String,
     pub competition_date: Option<chrono::NaiveDate>,
-    pub category_name: String,
+    pub division: Option<String>,
+    pub category_gender: Gender,
+    pub weight_class_min: Option<Decimal>,
+    pub weight_class_max: Option<Decimal>,
     pub rank: Option<i32>,
     pub total: Option<Decimal>,
     pub ris_score: Option<Decimal>,

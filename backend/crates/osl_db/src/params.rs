@@ -4,6 +4,7 @@
 //! independent of the HTTP layer. osl_api converts its validated request
 //! bodies into these on the way in.
 
+use osl_domain::WeightClass;
 use rust_decimal::Decimal;
 use uuid::Uuid;
 
@@ -74,9 +75,7 @@ pub struct RankingFilter {
     /// Which event a total is ranked within. Ignored when ranking by a single
     /// movement, since those compare across events.
     pub event: String,
-    /// Weight class suffix, e.g. `-73kg`, matched against the category name
-    /// regardless of gender.
-    pub category: Option<String>,
+    pub category: Option<WeightClass>,
     pub year: Option<i32>,
     /// Narrows the ranking to one competition, e.g. for a per-meet leaderboard.
     pub competition_id: Option<Uuid>,

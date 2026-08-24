@@ -36,6 +36,8 @@ pub struct AthleteCompetitionSummary {
     pub competition_slug: String,
     pub competition_date: Option<chrono::NaiveDate>,
     pub category_name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub division: Option<String>,
     pub rank: Option<i32>,
     pub total: Option<rust_decimal::Decimal>,
     pub ris_score: Option<rust_decimal::Decimal>,
@@ -77,7 +79,13 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
             competition_name: row.competition_name,
             competition_slug: row.competition_slug,
             competition_date: row.competition_date,
-            category_name: row.category_name,
+            category_name: osl_domain::category_label(
+                None,
+                row.category_gender,
+                row.weight_class_min,
+                row.weight_class_max,
+            ),
+            division: row.division,
             rank: row.rank,
             total: row.total,
             ris_score: row.ris_score,

@@ -1,12 +1,13 @@
 use chrono::NaiveDate;
 use osl_db::projections::competition::{
-    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem,
+    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem, Contest,
     LiftDetail as DbLiftDetail, ParticipantDetail as DbParticipantDetail,
 };
 use osl_db::rows::{
-    athlete::AthleteRow, category::CategoryRow, competition::CompetitionRow,
-    competition_movement::CompetitionMovementRow, federation::FederationRow,
+    athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
+    federation::FederationRow,
 };
+use osl_domain::WeightClass;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -59,11 +60,13 @@ pub struct CategoryDetail {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CategoryInfo {
-    pub category_id: uuid::Uuid,
+    /// What the contest is called, e.g. `Elite Men -80kg`.
     pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub division: Option<String>,
     pub gender: String,
-    pub weight_class_min: Option<rust_decimal::Decimal>,
-    pub weight_class_max: Option<rust_decimal::Decimal>,
+    /// The class alone, e.g. `-80kg`.
+    pub weight_class: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -145,14 +148,18 @@ impl From<CompetitionMovementRow> for MovementInfo {
     }
 }
 
-impl From<CategoryRow> for CategoryInfo {
-    fn from(row: CategoryRow) -> Self {
+impl From<Contest> for CategoryInfo {
+    fn from(contest: Contest) -> Self {
         Self {
-            category_id: row.category_id,
-            name: row.name,
-            gender: row.gender,
-            weight_class_min: row.weight_class_min,
-            weight_class_max: row.weight_class_max,
+            name: osl_domain::category_label(
+                contest.division.as_deref(),
+                contest.gender,
+                contest.weight_class_min,
+                contest.weight_class_max,
+            ),
+            division: contest.division,
+            gender: contest.gender.as_str().to_string(),
+            weight_class: WeightClass::label(contest.weight_class_min, contest.weight_class_max),
         }
     }
 }

@@ -1,6 +1,5 @@
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum WeightClassSlug {
@@ -95,18 +94,61 @@ impl std::str::FromStr for WeightClassSlug {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WeightClass {
-    pub id: Uuid,
-    pub slug: WeightClassSlug,
-    pub gender: String,
-    pub limit_kg: Option<Decimal>,
-    pub is_plus: bool,
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum WeightClass {
+    UpTo(Decimal),
+    Above(Decimal),
+}
+
+impl WeightClass {
+    pub fn of(min: Option<Decimal>, max: Option<Decimal>) -> Option<Self> {
+        match (min, max) {
+            (_, Some(max)) => Some(Self::UpTo(max)),
+            (Some(min), None) => Some(Self::Above(min)),
+            (None, None) => None,
+        }
+    }
+
+    pub fn label(min: Option<Decimal>, max: Option<Decimal>) -> String {
+        Self::of(min, max)
+            .map(|class| class.to_string())
+            .unwrap_or_default()
+    }
+}
+
+impl std::fmt::Display for WeightClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::UpTo(max) => write!(f, "-{}kg", max.normalize()),
+            Self::Above(min) => write!(f, "+{}kg", min.normalize()),
+        }
+    }
+}
+
+impl std::str::FromStr for WeightClass {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let invalid = || format!("'{s}' is not a weight class, expected -80kg or +101kg");
+        let digits = s.trim().strip_suffix("kg").ok_or_else(invalid)?;
+
+        if let Some(max) = digits.strip_prefix('-') {
+            return max.parse().map(Self::UpTo).map_err(|_| invalid());
+        }
+
+        digits
+            .strip_prefix('+')
+            .ok_or_else(invalid)?
+            .parse()
+            .map(Self::Above)
+            .map_err(|_| invalid())
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::str::FromStr;
 
     #[test]
     fn lightest_class_has_no_lower_bound() {
@@ -130,5 +172,46 @@ mod tests {
             WeightClassSlug::MPlus101.bounds(),
             (Some(Decimal::from(101)), None)
         );
+    }
+
+    #[test]
+    fn a_capped_class_is_named_by_its_ceiling() {
+        let (min, max) = WeightClassSlug::M80.bounds();
+        assert_eq!(WeightClass::label(min, max), "-80kg");
+    }
+
+    #[test]
+    fn an_open_class_is_named_by_its_floor() {
+        let (min, max) = WeightClassSlug::MPlus101.bounds();
+        assert_eq!(WeightClass::label(min, max), "+101kg");
+    }
+
+    #[test]
+    fn a_class_without_bounds_has_no_name() {
+        assert_eq!(WeightClass::label(None, None), "");
+    }
+
+    #[test]
+    fn trailing_zeros_are_stripped() {
+        let max = Decimal::from_str("52.00").unwrap();
+        assert_eq!(WeightClass::label(None, Some(max)), "-52kg");
+    }
+
+    #[test]
+    fn labels_round_trip() {
+        for class in [
+            WeightClass::UpTo(Decimal::from(80)),
+            WeightClass::Above(Decimal::from(101)),
+            WeightClass::UpTo(Decimal::from_str("52.5").unwrap()),
+        ] {
+            assert_eq!(WeightClass::from_str(&class.to_string()), Ok(class));
+        }
+    }
+
+    #[test]
+    fn a_label_without_a_sign_is_not_a_class() {
+        assert!(WeightClass::from_str("80kg").is_err());
+        assert!(WeightClass::from_str("-80").is_err());
+        assert!(WeightClass::from_str("Men -80kg").is_err());
     }
 }

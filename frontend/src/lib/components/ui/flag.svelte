@@ -33,7 +33,7 @@
   /* The flag artwork sits inset on a square canvas rather than edge to edge,
      so `cover` on a flag-ratio box crops the padding away. */
   .flag {
-    --height: 1.6em;
+    --height: var(--flag-height, 1.6em);
     display: inline-block;
     vertical-align: middle;
     width: calc(var(--height) * 36 / 26);

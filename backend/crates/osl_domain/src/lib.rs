@@ -1,4 +1,5 @@
 pub mod athlete_status;
+pub mod category;
 pub mod competition_status;
 pub mod country;
 pub mod error;
@@ -11,6 +12,7 @@ pub mod ris_source;
 pub mod weight_class;
 
 pub use athlete_status::AthleteStatus;
+pub use category::category_label;
 pub use competition_status::CompetitionStatus;
 pub use country::CountryCode;
 pub use event::{FULL_EVENT, is_full_event};

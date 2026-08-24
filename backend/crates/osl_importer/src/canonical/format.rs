@@ -6,7 +6,9 @@ use super::models::{CanonicalFormat, CategoryData};
 pub fn normalize(canonical: &mut CanonicalFormat) {
     canonical.movements.sort_by_key(|m| m.display_order());
     canonical.movements.dedup();
-    canonical.categories.sort_by_key(category_order);
+    canonical
+        .categories
+        .sort_by(|a, b| category_order(a).cmp(&category_order(b)));
 
     for category in &mut canonical.categories {
         category.athletes.sort_by(|a, b| {
@@ -28,19 +30,17 @@ pub fn normalize(canonical: &mut CanonicalFormat) {
     }
 }
 
-fn category_order(category: &CategoryData) -> (u8, Decimal, Decimal) {
+fn category_order(category: &CategoryData) -> (Option<&str>, u8, Decimal, Decimal) {
     let gender = match category.gender {
         Gender::M => 0,
         Gender::F => 1,
         Gender::Mx => 2,
     };
 
-    let (min, max) = match category.weight_class_slug.as_ref() {
-        Some(slug) => slug.bounds(),
-        None => (category.weight_class_min, category.weight_class_max),
-    };
+    let (min, max) = category.bounds();
 
     (
+        category.division.as_deref(),
         gender,
         max.unwrap_or(Decimal::MAX),
         min.unwrap_or(Decimal::ZERO),

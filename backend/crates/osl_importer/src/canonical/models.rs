@@ -1,11 +1,12 @@
 use chrono::NaiveDate;
 use osl_domain::{
     AthleteStatus, CompetitionStatus, CountryCode, Gender, Movement, WeightClassSlug,
+    category_label,
 };
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-pub const FORMAT_VERSION: &str = "2.0.0";
+pub const FORMAT_VERSION: &str = "2.1.0";
 
 #[derive(Debug, Clone)]
 pub struct CanonicalFormat {
@@ -42,12 +43,26 @@ pub struct FederationData {
 
 #[derive(Debug, Clone)]
 pub struct CategoryData {
-    pub name: String,
+    pub division: Option<String>,
     pub gender: Gender,
     pub weight_class_slug: Option<WeightClassSlug>,
     pub weight_class_min: Option<Decimal>,
     pub weight_class_max: Option<Decimal>,
     pub athletes: Vec<AthleteData>,
+}
+
+impl CategoryData {
+    pub fn bounds(&self) -> (Option<Decimal>, Option<Decimal>) {
+        match self.weight_class_slug.as_ref() {
+            Some(slug) => slug.bounds(),
+            None => (self.weight_class_min, self.weight_class_max),
+        }
+    }
+
+    pub fn label(&self) -> String {
+        let (min, max) = self.bounds();
+        category_label(self.division.as_deref(), self.gender, min, max)
+    }
 }
 
 #[derive(Debug, Clone)]

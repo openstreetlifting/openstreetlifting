@@ -66,9 +66,10 @@ export interface Participant {
 }
 
 export interface Category {
-  category_id: string;
   name: string;
+  division?: string | null;
   gender: string;
+  weight_class: string;
   weight_class_min: string | null;
   weight_class_max: string | null;
 }

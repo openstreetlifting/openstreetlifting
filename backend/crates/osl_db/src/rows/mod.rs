@@ -1,7 +1,6 @@
 pub mod athlete;
 pub mod athlete_social;
 pub mod attempt;
-pub mod category;
 pub mod competition;
 pub mod competition_movement;
 pub mod competition_participant;

@@ -2,7 +2,9 @@ use chrono::Datelike;
 use std::path::Path;
 use std::str::FromStr;
 
-use osl_domain::{AthleteStatus, CountryCode, Gender, Movement, WeightClassSlug, event};
+use osl_domain::{
+    AthleteStatus, CountryCode, Gender, Movement, WeightClass, WeightClassSlug, event,
+};
 use rust_decimal::Decimal;
 
 use super::entries::{self, Columns};
@@ -150,21 +152,28 @@ fn read_entries(path: &Path, movements: &[Movement]) -> Result<Vec<CategoryData>
             ImporterError::ValidationError(format!("{} line {line}: {e}", path.display()))
         })?;
 
-        let (gender, bound, athlete) = read_entry(&columns, &record, movements).map_err(|e| {
-            ImporterError::ValidationError(format!("{} line {line}: {e}", path.display()))
-        })?;
+        let (division, gender, bound, athlete) =
+            read_entry(&columns, &record, movements).map_err(|e| {
+                ImporterError::ValidationError(format!("{} line {line}: {e}", path.display()))
+            })?;
 
-        let name = category_name(gender, bound);
+        let (slug, min, max) = weight_class_bounds(gender, bound);
 
-        if let Some(existing) = categories.iter_mut().find(|c| c.name == name) {
+        let existing = categories.iter_mut().find(|c| {
+            c.division == division
+                && c.gender == gender
+                && c.weight_class_slug == slug
+                && c.weight_class_min == min
+                && c.weight_class_max == max
+        });
+
+        if let Some(existing) = existing {
             existing.athletes.push(athlete);
             continue;
         }
 
-        let (slug, min, max) = weight_class_bounds(gender, bound);
-
         categories.push(CategoryData {
-            name,
+            division,
             gender,
             weight_class_slug: slug,
             weight_class_min: min,
@@ -176,13 +185,14 @@ fn read_entries(path: &Path, movements: &[Movement]) -> Result<Vec<CategoryData>
     Ok(categories)
 }
 
-type Entry = (Gender, ClassBound, AthleteData);
+type Entry = (Option<String>, Gender, WeightClass, AthleteData);
 
 fn read_entry(
     columns: &Columns,
     record: &csv::StringRecord,
     movements: &[Movement],
 ) -> std::result::Result<Entry, String> {
+    let division = optional(columns, record, entries::DIVISION);
     let gender = Gender::from_str(columns.get(record, entries::SEX))?;
 
     let weight_class = columns.get(record, entries::WEIGHT_CLASS);
@@ -227,7 +237,7 @@ fn read_entry(
         lifts: read_lifts(columns, record, movements)?,
     };
 
-    Ok((gender, weight_class, athlete))
+    Ok((division, gender, weight_class, athlete))
 }
 
 fn read_lifts(
@@ -284,15 +294,25 @@ fn read_lifts(
 fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
     let mut writer = csv::Writer::from_writer(Vec::new());
 
+    let divisioned = canonical
+        .categories
+        .iter()
+        .any(|category| category.division.is_some());
+
     writer
-        .write_record(entries::headers())
+        .write_record(entries::headers(divisioned))
         .map_err(|e| ImporterError::ImportError(format!("writing {}: {e}", entries::FILE_NAME)))?;
 
     for category in &canonical.categories {
         let weight_class = weight_class_cell(category);
 
         for athlete in &category.athletes {
-            let mut row = vec![
+            let mut row: Vec<String> = divisioned
+                .then(|| category.division.clone().unwrap_or_default())
+                .into_iter()
+                .collect();
+
+            row.extend([
                 category.gender.as_str().to_string(),
                 weight_class.clone(),
                 athlete.first_name.clone(),
@@ -306,7 +326,7 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                 entries::render_decimal(athlete.ris),
                 athlete.status.as_str().to_string(),
                 athlete.status_reason.clone().unwrap_or_default(),
-            ];
+            ]);
 
             for movement in Movement::ALL {
                 let lift = athlete.lifts.iter().find(|l| l.movement == movement);
@@ -376,40 +396,21 @@ fn optional(columns: &Columns, record: &csv::StringRecord, column: &str) -> Opti
     (!value.is_empty()).then(|| value.to_string())
 }
 
-#[derive(Debug, Clone, Copy)]
-enum ClassBound {
-    UpTo(Decimal),
-    Above(Decimal),
-}
-
-fn parse_weight_class(cell: &str) -> std::result::Result<ClassBound, String> {
+fn parse_weight_class(cell: &str) -> std::result::Result<WeightClass, String> {
     let invalid = || format!("'{cell}' is not a weight class, expected 80 or 101+");
 
     match cell.strip_suffix('+') {
-        Some(base) => base.parse().map(ClassBound::Above).map_err(|_| invalid()),
-        None => cell.parse().map(ClassBound::UpTo).map_err(|_| invalid()),
-    }
-}
-
-fn category_name(gender: Gender, bound: ClassBound) -> String {
-    let who = match gender {
-        Gender::M => "Men",
-        Gender::F => "Women",
-        Gender::Mx => "Mixed",
-    };
-
-    match bound {
-        ClassBound::UpTo(max) => format!("{who} -{}kg", max.normalize()),
-        ClassBound::Above(min) => format!("{who} +{}kg", min.normalize()),
+        Some(base) => base.parse().map(WeightClass::Above).map_err(|_| invalid()),
+        None => cell.parse().map(WeightClass::UpTo).map_err(|_| invalid()),
     }
 }
 
 type Bounds = (Option<WeightClassSlug>, Option<Decimal>, Option<Decimal>);
 
-fn weight_class_bounds(gender: Gender, bound: ClassBound) -> Bounds {
+fn weight_class_bounds(gender: Gender, bound: WeightClass) -> Bounds {
     let candidate = match bound {
-        ClassBound::UpTo(max) => format!("{}-{}", gender.as_str(), max.normalize()),
-        ClassBound::Above(min) => format!("{}+{}", gender.as_str(), min.normalize()),
+        WeightClass::UpTo(max) => format!("{}-{}", gender.as_str(), max.normalize()),
+        WeightClass::Above(min) => format!("{}+{}", gender.as_str(), min.normalize()),
     };
 
     if let Ok(slug) = WeightClassSlug::from_str(&candidate) {
@@ -417,20 +418,17 @@ fn weight_class_bounds(gender: Gender, bound: ClassBound) -> Bounds {
     }
 
     match bound {
-        ClassBound::UpTo(max) => (None, None, Some(max)),
-        ClassBound::Above(min) => (None, Some(min), None),
+        WeightClass::UpTo(max) => (None, None, Some(max)),
+        WeightClass::Above(min) => (None, Some(min), None),
     }
 }
 
 fn weight_class_cell(category: &CategoryData) -> String {
-    let (min, max) = match category.weight_class_slug.as_ref() {
-        Some(slug) => slug.bounds(),
-        None => (category.weight_class_min, category.weight_class_max),
-    };
+    let (min, max) = category.bounds();
 
-    match (min, max) {
-        (_, Some(max)) => max.normalize().to_string(),
-        (Some(min), None) => format!("{}+", min.normalize()),
-        (None, None) => String::new(),
+    match WeightClass::of(min, max) {
+        Some(WeightClass::UpTo(max)) => max.normalize().to_string(),
+        Some(WeightClass::Above(min)) => format!("{}+", min.normalize()),
+        None => String::new(),
     }
 }

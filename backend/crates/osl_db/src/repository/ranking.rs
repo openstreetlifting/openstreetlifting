@@ -1,3 +1,5 @@
+use osl_domain::WeightClass;
+use rust_decimal::Decimal;
 use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
@@ -45,7 +47,9 @@ impl<'a> RankingRepository<'a> {
                     a.country,
                     a.gender,
                     cp.bodyweight,
-                    cat.name as category_name,
+                    d.name as division,
+                    wc.min_kg as weight_class_min,
+                    wc.max_kg as weight_class_max,
                     c.competition_id,
                     c.name as competition_name,
                     c.slug as competition_slug,
@@ -65,7 +69,8 @@ impl<'a> RankingRepository<'a> {
                 INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
                 INNER JOIN competitions c ON cp.competition_id = c.competition_id
                 INNER JOIN lifts l ON cp.participant_id = l.participant_id
-                INNER JOIN categories cat ON cp.category_id = cat.category_id
+                INNER JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+                LEFT JOIN divisions d ON d.division_id = cp.division_id
                 INNER JOIN federations f ON c.federation_id = f.federation_id
                 LEFT JOIN athlete_socials ats
                     ON ats.athlete_id = a.athlete_id
@@ -90,9 +95,16 @@ impl<'a> RankingRepository<'a> {
             query.push(" || '%' ");
         }
 
-        if let Some(ref category) = filter.category {
-            query.push(" AND cat.name LIKE '%' || ");
-            query.push_bind(category);
+        match filter.category {
+            Some(WeightClass::UpTo(max)) => {
+                query.push(" AND wc.max_kg = ");
+                query.push_bind(max);
+            }
+            Some(WeightClass::Above(min)) => {
+                query.push(" AND wc.max_kg IS NULL AND wc.min_kg = ");
+                query.push_bind(min);
+            }
+            None => {}
         }
 
         if let Some(year) = filter.year {
@@ -108,7 +120,8 @@ impl<'a> RankingRepository<'a> {
         query.push(
             r#"
                 GROUP BY cp.participant_id, a.athlete_id, a.first_name, a.last_name,
-                         a.slug, a.country, a.gender, cp.bodyweight, cat.name, cp.ris_score, cp.ris_source,
+                         a.slug, a.country, a.gender, cp.bodyweight, d.name, wc.min_kg, wc.max_kg,
+                         cp.ris_score, cp.ris_source,
                          c.competition_id, c.name, c.slug, c.start_date, c.event_code, f.name, f.abbreviation,
                          ats.handle
             ),
@@ -173,11 +186,11 @@ impl<'a> RankingRepository<'a> {
         Ok(rows)
     }
 
-    /// Distinct weight classes, gender-stripped and sorted by weight so the
-    /// filter dropdown reads smallest to largest. Men and women don't share
-    /// the same classes, so an optional gender narrows the list to what that
-    /// gender actually has. An optional competition further narrows it to
-    /// the classes actually contested at that meet.
+    /// Distinct weight classes, sorted by weight so the filter dropdown reads
+    /// smallest to largest. Men and women don't share the same classes, so an
+    /// optional gender narrows the list to what that gender actually has. An
+    /// optional competition further narrows it to the classes actually
+    /// contested at that meet.
     pub async fn list_distinct_classes(
         &self,
         gender: Option<&str>,
@@ -185,22 +198,17 @@ impl<'a> RankingRepository<'a> {
     ) -> Result<Vec<String>> {
         let mut query = QueryBuilder::new(
             r#"
-            SELECT class FROM (
-                SELECT DISTINCT split_part(cat.name, ' ', 2) as class
-                FROM categories cat
+            SELECT min_kg, max_kg FROM (
+                SELECT DISTINCT wc.min_kg, wc.max_kg
+                FROM competition_participants cp
+                INNER JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
             "#,
         );
-
-        if competition_id.is_some() {
-            query.push(
-                " INNER JOIN competition_participants cp ON cp.category_id = cat.category_id ",
-            );
-        }
 
         let mut has_where = false;
 
         if let Some(gender) = gender {
-            query.push(" WHERE cat.gender = ");
+            query.push(" WHERE wc.gender = ");
             query.push_bind(gender);
             has_where = true;
         }
@@ -211,9 +219,18 @@ impl<'a> RankingRepository<'a> {
             query.push_bind(competition_id);
         }
 
-        query.push(" ) t ORDER BY regexp_replace(class, '[^0-9]', '', 'g')::int ");
+        query.push(" ) t ORDER BY COALESCE(max_kg, min_kg), max_kg NULLS LAST ");
 
-        let classes: Vec<String> = query.build_query_scalar().fetch_all(self.pool).await?;
+        let bounds: Vec<(Option<Decimal>, Option<Decimal>)> =
+            query.build_query_as().fetch_all(self.pool).await?;
+
+        let mut classes: Vec<String> = bounds
+            .into_iter()
+            .filter_map(|(min, max)| WeightClass::of(min, max))
+            .map(|class| class.to_string())
+            .collect();
+
+        classes.dedup();
 
         Ok(classes)
     }

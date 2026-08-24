@@ -1,8 +1,10 @@
 use chrono::NaiveDate;
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::projections::ranking::RankingRow;
+use osl_domain::WeightClass;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use std::str::FromStr;
 use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
 
@@ -74,8 +76,9 @@ pub struct GlobalRankingFilter {
     /// Which event to rank totals within, defaulting to the four movements.
     /// Ignored when ranking by a single movement.
     pub event: Option<String>,
-    /// Weight class suffix, e.g. `-73kg`, matched regardless of gender.
+    /// Weight class label, e.g. `-73kg`, matched regardless of gender.
     pub category: Option<String>,
+
     pub year: Option<i32>,
     /// Narrows the ranking to one competition, e.g. for a per-meet leaderboard.
     pub competition_id: Option<Uuid>,
@@ -90,6 +93,10 @@ impl GlobalRankingFilter {
             && gender != "F"
         {
             return Err("gender must be 'M' or 'F'".to_string());
+        }
+
+        if let Some(ref category) = self.category {
+            WeightClass::from_str(category)?;
         }
 
         Ok(())
@@ -111,7 +118,10 @@ impl GlobalRankingFilter {
                 .event
                 .clone()
                 .unwrap_or_else(|| osl_domain::FULL_EVENT.to_string()),
-            category: self.category.clone(),
+            category: self
+                .category
+                .as_deref()
+                .and_then(|label| WeightClass::from_str(label).ok()),
             year: self.year,
             competition_id: self.competition_id,
             offset: self.pagination.offset() as i64,
@@ -125,6 +135,8 @@ pub struct GlobalRankingEntry {
     pub rank: i64,
     pub athlete: AthleteInfo,
     pub category: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub division: Option<String>,
     /// Absent when no score could be established, rather than zero.
     pub ris: Option<f64>,
     pub ris_source: Option<String>,
@@ -183,7 +195,8 @@ impl From<RankingRow> for GlobalRankingEntry {
                 bodyweight: row.bodyweight.map(decimal_to_f64),
                 instagram_handle: row.instagram_handle,
             },
-            category: weight_class(&row.category_name),
+            category: WeightClass::label(row.weight_class_min, row.weight_class_max),
+            division: row.division,
             ris: row.ris_score.map(decimal_to_f64),
             ris_source: row.ris_source,
             total: row.total.map(decimal_to_f64),
@@ -208,15 +221,4 @@ impl From<RankingRow> for GlobalRankingEntry {
 
 fn decimal_to_f64(decimal: Decimal) -> f64 {
     decimal.to_string().parse().unwrap_or(0.0)
-}
-
-/// Category names are stored as `"<Gender> <weight class>"` (e.g. `"Men -73kg"`).
-/// Gender already has its own field on the entry, so drop that leading word here
-/// rather than making every caller strip it again.
-fn weight_class(category_name: &str) -> String {
-    category_name
-        .split_once(' ')
-        .map(|(_, class)| class)
-        .unwrap_or(category_name)
-        .to_string()
 }
