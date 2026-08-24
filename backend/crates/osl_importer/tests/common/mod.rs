@@ -5,8 +5,8 @@ use osl_domain::{
     AthleteStatus, CompetitionStatus, CountryCode, Gender, Movement, WeightClassSlug,
 };
 use osl_importer::canonical::models::{
-    AthleteData, AttemptData, CanonicalFormat, CategoryData, CompetitionData, FORMAT_VERSION,
-    FederationData, LiftData,
+    AthleteData, AttemptData, CanonicalFormat, CategoryData, CompetitionData, FederationData,
+    LiftData,
 };
 use osl_importer::canonical::transformer::CanonicalTransformer;
 use rust_decimal::Decimal;
@@ -19,7 +19,6 @@ pub fn decimal(raw: &str) -> Decimal {
 
 pub fn meet(slug: &str, categories: Vec<CategoryData>) -> CanonicalFormat {
     CanonicalFormat {
-        format_version: FORMAT_VERSION.to_string(),
         sources: Vec::new(),
         competition: CompetitionData {
             name: slug.to_string(),

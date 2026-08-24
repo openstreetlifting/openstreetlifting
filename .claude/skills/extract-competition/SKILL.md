@@ -118,11 +118,11 @@ overwrite either one.
 
 ## meet.toml
 
-`format_version` is `2.0.0`. Everything not marked required is optional and
-should be left out entirely when unknown.
+Everything not marked required is optional and should be left out entirely when
+unknown. There is no version key, and a key that is not one of these is
+rejected by name, so a typo fails the import instead of going quiet.
 
 ```toml
-format_version = "2.0.0"          # required
 event = "MPDS"                    # which movements were contested, see below
 sources = [                       # where the results came from
   "https://www.instagram.com/p/xxxx/",
@@ -269,7 +269,6 @@ A meet with a date and a venue and no results is **`meet.toml` on its own, with
 no `entries.csv` at all**, and `status = "upcoming"`:
 
 ```toml
-format_version = "2.0.0"
 sources = ["https://..."]
 
 [competition]
@@ -312,10 +311,10 @@ spellings of one name are not that. If you cannot tell, stop and ask.
 
 ## What the validator rejects
 
-A wrong `format_version`; a missing competition or federation name; a country
-that is not two letters; a `Sex` outside `M` `F` `MX`; a status outside the
-five listed; `end_date` before `start_date`; an `event` with an unknown letter,
-a repeated letter, or letters out of `MPDS` order; a missing, unknown or
+An unknown key in `meet.toml`; a missing competition or federation name; a
+country that is not two letters; a `Sex` outside `M` `F` `MX`; a status outside
+the five listed; `end_date` before `start_date`; an `event` with an unknown
+letter, a repeated letter, or letters out of `MPDS` order; a missing, unknown or
 duplicated column in `entries.csv`; a negative weight; a cell filled for a
 movement outside the event; a
 `Disambiguation` below 1; both `BodyweightKg` and `Ris` on one row; a

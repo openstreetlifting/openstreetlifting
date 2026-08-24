@@ -6,11 +6,8 @@ use osl_domain::{
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-pub const FORMAT_VERSION: &str = "2.1.0";
-
 #[derive(Debug, Clone)]
 pub struct CanonicalFormat {
-    pub format_version: String,
     pub sources: Vec<String>,
     pub competition: CompetitionData,
     pub movements: Vec<Movement>,
@@ -31,6 +28,7 @@ pub struct CompetitionData {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct FederationData {
     pub name: String,
 
