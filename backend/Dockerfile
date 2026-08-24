@@ -33,8 +33,7 @@ COPY --chown=appuser:appuser --from=builder /app/target/release/${BIN} /app/serv
 # The canonical files are the data, so the importer image carries the whole tree
 # it is expected to reconcile against. Shipping a partial one would make a prune
 # delete competitions that only look unclaimed.
-COPY --chown=appuser:appuser --from=builder /app/imports /app/imports
-COPY --chown=appuser:appuser --from=builder /app/athlete-data /app/athlete-data
+COPY --chown=appuser:appuser --from=builder /app/data /app/data
 USER appuser
 EXPOSE 8080
 ENTRYPOINT ["/app/server"]
