@@ -7,9 +7,8 @@ use super::models::{CompetitionData, FederationData};
 pub const FILE_NAME: &str = "meet.toml";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct MeetFile {
-    pub format_version: String,
-
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub event: Option<String>,
 
@@ -21,6 +20,7 @@ pub struct MeetFile {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct CompetitionSection {
     pub name: String,
     pub start_date: NaiveDate,
@@ -63,5 +63,46 @@ impl CompetitionSection {
             country: competition.country,
             status: competition.status,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const MEET: &str = r#"
+event = "MPDS"
+
+[competition]
+name = "Elite"
+start_date = "2026-05-15"
+end_date = "2026-05-17"
+city = "Sevran"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+country = "FR"
+"#;
+
+    #[test]
+    fn a_well_formed_file_parses() {
+        let meet: MeetFile = toml::from_str(MEET).unwrap();
+        assert_eq!(meet.competition.city.as_deref(), Some("Sevran"));
+    }
+
+    #[test]
+    fn a_misspelled_key_is_rejected() {
+        let text = MEET.replace("city =", "citty =");
+        let error = toml::from_str::<MeetFile>(&text).unwrap_err().to_string();
+        assert!(error.contains("citty"), "{error}");
+    }
+
+    #[test]
+    fn a_leftover_format_version_is_rejected() {
+        let text = format!("format_version = \"2.0.0\"\n{MEET}");
+        let error = toml::from_str::<MeetFile>(&text).unwrap_err().to_string();
+        assert!(error.contains("format_version"), "{error}");
     }
 }

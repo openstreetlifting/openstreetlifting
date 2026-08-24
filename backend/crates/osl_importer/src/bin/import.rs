@@ -243,11 +243,7 @@ async fn handle_canonical_import(
 
     let canonical = store::read(&directory)?;
 
-    tracing::info!(
-        "Loaded competition: {} (v{})",
-        canonical.competition.name,
-        canonical.format_version
-    );
+    tracing::info!("Loaded competition: {}", canonical.competition.name);
 
     tracing::info!("Validating canonical format...");
     let validation_report = CanonicalValidator::validate(&canonical)?;

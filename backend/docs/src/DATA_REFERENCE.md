@@ -2,10 +2,13 @@
 
 <!-- The contract. Anything not written here is not guaranteed. -->
 
-## Format versioning
+## How the format changes
 
-<!-- format_version in meet.toml, what a minor bump promises, what a major
-     bump means for an existing file. -->
+<!-- The files carry no version key. The importer that reads them ships in the
+     same commit, so the column list and the meet.toml keys are the contract,
+     and both reject anything they do not know. New optional shape is added,
+     and a change that invalidates existing files rewrites them in the same
+     commit and is called out with `!`. -->
 
 ## Directory layout
 

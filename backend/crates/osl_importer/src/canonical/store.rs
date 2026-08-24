@@ -77,7 +77,6 @@ pub fn read(directory: &Path) -> Result<CanonicalFormat> {
     };
 
     let MeetFile {
-        format_version,
         sources,
         competition,
         federation,
@@ -85,7 +84,6 @@ pub fn read(directory: &Path) -> Result<CanonicalFormat> {
     } = meet;
 
     Ok(CanonicalFormat {
-        format_version,
         sources,
         competition: competition.into_data(slug, federation),
         movements,
@@ -101,7 +99,6 @@ pub fn render(canonical: &CanonicalFormat) -> Result<(String, Option<String>)> {
     };
 
     let meet = MeetFile {
-        format_version: canonical.format_version.clone(),
         event,
         sources: canonical.sources.clone(),
         competition: CompetitionSection::from_data(&canonical.competition),
