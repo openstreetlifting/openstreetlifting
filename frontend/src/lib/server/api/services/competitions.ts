@@ -1,5 +1,10 @@
 import { apiClient } from '../client';
-import type { Competition, CompetitionDetail, CompetitionFilters } from '$lib/types/competition';
+import type {
+  Competition,
+  CompetitionDetail,
+  CompetitionFacets,
+  CompetitionFilters,
+} from '$lib/types/competition';
 import type { Paginated } from '$lib/types/pagination';
 
 export const competitionsService = {
@@ -16,5 +21,15 @@ export const competitionsService = {
     return apiClient.get<CompetitionDetail>(`/api/v1/competitions/${slug}`, {
       params: { include: 'federation,results' },
     });
+  },
+
+  async getFacets(): Promise<CompetitionFacets> {
+    const [federations, years, countries] = await Promise.all([
+      apiClient.get<string[]>('/api/v1/competitions/federations'),
+      apiClient.get<number[]>('/api/v1/competitions/years'),
+      apiClient.get<string[]>('/api/v1/competitions/countries'),
+    ]);
+
+    return { federations, years, countries };
   },
 };

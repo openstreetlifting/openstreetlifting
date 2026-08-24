@@ -25,13 +25,24 @@ export interface Competition {
   end_date: string | null;
   federation: Federation;
   movements: Movement[];
+  lifter_count?: number;
 }
 
 export interface CompetitionFilters {
   status?: CompetitionStatus;
+  federation?: string;
   country?: string;
-  search?: string;
+  year?: number;
+  q?: string;
+  direction?: 'asc' | 'desc';
   page?: number;
+  page_size?: number;
+}
+
+export interface CompetitionFacets {
+  federations: string[];
+  years: number[];
+  countries: string[];
 }
 
 export interface AthleteInfo {

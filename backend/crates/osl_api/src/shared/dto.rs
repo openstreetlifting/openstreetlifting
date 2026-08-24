@@ -1,4 +1,4 @@
-use osl_db::params::Page;
+use osl_db::params::{Page, SortDirection};
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
@@ -92,6 +92,25 @@ impl<T> PaginatedResponse<T> {
         Self {
             data,
             pagination: PaginationMeta::new(page, page_size, total_items),
+        }
+    }
+}
+
+/// Which way a sorted list runs. Shared by the ranking and the competition
+/// list, which disagree about the sensible default but not about the values.
+#[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, ToSchema)]
+#[serde(rename_all = "lowercase")]
+pub enum Direction {
+    #[default]
+    Desc,
+    Asc,
+}
+
+impl From<Direction> for SortDirection {
+    fn from(direction: Direction) -> Self {
+        match direction {
+            Direction::Desc => Self::Desc,
+            Direction::Asc => Self::Asc,
         }
     }
 }

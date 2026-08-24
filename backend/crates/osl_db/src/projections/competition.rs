@@ -1,5 +1,6 @@
 use osl_domain::Gender;
 use rust_decimal::Decimal;
+use sqlx::FromRow;
 use uuid::Uuid;
 
 use crate::rows::{
@@ -7,11 +8,22 @@ use crate::rows::{
     federation::FederationRow,
 };
 
+/// A competition and how many lifters it recorded. The count is what tells a
+/// reader a meet has results behind it, so it is carried by the list itself
+/// rather than looked up per row.
+#[derive(Debug, FromRow)]
+pub struct CompetitionSummaryRow {
+    #[sqlx(flatten)]
+    pub competition: CompetitionRow,
+    pub lifter_count: i64,
+}
+
 #[derive(Debug)]
 pub struct CompetitionListItem {
     pub competition: CompetitionRow,
     pub federation: FederationRow,
     pub movements: Vec<CompetitionMovementRow>,
+    pub lifter_count: i64,
 }
 
 #[derive(Debug)]
