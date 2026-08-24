@@ -7,7 +7,7 @@ export const competitionsService = {
     return apiClient.get<Paginated<Competition>>('/api/v1/competitions', {
       params: {
         include: 'federation,movements',
-        ...(filters as Record<string, string | number | boolean>),
+        ...filters,
       },
     });
   },
