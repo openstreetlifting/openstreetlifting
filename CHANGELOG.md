@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.12.0...v0.13.0) (2026-08-24)
+
+
+### Features
+
+* **competitions:** filter and search the competition list ([#432](https://github.com/openstreetlifting/openstreetlifting/issues/432)) ([b74b908](https://github.com/openstreetlifting/openstreetlifting/commit/b74b908d463f8ca25a6cff09ed1054fae13f5e7f))
+
 ## [0.12.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.11.0...v0.12.0) (2026-08-24)
 
 
