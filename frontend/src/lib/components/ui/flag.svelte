@@ -42,6 +42,10 @@
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 3px;
-    filter: saturate(0.85);
+    /* Twemoji's national colours are faithful, which on a dark row leaves a
+       navy like France's reading as a hole. Inverting around brightness lifts
+       a channel that is already at zero, where brightness alone cannot, so the
+       darks come up and the whites stay put. */
+    filter: saturate(0.85) invert(1) brightness(0.85) invert(1);
   }
 </style>
