@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.11.0...v0.12.0) (2026-08-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **importer:** drop format_version and reject unknown meet.toml keys ([#430](https://github.com/openstreetlifting/openstreetlifting/issues/430))
+* **competitions:** announce a meet before it is lifted ([#428](https://github.com/openstreetlifting/openstreetlifting/issues/428))
+* **api:** key results by weight class and division instead of category ([#427](https://github.com/openstreetlifting/openstreetlifting/issues/427))
+* **importer:** replace canonical JSON with meet.toml and entries.csv ([#420](https://github.com/openstreetlifting/openstreetlifting/issues/420))
+
+### Features
+
+* **api:** key results by weight class and division instead of category ([#427](https://github.com/openstreetlifting/openstreetlifting/issues/427)) ([d40d746](https://github.com/openstreetlifting/openstreetlifting/commit/d40d746a25bca87ea8c1a11a150a771fed872bcf))
+* **competitions:** announce a meet before it is lifted ([#428](https://github.com/openstreetlifting/openstreetlifting/issues/428)) ([d07e6d9](https://github.com/openstreetlifting/openstreetlifting/commit/d07e6d9331bb1b4bbc6683bffe512bbe863a9c16))
+* **importer:** drop format_version and reject unknown meet.toml keys ([#430](https://github.com/openstreetlifting/openstreetlifting/issues/430)) ([fd3f12e](https://github.com/openstreetlifting/openstreetlifting/commit/fd3f12eb8ce6c20f3945532f4448b6cda99c8d59))
+* **importer:** replace canonical JSON with meet.toml and entries.csv ([#420](https://github.com/openstreetlifting/openstreetlifting/issues/420)) ([2768098](https://github.com/openstreetlifting/openstreetlifting/commit/2768098385fe2fe586c21c27d71f857a2fd193e0))
+
+
+### Bug Fixes
+
+* **chart:** keep staging out of the analytics counts ([659c62a](https://github.com/openstreetlifting/openstreetlifting/commit/659c62a938b6eb6f671435875e8912e17083a1bb))
+* **deploy:** copy the canonical data tree from its current path ([#429](https://github.com/openstreetlifting/openstreetlifting/issues/429)) ([ab7c259](https://github.com/openstreetlifting/openstreetlifting/commit/ab7c259298c26cd1245b069c3c60faa19de8cc02))
+* **frontend:** load the umami script from the cluster instance ([#431](https://github.com/openstreetlifting/openstreetlifting/issues/431)) ([9c5a2ee](https://github.com/openstreetlifting/openstreetlifting/commit/9c5a2ee77e12d0b1d948e94e60a9a6f88c765d7a))
+
 ## [0.11.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.10.0...v0.11.0) (2026-08-21)
 
 
