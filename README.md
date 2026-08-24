@@ -48,7 +48,7 @@ API on <http://localhost:8080>, Swagger at `/swagger-ui/`, frontend on <http://l
 Contributions are welcome, whether you are fixing a bug, improving the codebase, or adding missing competition data.
 For code contributions, fork the repository, create a branch from main, and open a pull request.
 
-For data contributions, the entry point is the [canonical format](https://docs.openstreetlifting.org). If you have results from a competition that is not yet in the archive, add a `meet.toml` and an `entries.csv` under backend/data/competitions/{year}/{competition-slug}/ following the existing structure and open a pull request.
+For data contributions, the entry point is the [canonical format](https://docs.openstreetlifting.org). If you have results from a competition that is not yet in the archive, add a `meet.toml` and an `entries.csv` under backend/data/competitions/{federation}/{year}/{competition-slug}/ following the existing structure and open a pull request.
 
 Please note that I'm using Github issues to track identified work, whereas it is code or data. This can be a good starting point if you want to help me!
 

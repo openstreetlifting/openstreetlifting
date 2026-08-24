@@ -1,0 +1,15 @@
+format_version = "2.0.0"
+sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
+
+[competition]
+name = "Régionale Île-de-France-Centre-Val de Loire"
+start_date = "2027-01-30"
+end_date = "2027-01-31"
+city = "Paris"
+region = "Île-de-France"
+country = "FR"
+status = "upcoming"
+
+[federation]
+name = "FNSL"
+country = "FR"

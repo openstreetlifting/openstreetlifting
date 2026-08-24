@@ -16,7 +16,7 @@
 
 ## How a competition is stored
 
-<!-- data/competitions/{year}/{slug}/ holding meet.toml and entries.csv, and
+<!-- data/competitions/{federation}/{year}/{slug}/ holding meet.toml and entries.csv, and
      why the path matters. -->
 
 ## Adding a meet

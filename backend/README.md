@@ -48,7 +48,7 @@ cargo sqlx prepare --workspace
 ## Writing data
 
 The API is read-only and needs no authentication. Competition data comes from
-the files in `data/competitions/{year}/{slug}/`, loaded with the `import`
+the files in `data/competitions/{federation}/{year}/{slug}/`, loaded with the `import`
 binary. Each meet is a `meet.toml` describing the competition and an
 `entries.csv` holding one row per athlete. Correcting results means editing a
 file and importing it again.

@@ -5,7 +5,9 @@ use axum::{
     extract::{Path, Query, State},
 };
 use osl_db::repository::competition::CompetitionRepository;
+use osl_domain::CompetitionStatus;
 use serde::Deserialize;
+use std::str::FromStr;
 
 use super::dto::CompetitionResponse;
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
@@ -18,6 +20,7 @@ const DETAIL_INCLUDES: &[&str] = &["federation", "results"];
 pub struct CompetitionListQuery {
     #[serde(default)]
     pub include: Include,
+    pub status: Option<String>,
     #[serde(flatten)]
     pub pagination: PaginationParams,
 }
@@ -48,19 +51,27 @@ pub async fn list_competitions(
         .validate(LIST_INCLUDES)
         .map_err(WebError::BadRequest)?;
 
+    let status = query
+        .status
+        .as_deref()
+        .map(CompetitionStatus::from_str)
+        .transpose()
+        .map_err(WebError::BadRequest)?;
+
     let repo = CompetitionRepository::new(state.db.pool());
     let page = query.pagination.to_page();
+    let status = status.map(|status| status.as_str());
 
     // The per-row federation and movement lookups are only worth it when asked for.
     let (data, total_items) = if LIST_INCLUDES.iter().any(|name| query.include.has(name)) {
-        let (items, total) = repo.list_with_details(&page).await?;
+        let (items, total) = repo.list_with_details(&page, status).await?;
         let data = items
             .into_iter()
             .map(|item| CompetitionResponse::from_list_item(item, &query.include))
             .collect();
         (data, total)
     } else {
-        let (rows, total) = repo.list(&page).await?;
+        let (rows, total) = repo.list(&page, status).await?;
         let data = rows.into_iter().map(CompetitionResponse::from).collect();
         (data, total)
     };

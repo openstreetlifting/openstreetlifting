@@ -9,6 +9,7 @@ pub mod movement;
 pub mod normalized_name;
 pub mod ris;
 pub mod ris_source;
+pub mod slug;
 pub mod weight_class;
 
 pub use athlete_status::AthleteStatus;
@@ -21,4 +22,5 @@ pub use movement::Movement;
 pub use normalized_name::NormalizedAthleteName;
 pub use ris::{FormulaConstants, RisFormula};
 pub use ris_source::RisSource;
+pub use slug::slugify;
 pub use weight_class::{WeightClass, WeightClassSlug};

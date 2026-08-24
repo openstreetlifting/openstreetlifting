@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT competition_id, name, created_at, slug, status, federation_id,\n                   city, region, country, start_date, end_date\n            FROM competitions\n            ORDER BY start_date DESC, created_at DESC\n            LIMIT $1 OFFSET $2\n            ",
+  "query": "\n            SELECT competition_id, name, created_at, slug, status, federation_id,\n                   city, region, country, start_date, end_date\n            FROM competitions\n            WHERE $3::text IS NULL OR status = $3\n            ORDER BY start_date DESC, created_at DESC\n            LIMIT $1 OFFSET $2\n            ",
   "describe": {
     "columns": [
       {
@@ -128,7 +128,8 @@
     "parameters": {
       "Left": [
         "Int8",
-        "Int8"
+        "Int8",
+        "Text"
       ]
     },
     "nullable": [
@@ -145,5 +146,5 @@
       false
     ]
   },
-  "hash": "5b7532b8f2633517aa7df6e6918f80797f137aafe9d92882ec4278add728ba52"
+  "hash": "c985b1d6ded5edef7e0c84b9fdede90f402fd5e88bc3514b340cdd6d5e4d7fc2"
 }

@@ -13,22 +13,23 @@ reviewed as a git diff.
 ## Where files live
 
 ```
-backend/data/competitions/<year>/<competition-slug>/
+backend/data/competitions/<federation>/<year>/<competition-slug>/
     meet.toml      the competition, its federation, and which movements it ran
     entries.csv    one row per athlete
 ```
 
+`<federation>` is the federation's name slugified, so `FNSL` is `fnsl`.
 `<year>` is the year the meet starts, and `<competition-slug>` is the slug the
-meet keeps forever. Both are part of the contract: the slug is never written
-inside a file, it is read from the directory name, and the competition page
-links to `entries.csv` at exactly this path.
+meet keeps forever. All three are part of the contract: the slug is never
+written inside a file, it is read from the directory name, and the competition
+page links to `entries.csv` at exactly this path.
 
 One directory per competition. Never split one competition across two, and
 never put two competitions in one.
 
 ## The loop
 
-1. **Find the meet.** If `backend/data/competitions/<year>/<slug>/` exists,
+1. **Find the meet.** If `backend/data/competitions/<federation>/<year>/<slug>/` exists,
    read both files first. You are extending them, not writing them.
 2. **Extract only what this source shows.** One post usually covers one
    category, sometimes one movement.
@@ -36,8 +37,8 @@ never put two competitions in one.
    previously empty. Leave everything else exactly as it was.
 4. **Format and validate**, from `backend/`:
    ```bash
-   cargo run -p osl_importer --bin import -- fmt data/competitions/<year>/<slug>
-   cargo run -p osl_importer --bin import -- canonical data/competitions/<year>/<slug> --validate-only
+   cargo run -p osl_importer --bin import -- fmt data/competitions/<federation>/<year>/<slug>
+   cargo run -p osl_importer --bin import -- canonical data/competitions/<federation>/<year>/<slug> --validate-only
    ```
 5. **Fix and repeat** until validation passes.
 6. **Show the user `git diff`** and say what you added, what you could not
@@ -284,7 +285,7 @@ name = "FNSL"
 country = "FR"
 ```
 
-It lives at `backend/data/competitions/2027/fnsl-nationals-2027/`. Include
+It lives at `backend/data/competitions/fnsl/2027/fnsl-nationals-2027/`. Include
 `event` only if the calendar actually states the format.
 
 Results land by **adding `entries.csv` to this same directory**, never by

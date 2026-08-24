@@ -1,6 +1,6 @@
 use super::models::{CanonicalFormat, FORMAT_VERSION};
 use crate::{ImporterError, Result};
-use osl_domain::{CompetitionStatus, NormalizedAthleteName};
+use osl_domain::{CompetitionStatus, NormalizedAthleteName, slugify};
 use rust_decimal::Decimal;
 use std::collections::{HashMap, HashSet};
 use tracing::warn;
@@ -54,6 +54,13 @@ impl CanonicalValidator {
             report
                 .errors
                 .push("Federation name is required".to_string());
+        } else if slugify(&canonical.competition.federation.name).is_empty() {
+            // The name becomes the directory the meet lives in, so one that
+            // slugifies to nothing would collapse that level of the path away.
+            report.errors.push(format!(
+                "Federation name '{}' has no letter or digit to name its directory",
+                canonical.competition.federation.name
+            ));
         }
 
         if canonical.competition.city.is_none() {
@@ -379,6 +386,17 @@ mod tests {
         let mut canonical = completed();
         canonical.format_version = "1.8.0".to_string();
         assert!(CanonicalValidator::validate(&canonical).is_err());
+    }
+
+    #[test]
+    fn a_federation_name_that_slugifies_to_nothing_is_rejected() {
+        let mut canonical = completed();
+        canonical.competition.federation.name = "---".to_string();
+
+        let error = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(error.contains("no letter or digit"), "{error}");
     }
 
     #[test]
