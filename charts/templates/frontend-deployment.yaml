@@ -34,10 +34,12 @@ spec:
               value: {{ .Chart.AppVersion | quote }}
             - name: PUBLIC_ENVIRONMENT
               value: {{ .Values.environment | quote }}
+            {{- if eq .Values.environment "production" }}
             - name: PUBLIC_UMAMI_SCRIPT_URL
               value: {{ .Values.frontend.env.umamiScriptUrl | quote }}
             - name: PUBLIC_UMAMI_WEBSITE_ID
               value: {{ .Values.frontend.env.umamiWebsiteId | quote }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
