@@ -4,6 +4,7 @@
     Card,
     Breadcrumb,
     Pagination,
+    SearchInput,
     Table,
     TABLE_CELL,
     TABLE_HEAD_CELL,
@@ -12,31 +13,48 @@
   import { goto } from '$app/navigation';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
-  import { formatDate, formatLocation } from '$lib/utils';
-  import { COMPETITION_STATUSES, COMPETITION_STATUS_FILTERS } from '$lib/constants/competition';
-  import type { Competition, CompetitionStatus } from '$lib/types/competition';
+  import { formatDate, formatLocation, formatCountdown, countryName } from '$lib/utils';
+  import type { Competition } from '$lib/types/competition';
 
   let { data }: { data: PageData } = $props();
 
-  const isLifted = (competition: Competition) => competition.status !== 'upcoming';
+  type View = 'results' | 'upcoming' | 'all';
 
   const competitions = $derived(data.competitions);
   const pagination = $derived(data.pagination);
-  const statusFilter = $derived(data.status ?? 'all');
+  const upcoming = $derived(data.upcoming);
   const busy = $derived(navigating.to?.url.pathname === currentPage.url.pathname);
 
-  const filters = [
+  const view = $derived<View>(
+    data.status === 'all' ? 'all' : data.status === 'upcoming' ? 'upcoming' : 'results'
+  );
+
+  const views: { value: View; label: string }[] = [
+    { value: 'results', label: 'Results' },
+    { value: 'upcoming', label: 'Planned' },
     { value: 'all', label: 'All' },
-    ...COMPETITION_STATUS_FILTERS.map(({ value, label }) => ({ value, label })),
-  ] as const;
+  ];
+
+  let search = $state(data.q ?? '');
+  let federation = $state(data.federation ?? null);
+  let country = $state(data.country ?? null);
+  let year = $state(data.year ?? null);
+
+  const narrowed = $derived(Boolean(search || federation || country || year || data.status));
 
   // Paging and filtering live in the URL so a page of results can be linked to,
-  // and so the filter narrows the whole archive rather than the current page.
+  // and so a filter narrows the whole archive rather than the current page.
   // Defaults stay out of the query string, matching the rankings tables.
-  function show(status: CompetitionStatus | 'all', page = 1) {
+  function apply(next: { view?: View; page?: number } = {}) {
+    const target = next.view ?? view;
     const params = new SvelteURLSearchParams();
-    if (status !== 'all') params.set('status', status);
-    if (page > 1) params.set('page', String(page));
+
+    if (target !== 'results') params.set('status', target === 'all' ? 'all' : 'upcoming');
+    if (search) params.set('q', search);
+    if (federation) params.set('federation', federation);
+    if (country) params.set('country', country);
+    if (year) params.set('year', String(year));
+    if (next.page && next.page > 1) params.set('page', String(next.page));
 
     const query = params.toString();
     return goto(resolve(query ? `/competitions?${query}` : '/competitions'), {
@@ -45,10 +63,23 @@
     });
   }
 
+  function clearFilters() {
+    search = '';
+    federation = null;
+    country = null;
+    year = null;
+    return apply({ view: 'results' });
+  }
+
   function competitionDates(start: string | null, end: string | null): string {
     const from = formatDate(start);
     return end && end !== start ? `${from} - ${formatDate(end)}` : from;
   }
+
+  const isLifted = (competition: Competition) => competition.status !== 'upcoming';
+
+  const SELECT =
+    'w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto';
 </script>
 
 <svelte:head>
@@ -63,17 +94,70 @@
     <h1 class="mb-4 text-3xl font-light tracking-tight text-white sm:text-4xl">Competitions</h1>
   </div>
 
-  <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
-    <div class="flex flex-wrap gap-2">
-      {#each filters as filter (filter.value)}
+  {#if upcoming.length > 0}
+    <section class="mb-8">
+      <h2 class="mb-3 text-xs font-medium tracking-wider text-zinc-500 uppercase">Next meets</h2>
+      <div class="grid gap-2">
+        {#each upcoming as meet (meet.slug)}
+          <div
+            class="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-lg border border-zinc-800/60 bg-zinc-900/30 px-4 py-3"
+          >
+            <span class="text-sm text-zinc-300">{meet.name}</span>
+            <span class="text-xs text-zinc-500">
+              {formatDate(meet.start_date)}
+            </span>
+            {#if formatLocation(meet.country, meet.city)}
+              <span class="text-xs text-zinc-600">{formatLocation(meet.country, meet.city)}</span>
+            {/if}
+            <span class="ml-auto text-xs text-zinc-400">{formatCountdown(meet.start_date)}</span>
+          </div>
+        {/each}
+      </div>
+    </section>
+  {/if}
+
+  <div
+    class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/30 p-3"
+  >
+    <div class="w-full sm:w-64">
+      <SearchInput
+        bind:value={search}
+        placeholder="Search a competition"
+        onSearch={() => apply()}
+      />
+    </div>
+
+    <select bind:value={federation} onchange={() => apply()} class={SELECT}>
+      <option value={null}>All Federations</option>
+      {#each data.facets.federations as option (option)}
+        <option value={option}>{option}</option>
+      {/each}
+    </select>
+
+    <select bind:value={year} onchange={() => apply()} class={SELECT}>
+      <option value={null}>All Years</option>
+      {#each data.facets.years as option (option)}
+        <option value={option}>{option}</option>
+      {/each}
+    </select>
+
+    <select bind:value={country} onchange={() => apply()} class={SELECT}>
+      <option value={null}>All Countries</option>
+      {#each data.facets.countries as option (option)}
+        <option value={option}>{countryName(option)}</option>
+      {/each}
+    </select>
+
+    <div class="ml-auto flex flex-wrap gap-2">
+      {#each views as option (option.value)}
         <button
-          onclick={() => show(filter.value)}
+          onclick={() => apply({ view: option.value })}
           class="rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none
-					{statusFilter === filter.value
+            {view === option.value
             ? 'bg-white text-zinc-950'
             : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-300'}"
         >
-          {filter.label}
+          {option.label}
         </button>
       {/each}
     </div>
@@ -89,23 +173,38 @@
     <Card class="p-8">
       <div class="text-center">
         <p class="text-zinc-400">
-          {statusFilter !== 'all' ? 'No competitions match your filters' : 'No competitions found'}
+          {narrowed ? 'No competitions match your filters' : 'No competitions found'}
         </p>
-        {#if statusFilter !== 'all'}
-          <button
-            onclick={() => show('all')}
-            class="mt-4 text-sm text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
-          >
-            Clear filters
-          </button>
-        {/if}
+        <div class="mt-4 flex flex-wrap justify-center gap-4 text-sm">
+          <!-- The default view is results only, so a filter that matches nothing
+               but planned meets would otherwise be a dead end. -->
+          {#if view === 'results'}
+            <button
+              onclick={() => apply({ view: 'all' })}
+              class="text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+            >
+              Include planned meets
+            </button>
+          {/if}
+          {#if narrowed}
+            <button
+              onclick={clearFilters}
+              class="text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+            >
+              Clear filters
+            </button>
+          {/if}
+        </div>
       </div>
     </Card>
   {:else}
-    {#snippet statusText(status: CompetitionStatus)}
-      {@const match = COMPETITION_STATUSES.find((known) => known.value === status)}
-      {#if match}
-        <span class={match.text}>{match.label}</span>
+    <!-- A meet with lifters has results to read, one without is still to come.
+         The row says which by what it offers, so no status column is needed. -->
+    {#snippet lifters(competition: Competition)}
+      {#if isLifted(competition)}
+        <span class="tabular-nums">{competition.lifter_count ?? 0}</span>
+      {:else}
+        <span class="text-zinc-500">{formatCountdown(competition.start_date)}</span>
       {/if}
     {/snippet}
 
@@ -125,8 +224,12 @@
             {competition.federation.abbreviation || competition.federation.name}
           </span>
         </div>
-        <div class="mt-3">
-          {@render statusText(competition.status)}
+        <div class="mt-3 text-xs text-zinc-400">
+          {#if isLifted(competition)}
+            {competition.lifter_count ?? 0} lifters
+          {:else}
+            {formatCountdown(competition.start_date)}
+          {/if}
         </div>
       </Card>
     {/snippet}
@@ -153,7 +256,7 @@
           <th class="{TABLE_HEAD_CELL} text-zinc-400">Date</th>
           <th class="{TABLE_HEAD_CELL} text-zinc-400">Location</th>
           <th class="{TABLE_HEAD_CELL} text-zinc-400">Federation</th>
-          <th class="{TABLE_HEAD_CELL} text-zinc-400">Status</th>
+          <th class="{TABLE_HEAD_CELL} text-zinc-400">Lifters</th>
         {/snippet}
 
         {#snippet body()}
@@ -182,8 +285,8 @@
               <td class="{TABLE_CELL} text-zinc-400" title={competition.federation.name}>
                 {competition.federation.abbreviation || competition.federation.name}
               </td>
-              <td class={TABLE_CELL}>
-                {@render statusText(competition.status)}
+              <td class="{TABLE_CELL} text-zinc-400">
+                {@render lifters(competition)}
               </td>
             </tr>
           {/each}
@@ -203,7 +306,7 @@
           page={pagination.page}
           totalPages={pagination.total_pages}
           disabled={busy}
-          onNavigate={(target) => show(statusFilter, target)}
+          onNavigate={(target) => apply({ page: target })}
         />
       {/if}
     </div>

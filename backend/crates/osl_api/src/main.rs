@@ -40,6 +40,9 @@ pub struct AppState {
     paths(
         competition::handlers::list_competitions,
         competition::handlers::get_competition,
+        competition::handlers::list_competition_federations,
+        competition::handlers::list_competition_years,
+        competition::handlers::list_competition_countries,
         athlete::handlers::list_athletes,
         athlete::handlers::get_athlete,
         ranking::handler::get_global_ranking,
@@ -70,7 +73,7 @@ pub struct AppState {
             crate::shared::dto::PaginationParams,
             crate::shared::query::Include,
             crate::ranking::dto::Movement,
-            crate::ranking::dto::Direction,
+            crate::shared::dto::Direction,
             crate::ranking::dto::GlobalRankingEntry,
             crate::ranking::dto::AthleteInfo,
             crate::ranking::dto::CompetitionInfo,

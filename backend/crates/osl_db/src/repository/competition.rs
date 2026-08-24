@@ -1,13 +1,13 @@
 use rust_decimal::Decimal;
-use sqlx::PgPool;
+use sqlx::{PgPool, Postgres, QueryBuilder};
 use std::collections::HashMap;
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
-use crate::params::Page;
+use crate::params::{CompetitionFilter, Page};
 use crate::projections::competition::{
-    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem, Contest,
-    LiftDetail, ParticipantDetail,
+    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem,
+    CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail,
 };
 use crate::repository::parse_gender;
 use crate::rows::{
@@ -25,49 +25,102 @@ impl<'a> CompetitionRepository<'a> {
         Self { pool }
     }
 
-    /// The status is filtered here rather than on the page, so the total the
+    /// Every filter is applied here rather than on the page, so the total the
     /// pager divides counts the same rows it pages through.
     pub async fn list(
         &self,
         page: &Page,
-        status: Option<&str>,
-    ) -> Result<(Vec<CompetitionRow>, i64)> {
-        let competitions = sqlx::query_as!(
-            CompetitionRow,
+        filter: &CompetitionFilter,
+    ) -> Result<(Vec<CompetitionSummaryRow>, i64)> {
+        let mut query = QueryBuilder::new(
             r#"
-            SELECT competition_id, name, created_at, slug, status, federation_id,
-                   city, region, country, start_date, end_date
-            FROM competitions
-            WHERE $3::text IS NULL OR status = $3
-            ORDER BY start_date DESC, created_at DESC
-            LIMIT $1 OFFSET $2
+            SELECT c.competition_id, c.name, c.created_at, c.slug, c.status,
+                   c.federation_id, c.city, c.region, c.country,
+                   c.start_date, c.end_date,
+                   COUNT(p.participant_id) AS lifter_count
+            FROM competitions c
+            JOIN federations f ON f.federation_id = c.federation_id
+            LEFT JOIN competition_participants p ON p.competition_id = c.competition_id
             "#,
-            page.limit,
-            page.offset,
-            status
-        )
-        .fetch_all(self.pool)
-        .await?;
+        );
 
-        let total = sqlx::query_scalar!(
-            r#"SELECT COUNT(*) as "count!" FROM competitions WHERE $1::text IS NULL OR status = $1"#,
-            status
-        )
-        .fetch_one(self.pool)
-        .await?;
+        Self::push_filters(&mut query, filter);
+
+        query.push(" GROUP BY c.competition_id ORDER BY c.start_date ");
+        query.push(filter.direction.as_sql());
+        query.push(" NULLS LAST, c.created_at DESC LIMIT ");
+        query.push_bind(page.limit);
+        query.push(" OFFSET ");
+        query.push_bind(page.offset);
+
+        let competitions: Vec<CompetitionSummaryRow> =
+            query.build_query_as().fetch_all(self.pool).await?;
+
+        let mut counter = QueryBuilder::new(
+            r#"
+            SELECT COUNT(*)
+            FROM competitions c
+            JOIN federations f ON f.federation_id = c.federation_id
+            "#,
+        );
+
+        Self::push_filters(&mut counter, filter);
+
+        let total: i64 = counter.build_query_scalar().fetch_one(self.pool).await?;
 
         Ok((competitions, total))
+    }
+
+    /// Shared by the page and its total so the two can never disagree about
+    /// which rows are in the list.
+    fn push_filters(query: &mut QueryBuilder<Postgres>, filter: &CompetitionFilter) {
+        query.push(" WHERE TRUE ");
+
+        if let Some(status) = &filter.status {
+            query.push(" AND c.status = ");
+            query.push_bind(status.clone());
+        }
+
+        if let Some(federation) = &filter.federation {
+            query.push(" AND f.name = ");
+            query.push_bind(federation.clone());
+        }
+
+        if let Some(country) = &filter.country {
+            query.push(" AND c.country = ");
+            query.push_bind(country.clone());
+        }
+
+        if let Some(year) = filter.year {
+            query.push(" AND EXTRACT(YEAR FROM c.start_date) = ");
+            query.push_bind(f64::from(year));
+        }
+
+        if let Some(search) = &filter.search {
+            let pattern = format!("%{search}%");
+            query.push(" AND (c.name ILIKE ");
+            query.push_bind(pattern.clone());
+            query.push(" OR f.name ILIKE ");
+            query.push_bind(pattern.clone());
+            query.push(" OR c.city ILIKE ");
+            query.push_bind(pattern);
+            query.push(")");
+        }
     }
 
     pub async fn list_with_details(
         &self,
         page: &Page,
-        status: Option<&str>,
+        filter: &CompetitionFilter,
     ) -> Result<(Vec<CompetitionListItem>, i64)> {
-        let (competitions, total) = self.list(page, status).await?;
+        let (competitions, total) = self.list(page, filter).await?;
         let mut results = Vec::with_capacity(competitions.len());
 
-        for competition in competitions {
+        for summary in competitions {
+            let CompetitionSummaryRow {
+                competition,
+                lifter_count,
+            } = summary;
             let federation = sqlx::query_as!(
                 FederationRow,
                 "SELECT federation_id, name, rulebook_id, country, abbreviation
@@ -93,10 +146,60 @@ impl<'a> CompetitionRepository<'a> {
                 competition,
                 federation,
                 movements,
+                lifter_count,
             });
         }
 
         Ok((results, total))
+    }
+
+    /// Federations that have run at least one meet, alphabetical, so the
+    /// dropdown never offers a filter that returns nothing.
+    pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
+        let federations: Vec<String> = sqlx::query_scalar(
+            r#"
+            SELECT DISTINCT f.name
+            FROM federations f
+            JOIN competitions c ON c.federation_id = f.federation_id
+            ORDER BY f.name
+            "#,
+        )
+        .fetch_all(self.pool)
+        .await?;
+
+        Ok(federations)
+    }
+
+    /// Years a meet was held in, most recent first.
+    pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
+        let years: Vec<i32> = sqlx::query_scalar(
+            r#"
+            SELECT DISTINCT EXTRACT(YEAR FROM start_date)::int as year
+            FROM competitions
+            WHERE start_date IS NOT NULL
+            ORDER BY year DESC
+            "#,
+        )
+        .fetch_all(self.pool)
+        .await?;
+
+        Ok(years)
+    }
+
+    /// Countries a meet was held in, alphabetical.
+    pub async fn list_distinct_countries(&self) -> Result<Vec<String>> {
+        let countries: Vec<String> = sqlx::query_scalar(
+            r#"
+            SELECT DISTINCT country
+            FROM competitions
+            WHERE country IS NOT NULL
+            ORDER BY country
+            "#,
+        )
+        .fetch_all(self.pool)
+        .await?;
+
+        Ok(countries)
     }
 
     pub async fn find_by_id(&self, id: Uuid) -> Result<CompetitionRow> {

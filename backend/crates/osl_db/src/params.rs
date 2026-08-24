@@ -83,6 +83,20 @@ pub struct RankingFilter {
     pub limit: i64,
 }
 
+/// Narrows the competition list. A `None` leaves that dimension alone, and
+/// `search` matches the competition name, its federation and its city, since
+/// those are the three things someone types into one box.
+#[derive(Debug, Clone, Default)]
+pub struct CompetitionFilter {
+    pub status: Option<String>,
+    pub federation: Option<String>,
+    pub country: Option<String>,
+    pub year: Option<i32>,
+    pub search: Option<String>,
+    /// Results read newest first, an upcoming calendar reads soonest first.
+    pub direction: SortDirection,
+}
+
 /// Score to upsert into `ris_scores_history`.
 #[derive(Debug, Clone, Copy)]
 pub struct RisScoreUpsert {

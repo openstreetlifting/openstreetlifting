@@ -4,13 +4,14 @@ use axum::{
     Json,
     extract::{Path, Query, State},
 };
+use osl_db::params::CompetitionFilter;
 use osl_db::repository::competition::CompetitionRepository;
 use osl_domain::CompetitionStatus;
 use serde::Deserialize;
 use std::str::FromStr;
 
 use super::dto::CompetitionResponse;
-use crate::shared::dto::{PaginatedResponse, PaginationParams};
+use crate::shared::dto::{Direction, PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
 const LIST_INCLUDES: &[&str] = &["federation", "movements"];
@@ -21,8 +22,35 @@ pub struct CompetitionListQuery {
     #[serde(default)]
     pub include: Include,
     pub status: Option<String>,
+    /// Federation name, exactly as `/competitions/federations` lists it.
+    pub federation: Option<String>,
+    pub country: Option<String>,
+    pub year: Option<i32>,
+    /// Case insensitive substring of the name, federation or city.
+    pub q: Option<String>,
+    /// Results read newest first by default, a calendar wants `asc`.
+    #[serde(default)]
+    pub direction: Direction,
     #[serde(flatten)]
     pub pagination: PaginationParams,
+}
+
+impl CompetitionListQuery {
+    fn to_db_filter(&self, status: Option<CompetitionStatus>) -> CompetitionFilter {
+        CompetitionFilter {
+            status: status.map(|status| status.as_str().to_string()),
+            federation: self.federation.clone(),
+            country: self.country.clone(),
+            year: self.year,
+            search: self
+                .q
+                .as_deref()
+                .map(str::trim)
+                .filter(|query| !query.is_empty())
+                .map(str::to_string),
+            direction: self.direction.into(),
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
@@ -60,19 +88,26 @@ pub async fn list_competitions(
 
     let repo = CompetitionRepository::new(state.db.pool());
     let page = query.pagination.to_page();
-    let status = status.map(|status| status.as_str());
+    let filter = query.to_db_filter(status);
 
     // The per-row federation and movement lookups are only worth it when asked for.
     let (data, total_items) = if LIST_INCLUDES.iter().any(|name| query.include.has(name)) {
-        let (items, total) = repo.list_with_details(&page, status).await?;
+        let (items, total) = repo.list_with_details(&page, &filter).await?;
         let data = items
             .into_iter()
             .map(|item| CompetitionResponse::from_list_item(item, &query.include))
             .collect();
         (data, total)
     } else {
-        let (rows, total) = repo.list(&page, status).await?;
-        let data = rows.into_iter().map(CompetitionResponse::from).collect();
+        let (rows, total) = repo.list(&page, &filter).await?;
+        let data = rows
+            .into_iter()
+            .map(|row| {
+                let mut response = CompetitionResponse::from(row.competition);
+                response.lifter_count = Some(row.lifter_count);
+                response
+            })
+            .collect();
         (data, total)
     };
 
@@ -120,4 +155,47 @@ pub async fn get_competition(
 
     let competition = repo.find_by_slug(&slug).await?;
     Ok(Json(CompetitionResponse::from(competition)))
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/competitions/federations",
+    responses(
+        (status = 200, description = "Federations that have run at least one meet, alphabetical", body = Vec<String>),
+    ),
+    tag = "competitions"
+)]
+pub async fn list_competition_federations(
+    State(state): State<AppState>,
+) -> WebResult<Json<Vec<String>>> {
+    let repo = CompetitionRepository::new(state.db.pool());
+    Ok(Json(repo.list_distinct_federations().await?))
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/competitions/years",
+    responses(
+        (status = 200, description = "Years a meet was held in, most recent first", body = Vec<i32>),
+    ),
+    tag = "competitions"
+)]
+pub async fn list_competition_years(State(state): State<AppState>) -> WebResult<Json<Vec<i32>>> {
+    let repo = CompetitionRepository::new(state.db.pool());
+    Ok(Json(repo.list_distinct_years().await?))
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/competitions/countries",
+    responses(
+        (status = 200, description = "Countries a meet was held in, alphabetical", body = Vec<String>),
+    ),
+    tag = "competitions"
+)]
+pub async fn list_competition_countries(
+    State(state): State<AppState>,
+) -> WebResult<Json<Vec<String>>> {
+    let repo = CompetitionRepository::new(state.db.pool());
+    Ok(Json(repo.list_distinct_countries().await?))
 }

@@ -12,7 +12,7 @@ export class ApiError extends Error {
 }
 
 export interface RequestOptions extends RequestInit {
-  params?: Record<string, string | number | boolean>;
+  params?: Record<string, string | number | boolean | null | undefined>;
 }
 
 class ApiClient {
@@ -22,11 +22,20 @@ class ApiClient {
     this.baseUrl = baseUrl.replace(/\/$/, '');
   }
 
-  private buildUrl(path: string, params?: Record<string, string | number | boolean>): string {
+  private buildUrl(
+    path: string,
+    params?: Record<string, string | number | boolean | null | undefined>
+  ): string {
     const url = new URL(`${this.baseUrl}${path}`);
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
+        // An unset filter must be left out of the query string, since the API
+        // reads a literal "undefined" as a value it does not know.
+        if (value === null || value === undefined) {
+          return;
+        }
+
         url.searchParams.append(key, String(value));
       });
     }

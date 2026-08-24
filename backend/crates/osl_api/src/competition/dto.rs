@@ -36,6 +36,10 @@ pub struct CompetitionResponse {
     /// Present only when requested via `?include=results`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<CategoryDetail>>,
+    /// How many lifters the meet recorded. Absent on a single competition,
+    /// where the results themselves carry it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lifter_count: Option<i64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -124,6 +128,7 @@ impl From<CompetitionRow> for CompetitionResponse {
             federation: None,
             movements: None,
             categories: None,
+            lifter_count: None,
         }
     }
 }
@@ -228,9 +233,11 @@ impl CompetitionResponse {
             competition,
             federation,
             movements,
+            lifter_count,
         } = item;
 
         let mut response = Self::from(competition);
+        response.lifter_count = Some(lifter_count);
         if include.has("federation") {
             response.federation = Some(federation.into());
         }

@@ -1,5 +1,6 @@
+use crate::shared::dto::Direction;
 use chrono::NaiveDate;
-use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
+use osl_db::params::{RankingFilter, RankingMovement};
 use osl_db::projections::ranking::RankingRow;
 use osl_domain::WeightClass;
 use rust_decimal::Decimal;
@@ -40,23 +41,6 @@ impl From<Movement> for RankingMovement {
             Movement::Squat => Self::Squat,
             Movement::Total => Self::Total,
             Movement::Ris => Self::Ris,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, ToSchema)]
-#[serde(rename_all = "lowercase")]
-pub enum Direction {
-    #[default]
-    Desc,
-    Asc,
-}
-
-impl From<Direction> for SortDirection {
-    fn from(direction: Direction) -> Self {
-        match direction {
-            Direction::Desc => Self::Desc,
-            Direction::Asc => Self::Asc,
         }
     }
 }
