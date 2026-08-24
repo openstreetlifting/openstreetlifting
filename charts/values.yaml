@@ -11,6 +11,8 @@ frontend:
     port: 3000
   env:
     backendUrl: "http://openstreetlifting-backend:8080"
+    umamiScriptUrl: "https://umami.adrienpelfresne.com/script.js"
+    umamiWebsiteId: "01a3177c-6b2e-4b8e-802b-6b9d26ece8ef"
   resources:
     requests:
       cpu: 50m
