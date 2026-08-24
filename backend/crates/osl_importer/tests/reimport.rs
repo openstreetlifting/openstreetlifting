@@ -41,7 +41,7 @@ fn fixture(class: Class, ris: Option<&str>) -> CanonicalFormat {
     };
 
     let category = CategoryData {
-        name: "Test category".to_string(),
+        division: None,
         gender: Gender::M,
         weight_class_slug,
         weight_class_min,
@@ -93,8 +93,10 @@ async fn reimport_keeps_a_status_the_file_does_not_state(pool: PgPool) {
     assert_eq!(status, "cancelled");
 }
 
+/// The class is part of what a result is, so correcting it refiles the lifter
+/// rather than editing the class they were in.
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn reimport_corrects_category_bounds(pool: PgPool) {
+async fn reimport_moves_a_lifter_to_the_corrected_class(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
@@ -106,17 +108,11 @@ async fn reimport_corrects_category_bounds(pool: PgPool) {
         .await
         .unwrap();
 
-    let category = sqlx::query!(
-        r#"SELECT wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
-           FROM categories c
-           JOIN weight_classes wc USING (weight_class_id)
-           WHERE c.name = 'Test category'"#
-    )
-    .fetch_one(&pool)
-    .await
-    .unwrap();
-    assert_eq!(category.weight_class_min, Some(Decimal::from(73)));
-    assert_eq!(category.weight_class_max, Some(Decimal::from(80)));
+    let classes = participant_classes(&pool).await;
+    assert_eq!(
+        classes,
+        vec![(Some(Decimal::from(73)), Some(Decimal::from(80)))]
+    );
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
@@ -128,17 +124,60 @@ async fn open_class_is_stored_as_a_lower_bound(pool: PgPool) {
         .await
         .unwrap();
 
-    let category = sqlx::query!(
-        r#"SELECT wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
-           FROM categories c
-           JOIN weight_classes wc USING (weight_class_id)
-           WHERE c.name = 'Test category'"#
+    let classes = participant_classes(&pool).await;
+    assert_eq!(classes, vec![(Some(Decimal::from(87)), None)]);
+}
+
+/// A meet running two divisions in one class is two contests, so each keeps its
+/// own winner instead of the second collapsing onto the first.
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn two_divisions_in_one_class_each_get_a_winner(pool: PgPool) {
+    let mut elite = fixture(Class::Slug(WeightClassSlug::M73), None);
+    elite.categories[0].division = Some("Elite".to_string());
+
+    let mut open = elite.categories[0].clone();
+    open.division = Some("Open".to_string());
+    open.athletes[0].first_name = "Jane".to_string();
+    elite.categories.push(open);
+
+    CanonicalTransformer::new(&pool)
+        .import_to_database(elite)
+        .await
+        .unwrap();
+
+    let divisions = sqlx::query_scalar!(
+        r#"SELECT d.name FROM competition_participants cp
+           JOIN divisions d ON d.division_id = cp.division_id
+           ORDER BY d.name"#
     )
-    .fetch_one(&pool)
+    .fetch_all(&pool)
     .await
     .unwrap();
-    assert_eq!(category.weight_class_min, Some(Decimal::from(87)));
-    assert_eq!(category.weight_class_max, None);
+    assert_eq!(divisions, vec!["Elite", "Open"]);
+
+    let detail = osl_db::repository::competition::CompetitionRepository::new(&pool)
+        .find_by_slug_detailed("test-open")
+        .await
+        .unwrap();
+
+    assert_eq!(detail.categories.len(), 2);
+    for category in &detail.categories {
+        assert_eq!(category.participants[0].rank, Some(1));
+    }
+}
+
+async fn participant_classes(pool: &PgPool) -> Vec<(Option<Decimal>, Option<Decimal>)> {
+    sqlx::query!(
+        r#"SELECT wc.min_kg, wc.max_kg
+           FROM competition_participants cp
+           JOIN weight_classes wc USING (weight_class_id)"#
+    )
+    .fetch_all(pool)
+    .await
+    .unwrap()
+    .into_iter()
+    .map(|row| (row.min_kg, row.max_kg))
+    .collect()
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

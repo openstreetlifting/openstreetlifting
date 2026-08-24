@@ -48,7 +48,7 @@ pub fn announcement(slug: &str) -> CanonicalFormat {
     canonical
 }
 
-pub fn category(name: &str, slug: WeightClassSlug, athletes: Vec<AthleteData>) -> CategoryData {
+pub fn category(slug: WeightClassSlug, athletes: Vec<AthleteData>) -> CategoryData {
     let gender = if slug.as_str().starts_with('F') {
         Gender::F
     } else {
@@ -56,7 +56,7 @@ pub fn category(name: &str, slug: WeightClassSlug, athletes: Vec<AthleteData>) -
     };
 
     CategoryData {
-        name: name.to_string(),
+        division: None,
         gender,
         weight_class_slug: Some(slug),
         weight_class_min: None,
@@ -65,14 +65,9 @@ pub fn category(name: &str, slug: WeightClassSlug, athletes: Vec<AthleteData>) -
     }
 }
 
-pub fn open_category(
-    name: &str,
-    gender: Gender,
-    min: &str,
-    athletes: Vec<AthleteData>,
-) -> CategoryData {
+pub fn open_category(gender: Gender, min: &str, athletes: Vec<AthleteData>) -> CategoryData {
     CategoryData {
-        name: name.to_string(),
+        division: None,
         gender,
         weight_class_slug: None,
         weight_class_min: Some(decimal(min)),
@@ -82,7 +77,12 @@ pub fn open_category(
 }
 
 pub fn men_80(athletes: Vec<AthleteData>) -> CategoryData {
-    category("Men -80kg", WeightClassSlug::M80, athletes)
+    category(WeightClassSlug::M80, athletes)
+}
+
+pub fn in_division(mut category: CategoryData, division: &str) -> CategoryData {
+    category.division = Some(division.to_string());
+    category
 }
 
 pub fn athlete(first: &str, last: &str) -> AthleteData {

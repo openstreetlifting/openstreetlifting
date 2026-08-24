@@ -63,6 +63,7 @@ impl CanonicalValidator {
         }
 
         Self::check_announcement(canonical, &mut report);
+        Self::check_divisions(canonical, &mut report);
         Self::check_athletes(canonical, &mut report);
         Self::check_athlete_identities(canonical, &mut report);
 
@@ -106,6 +107,59 @@ impl CanonicalValidator {
             report
                 .errors
                 .push("entries.csv lists results, so event is required".to_string());
+        }
+    }
+
+    /// A division tells two contests in one meet apart, so a file that names
+    /// one for some entries and not others is claiming a contest nobody ran.
+    /// Left alone it hands that phantom contest its own winner, which is the
+    /// collapse this column exists to prevent, running the other way.
+    fn check_divisions(canonical: &CanonicalFormat, report: &mut ValidationReport) {
+        let named: Vec<&str> = canonical
+            .categories
+            .iter()
+            .filter_map(|category| category.division.as_deref())
+            .collect();
+
+        if named.is_empty() {
+            return;
+        }
+
+        let missing: Vec<String> = canonical
+            .categories
+            .iter()
+            .filter(|category| category.division.is_none())
+            .map(|category| category.label())
+            .collect();
+
+        if !missing.is_empty() {
+            report.errors.push(format!(
+                "The meet names divisions ({}), so every entry needs one. Missing on: {}",
+                named.join(", "),
+                missing.join(", ")
+            ));
+        }
+
+        let mut by_fold: HashMap<String, HashSet<&str>> = HashMap::new();
+        for division in &named {
+            by_fold
+                .entry(division.trim().to_lowercase())
+                .or_default()
+                .insert(division);
+        }
+
+        for spellings in by_fold.values().filter(|s| s.len() > 1) {
+            let mut spellings: Vec<&str> = spellings.iter().copied().collect();
+            spellings.sort();
+            report.errors.push(format!(
+                "Divisions {} differ only in case or spacing, so they would import as \
+                 separate contests. Pick one spelling",
+                spellings
+                    .iter()
+                    .map(|s| format!("'{s}'"))
+                    .collect::<Vec<_>>()
+                    .join(" and ")
+            ));
         }
     }
 
@@ -171,7 +225,7 @@ impl CanonicalValidator {
     /// disambiguation number. Within a single category they can only be a
     /// duplicated row.
     fn check_athlete_identities(canonical: &CanonicalFormat, report: &mut ValidationReport) {
-        let mut seen: HashMap<(String, Option<i16>), Vec<&str>> = HashMap::new();
+        let mut seen: HashMap<(String, Option<i16>), Vec<String>> = HashMap::new();
 
         for category in &canonical.categories {
             let mut seen_in_category = HashSet::new();
@@ -184,13 +238,15 @@ impl CanonicalValidator {
                     report.errors.push(format!(
                         "Category '{}' lists '{} {}' twice. Remove the duplicate, or set \
                          disambiguation if these are two different people",
-                        category.name, athlete.first_name, athlete.last_name
+                        category.label(),
+                        athlete.first_name,
+                        athlete.last_name
                     ));
                 }
 
                 seen.entry((identity, athlete.disambiguation))
                     .or_default()
-                    .push(&category.name);
+                    .push(category.label());
             }
         }
 
@@ -284,7 +340,7 @@ mod tests {
         canonical.competition.status = Some(CompetitionStatus::Completed);
         canonical.movements = vec![Movement::Squat];
         canonical.categories = vec![CategoryData {
-            name: "Men -80kg".to_string(),
+            division: None,
             gender: Gender::M,
             weight_class_slug: Some(WeightClassSlug::M80),
             weight_class_min: None,
@@ -403,12 +459,74 @@ mod tests {
     fn the_same_athlete_in_two_categories_only_warns() {
         let mut canonical = completed();
         let mut second = canonical.categories[0].clone();
-        second.name = "Men -87kg".to_string();
         second.weight_class_slug = Some(WeightClassSlug::M87);
         canonical.categories.push(second);
 
         let report = CanonicalValidator::validate(&canonical).unwrap();
         assert!(report.warnings.iter().any(|w| w.contains("2 categories")));
+    }
+
+    #[test]
+    fn the_same_athlete_in_two_divisions_only_warns() {
+        let mut canonical = completed();
+        canonical.categories[0].division = Some("Elite".to_string());
+
+        let mut second = canonical.categories[0].clone();
+        second.division = Some("Open".to_string());
+        canonical.categories.push(second);
+
+        let report = CanonicalValidator::validate(&canonical).unwrap();
+        assert!(report.warnings.iter().any(|w| w.contains("2 categories")));
+    }
+
+    #[test]
+    fn a_meet_with_no_divisions_is_fine() {
+        assert!(CanonicalValidator::validate(&completed()).is_ok());
+    }
+
+    #[test]
+    fn an_entry_without_a_division_in_a_divisioned_meet_is_rejected() {
+        let mut canonical = completed();
+        canonical.categories[0].division = Some("Elite".to_string());
+
+        let mut open = canonical.categories[0].clone();
+        open.division = None;
+        open.weight_class_slug = Some(WeightClassSlug::M87);
+        canonical.categories.push(open);
+
+        let error = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(error.contains("every entry needs one"), "{error}");
+    }
+
+    #[test]
+    fn divisions_differing_only_in_case_are_rejected() {
+        let mut canonical = completed();
+        canonical.categories[0].division = Some("Elite".to_string());
+
+        let mut shouty = canonical.categories[0].clone();
+        shouty.division = Some("elite".to_string());
+        shouty.weight_class_slug = Some(WeightClassSlug::M87);
+        canonical.categories.push(shouty);
+
+        let error = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(error.contains("differ only in case"), "{error}");
+    }
+
+    #[test]
+    fn two_real_divisions_are_accepted() {
+        let mut canonical = completed();
+        canonical.categories[0].division = Some("Elite".to_string());
+
+        let mut open = canonical.categories[0].clone();
+        open.division = Some("Open".to_string());
+        open.athletes[0].first_name = "Bea".to_string();
+        canonical.categories.push(open);
+
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
     }
 
     #[test]

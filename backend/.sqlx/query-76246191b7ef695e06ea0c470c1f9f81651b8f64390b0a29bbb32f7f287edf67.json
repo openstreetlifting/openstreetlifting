@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO divisions (federation_id, name)\n            VALUES ($1, $2)\n            ON CONFLICT ON CONSTRAINT division_name_unique_per_federation\n            DO UPDATE SET name = EXCLUDED.name\n            RETURNING division_id as \"division_id: Uuid\"\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "division_id: Uuid",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "divisions",
+            "name": "division_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Varchar"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "76246191b7ef695e06ea0c470c1f9f81651b8f64390b0a29bbb32f7f287edf67"
+}

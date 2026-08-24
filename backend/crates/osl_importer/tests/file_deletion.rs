@@ -9,7 +9,7 @@ use sqlx::PgPool;
 
 mod common;
 
-use common::{attempts, import, men_80};
+use common::{attempts, import, in_division, men_80};
 
 fn athlete(first: &str, last: &str) -> AthleteData {
     let lifter = attempts(
@@ -21,7 +21,7 @@ fn athlete(first: &str, last: &str) -> AthleteData {
 }
 
 fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
-    let mut canonical = common::meet(slug, vec![men_80(athletes)]);
+    let mut canonical = common::meet(slug, vec![in_division(men_80(athletes), "Elite")]);
     canonical.movements = vec![Movement::MuscleUp, Movement::PullUp];
     canonical
 }
@@ -125,7 +125,7 @@ async fn reference_data_is_left_alone(pool: PgPool) {
         .unwrap();
 
     assert_eq!(count(&pool, "SELECT COUNT(*) FROM federations").await, 1);
-    assert_eq!(count(&pool, "SELECT COUNT(*) FROM categories").await, 1);
+    assert_eq!(count(&pool, "SELECT COUNT(*) FROM divisions").await, 1);
     assert_eq!(
         count(&pool, "SELECT COUNT(*) FROM movements").await,
         movements

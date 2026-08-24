@@ -19,6 +19,7 @@ export interface AthleteCompetitionSummary {
   competition_slug: string;
   competition_date: string | null;
   category_name: string;
+  division?: string | null;
   rank: number | null;
   total: string | null;
   ris_score: string | null;

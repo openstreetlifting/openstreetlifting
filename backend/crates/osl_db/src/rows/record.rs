@@ -6,7 +6,8 @@ use uuid::Uuid;
 pub struct RecordRow {
     pub record_id: Uuid,
     pub record_type: String,
-    pub category_id: Uuid,
+    pub weight_class_id: Uuid,
+    pub division_id: Option<Uuid>,
     pub movement_name: String,
     pub athlete_id: Uuid,
     pub competition_id: Uuid,

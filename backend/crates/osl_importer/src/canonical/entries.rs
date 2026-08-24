@@ -5,6 +5,7 @@ use rust_decimal::Decimal;
 
 pub const FILE_NAME: &str = "entries.csv";
 
+pub const DIVISION: &str = "Division";
 pub const SEX: &str = "Sex";
 pub const WEIGHT_CLASS: &str = "WeightClassKg";
 pub const FIRST_NAME: &str = "FirstName";
@@ -39,8 +40,15 @@ pub fn best_column(movement: Movement) -> String {
     format!("Best{}Kg", movement.column_prefix())
 }
 
-pub fn headers() -> Vec<String> {
-    let mut headers: Vec<String> = IDENTITY_COLUMNS.iter().map(|c| (*c).to_string()).collect();
+/// We leave the column out entirely when a meet ran no divisions, rather than
+/// carry an empty one on every row. Reading tolerates either shape.
+pub fn headers(divisioned: bool) -> Vec<String> {
+    let mut headers: Vec<String> = divisioned
+        .then(|| DIVISION.to_string())
+        .into_iter()
+        .collect();
+
+    headers.extend(IDENTITY_COLUMNS.iter().map(|c| (*c).to_string()));
 
     for movement in Movement::ALL {
         for attempt in 1..=ATTEMPTS_PER_MOVEMENT {
@@ -136,11 +144,11 @@ impl Columns {
             }
         }
 
-        let expected = headers();
+        let expected = headers(true);
 
         let missing: Vec<&String> = expected
             .iter()
-            .filter(|c| !index.contains_key(*c))
+            .filter(|c| *c != DIVISION && !index.contains_key(*c))
             .collect();
         if !missing.is_empty() {
             return Err(format!(
@@ -233,15 +241,22 @@ mod tests {
 
     #[test]
     fn headers_cover_every_movement() {
-        let headers = headers();
+        let headers = headers(false);
         assert_eq!(headers.len(), 10 + 4 * 4);
         assert!(headers.contains(&"MuscleUp1Kg".to_string()));
         assert!(headers.contains(&"BestSquatKg".to_string()));
     }
 
     #[test]
+    fn a_divisioned_meet_leads_with_the_division() {
+        let headers = headers(true);
+        assert_eq!(headers.len(), 11 + 4 * 4);
+        assert_eq!(headers[0], DIVISION);
+    }
+
+    #[test]
     fn an_unknown_column_is_rejected() {
-        let mut header = csv::StringRecord::from(headers());
+        let mut header = csv::StringRecord::from(headers(false));
         header.push_field("Total");
         let error = Columns::read(&header).unwrap_err();
         assert!(error.contains("Total"), "{error}");
@@ -249,9 +264,15 @@ mod tests {
 
     #[test]
     fn a_missing_column_is_rejected() {
-        let mut fields = headers();
+        let mut fields = headers(false);
         fields.retain(|c| c != "BestSquatKg");
         let error = Columns::read(&csv::StringRecord::from(fields)).unwrap_err();
         assert!(error.contains("BestSquatKg"), "{error}");
+    }
+
+    #[test]
+    fn a_file_without_a_division_column_is_accepted() {
+        assert!(Columns::read(&csv::StringRecord::from(headers(false))).is_ok());
+        assert!(Columns::read(&csv::StringRecord::from(headers(true))).is_ok());
     }
 }

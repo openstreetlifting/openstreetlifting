@@ -196,7 +196,10 @@
                   href={resolve(`/athletes/${entry.athlete.slug}`)}
                   class="inline-flex max-w-[8rem] items-center gap-2.5 hover:text-zinc-300 sm:max-w-none"
                 >
-                  <Flag countryCode={entry.athlete.country} class="-ml-1 shrink-0" />
+                  <Flag
+                    countryCode={entry.athlete.country}
+                    class="-ml-1 shrink-0 [--flag-height:1.45em]"
+                  />
                   <span class="truncate underline">
                     {entry.athlete.first_name}
                     {entry.athlete.last_name}

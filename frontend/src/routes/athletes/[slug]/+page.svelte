@@ -8,6 +8,7 @@
 
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
+  const showsDivision = $derived(athlete.competitions.some((c) => c.division));
 
   function formatWeight(weight: string | null): string {
     if (!weight) return '-';
@@ -151,6 +152,9 @@
               <tr class="border-b border-zinc-800">
                 <th class="px-3 py-2 text-left font-medium text-zinc-400">Competition</th>
                 <th class="px-3 py-2 text-left font-medium text-zinc-400">Date</th>
+                {#if showsDivision}
+                  <th class="px-3 py-2 text-left font-medium text-zinc-400">Division</th>
+                {/if}
                 <th class="px-3 py-2 text-left font-medium text-zinc-400">Category</th>
                 <th class="px-3 py-2 text-center font-medium text-zinc-400">Rank</th>
                 <th class="px-3 py-2 text-center font-medium text-zinc-400">Total</th>
@@ -174,6 +178,9 @@
                   </td>
                   <td class="px-3 py-2 text-zinc-400">{formatDate(competition.competition_date)}</td
                   >
+                  {#if showsDivision}
+                    <td class="px-3 py-2 text-zinc-400">{competition.division || '-'}</td>
+                  {/if}
                   <td class="px-3 py-2 text-zinc-400">{competition.category_name}</td>
                   <td class="px-3 py-2 text-center text-white">
                     {#if competition.is_disqualified}
@@ -214,6 +221,12 @@
                 <div class="text-xs text-zinc-500">Date</div>
                 <div class="text-zinc-400">{formatDate(competition.competition_date)}</div>
               </div>
+              {#if competition.division}
+                <div>
+                  <div class="text-xs text-zinc-500">Division</div>
+                  <div class="text-zinc-400">{competition.division}</div>
+                </div>
+              {/if}
               <div>
                 <div class="text-xs text-zinc-500">Category</div>
                 <div class="text-zinc-400">{competition.category_name}</div>

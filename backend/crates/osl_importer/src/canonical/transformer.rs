@@ -18,6 +18,12 @@ struct ImportedFacts {
     attempts: Vec<Uuid>,
 }
 
+#[derive(Clone, Copy)]
+struct ContestKey {
+    weight_class_id: Uuid,
+    division_id: Option<Uuid>,
+}
+
 impl<'a> CanonicalTransformer<'a> {
     pub fn new(pool: &'a PgPool) -> Self {
         Self { pool }
@@ -26,7 +32,7 @@ impl<'a> CanonicalTransformer<'a> {
     pub async fn import_to_database(&self, canonical: CanonicalFormat) -> Result<()> {
         let mut tx = self.pool.begin().await?;
 
-        let competition_id = self
+        let (competition_id, federation_id) = self
             .upsert_competition(&canonical.competition, &mut tx)
             .await?;
 
@@ -36,14 +42,16 @@ impl<'a> CanonicalTransformer<'a> {
         let mut imported = ImportedFacts::default();
 
         for category in &canonical.categories {
-            let category_id = self.upsert_category(category, &mut tx).await?;
+            let contest = self
+                .resolve_contest(category, federation_id, &mut tx)
+                .await?;
 
             for athlete in &category.athletes {
                 self.import_athlete_performance(
                     athlete,
                     category,
                     competition_id,
-                    category_id,
+                    contest,
                     &mut imported,
                     &mut tx,
                 )
@@ -106,7 +114,7 @@ impl<'a> CanonicalTransformer<'a> {
 
     /// A canonical file is the whole truth about its competition, so a row it
     /// no longer lists has been corrected away and must go. Only facts the
-    /// competition owns are pruned: athletes, categories, weight classes,
+    /// competition owns are pruned: athletes, weight classes, divisions,
     /// movements and federations are shared between competitions and stay.
     ///
     /// Order matters. Participants go first and take their lifts, attempts and
@@ -187,7 +195,7 @@ impl<'a> CanonicalTransformer<'a> {
         &self,
         competition: &CompetitionData,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
-    ) -> Result<Uuid> {
+    ) -> Result<(Uuid, Uuid)> {
         let federation_id = self
             .get_or_create_federation(&competition.federation, tx)
             .await?;
@@ -221,7 +229,7 @@ impl<'a> CanonicalTransformer<'a> {
         .fetch_one(&mut **tx)
         .await?;
 
-        Ok(competition_id)
+        Ok((competition_id, federation_id))
     }
 
     async fn get_or_create_federation(
@@ -315,7 +323,7 @@ impl<'a> CanonicalTransformer<'a> {
             return Err(ImporterError::TransformationError(format!(
                 "Category '{}' has no weight class. Set weight_class_slug, or \
                  weight_class_min and weight_class_max",
-                category.name
+                category.label()
             )));
         }
 
@@ -338,49 +346,46 @@ impl<'a> CanonicalTransformer<'a> {
         Ok(weight_class_id)
     }
 
-    async fn upsert_category(
+    async fn upsert_division(
         &self,
-        category: &CategoryData,
+        federation_id: Uuid,
+        name: &str,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<Uuid> {
-        let gender = category.gender.as_str();
-
-        let existing = sqlx::query_scalar!(
-            r#"SELECT category_id as "category_id: Uuid" FROM categories WHERE name = $1 AND gender = $2"#,
-            category.name,
-            gender
-        )
-        .fetch_optional(&mut **tx)
-        .await?;
-
-        let weight_class_id = self.resolve_weight_class(category, tx).await?;
-
-        if let Some(id) = existing {
-            sqlx::query!(
-                r#"UPDATE categories SET weight_class_id = $1 WHERE category_id = $2"#,
-                weight_class_id,
-                id
-            )
-            .execute(&mut **tx)
-            .await?;
-
-            return Ok(id);
-        }
-
-        let category_id = sqlx::query_scalar!(
+        let division_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO categories (name, gender, weight_class_id)
-            VALUES ($1, $2, $3)
-            RETURNING category_id as "category_id: Uuid"
+            INSERT INTO divisions (federation_id, name)
+            VALUES ($1, $2)
+            ON CONFLICT ON CONSTRAINT division_name_unique_per_federation
+            DO UPDATE SET name = EXCLUDED.name
+            RETURNING division_id as "division_id: Uuid"
             "#,
-            category.name,
-            gender,
-            weight_class_id
+            federation_id,
+            name
         )
         .fetch_one(&mut **tx)
         .await?;
 
-        Ok(category_id)
+        Ok(division_id)
+    }
+
+    async fn resolve_contest(
+        &self,
+        category: &CategoryData,
+        federation_id: Uuid,
+        tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
+    ) -> Result<ContestKey> {
+        let weight_class_id = self.resolve_weight_class(category, tx).await?;
+
+        let division_id = match category.division.as_deref() {
+            Some(division) => Some(self.upsert_division(federation_id, division, tx).await?),
+            None => None,
+        };
+
+        Ok(ContestKey {
+            weight_class_id,
+            division_id,
+        })
     }
 
     async fn import_athlete_performance(
@@ -388,7 +393,7 @@ impl<'a> CanonicalTransformer<'a> {
         athlete: &AthleteData,
         category: &CategoryData,
         competition_id: Uuid,
-        category_id: Uuid,
+        contest: ContestKey,
         imported: &mut ImportedFacts,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
@@ -401,12 +406,11 @@ impl<'a> CanonicalTransformer<'a> {
         let participant_id = sqlx::query_scalar!(
             r#"
             INSERT INTO competition_participants
-                (competition_id, category_id, athlete_id, bodyweight, rank, is_disqualified, disqualified_reason, ris_score, ris_source)
+                (competition_id, weight_class_id, division_id, athlete_id, bodyweight, is_disqualified, disqualified_reason, ris_score, ris_source)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END)
-            ON CONFLICT (competition_id, category_id, athlete_id)
+            ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id)
             DO UPDATE SET
                 bodyweight = EXCLUDED.bodyweight,
-                rank = EXCLUDED.rank,
                 is_disqualified = EXCLUDED.is_disqualified,
                 disqualified_reason = EXCLUDED.disqualified_reason,
                 ris_score = EXCLUDED.ris_score,
@@ -414,10 +418,10 @@ impl<'a> CanonicalTransformer<'a> {
             RETURNING participant_id as "participant_id: Uuid"
             "#,
             competition_id,
-            category_id,
+            contest.weight_class_id,
+            contest.division_id,
             athlete_id,
             athlete.bodyweight,
-            None as Option<i32>,
             is_disqualified,
             athlete.status_reason,
             athlete.ris

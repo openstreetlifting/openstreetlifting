@@ -10,6 +10,7 @@ export interface RankingEntry {
   rank: number;
   athlete: AthleteInfo;
   category: string;
+  division?: string | null;
   ris: number | null;
   ris_source: 'computed' | 'reported' | null;
   /** Absent outside the four-movement event, where a total does not compare. */

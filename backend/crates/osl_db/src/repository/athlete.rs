@@ -5,6 +5,7 @@ use uuid::Uuid;
 use crate::error::{Result, StorageError};
 use crate::params::Page;
 use crate::projections::athlete::{AthleteCompetitionRow, AthleteDetail, PersonalRecordRow};
+use crate::repository::parse_gender;
 use crate::rows::athlete::AthleteRow;
 
 pub struct AthleteRepository<'a> {
@@ -103,16 +104,45 @@ impl<'a> AthleteRepository<'a> {
     }
 
     async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
-        let competitions = sqlx::query_as!(
-            AthleteCompetitionRow,
+        // The placing is worked out from the lifts, the same way the meet page
+        // does it, over the contests this athlete actually entered.
+        let rows = sqlx::query!(
             r#"
+            WITH entered AS (
+                SELECT DISTINCT competition_id, weight_class_id, division_id
+                FROM competition_participants
+                WHERE athlete_id = $1
+            ),
+            placed AS (
+                SELECT
+                    cp.participant_id,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY cp.competition_id, cp.weight_class_id, cp.division_id
+                        ORDER BY
+                            CASE WHEN COALESCE(SUM(l.max_weight), 0) = 0 THEN 1 ELSE 0 END,
+                            COALESCE(SUM(l.max_weight), 0) DESC,
+                            cp.bodyweight ASC NULLS LAST
+                    )::int as place
+                FROM competition_participants cp
+                JOIN entered e
+                    ON e.competition_id = cp.competition_id
+                   AND e.weight_class_id = cp.weight_class_id
+                   AND e.division_id IS NOT DISTINCT FROM cp.division_id
+                LEFT JOIN lifts l ON l.participant_id = cp.participant_id
+                WHERE NOT cp.is_disqualified
+                GROUP BY cp.participant_id, cp.competition_id, cp.weight_class_id,
+                         cp.division_id, cp.bodyweight
+            )
             SELECT
                 c.competition_id,
                 c.name as competition_name,
                 c.slug as competition_slug,
                 c.start_date as competition_date,
-                cat.name as category_name,
-                cp.rank,
+                d.name as "division?",
+                wc.gender as category_gender,
+                wc.min_kg as weight_class_min,
+                wc.max_kg as weight_class_max,
+                placed.place as "rank?",
                 CASE WHEN COUNT(l.lift_id) = 0 THEN NULL
                      ELSE COALESCE(SUM(l.max_weight), 0)
                 END as "total: Decimal",
@@ -120,16 +150,39 @@ impl<'a> AthleteRepository<'a> {
                 cp.is_disqualified
             FROM competition_participants cp
             JOIN competitions c ON cp.competition_id = c.competition_id
-            JOIN categories cat ON cp.category_id = cat.category_id
+            JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+            LEFT JOIN divisions d ON d.division_id = cp.division_id
             LEFT JOIN lifts l ON l.participant_id = cp.participant_id
+            LEFT JOIN placed ON placed.participant_id = cp.participant_id
             WHERE cp.athlete_id = $1
-            GROUP BY c.competition_id, c.name, c.slug, c.start_date, cat.name, cp.rank, cp.ris_score, cp.is_disqualified
+            GROUP BY c.competition_id, c.name, c.slug, c.start_date, d.name, wc.gender,
+                     wc.min_kg, wc.max_kg, placed.place, cp.ris_score, cp.is_disqualified
             ORDER BY c.start_date DESC NULLS LAST
             "#,
             athlete.athlete_id
         )
         .fetch_all(self.pool)
         .await?;
+
+        let competitions = rows
+            .into_iter()
+            .map(|row| {
+                Ok(AthleteCompetitionRow {
+                    competition_id: row.competition_id,
+                    competition_name: row.competition_name,
+                    competition_slug: row.competition_slug,
+                    competition_date: Some(row.competition_date),
+                    division: row.division,
+                    category_gender: parse_gender(&row.category_gender)?,
+                    weight_class_min: row.weight_class_min,
+                    weight_class_max: row.weight_class_max,
+                    rank: row.rank,
+                    total: row.total,
+                    ris_score: row.ris_score,
+                    is_disqualified: row.is_disqualified,
+                })
+            })
+            .collect::<Result<Vec<_>>>()?;
 
         let personal_records = sqlx::query_as!(
             PersonalRecordRow,

@@ -93,7 +93,7 @@ or a spelling, query the project's own read-only API before asking the user:
 GET /athletes?page=1&page_size=50
 GET /athletes/{slug}?include=competitions,records
 GET /competitions?page=1&page_size=50&include=federation,movements
-GET /competitions/{slug}?include=categories,results,federation,movements
+GET /competitions/{slug}?include=federation,results
 ```
 
 Everything is a plain GET, no auth. Use it to answer: is this athlete already
@@ -163,7 +163,7 @@ totals, so a partial event is ranked per movement and nothing else.
 
 ## entries.csv
 
-One row per athlete, 26 columns, always in this order:
+One row per athlete, 26 columns (27 with `Division`), always in this order:
 
 ```
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,
@@ -177,6 +177,7 @@ Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 
 | Column | Meaning |
 |---|---|
+| `Division` | Only when the meet ran divisions. See below |
 | `Sex` | `M`, `F` or `MX`. Required |
 | `WeightClassKg` | `80` for −80, `101+` for +101. Required |
 | `FirstName` `LastName` | As the source spells them. Required |
@@ -191,8 +192,37 @@ Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 country imports as a different person. Use the country the source lists them
 under, and keep it consistent for one person across meets.
 
-The category is not stored. It is derived from `Sex` and `WeightClassKg`, so
-`M` + `80` renders as "Men -80kg" and `M` + `101+` as "Men +101kg".
+The category is not stored. It is derived from `Division`, `Sex` and
+`WeightClassKg`, so `M` + `80` renders as "Men -80kg", `M` + `101+` as
+"Men +101kg", and `Elite` + `M` + `80` as "Elite Men -80kg".
+
+### Division
+
+Most meets run one contest per sex and weight class, and those files have **no
+`Division` column at all**. Leave it out rather than adding an empty one.
+
+Add it as the **first** column, before `Sex`, only when the meet ran the same
+weight class more than once, for example an Elite board and an Open board
+lifting -80kg separately. Those are two contests with two winners, and without
+the column they collapse into one and a winner disappears.
+
+A meet that is *itself* one division, like FNSL Elite 2026, does not need the
+column. There is nothing to tell apart, and the meet name already says Elite.
+
+```
+Division,Sex,WeightClassKg,FirstName,...
+Elite,M,80,Ana,...
+Open,M,80,Cy,...
+```
+
+The value is free text, whatever the meet called it. There is no fixed list,
+and names are not standardised between federations. Use the source's own
+wording, and keep it identical for every row in that division. Every row needs
+a value once the column exists.
+
+Placings are computed per division, so a lifter can appear in two divisions of
+one meet. Global rankings ignore division entirely, since a 200 kg squat is a
+200 kg squat either way.
 
 Weight classes are written **bound first, plus as a suffix**: `80`, not `-80`,
 and `101+`, not `+101`. Nothing may start with `+` or `-`, because a

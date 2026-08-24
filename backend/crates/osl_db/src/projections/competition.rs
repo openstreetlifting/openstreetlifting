@@ -1,8 +1,10 @@
+use osl_domain::Gender;
 use rust_decimal::Decimal;
+use uuid::Uuid;
 
 use crate::rows::{
-    athlete::AthleteRow, category::CategoryRow, competition::CompetitionRow,
-    competition_movement::CompetitionMovementRow, federation::FederationRow,
+    athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
+    federation::FederationRow,
 };
 
 #[derive(Debug)]
@@ -19,9 +21,19 @@ pub struct CompetitionDetail {
     pub categories: Vec<CategoryParticipants>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Contest {
+    pub weight_class_id: Uuid,
+    pub division_id: Option<Uuid>,
+    pub division: Option<String>,
+    pub gender: Gender,
+    pub weight_class_min: Option<Decimal>,
+    pub weight_class_max: Option<Decimal>,
+}
+
 #[derive(Debug)]
 pub struct CategoryParticipants {
-    pub category: CategoryRow,
+    pub category: Contest,
     pub participants: Vec<ParticipantDetail>,
 }
 
@@ -29,7 +41,7 @@ pub struct CategoryParticipants {
 pub struct ParticipantDetail {
     pub athlete: AthleteRow,
     pub bodyweight: Option<Decimal>,
-    /// Rank computed per category by the ranking window function
+    /// Placing within the contest, computed from the lifts.
     pub rank: Option<i32>,
     pub ris_score: Option<Decimal>,
     pub is_disqualified: bool,

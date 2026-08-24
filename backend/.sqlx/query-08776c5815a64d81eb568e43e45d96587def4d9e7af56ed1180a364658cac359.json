@@ -1,43 +1,54 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT DISTINCT c.category_id, c.name, c.gender,\n                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max\n             FROM categories c\n             JOIN competition_participants cp ON c.category_id = cp.category_id\n             JOIN weight_classes wc ON wc.weight_class_id = c.weight_class_id\n             WHERE cp.competition_id = $1",
+  "query": "SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS \"division?\", wc.gender,\n                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max\n             FROM competition_participants cp\n             JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n             LEFT JOIN divisions d ON d.division_id = cp.division_id\n             WHERE cp.competition_id = $1",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
-        "name": "category_id",
+        "name": "weight_class_id",
         "type_info": "Uuid",
         "origin": {
           "Table": {
-            "table": "categories",
-            "name": "category_id"
+            "table": "competition_participants",
+            "name": "weight_class_id"
           }
         }
       },
       {
         "ordinal": 1,
-        "name": "name",
-        "type_info": "Varchar",
+        "name": "division_id",
+        "type_info": "Uuid",
         "origin": {
           "Table": {
-            "table": "categories",
-            "name": "name"
+            "table": "competition_participants",
+            "name": "division_id"
           }
         }
       },
       {
         "ordinal": 2,
-        "name": "gender",
+        "name": "division?",
         "type_info": "Varchar",
         "origin": {
           "Table": {
-            "table": "categories",
-            "name": "gender"
+            "table": "divisions",
+            "name": "name"
           }
         }
       },
       {
         "ordinal": 3,
+        "name": "gender",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "weight_classes",
+            "name": "gender"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
         "name": "weight_class_min",
         "type_info": "Numeric",
         "origin": {
@@ -48,7 +59,7 @@
         }
       },
       {
-        "ordinal": 4,
+        "ordinal": 5,
         "name": "weight_class_max",
         "type_info": "Numeric",
         "origin": {
@@ -66,11 +77,12 @@
     },
     "nullable": [
       false,
+      true,
       false,
       false,
       true,
       true
     ]
   },
-  "hash": "8d185c57ca2e8ed96e00a10c2cc299af5f838ec5c44ce91ee2346ef7b74541b1"
+  "hash": "08776c5815a64d81eb568e43e45d96587def4d9e7af56ed1180a364658cac359"
 }

@@ -6,13 +6,15 @@ use uuid::Uuid;
 use crate::error::{Result, StorageError};
 use crate::params::Page;
 use crate::projections::competition::{
-    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem, LiftDetail,
-    ParticipantDetail,
+    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem, Contest,
+    LiftDetail, ParticipantDetail,
 };
+use crate::repository::parse_gender;
 use crate::rows::{
-    athlete::AthleteRow, category::CategoryRow, competition::CompetitionRow,
-    competition_movement::CompetitionMovementRow, federation::FederationRow, lift::LiftRow,
+    athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
+    federation::FederationRow, lift::LiftRow,
 };
+use osl_domain::Gender;
 
 pub struct CompetitionRepository<'a> {
     pool: &'a PgPool,
@@ -135,19 +137,20 @@ impl<'a> CompetitionRepository<'a> {
             WITH participant_totals AS (
                 SELECT
                     cp.participant_id,
-                    cp.category_id,
+                    cp.weight_class_id,
+                    cp.division_id,
                     cp.bodyweight,
                     COALESCE(SUM(l.max_weight), 0) as total
                 FROM competition_participants cp
                 LEFT JOIN lifts l ON l.participant_id = cp.participant_id
                 WHERE cp.competition_id = $1
                   AND NOT cp.is_disqualified
-                GROUP BY cp.participant_id, cp.category_id, cp.bodyweight
+                GROUP BY cp.participant_id, cp.weight_class_id, cp.division_id, cp.bodyweight
             )
             SELECT
                 participant_id,
                 ROW_NUMBER() OVER (
-                    PARTITION BY category_id
+                    PARTITION BY weight_class_id, division_id
                     ORDER BY
                         CASE WHEN total = 0 THEN 1 ELSE 0 END,
                         total DESC,
@@ -184,30 +187,45 @@ impl<'a> CompetitionRepository<'a> {
         .fetch_one(self.pool)
         .await?;
 
-        let categories = sqlx::query_as!(
-            CategoryRow,
-            "SELECT DISTINCT c.category_id, c.name, c.gender,
+        let contests = sqlx::query!(
+            r#"SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS "division?", wc.gender,
                     wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
-             FROM categories c
-             JOIN competition_participants cp ON c.category_id = cp.category_id
-             JOIN weight_classes wc ON wc.weight_class_id = c.weight_class_id
-             WHERE cp.competition_id = $1",
+             FROM competition_participants cp
+             JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+             LEFT JOIN divisions d ON d.division_id = cp.division_id
+             WHERE cp.competition_id = $1"#,
             competition.competition_id
         )
         .fetch_all(self.pool)
         .await?;
 
+        let categories = contests
+            .into_iter()
+            .map(|row| {
+                Ok(Contest {
+                    weight_class_id: row.weight_class_id,
+                    division_id: row.division_id,
+                    division: row.division,
+                    gender: parse_gender(&row.gender)?,
+                    weight_class_min: row.weight_class_min,
+                    weight_class_max: row.weight_class_max,
+                })
+            })
+            .collect::<Result<Vec<_>>>()?;
+
         let mut category_details = Vec::with_capacity(categories.len());
 
         for category in categories {
             let participants = sqlx::query!(
-                "SELECT participant_id, competition_id, category_id, athlete_id, bodyweight, rank, is_disqualified,
+                "SELECT participant_id, competition_id, athlete_id, bodyweight, is_disqualified,
                         created_at, disqualified_reason, ris_score
                  FROM competition_participants
-                 WHERE competition_id = $1 AND category_id = $2
-                 ORDER BY rank NULLS LAST",
+                 WHERE competition_id = $1
+                   AND weight_class_id = $2
+                   AND division_id IS NOT DISTINCT FROM $3",
                 competition.competition_id,
-                category.category_id
+                category.weight_class_id,
+                category.division_id
             )
             .fetch_all(self.pool)
             .await?;
@@ -289,7 +307,8 @@ impl<'a> CompetitionRepository<'a> {
             });
         }
 
-        category_details.sort_by(|a, b| a.category.name.cmp(&b.category.name));
+        category_details
+            .sort_by(|a, b| category_order(&a.category).cmp(&category_order(&b.category)));
 
         Ok(CompetitionDetail {
             competition,
@@ -297,4 +316,19 @@ impl<'a> CompetitionRepository<'a> {
             categories: category_details,
         })
     }
+}
+
+fn category_order(category: &Contest) -> (Option<&str>, u8, Decimal, Decimal) {
+    let gender = match category.gender {
+        Gender::M => 0,
+        Gender::F => 1,
+        Gender::Mx => 2,
+    };
+
+    (
+        category.division.as_deref(),
+        gender,
+        category.weight_class_max.unwrap_or(Decimal::MAX),
+        category.weight_class_min.unwrap_or(Decimal::ZERO),
+    )
 }
