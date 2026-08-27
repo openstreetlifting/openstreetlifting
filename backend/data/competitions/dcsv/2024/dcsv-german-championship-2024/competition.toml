@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = ["https://www.dcs-verband.de/dm-weighted-calisthenics"]
+
+[competition]
+name = "Deutsche Meisterschaft Weighted Calisthenics"
+start_date = "2024-09-21"
+end_date = "2024-09-22"
+city = "Wetzlar"
+region = "Hessen"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "DCSV"
+abbreviation = "DCSV"
+country = "DE"
