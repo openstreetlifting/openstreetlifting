@@ -13,7 +13,7 @@
   } from '$lib/components/ui';
   import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
-  import { formatDate, formatWeight } from '$lib/utils';
+  import { formatDate, formatWeight, formatAthleteName } from '$lib/utils';
   import { CELL, STATUS_FLAG, NO_VALUE } from '$lib/constants/table';
 
   // The badge is two letters, so the title carries the meaning. A reason from
@@ -58,27 +58,21 @@
 </script>
 
 <svelte:head>
-  <title>{athlete.first_name} {athlete.last_name} - OpenStreetlifting</title>
+  <title>{formatAthleteName(athlete)} - OpenStreetlifting</title>
   <meta
     name="description"
-    content="Competition history and personal records for {athlete.first_name} {athlete.last_name}"
+    content="Competition history and personal records for {formatAthleteName(athlete)}"
   />
 </svelte:head>
 
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
-  <Breadcrumb
-    items={[
-      { label: 'Rankings', href: '/' },
-      { label: `${athlete.first_name} ${athlete.last_name}` },
-    ]}
-  />
+  <Breadcrumb items={[{ label: 'Rankings', href: '/' }, { label: formatAthleteName(athlete) }]} />
 
   <div class="mb-12">
     <div class="mb-4 flex items-center gap-4">
       <Flag countryCode={athlete.country} class="text-xl" />
       <h1 class="{TEXT.title} text-white">
-        {athlete.first_name}
-        {athlete.last_name}
+        {formatAthleteName(athlete)}
       </h1>
 
       {#if athlete.instagram_handle}
@@ -87,7 +81,7 @@
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center text-white transition-colors hover:text-zinc-300"
-          aria-label="{athlete.first_name} {athlete.last_name} on Instagram"
+          aria-label="{formatAthleteName(athlete)} on Instagram"
           title="@{athlete.instagram_handle}"
         >
           <InstagramIcon class="h-7 w-7 sm:h-9 sm:w-9" />

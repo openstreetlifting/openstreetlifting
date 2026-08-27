@@ -12,6 +12,12 @@ export function formatLocation(...parts: (string | null | undefined)[]): string 
   return parts.filter(Boolean).join(', ');
 }
 
+// An athlete with only one name has no first name, so the halves are joined
+// rather than interpolated with a space that would sit there on its own.
+export function formatAthleteName(athlete: { first_name: string; last_name: string }): string {
+  return [athlete.first_name, athlete.last_name].filter(Boolean).join(' ');
+}
+
 const relativeTime = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
 
 // A date on its own does not say how soon a competition is, which is the only thing

@@ -1,7 +1,7 @@
 use chrono::NaiveDate;
 use osl_domain::{
     AthleteStatus, CompetitionStatus, CountryCode, Gender, Movement, WeightClassSlug,
-    category_label,
+    category_label, display_name,
 };
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -75,6 +75,12 @@ pub struct AthleteData {
     pub status: AthleteStatus,
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftData>,
+}
+
+impl AthleteData {
+    pub fn display_name(&self) -> String {
+        display_name(&self.first_name, &self.last_name)
+    }
 }
 
 #[derive(Debug, Clone)]

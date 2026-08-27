@@ -20,7 +20,14 @@
   } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
-  import { formatDate, formatLocation, countryName, slugify, formatWeight } from '$lib/utils';
+  import {
+    formatDate,
+    formatLocation,
+    countryName,
+    slugify,
+    formatWeight,
+    formatAthleteName,
+  } from '$lib/utils';
   import {
     CELL,
     STATUS_FLAG,
@@ -166,7 +173,7 @@
           (!table.genderFilter || athlete.gender === table.genderFilter) &&
           (!table.countryFilter || athlete.country === table.countryFilter) &&
           (!table.categoryFilter || category.category.weight_class === table.categoryFilter) &&
-          (!search || `${athlete.first_name} ${athlete.last_name}`.toLowerCase().includes(search))
+          (!search || formatAthleteName(athlete).toLowerCase().includes(search))
         );
       })
       .sort(
@@ -434,8 +441,7 @@
                     class="-ml-1 shrink-0 [--flag-height:1.25em]"
                   />
                   <span class="truncate underline">
-                    {entry.athlete.first_name}
-                    {entry.athlete.last_name}
+                    {formatAthleteName(entry.athlete)}
                   </span>
                 </a>
                 {#if participant && participant.status !== 'competed'}
@@ -513,8 +519,7 @@
                       class="-ml-1 shrink-0 [--flag-height:1.25em]"
                     />
                     <span class="truncate underline">
-                      {participant.athlete.first_name}
-                      {participant.athlete.last_name}
+                      {formatAthleteName(participant.athlete)}
                     </span>
                   </a>
                   <span

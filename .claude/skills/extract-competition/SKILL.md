@@ -181,7 +181,7 @@ Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 | `Division` | Only when the competition ran divisions. See below |
 | `Sex` | `M`, `F` or `MX`. Required |
 | `WeightClassKg` | `80` for −80, `101+` for +101. Required |
-| `FirstName` `LastName` | As the source spells them. Required |
+| `FirstName` `LastName` | As the source spells them. `LastName` is required, `FirstName` is not |
 | `Disambiguation` | Only to separate two real people sharing a name |
 | `Country` | Required, ISO 3166-1 alpha-2 |
 | `BodyweightKg` | Never set alongside `Ris` |
@@ -299,6 +299,12 @@ Write the name the way the source spells it. Matching already ignores accents,
 capitalisation and punctuation, so `MERANDON`, `Mérandon` and `merandon` are
 one person however the source wrote it, and so are `Jean-Luc` and `Jean Luc`.
 Never "fix" a name to make it match one you have seen before.
+
+A source sometimes gives only one name. Put it in `LastName` and leave
+`FirstName` empty, so the athlete reads and sorts as that one name. Never
+repeat it in both fields: identity is decided by the folded name, so an invented
+surname becomes their permanent key and splits their history the day a source
+spells them in full.
 
 `Disambiguation` is for the opposite case: two **different** people who share a
 name, gender and country. Leave the first empty and number the rest from 2, the

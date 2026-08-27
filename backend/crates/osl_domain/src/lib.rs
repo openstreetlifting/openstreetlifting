@@ -19,7 +19,7 @@ pub use country::CountryCode;
 pub use event::{FULL_EVENT, is_full_event};
 pub use gender::Gender;
 pub use movement::Movement;
-pub use normalized_name::NormalizedAthleteName;
+pub use normalized_name::{NormalizedAthleteName, display_name};
 pub use ris::{FormulaConstants, RisFormula};
 pub use ris_source::RisSource;
 pub use slug::slugify;

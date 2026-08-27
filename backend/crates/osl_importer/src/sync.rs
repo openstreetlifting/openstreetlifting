@@ -3,6 +3,7 @@
 //! The files are the data, so a competition no file claims should not exist,
 //! and neither should an athlete left without a single result.
 
+use osl_domain::display_name;
 use sqlx::PgPool;
 
 use crate::error::{ImporterError, Result};
@@ -101,7 +102,7 @@ impl<'a> CompetitionSync<'a> {
                 .collect(),
             athletes: athletes
                 .into_iter()
-                .map(|row| format!("{} {}", row.first_name, row.last_name))
+                .map(|row| display_name(&row.first_name, &row.last_name))
                 .collect(),
         })
     }
