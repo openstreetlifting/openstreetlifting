@@ -10,5 +10,5 @@ status = "completed"
 
 [federation]
 name = "USAStreetlifting"
-abbreviation = "USASL"
+abbreviation = "usastreetlifting"
 country = "US"
