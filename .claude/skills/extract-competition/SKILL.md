@@ -231,9 +231,30 @@ spreadsheet reads that as a formula and silently eats the file. Read the bound
 off the category name, not off the athletes: a class called +101 has a minimum
 of 101 even when the lightest athlete in it weighs 105.
 
-The standard ladder is `52` `57` `63` `70` `70+` for women and `66` `73` `80`
-`87` `94` `101` `101+` for men. A competition running something else, like `75`, is
-fine and stores its bound directly.
+The standard ladder is the FinalRep one: `52` `57` `63` `70` `70+` for women and
+`66` `73` `80` `87` `94` `101` `101+` for men. A competition running something
+else, like `75`, is fine and stores its bound directly.
+
+### A group the source does not classify
+
+Some sources give a group no class at all, or a placeholder standing in for one.
+USA Streetlifting print `D/C` on their early meets, over a group whose
+bodyweights span several standard classes. Then, and only then, read the bound
+off each athlete's bodyweight and put them in the standard class it falls in, so
+a man at 95.9 kg goes in `101` and a woman at 69.9 kg in `70`.
+
+Never do this to a class the source names. A lifter may enter above their own
+class, so a 58.2 kg man the source lists under -73 stays in `73`, and a
+federation running its own ladder keeps it.
+
+Splitting an unclassified group has a cost worth saying out loud in the summary:
+the source ranked those athletes against each other, and once they sit in
+different classes each becomes their own winner, so the placings stop matching
+the source's page. Say so rather than letting the user find it on the site.
+
+A bound must be greater than zero, so there is no way to write a class that is
+open at the bottom. Resolving per athlete against the ladder avoids ever needing
+one.
 
 ### Attempt cells
 
