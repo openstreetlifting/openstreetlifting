@@ -6,6 +6,9 @@ export { default as Breadcrumb } from './breadcrumb.svelte';
 export { default as Pagination } from './pagination.svelte';
 export { default as Flag } from './flag.svelte';
 export { default as SearchInput } from './search-input.svelte';
+export { default as InfoTip } from './info-tip.svelte';
+export { default as RisScore } from './ris-score.svelte';
+export { default as RisHeader } from './ris-header.svelte';
 export {
   default as Table,
   TABLE_CELL,

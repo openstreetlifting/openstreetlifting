@@ -7,6 +7,8 @@
     Flag,
     SearchInput,
     Table,
+    RisHeader,
+    RisScore,
     TABLE_CELL,
     TABLE_HEAD_CELL,
     FROZEN_CELL,
@@ -18,14 +20,7 @@
   } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
-  import {
-    formatDate,
-    formatLocation,
-    countryName,
-    slugify,
-    formatWeight,
-    formatScore,
-  } from '$lib/utils';
+  import { formatDate, formatLocation, countryName, slugify, formatWeight } from '$lib/utils';
   import {
     CELL,
     STATUS_FLAG,
@@ -417,7 +412,7 @@
             ? SORTED_COLUMN
             : ''}"
         >
-          RIS
+          <RisHeader />
         </th>
       {/snippet}
 
@@ -497,7 +492,9 @@
               </td>
             {/each}
             <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
-            <td class="{TABLE_CELL} {CELL.counted}">{formatScore(entry.ris)}</td>
+            <td class="{TABLE_CELL} {CELL.counted}">
+              <RisScore value={entry.ris} source={entry.ris_source} />
+            </td>
           </tr>
         {/each}
 

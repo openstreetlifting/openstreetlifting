@@ -11,8 +11,12 @@
   // scrolls behind them would otherwise show through.
   export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
   export const FROZEN_HEAD_CELL = 'sticky z-10 bg-zinc-900';
-  /** The edge that shows the columns to its right have moved. */
-  export const FROZEN_EDGE = 'border-r border-zinc-800';
+  /**
+   * The edge that shows the columns to its right have moved. Only below sm:
+   * from there the table fits without scrolling, nothing slides under the
+   * pinned columns, and the rule is then just a line through the row.
+   */
+  export const FROZEN_EDGE = 'border-r border-zinc-800 sm:border-r-0';
 
   // Both pinned columns carry their width here rather than taking it from the
   // longest value in them, so a long name truncates instead of pushing the

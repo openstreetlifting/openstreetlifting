@@ -18,6 +18,7 @@ pub struct AthleteCompetitionRow {
     pub rank: Option<i32>,
     pub total: Option<Decimal>,
     pub ris_score: Option<Decimal>,
+    pub ris_source: Option<String>,
     pub status: String,
 }
 

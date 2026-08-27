@@ -147,6 +147,7 @@ impl<'a> AthleteRepository<'a> {
                      ELSE COALESCE(SUM(l.max_weight), 0)
                 END as "total: Decimal",
                 cp.ris_score,
+                cp.ris_source,
                 cp.status
             FROM competition_participants cp
             JOIN competitions c ON cp.competition_id = c.competition_id
@@ -156,7 +157,8 @@ impl<'a> AthleteRepository<'a> {
             LEFT JOIN placed ON placed.participant_id = cp.participant_id
             WHERE cp.athlete_id = $1
             GROUP BY c.competition_id, c.name, c.slug, c.start_date, d.name, wc.gender,
-                     wc.min_kg, wc.max_kg, placed.place, cp.ris_score, cp.status
+                     wc.min_kg, wc.max_kg, placed.place, cp.ris_score, cp.ris_source,
+                     cp.status
             ORDER BY c.start_date DESC NULLS LAST
             "#,
             athlete.athlete_id
@@ -179,6 +181,7 @@ impl<'a> AthleteRepository<'a> {
                     rank: row.rank,
                     total: row.total,
                     ris_score: row.ris_score,
+                    ris_source: row.ris_source,
                     status: row.status,
                 })
             })
