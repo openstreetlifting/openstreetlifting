@@ -26,14 +26,16 @@
   ?
 </button>
 
-<!-- Sized to hold its content outright. A note the reader has to scroll is
-     worse than no note, so nothing here caps the height.
+<!-- Sized to hold its content outright, so on any ordinary phone the note is
+     read without scrolling. The cap is only a floor under that: on the
+     shortest screens this is taller than the viewport, and text scrolled to is
+     better than text hanging off the top where it cannot be reached at all.
      whitespace-normal because a column header sets nowrap to keep its label on
      one line, and the panel would otherwise inherit it and never wrap. -->
 <div
   id={panelId}
   popover="auto"
-  class="m-auto w-[min(30rem,calc(100vw-2rem))] rounded-xl whitespace-normal border border-zinc-700 bg-zinc-900 p-6 text-left text-sm leading-relaxed font-normal text-zinc-300 shadow-2xl shadow-zinc-950/70 backdrop:bg-zinc-950/70"
+  class="m-auto max-h-[calc(100dvh-2rem)] w-[min(30rem,calc(100vw-2rem))] overflow-y-auto overscroll-contain rounded-xl whitespace-normal border border-zinc-700 bg-zinc-900 p-5 text-left sm:p-6 text-sm leading-relaxed font-normal text-zinc-300 shadow-2xl shadow-zinc-950/70 backdrop:bg-zinc-950/70"
 >
   {@render children()}
 </div>
