@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.13.0...v0.14.0) (2026-08-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** tell a no-show apart from a disqualification, and show both ([#454](https://github.com/openstreetlifting/openstreetlifting/issues/454))
+* **importer:** rename meet.toml to competition.toml ([#452](https://github.com/openstreetlifting/openstreetlifting/issues/452))
+
+### Features
+
+* **api:** tell a no-show apart from a disqualification, and show both ([#454](https://github.com/openstreetlifting/openstreetlifting/issues/454)) ([b59487b](https://github.com/openstreetlifting/openstreetlifting/commit/b59487b14e120ec8c805a4133070190443c8ae2e))
+* **competitions:** add DCSV German Championship 2022 ([#455](https://github.com/openstreetlifting/openstreetlifting/issues/455)) ([5b3d7b5](https://github.com/openstreetlifting/openstreetlifting/commit/5b3d7b57570c00e0bae24a1e878de009318aad5d))
+* **competitions:** add DCSV German Championship 2023 ([#456](https://github.com/openstreetlifting/openstreetlifting/issues/456)) ([cbea6ff](https://github.com/openstreetlifting/openstreetlifting/commit/cbea6ff84cbc252b7a6ff4f9e036db585b089aad))
+* **competitions:** add DCSV German Championship 2024 ([#458](https://github.com/openstreetlifting/openstreetlifting/issues/458)) ([45ab344](https://github.com/openstreetlifting/openstreetlifting/commit/45ab3445ac7eb361a5b5b84f4272c52522025368))
+* **frontend:** show the three attempts behind every lift ([#447](https://github.com/openstreetlifting/openstreetlifting/issues/447)) ([a1243d3](https://github.com/openstreetlifting/openstreetlifting/commit/a1243d3c82f9cde8375bd72a2c6b0b40342485ca))
+* **importer:** rename meet.toml to competition.toml ([#452](https://github.com/openstreetlifting/openstreetlifting/issues/452)) ([32c7b62](https://github.com/openstreetlifting/openstreetlifting/commit/32c7b626685b8606ddd944f80e3bab54a13a0d37))
+
+
+### Bug Fixes
+
+* **frontend:** put the competition history on the shared table ([#459](https://github.com/openstreetlifting/openstreetlifting/issues/459)) ([5d3bf2f](https://github.com/openstreetlifting/openstreetlifting/commit/5d3bf2f01dd8ca9cf5701b9833fbd2b71e547b52))
+* **importer:** score every meet with the current RIS formula ([#444](https://github.com/openstreetlifting/openstreetlifting/issues/444)) ([7afadd8](https://github.com/openstreetlifting/openstreetlifting/commit/7afadd8242a7f5dac004f18f10daff1e61aefa56))
+
+
+### Refactoring
+
+* **frontend:** give colour, type and wording one meaning ([#450](https://github.com/openstreetlifting/openstreetlifting/issues/450)) ([4405d78](https://github.com/openstreetlifting/openstreetlifting/commit/4405d787133ebb8843f4f28d432621fa1eaa66a3))
+
 ## [0.13.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.12.0...v0.13.0) (2026-08-24)
 
 
