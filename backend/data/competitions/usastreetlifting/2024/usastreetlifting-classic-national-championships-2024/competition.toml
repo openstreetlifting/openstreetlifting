@@ -2,9 +2,10 @@ event = "PD"
 sources = ["https://usastreetlifting.org/"]
 
 [competition]
-name = "First Ever USA Streetlifting Competition"
-start_date = "2023-04-08"
-end_date = "2023-04-08"
+name = "Classic National Championships"
+start_date = "2024-08-10"
+end_date = "2024-08-10"
+region = "Maryland"
 country = "US"
 status = "completed"
 

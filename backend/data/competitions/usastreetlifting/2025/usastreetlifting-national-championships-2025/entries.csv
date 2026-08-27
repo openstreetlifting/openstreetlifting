@@ -1,0 +1,35 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Rodney,Cabrera-Joseph,,US,64.55,,disqualified,,2.5x,2.5x,2.5x,,40,60,72.5,72.5,80,90x,90,90,145,155,170x,155
+M,66,Dustin,Clark,,US,64.2,,competed,,10,15,17.5x,15,50,55x,55x,50,80x,85,92.5,92.5,157.5,165,170,170
+M,66,Jaime,Contreras,,US,65.6,,competed,,3.75x,5,7.5x,5,40,46.25,51.25x,46.25,68.75,75x,78.75x,68.75,142.5x,142.5,147.5,147.5
+M,66,Brandol,Garcia Castillo,,US,64.85,,disqualified,,1.25x,1.25,10x,1.25,55,63.75,70x,63.75,70,85,95x,85,80x,80x,80x,
+M,66,Jason,Lee,,US,65.75,,competed,,5x,7.5,10,10,55,60,62.5,62.5,60,65,67.5x,65,97.5,100,102.5,102.5
+M,66,Tony,Nguyen,,US,64.9,,competed,,20,26.25,31.25x,26.25,72.5x,76.25,80,80,75,85x,95,95,100,125x,140,140
+M,73,Lincoln,Black,,US,71.4,,competed,,15,20,22.5x,20,65,76.25,77.5x,76.25,100,112.5x,112.5x,100,190,210,215,215
+M,73,Eduardo,Chessa,,US,70.8,,competed,,20x,20,25x,20,72.5,77.5,80,80,105,115,120x,115,150,160x,165,165
+M,73,Nicholas,DeFrancesco,,US,72.8,,competed,,20,27.5,31.25,31.25,65,75,80x,75,120,132.5x,132.5x,120,70x,75,85,85
+M,73,Malik,Ibrahim,,US,70.5,,competed,,5x,5,10,10,40,47.5,52.5x,47.5,62.5x,62.5,75,75,125,137.5,150,150
+M,73,Kevin,Makell,,US,71.15,,competed,,15,20x,25x,15,50,56.25x,62.5,62.5,72.5x,72.5x,80,80,112.5,142.5,152.5,152.5
+M,73,Amin,Meknaci,,US,70.8,,competed,,25,30x,32.5,32.5,70,75,77.5,77.5,120,127.5,131.25x,127.5,170,175x,175x,170
+M,73,Jacob,Oster,,US,72.25,,disqualified,,1.25x,2.5x,2.5x,,30,37.5,45,45,60,75x,87.5,87.5,100,120,136.25,136.25
+M,80,Armen,Galovich,,US,78.7,,competed,,5x,5,10,10,35x,35,45,45,70,85,100x,85,90,105,120,120
+M,80,Corey,Morrison,,US,79.7,,competed,,10x,15,22.5x,15,70,75,81.25x,75,85,95,105x,95,145x,160,175,175
+M,80,Miguel,Robles,,US,79.45,,competed,,15,20,25x,20,60,75,85,85,100,110,111.25x,110,150,165,170,170
+M,80,William,Santiago,,US,78.5,,competed,,17.5,20,22.5,22.5,68.75,70,75,75,72.5,75x,75,75,177.5,180,185,185
+M,80,Matthew,Shoffner,,US,75.95,,competed,,2.5,15,22.5x,15,80x,80,90x,80,112.5,120,130x,120,160x,180,200,200
+M,80,Brian,Shtika,,US,79.45,,competed,,10,15,20x,15,55x,55,65,65,100,110,115,115,180,192.5,200x,192.5
+M,80,Anthony,Strickland,,US,78.5,,competed,,10,15,20,20,60x,60,70,70,80,100,110,110,140,170x,180,180
+M,87,Godfroy,Ali Yerima,,US,85.45,,competed,,12.5x,15,18.75,18.75,70x,75x,75,75,105x,115,120x,115,180,200x,200,200
+M,87,Zavier,Bryant,,US,80.9,,competed,,15x,20x,20,20,75,80x,85x,75,95,100,105,105,125,140,165x,140
+M,87,Nicholas,Cerean,,US,86.95,,competed,,27.5,33.75x,33.75x,27.5,80,90,92.5,92.5,105,115x,117.5x,105,100,120,132.5,132.5
+M,87,Alberto,Franzini,,US,85.75,,competed,,10x,15,20x,15,55,60,65,65,90x,95,100x,95,150,160,165,165
+M,87,Joe,Ray,,US,80.05,,disqualified,,22.5x,25x,25x,,72.5,80,85x,80,85,100x,100x,85,200,215x,222.5x,200
+M,87,Khamari,Williams,,US,85.5,,disqualified,,10x,10x,10x,,50,55,62.5,62.5,102.5x,102.5x,102.5,102.5,170x,185,195,195
+M,94,Abu,Asada,,US,92.9,,competed,,25,31.25,35x,31.25,70x,75,82.5x,75,110,117.5,120,120,255x,255,275x,255
+M,94,Matthew,Cagnetta,,US,88.25,,competed,,11.25,16.25,18.75x,16.25,60,65,67.5,67.5,81.25,86.25x,88.75,88.75,182.5,192.5,202.5,202.5
+M,94,Marcel,Shields,,US,91.3,,disqualified,,1.25x,1.25x,1.25x,,45,55,62.5x,55,70x,80,87.5,87.5,140,150,157.5,157.5
+M,94,Colin,Snoke,,US,90.65,,competed,,1.25x,1.25,2.5x,1.25,40,46.25,52.5,52.5,60,70,85,85,175,185,192.5,192.5
+M,101+,Christopher,Cerean,,US,122.4,,disqualified,,1.25x,1.25x,1.25x,,37.5,40x,45x,37.5,65x,75,85,85,120,130,145,145
+F,57,Gess,Kelly,,US,56.05,,competed,,12.5x,12.5,15,15,36.25,38.75x,38.75x,36.25,42.5,46.25,51.25x,46.25,115,120x,120x,115
+F,63,Teresa,George,,US,62.4,,competed,,1.25,2.5,5x,2.5,46.25,48.75x,48.75x,46.25,58.75,63.75,68.75x,63.75,132.5,140x,140x,132.5
+F,70,Danae,Morgan,,US,67.55,,competed,,13.75,15,20x,15,50,53.75,57.5,57.5,60,63.75,70,70,117.5,127.5,135x,127.5

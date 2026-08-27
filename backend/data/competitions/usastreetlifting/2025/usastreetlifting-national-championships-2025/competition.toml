@@ -1,10 +1,11 @@
-event = "PD"
+event = "MPDS"
 sources = ["https://usastreetlifting.org/"]
 
 [competition]
-name = "First Ever USA Streetlifting Competition"
-start_date = "2023-04-08"
-end_date = "2023-04-08"
+name = "National Championships"
+start_date = "2025-04-27"
+end_date = "2025-04-27"
+region = "Maryland"
 country = "US"
 status = "completed"
 

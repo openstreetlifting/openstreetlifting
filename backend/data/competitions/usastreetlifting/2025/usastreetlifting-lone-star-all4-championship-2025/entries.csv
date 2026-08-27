@@ -1,0 +1,10 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Dustin,Clark,,US,65.5,,competed,,10,15,17.5,17.5,47.5,50,52.5,52.5,85x,92.5,100,100,165,172.5x,175,175
+M,66,Dashiell,Garcia,,US,62.9,,competed,,5,10x,10x,5,37.5,42.5,45,45,60,67.5,72.5,72.5,95,105x,105,105
+M,66,Theo,Lopez Marques,,US,65.5,,competed,,25,28.75x,28.75,28.75,60,65,70,70,80,87.5,90x,87.5,160,167.5,175,175
+M,73,Lincoln,Black,,US,71.6,,competed,,15,20,22.5x,20,67.5,77.5,80,80,97.5,110x,110x,97.5,190x,190x,200,200
+M,73,Jacob,Oster,,US,73,,competed,,1.25,3.75x,3.75,3.75,35,45,60x,45,77.5x,85x,85,85,122.5,135,160x,135
+M,94,Nicolas,Tisdel,,US,91.9,,disqualified,,1.25x,1.25x,1.25x,,40,60x,60x,40,40,70,80,80,102.5,145x,150x,102.5
+M,101,Abu,Asada,,US,95.3,,competed,,22.5,27.5,30,30,67.5,72.5,77.5,77.5,107.5,120,127.5,127.5,250,265,275x,265
+M,101,Jihad,Brogdon,,US,98.6,,competed,,1.25x,1.25x,1.25,1.25,50,62.5,70,70,80,92.5,100,100,195,210,215,215
+F,57,Octavia,Hill,,US,53.6,,competed,,2.5,5,7.5,7.5,20,25,28.75,28.75,30,37.5x,42.5,42.5,135,140,142.5,142.5
