@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.15.0...v0.16.0) (2026-08-27)
+
+
+### Features
+
+* **competitions:** add nineteen USA Streetlifting competitions ([#488](https://github.com/openstreetlifting/openstreetlifting/issues/488)) ([30776f9](https://github.com/openstreetlifting/openstreetlifting/commit/30776f97717463dcca6adfecd80b92c59dcd696a))
+* **competitions:** add the first ever USA Streetlifting competition ([#474](https://github.com/openstreetlifting/openstreetlifting/issues/474)) ([886d31e](https://github.com/openstreetlifting/openstreetlifting/commit/886d31ee3ac67345c245d4cf1644eb4506ba24ff))
+
+
+### Bug Fixes
+
+* **frontend:** drop the sex from a disqualified row's weight class ([#485](https://github.com/openstreetlifting/openstreetlifting/issues/485)) ([e8c26cd](https://github.com/openstreetlifting/openstreetlifting/commit/e8c26cd78bbfd51215105a8419caae967dee655e))
+* **frontend:** open a Classic competition on a column it can sort ([#479](https://github.com/openstreetlifting/openstreetlifting/issues/479)) ([eec8a15](https://github.com/openstreetlifting/openstreetlifting/commit/eec8a1558d1281e2d4e2fad56a62b2c81fb00df5))
+* **importer:** let a re-import correct a competition's federation and dates ([#477](https://github.com/openstreetlifting/openstreetlifting/issues/477)) ([c663453](https://github.com/openstreetlifting/openstreetlifting/commit/c6634539dc285e296fa07f9a225cbdbd9e5a08ec))
+* **importer:** let an athlete with only one name be imported ([#471](https://github.com/openstreetlifting/openstreetlifting/issues/471)) ([3b239d5](https://github.com/openstreetlifting/openstreetlifting/commit/3b239d5a41ddbf779c94e072c33dc4e05b2e1dbb))
+* **importer:** reject a bombed movement left as a competed result ([#483](https://github.com/openstreetlifting/openstreetlifting/issues/483)) ([ec0b92c](https://github.com/openstreetlifting/openstreetlifting/commit/ec0b92c1b75d7193174d1b9b18263c7c6f7d2a1c))
+* **importer:** reject a weight class bound of zero or less ([#478](https://github.com/openstreetlifting/openstreetlifting/issues/478)) ([6e2b299](https://github.com/openstreetlifting/openstreetlifting/commit/6e2b299dbb6acfcc7993b8a7e7a006838671e7fa))
+
 ## [0.15.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.14.0...v0.15.0) (2026-08-27)
 
 
