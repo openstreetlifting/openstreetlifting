@@ -188,3 +188,23 @@ async fn athletes_from_different_countries_stay_apart(pool: PgPool) {
 
     assert_eq!(athlete_count(&pool).await, 2);
 }
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn an_athlete_with_only_one_name_is_imported_under_it(pool: PgPool) {
+    import(
+        &pool,
+        file("competition-one", vec![athlete("", "Darkhan", None)]),
+    )
+    .await;
+
+    let (first, last, slug, key): (String, String, String, String) =
+        sqlx::query_as("SELECT first_name, last_name, slug, match_key FROM athletes")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+
+    assert_eq!(first, "", "no surname is invented to fill the gap");
+    assert_eq!(last, "Darkhan");
+    assert_eq!(slug, "darkhan", "the empty half leaves no gap in the url");
+    assert_eq!(key, "darkhan");
+}

@@ -2,6 +2,7 @@ export { cn } from './cn.js';
 export {
   formatDate,
   formatLocation,
+  formatAthleteName,
   formatCountdown,
   countryName,
   formatWeight,

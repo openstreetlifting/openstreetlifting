@@ -69,6 +69,21 @@ impl NormalizedAthleteName {
     }
 }
 
+/// The two halves joined for a reader.
+///
+/// An athlete with only one name has no first name, so the halves are joined
+/// rather than interpolated with a space that would sit there on its own.
+///
+/// ```
+/// use osl_domain::normalized_name::display_name;
+///
+/// assert_eq!(display_name("Adrien", "Pelfresne"), "Adrien Pelfresne");
+/// assert_eq!(display_name("", "Darkhan"), "Darkhan");
+/// ```
+pub fn display_name(first_name: &str, last_name: &str) -> String {
+    format!("{first_name} {last_name}").trim().to_string()
+}
+
 /// Folds a name part down to what identity should ignore: accents, case, and
 /// how someone chose to punctuate. `Mérandon`, `MERANDON` and `merandon` all
 /// land on `merandon`, and `Jean-Luc` matches `Jean Luc`.

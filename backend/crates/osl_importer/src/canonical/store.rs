@@ -216,7 +216,8 @@ fn read_entry(
     }
     let weight_class = parse_weight_class(weight_class)?;
 
-    let first_name = required(columns, record, entries::FIRST_NAME)?;
+    // A mononym goes in LastName, so that is the required half of a name.
+    let first_name = optional(columns, record, entries::FIRST_NAME).unwrap_or_default();
     let last_name = required(columns, record, entries::LAST_NAME)?;
     let country = CountryCode::parse(columns.get(record, entries::COUNTRY))?;
 

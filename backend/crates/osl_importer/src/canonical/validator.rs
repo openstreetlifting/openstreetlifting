@@ -150,7 +150,7 @@ impl CanonicalValidator {
     fn check_athletes(canonical: &CanonicalFormat, report: &mut ValidationReport) {
         for category in &canonical.categories {
             for athlete in &category.athletes {
-                let label = format!("{} {}", athlete.first_name, athlete.last_name);
+                let label = athlete.display_name();
 
                 match (athlete.bodyweight, athlete.ris) {
                     (Some(_), Some(_)) => report.errors.push(format!(
@@ -234,11 +234,10 @@ impl CanonicalValidator {
 
                 if !seen_in_category.insert((identity.clone(), athlete.disambiguation)) {
                     report.errors.push(format!(
-                        "Category '{}' lists '{} {}' twice. Remove the duplicate, or set \
+                        "Category '{}' lists '{}' twice. Remove the duplicate, or set \
                          disambiguation if these are two different people",
                         category.label(),
-                        athlete.first_name,
-                        athlete.last_name
+                        athlete.display_name()
                     ));
                 }
 

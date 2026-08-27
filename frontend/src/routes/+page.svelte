@@ -20,7 +20,7 @@
   import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
-  import { formatDate, countryName, formatWeight } from '$lib/utils';
+  import { formatDate, countryName, formatWeight, formatAthleteName } from '$lib/utils';
   import { CELL, SORTED_COLUMN, EDGE_TO_EDGE } from '$lib/constants/table';
   import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
@@ -202,8 +202,7 @@
                     class="-ml-1 shrink-0 [--flag-height:1.25em]"
                   />
                   <span class="truncate underline">
-                    {entry.athlete.first_name}
-                    {entry.athlete.last_name}
+                    {formatAthleteName(entry.athlete)}
                   </span>
                 </a>
                 {#if entry.athlete.instagram_handle}
@@ -212,7 +211,7 @@
                     target="_blank"
                     rel="noopener noreferrer"
                     class="inline-flex shrink-0 items-center text-white transition-colors hover:text-zinc-300"
-                    aria-label="{entry.athlete.first_name} {entry.athlete.last_name} on Instagram"
+                    aria-label="{formatAthleteName(entry.athlete)} on Instagram"
                     title="@{entry.athlete.instagram_handle}"
                   >
                     <InstagramIcon class="h-4 w-4" />
