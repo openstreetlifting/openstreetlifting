@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.14.0...v0.15.0) (2026-08-27)
+
+
+### Features
+
+* **frontend:** say when a RIS score was reported rather than computed ([#469](https://github.com/openstreetlifting/openstreetlifting/issues/469)) ([3ae73ad](https://github.com/openstreetlifting/openstreetlifting/commit/3ae73adf7712a5e0c5cb565a52f685cc1db085c1))
+
+
+### Bug Fixes
+
+* **frontend:** make the results tables readable on a phone ([#465](https://github.com/openstreetlifting/openstreetlifting/issues/465)) ([edc7e79](https://github.com/openstreetlifting/openstreetlifting/commit/edc7e797482226d3613cdf794fec0213b5c52a20))
+* **frontend:** paint the page background on the root, not on a div ([#468](https://github.com/openstreetlifting/openstreetlifting/issues/468)) ([f2c5cba](https://github.com/openstreetlifting/openstreetlifting/commit/f2c5cbaaece991f942e96678437d887999acf9e2))
+* **rankings:** give an athlete one place, at their best competition ([#463](https://github.com/openstreetlifting/openstreetlifting/issues/463)) ([2f8fe7b](https://github.com/openstreetlifting/openstreetlifting/commit/2f8fe7b8f66a86f70d0391ad26b19ae9d3cd6772))
+
 ## [0.14.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.13.0...v0.14.0) (2026-08-27)
 
 
