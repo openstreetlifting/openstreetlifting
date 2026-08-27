@@ -82,6 +82,13 @@ with its `x`. Do not blank the movement and do not invent a zero for it: they
 contested it and lifted nothing, which is different from lifting their
 bodyweight.
 
+Bombing a movement ends their competition, so that athlete is `disqualified`,
+never `competed`. Sources say the same thing in their own way, printing a dash
+for the place and the total. The importer refuses a bombed athlete left as
+`competed` rather than correcting it for you, because a status is something the
+source states and not something to infer. Their missed attempts stay in the
+file: the lifts are real, only the standing changes.
+
 ## Looking things up in the public API
 
 When a source leaves you unsure about an athlete, a competition, a federation
@@ -186,7 +193,7 @@ Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 | `Country` | Required, ISO 3166-1 alpha-2 |
 | `BodyweightKg` | Never set alongside `Ris` |
 | `Ris` | Only when the source gives a score and no bodyweight |
-| `Status` | `competed` or `disqualified`. Empty means competed |
+| `Status` | `competed` or `disqualified`. Empty means competed. A bombed movement means `disqualified` |
 | `StatusReason` | Why they were disqualified |
 
 `Country` is part of who an athlete *is*: the same name with a different
