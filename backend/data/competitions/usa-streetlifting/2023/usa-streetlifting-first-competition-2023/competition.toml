@@ -1,0 +1,14 @@
+event = "PD"
+sources = ["https://usastreetlifting.org/"]
+
+[competition]
+name = "First Ever USA Streetlifting Competition"
+start_date = "2023-04-08"
+end_date = "2023-04-08"
+country = "US"
+status = "completed"
+
+[federation]
+name = "USA Streetlifting"
+abbreviation = "USASL"
+country = "US"
