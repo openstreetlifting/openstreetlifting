@@ -112,6 +112,7 @@ export interface CompetitionDetail {
   start_date: string | null;
   end_date: string | null;
   federation: Federation;
+  movements: Movement[];
   categories: CategoryDetail[];
 }
 

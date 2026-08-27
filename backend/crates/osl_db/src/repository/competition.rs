@@ -304,6 +304,17 @@ impl<'a> CompetitionRepository<'a> {
         .fetch_one(self.pool)
         .await?;
 
+        let movements = sqlx::query_as!(
+            CompetitionMovementRow,
+            "SELECT competition_id, movement_name, display_order
+             FROM competition_movements
+             WHERE competition_id = $1
+             ORDER BY display_order",
+            competition.competition_id
+        )
+        .fetch_all(self.pool)
+        .await?;
+
         let contests = sqlx::query!(
             r#"SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS "division?", wc.gender,
                     wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
@@ -431,6 +442,7 @@ impl<'a> CompetitionRepository<'a> {
         Ok(CompetitionDetail {
             competition,
             federation,
+            movements,
             categories: category_details,
         })
     }

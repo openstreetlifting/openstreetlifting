@@ -258,12 +258,16 @@ impl CompetitionResponse {
         let CompetitionDetail {
             competition,
             federation,
+            movements,
             categories,
         } = detail;
 
         let mut response = Self::from(competition);
         if include.has("federation") {
             response.federation = Some(federation.into());
+        }
+        if include.has("movements") {
+            response.movements = Some(movements.into_iter().map(Into::into).collect());
         }
         if include.has("results") {
             response.categories = Some(categories.into_iter().map(Into::into).collect());

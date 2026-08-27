@@ -137,6 +137,9 @@ impl<'a> RankingRepository<'a> {
     /// muscle-up whatever else the competition ran; it only drops athletes who never
     /// contested it. Ranking by total stays inside a single event, because
     /// adding four lifts and adding one are not the same measurement.
+    ///
+    /// One competition is already one event, so scoping its own leaderboard again
+    /// only risks measuring it against the wrong one and returning nothing.
     fn push_eligible(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
         let sort_column = filter.movement.as_column();
 
@@ -144,7 +147,7 @@ impl<'a> RankingRepository<'a> {
         query.push(sort_column);
         query.push(" IS NOT NULL ");
 
-        if filter.movement == RankingMovement::Total {
+        if filter.movement == RankingMovement::Total && filter.competition_id.is_none() {
             query.push(" AND event_code = ");
             query.push_bind(filter.event.clone());
         }

@@ -15,7 +15,7 @@ use crate::shared::dto::{Direction, PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
 const LIST_INCLUDES: &[&str] = &["federation", "movements"];
-const DETAIL_INCLUDES: &[&str] = &["federation", "results"];
+const DETAIL_INCLUDES: &[&str] = &["federation", "results", "movements"];
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct CompetitionListQuery {

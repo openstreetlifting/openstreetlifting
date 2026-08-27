@@ -8,6 +8,8 @@ interface RankingsTableConfig {
   /** Whether this table supports filtering by competition year. */
   includeYear?: boolean;
   initialUrl: URL;
+  /** Column sorted before anyone picks one. Not every competition has a RIS to sort on. */
+  defaultSort?: string;
 }
 
 /**
@@ -29,11 +31,13 @@ export class RankingsTable {
   sortDirection = $state<'asc' | 'desc'>('desc');
 
   readonly includeYear: boolean;
+  readonly defaultSort: string;
   private basePath: string;
 
   constructor(config: RankingsTableConfig) {
     this.basePath = config.basePath;
     this.includeYear = config.includeYear ?? false;
+    this.defaultSort = config.defaultSort ?? 'ris';
 
     const params = config.initialUrl.searchParams;
     this.genderFilter = params.get('gender') || null;
@@ -41,7 +45,7 @@ export class RankingsTable {
     this.countryFilter = params.get('country') || null;
     this.searchFilter = params.get('q') ?? '';
     this.yearFilter = this.includeYear ? Number(params.get('year')) || null : null;
-    this.movementFilter = params.get('movement') || 'ris';
+    this.movementFilter = params.get('movement') || this.defaultSort;
     this.sortDirection = params.get('direction') === 'asc' ? 'asc' : 'desc';
   }
 
@@ -52,7 +56,7 @@ export class RankingsTable {
   /** Defaults stay out of the query string so a shared link carries only what was chosen. */
   private navigate(targetPage: number) {
     const params = new SvelteURLSearchParams();
-    if (this.movementFilter !== 'ris') params.set('movement', this.movementFilter);
+    if (this.movementFilter !== this.defaultSort) params.set('movement', this.movementFilter);
     if (this.sortDirection !== 'desc') params.set('direction', this.sortDirection);
     if (this.genderFilter) params.set('gender', this.genderFilter);
     if (this.categoryFilter) params.set('category', this.categoryFilter);
@@ -81,7 +85,7 @@ export class RankingsTable {
     this.countryFilter = null;
     this.yearFilter = null;
     this.searchFilter = '';
-    this.movementFilter = 'ris';
+    this.movementFilter = this.defaultSort;
     this.sortDirection = 'desc';
     await this.navigate(1);
   }

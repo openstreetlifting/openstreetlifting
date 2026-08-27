@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT competition_id, movement_name, display_order\n             FROM competition_movements\n             WHERE competition_id = $1\n             ORDER BY display_order",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "competition_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "competition_movements",
+            "name": "competition_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "movement_name",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competition_movements",
+            "name": "movement_name"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "display_order",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "competition_movements",
+            "name": "display_order"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "7d7d2193a3ace2f3cf3f75a5c392e6468a27cb6be654a3ecfb7fc0ad0f87facd"
+}

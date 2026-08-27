@@ -19,7 +19,7 @@ export const competitionsService = {
 
   async getById(slug: string): Promise<CompetitionDetail> {
     return apiClient.get<CompetitionDetail>(`/api/v1/competitions/${slug}`, {
-      params: { include: 'federation,results' },
+      params: { include: 'federation,results,movements' },
     });
   },
 
