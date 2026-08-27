@@ -198,7 +198,7 @@
                 >
                   <Flag
                     countryCode={entry.athlete.country}
-                    class="-ml-1 shrink-0 [--flag-height:1.45em]"
+                    class="-ml-1 shrink-0 [--flag-height:1.25em]"
                   />
                   <span class="truncate underline">
                     {entry.athlete.first_name}

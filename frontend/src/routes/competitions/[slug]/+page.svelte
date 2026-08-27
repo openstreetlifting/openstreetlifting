@@ -303,19 +303,19 @@
 
     <Table {busy}>
       {#snippet head()}
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Rank</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Athlete</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Sex</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Class</th>
+        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Rank</th>
+        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Athlete</th>
+        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Sex</th>
+        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Class</th>
         {#each movements as movement (movement.value)}
           <th
-            class="{TABLE_HEAD_CELL} {table.movementFilter === movement.value
+            class="{TABLE_HEAD_CELL} align-top {table.movementFilter === movement.value
               ? 'text-white'
               : 'text-zinc-400'}"
           >
             {movement.label}
             {#if movement.value !== 'total'}
-              <span class="{ATTEMPT_ROW} text-[0.6rem] font-normal text-zinc-600">
+              <span class="{ATTEMPT_ROW} mt-1 text-[0.6rem] font-normal text-zinc-600">
                 <span class="text-right">1</span>
                 <span class="text-right">2</span>
                 <span class="text-right">3</span>
@@ -325,7 +325,7 @@
           </th>
         {/each}
         <th
-          class="{TABLE_HEAD_CELL} {table.movementFilter === 'ris'
+          class="{TABLE_HEAD_CELL} align-top {table.movementFilter === 'ris'
             ? 'text-white'
             : 'text-zinc-400'}"
         >
@@ -349,7 +349,7 @@
               >
                 <Flag
                   countryCode={entry.athlete.country}
-                  class="-ml-1 shrink-0 [--flag-height:1.45em]"
+                  class="-ml-1 shrink-0 [--flag-height:1.25em]"
                 />
                 <span class="truncate underline">
                   {entry.athlete.first_name}
