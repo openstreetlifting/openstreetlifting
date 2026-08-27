@@ -1,0 +1,50 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT f.name as \"federation!\", c.start_date as \"start_date!\", c.end_date as \"end_date!\"\n        FROM competitions c JOIN federations f USING (federation_id)\n        WHERE c.slug = 'test-open'\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "federation!",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "federations",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "start_date!",
+        "type_info": "Date",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "start_date"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "end_date!",
+        "type_info": "Date",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "end_date"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "67b46bf1ffee2eae209f7ff4830f11e5cfdf4dabc0b37e7c877beb7318b912b1"
+}

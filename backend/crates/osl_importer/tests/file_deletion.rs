@@ -175,3 +175,33 @@ async fn a_dry_run_reports_without_deleting(pool: PgPool) {
         "reporting must not be a deletion"
     );
 }
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn a_federation_left_with_no_competition_goes_too(pool: PgPool) {
+    import(
+        &pool,
+        competition("kept-competition", vec![athlete("Clara", "Clean")]),
+    )
+    .await;
+
+    let mut elsewhere = competition("gone-competition", vec![athlete("Gil", "Gone")]);
+    elsewhere.competition.federation.name = "Lonely Federation".to_string();
+    import(&pool, elsewhere).await;
+
+    let plan = CompetitionSync::new(&pool)
+        .apply(&["kept-competition".to_string()])
+        .await
+        .unwrap();
+
+    assert_eq!(plan.federations, vec!["Lonely Federation".to_string()]);
+
+    let names: Vec<String> = sqlx::query_scalar("SELECT name FROM federations ORDER BY name")
+        .fetch_all(&pool)
+        .await
+        .unwrap();
+    assert_eq!(
+        names,
+        vec!["Test Federation".to_string()],
+        "the federation the kept competition still points at stays"
+    );
+}
