@@ -56,6 +56,7 @@ pub struct ParticipantDetail {
     /// Placing within the contest, computed from the lifts.
     pub rank: Option<i32>,
     pub ris_score: Option<Decimal>,
+    pub ris_source: Option<String>,
     pub status: String,
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,

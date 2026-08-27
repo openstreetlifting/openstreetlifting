@@ -1,4 +1,4 @@
-import type { AthleteInfo, CompetitionInfo } from './competition';
+import type { AthleteInfo, CompetitionInfo, RisSource } from './competition';
 import type { Paginated } from './pagination';
 
 export interface RankingFederationInfo {
@@ -12,7 +12,7 @@ export interface RankingEntry {
   category: string;
   division?: string | null;
   ris: number | null;
-  ris_source: 'computed' | 'reported' | null;
+  ris_source: RisSource | null;
   /** Absent outside the four-movement event, where a total does not compare. */
   total: number | null;
   /** Absent when the competition did not contest the movement. */

@@ -335,7 +335,7 @@ impl<'a> CompetitionRepository<'a> {
         for category in categories {
             let participants = sqlx::query!(
                 "SELECT participant_id, competition_id, athlete_id, bodyweight, status,
-                        created_at, status_reason, ris_score
+                        created_at, status_reason, ris_score, ris_source
                  FROM competition_participants
                  WHERE competition_id = $1
                    AND weight_class_id = $2
@@ -409,6 +409,7 @@ impl<'a> CompetitionRepository<'a> {
                     bodyweight: participant.bodyweight,
                     rank,
                     ris_score: participant.ris_score,
+                    ris_source: participant.ris_source.clone(),
                     status: participant.status.clone(),
                     status_reason: participant.status_reason.clone(),
                     total: (!lift_details.is_empty()).then_some(total),

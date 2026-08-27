@@ -1,10 +1,19 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import type { PersonalRecord } from '$lib/types/athlete';
-  import { Card, Breadcrumb, Flag, Table, TABLE_CELL, TABLE_HEAD_CELL } from '$lib/components/ui';
+  import {
+    Card,
+    Breadcrumb,
+    Flag,
+    Table,
+    RisScore,
+    RisHeader,
+    TABLE_CELL,
+    TABLE_HEAD_CELL,
+  } from '$lib/components/ui';
   import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
-  import { formatDate, formatWeight, formatScore } from '$lib/utils';
+  import { formatDate, formatWeight } from '$lib/utils';
   import { CELL, STATUS_FLAG, NO_VALUE } from '$lib/constants/table';
 
   // The badge is two letters, so the title carries the meaning. A reason from
@@ -164,9 +173,9 @@
               <th class="{TABLE_HEAD_CELL} text-zinc-400">Division</th>
             {/if}
             <th class="{TABLE_HEAD_CELL} text-zinc-400">Category</th>
-            <th class="{TABLE_HEAD_CELL} text-center text-zinc-400">Rank</th>
-            <th class="{TABLE_HEAD_CELL} text-center text-zinc-400">Total</th>
-            <th class="{TABLE_HEAD_CELL} text-center text-zinc-400">RIS</th>
+            <th class="{TABLE_HEAD_CELL} text-zinc-400">Rank</th>
+            <th class="{TABLE_HEAD_CELL} text-zinc-400">Total</th>
+            <th class="{TABLE_HEAD_CELL} text-zinc-400"><RisHeader /></th>
           {/snippet}
 
           {#snippet body()}
@@ -190,7 +199,7 @@
                   <td class="{TABLE_CELL} {CELL.data}">{competition.division || NO_VALUE}</td>
                 {/if}
                 <td class="{TABLE_CELL} {CELL.data}">{competition.category_name}</td>
-                <td class="{TABLE_CELL} text-center {CELL.identity}">
+                <td class="{TABLE_CELL} {CELL.identity}">
                   {#if competition.status !== 'competed'}
                     <span class={STATUS_FLAG} title={statusTitle(competition.status, null)}
                       >{STATUS_LABEL[competition.status]}</span
@@ -199,11 +208,11 @@
                     {competition.rank || NO_VALUE}
                   {/if}
                 </td>
-                <td class="{TABLE_CELL} text-center {CELL.counted}">
+                <td class="{TABLE_CELL} {CELL.counted}">
                   {formatWeight(competition.total)}
                 </td>
-                <td class="{TABLE_CELL} text-center {CELL.counted}">
-                  {formatScore(competition.ris_score)}
+                <td class="{TABLE_CELL} {CELL.counted}">
+                  <RisScore value={competition.ris_score} source={competition.ris_source} />
                 </td>
               </tr>
             {/each}
@@ -259,7 +268,9 @@
               </div>
               <div>
                 <div class="text-xs text-zinc-500">RIS Score</div>
-                <div class={CELL.counted}>{formatScore(competition.ris_score)}</div>
+                <div class={CELL.counted}>
+                  <RisScore value={competition.ris_score} source={competition.ris_source} />
+                </div>
               </div>
             </div>
           </Card>

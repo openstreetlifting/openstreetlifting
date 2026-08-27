@@ -41,6 +41,10 @@ pub struct AthleteCompetitionSummary {
     pub rank: Option<i32>,
     pub total: Option<rust_decimal::Decimal>,
     pub ris_score: Option<rust_decimal::Decimal>,
+    /// `computed` when the score was worked out from a bodyweight and a
+    /// total, `reported` when the source stated it and it cannot be
+    /// restated on the current formula. Absent alongside a missing score.
+    pub ris_source: Option<String>,
     pub status: String,
 }
 
@@ -89,6 +93,7 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
             rank: row.rank,
             total: row.total,
             ris_score: row.ris_score,
+            ris_source: row.ris_source,
             status: row.status,
         }
     }

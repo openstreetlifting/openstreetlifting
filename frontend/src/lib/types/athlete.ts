@@ -1,3 +1,5 @@
+import type { RisSource } from './competition';
+
 export interface AthleteDetail {
   athlete_id: string;
   first_name: string;
@@ -23,6 +25,7 @@ export interface AthleteCompetitionSummary {
   rank: number | null;
   total: string | null;
   ris_score: string | null;
+  ris_source: RisSource | null;
   status: 'competed' | 'disqualified' | 'no_show';
 }
 

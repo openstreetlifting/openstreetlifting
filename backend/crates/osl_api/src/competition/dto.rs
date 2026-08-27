@@ -79,6 +79,10 @@ pub struct ParticipantDetail {
     pub bodyweight: Option<rust_decimal::Decimal>,
     pub rank: Option<i32>,
     pub ris_score: Option<rust_decimal::Decimal>,
+    /// `computed` when the score was worked out from a bodyweight and a
+    /// total, `reported` when the source stated it and it cannot be
+    /// restated on the current formula. Absent alongside a missing score.
+    pub ris_source: Option<String>,
     pub status: String,
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,
@@ -209,6 +213,7 @@ impl From<DbParticipantDetail> for ParticipantDetail {
             bodyweight: participant.bodyweight,
             rank: participant.rank,
             ris_score: participant.ris_score,
+            ris_source: participant.ris_source,
             status: participant.status,
             status_reason: participant.status_reason,
             lifts: participant.lifts.into_iter().map(Into::into).collect(),

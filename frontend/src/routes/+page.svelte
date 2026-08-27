@@ -6,6 +6,8 @@
     Flag,
     SearchInput,
     Table,
+    RisHeader,
+    RisScore,
     TABLE_CELL,
     TABLE_HEAD_CELL,
     FROZEN_CELL,
@@ -18,7 +20,7 @@
   import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
-  import { formatDate, countryName, formatWeight, formatScore } from '$lib/utils';
+  import { formatDate, countryName, formatWeight } from '$lib/utils';
   import { CELL, SORTED_COLUMN, EDGE_TO_EDGE } from '$lib/constants/table';
   import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
@@ -179,7 +181,7 @@
             ? SORTED_COLUMN
             : ''}"
         >
-          RIS
+          <RisHeader />
         </th>
       {/snippet}
 
@@ -237,7 +239,9 @@
             <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.dips)}</td>
             <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.squat)}</td>
             <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
-            <td class="{TABLE_CELL} {CELL.counted}">{formatScore(entry.ris)}</td>
+            <td class="{TABLE_CELL} {CELL.counted}">
+              <RisScore value={entry.ris} source={entry.ris_source} />
+            </td>
           </tr>
         {/each}
       {/snippet}

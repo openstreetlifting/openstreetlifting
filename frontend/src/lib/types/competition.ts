@@ -68,12 +68,20 @@ export interface Lift {
   attempts: Attempt[];
 }
 
+/**
+ * Where a score came from. `computed` was worked out from the athlete's
+ * bodyweight and total. `reported` was stated by the source, which gave no
+ * bodyweight, so it cannot be restated on the formula everything else uses.
+ */
+export type RisSource = 'computed' | 'reported';
+
 export interface Participant {
   athlete: AthleteInfo;
   bodyweight: string | null;
   rank: number | null;
   total: string | null;
   ris_score: string | null;
+  ris_source: RisSource | null;
   status: 'competed' | 'disqualified' | 'no_show';
   status_reason: string | null;
   lifts: Lift[];
