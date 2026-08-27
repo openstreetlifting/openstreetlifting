@@ -17,7 +17,7 @@
 <div class="-mx-4 sm:mx-0">
   <Card class="rounded-none border-x-0 p-0 sm:rounded-xl sm:border-x sm:p-4">
     <div class="overflow-x-auto">
-      <table class="w-full text-xs sm:text-sm" aria-busy={busy}>
+      <table class="w-full text-[0.7rem] sm:text-xs" aria-busy={busy}>
         <thead class="sticky top-0 z-10">
           <tr class="border-b border-zinc-800 bg-zinc-900 shadow-lg shadow-zinc-950/50">
             {@render head()}
