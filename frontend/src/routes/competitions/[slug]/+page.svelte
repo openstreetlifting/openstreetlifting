@@ -12,12 +12,21 @@
   } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
-  import { formatDate, formatLocation, countryName, slugify } from '$lib/utils';
+  import {
+    formatDate,
+    formatLocation,
+    countryName,
+    slugify,
+    formatWeight,
+    formatScore,
+  } from '$lib/utils';
+  import { CELL, STATUS_FLAG, SORTED_COLUMN, NO_VALUE, NO_RESULT } from '$lib/constants/table';
   import { GitHubIcon } from '$lib/components/icons';
   import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import type { RankingEntry } from '$lib/types/ranking';
   import type { Attempt } from '$lib/types/competition';
+  import { FIELD, TEXT } from '$lib/constants/typography';
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
@@ -26,7 +35,7 @@
 
   // Files live at data/competitions/{federation}/{year}/{slug}/, which the
   // importer enforces. The year is read off the string rather than a Date, so a
-  // viewer west of UTC does not shift a January meet into the previous year.
+  // viewer west of UTC does not shift a January competition into the previous year.
   const editPath = $derived(
     competition.start_date
       ? [
@@ -60,7 +69,7 @@
   const sorts = RANKING_SORTS;
   const genders = RANKING_GENDERS;
 
-  // The event code names the movements a meet contested, so a column with no
+  // The event code names the movements a competition contested, so a column with no
   // weight can be read as bombed rather than never lifted.
   const LIFTS = [
     { key: 'muscleup', code: 'M', movement: 'Muscle-up', label: 'Muscle Up' },
@@ -85,17 +94,8 @@
   const ATTEMPT_ROW =
     'grid grid-cols-[2.5rem_2.5rem_2.5rem_2.9rem] gap-x-1.5 items-baseline tabular-nums';
 
-  /** Zero is a lift at bodyweight, so only a missing weight is not a number. */
-  function formatWeight(weight: number | null): string {
-    return weight === null ? '-' : `${weight}`;
-  }
-
-  function formatRIS(ris: number | null): string {
-    return ris && ris > 0 ? ris.toFixed(2) : '-';
-  }
-
   type LiftCell =
-    /** The meet never contested the movement. */
+    /** The competition never contested the movement. */
     | { kind: 'absent' }
     /** Contested, and every attempt failed. */
     | { kind: 'bombed' }
@@ -136,7 +136,7 @@
 
   <!-- Competition Header -->
   <div class="mb-12">
-    <h1 class="mb-4 text-3xl font-light tracking-tight text-white sm:text-4xl">
+    <h1 class="mb-4 {TEXT.title} text-white">
       {competition.name}
     </h1>
 
@@ -193,7 +193,7 @@
         href={`https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/data/competitions/${editPath}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="mt-6 inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+        class="mt-6 inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-xs text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
       >
         <GitHubIcon class="h-4 w-4" />
         Edit on GitHub
@@ -216,7 +216,7 @@
       <select
         bind:value={table.countryFilter}
         onchange={() => table.handleFilterChange()}
-        class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
+        class="w-full {FIELD} px-3 py-2 sm:w-auto"
       >
         <option value={null}>All Countries</option>
         {#each data.countries as countryOption (countryOption)}
@@ -229,7 +229,7 @@
           table.categoryFilter = null;
           table.handleFilterChange();
         }}
-        class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
+        class="w-full {FIELD} px-3 py-2 sm:w-auto"
       >
         {#each genders as gender (gender.label)}
           <option value={gender.value}>{gender.label}</option>
@@ -238,7 +238,7 @@
       <select
         bind:value={table.categoryFilter}
         onchange={() => table.handleFilterChange()}
-        class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto"
+        class="w-full {FIELD} px-3 py-2 sm:w-auto"
       >
         <option value={null}>All Classes</option>
         {#each data.classes as classOption (classOption)}
@@ -252,7 +252,7 @@
           id="sort-by"
           bind:value={table.movementFilter}
           onchange={() => table.handleFilterChange()}
-          class="flex-1 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:flex-none"
+          class="flex-1 {FIELD} px-3 py-2 sm:flex-none"
         >
           {#each sorts as sort (sort.value)}
             <option value={sort.value}>{sort.label}</option>
@@ -264,7 +264,7 @@
 
   {#if !published}
     <div class="border-l-2 border-zinc-700 py-1 pl-5">
-      <p class="text-lg text-white">This meet has not been lifted yet.</p>
+      <p class="text-lg text-white">This competition has not been lifted yet.</p>
       <p class="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
         {competition.name} is scheduled for {formatDate(competition.start_date)}. There is nothing
         to rank until the platform closes, and the results will land on this page once they are in.
@@ -285,7 +285,7 @@
   {:else}
     {#snippet paginationBar()}
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <span class="text-sm text-zinc-500">
+        <span class="text-xs text-zinc-500">
           Page {pagination.page} of {pagination.total_pages} &middot; {pagination.total_items} athletes
         </span>
         <Pagination
@@ -309,9 +309,10 @@
         <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Class</th>
         {#each movements as movement (movement.value)}
           <th
-            class="{TABLE_HEAD_CELL} align-top {table.movementFilter === movement.value
-              ? 'text-white'
-              : 'text-zinc-400'}"
+            class="{TABLE_HEAD_CELL} align-top text-zinc-400 {table.movementFilter ===
+            movement.value
+              ? SORTED_COLUMN
+              : ''}"
           >
             {movement.label}
             {#if movement.value !== 'total'}
@@ -325,9 +326,9 @@
           </th>
         {/each}
         <th
-          class="{TABLE_HEAD_CELL} align-top {table.movementFilter === 'ris'
-            ? 'text-white'
-            : 'text-zinc-400'}"
+          class="{TABLE_HEAD_CELL} align-top text-zinc-400 {table.movementFilter === 'ris'
+            ? SORTED_COLUMN
+            : ''}"
         >
           RIS
         </th>
@@ -339,10 +340,10 @@
           <tr
             class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
           >
-            <td class="{TABLE_CELL} text-white">
+            <td class="{TABLE_CELL} {CELL.identity}">
               {entry.rank}
             </td>
-            <td class="{TABLE_CELL} text-white">
+            <td class="{TABLE_CELL} {CELL.identity}">
               <a
                 href={resolve(`/athletes/${entry.athlete.slug}`)}
                 class="inline-flex max-w-[8rem] items-center gap-2.5 hover:text-zinc-300 sm:max-w-none"
@@ -358,26 +359,26 @@
               </a>
               {#if participant?.is_disqualified}
                 <span
-                  class="ml-1.5 align-middle text-[0.65rem] font-medium tracking-wide text-amber-500/90 uppercase"
+                  class="ml-1.5 align-middle text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
                   title={participant.disqualified_reason ?? 'Disqualified'}
                 >
                   DQ
                 </span>
               {/if}
             </td>
-            <td class="{TABLE_CELL} text-zinc-400">{entry.athlete.gender}</td>
-            <td class="{TABLE_CELL} text-zinc-400">{entry.category}</td>
+            <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
+            <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
             {#each LIFTS as lift (lift.key)}
               {@const cell = liftCell(entry, lift.key, lift.code, lift.movement)}
-              <td class="{TABLE_CELL} whitespace-nowrap text-zinc-400">
+              <td class="{TABLE_CELL} whitespace-nowrap">
                 <span class={ATTEMPT_ROW}>
                   {#if cell.kind === 'attempts'}
                     {#each [1, 2, 3] as slot (slot)}
                       {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
                       <span
                         class="text-right {attempt && !attempt.is_successful
-                          ? 'text-zinc-600 line-through decoration-zinc-600'
-                          : 'text-zinc-400'}"
+                          ? CELL.discounted
+                          : CELL.data}"
                         title={attempt
                           ? `Attempt ${slot}: ${attempt.weight} kg, ${attempt.is_successful ? 'good lift' : 'no lift'}`
                           : `Attempt ${slot} not recorded`}
@@ -393,13 +394,13 @@
 
                   <!-- The best sits in its own slot at a fixed offset, so the
                        column can be read straight down to compare athletes. -->
-                  <span class="text-right font-medium text-white">
+                  <span class="text-right {CELL.counted}">
                     {#if cell.kind === 'absent'}
-                      <span class="font-normal text-zinc-700">-</span>
+                      <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
                     {:else if cell.kind === 'bombed'}
                       <span
-                        class="font-normal text-zinc-600"
-                        title="No successful {lift.label.toLowerCase()}">—</span
+                        class="font-normal {CELL.nothing}"
+                        title="No successful {lift.label.toLowerCase()}">{NO_RESULT}</span
                       >
                     {:else}
                       {cell.best}
@@ -408,8 +409,8 @@
                 </span>
               </td>
             {/each}
-            <td class="{TABLE_CELL} font-medium text-zinc-400">{formatWeight(entry.total)}</td>
-            <td class="{TABLE_CELL} font-medium text-zinc-400">{formatRIS(entry.ris)}</td>
+            <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
+            <td class="{TABLE_CELL} {CELL.counted}">{formatScore(entry.ris)}</td>
           </tr>
         {/each}
       {/snippet}

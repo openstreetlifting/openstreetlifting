@@ -32,7 +32,7 @@
   });
 
   const buttonBase =
-    'inline-flex h-9 min-w-9 items-center justify-center rounded-md px-2 text-sm font-medium sm:px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:pointer-events-none disabled:opacity-40';
+    'inline-flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-xs font-medium sm:px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:pointer-events-none disabled:opacity-40';
 </script>
 
 <nav aria-label="Pagination" class="flex flex-wrap items-center justify-center gap-1">
@@ -50,7 +50,7 @@
 
   {#each items as item, index (index)}
     {#if item === 'ellipsis'}
-      <span class="inline-flex h-9 min-w-9 items-center justify-center text-sm text-zinc-500"
+      <span class="inline-flex h-8 min-w-8 items-center justify-center text-xs text-zinc-500"
         >&hellip;</span
       >
     {:else}

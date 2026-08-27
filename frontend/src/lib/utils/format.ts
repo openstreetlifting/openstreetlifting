@@ -1,3 +1,5 @@
+import { NO_VALUE } from '$lib/constants/table';
+
 export function formatDate(dateString: string | null): string {
   if (!dateString) return '-';
   const date = new Date(dateString);
@@ -12,7 +14,7 @@ export function formatLocation(...parts: (string | null | undefined)[]): string 
 
 const relativeTime = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
 
-// A date on its own does not say how soon a meet is, which is the only thing
+// A date on its own does not say how soon a competition is, which is the only thing
 // worth knowing about one nobody has lifted yet.
 export function formatCountdown(dateString: string | null): string {
   if (!dateString) return '';
@@ -34,4 +36,16 @@ export function countryName(countryCode: string): string {
   } catch {
     return countryCode;
   }
+}
+
+// A lift of 0 is a real result, a muscle-up at bodyweight, so only the absence
+// of a value is a dash. Guarding on truthiness silently turns it into no data.
+export function formatWeight(weight: number | string | null | undefined): string {
+  return weight === null || weight === undefined || weight === '' ? NO_VALUE : `${weight}`;
+}
+
+export function formatScore(score: number | string | null | undefined): string {
+  return score === null || score === undefined || score === ''
+    ? NO_VALUE
+    : Number(score).toFixed(2);
 }
