@@ -12,4 +12,12 @@
      (rankings, athletes, competitions). Narrow prose pages (contact,
      privacy) intentionally use their own max-w-4xl instead. */
   --content-max-width: 100rem;
+
+  /* A pinned column paints its own background, because the columns it pins
+     scroll behind it. A translucent tint cannot be matched that way, so the
+     three row states are stated once here as flat colours: the card over the
+     page, the zebra tint over the card, and the hover tint over that. */
+  --table-row: #101013;
+  --table-row-alt: #151518;
+  --table-row-hover: #1c1c1f;
 }

@@ -9,6 +9,12 @@
     Table,
     TABLE_CELL,
     TABLE_HEAD_CELL,
+    FROZEN_CELL,
+    FROZEN_HEAD_CELL,
+    FROZEN_EDGE,
+    FROZEN_RANK,
+    FROZEN_ATHLETE,
+    FROZEN_ATHLETE_CONTENT,
   } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
@@ -20,7 +26,14 @@
     formatWeight,
     formatScore,
   } from '$lib/utils';
-  import { CELL, STATUS_FLAG, SORTED_COLUMN, NO_VALUE, NO_RESULT } from '$lib/constants/table';
+  import {
+    CELL,
+    STATUS_FLAG,
+    SORTED_COLUMN,
+    NO_VALUE,
+    NO_RESULT,
+    EDGE_TO_EDGE,
+  } from '$lib/constants/table';
   import { GitHubIcon } from '$lib/components/icons';
   import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
@@ -272,7 +285,7 @@
 
   {#if published}
     <div
-      class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/30 p-3"
+      class="{EDGE_TO_EDGE} mb-6 flex flex-wrap items-center gap-3 rounded-none border border-x-0 border-zinc-800 bg-zinc-900/30 p-3 sm:rounded-lg sm:border-x"
     >
       <div class="w-full sm:w-64">
         <SearchInput
@@ -372,8 +385,13 @@
 
     <Table {busy}>
       {#snippet head()}
-        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Rank</th>
-        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Athlete</th>
+        <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} align-top text-zinc-400"
+          >Rank</th
+        >
+        <th
+          class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {FROZEN_EDGE} align-top text-zinc-400"
+          >Athlete</th
+        >
         <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Sex</th>
         <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Class</th>
         {#each movements as movement (movement.value)}
@@ -406,34 +424,34 @@
       {#snippet body()}
         {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
           {@const participant = participants.get(entry.athlete.athlete_id)}
-          <tr
-            class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
-          >
-            <td class="{TABLE_CELL} {CELL.identity}">
+          <tr class="border-b border-zinc-800/50 transition-colors">
+            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
               {entry.rank}
             </td>
-            <td class="{TABLE_CELL} {CELL.identity}">
-              <a
-                href={resolve(`/athletes/${entry.athlete.slug}`)}
-                class="inline-flex max-w-[8rem] items-center gap-2.5 hover:text-zinc-300 sm:max-w-none"
-              >
-                <Flag
-                  countryCode={entry.athlete.country}
-                  class="-ml-1 shrink-0 [--flag-height:1.25em]"
-                />
-                <span class="truncate underline">
-                  {entry.athlete.first_name}
-                  {entry.athlete.last_name}
-                </span>
-              </a>
-              {#if participant && participant.status !== 'competed'}
-                <span
-                  class="ml-1.5 align-middle text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                  title={statusTitle(participant.status, participant.status_reason)}
+            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {FROZEN_EDGE} {CELL.identity}">
+              <span class="flex items-center gap-1.5 {FROZEN_ATHLETE_CONTENT}">
+                <a
+                  href={resolve(`/athletes/${entry.athlete.slug}`)}
+                  class="flex min-w-0 items-center gap-2.5 hover:text-zinc-300"
                 >
-                  {STATUS_LABEL[participant.status]}
-                </span>
-              {/if}
+                  <Flag
+                    countryCode={entry.athlete.country}
+                    class="-ml-1 shrink-0 [--flag-height:1.25em]"
+                  />
+                  <span class="truncate underline">
+                    {entry.athlete.first_name}
+                    {entry.athlete.last_name}
+                  </span>
+                </a>
+                {#if participant && participant.status !== 'competed'}
+                  <span
+                    class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
+                    title={statusTitle(participant.status, participant.status_reason)}
+                  >
+                    {STATUS_LABEL[participant.status]}
+                  </span>
+                {/if}
+              </span>
             </td>
             <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
             <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
@@ -485,29 +503,29 @@
 
         {#if onLastPage}
           {#each notPlaced as { category, participant } (participant.athlete.athlete_id)}
-            <tr
-              class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
-            >
-              <td class="{TABLE_CELL} {CELL.absent}">{NO_VALUE}</td>
-              <td class="{TABLE_CELL} {CELL.identity}">
-                <a
-                  href={resolve(`/athletes/${participant.athlete.slug}`)}
-                  class="inline-flex max-w-[8rem] items-center gap-2.5 hover:text-zinc-300 sm:max-w-none"
-                >
-                  <Flag
-                    countryCode={participant.athlete.country}
-                    class="-ml-1 shrink-0 [--flag-height:1.25em]"
-                  />
-                  <span class="truncate underline">
-                    {participant.athlete.first_name}
-                    {participant.athlete.last_name}
+            <tr class="border-b border-zinc-800/50 transition-colors">
+              <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.absent}">{NO_VALUE}</td>
+              <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {FROZEN_EDGE} {CELL.identity}">
+                <span class="flex items-center gap-1.5 {FROZEN_ATHLETE_CONTENT}">
+                  <a
+                    href={resolve(`/athletes/${participant.athlete.slug}`)}
+                    class="flex min-w-0 items-center gap-2.5 hover:text-zinc-300"
+                  >
+                    <Flag
+                      countryCode={participant.athlete.country}
+                      class="-ml-1 shrink-0 [--flag-height:1.25em]"
+                    />
+                    <span class="truncate underline">
+                      {participant.athlete.first_name}
+                      {participant.athlete.last_name}
+                    </span>
+                  </a>
+                  <span
+                    class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
+                    title={statusTitle(participant.status, participant.status_reason)}
+                  >
+                    {STATUS_LABEL[participant.status]}
                   </span>
-                </a>
-                <span
-                  class="ml-1.5 align-middle text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                  title={statusTitle(participant.status, participant.status_reason)}
-                >
-                  {STATUS_LABEL[participant.status]}
                 </span>
               </td>
               <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
