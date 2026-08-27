@@ -152,10 +152,30 @@ impl<'a> RankingRepository<'a> {
         query.push(" ) ");
     }
 
+    /// A ranking is a list of people, so a lifter who has competed three times
+    /// is still one of them, represented by the competition where they were at
+    /// their best on the column being ranked. Higher is better for every column,
+    /// so the pick does not follow the sort direction: ascending order reverses
+    /// the same ranking rather than asking for anyone's worst result.
+    ///
+    /// A competition's own results are left alone. There the rows are entries,
+    /// and an athlete who entered two categories entered them both.
+    fn push_ranking_pool(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
+        if filter.competition_id.is_some() {
+            query.push(" , ranking_pool AS ( SELECT * FROM eligible ) ");
+            return;
+        }
+
+        query.push(" , ranking_pool AS ( SELECT DISTINCT ON (athlete_id) * FROM eligible ORDER BY athlete_id, ");
+        query.push(filter.movement.as_column());
+        query.push(" DESC NULLS LAST ) ");
+    }
+
     async fn count_participants(&self, filter: &RankingFilter) -> Result<i64> {
         let mut query = Self::movement_weights(filter);
         Self::push_eligible(&mut query, filter);
-        query.push(" SELECT COUNT(*) FROM eligible ");
+        Self::push_ranking_pool(&mut query, filter);
+        query.push(" SELECT COUNT(*) FROM ranking_pool ");
 
         let count = query
             .build_query_scalar::<i64>()
@@ -170,12 +190,13 @@ impl<'a> RankingRepository<'a> {
 
         let mut query = Self::movement_weights(filter);
         Self::push_eligible(&mut query, filter);
+        Self::push_ranking_pool(&mut query, filter);
 
         query.push(" , ranked_movements AS ( SELECT *, ROW_NUMBER() OVER (ORDER BY ");
         query.push(sort_column);
         query.push(" ");
         query.push(filter.direction.as_sql());
-        query.push(") as rank FROM eligible ) ");
+        query.push(") as rank FROM ranking_pool ) ");
         query.push(" SELECT * FROM ranked_movements ORDER BY rank LIMIT ");
         query.push_bind(filter.limit);
         query.push(" OFFSET ");
