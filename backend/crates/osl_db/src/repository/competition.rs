@@ -261,7 +261,7 @@ impl<'a> CompetitionRepository<'a> {
                 FROM competition_participants cp
                 LEFT JOIN lifts l ON l.participant_id = cp.participant_id
                 WHERE cp.competition_id = $1
-                  AND NOT cp.is_disqualified
+                  AND cp.status = 'competed'
                 GROUP BY cp.participant_id, cp.weight_class_id, cp.division_id, cp.bodyweight
             )
             SELECT
@@ -334,8 +334,8 @@ impl<'a> CompetitionRepository<'a> {
 
         for category in categories {
             let participants = sqlx::query!(
-                "SELECT participant_id, competition_id, athlete_id, bodyweight, is_disqualified,
-                        created_at, disqualified_reason, ris_score
+                "SELECT participant_id, competition_id, athlete_id, bodyweight, status,
+                        created_at, status_reason, ris_score
                  FROM competition_participants
                  WHERE competition_id = $1
                    AND weight_class_id = $2
@@ -409,8 +409,8 @@ impl<'a> CompetitionRepository<'a> {
                     bodyweight: participant.bodyweight,
                     rank,
                     ris_score: participant.ris_score,
-                    is_disqualified: participant.is_disqualified,
-                    disqualified_reason: participant.disqualified_reason.clone(),
+                    status: participant.status.clone(),
+                    status_reason: participant.status_reason.clone(),
                     total: (!lift_details.is_empty()).then_some(total),
                     lifts: lift_details,
                 });

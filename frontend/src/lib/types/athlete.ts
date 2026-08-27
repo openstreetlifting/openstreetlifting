@@ -23,7 +23,7 @@ export interface AthleteCompetitionSummary {
   rank: number | null;
   total: string | null;
   ris_score: string | null;
-  is_disqualified: boolean;
+  status: 'competed' | 'disqualified' | 'no_show';
 }
 
 export interface PersonalRecord {

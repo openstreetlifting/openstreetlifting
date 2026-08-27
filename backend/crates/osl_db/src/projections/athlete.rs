@@ -18,7 +18,7 @@ pub struct AthleteCompetitionRow {
     pub rank: Option<i32>,
     pub total: Option<Decimal>,
     pub ris_score: Option<Decimal>,
-    pub is_disqualified: bool,
+    pub status: String,
 }
 
 #[derive(Debug, FromRow)]

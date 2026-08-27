@@ -1,6 +1,6 @@
 use super::models::CanonicalFormat;
 use crate::{ImporterError, Result};
-use osl_domain::{CompetitionStatus, NormalizedAthleteName, slugify};
+use osl_domain::{AthleteStatus, CompetitionStatus, NormalizedAthleteName, slugify};
 use rust_decimal::Decimal;
 use std::collections::{HashMap, HashSet};
 use tracing::warn;
@@ -181,6 +181,20 @@ impl CanonicalValidator {
                     report
                         .warnings
                         .push(format!("Athlete '{label}' has no lifts"));
+                }
+
+                if athlete.status == AthleteStatus::NoShow && !athlete.lifts.is_empty() {
+                    report.errors.push(format!(
+                        "Athlete '{label}' is a no_show but has lifts. Someone who took an \
+                         attempt competed, and is disqualified if the result does not stand"
+                    ));
+                }
+
+                if athlete.status == AthleteStatus::Competed && athlete.status_reason.is_some() {
+                    report.errors.push(format!(
+                        "Athlete '{label}' competed but carries a status reason. A reason \
+                         explains an outcome, so it belongs to a status that is not competed"
+                    ));
                 }
 
                 if let Some(disambiguation) = athlete.disambiguation

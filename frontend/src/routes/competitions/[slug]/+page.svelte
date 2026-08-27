@@ -25,7 +25,7 @@
   import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import type { RankingEntry } from '$lib/types/ranking';
-  import type { Attempt } from '$lib/types/competition';
+  import type { Attempt, Participant, CategoryDetail } from '$lib/types/competition';
   import { FIELD, TEXT } from '$lib/constants/typography';
 
   let { data }: { data: PageData } = $props();
@@ -103,13 +103,15 @@
     | { kind: 'best'; best: number }
     | { kind: 'attempts'; attempts: Attempt[]; best: number | null };
 
-  function liftCell(entry: RankingEntry, key: string, code: string, movement: string): LiftCell {
-    if (!entry.event?.includes(code)) return { kind: 'absent' };
+  function liftCell(
+    participant: Participant | undefined,
+    best: number | null,
+    code: string,
+    movement: string
+  ): LiftCell {
+    if (!event?.includes(code)) return { kind: 'absent' };
 
-    const best = entry[key as 'muscleup' | 'pullup' | 'dips' | 'squat'];
-    const lift = participants
-      .get(entry.athlete.athlete_id)
-      ?.lifts.find((candidate) => candidate.movement_name === movement);
+    const lift = participant?.lifts.find((candidate) => candidate.movement_name === movement);
 
     if (lift?.attempts.length) {
       const attempts = [...lift.attempts].sort((a, b) => a.attempt_number - b.attempt_number);
@@ -117,6 +119,73 @@
     }
 
     return best === null ? { kind: 'bombed' } : { kind: 'best', best };
+  }
+
+  function rankedCell(entry: RankingEntry, key: string, code: string, movement: string): LiftCell {
+    const best = entry[key as 'muscleup' | 'pullup' | 'dips' | 'squat'];
+    return liftCell(participants.get(entry.athlete.athlete_id), best, code, movement);
+  }
+
+  function participantCell(participant: Participant, code: string, movement: string): LiftCell {
+    const lift = participant.lifts.find((candidate) => candidate.movement_name === movement);
+    const best = lift?.best_weight == null ? null : Number(lift.best_weight);
+    return liftCell(participant, best, code, movement);
+  }
+
+  // Which movements the competition ran. Every row shares it, and a lifter with
+  // no lifts at all has nothing of their own to read it from.
+  const event = $derived(rankings.find((entry) => entry.event)?.event ?? null);
+
+  // The rankings query joins through lifts and keeps only competed lifters, so
+  // it can never return these. The competition's own results list them, and a
+  // competition page is a record of who turned up, not a leaderboard.
+  // Disqualified before no_show: one turned up and lifted, the other never did.
+  const NOT_PLACED_ORDER = ['disqualified', 'no_show'];
+
+  const notPlaced = $derived(
+    competition.categories
+      .flatMap((category: CategoryDetail) =>
+        category.participants
+          .filter((participant) => participant.status !== 'competed')
+          .map((participant) => ({ category, participant }))
+      )
+      // The ranked half is filtered by the server, so these have to answer the
+      // same filters or the table would contradict itself.
+      .filter(({ category, participant }) => {
+        const { athlete } = participant;
+        const search = table.searchFilter.trim().toLowerCase();
+        return (
+          (!table.genderFilter || athlete.gender === table.genderFilter) &&
+          (!table.countryFilter || athlete.country === table.countryFilter) &&
+          (!table.categoryFilter || category.category.weight_class === table.categoryFilter) &&
+          (!search || `${athlete.first_name} ${athlete.last_name}`.toLowerCase().includes(search))
+        );
+      })
+      .sort(
+        (a, b) =>
+          NOT_PLACED_ORDER.indexOf(a.participant.status) -
+            NOT_PLACED_ORDER.indexOf(b.participant.status) ||
+          a.participant.athlete.last_name.localeCompare(b.participant.athlete.last_name)
+      )
+  );
+
+  // The pagination count comes from the ranked query, so it has to be told
+  // about the lifters the table shows underneath it.
+  const fieldSize = $derived(pagination.total_items + notPlaced.length);
+
+  const onLastPage = $derived(pagination.page >= pagination.total_pages);
+
+  // The badge is two letters, so the title carries the meaning. A reason from
+  // the source is better than either, when there is one.
+  const STATUS_LABEL: Record<string, string> = { disqualified: 'DQ', no_show: 'NS' };
+  const STATUS_TITLE: Record<string, string> = {
+    disqualified: 'Disqualified',
+    no_show: 'Did not lift',
+  };
+
+  function statusTitle(status: string, reason: string | null): string {
+    const name = STATUS_TITLE[status] ?? status;
+    return reason ? `${name}: ${reason.toLowerCase()}` : name;
   }
 </script>
 
@@ -286,7 +355,7 @@
     {#snippet paginationBar()}
       <div class="flex flex-wrap items-center justify-between gap-3">
         <span class="text-xs text-zinc-500">
-          Page {pagination.page} of {pagination.total_pages} &middot; {pagination.total_items} athletes
+          Page {pagination.page} of {pagination.total_pages} &middot; {fieldSize} athletes
         </span>
         <Pagination
           page={pagination.page}
@@ -357,19 +426,19 @@
                   {entry.athlete.last_name}
                 </span>
               </a>
-              {#if participant?.is_disqualified}
+              {#if participant && participant.status !== 'competed'}
                 <span
                   class="ml-1.5 align-middle text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                  title={participant.disqualified_reason ?? 'Disqualified'}
+                  title={statusTitle(participant.status, participant.status_reason)}
                 >
-                  DQ
+                  {STATUS_LABEL[participant.status]}
                 </span>
               {/if}
             </td>
             <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
             <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
             {#each LIFTS as lift (lift.key)}
-              {@const cell = liftCell(entry, lift.key, lift.code, lift.movement)}
+              {@const cell = rankedCell(entry, lift.key, lift.code, lift.movement)}
               <td class="{TABLE_CELL} whitespace-nowrap">
                 <span class={ATTEMPT_ROW}>
                   {#if cell.kind === 'attempts'}
@@ -413,6 +482,73 @@
             <td class="{TABLE_CELL} {CELL.counted}">{formatScore(entry.ris)}</td>
           </tr>
         {/each}
+
+        {#if onLastPage}
+          {#each notPlaced as { category, participant } (participant.athlete.athlete_id)}
+            <tr
+              class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
+            >
+              <td class="{TABLE_CELL} {CELL.absent}">{NO_VALUE}</td>
+              <td class="{TABLE_CELL} {CELL.identity}">
+                <a
+                  href={resolve(`/athletes/${participant.athlete.slug}`)}
+                  class="inline-flex max-w-[8rem] items-center gap-2.5 hover:text-zinc-300 sm:max-w-none"
+                >
+                  <Flag
+                    countryCode={participant.athlete.country}
+                    class="-ml-1 shrink-0 [--flag-height:1.25em]"
+                  />
+                  <span class="truncate underline">
+                    {participant.athlete.first_name}
+                    {participant.athlete.last_name}
+                  </span>
+                </a>
+                <span
+                  class="ml-1.5 align-middle text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
+                  title={statusTitle(participant.status, participant.status_reason)}
+                >
+                  {STATUS_LABEL[participant.status]}
+                </span>
+              </td>
+              <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
+              <td class="{TABLE_CELL} {CELL.data}">{category.category.name}</td>
+              {#each LIFTS as lift (lift.key)}
+                {@const cell = participantCell(participant, lift.code, lift.movement)}
+                <td class="{TABLE_CELL} whitespace-nowrap">
+                  <span class={ATTEMPT_ROW}>
+                    {#if cell.kind === 'attempts'}
+                      {#each [1, 2, 3] as slot (slot)}
+                        {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
+                        <span
+                          class="text-right {attempt && !attempt.is_successful
+                            ? CELL.discounted
+                            : CELL.data}"
+                        >
+                          {attempt ? attempt.weight : ''}
+                        </span>
+                      {/each}
+                    {:else}
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    {/if}
+                    <span class="text-right {CELL.counted}">
+                      {#if cell.kind === 'absent'}
+                        <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
+                      {:else if cell.kind === 'bombed'}
+                        <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
+                      {:else}
+                        {cell.best}
+                      {/if}
+                    </span>
+                  </span>
+                </td>
+              {/each}
+              <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
+              <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
+            </tr>
+          {/each}
+        {/if}
       {/snippet}
     </Table>
 

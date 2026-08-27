@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT participant_id, competition_id, athlete_id, bodyweight, is_disqualified,\n                        created_at, disqualified_reason, ris_score\n                 FROM competition_participants\n                 WHERE competition_id = $1\n                   AND weight_class_id = $2\n                   AND division_id IS NOT DISTINCT FROM $3",
+  "query": "SELECT participant_id, competition_id, athlete_id, bodyweight, status,\n                        created_at, status_reason, ris_score\n                 FROM competition_participants\n                 WHERE competition_id = $1\n                   AND weight_class_id = $2\n                   AND division_id IS NOT DISTINCT FROM $3",
   "describe": {
     "columns": [
       {
@@ -49,12 +49,12 @@
       },
       {
         "ordinal": 4,
-        "name": "is_disqualified",
-        "type_info": "Bool",
+        "name": "status",
+        "type_info": "Text",
         "origin": {
           "Table": {
             "table": "competition_participants",
-            "name": "is_disqualified"
+            "name": "status"
           }
         }
       },
@@ -71,12 +71,12 @@
       },
       {
         "ordinal": 6,
-        "name": "disqualified_reason",
+        "name": "status_reason",
         "type_info": "Text",
         "origin": {
           "Table": {
             "table": "competition_participants",
-            "name": "disqualified_reason"
+            "name": "status_reason"
           }
         }
       },
@@ -110,5 +110,5 @@
       true
     ]
   },
-  "hash": "01dd6b972f099fb946cbd77f90127dd37bcb91c8fce214c681781e7a7b9f7e6e"
+  "hash": "a90b599e626c1c156155642b62dddc42186e362d28ad41550ca1d638a6004d76"
 }

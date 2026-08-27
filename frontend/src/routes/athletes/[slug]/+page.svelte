@@ -6,6 +6,19 @@
   import { resolve } from '$app/paths';
   import { formatDate, formatWeight, formatScore } from '$lib/utils';
   import { CELL, STATUS_FLAG, NO_VALUE } from '$lib/constants/table';
+
+  // The badge is two letters, so the title carries the meaning. A reason from
+  // the source is better than either, when there is one.
+  const STATUS_LABEL: Record<string, string> = { disqualified: 'DQ', no_show: 'NS' };
+  const STATUS_TITLE: Record<string, string> = {
+    disqualified: 'Disqualified',
+    no_show: 'Did not lift',
+  };
+
+  function statusTitle(status: string, reason: string | null): string {
+    const name = STATUS_TITLE[status] ?? status;
+    return reason ? `${name}: ${reason.toLowerCase()}` : name;
+  }
   import { TEXT } from '$lib/constants/typography';
 
   let { data }: { data: PageData } = $props();
@@ -161,7 +174,8 @@
             <tbody>
               {#each athlete.competitions as competition (competition.competition_id)}
                 <tr
-                  class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50 {competition.is_disqualified
+                  class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50 {competition.status !==
+                  'competed'
                     ? 'opacity-50'
                     : ''}"
                 >
@@ -179,8 +193,10 @@
                   {/if}
                   <td class="px-3 py-2 {CELL.data}">{competition.category_name}</td>
                   <td class="px-3 py-2 text-center {CELL.identity}">
-                    {#if competition.is_disqualified}
-                      <span class={STATUS_FLAG}>DQ</span>
+                    {#if competition.status !== 'competed'}
+                      <span class={STATUS_FLAG} title={statusTitle(competition.status, null)}
+                        >{STATUS_LABEL[competition.status]}</span
+                      >
                     {:else}
                       {competition.rank || NO_VALUE}
                     {/if}
@@ -202,7 +218,8 @@
       <div class="grid gap-3 md:hidden">
         {#each athlete.competitions as competition (competition.competition_id)}
           <Card
-            class="p-4 transition-all duration-200 hover:border-zinc-700/60 hover:shadow-lg hover:shadow-zinc-900/50 {competition.is_disqualified
+            class="p-4 transition-all duration-200 hover:border-zinc-700/60 hover:shadow-lg hover:shadow-zinc-900/50 {competition.status !==
+            'competed'
               ? 'opacity-50'
               : ''}"
           >
@@ -230,8 +247,10 @@
               <div>
                 <div class="text-xs text-zinc-500">Rank</div>
                 <div class={CELL.identity}>
-                  {#if competition.is_disqualified}
-                    <span class={STATUS_FLAG}>DQ</span>
+                  {#if competition.status !== 'competed'}
+                    <span class={STATUS_FLAG} title={statusTitle(competition.status, null)}
+                      >{STATUS_LABEL[competition.status]}</span
+                    >
                   {:else}
                     {competition.rank || NO_VALUE}
                   {/if}

@@ -74,8 +74,8 @@ export interface Participant {
   rank: number | null;
   total: string | null;
   ris_score: string | null;
-  is_disqualified: boolean;
-  disqualified_reason: string | null;
+  status: 'competed' | 'disqualified' | 'no_show';
+  status_reason: string | null;
   lifts: Lift[];
 }
 

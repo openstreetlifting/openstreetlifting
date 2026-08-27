@@ -75,7 +75,7 @@ impl<'a> RankingRepository<'a> {
                 LEFT JOIN athlete_socials ats
                     ON ats.athlete_id = a.athlete_id
                    AND ats.social_id = (SELECT social_id FROM socials WHERE name = 'instagram')
-                WHERE NOT cp.is_disqualified
+                WHERE cp.status = 'competed'
             "#,
         );
 

@@ -121,6 +121,14 @@ pub fn disqualified(mut athlete: AthleteData, reason: Option<&str>) -> AthleteDa
     athlete
 }
 
+pub fn no_show(mut athlete: AthleteData, reason: Option<&str>) -> AthleteData {
+    athlete.status = AthleteStatus::NoShow;
+    athlete.status_reason = reason.map(|r| r.to_string());
+    athlete.bodyweight = None;
+    athlete.lifts.clear();
+    athlete
+}
+
 pub fn numbered(mut athlete: AthleteData, disambiguation: i16) -> AthleteData {
     athlete.disambiguation = Some(disambiguation);
     athlete

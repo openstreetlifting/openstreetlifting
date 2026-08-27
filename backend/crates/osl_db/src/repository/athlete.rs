@@ -129,7 +129,7 @@ impl<'a> AthleteRepository<'a> {
                    AND e.weight_class_id = cp.weight_class_id
                    AND e.division_id IS NOT DISTINCT FROM cp.division_id
                 LEFT JOIN lifts l ON l.participant_id = cp.participant_id
-                WHERE NOT cp.is_disqualified
+                WHERE cp.status = 'competed'
                 GROUP BY cp.participant_id, cp.competition_id, cp.weight_class_id,
                          cp.division_id, cp.bodyweight
             )
@@ -147,7 +147,7 @@ impl<'a> AthleteRepository<'a> {
                      ELSE COALESCE(SUM(l.max_weight), 0)
                 END as "total: Decimal",
                 cp.ris_score,
-                cp.is_disqualified
+                cp.status
             FROM competition_participants cp
             JOIN competitions c ON cp.competition_id = c.competition_id
             JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
@@ -156,7 +156,7 @@ impl<'a> AthleteRepository<'a> {
             LEFT JOIN placed ON placed.participant_id = cp.participant_id
             WHERE cp.athlete_id = $1
             GROUP BY c.competition_id, c.name, c.slug, c.start_date, d.name, wc.gender,
-                     wc.min_kg, wc.max_kg, placed.place, cp.ris_score, cp.is_disqualified
+                     wc.min_kg, wc.max_kg, placed.place, cp.ris_score, cp.status
             ORDER BY c.start_date DESC NULLS LAST
             "#,
             athlete.athlete_id
@@ -179,7 +179,7 @@ impl<'a> AthleteRepository<'a> {
                     rank: row.rank,
                     total: row.total,
                     ris_score: row.ris_score,
-                    is_disqualified: row.is_disqualified,
+                    status: row.status,
                 })
             })
             .collect::<Result<Vec<_>>>()?;
@@ -201,7 +201,7 @@ impl<'a> AthleteRepository<'a> {
               -- A movement where every attempt failed is not a record, and
               -- DESC would otherwise sort its NULL to the front and pick it.
               AND l.max_weight IS NOT NULL
-              AND NOT cp.is_disqualified
+              AND cp.status = 'competed'
             ORDER BY l.movement_name, l.max_weight DESC
             "#,
             athlete.athlete_id
