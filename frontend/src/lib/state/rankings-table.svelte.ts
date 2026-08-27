@@ -12,7 +12,7 @@ interface RankingsTableConfig {
 
 /**
  * Shared filter and sort state for a rankings table. Both the global rankings
- * page and a per-meet leaderboard read from the same `/api/v1/rankings` shape,
+ * page and a per-competition leaderboard read from the same `/api/v1/rankings` shape,
  * so they share this instead of each carrying its own near-identical copy.
  *
  * The URL is the only source of truth: every change navigates, and the page's

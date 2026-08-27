@@ -4,16 +4,13 @@
   import { Card, Breadcrumb, Flag } from '$lib/components/ui';
   import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
-  import { formatDate } from '$lib/utils';
+  import { formatDate, formatWeight, formatScore } from '$lib/utils';
+  import { CELL, STATUS_FLAG, NO_VALUE } from '$lib/constants/table';
+  import { TEXT } from '$lib/constants/typography';
 
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
   const showsDivision = $derived(athlete.competitions.some((c) => c.division));
-
-  function formatWeight(weight: string | null): string {
-    if (!weight) return '-';
-    return `${weight}`;
-  }
 
   function sortPersonalRecords(records: PersonalRecord[]) {
     const movementPriority: Record<string, number> = {
@@ -57,7 +54,7 @@
   <div class="mb-12">
     <div class="mb-4 flex items-center gap-4">
       <Flag countryCode={athlete.country} class="text-xl" />
-      <h1 class="text-3xl font-light tracking-tight text-white sm:text-4xl">
+      <h1 class="{TEXT.title} text-white">
         {athlete.first_name}
         {athlete.last_name}
       </h1>
@@ -96,7 +93,7 @@
             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
           />
         </svg>
-        <span>Gender: {athlete.gender}</span>
+        <span>Sex: {athlete.gender}</span>
       </div>
 
       <div class="flex items-center gap-2">
@@ -118,12 +115,12 @@
 
   {#if athlete.personal_records && athlete.personal_records.length > 0}
     <div class="mb-8">
-      <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Personal Records</h2>
+      <h2 class="mb-4 {TEXT.heading} text-white">Personal Records</h2>
       <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {#each sortPersonalRecords(athlete.personal_records) as pr (pr.movement_name)}
           <Card class="p-6 transition-colors hover:border-zinc-700/60">
             <div class="mb-2 text-sm font-medium text-zinc-400">{pr.movement_name}</div>
-            <div class="mb-2 text-3xl font-semibold text-white">{formatWeight(pr.max_weight)}</div>
+            <div class="mb-2 {TEXT.figure} text-white">{formatWeight(pr.max_weight)}</div>
             <div class="text-xs text-zinc-500">
               <a
                 href={resolve(`/competitions/${pr.competition_slug}`)}
@@ -143,7 +140,7 @@
   {/if}
 
   <div>
-    <h2 class="mb-4 text-xl font-medium text-white sm:text-2xl">Competition History</h2>
+    <h2 class="mb-4 {TEXT.heading} text-white">Competition History</h2>
     {#if athlete.competitions && athlete.competitions.length > 0}
       <Card class="hidden p-4 md:block">
         <div class="overflow-x-auto">
@@ -176,24 +173,23 @@
                       {competition.competition_name}
                     </a>
                   </td>
-                  <td class="px-3 py-2 text-zinc-400">{formatDate(competition.competition_date)}</td
-                  >
+                  <td class="px-3 py-2 {CELL.data}">{formatDate(competition.competition_date)}</td>
                   {#if showsDivision}
-                    <td class="px-3 py-2 text-zinc-400">{competition.division || '-'}</td>
+                    <td class="px-3 py-2 {CELL.data}">{competition.division || NO_VALUE}</td>
                   {/if}
-                  <td class="px-3 py-2 text-zinc-400">{competition.category_name}</td>
-                  <td class="px-3 py-2 text-center text-white">
+                  <td class="px-3 py-2 {CELL.data}">{competition.category_name}</td>
+                  <td class="px-3 py-2 text-center {CELL.identity}">
                     {#if competition.is_disqualified}
-                      <span class="text-red-400">DQ</span>
+                      <span class={STATUS_FLAG}>DQ</span>
                     {:else}
-                      {competition.rank || '-'}
+                      {competition.rank || NO_VALUE}
                     {/if}
                   </td>
-                  <td class="px-3 py-2 text-center font-medium text-white">
+                  <td class="px-3 py-2 text-center {CELL.counted}">
                     {formatWeight(competition.total)}
                   </td>
-                  <td class="px-3 py-2 text-center text-zinc-400">
-                    {competition.ris_score || '-'}
+                  <td class="px-3 py-2 text-center {CELL.counted}">
+                    {formatScore(competition.ris_score)}
                   </td>
                 </tr>
               {/each}
@@ -219,35 +215,35 @@
             <div class="grid grid-cols-2 gap-3 text-sm">
               <div>
                 <div class="text-xs text-zinc-500">Date</div>
-                <div class="text-zinc-400">{formatDate(competition.competition_date)}</div>
+                <div class={CELL.data}>{formatDate(competition.competition_date)}</div>
               </div>
               {#if competition.division}
                 <div>
                   <div class="text-xs text-zinc-500">Division</div>
-                  <div class="text-zinc-400">{competition.division}</div>
+                  <div class={CELL.data}>{competition.division}</div>
                 </div>
               {/if}
               <div>
                 <div class="text-xs text-zinc-500">Category</div>
-                <div class="text-zinc-400">{competition.category_name}</div>
+                <div class={CELL.data}>{competition.category_name}</div>
               </div>
               <div>
                 <div class="text-xs text-zinc-500">Rank</div>
-                <div class="text-white">
+                <div class={CELL.identity}>
                   {#if competition.is_disqualified}
-                    <span class="text-red-400">DQ</span>
+                    <span class={STATUS_FLAG}>DQ</span>
                   {:else}
-                    {competition.rank || '-'}
+                    {competition.rank || NO_VALUE}
                   {/if}
                 </div>
               </div>
               <div>
                 <div class="text-xs text-zinc-500">Total</div>
-                <div class="font-medium text-white">{formatWeight(competition.total)}</div>
+                <div class={CELL.counted}>{formatWeight(competition.total)}</div>
               </div>
               <div>
                 <div class="text-xs text-zinc-500">RIS Score</div>
-                <div class="text-zinc-400">{competition.ris_score || '-'}</div>
+                <div class={CELL.counted}>{formatScore(competition.ris_score)}</div>
               </div>
             </div>
           </Card>

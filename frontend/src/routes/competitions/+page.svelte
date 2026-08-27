@@ -14,7 +14,9 @@
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
   import { formatDate, formatLocation, formatCountdown, countryName } from '$lib/utils';
+  import { CELL } from '$lib/constants/table';
   import type { Competition } from '$lib/types/competition';
+  import { FIELD, TEXT, CONTROL } from '$lib/constants/typography';
 
   let { data }: { data: PageData } = $props();
 
@@ -78,8 +80,33 @@
 
   const isLifted = (competition: Competition) => competition.status !== 'upcoming';
 
-  const SELECT =
-    'w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none sm:w-auto';
+  const monthLabel = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' });
+
+  function dayOfMonth(date: string | null): string {
+    return date ? date.slice(8, 10) : '';
+  }
+
+  // A countdown only tells the reader something while it is short. On a meet
+  // half a year out every row reads "in 5 months" and the column is noise.
+  function isSoon(date: string | null): boolean {
+    if (!date) return false;
+    return new Date(date).getTime() - Date.now() < 31 * 86_400_000;
+  }
+
+  function groupByMonth(list: Competition[]) {
+    const months: { label: string; competitions: Competition[] }[] = [];
+    for (const competition of list) {
+      const label = competition.start_date
+        ? monthLabel.format(new Date(competition.start_date))
+        : 'Date to be confirmed';
+      const last = months.at(-1);
+      if (last?.label === label) last.competitions.push(competition);
+      else months.push({ label, competitions: [competition] });
+    }
+    return months;
+  }
+
+  const SELECT = `w-full ${FIELD} px-3 py-2 sm:w-auto`;
 </script>
 
 <svelte:head>
@@ -91,26 +118,52 @@
   <Breadcrumb items={[{ label: 'Rankings', href: '/' }, { label: 'Competitions' }]} />
 
   <div class="mb-8">
-    <h1 class="mb-4 text-3xl font-light tracking-tight text-white sm:text-4xl">Competitions</h1>
+    <h1 class="mb-4 {TEXT.title} text-white">Competitions</h1>
   </div>
 
   {#if upcoming.length > 0}
     <section class="mb-8">
-      <h2 class="mb-3 text-xs font-medium tracking-wider text-zinc-500 uppercase">Next meets</h2>
-      <div class="grid gap-2">
-        {#each upcoming as meet (meet.slug)}
-          <div
-            class="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-lg border border-zinc-800/60 bg-zinc-900/30 px-4 py-3"
-          >
-            <span class="text-sm text-zinc-300">{meet.name}</span>
-            <span class="text-xs text-zinc-500">
-              {formatDate(meet.start_date)}
-            </span>
-            {#if formatLocation(meet.country, meet.city)}
-              <span class="text-xs text-zinc-600">{formatLocation(meet.country, meet.city)}</span>
-            {/if}
-            <span class="ml-auto text-xs text-zinc-400">{formatCountdown(meet.start_date)}</span>
-          </div>
+      <div class="mb-3 flex items-baseline justify-between">
+        <h2 class="{TEXT.micro} font-medium tracking-wider text-zinc-500 uppercase">
+          Next competitions
+        </h2>
+        <button
+          onclick={() => apply({ view: 'upcoming' })}
+          class="text-xs text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+        >
+          See all planned
+        </button>
+      </div>
+
+      <div class="rounded-lg border border-zinc-800/60 bg-zinc-900/30 px-4 py-3">
+        {#each groupByMonth(upcoming) as month (month.label)}
+          <h3 class="mt-3 mb-1.5 {TEXT.micro} tracking-wider text-zinc-600 uppercase first:mt-0">
+            {month.label}
+          </h3>
+          {#each month.competitions as competition (competition.slug)}
+            <a
+              href={resolve(`/competitions/${competition.slug}`)}
+              class="flex items-baseline gap-3 rounded py-1 text-xs hover:bg-zinc-800/40 focus:ring-2 focus:ring-zinc-500 focus:outline-none"
+            >
+              <span class="w-6 shrink-0 text-right tabular-nums text-zinc-500">
+                {dayOfMonth(competition.start_date)}
+              </span>
+              <span class="truncate text-zinc-300">{competition.name}</span>
+              <span class="shrink-0 text-zinc-600"
+                >{competition.federation.abbreviation || competition.federation.name}</span
+              >
+              {#if formatLocation(competition.country, competition.city)}
+                <span class="truncate text-zinc-600">
+                  {formatLocation(competition.country, competition.city)}
+                </span>
+              {/if}
+              {#if isSoon(competition.start_date)}
+                <span class="ml-auto shrink-0 text-zinc-400">
+                  {formatCountdown(competition.start_date)}
+                </span>
+              {/if}
+            </a>
+          {/each}
         {/each}
       </div>
     </section>
@@ -152,7 +205,7 @@
       {#each views as option (option.value)}
         <button
           onclick={() => apply({ view: option.value })}
-          class="rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none
+          class="rounded-lg px-4 py-2 {CONTROL} transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none
             {view === option.value
             ? 'bg-white text-zinc-950'
             : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-300'}"
@@ -175,15 +228,15 @@
         <p class="text-zinc-400">
           {narrowed ? 'No competitions match your filters' : 'No competitions found'}
         </p>
-        <div class="mt-4 flex flex-wrap justify-center gap-4 text-sm">
+        <div class="mt-4 flex flex-wrap justify-center gap-4 text-xs">
           <!-- The default view is results only, so a filter that matches nothing
-               but planned meets would otherwise be a dead end. -->
+               but planned competitions would otherwise be a dead end. -->
           {#if view === 'results'}
             <button
               onclick={() => apply({ view: 'all' })}
               class="text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
             >
-              Include planned meets
+              Include planned competitions
             </button>
           {/if}
           {#if narrowed}
@@ -198,7 +251,7 @@
       </div>
     </Card>
   {:else}
-    <!-- A meet with lifters has results to read, one without is still to come.
+    <!-- A competition with lifters has results to read, one without is still to come.
          The row says which by what it offers, so no status column is needed. -->
     {#snippet lifters(competition: Competition)}
       {#if isLifted(competition)}
@@ -212,7 +265,7 @@
          matching how the athlete page shows competition history. -->
     {#snippet competitionCard(competition: Competition)}
       <Card class="p-4">
-        <h2 class="mb-2 text-base font-medium text-white">{competition.name}</h2>
+        <h2 class="mb-2 {TEXT.subheading} text-white">{competition.name}</h2>
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
           <span>{competitionDates(competition.start_date, competition.end_date)}</span>
           {#if formatLocation(competition.country, competition.region, competition.city)}
@@ -264,7 +317,7 @@
             <tr
               class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
             >
-              <td class="{TABLE_CELL} text-white">
+              <td class="{TABLE_CELL} {CELL.identity}">
                 {#if isLifted(competition)}
                   <a
                     href={resolve(`/competitions/${competition.slug}`)}
@@ -279,13 +332,13 @@
               <td class="{TABLE_CELL} whitespace-nowrap text-zinc-400">
                 {competitionDates(competition.start_date, competition.end_date)}
               </td>
-              <td class="{TABLE_CELL} text-zinc-400">
+              <td class="{TABLE_CELL} {CELL.data}">
                 {formatLocation(competition.country, competition.region, competition.city)}
               </td>
-              <td class="{TABLE_CELL} text-zinc-400" title={competition.federation.name}>
+              <td class="{TABLE_CELL} {CELL.data}" title={competition.federation.name}>
                 {competition.federation.abbreviation || competition.federation.name}
               </td>
-              <td class="{TABLE_CELL} text-zinc-400">
+              <td class="{TABLE_CELL} {CELL.data}">
                 {@render lifters(competition)}
               </td>
             </tr>
@@ -295,7 +348,7 @@
     </div>
 
     <div class="mt-8 flex flex-wrap items-center justify-between gap-3">
-      <span class="text-sm text-zinc-500">
+      <span class="text-xs text-zinc-500">
         {pagination.total_items} competitions
         {#if pagination.total_pages > 1}
           &middot; page {pagination.page} of {pagination.total_pages}

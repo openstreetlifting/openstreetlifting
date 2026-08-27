@@ -1,5 +1,6 @@
 <script lang="ts">
   import { EmailIcon, InstagramIcon, GitHubIcon, DiscordIcon } from '$lib/components/icons';
+  import { TEXT } from '$lib/constants/typography';
 
   const rowClass =
     'flex items-center gap-3 py-4 text-sm text-zinc-400 transition-colors hover:text-white';
@@ -11,7 +12,7 @@
 </svelte:head>
 
 <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
-  <h1 class="mb-4 text-3xl font-light tracking-tight text-white sm:text-4xl">Get in touch</h1>
+  <h1 class="mb-4 {TEXT.title} text-white">Get in touch</h1>
   <p class="mb-10 text-base font-light text-zinc-500">
     If you have a question, want to help me, or simply want to connect, reach out through any of
     these channels. I'm a solo developer on this project, I may take a little bit of time to

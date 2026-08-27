@@ -1,5 +1,6 @@
 <script lang="ts">
   import { SearchIcon } from '$lib/components/icons';
+  import { FIELD } from '$lib/constants/typography';
 
   interface Props {
     value: string;
@@ -38,7 +39,7 @@
     {placeholder}
     oninput={schedule}
     onkeydown={(event) => event.key === 'Enter' && flush()}
-    class="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 py-2 pr-8 pl-9 text-sm text-zinc-300 placeholder:text-zinc-500 transition-colors focus:border-zinc-700 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+    class="w-full {FIELD} py-2 pr-8 pl-9 placeholder:text-zinc-500"
   />
   {#if value}
     <button

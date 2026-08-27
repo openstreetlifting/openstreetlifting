@@ -43,6 +43,6 @@ export interface RankingFilters {
   /** Weight class suffix, e.g. `-73kg`, matched regardless of gender. */
   category?: string | null;
   year?: number | null;
-  /** Narrows the ranking to one competition, e.g. for a per-meet leaderboard. */
+  /** Narrows the ranking to one competition, e.g. for a per-competition leaderboard. */
   competition_id?: string | null;
 }
