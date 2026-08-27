@@ -645,6 +645,7 @@ impl<'a> CanonicalTransformer<'a> {
             INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
             LEFT JOIN lifts l ON l.participant_id = cp.participant_id
             WHERE cp.competition_id = $1
+              AND cp.status = 'competed'
               AND cp.ris_source IS DISTINCT FROM 'reported'
             GROUP BY cp.participant_id, cp.athlete_id, cp.bodyweight, a.gender
             "#,

@@ -190,6 +190,30 @@ impl CanonicalValidator {
                     ));
                 }
 
+                if athlete.status == AthleteStatus::Competed {
+                    // A movement is bombed when every attempt at it failed, which
+                    // ends the athlete's competition. The file has to say so; the
+                    // importer never infers a status the source did not state.
+                    let bombed: Vec<&str> = athlete
+                        .lifts
+                        .iter()
+                        .filter(|lift| match lift.attempts.as_ref() {
+                            Some(attempts) => !attempts.iter().any(|a| a.is_successful),
+                            None => lift.best_lift.is_none(),
+                        })
+                        .map(|lift| lift.movement.name())
+                        .collect();
+
+                    if !bombed.is_empty() {
+                        report.errors.push(format!(
+                            "Athlete '{label}' missed every attempt at the {}, so their \
+                             result does not stand. Mark them disqualified rather than \
+                             leaving them as competed",
+                            bombed.join(", the ")
+                        ));
+                    }
+                }
+
                 if athlete.status == AthleteStatus::Competed && athlete.status_reason.is_some() {
                     report.errors.push(format!(
                         "Athlete '{label}' competed but carries a status reason. A reason \
@@ -521,5 +545,28 @@ mod tests {
         canonical.categories[0].athletes[0].lifts[0].attempts = None;
         canonical.categories[0].athletes[0].lifts[0].best_lift = Some(Decimal::from(-10));
         assert!(CanonicalValidator::validate(&canonical).is_err());
+    }
+
+    #[test]
+    fn a_bombed_movement_left_as_competed_is_rejected() {
+        let mut canonical = completed();
+        canonical.categories[0].athletes[0].lifts[0].attempts = Some(vec![AttemptData {
+            attempt_number: 1,
+            weight: Decimal::from(100),
+            is_successful: false,
+        }]);
+        assert!(CanonicalValidator::validate(&canonical).is_err());
+    }
+
+    #[test]
+    fn a_bombed_movement_is_accepted_once_disqualified() {
+        let mut canonical = completed();
+        canonical.categories[0].athletes[0].status = AthleteStatus::Disqualified;
+        canonical.categories[0].athletes[0].lifts[0].attempts = Some(vec![AttemptData {
+            attempt_number: 1,
+            weight: Decimal::from(100),
+            is_successful: false,
+        }]);
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
     }
 }

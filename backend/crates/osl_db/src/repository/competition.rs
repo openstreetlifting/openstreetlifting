@@ -14,7 +14,7 @@ use crate::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
     federation::FederationRow, lift::LiftRow,
 };
-use osl_domain::Gender;
+use osl_domain::{AthleteStatus, Gender};
 
 pub struct CompetitionRepository<'a> {
     pool: &'a PgPool,
@@ -415,6 +415,10 @@ impl<'a> CompetitionRepository<'a> {
 
                 let rank = ranking_map.get(&participant.participant_id).copied();
 
+                // A disqualified lifter's result does not stand, so the lifts that
+                // did count towards nothing must not read as a total.
+                let result_stands = participant.status == AthleteStatus::Competed.as_str();
+
                 participant_details.push(ParticipantDetail {
                     athlete,
                     bodyweight: participant.bodyweight,
@@ -423,7 +427,7 @@ impl<'a> CompetitionRepository<'a> {
                     ris_source: participant.ris_source.clone(),
                     status: participant.status.clone(),
                     status_reason: participant.status_reason.clone(),
-                    total: (!lift_details.is_empty()).then_some(total),
+                    total: (result_stands && !lift_details.is_empty()).then_some(total),
                     lifts: lift_details,
                 });
             }
