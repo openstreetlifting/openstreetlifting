@@ -1,10 +1,11 @@
-event = "PD"
+event = "MPDS"
 sources = ["https://usastreetlifting.org/"]
 
 [competition]
-name = "First Ever USA Streetlifting Competition"
-start_date = "2023-04-08"
-end_date = "2023-04-08"
+name = "Lone Star All4 Championship"
+start_date = "2025-10-18"
+end_date = "2025-10-18"
+region = "Texas"
 country = "US"
 status = "completed"
 

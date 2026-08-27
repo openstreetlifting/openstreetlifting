@@ -1,0 +1,12 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Tyler,Vanderbilt,,US,,,disqualified,DQ per official results,,,,,40x,40x,40x,,40x,40x,40x,,,,,
+M,73,Kevin,Makell,,US,,,competed,,,,,,75,80,85,85,102.5x,102.5,112.5,112.5,,,,
+M,80,Ryan,Bibeau,,US,,,competed,,,,,,25,35,40,40,63,75,90x,75,,,,
+M,80,Quan,Myers,,US,,,competed,,,,,,60x,65x,70,70,100,110x,115,115,,,,
+M,80,Cooper,Rhoades,,US,,,competed,,,,,,35,42.5,51.25,51.25,50,55,61.25,61.25,,,,
+M,87,Joshua,Bieger,,US,,,disqualified,DQ per official results,,,,,45x,55x,65x,,65,80x,85,85,,,,
+M,101+,Brian,Hershler,,US,,,competed,,,,,,40,45,50,50,82.5,92.5,100x,92.5,,,,
+F,52,Jayne,Paschall,,US,,,competed,,,,,,13.75,17.5,20,20,13.75,17.5,20,20,,,,
+F,57,Ashley,Ouzts,,US,,,competed,,,,,,10,12.5,15x,12.5,15,20,23.75x,20,,,,
+F,63,Chrys,Sotos,,US,,,competed,,,,,,1.25,3.75,5,5,5,8.75,11.25,11.25,,,,
+F,70,Tahirih,Moffett,,US,,,competed,,,,,,7.5,11.25,13.75,13.75,5,6.25,8.75,8.75,,,,

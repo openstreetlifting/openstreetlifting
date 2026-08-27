@@ -2,9 +2,10 @@ event = "PD"
 sources = ["https://usastreetlifting.org/"]
 
 [competition]
-name = "First Ever USA Streetlifting Competition"
-start_date = "2023-04-08"
-end_date = "2023-04-08"
+name = "Brute Force Classic"
+start_date = "2026-07-18"
+end_date = "2026-07-18"
+region = "Texas"
 country = "US"
 status = "completed"
 

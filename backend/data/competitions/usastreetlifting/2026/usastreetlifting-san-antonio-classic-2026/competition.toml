@@ -2,9 +2,10 @@ event = "PD"
 sources = ["https://usastreetlifting.org/"]
 
 [competition]
-name = "First Ever USA Streetlifting Competition"
-start_date = "2023-04-08"
-end_date = "2023-04-08"
+name = "San Antonio Classic"
+start_date = "2026-03-14"
+end_date = "2026-03-14"
+region = "Texas"
 country = "US"
 status = "completed"
 

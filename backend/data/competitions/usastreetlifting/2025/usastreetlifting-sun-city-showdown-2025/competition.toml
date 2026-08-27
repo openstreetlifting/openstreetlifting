@@ -2,9 +2,10 @@ event = "PD"
 sources = ["https://usastreetlifting.org/"]
 
 [competition]
-name = "First Ever USA Streetlifting Competition"
-start_date = "2023-04-08"
-end_date = "2023-04-08"
+name = "Sun City Showdown"
+start_date = "2025-08-23"
+end_date = "2025-08-23"
+region = "Texas"
 country = "US"
 status = "completed"
 
