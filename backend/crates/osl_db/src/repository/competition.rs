@@ -153,7 +153,7 @@ impl<'a> CompetitionRepository<'a> {
         Ok((results, total))
     }
 
-    /// Federations that have run at least one meet, alphabetical, so the
+    /// Federations that have run at least one competition, alphabetical, so the
     /// dropdown never offers a filter that returns nothing.
     pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
         let federations: Vec<String> = sqlx::query_scalar(
@@ -170,7 +170,7 @@ impl<'a> CompetitionRepository<'a> {
         Ok(federations)
     }
 
-    /// Years a meet was held in, most recent first.
+    /// Years a competition was held in, most recent first.
     pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
         let years: Vec<i32> = sqlx::query_scalar(
             r#"
@@ -186,7 +186,7 @@ impl<'a> CompetitionRepository<'a> {
         Ok(years)
     }
 
-    /// Countries a meet was held in, alphabetical.
+    /// Countries a competition was held in, alphabetical.
     pub async fn list_distinct_countries(&self) -> Result<Vec<String>> {
         let countries: Vec<String> = sqlx::query_scalar(
             r#"

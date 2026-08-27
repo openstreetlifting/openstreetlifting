@@ -12,8 +12,8 @@ fn athlete(first: &str, last: &str) -> AthleteData {
     lifting(common::athlete(first, last), ["50", "90", "100", "150"])
 }
 
-fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
-    common::meet(slug, vec![men_80(athletes)])
+fn competition(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
+    common::competition(slug, vec![men_80(athletes)])
 }
 
 fn filter(name: Option<&str>) -> RankingFilter {
@@ -35,8 +35,8 @@ fn filter(name: Option<&str>) -> RankingFilter {
 async fn seed(pool: &PgPool) {
     import(
         pool,
-        meet(
-            "search-meet",
+        competition(
+            "search-competition",
             vec![
                 athlete("Jean", "Dupont"),
                 athlete("Marie", "Dupont"),

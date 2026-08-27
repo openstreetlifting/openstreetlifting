@@ -9,7 +9,7 @@ use crate::rows::{
 };
 
 /// A competition and how many lifters it recorded. The count is what tells a
-/// reader a meet has results behind it, so it is carried by the list itself
+/// reader a competition has results behind it, so it is carried by the list itself
 /// rather than looked up per row.
 #[derive(Debug, FromRow)]
 pub struct CompetitionSummaryRow {

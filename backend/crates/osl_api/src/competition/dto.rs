@@ -36,7 +36,7 @@ pub struct CompetitionResponse {
     /// Present only when requested via `?include=results`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<CategoryDetail>>,
-    /// How many lifters the meet recorded. Absent on a single competition,
+    /// How many lifters the competition recorded. Absent on a single competition,
     /// where the results themselves carry it.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lifter_count: Option<i64>,

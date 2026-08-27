@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 mod common;
 
-use common::{announcement, athlete, lifting, meet, men_80};
+use common::{announcement, athlete, competition, lifting, men_80};
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn an_announcement_imports_without_results(pool: PgPool) {
@@ -27,7 +27,7 @@ async fn results_fill_in_the_announced_competition(pool: PgPool) {
     let announced = competition_id(&pool).await;
 
     let lifter = lifting(athlete("John", "Doe"), ["50", "60", "80", "120"]);
-    common::import(&pool, meet("test-open", vec![men_80(vec![lifter])])).await;
+    common::import(&pool, competition("test-open", vec![men_80(vec![lifter])])).await;
 
     assert_eq!(competition_id(&pool).await, announced);
     assert_eq!(participant_count(&pool).await, 1);

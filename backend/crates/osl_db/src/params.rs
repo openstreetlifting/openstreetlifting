@@ -77,7 +77,7 @@ pub struct RankingFilter {
     pub event: String,
     pub category: Option<WeightClass>,
     pub year: Option<i32>,
-    /// Narrows the ranking to one competition, e.g. for a per-meet leaderboard.
+    /// Narrows the ranking to one competition, e.g. for a per-competition leaderboard.
     pub competition_id: Option<Uuid>,
     pub offset: i64,
     pub limit: i64,

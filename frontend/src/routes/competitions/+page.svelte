@@ -86,7 +86,7 @@
     return date ? date.slice(8, 10) : '';
   }
 
-  // A countdown only tells the reader something while it is short. On a meet
+  // A countdown only tells the reader something while it is short. On a competition
   // half a year out every row reads "in 5 months" and the column is noise.
   function isSoon(date: string | null): boolean {
     if (!date) return false;

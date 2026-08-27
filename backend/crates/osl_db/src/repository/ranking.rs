@@ -134,7 +134,7 @@ impl<'a> RankingRepository<'a> {
     /// Who belongs in this ranking at all.
     ///
     /// Ranking by one movement spans every event, because a muscle-up is a
-    /// muscle-up whatever else the meet ran; it only drops athletes who never
+    /// muscle-up whatever else the competition ran; it only drops athletes who never
     /// contested it. Ranking by total stays inside a single event, because
     /// adding four lifts and adding one are not the same measurement.
     fn push_eligible(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
@@ -190,7 +190,7 @@ impl<'a> RankingRepository<'a> {
     /// smallest to largest. Men and women don't share the same classes, so an
     /// optional gender narrows the list to what that gender actually has. An
     /// optional competition further narrows it to the classes actually
-    /// contested at that meet.
+    /// contested at that competition.
     pub async fn list_distinct_classes(
         &self,
         gender: Option<&str>,
@@ -251,7 +251,7 @@ impl<'a> RankingRepository<'a> {
     }
 
     /// Distinct countries athletes have actually competed under, alphabetical.
-    /// An optional competition narrows it to who competed at that meet.
+    /// An optional competition narrows it to who competed at that competition.
     pub async fn list_distinct_countries(
         &self,
         competition_id: Option<Uuid>,

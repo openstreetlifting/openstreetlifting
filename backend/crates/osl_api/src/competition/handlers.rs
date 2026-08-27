@@ -161,7 +161,7 @@ pub async fn get_competition(
     get,
     path = "/api/v1/competitions/federations",
     responses(
-        (status = 200, description = "Federations that have run at least one meet, alphabetical", body = Vec<String>),
+        (status = 200, description = "Federations that have run at least one competition, alphabetical", body = Vec<String>),
     ),
     tag = "competitions"
 )]
@@ -176,7 +176,7 @@ pub async fn list_competition_federations(
     get,
     path = "/api/v1/competitions/years",
     responses(
-        (status = 200, description = "Years a meet was held in, most recent first", body = Vec<i32>),
+        (status = 200, description = "Years a competition was held in, most recent first", body = Vec<i32>),
     ),
     tag = "competitions"
 )]
@@ -189,7 +189,7 @@ pub async fn list_competition_years(State(state): State<AppState>) -> WebResult<
     get,
     path = "/api/v1/competitions/countries",
     responses(
-        (status = 200, description = "Countries a meet was held in, alphabetical", body = Vec<String>),
+        (status = 200, description = "Countries a competition was held in, alphabetical", body = Vec<String>),
     ),
     tag = "competitions"
 )]

@@ -20,27 +20,27 @@ fn athlete(first: &str, last: &str) -> AthleteData {
     attempts(lifter, Movement::PullUp, &[("90", true)])
 }
 
-fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
-    let mut canonical = common::meet(slug, vec![in_division(men_80(athletes), "Elite")]);
+fn competition(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
+    let mut canonical = common::competition(slug, vec![in_division(men_80(athletes), "Elite")]);
     canonical.movements = vec![Movement::MuscleUp, Movement::PullUp];
     canonical
 }
 
-/// One meet whose file is still there, one whose file was deleted, and a lifter
+/// One competition whose file is still there, one whose file was deleted, and a lifter
 /// who was at both.
 async fn two_meets(pool: &PgPool) {
     import(
         pool,
-        meet(
-            "kept-meet",
+        competition(
+            "kept-competition",
             vec![athlete("Clara", "Clean"), athlete("Sam", "Shared")],
         ),
     )
     .await;
     import(
         pool,
-        meet(
-            "gone-meet",
+        competition(
+            "gone-competition",
             vec![athlete("Sam", "Shared"), athlete("Gil", "Gone")],
         ),
     )
@@ -70,17 +70,17 @@ async fn a_competition_no_file_claims_is_deleted(pool: PgPool) {
     two_meets(&pool).await;
 
     let plan = CompetitionSync::new(&pool)
-        .apply(&["kept-meet".to_string()])
+        .apply(&["kept-competition".to_string()])
         .await
         .unwrap();
 
-    assert_eq!(slugs(&pool).await, vec!["kept-meet"]);
+    assert_eq!(slugs(&pool).await, vec!["kept-competition"]);
     assert_eq!(
         plan.competitions
             .iter()
             .map(|c| c.slug.as_str())
             .collect::<Vec<_>>(),
-        vec!["gone-meet"],
+        vec!["gone-competition"],
         "the plan has to name what it deleted"
     );
 
@@ -101,14 +101,14 @@ async fn an_athlete_left_with_no_result_goes_too(pool: PgPool) {
     two_meets(&pool).await;
 
     CompetitionSync::new(&pool)
-        .apply(&["kept-meet".to_string()])
+        .apply(&["kept-competition".to_string()])
         .await
         .unwrap();
 
     assert_eq!(
         last_names(&pool).await,
         vec!["Clean", "Shared"],
-        "Gone only ever lifted at the deleted meet, Shared was at both"
+        "Gone only ever lifted at the deleted competition, Shared was at both"
     );
 }
 
@@ -120,7 +120,7 @@ async fn reference_data_is_left_alone(pool: PgPool) {
     let weight_classes = count(&pool, "SELECT COUNT(*) FROM weight_classes").await;
 
     CompetitionSync::new(&pool)
-        .apply(&["kept-meet".to_string()])
+        .apply(&["kept-competition".to_string()])
         .await
         .unwrap();
 
@@ -146,7 +146,10 @@ async fn claiming_nothing_is_refused(pool: PgPool) {
         refused.is_err(),
         "an empty tree means a mistake, not an instruction to delete everything"
     );
-    assert_eq!(slugs(&pool).await, vec!["gone-meet", "kept-meet"]);
+    assert_eq!(
+        slugs(&pool).await,
+        vec!["gone-competition", "kept-competition"]
+    );
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
@@ -154,7 +157,7 @@ async fn a_dry_run_reports_without_deleting(pool: PgPool) {
     two_meets(&pool).await;
 
     let plan = CompetitionSync::new(&pool)
-        .dry_run(&["kept-meet".to_string()])
+        .dry_run(&["kept-competition".to_string()])
         .await
         .unwrap();
 
@@ -163,12 +166,12 @@ async fn a_dry_run_reports_without_deleting(pool: PgPool) {
             .iter()
             .map(|c| c.slug.as_str())
             .collect::<Vec<_>>(),
-        vec!["gone-meet"]
+        vec!["gone-competition"]
     );
     assert_eq!(plan.athletes, vec!["Gil Gone"]);
     assert_eq!(
         slugs(&pool).await,
-        vec!["gone-meet", "kept-meet"],
+        vec!["gone-competition", "kept-competition"],
         "reporting must not be a deletion"
     );
 }

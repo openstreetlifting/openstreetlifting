@@ -21,7 +21,7 @@ fn athlete(first: &str, last: &str, disambiguation: Option<i16>) -> AthleteData 
 }
 
 fn file(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
-    let mut canonical = common::meet(slug, vec![men_80(athletes)]);
+    let mut canonical = common::competition(slug, vec![men_80(athletes)]);
     canonical.movements = vec![Movement::MuscleUp];
     canonical
 }
@@ -37,17 +37,17 @@ async fn athlete_count(pool: &PgPool) -> i64 {
 async fn one_person_spelled_three_ways_stays_one_athlete(pool: PgPool) {
     import(
         &pool,
-        file("meet-one", vec![athlete("Lea", "MERANDON", None)]),
+        file("competition-one", vec![athlete("Lea", "MERANDON", None)]),
     )
     .await;
     import(
         &pool,
-        file("meet-two", vec![athlete("Léa", "Mérandon", None)]),
+        file("competition-two", vec![athlete("Léa", "Mérandon", None)]),
     )
     .await;
     import(
         &pool,
-        file("meet-three", vec![athlete("léa", "merandon", None)]),
+        file("competition-three", vec![athlete("léa", "merandon", None)]),
     )
     .await;
 
@@ -67,7 +67,7 @@ async fn one_person_spelled_three_ways_stays_one_athlete(pool: PgPool) {
 async fn the_stored_name_keeps_the_spelling_the_file_used(pool: PgPool) {
     import(
         &pool,
-        file("meet-one", vec![athlete("Léa", "Mérandon", None)]),
+        file("competition-one", vec![athlete("Léa", "Mérandon", None)]),
     )
     .await;
 
@@ -91,7 +91,7 @@ async fn two_people_sharing_a_name_stay_apart(pool: PgPool) {
     import(
         &pool,
         file(
-            "meet-one",
+            "competition-one",
             vec![
                 athlete("Tom", "Berthier", None),
                 athlete("Tom", "Berthier", Some(2)),
@@ -105,7 +105,7 @@ async fn two_people_sharing_a_name_stay_apart(pool: PgPool) {
     // And they stay apart on a later import that mentions only one of them.
     import(
         &pool,
-        file("meet-two", vec![athlete("Tom", "Berthier", Some(2))]),
+        file("competition-two", vec![athlete("Tom", "Berthier", Some(2))]),
     )
     .await;
     assert_eq!(athlete_count(&pool).await, 2);
@@ -124,12 +124,15 @@ async fn two_people_sharing_a_name_stay_apart(pool: PgPool) {
 async fn punctuation_does_not_create_a_second_athlete(pool: PgPool) {
     import(
         &pool,
-        file("meet-one", vec![athlete("Jean-Luc", "O'Brien", None)]),
+        file(
+            "competition-one",
+            vec![athlete("Jean-Luc", "O'Brien", None)],
+        ),
     )
     .await;
     import(
         &pool,
-        file("meet-two", vec![athlete("Jean Luc", "OBrien", None)]),
+        file("competition-two", vec![athlete("Jean Luc", "OBrien", None)]),
     )
     .await;
 
@@ -140,14 +143,14 @@ async fn punctuation_does_not_create_a_second_athlete(pool: PgPool) {
 async fn a_reimport_creates_no_new_athlete(pool: PgPool) {
     import(
         &pool,
-        file("meet-one", vec![athlete("Lea", "Merandon", None)]),
+        file("competition-one", vec![athlete("Lea", "Merandon", None)]),
     )
     .await;
     let before = athlete_count(&pool).await;
 
     import(
         &pool,
-        file("meet-one", vec![athlete("Lea", "Merandon", None)]),
+        file("competition-one", vec![athlete("Lea", "Merandon", None)]),
     )
     .await;
 
@@ -158,7 +161,7 @@ async fn a_reimport_creates_no_new_athlete(pool: PgPool) {
 async fn the_database_refuses_a_duplicate_identity(pool: PgPool) {
     import(
         &pool,
-        file("meet-one", vec![athlete("Lea", "Merandon", None)]),
+        file("competition-one", vec![athlete("Lea", "Merandon", None)]),
     )
     .await;
 
@@ -181,7 +184,7 @@ async fn athletes_from_different_countries_stay_apart(pool: PgPool) {
     let spanish = from(athlete("Jose", "Garcia", None), "ES");
     let mexican = from(athlete("Jose", "Garcia", None), "MX");
 
-    import(&pool, file("meet-one", vec![spanish, mexican])).await;
+    import(&pool, file("competition-one", vec![spanish, mexican])).await;
 
     assert_eq!(athlete_count(&pool).await, 2);
 }

@@ -1,5 +1,5 @@
 <!--
-Title: conventional commit naming the meet.
+Title: conventional commit naming the competition.
   feat(canonical): add FNSL Elite 2026 results
 -->
 

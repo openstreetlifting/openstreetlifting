@@ -23,8 +23,8 @@ fn athlete(first: &str, last: &str, lifts: Vec<(Movement, Vec<(&str, bool)>)>) -
         })
 }
 
-fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
-    common::meet(slug, vec![men_80(athletes)])
+fn competition(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
+    common::competition(slug, vec![men_80(athletes)])
 }
 
 async fn best(pool: &PgPool, last_name: &str, movement: &str) -> Option<Decimal> {
@@ -86,7 +86,11 @@ fn bomber() -> AthleteData {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_bodyweight_lift_is_stored_as_zero(pool: PgPool) {
-    import(&pool, meet("test-meet", vec![bodyweight_lifter()])).await;
+    import(
+        &pool,
+        competition("test-competition", vec![bodyweight_lifter()]),
+    )
+    .await;
 
     assert_eq!(
         best(&pool, "Bodyweight", "Muscle-up").await,
@@ -97,7 +101,7 @@ async fn a_bodyweight_lift_is_stored_as_zero(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_bombed_movement_is_stored_as_absent(pool: PgPool) {
-    import(&pool, meet("test-meet", vec![bomber()])).await;
+    import(&pool, competition("test-competition", vec![bomber()])).await;
 
     assert_eq!(
         best(&pool, "Bombed", "Dips").await,
@@ -112,7 +116,7 @@ async fn a_bombed_movement_is_stored_as_absent(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn every_attempt_is_kept_including_the_failures(pool: PgPool) {
-    import(&pool, meet("test-meet", vec![bomber()])).await;
+    import(&pool, competition("test-competition", vec![bomber()])).await;
 
     let attempts: i64 = sqlx::query_scalar(
         "SELECT COUNT(*) FROM attempts a
@@ -127,7 +131,7 @@ async fn every_attempt_is_kept_including_the_failures(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_bombed_movement_costs_only_itself(pool: PgPool) {
-    import(&pool, meet("test-meet", vec![bomber()])).await;
+    import(&pool, competition("test-competition", vec![bomber()])).await;
 
     let total: Option<Decimal> = sqlx::query_scalar(
         "SELECT SUM(l.max_weight) FROM lifts l
@@ -148,7 +152,7 @@ async fn a_bombed_movement_costs_only_itself(pool: PgPool) {
 async fn a_bodyweight_lifter_still_appears_on_that_movement(pool: PgPool) {
     import(
         &pool,
-        meet("test-meet", vec![bodyweight_lifter(), bomber()]),
+        competition("test-competition", vec![bodyweight_lifter(), bomber()]),
     )
     .await;
 
@@ -179,7 +183,7 @@ async fn a_bodyweight_lifter_still_appears_on_that_movement(pool: PgPool) {
 async fn a_bomber_is_left_off_that_movements_board(pool: PgPool) {
     import(
         &pool,
-        meet("test-meet", vec![bodyweight_lifter(), bomber()]),
+        competition("test-competition", vec![bodyweight_lifter(), bomber()]),
     )
     .await;
 
@@ -212,7 +216,11 @@ async fn a_bomber_is_left_off_that_movements_board(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_negative_weight_is_still_refused(pool: PgPool) {
-    import(&pool, meet("test-meet", vec![bodyweight_lifter()])).await;
+    import(
+        &pool,
+        competition("test-competition", vec![bodyweight_lifter()]),
+    )
+    .await;
 
     let inserted = sqlx::query(
         "INSERT INTO attempts (lift_id, attempt_number, weight, is_successful)

@@ -7,8 +7,8 @@ use osl_domain::{
 };
 use rust_decimal::Decimal;
 
+use super::competition::{self, CompetitionFile, CompetitionSection};
 use super::entries::{self, Columns};
-use super::meet::{self, CompetitionSection, MeetFile};
 use super::models::{AthleteData, AttemptData, CanonicalFormat, CategoryData, LiftData};
 use crate::{ImporterError, Result};
 
@@ -50,22 +50,37 @@ fn expected_location(canonical: &CanonicalFormat) -> PathBuf {
 }
 
 pub fn is_competition_directory(path: &Path) -> bool {
-    path.is_dir() && path.join(meet::FILE_NAME).is_file()
+    path.is_dir()
+        && (path.join(competition::FILE_NAME).is_file() || path.join(LEGACY_FILE_NAME).is_file())
 }
+
+/// The file was called competition.toml until the rename, and a directory still
+/// holding one would otherwise be skipped without a word.
+const LEGACY_FILE_NAME: &str = "meet.toml";
 
 pub fn read(directory: &Path) -> Result<CanonicalFormat> {
     let slug = slug_of(directory)?;
-    let meet_path = directory.join(meet::FILE_NAME);
+    let competition_path = directory.join(competition::FILE_NAME);
 
-    let text = std::fs::read_to_string(&meet_path)
-        .map_err(|e| ImporterError::ImportError(format!("{}: {e}", meet_path.display())))?;
+    if !competition_path.is_file() && directory.join(LEGACY_FILE_NAME).is_file() {
+        return Err(ImporterError::ValidationError(format!(
+            "{} holds a {LEGACY_FILE_NAME}, which is now called {}. Rename it.",
+            directory.display(),
+            competition::FILE_NAME
+        )));
+    }
 
-    let meet: MeetFile = toml::from_str(&text)
-        .map_err(|e| ImporterError::ValidationError(format!("{}: {e}", meet_path.display())))?;
+    let text = std::fs::read_to_string(&competition_path)
+        .map_err(|e| ImporterError::ImportError(format!("{}: {e}", competition_path.display())))?;
 
-    let movements = match meet.event.as_deref() {
-        Some(event) => event::movements(event)
-            .map_err(|e| ImporterError::ValidationError(format!("{}: {e}", meet_path.display())))?,
+    let parsed: CompetitionFile = toml::from_str(&text).map_err(|e| {
+        ImporterError::ValidationError(format!("{}: {e}", competition_path.display()))
+    })?;
+
+    let movements = match parsed.event.as_deref() {
+        Some(event) => event::movements(event).map_err(|e| {
+            ImporterError::ValidationError(format!("{}: {e}", competition_path.display()))
+        })?,
         None => Vec::new(),
     };
 
@@ -76,12 +91,12 @@ pub fn read(directory: &Path) -> Result<CanonicalFormat> {
         Vec::new()
     };
 
-    let MeetFile {
+    let CompetitionFile {
         sources,
         competition,
         federation,
         ..
-    } = meet;
+    } = parsed;
 
     Ok(CanonicalFormat {
         sources,
@@ -98,15 +113,16 @@ pub fn render(canonical: &CanonicalFormat) -> Result<(String, Option<String>)> {
         Some(canonical.movements.iter().map(|m| m.code()).collect())
     };
 
-    let meet = MeetFile {
+    let file = CompetitionFile {
         event,
         sources: canonical.sources.clone(),
         competition: CompetitionSection::from_data(&canonical.competition),
         federation: canonical.competition.federation.clone(),
     };
 
-    let rendered = toml::to_string_pretty(&meet)
-        .map_err(|e| ImporterError::ImportError(format!("writing {}: {e}", meet::FILE_NAME)))?;
+    let rendered = toml::to_string_pretty(&file).map_err(|e| {
+        ImporterError::ImportError(format!("writing {}: {e}", competition::FILE_NAME))
+    })?;
 
     let entries = if canonical.categories.is_empty() {
         None
@@ -118,9 +134,9 @@ pub fn render(canonical: &CanonicalFormat) -> Result<(String, Option<String>)> {
 }
 
 pub fn write(directory: &Path, canonical: &CanonicalFormat) -> Result<()> {
-    let (meet_text, entries_text) = render(canonical)?;
+    let (competition_text, entries_text) = render(canonical)?;
 
-    std::fs::write(directory.join(meet::FILE_NAME), meet_text)
+    std::fs::write(directory.join(competition::FILE_NAME), competition_text)
         .map_err(|e| ImporterError::ImportError(format!("{}: {e}", directory.display())))?;
 
     if let Some(entries_text) = entries_text {
@@ -362,7 +378,7 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
         .map_err(|e| ImporterError::ImportError(format!("writing {}: {e}", entries::FILE_NAME)))
 }
 
-/// What the meet page shows for the movement, and what the importer stores as
+/// What the competition page shows for the movement, and what the importer stores as
 /// `max_weight`. Derived whenever the attempts are known, so the column can
 /// never contradict them.
 fn best_of(lift: &LiftData) -> Option<Decimal> {

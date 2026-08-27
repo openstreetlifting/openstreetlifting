@@ -5,22 +5,22 @@ description: Extract streetlifting competition results from a web page, PDF, scr
 
 # Extract competition results
 
-Turn source material into one competition directory per meet, ready for
+Turn source material into one competition directory per competition, ready for
 `osl-import`. A competition is usually spread across several posts or pages,
-so a meet is built up over several passes. Each pass adds one brick and is
+so a competition is built up over several passes. Each pass adds one brick and is
 reviewed as a git diff.
 
 ## Where files live
 
 ```
 backend/data/competitions/<federation>/<year>/<competition-slug>/
-    meet.toml      the competition, its federation, and which movements it ran
+    competition.toml      the competition, its federation, and which movements it ran
     entries.csv    one row per athlete
 ```
 
 `<federation>` is the federation's name slugified, so `FNSL` is `fnsl`.
-`<year>` is the year the meet starts, and `<competition-slug>` is the slug the
-meet keeps forever. All three are part of the contract: the slug is never
+`<year>` is the year the competition starts, and `<competition-slug>` is the slug the
+competition keeps forever. All three are part of the contract: the slug is never
 written inside a file, it is read from the directory name, and the competition
 page links to `entries.csv` at exactly this path.
 
@@ -29,7 +29,7 @@ never put two competitions in one.
 
 ## The loop
 
-1. **Find the meet.** If `backend/data/competitions/<federation>/<year>/<slug>/` exists,
+1. **Find the competition.** If `backend/data/competitions/<federation>/<year>/<slug>/` exists,
    read both files first. You are extending them, not writing them.
 2. **Extract only what this source shows.** One post usually covers one
    category, sometimes one movement.
@@ -100,12 +100,12 @@ GET /competitions/{slug}?include=federation,results
 Everything is a plain GET, no auth. Use it to answer: is this athlete already
 known and how is their name spelled, does this competition already exist under
 a slug, which movements did this federation run last year, is the person in
-this post the same one who lifted in another meet.
+this post the same one who lifted in another competition.
 
 Two limits, both important.
 
 The API serves what has **already been imported**, which is a projection of the
-files. It is not an independent record of the meet and it is not ground truth
+files. It is not an independent record of the competition and it is not ground truth
 about this source. It tells you what the project already believes.
 
 So it never supplies a value. It can tell you that `Timothée MERANDON` is the
@@ -116,7 +116,7 @@ as if the source had printed it. **Never invent a value** still holds, and an
 API lookup that contradicts the source is a reason to stop and ask, not to
 overwrite either one.
 
-## meet.toml
+## competition.toml
 
 Everything not marked required is optional and should be left out entirely when
 unknown. There is no version key, and a key that is not one of these is
@@ -145,7 +145,7 @@ country = "FR"
 
 Dates are **quoted strings**, not bare TOML dates.
 
-`event` is the movements the meet contested, as letters in this fixed order:
+`event` is the movements the competition contested, as letters in this fixed order:
 
 | Letter | Movement  |
 |--------|-----------|
@@ -154,12 +154,12 @@ Dates are **quoted strings**, not bare TOML dates.
 | `D`    | Dips      |
 | `S`    | Squat     |
 
-So a full four-movement meet is `MPDS`, a squat-and-dips meet is `DS`, a
-muscle-up-only meet is `M`. The letters must stay in `MPDS` order. These four
-are the only movements that exist; a meet contesting anything else cannot be
+So a full four-movement competition is `MPDS`, a squat-and-dips competition is `DS`, a
+muscle-up-only competition is `M`. The letters must stay in `MPDS` order. These four
+are the only movements that exist; a competition contesting anything else cannot be
 imported without a schema change, so stop and say so.
 
-Only a `MPDS` meet gets a total and a RIS. The formula is fitted to four-lift
+Only a `MPDS` competition gets a total and a RIS. The formula is fitted to four-lift
 totals, so a partial event is ranked per movement and nothing else.
 
 ## entries.csv
@@ -178,7 +178,7 @@ Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 
 | Column | Meaning |
 |---|---|
-| `Division` | Only when the meet ran divisions. See below |
+| `Division` | Only when the competition ran divisions. See below |
 | `Sex` | `M`, `F` or `MX`. Required |
 | `WeightClassKg` | `80` for −80, `101+` for +101. Required |
 | `FirstName` `LastName` | As the source spells them. Required |
@@ -191,7 +191,7 @@ Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 
 `Country` is part of who an athlete *is*: the same name with a different
 country imports as a different person. Use the country the source lists them
-under, and keep it consistent for one person across meets.
+under, and keep it consistent for one person across competitions.
 
 The category is not stored. It is derived from `Division`, `Sex` and
 `WeightClassKg`, so `M` + `80` renders as "Men -80kg", `M` + `101+` as
@@ -199,16 +199,16 @@ The category is not stored. It is derived from `Division`, `Sex` and
 
 ### Division
 
-Most meets run one contest per sex and weight class, and those files have **no
+Most competitions run one contest per sex and weight class, and those files have **no
 `Division` column at all**. Leave it out rather than adding an empty one.
 
-Add it as the **first** column, before `Sex`, only when the meet ran the same
+Add it as the **first** column, before `Sex`, only when the competition ran the same
 weight class more than once, for example an Elite board and an Open board
 lifting -80kg separately. Those are two contests with two winners, and without
 the column they collapse into one and a winner disappears.
 
-A meet that is *itself* one division, like FNSL Elite 2026, does not need the
-column. There is nothing to tell apart, and the meet name already says Elite.
+A competition that is *itself* one division, like FNSL Elite 2026, does not need the
+column. There is nothing to tell apart, and the competition name already says Elite.
 
 ```
 Division,Sex,WeightClassKg,FirstName,...
@@ -216,13 +216,13 @@ Elite,M,80,Ana,...
 Open,M,80,Cy,...
 ```
 
-The value is free text, whatever the meet called it. There is no fixed list,
+The value is free text, whatever the competition called it. There is no fixed list,
 and names are not standardised between federations. Use the source's own
 wording, and keep it identical for every row in that division. Every row needs
 a value once the column exists.
 
 Placings are computed per division, so a lifter can appear in two divisions of
-one meet. Global rankings ignore division entirely, since a 200 kg squat is a
+one competition. Global rankings ignore division entirely, since a 200 kg squat is a
 200 kg squat either way.
 
 Weight classes are written **bound first, plus as a suffix**: `80`, not `-80`,
@@ -232,7 +232,7 @@ off the category name, not off the athletes: a class called +101 has a minimum
 of 101 even when the lightest athlete in it weighs 105.
 
 The standard ladder is `52` `57` `63` `70` `70+` for women and `66` `73` `80`
-`87` `94` `101` `101+` for men. A meet running something else, like `75`, is
+`87` `94` `101` `101+` for men. A competition running something else, like `75`, is
 fine and stores its bound directly.
 
 ### Attempt cells
@@ -259,13 +259,13 @@ attempt breakdown**. Leave the three attempt cells empty and put the weight in
 the best cell; that is the one case where it is real data rather than a
 summary.
 
-A movement outside the meet's `event` must have all four cells empty.
+A movement outside the competition's `event` must have all four cells empty.
 
 There is no Total, no Rank and no Place column. Those are computed on import.
 
-## Announcing a meet nobody has lifted yet
+## Announcing a competition nobody has lifted yet
 
-A meet with a date and a venue and no results is **`meet.toml` on its own, with
+A competition with a date and a venue and no results is **`competition.toml` on its own, with
 no `entries.csv` at all**, and `status = "upcoming"`:
 
 ```toml
@@ -288,7 +288,7 @@ It lives at `backend/data/competitions/fnsl/2027/fnsl-nationals-2027/`. Include
 `event` only if the calendar actually states the format.
 
 Results land by **adding `entries.csv` to this same directory**, never by
-starting a second one, so the slug has to be the one the meet will keep. When
+starting a second one, so the slug has to be the one the competition will keep. When
 they do, move `status` to `completed` in the same edit. No `entries.csv` and a
 status other than `upcoming` is rejected, and so is an `entries.csv` sitting
 next to `status = "upcoming"`.
@@ -311,7 +311,7 @@ spellings of one name are not that. If you cannot tell, stop and ask.
 
 ## What the validator rejects
 
-An unknown key in `meet.toml`; a missing competition or federation name; a
+An unknown key in `competition.toml`; a missing competition or federation name; a
 country that is not two letters; a `Sex` outside `M` `F` `MX`; a status outside
 the five listed; `end_date` before `start_date`; an `event` with an unknown
 letter, a repeated letter, or letters out of `MPDS` order; a missing, unknown or
@@ -326,7 +326,7 @@ No `entries.csv` unless `status` is `upcoming`, and an `entries.csv` when it is.
 ## What it only warns about
 
 A missing city. A row with neither bodyweight nor ris. An athlete with no lifts
-at all. One athlete appearing in two classes. These are normal for a meet still
+at all. One athlete appearing in two classes. These are normal for a competition still
 being built, so warnings are expected mid-construction and are not something to
 fix by inventing data.
 

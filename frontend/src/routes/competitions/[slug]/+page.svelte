@@ -42,7 +42,7 @@
           slugify(competition.federation.name),
           competition.start_date.slice(0, 4),
           competition.slug,
-          published ? 'entries.csv' : 'meet.toml',
+          published ? 'entries.csv' : 'competition.toml',
         ].join('/')
       : null
   );

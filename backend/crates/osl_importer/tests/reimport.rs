@@ -49,7 +49,7 @@ fn fixture(class: Class, ris: Option<&str>) -> CanonicalFormat {
         athletes: vec![lifter],
     };
 
-    let mut canonical = common::meet("test-open", vec![category]);
+    let mut canonical = common::competition("test-open", vec![category]);
     canonical.competition.name = "Test Open".to_string();
     canonical.competition.status = None;
     canonical
@@ -128,7 +128,7 @@ async fn open_class_is_stored_as_a_lower_bound(pool: PgPool) {
     assert_eq!(classes, vec![(Some(Decimal::from(87)), None)]);
 }
 
-/// A meet running two divisions in one class is two contests, so each keeps its
+/// A competition running two divisions in one class is two contests, so each keeps its
 /// own winner instead of the second collapsing onto the first.
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn two_divisions_in_one_class_each_get_a_winner(pool: PgPool) {

@@ -17,7 +17,7 @@ pub fn decimal(raw: &str) -> Decimal {
     Decimal::from_str(raw).expect("test weight should parse")
 }
 
-pub fn meet(slug: &str, categories: Vec<CategoryData>) -> CanonicalFormat {
+pub fn competition(slug: &str, categories: Vec<CategoryData>) -> CanonicalFormat {
     CanonicalFormat {
         sources: Vec::new(),
         competition: CompetitionData {
@@ -41,7 +41,7 @@ pub fn meet(slug: &str, categories: Vec<CategoryData>) -> CanonicalFormat {
 }
 
 pub fn announcement(slug: &str) -> CanonicalFormat {
-    let mut canonical = meet(slug, Vec::new());
+    let mut canonical = competition(slug, Vec::new());
     canonical.competition.status = Some(CompetitionStatus::Upcoming);
     canonical.movements.clear();
     canonical
