@@ -415,10 +415,30 @@ fn optional(columns: &Columns, record: &csv::StringRecord, column: &str) -> Opti
 fn parse_weight_class(cell: &str) -> std::result::Result<WeightClass, String> {
     let invalid = || format!("'{cell}' is not a weight class, expected 80 or 101+");
 
-    match cell.strip_suffix('+') {
-        Some(base) => base.parse().map(WeightClass::Above).map_err(|_| invalid()),
-        None => cell.parse().map(WeightClass::UpTo).map_err(|_| invalid()),
+    let class = match cell.strip_suffix('+') {
+        Some(base) => base
+            .parse()
+            .map(WeightClass::Above)
+            .map_err(|_| invalid())?,
+        None => cell.parse().map(WeightClass::UpTo).map_err(|_| invalid())?,
+    };
+
+    // Every stored bound is above zero, so a class open at the bottom has no row
+    // to live in. Catching it here is the difference between a file that fails
+    // validation and one that passes and then dies partway through an import.
+    let bound = match class {
+        WeightClass::Above(min) => min,
+        WeightClass::UpTo(max) => max,
+    };
+
+    if bound <= Decimal::ZERO {
+        return Err(format!(
+            "weight class '{cell}' has a bound of zero or less. Every class is bounded, \
+             so an unclassified group is filed per athlete against the standard ladder"
+        ));
     }
+
+    Ok(class)
 }
 
 type Bounds = (Option<WeightClassSlug>, Option<Decimal>, Option<Decimal>);
@@ -446,5 +466,33 @@ fn weight_class_cell(category: &CategoryData) -> String {
         Some(WeightClass::UpTo(max)) => max.normalize().to_string(),
         Some(WeightClass::Above(min)) => format!("{}+", min.normalize()),
         None => String::new(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_bound_is_read_off_the_suffix() {
+        assert_eq!(parse_weight_class("80"), Ok(WeightClass::UpTo(80.into())));
+        assert_eq!(
+            parse_weight_class("101+"),
+            Ok(WeightClass::Above(101.into()))
+        );
+    }
+
+    #[test]
+    fn a_bound_of_zero_or_less_is_refused() {
+        // `0+` reads as a class open at the bottom, which the database has no row for.
+        assert!(parse_weight_class("0+").is_err());
+        assert!(parse_weight_class("0").is_err());
+        assert!(parse_weight_class("-5").is_err());
+    }
+
+    #[test]
+    fn anything_that_is_not_a_number_is_refused() {
+        assert!(parse_weight_class("D/C").is_err());
+        assert!(parse_weight_class("").is_err());
     }
 }
