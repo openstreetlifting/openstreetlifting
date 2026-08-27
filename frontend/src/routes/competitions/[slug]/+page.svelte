@@ -16,6 +16,8 @@
   import { GitHubIcon } from '$lib/components/icons';
   import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
+  import type { RankingEntry } from '$lib/types/ranking';
+  import type { Attempt } from '$lib/types/competition';
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
@@ -58,12 +60,63 @@
   const sorts = RANKING_SORTS;
   const genders = RANKING_GENDERS;
 
+  // The event code names the movements a meet contested, so a column with no
+  // weight can be read as bombed rather than never lifted.
+  const LIFTS = [
+    { key: 'muscleup', code: 'M', movement: 'Muscle-up', label: 'Muscle Up' },
+    { key: 'pullup', code: 'P', movement: 'Pull-up', label: 'Pull Up' },
+    { key: 'dips', code: 'D', movement: 'Dips', label: 'Dips' },
+    { key: 'squat', code: 'S', movement: 'Squat', label: 'Squat' },
+  ] as const;
+
+  // The rankings response carries a best per movement; the attempts behind it
+  // arrive with the competition itself, keyed by athlete.
+  const participants = $derived(
+    new Map(
+      competition.categories
+        .flatMap((category) => category.participants)
+        .map((participant) => [participant.athlete.athlete_id, participant])
+    )
+  );
+
+  // Four fixed slots per movement, the three attempts then the best. Fixing the
+  // widths is what lets the bold figure land at the same offset on every row,
+  // so a column can be read straight down to compare athletes.
+  const ATTEMPT_ROW =
+    'grid grid-cols-[2.5rem_2.5rem_2.5rem_2.9rem] gap-x-1.5 items-baseline tabular-nums';
+
+  /** Zero is a lift at bodyweight, so only a missing weight is not a number. */
   function formatWeight(weight: number | null): string {
-    return weight && weight > 0 ? `${weight}` : '-';
+    return weight === null ? '-' : `${weight}`;
   }
 
   function formatRIS(ris: number | null): string {
     return ris && ris > 0 ? ris.toFixed(2) : '-';
+  }
+
+  type LiftCell =
+    /** The meet never contested the movement. */
+    | { kind: 'absent' }
+    /** Contested, and every attempt failed. */
+    | { kind: 'bombed' }
+    /** The source published a best with no attempt breakdown behind it. */
+    | { kind: 'best'; best: number }
+    | { kind: 'attempts'; attempts: Attempt[]; best: number | null };
+
+  function liftCell(entry: RankingEntry, key: string, code: string, movement: string): LiftCell {
+    if (!entry.event?.includes(code)) return { kind: 'absent' };
+
+    const best = entry[key as 'muscleup' | 'pullup' | 'dips' | 'squat'];
+    const lift = participants
+      .get(entry.athlete.athlete_id)
+      ?.lifts.find((candidate) => candidate.movement_name === movement);
+
+    if (lift?.attempts.length) {
+      const attempts = [...lift.attempts].sort((a, b) => a.attempt_number - b.attempt_number);
+      return { kind: 'attempts', attempts, best };
+    }
+
+    return best === null ? { kind: 'bombed' } : { kind: 'best', best };
   }
 </script>
 
@@ -261,6 +314,14 @@
               : 'text-zinc-400'}"
           >
             {movement.label}
+            {#if movement.value !== 'total'}
+              <span class="{ATTEMPT_ROW} text-[0.6rem] font-normal text-zinc-600">
+                <span class="text-right">1</span>
+                <span class="text-right">2</span>
+                <span class="text-right">3</span>
+                <span class="text-right">Best</span>
+              </span>
+            {/if}
           </th>
         {/each}
         <th
@@ -274,6 +335,7 @@
 
       {#snippet body()}
         {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
+          {@const participant = participants.get(entry.athlete.athlete_id)}
           <tr
             class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
           >
@@ -294,13 +356,58 @@
                   {entry.athlete.last_name}
                 </span>
               </a>
+              {#if participant?.is_disqualified}
+                <span
+                  class="ml-1.5 align-middle text-[0.65rem] font-medium tracking-wide text-amber-500/90 uppercase"
+                  title={participant.disqualified_reason ?? 'Disqualified'}
+                >
+                  DQ
+                </span>
+              {/if}
             </td>
             <td class="{TABLE_CELL} text-zinc-400">{entry.athlete.gender}</td>
             <td class="{TABLE_CELL} text-zinc-400">{entry.category}</td>
-            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.muscleup)}</td>
-            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.pullup)}</td>
-            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.dips)}</td>
-            <td class="{TABLE_CELL} text-zinc-400">{formatWeight(entry.squat)}</td>
+            {#each LIFTS as lift (lift.key)}
+              {@const cell = liftCell(entry, lift.key, lift.code, lift.movement)}
+              <td class="{TABLE_CELL} whitespace-nowrap text-zinc-400">
+                <span class={ATTEMPT_ROW}>
+                  {#if cell.kind === 'attempts'}
+                    {#each [1, 2, 3] as slot (slot)}
+                      {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
+                      <span
+                        class="text-right {attempt && !attempt.is_successful
+                          ? 'text-zinc-600 line-through decoration-zinc-600'
+                          : 'text-zinc-400'}"
+                        title={attempt
+                          ? `Attempt ${slot}: ${attempt.weight} kg, ${attempt.is_successful ? 'good lift' : 'no lift'}`
+                          : `Attempt ${slot} not recorded`}
+                      >
+                        {attempt ? attempt.weight : ''}
+                      </span>
+                    {/each}
+                  {:else}
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  {/if}
+
+                  <!-- The best sits in its own slot at a fixed offset, so the
+                       column can be read straight down to compare athletes. -->
+                  <span class="text-right font-medium text-white">
+                    {#if cell.kind === 'absent'}
+                      <span class="font-normal text-zinc-700">-</span>
+                    {:else if cell.kind === 'bombed'}
+                      <span
+                        class="font-normal text-zinc-600"
+                        title="No successful {lift.label.toLowerCase()}">—</span
+                      >
+                    {:else}
+                      {cell.best}
+                    {/if}
+                  </span>
+                </span>
+              </td>
+            {/each}
             <td class="{TABLE_CELL} font-medium text-zinc-400">{formatWeight(entry.total)}</td>
             <td class="{TABLE_CELL} font-medium text-zinc-400">{formatRIS(entry.ris)}</td>
           </tr>
