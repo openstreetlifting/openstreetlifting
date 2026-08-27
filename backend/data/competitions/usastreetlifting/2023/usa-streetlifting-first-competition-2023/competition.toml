@@ -9,6 +9,6 @@ country = "US"
 status = "completed"
 
 [federation]
-name = "USA Streetlifting"
+name = "USAStreetlifting"
 abbreviation = "USASL"
 country = "US"
