@@ -67,12 +67,8 @@ impl<'a> CanonicalTransformer<'a> {
 
         if osl_domain::is_full_event(event_code.as_deref()) {
             info!("Computing RIS scores for all participants...");
-            self.compute_ris_for_competition(
-                competition_id,
-                canonical.competition.start_date,
-                &mut tx,
-            )
-            .await?;
+            self.compute_ris_for_competition(competition_id, &mut tx)
+                .await?;
         } else {
             info!(
                 "Event {} is not the full four movements, so no RIS is computed",
@@ -624,21 +620,19 @@ impl<'a> CanonicalTransformer<'a> {
         Ok(())
     }
 
+    /// Every meet is scored with the current formula, whatever year it was
+    /// lifted, so one ranking never mixes two scales. Publishing a new edition
+    /// means re-scoring the archive with `recompute-ris`.
     async fn compute_ris_for_competition(
         &self,
         competition_id: Uuid,
-        competition_date: chrono::NaiveDate,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
-        let formula =
-            osl_db::services::ris_computation::get_formula_for_date(self.pool, competition_date)
-                .await
-                .map_err(|e| {
-                    ImporterError::TransformationError(format!(
-                        "No RIS formula available for date {}: {}",
-                        competition_date, e
-                    ))
-                })?;
+        let formula = osl_db::services::ris_computation::get_current_formula(self.pool)
+            .await
+            .map_err(|e| {
+                ImporterError::TransformationError(format!("No current RIS formula: {e}"))
+            })?;
 
         let participants = sqlx::query!(
             r#"
