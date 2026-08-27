@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM federations\n            WHERE NOT EXISTS (\n                SELECT 1\n                FROM competitions c\n                WHERE c.federation_id = federations.federation_id\n            )\n            RETURNING name\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "name",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "federations",
+            "name": "name"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "21a8dca811b05c9f53774d8223af404cf12e562ac22db73e87cfdc22fdb86923"
+}

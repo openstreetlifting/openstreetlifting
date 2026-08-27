@@ -1,6 +1,7 @@
 //! A canonical file is built up over several passes, so importing a corrected
 //! file has to land the correction rather than stop at the row already there.
 
+use chrono::NaiveDate;
 use osl_domain::{CompetitionStatus, Gender, Movement, WeightClassSlug};
 use osl_importer::canonical::models::{CanonicalFormat, CategoryData};
 use osl_importer::canonical::transformer::CanonicalTransformer;
@@ -233,4 +234,37 @@ async fn a_recompute_leaves_a_reported_score_alone(pool: PgPool) {
 
     assert_eq!(row.ris_score, Some(Decimal::from_str("84.21").unwrap()));
     assert_eq!(row.ris_source.as_deref(), Some("reported"));
+}
+
+/// Correcting a federation name or a date in the file has to reach the database,
+/// or the file stops being the truth about its own competition the moment one exists.
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn reimport_lands_a_corrected_federation_and_dates(pool: PgPool) {
+    let transformer = CanonicalTransformer::new(&pool);
+
+    transformer
+        .import_to_database(canonical(Class::Slug(WeightClassSlug::M73)))
+        .await
+        .unwrap();
+
+    let mut corrected = canonical(Class::Slug(WeightClassSlug::M73));
+    corrected.competition.federation.name = "Corrected Federation".to_string();
+    corrected.competition.start_date = NaiveDate::from_ymd_opt(2026, 3, 7).unwrap();
+    corrected.competition.end_date = NaiveDate::from_ymd_opt(2026, 3, 8).unwrap();
+    transformer.import_to_database(corrected).await.unwrap();
+
+    let row = sqlx::query!(
+        r#"
+        SELECT f.name as "federation!", c.start_date as "start_date!", c.end_date as "end_date!"
+        FROM competitions c JOIN federations f USING (federation_id)
+        WHERE c.slug = 'test-open'
+        "#
+    )
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+
+    assert_eq!(row.federation, "Corrected Federation");
+    assert_eq!(row.start_date, NaiveDate::from_ymd_opt(2026, 3, 7).unwrap());
+    assert_eq!(row.end_date, NaiveDate::from_ymd_opt(2026, 3, 8).unwrap());
 }

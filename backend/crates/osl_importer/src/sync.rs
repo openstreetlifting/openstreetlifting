@@ -1,7 +1,7 @@
 //! Bringing the database back to what the canonical files say.
 //!
 //! The files are the data, so a competition no file claims should not exist,
-//! and neither should an athlete left without a single result.
+//! and neither should an athlete or a federation left without a single result.
 
 use osl_domain::display_name;
 use sqlx::PgPool;
@@ -16,6 +16,7 @@ pub struct CompetitionSync<'a> {
 pub struct SyncPlan {
     pub competitions: Vec<DeletedCompetition>,
     pub athletes: Vec<String>,
+    pub federations: Vec<String>,
 }
 
 #[derive(Debug)]
@@ -26,7 +27,7 @@ pub struct DeletedCompetition {
 
 impl SyncPlan {
     pub fn is_empty(&self) -> bool {
-        self.competitions.is_empty() && self.athletes.is_empty()
+        self.competitions.is_empty() && self.athletes.is_empty() && self.federations.is_empty()
     }
 }
 
@@ -92,6 +93,22 @@ impl<'a> CompetitionSync<'a> {
         .fetch_all(&mut **tx)
         .await?;
 
+        // Renaming a federation in a file leaves the old row behind with nothing
+        // pointing at it, so it goes the same way an athlete without a result does.
+        let federations = sqlx::query!(
+            r#"
+            DELETE FROM federations
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM competitions c
+                WHERE c.federation_id = federations.federation_id
+            )
+            RETURNING name
+            "#
+        )
+        .fetch_all(&mut **tx)
+        .await?;
+
         Ok(SyncPlan {
             competitions: competitions
                 .into_iter()
@@ -104,6 +121,7 @@ impl<'a> CompetitionSync<'a> {
                 .into_iter()
                 .map(|row| display_name(&row.first_name, &row.last_name))
                 .collect(),
+            federations: federations.into_iter().map(|row| row.name).collect(),
         })
     }
 }

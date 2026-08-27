@@ -447,17 +447,27 @@ async fn handle_prune(pool: &sqlx::PgPool, claimed_slugs: &[String], yes: bool) 
         }
     }
 
+    if !plan.federations.is_empty() {
+        tracing::info!("Federations left without a competition:");
+        for federation in &plan.federations {
+            tracing::info!("  {}", federation);
+        }
+    }
+
     if yes {
         tracing::info!(
-            "Deleted {} competition(s) and {} athlete(s)",
+            "Deleted {} competition(s), {} athlete(s) and {} federation(s)",
             plan.competitions.len(),
-            plan.athletes.len()
+            plan.athletes.len(),
+            plan.federations.len()
         );
     } else {
         tracing::warn!(
-            "Would delete {} competition(s) and {} athlete(s). Pass --yes to carry it out",
+            "Would delete {} competition(s), {} athlete(s) and {} federation(s). \
+             Pass --yes to carry it out",
             plan.competitions.len(),
-            plan.athletes.len()
+            plan.athletes.len(),
+            plan.federations.len()
         );
     }
 

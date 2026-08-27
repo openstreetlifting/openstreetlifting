@@ -204,6 +204,9 @@ impl<'a> CanonicalTransformer<'a> {
             DO UPDATE SET
                 name = EXCLUDED.name,
                 status = COALESCE($3, competitions.status),
+                federation_id = EXCLUDED.federation_id,
+                start_date = EXCLUDED.start_date,
+                end_date = EXCLUDED.end_date,
                 city = EXCLUDED.city,
                 region = EXCLUDED.region,
                 country = EXCLUDED.country
