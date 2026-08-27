@@ -395,20 +395,16 @@ impl<'a> CanonicalTransformer<'a> {
     ) -> Result<()> {
         let athlete_id = self.upsert_athlete(athlete, category, tx).await?;
 
-        // The schema stores the outcome as a flag plus free text. Richer
-        // statuses need a status column, which 1.1.0 does not add.
-        let is_disqualified = athlete.status.is_disqualified();
-
         let participant_id = sqlx::query_scalar!(
             r#"
             INSERT INTO competition_participants
-                (competition_id, weight_class_id, division_id, athlete_id, bodyweight, is_disqualified, disqualified_reason, ris_score, ris_source)
+                (competition_id, weight_class_id, division_id, athlete_id, bodyweight, status, status_reason, ris_score, ris_source)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END)
             ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id)
             DO UPDATE SET
                 bodyweight = EXCLUDED.bodyweight,
-                is_disqualified = EXCLUDED.is_disqualified,
-                disqualified_reason = EXCLUDED.disqualified_reason,
+                status = EXCLUDED.status,
+                status_reason = EXCLUDED.status_reason,
                 ris_score = EXCLUDED.ris_score,
                 ris_source = EXCLUDED.ris_source
             RETURNING participant_id as "participant_id: Uuid"
@@ -418,7 +414,7 @@ impl<'a> CanonicalTransformer<'a> {
             contest.division_id,
             athlete_id,
             athlete.bodyweight,
-            is_disqualified,
+            athlete.status.as_str(),
             athlete.status_reason,
             athlete.ris
         )

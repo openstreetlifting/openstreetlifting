@@ -41,7 +41,7 @@ pub struct AthleteCompetitionSummary {
     pub rank: Option<i32>,
     pub total: Option<rust_decimal::Decimal>,
     pub ris_score: Option<rust_decimal::Decimal>,
-    pub is_disqualified: bool,
+    pub status: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -89,7 +89,7 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
             rank: row.rank,
             total: row.total,
             ris_score: row.ris_score,
-            is_disqualified: row.is_disqualified,
+            status: row.status,
         }
     }
 }

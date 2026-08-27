@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT DISTINCT ON (l.movement_name)\n                l.movement_name,\n                -- Not null thanks to the filter below, which sqlx cannot infer.\n                l.max_weight as \"max_weight!\",\n                c.name as competition_name,\n                c.slug as competition_slug,\n                c.start_date as date\n            FROM lifts l\n            JOIN competition_participants cp ON l.participant_id = cp.participant_id\n            JOIN competitions c ON cp.competition_id = c.competition_id\n            WHERE cp.athlete_id = $1\n              -- A movement where every attempt failed is not a record, and\n              -- DESC would otherwise sort its NULL to the front and pick it.\n              AND l.max_weight IS NOT NULL\n              AND NOT cp.is_disqualified\n            ORDER BY l.movement_name, l.max_weight DESC\n            ",
+  "query": "\n            SELECT DISTINCT ON (l.movement_name)\n                l.movement_name,\n                -- Not null thanks to the filter below, which sqlx cannot infer.\n                l.max_weight as \"max_weight!\",\n                c.name as competition_name,\n                c.slug as competition_slug,\n                c.start_date as date\n            FROM lifts l\n            JOIN competition_participants cp ON l.participant_id = cp.participant_id\n            JOIN competitions c ON cp.competition_id = c.competition_id\n            WHERE cp.athlete_id = $1\n              -- A movement where every attempt failed is not a record, and\n              -- DESC would otherwise sort its NULL to the front and pick it.\n              AND l.max_weight IS NOT NULL\n              AND cp.status = 'competed'\n            ORDER BY l.movement_name, l.max_weight DESC\n            ",
   "describe": {
     "columns": [
       {
@@ -72,5 +72,5 @@
       false
     ]
   },
-  "hash": "7ba03cd13a6bc4d1c7fc6a238f218d85473040d8bb5401f570e9a71bd30ee58a"
+  "hash": "3426ca75ff5ecb76b27fd911d59f73dab19014db402b08fc02361b6b9c622061"
 }

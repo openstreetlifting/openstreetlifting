@@ -2,15 +2,16 @@ use serde::{Deserialize, Serialize};
 
 /// Outcome of an athlete's participation in a competition.
 ///
-/// Mirrors what the schema can express today: `competition_participants`
-/// stores `is_disqualified` plus a free-text `disqualified_reason`.
-/// Additional variants (did-not-start, did-not-finish) land with the
-/// canonical format 1.1.0 migration, which introduces a real status column.
+/// Only `Competed` counts for rankings and records. `Disqualified` covers a
+/// lifter who took attempts and was ruled out, whether by failing every attempt
+/// in a movement or by a procedural call; `NoShow` covers an entrant who never
+/// lifted at all, which has no bodyweight and no attempts behind it.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum AthleteStatus {
     Competed,
     Disqualified,
+    NoShow,
 }
 
 impl AthleteStatus {
@@ -18,11 +19,13 @@ impl AthleteStatus {
         match self {
             Self::Competed => "competed",
             Self::Disqualified => "disqualified",
+            Self::NoShow => "no_show",
         }
     }
 
-    pub fn is_disqualified(&self) -> bool {
-        matches!(self, Self::Disqualified)
+    /// Whether the result stands, which is what every ranking and record asks.
+    pub fn competed(&self) -> bool {
+        matches!(self, Self::Competed)
     }
 }
 
@@ -39,6 +42,7 @@ impl std::str::FromStr for AthleteStatus {
         match s {
             "competed" => Ok(Self::Competed),
             "disqualified" => Ok(Self::Disqualified),
+            "no_show" => Ok(Self::NoShow),
             other => Err(format!("unknown athlete status: {}", other)),
         }
     }

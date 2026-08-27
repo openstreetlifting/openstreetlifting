@@ -56,8 +56,8 @@ pub struct ParticipantDetail {
     /// Placing within the contest, computed from the lifts.
     pub rank: Option<i32>,
     pub ris_score: Option<Decimal>,
-    pub is_disqualified: bool,
-    pub disqualified_reason: Option<String>,
+    pub status: String,
+    pub status_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,
     pub total: Option<Decimal>,
 }

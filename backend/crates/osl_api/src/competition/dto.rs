@@ -79,8 +79,8 @@ pub struct ParticipantDetail {
     pub bodyweight: Option<rust_decimal::Decimal>,
     pub rank: Option<i32>,
     pub ris_score: Option<rust_decimal::Decimal>,
-    pub is_disqualified: bool,
-    pub disqualified_reason: Option<String>,
+    pub status: String,
+    pub status_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,
     pub total: Option<rust_decimal::Decimal>,
 }
@@ -209,8 +209,8 @@ impl From<DbParticipantDetail> for ParticipantDetail {
             bodyweight: participant.bodyweight,
             rank: participant.rank,
             ris_score: participant.ris_score,
-            is_disqualified: participant.is_disqualified,
-            disqualified_reason: participant.disqualified_reason,
+            status: participant.status,
+            status_reason: participant.status_reason,
             lifts: participant.lifts.into_iter().map(Into::into).collect(),
             total: participant.total,
         }

@@ -10,8 +10,8 @@ pub struct CompetitionParticipantRow {
     pub athlete_id: Uuid,
     pub bodyweight: Option<Decimal>,
     pub rank: Option<i32>,
-    pub is_disqualified: bool,
+    pub status: String,
     pub created_at: Option<chrono::NaiveDateTime>,
-    pub disqualified_reason: Option<String>,
+    pub status_reason: Option<String>,
     pub ris_score: Option<Decimal>,
 }
