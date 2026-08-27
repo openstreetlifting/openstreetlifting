@@ -32,7 +32,7 @@ impl CanonicalValidator {
                 .errors
                 .push("Federation name is required".to_string());
         } else if slugify(&canonical.competition.federation.name).is_empty() {
-            // The name becomes the directory the meet lives in, so one that
+            // The name becomes the directory the competition lives in, so one that
             // slugifies to nothing would collapse that level of the path away.
             report.errors.push(format!(
                 "Federation name '{}' has no letter or digit to name its directory",
@@ -62,7 +62,7 @@ impl CanonicalValidator {
         }
     }
 
-    /// A meet with no entries.csv is an announcement, and one with entries is a
+    /// A competition with no entries.csv is an announcement, and one with entries is a
     /// result. Letting the two drift apart would either hide results behind an
     /// upcoming status on re-import, or publish an empty competition as though
     /// it had been lifted.
@@ -94,7 +94,7 @@ impl CanonicalValidator {
         }
     }
 
-    /// A division tells two contests in one meet apart, so a file that names
+    /// A division tells two contests in one competition apart, so a file that names
     /// one for some entries and not others is claiming a contest nobody ran.
     /// Left alone it hands that phantom contest its own winner, which is the
     /// collapse this column exists to prevent, running the other way.
@@ -118,7 +118,7 @@ impl CanonicalValidator {
 
         if !missing.is_empty() {
             report.errors.push(format!(
-                "The meet names divisions ({}), so every entry needs one. Missing on: {}",
+                "The competition names divisions ({}), so every entry needs one. Missing on: {}",
                 named.join(", "),
                 missing.join(", ")
             ));

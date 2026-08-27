@@ -40,7 +40,7 @@ pub fn best_column(movement: Movement) -> String {
     format!("Best{}Kg", movement.column_prefix())
 }
 
-/// We leave the column out entirely when a meet ran no divisions, rather than
+/// We leave the column out entirely when a competition ran no divisions, rather than
 /// carry an empty one on every row. Reading tolerates either shape.
 pub fn headers(divisioned: bool) -> Vec<String> {
     let mut headers: Vec<String> = divisioned

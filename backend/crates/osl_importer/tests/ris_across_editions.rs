@@ -1,5 +1,5 @@
 //! Most of the archive was lifted before RIS existed, and a ranking is only
-//! readable if every score in it came from the same formula. So the meet's date
+//! readable if every score in it came from the same formula. So the competition's date
 //! decides nothing: the current edition scores all of them.
 
 use chrono::NaiveDate;
@@ -25,8 +25,8 @@ fn lifter() -> AthleteData {
     athlete
 }
 
-fn meet_held_in(year: i32, slug: &str) -> CanonicalFormat {
-    let mut canonical = common::meet(slug, vec![men_80(vec![lifter()])]);
+fn competition_held_in(year: i32, slug: &str) -> CanonicalFormat {
+    let mut canonical = common::competition(slug, vec![men_80(vec![lifter()])]);
     let day = NaiveDate::from_ymd_opt(year, 8, 20).unwrap();
     canonical.competition.start_date = day;
     canonical.competition.end_date = day;
@@ -45,14 +45,14 @@ async fn scored_with(pool: &PgPool, slug: &str) -> (Decimal, i32) {
     .bind(slug)
     .fetch_one(pool)
     .await
-    .expect("the meet should have been scored")
+    .expect("the competition should have been scored")
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_meet_older_than_the_formula_is_still_scored(pool: PgPool) {
-    import(&pool, meet_held_in(2022, "old-meet")).await;
+    import(&pool, competition_held_in(2022, "old-competition")).await;
 
-    let (score, year) = scored_with(&pool, "old-meet").await;
+    let (score, year) = scored_with(&pool, "old-competition").await;
 
     assert_eq!(year, 2025);
     assert!(score > Decimal::ZERO);
@@ -60,12 +60,12 @@ async fn a_meet_older_than_the_formula_is_still_scored(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn meets_from_different_years_share_one_formula(pool: PgPool) {
-    import(&pool, meet_held_in(2022, "old-meet")).await;
-    import(&pool, meet_held_in(2026, "recent-meet")).await;
+    import(&pool, competition_held_in(2022, "old-competition")).await;
+    import(&pool, competition_held_in(2026, "recent-competition")).await;
 
     assert_eq!(
-        scored_with(&pool, "old-meet").await,
-        scored_with(&pool, "recent-meet").await,
+        scored_with(&pool, "old-competition").await,
+        scored_with(&pool, "recent-competition").await,
         "the same lifts at the same bodyweight must score the same in any year"
     );
 }

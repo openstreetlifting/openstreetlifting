@@ -4,7 +4,7 @@
 
 mod common;
 
-use common::{athlete, best, import, meet, men_80};
+use common::{athlete, best, competition, import, men_80};
 use osl_domain::Movement;
 use osl_importer::canonical::models::AthleteData;
 use rust_decimal::Decimal;
@@ -37,7 +37,7 @@ fn stated_best_lifter() -> AthleteData {
 async fn a_stated_best_lift_is_stored_as_max_weight(pool: PgPool) {
     import(
         &pool,
-        meet("test-meet", vec![men_80(vec![stated_best_lifter()])]),
+        competition("test-competition", vec![men_80(vec![stated_best_lifter()])]),
     )
     .await;
 
@@ -51,7 +51,7 @@ async fn a_stated_best_lift_is_stored_as_max_weight(pool: PgPool) {
 async fn a_stated_best_lift_creates_no_attempt_rows(pool: PgPool) {
     import(
         &pool,
-        meet("test-meet", vec![men_80(vec![stated_best_lifter()])]),
+        competition("test-competition", vec![men_80(vec![stated_best_lifter()])]),
     )
     .await;
 
@@ -73,7 +73,7 @@ async fn a_stated_best_lift_creates_no_attempt_rows(pool: PgPool) {
 async fn a_stated_best_lift_still_counts_toward_the_total(pool: PgPool) {
     import(
         &pool,
-        meet("test-meet", vec![men_80(vec![stated_best_lifter()])]),
+        competition("test-competition", vec![men_80(vec![stated_best_lifter()])]),
     )
     .await;
 

@@ -1,21 +1,17 @@
 //! Which movements a competition contested.
 //!
-//! A meet declares its movements and everyone in it contests all of them, so
-//! the event belongs to the competition rather than to each athlete. That is
-//! the one place streetlifting differs from powerlifting, where a lifter can
-//! enter bench-only at a full-power meet and OpenPowerlifting has to put the
-//! event on the entry.
+//! A competition declares its movements and everyone in it contests all of them, so
+//! the event belongs to the competition rather than to each athlete.
 //!
 //! A total is only a total within one event. Adding four lifts and adding one
 //! produce numbers that must never be ranked against each other, and the same
 //! goes for the RIS derived from them. A single movement is different: a
-//! muscle-up is a muscle-up whatever else the meet ran, so those compare
+//! muscle-up is a muscle-up whatever else the competition ran, so those compare
 //! freely across events.
 
 use crate::movement::Movement;
 
-/// The full four movements, in display order. The letters come from
-/// `movements.code` in the database.
+/// The full four movements, in display order.
 pub const FULL_EVENT: &str = "MPDS";
 
 /// Whether a total and a RIS mean anything for this event.

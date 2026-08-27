@@ -104,7 +104,7 @@ impl<'a> AthleteRepository<'a> {
     }
 
     async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
-        // The placing is worked out from the lifts, the same way the meet page
+        // The placing is worked out from the lifts, the same way the competition page
         // does it, over the contests this athlete actually entered.
         let rows = sqlx::query!(
             r#"

@@ -1,7 +1,7 @@
 use anyhow::{Context, Result, bail};
 use clap::{Parser, Subcommand};
 use osl_importer::canonical::{
-    entries, format as canonical_format, meet, store, transformer::CanonicalTransformer,
+    competition, entries, format as canonical_format, store, transformer::CanonicalTransformer,
     validator::CanonicalValidator,
 };
 use osl_importer::sync::CompetitionSync;
@@ -220,9 +220,9 @@ async fn handle_fmt(paths: &[PathBuf], check: bool) -> Result<()> {
 fn is_formatted(directory: &Path) -> Result<bool> {
     let mut canonical = store::read(directory)?;
     canonical_format::normalize(&mut canonical);
-    let (meet_text, entries_text) = store::render(&canonical)?;
+    let (competition_text, entries_text) = store::render(&canonical)?;
 
-    if std::fs::read_to_string(directory.join(meet::FILE_NAME))? != meet_text {
+    if std::fs::read_to_string(directory.join(competition::FILE_NAME))? != competition_text {
         return Ok(false);
     }
 
@@ -300,7 +300,7 @@ fn collect_competitions(path: &Path, found: &mut Vec<PathBuf>) -> Result<()> {
 ///
 /// An import owns its whole competition and removes the rows its files do not
 /// list, so two directories claiming one slug would each delete the other's
-/// results. Sessions of the same meet belong in one directory, and that has to
+/// results. Sessions of the same competition belong in one directory, and that has to
 /// hold before anything is written.
 fn claimed_competition_slugs(directories: &[PathBuf]) -> Result<Vec<String>> {
     let mut by_slug: BTreeMap<String, Vec<&PathBuf>> = BTreeMap::new();

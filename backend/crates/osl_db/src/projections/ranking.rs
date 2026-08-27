@@ -23,7 +23,7 @@ pub struct RankingRow {
     pub start_date: Option<NaiveDate>,
     pub federation_name: String,
     pub federation_abbreviation: Option<String>,
-    /// Absent when the meet did not contest the movement, rather than zero.
+    /// Absent when the competition did not contest the movement, rather than zero.
     pub muscleup: Option<Decimal>,
     pub pullup: Option<Decimal>,
     pub dips: Option<Decimal>,

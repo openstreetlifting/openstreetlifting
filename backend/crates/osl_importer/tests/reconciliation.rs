@@ -26,7 +26,7 @@ fn athlete(
 
 /// One category holding whichever athletes the case needs.
 fn file(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
-    let mut canonical = common::meet(slug, vec![men_80(athletes)]);
+    let mut canonical = common::competition(slug, vec![men_80(athletes)]);
     canonical.movements = vec![Movement::MuscleUp, Movement::PullUp];
     canonical
 }
@@ -65,10 +65,10 @@ fn two_lifters() -> Vec<AthleteData> {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_reimport_of_the_same_file_changes_nothing(pool: PgPool) {
-    import(&pool, file("test-meet", two_lifters())).await;
+    import(&pool, file("test-competition", two_lifters())).await;
     let before = participant_count(&pool).await;
 
-    import(&pool, file("test-meet", two_lifters())).await;
+    import(&pool, file("test-competition", two_lifters())).await;
 
     assert_eq!(participant_count(&pool).await, before);
     assert_eq!(count(&pool, "SELECT COUNT(*) FROM lifts").await, 2);
@@ -77,7 +77,7 @@ async fn a_reimport_of_the_same_file_changes_nothing(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn an_athlete_dropped_from_the_file_loses_their_participation(pool: PgPool) {
-    import(&pool, file("test-meet", two_lifters())).await;
+    import(&pool, file("test-competition", two_lifters())).await;
     assert_eq!(participant_count(&pool).await, 2);
 
     let remaining = vec![athlete(
@@ -85,7 +85,7 @@ async fn an_athlete_dropped_from_the_file_loses_their_participation(pool: PgPool
         "Lovelace",
         vec![(Movement::MuscleUp, vec![("60", true)])],
     )];
-    import(&pool, file("test-meet", remaining)).await;
+    import(&pool, file("test-competition", remaining)).await;
 
     assert_eq!(participant_count(&pool).await, 1);
     // The lift and attempt went with the participant, through the cascade.
@@ -106,7 +106,7 @@ async fn a_lift_dropped_from_the_file_is_removed(pool: PgPool) {
             (Movement::PullUp, vec![("40", true)]),
         ],
     )];
-    import(&pool, file("test-meet", both)).await;
+    import(&pool, file("test-competition", both)).await;
     assert_eq!(count(&pool, "SELECT COUNT(*) FROM lifts").await, 2);
 
     let one = vec![athlete(
@@ -114,7 +114,7 @@ async fn a_lift_dropped_from_the_file_is_removed(pool: PgPool) {
         "Lovelace",
         vec![(Movement::MuscleUp, vec![("60", true)])],
     )];
-    import(&pool, file("test-meet", one)).await;
+    import(&pool, file("test-competition", one)).await;
 
     assert_eq!(count(&pool, "SELECT COUNT(*) FROM lifts").await, 1);
     assert_eq!(participant_count(&pool).await, 1);
@@ -130,7 +130,7 @@ async fn an_attempt_dropped_from_the_file_is_removed(pool: PgPool) {
             vec![("60", true), ("65", true), ("70", false)],
         )],
     )];
-    import(&pool, file("test-meet", three)).await;
+    import(&pool, file("test-competition", three)).await;
     assert_eq!(count(&pool, "SELECT COUNT(*) FROM attempts").await, 3);
 
     // The third attempt never happened and is corrected away.
@@ -139,7 +139,7 @@ async fn an_attempt_dropped_from_the_file_is_removed(pool: PgPool) {
         "Lovelace",
         vec![(Movement::MuscleUp, vec![("60", true), ("65", true)])],
     )];
-    import(&pool, file("test-meet", two)).await;
+    import(&pool, file("test-competition", two)).await;
 
     assert_eq!(count(&pool, "SELECT COUNT(*) FROM attempts").await, 2);
     assert_eq!(count(&pool, "SELECT COUNT(*) FROM lifts").await, 1);
@@ -147,40 +147,43 @@ async fn an_attempt_dropped_from_the_file_is_removed(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn pruning_one_competition_leaves_the_others_alone(pool: PgPool) {
-    import(&pool, file("first-meet", two_lifters())).await;
-    import(&pool, file("second-meet", two_lifters())).await;
+    import(&pool, file("first-competition", two_lifters())).await;
+    import(&pool, file("second-competition", two_lifters())).await;
     assert_eq!(participant_count(&pool).await, 4);
 
-    // Grace is dropped from the first meet only.
+    // Grace is dropped from the first competition only.
     let remaining = vec![athlete(
         "Ada",
         "Lovelace",
         vec![(Movement::MuscleUp, vec![("60", true)])],
     )];
-    import(&pool, file("first-meet", remaining)).await;
+    import(&pool, file("first-competition", remaining)).await;
 
     assert_eq!(participant_count(&pool).await, 3);
 
-    let second_meet: i64 = sqlx::query_scalar(
+    let second_competition: i64 = sqlx::query_scalar(
         "SELECT COUNT(*) FROM competition_participants cp
          JOIN competitions c ON c.competition_id = cp.competition_id
-         WHERE c.slug = 'second-meet'",
+         WHERE c.slug = 'second-competition'",
     )
     .fetch_one(&pool)
     .await
     .unwrap();
-    assert_eq!(second_meet, 2, "the other meet keeps both of its lifters");
+    assert_eq!(
+        second_competition, 2,
+        "the other competition keeps both of its lifters"
+    );
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_movement_dropped_from_the_file_is_removed(pool: PgPool) {
-    import(&pool, file("test-meet", two_lifters())).await;
+    import(&pool, file("test-competition", two_lifters())).await;
     assert_eq!(
         count(&pool, "SELECT COUNT(*) FROM competition_movements").await,
         2
     );
 
-    let mut canonical = file("test-meet", two_lifters());
+    let mut canonical = file("test-competition", two_lifters());
     canonical
         .movements
         .retain(|movement| *movement == Movement::MuscleUp);
@@ -192,7 +195,7 @@ async fn a_movement_dropped_from_the_file_is_removed(pool: PgPool) {
     );
 }
 
-/// The same two lifters, contesting all four movements so the meet is a full
+/// The same two lifters, contesting all four movements so the competition is a full
 /// event and therefore actually gets a RIS.
 fn four_lifts() -> Vec<(Movement, Vec<(&'static str, bool)>)> {
     vec![
@@ -220,7 +223,7 @@ fn full_event_file(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
 async fn ris_history_goes_with_the_participant(pool: PgPool) {
     import(
         &pool,
-        full_event_file("test-meet", two_lifters_full_event()),
+        full_event_file("test-competition", two_lifters_full_event()),
     )
     .await;
     let scored: i64 = count(&pool, "SELECT COUNT(*) FROM ris_scores_history").await;
@@ -237,7 +240,7 @@ async fn ris_history_goes_with_the_participant(pool: PgPool) {
 
     // Still the full event, so only the dropped lifter changes.
     let remaining = vec![athlete("Ada", "Lovelace", four_lifts())];
-    import(&pool, full_event_file("test-meet", remaining)).await;
+    import(&pool, full_event_file("test-competition", remaining)).await;
 
     let orphaned: i64 =
         sqlx::query_scalar("SELECT COUNT(*) FROM ris_scores_history WHERE participant_id = $1")

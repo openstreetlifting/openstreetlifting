@@ -1,6 +1,6 @@
 //! A total is only a total within one event, so a muscle-up-only result must
 //! never be ranked against a four-lift total. A single movement is different:
-//! a muscle-up is a muscle-up whatever else the meet ran, so those boards span
+//! a muscle-up is a muscle-up whatever else the competition ran, so those boards span
 //! every event.
 
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
@@ -21,8 +21,8 @@ fn athlete(first: &str, last: &str, lifts: Vec<(Movement, &str)>) -> AthleteData
 }
 
 /// A competition contesting exactly the movements given.
-fn meet(slug: &str, movements: &[Movement], athletes: Vec<AthleteData>) -> CanonicalFormat {
-    let mut canonical = common::meet(slug, vec![men_80(athletes)]);
+fn competition(slug: &str, movements: &[Movement], athletes: Vec<AthleteData>) -> CanonicalFormat {
+    let mut canonical = common::competition(slug, vec![men_80(athletes)]);
     canonical.movements = movements.to_vec();
     canonical
 }
@@ -58,12 +58,12 @@ async fn rank(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
     (rows.into_iter().map(|row| row.last_name).collect(), total)
 }
 
-/// One four-lift meet and one muscle-up-only meet.
+/// One four-lift competition and one muscle-up-only competition.
 async fn seed_both_events(pool: &PgPool) {
     import(
         pool,
-        meet(
-            "four-lift-meet",
+        competition(
+            "four-lift-competition",
             ALL_FOUR,
             vec![four_lift_athlete("Ada", "Fourlift", "50")],
         ),
@@ -72,7 +72,7 @@ async fn seed_both_events(pool: &PgPool) {
 
     import(
         pool,
-        meet(
+        competition(
             "muscle-up-only",
             &[Movement::MuscleUp],
             vec![athlete(
@@ -98,7 +98,10 @@ async fn the_event_records_which_movements_were_contested(pool: PgPool) {
     assert_eq!(
         events,
         vec![
-            ("four-lift-meet".to_string(), Some("MPDS".to_string())),
+            (
+                "four-lift-competition".to_string(),
+                Some("MPDS".to_string())
+            ),
             ("muscle-up-only".to_string(), Some("M".to_string())),
         ]
     );
@@ -164,7 +167,7 @@ async fn no_ris_is_computed_outside_the_full_event(pool: PgPool) {
     .await
     .unwrap();
 
-    assert!(scores[0].1.is_some(), "the four-lift meet is scored");
+    assert!(scores[0].1.is_some(), "the four-lift competition is scored");
     assert!(
         scores[1].1.is_none(),
         "a one-movement total measured against a four-lift benchmark would be meaningless"
@@ -181,8 +184,8 @@ async fn no_ris_is_computed_outside_the_full_event(pool: PgPool) {
 async fn a_three_movement_meet_is_its_own_event(pool: PgPool) {
     import(
         &pool,
-        meet(
-            "three-lift-meet",
+        competition(
+            "three-lift-competition",
             &[Movement::MuscleUp, Movement::PullUp, Movement::Dips],
             vec![athlete(
                 "Alan",
@@ -211,8 +214,8 @@ async fn a_three_movement_meet_is_its_own_event(pool: PgPool) {
 async fn dropping_a_movement_from_the_file_changes_the_event(pool: PgPool) {
     import(
         &pool,
-        meet(
-            "shrinking-meet",
+        competition(
+            "shrinking-competition",
             ALL_FOUR,
             vec![four_lift_athlete("Ada", "Fourlift", "50")],
         ),
@@ -222,8 +225,8 @@ async fn dropping_a_movement_from_the_file_changes_the_event(pool: PgPool) {
     // Corrected: the squat never happened.
     import(
         &pool,
-        meet(
-            "shrinking-meet",
+        competition(
+            "shrinking-competition",
             &[Movement::MuscleUp, Movement::PullUp, Movement::Dips],
             vec![athlete(
                 "Ada",

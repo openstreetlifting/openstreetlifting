@@ -6,12 +6,12 @@ use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-struct Meet {
+struct Competition {
     competition_id: Uuid,
     federation_id: Uuid,
 }
 
-async fn competition(pool: &PgPool) -> Meet {
+async fn competition(pool: &PgPool) -> Competition {
     let federation_id: Uuid = sqlx::query_scalar(
         "INSERT INTO federations (name) VALUES ('Test Federation') RETURNING federation_id",
     )
@@ -29,7 +29,7 @@ async fn competition(pool: &PgPool) -> Meet {
     .await
     .unwrap();
 
-    Meet {
+    Competition {
         competition_id,
         federation_id,
     }
@@ -37,7 +37,7 @@ async fn competition(pool: &PgPool) -> Meet {
 
 async fn enter(
     pool: &PgPool,
-    meet: &Meet,
+    competition: &Competition,
     gender: &str,
     min: Option<i32>,
     max: Option<i32>,
@@ -63,7 +63,7 @@ async fn enter(
                  DO UPDATE SET name = EXCLUDED.name
                  RETURNING division_id",
             )
-            .bind(meet.federation_id)
+            .bind(competition.federation_id)
             .bind(name)
             .fetch_one(pool)
             .await
@@ -88,7 +88,7 @@ async fn enter(
         "INSERT INTO competition_participants (competition_id, weight_class_id, division_id, athlete_id)
          VALUES ($1, $2, $3, $4)",
     )
-    .bind(meet.competition_id)
+    .bind(competition.competition_id)
     .bind(weight_class_id)
     .bind(division_id)
     .bind(athlete_id)
@@ -99,11 +99,11 @@ async fn enter(
 
 #[sqlx::test(migrations = "./migrations")]
 async fn classes_are_listed_lightest_first(pool: PgPool) {
-    let meet = competition(&pool).await;
-    enter(&pool, &meet, "M", Some(94), Some(101), None).await;
-    enter(&pool, &meet, "M", None, Some(66), None).await;
-    enter(&pool, &meet, "M", Some(101), None, None).await;
-    enter(&pool, &meet, "M", Some(73), Some(80), None).await;
+    let competition = competition(&pool).await;
+    enter(&pool, &competition, "M", Some(94), Some(101), None).await;
+    enter(&pool, &competition, "M", None, Some(66), None).await;
+    enter(&pool, &competition, "M", Some(101), None, None).await;
+    enter(&pool, &competition, "M", Some(73), Some(80), None).await;
 
     let classes = RankingRepository::new(&pool)
         .list_distinct_classes(Some("M"), None)
@@ -115,9 +115,9 @@ async fn classes_are_listed_lightest_first(pool: PgPool) {
 
 #[sqlx::test(migrations = "./migrations")]
 async fn a_gender_only_sees_its_own_classes(pool: PgPool) {
-    let meet = competition(&pool).await;
-    enter(&pool, &meet, "M", Some(73), Some(80), None).await;
-    enter(&pool, &meet, "F", Some(63), Some(70), None).await;
+    let competition = competition(&pool).await;
+    enter(&pool, &competition, "M", Some(73), Some(80), None).await;
+    enter(&pool, &competition, "F", Some(63), Some(70), None).await;
 
     let repository = RankingRepository::new(&pool);
 
@@ -140,9 +140,9 @@ async fn a_gender_only_sees_its_own_classes(pool: PgPool) {
 /// Two divisions contest the same class, and the dropdown offers it once.
 #[sqlx::test(migrations = "./migrations")]
 async fn one_class_run_by_two_divisions_is_listed_once(pool: PgPool) {
-    let meet = competition(&pool).await;
-    enter(&pool, &meet, "M", Some(73), Some(80), Some("Elite")).await;
-    enter(&pool, &meet, "M", Some(73), Some(80), Some("Open")).await;
+    let competition = competition(&pool).await;
+    enter(&pool, &competition, "M", Some(73), Some(80), Some("Elite")).await;
+    enter(&pool, &competition, "M", Some(73), Some(80), Some("Open")).await;
 
     let classes = RankingRepository::new(&pool)
         .list_distinct_classes(None, None)
@@ -154,14 +154,14 @@ async fn one_class_run_by_two_divisions_is_listed_once(pool: PgPool) {
 
 #[sqlx::test(migrations = "./migrations")]
 async fn a_competition_narrows_the_list_to_what_it_contested(pool: PgPool) {
-    let meet = competition(&pool).await;
-    enter(&pool, &meet, "M", Some(73), Some(80), None).await;
+    let competition = competition(&pool).await;
+    enter(&pool, &competition, "M", Some(73), Some(80), None).await;
 
     let repository = RankingRepository::new(&pool);
 
     assert_eq!(
         repository
-            .list_distinct_classes(None, Some(meet.competition_id))
+            .list_distinct_classes(None, Some(competition.competition_id))
             .await
             .unwrap(),
         vec!["-80kg"]

@@ -10,20 +10,20 @@
 <!-- Live stream, federation PDF, scoresheet photo, Instagram post. What makes
      a source good enough to import, and what does not. -->
 
-### Check the meet is not already there
+### Check the competition is not already there
 
 <!-- How to search the archive first. -->
 
 ## How a competition is stored
 
-<!-- data/competitions/{federation}/{year}/{slug}/ holding meet.toml and entries.csv, and
+<!-- data/competitions/{federation}/{year}/{slug}/ holding competition.toml and entries.csv, and
      why the path matters. -->
 
-## Adding a meet
+## Adding a competition
 
 ### 1. Create the directory
 
-### 2. Write meet.toml
+### 2. Write competition.toml
 
 ### 3. Write entries.csv
 
@@ -45,7 +45,7 @@
 
 <!-- Disambiguation, and why country is part of identity. -->
 
-### Meets that ran more than one division
+### Competitions that ran more than one division
 
 <!-- When the Division column is needed and when it is not. -->
 

@@ -211,7 +211,7 @@ impl<'a> CanonicalTransformer<'a> {
             "#,
             competition.name,
             competition.slug,
-            // A canonical file describes a meet that has happened. A status the
+            // A canonical file describes a competition that has happened. A status the
             // file does not state is unknown, so it must not overwrite one set
             // deliberately on a re-import.
             competition.status.map(|status| status.as_str()),
@@ -304,7 +304,7 @@ impl<'a> CanonicalTransformer<'a> {
     }
 
     /// Finds the weight class the category's bounds describe, creating it if
-    /// the meet runs one outside the standard ladder.
+    /// the competition runs one outside the standard ladder.
     async fn resolve_weight_class(
         &self,
         category: &CategoryData,
@@ -620,7 +620,7 @@ impl<'a> CanonicalTransformer<'a> {
         Ok(())
     }
 
-    /// Every meet is scored with the current formula, whatever year it was
+    /// Every competition is scored with the current formula, whatever year it was
     /// lifted, so one ranking never mixes two scales. Publishing a new edition
     /// means re-scoring the archive with `recompute-ris`.
     async fn compute_ris_for_competition(

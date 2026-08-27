@@ -13,7 +13,7 @@ use sqlx::PgPool;
 
 mod common;
 
-use common::{athlete, disqualified as thrown_out, import, lifting, meet, men_80};
+use common::{athlete, competition, disqualified as thrown_out, import, lifting, men_80};
 
 async fn board(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
     let filter = RankingFilter {
@@ -58,12 +58,15 @@ fn absent() -> AthleteData {
 async fn a_disqualified_lifter_takes_no_place(pool: PgPool) {
     import(
         &pool,
-        meet("test-meet", vec![men_80(vec![disqualified(), clean()])]),
+        competition(
+            "test-competition",
+            vec![men_80(vec![disqualified(), clean()])],
+        ),
     )
     .await;
 
     let detail = CompetitionRepository::new(&pool)
-        .find_by_slug_detailed("test-meet")
+        .find_by_slug_detailed("test-competition")
         .await
         .unwrap();
 
@@ -84,7 +87,10 @@ async fn a_disqualified_lifter_takes_no_place(pool: PgPool) {
 async fn a_disqualified_result_reaches_no_board(pool: PgPool) {
     import(
         &pool,
-        meet("test-meet", vec![men_80(vec![disqualified(), clean()])]),
+        competition(
+            "test-competition",
+            vec![men_80(vec![disqualified(), clean()])],
+        ),
     )
     .await;
 
@@ -102,7 +108,11 @@ async fn a_disqualified_result_reaches_no_board(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_disqualified_lift_is_not_a_personal_record(pool: PgPool) {
-    import(&pool, meet("test-meet", vec![men_80(vec![disqualified()])])).await;
+    import(
+        &pool,
+        competition("test-competition", vec![men_80(vec![disqualified()])]),
+    )
+    .await;
 
     let detail = AthleteRepository::new(&pool)
         .find_by_slug_detailed("dan-disqualified")
@@ -111,7 +121,7 @@ async fn a_disqualified_lift_is_not_a_personal_record(pool: PgPool) {
 
     assert!(
         detail.personal_records.is_empty(),
-        "his 200 kg squat happened, but a disqualified meet sets no record"
+        "his 200 kg squat happened, but a disqualified competition sets no record"
     );
     assert_eq!(
         detail.competitions.len(),
@@ -124,12 +134,12 @@ async fn a_disqualified_lift_is_not_a_personal_record(pool: PgPool) {
 async fn somebody_who_never_lifted_has_no_total(pool: PgPool) {
     import(
         &pool,
-        meet("test-meet", vec![men_80(vec![clean(), absent()])]),
+        competition("test-competition", vec![men_80(vec![clean(), absent()])]),
     )
     .await;
 
     let detail = CompetitionRepository::new(&pool)
-        .find_by_slug_detailed("test-meet")
+        .find_by_slug_detailed("test-competition")
         .await
         .unwrap();
 

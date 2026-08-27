@@ -5,14 +5,14 @@
 ## How the format changes
 
 <!-- The files carry no version key. The importer that reads them ships in the
-     same commit, so the column list and the meet.toml keys are the contract,
+     same commit, so the column list and the competition.toml keys are the contract,
      and both reject anything they do not know. New optional shape is added,
      and a change that invalidates existing files rewrites them in the same
      commit and is called out with `!`. -->
 
 ## Directory layout
 
-## meet.toml
+## competition.toml
 
 ### [competition]
 
@@ -38,7 +38,7 @@
 
 ### Division
 
-<!-- Optional. Free text. Present only when a meet ran one class more than
+<!-- Optional. Free text. Present only when a competition ran one class more than
      once. -->
 
 ### WeightClassKg
