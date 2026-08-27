@@ -7,6 +7,7 @@
     Flag,
     Table,
     RisScore,
+    RisHeader,
     TABLE_CELL,
     TABLE_HEAD_CELL,
   } from '$lib/components/ui';
@@ -172,9 +173,9 @@
               <th class="{TABLE_HEAD_CELL} text-zinc-400">Division</th>
             {/if}
             <th class="{TABLE_HEAD_CELL} text-zinc-400">Category</th>
-            <th class="{TABLE_HEAD_CELL} text-center text-zinc-400">Rank</th>
-            <th class="{TABLE_HEAD_CELL} text-center text-zinc-400">Total</th>
-            <th class="{TABLE_HEAD_CELL} text-center text-zinc-400">RIS</th>
+            <th class="{TABLE_HEAD_CELL} text-zinc-400">Rank</th>
+            <th class="{TABLE_HEAD_CELL} text-zinc-400">Total</th>
+            <th class="{TABLE_HEAD_CELL} text-zinc-400"><RisHeader /></th>
           {/snippet}
 
           {#snippet body()}
@@ -198,7 +199,7 @@
                   <td class="{TABLE_CELL} {CELL.data}">{competition.division || NO_VALUE}</td>
                 {/if}
                 <td class="{TABLE_CELL} {CELL.data}">{competition.category_name}</td>
-                <td class="{TABLE_CELL} text-center {CELL.identity}">
+                <td class="{TABLE_CELL} {CELL.identity}">
                   {#if competition.status !== 'competed'}
                     <span class={STATUS_FLAG} title={statusTitle(competition.status, null)}
                       >{STATUS_LABEL[competition.status]}</span
@@ -207,10 +208,10 @@
                     {competition.rank || NO_VALUE}
                   {/if}
                 </td>
-                <td class="{TABLE_CELL} text-center {CELL.counted}">
+                <td class="{TABLE_CELL} {CELL.counted}">
                   {formatWeight(competition.total)}
                 </td>
-                <td class="{TABLE_CELL} text-center {CELL.counted}">
+                <td class="{TABLE_CELL} {CELL.counted}">
                   <RisScore value={competition.ris_score} source={competition.ris_source} />
                 </td>
               </tr>
