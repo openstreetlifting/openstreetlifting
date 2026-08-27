@@ -172,7 +172,7 @@
           {#snippet body()}
             {#each athlete.competitions as competition (competition.competition_id)}
               <tr
-                class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50 {competition.status !==
+                class="border-b border-zinc-800/50 transition-colors {competition.status !==
                 'competed'
                   ? 'opacity-50'
                   : ''}"

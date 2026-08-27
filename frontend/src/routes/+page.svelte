@@ -8,12 +8,18 @@
     Table,
     TABLE_CELL,
     TABLE_HEAD_CELL,
+    FROZEN_CELL,
+    FROZEN_HEAD_CELL,
+    FROZEN_EDGE,
+    FROZEN_RANK,
+    FROZEN_ATHLETE,
+    FROZEN_ATHLETE_CONTENT,
   } from '$lib/components/ui';
   import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { formatDate, countryName, formatWeight, formatScore } from '$lib/utils';
-  import { CELL, SORTED_COLUMN } from '$lib/constants/table';
+  import { CELL, SORTED_COLUMN, EDGE_TO_EDGE } from '$lib/constants/table';
   import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import { FIELD, TEXT } from '$lib/constants/typography';
@@ -42,7 +48,7 @@
   </div>
 
   <div
-    class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/30 p-3"
+    class="{EDGE_TO_EDGE} mb-6 flex flex-wrap items-center gap-3 rounded-none border border-x-0 border-zinc-800 bg-zinc-900/30 p-3 sm:rounded-lg sm:border-x"
   >
     <div class="w-full sm:w-64">
       <SearchInput
@@ -149,8 +155,11 @@
 
     <Table {busy}>
       {#snippet head()}
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Rank</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Athlete</th>
+        <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-zinc-400">Rank</th>
+        <th
+          class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {FROZEN_EDGE} text-zinc-400"
+          >Athlete</th
+        >
         <th class="{TABLE_HEAD_CELL} text-zinc-400">Competition</th>
         <th class="{TABLE_HEAD_CELL} text-zinc-400">Federation</th>
         <th class="{TABLE_HEAD_CELL} text-zinc-400">Date</th>
@@ -176,17 +185,15 @@
 
       {#snippet body()}
         {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
-          <tr
-            class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
-          >
-            <td class="{TABLE_CELL} {CELL.identity}">
+          <tr class="border-b border-zinc-800/50 transition-colors">
+            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
               {entry.rank}
             </td>
-            <td class="{TABLE_CELL} {CELL.identity}">
-              <span class="inline-flex items-center gap-1.5">
+            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {FROZEN_EDGE} {CELL.identity}">
+              <span class="flex items-center gap-1.5 {FROZEN_ATHLETE_CONTENT}">
                 <a
                   href={resolve(`/athletes/${entry.athlete.slug}`)}
-                  class="inline-flex max-w-[8rem] items-center gap-2.5 hover:text-zinc-300 sm:max-w-none"
+                  class="flex min-w-0 items-center gap-2.5 hover:text-zinc-300"
                 >
                   <Flag
                     countryCode={entry.athlete.country}
@@ -214,7 +221,7 @@
             <td class="{TABLE_CELL} {CELL.data}">
               <a
                 href={resolve(`/competitions/${entry.competition.slug}`)}
-                class="block max-w-[10rem] truncate underline hover:text-zinc-300 sm:max-w-none"
+                class="block max-w-[9rem] truncate underline hover:text-zinc-300 sm:max-w-[16rem]"
               >
                 {entry.competition.name}
               </a>

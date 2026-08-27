@@ -23,3 +23,10 @@ export const NO_RESULT = '—';
 
 /** Which column the table is sorted on. A tint, so it stays off the brightness scale. */
 export const SORTED_COLUMN = 'rounded-t bg-zinc-800/60 text-zinc-200';
+
+/**
+ * Below sm the data is worth more than the margin, so the table runs to the
+ * screen edge. Anything stacked with it takes the same treatment, or the page
+ * ends up with two different left edges.
+ */
+export const EDGE_TO_EDGE = '-mx-4 sm:mx-0';

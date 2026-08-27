@@ -14,7 +14,7 @@
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
   import { formatDate, formatLocation, formatCountdown, countryName } from '$lib/utils';
-  import { CELL } from '$lib/constants/table';
+  import { CELL, EDGE_TO_EDGE } from '$lib/constants/table';
   import type { Competition } from '$lib/types/competition';
   import { FIELD, TEXT, CONTROL } from '$lib/constants/typography';
 
@@ -170,7 +170,7 @@
   {/if}
 
   <div
-    class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/30 p-3"
+    class="{EDGE_TO_EDGE} mb-6 flex flex-wrap items-center gap-3 rounded-none border border-x-0 border-zinc-800 bg-zinc-900/30 p-3 sm:rounded-lg sm:border-x"
   >
     <div class="w-full sm:w-64">
       <SearchInput
@@ -314,9 +314,7 @@
 
         {#snippet body()}
           {#each competitions as competition (competition.slug)}
-            <tr
-              class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50"
-            >
+            <tr class="border-b border-zinc-800/50 transition-colors">
               <td class="{TABLE_CELL} {CELL.identity}">
                 {#if isLifted(competition)}
                   <a
