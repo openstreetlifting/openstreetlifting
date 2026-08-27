@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="%sveltekit.assets%/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Hex rather than the zinc-950 custom property, which this meta cannot read.
+         Keep it in step with the :root background in app.css. -->
+    <meta name="theme-color" content="#09090b" />
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">
