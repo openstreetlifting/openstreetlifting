@@ -6,7 +6,7 @@ import { COMPETITION_STATUS_FILTERS } from '$lib/constants/competition';
 // The archive is what people come for, so results are the default list and the
 // calendar rides above it. Asking for a status explicitly overrides both.
 const RESULTS_STATUS: CompetitionStatus = 'completed';
-const UPCOMING_PREVIEW = 5;
+const UPCOMING_PREVIEW = 10;
 
 function readStatus(raw: string | null): CompetitionStatus | 'all' | undefined {
   if (raw === 'all') return 'all';
