@@ -37,7 +37,13 @@
     EDGE_TO_EDGE,
   } from '$lib/constants/table';
   import { GitHubIcon } from '$lib/components/icons';
-  import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
+  import {
+    RANKING_MOVEMENTS,
+    RANKING_SORTS,
+    RANKING_GENDERS,
+    defaultRankingSort,
+    hasRis,
+  } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import type { RankingEntry } from '$lib/types/ranking';
   import type { Attempt, Participant, CategoryDetail } from '$lib/types/competition';
@@ -71,9 +77,12 @@
       : competition.federation.name
   );
 
+  const risAvailable = $derived(hasRis(data.competition.movements.length));
+
   const table = new RankingsTable({
     basePath: `/competitions/${data.competition.slug}`,
     initialUrl: page.url,
+    defaultSort: defaultRankingSort(data.competition.movements.length),
   });
 
   const rankings = $derived(data.initialRankings);
@@ -81,7 +90,7 @@
   const busy = $derived(navigating.to?.url.pathname === page.url.pathname);
 
   const movements = RANKING_MOVEMENTS;
-  const sorts = RANKING_SORTS;
+  const sorts = $derived(risAvailable ? RANKING_SORTS : RANKING_MOVEMENTS);
   const genders = RANKING_GENDERS;
 
   // The event code names the movements a competition contested, so a column with no
@@ -414,13 +423,15 @@
             {/if}
           </th>
         {/each}
-        <th
-          class="{TABLE_HEAD_CELL} align-top text-zinc-400 {table.movementFilter === 'ris'
-            ? SORTED_COLUMN
-            : ''}"
-        >
-          <RisHeader />
-        </th>
+        {#if risAvailable}
+          <th
+            class="{TABLE_HEAD_CELL} align-top text-zinc-400 {table.movementFilter === 'ris'
+              ? SORTED_COLUMN
+              : ''}"
+          >
+            <RisHeader />
+          </th>
+        {/if}
       {/snippet}
 
       {#snippet body()}
@@ -498,9 +509,11 @@
               </td>
             {/each}
             <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
-            <td class="{TABLE_CELL} {CELL.counted}">
-              <RisScore value={entry.ris} source={entry.ris_source} />
-            </td>
+            {#if risAvailable}
+              <td class="{TABLE_CELL} {CELL.counted}">
+                <RisScore value={entry.ris} source={entry.ris_source} />
+              </td>
+            {/if}
           </tr>
         {/each}
 

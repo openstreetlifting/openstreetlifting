@@ -250,3 +250,70 @@ async fn dropping_a_movement_from_the_file_changes_the_event(pool: PgPool) {
     let (names, _) = rank(&pool, RankingMovement::Total).await;
     assert!(names.is_empty(), "and it leaves the four-lift board");
 }
+
+/// A competition's own leaderboard is one event by definition, so it must not be
+/// scoped to the default four-lift event and come back empty.
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn a_competitions_own_total_board_ignores_the_event_filter(pool: PgPool) {
+    let classic = &[Movement::PullUp, Movement::Dips];
+    import(
+        &pool,
+        competition(
+            "classic-meet",
+            classic,
+            vec![athlete(
+                "Ana",
+                "Classic",
+                vec![(Movement::PullUp, "60"), (Movement::Dips, "80")],
+            )],
+        ),
+    )
+    .await;
+
+    let competition_id: uuid::Uuid =
+        sqlx::query_scalar("SELECT competition_id FROM competitions WHERE slug = 'classic-meet'")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+
+    // The filter still carries MPDS, the way the API fills it in when nobody says otherwise.
+    let mut scoped = filter(RankingMovement::Total);
+    scoped.competition_id = Some(competition_id);
+
+    let (rows, total) = RankingRepository::new(&pool)
+        .get_global_ranking(&scoped)
+        .await
+        .expect("ranking should succeed");
+
+    assert_eq!(total, 1, "the meet's own lifters are its leaderboard");
+    assert_eq!(
+        rows.into_iter()
+            .map(|row| row.last_name)
+            .collect::<Vec<_>>(),
+        vec!["Classic".to_string()]
+    );
+}
+
+/// The global board keeps its event scope, since a two lift total is not a four lift one.
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn a_global_total_board_still_stays_inside_one_event(pool: PgPool) {
+    import(
+        &pool,
+        competition(
+            "classic-meet",
+            &[Movement::PullUp, Movement::Dips],
+            vec![athlete(
+                "Ana",
+                "Classic",
+                vec![(Movement::PullUp, "60"), (Movement::Dips, "80")],
+            )],
+        ),
+    )
+    .await;
+
+    let (rows, _) = rank(&pool, RankingMovement::Total).await;
+    assert!(
+        rows.is_empty(),
+        "a Classic total has no place on the four-lift board"
+    );
+}

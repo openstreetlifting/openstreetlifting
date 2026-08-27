@@ -30,6 +30,7 @@ pub struct CompetitionListItem {
 pub struct CompetitionDetail {
     pub competition: CompetitionRow,
     pub federation: FederationRow,
+    pub movements: Vec<CompetitionMovementRow>,
     pub categories: Vec<CategoryParticipants>,
 }
 

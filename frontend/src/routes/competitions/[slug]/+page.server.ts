@@ -1,4 +1,5 @@
 import { competitionsService, rankingsService } from '$lib/server/api';
+import { defaultRankingSort } from '$lib/constants/ranking';
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 
@@ -29,7 +30,8 @@ export const load: PageServerLoad = async ({ params, url }) => {
     };
   }
 
-  const movement = url.searchParams.get('movement') || 'ris';
+  const movement =
+    url.searchParams.get('movement') || defaultRankingSort(competition.movements.length);
   const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
   const gender = url.searchParams.get('gender') || null;
   const category = url.searchParams.get('category') || null;
