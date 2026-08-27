@@ -544,7 +544,7 @@
                 </span>
               </td>
               <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
-              <td class="{TABLE_CELL} {CELL.data}">{category.category.name}</td>
+              <td class="{TABLE_CELL} {CELL.data}">{category.category.weight_class}</td>
               {#each LIFTS as lift (lift.key)}
                 {@const cell = participantCell(participant, lift.code, lift.movement)}
                 <td class="{TABLE_CELL} whitespace-nowrap">
