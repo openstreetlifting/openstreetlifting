@@ -76,9 +76,6 @@ impl<'a> RisRepository<'a> {
         Ok(formula)
     }
 
-    /// A meet older than every formula is still scored, with the earliest one.
-    /// RIS did not exist when it was lifted, so there is no score of the day to
-    /// preserve, and refusing the meet would keep the whole pre-RIS archive out.
     pub async fn get_formula_for_date(&self, date: NaiveDate) -> Result<RisFormulaVersionRow> {
         let formula = sqlx::query_as!(
             RisFormulaVersionRow,
@@ -96,27 +93,10 @@ impl<'a> RisRepository<'a> {
             date
         )
         .fetch_optional(self.pool)
-        .await?;
-
-        if let Some(formula) = formula {
-            return Ok(formula);
-        }
-
-        sqlx::query_as!(
-            RisFormulaVersionRow,
-            r#"
-            SELECT formula_id, year, effective_from, effective_until, is_current,
-                   men_a, men_k, men_b, men_v, men_q,
-                   women_a, women_k, women_b, women_v, women_q,
-                   notes, created_at
-            FROM ris_formula_versions
-            ORDER BY effective_from ASC
-            LIMIT 1
-            "#
-        )
-        .fetch_optional(self.pool)
         .await?
-        .ok_or(StorageError::NotFound)
+        .ok_or(StorageError::NotFound)?;
+
+        Ok(formula)
     }
 
     pub async fn list_all_formulas(&self) -> Result<Vec<RisFormulaVersionRow>> {
