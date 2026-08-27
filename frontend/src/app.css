@@ -8,6 +8,14 @@
 }
 
 :root {
+  /* The canvas, which is what a browser paints outside the page box: iOS
+     Safari fills the rubber band at either end of a scroll with it and tints
+     its own toolbars from it. A background on a div inside the body does not
+     reach there, so leaving this unset put white strips above and below a
+     dark page. color-scheme settles scrollbars and form controls the same way. */
+  color-scheme: dark;
+  background-color: var(--color-zinc-950);
+
   /* Shared page width for the header, footer, and full-width content pages
      (rankings, athletes, competitions). Narrow prose pages (contact,
      privacy) intentionally use their own max-w-4xl instead. */
