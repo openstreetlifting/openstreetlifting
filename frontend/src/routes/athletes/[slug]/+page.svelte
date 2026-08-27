@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import type { PersonalRecord } from '$lib/types/athlete';
-  import { Card, Breadcrumb, Flag } from '$lib/components/ui';
+  import { Card, Breadcrumb, Flag, Table, TABLE_CELL, TABLE_HEAD_CELL } from '$lib/components/ui';
   import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
   import { formatDate, formatWeight, formatScore } from '$lib/utils';
@@ -155,64 +155,61 @@
   <div>
     <h2 class="mb-4 {TEXT.heading} text-white">Competition History</h2>
     {#if athlete.competitions && athlete.competitions.length > 0}
-      <Card class="hidden p-4 md:block">
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-zinc-800">
-                <th class="px-3 py-2 text-left font-medium text-zinc-400">Competition</th>
-                <th class="px-3 py-2 text-left font-medium text-zinc-400">Date</th>
+      <div class="hidden md:block">
+        <Table>
+          {#snippet head()}
+            <th class="{TABLE_HEAD_CELL} text-zinc-400">Competition</th>
+            <th class="{TABLE_HEAD_CELL} text-zinc-400">Date</th>
+            {#if showsDivision}
+              <th class="{TABLE_HEAD_CELL} text-zinc-400">Division</th>
+            {/if}
+            <th class="{TABLE_HEAD_CELL} text-zinc-400">Category</th>
+            <th class="{TABLE_HEAD_CELL} text-center text-zinc-400">Rank</th>
+            <th class="{TABLE_HEAD_CELL} text-center text-zinc-400">Total</th>
+            <th class="{TABLE_HEAD_CELL} text-center text-zinc-400">RIS</th>
+          {/snippet}
+
+          {#snippet body()}
+            {#each athlete.competitions as competition (competition.competition_id)}
+              <tr
+                class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50 {competition.status !==
+                'competed'
+                  ? 'opacity-50'
+                  : ''}"
+              >
+                <td class={TABLE_CELL}>
+                  <a
+                    href={resolve(`/competitions/${competition.competition_slug}`)}
+                    class="text-white underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+                  >
+                    {competition.competition_name}
+                  </a>
+                </td>
+                <td class="{TABLE_CELL} {CELL.data}">{formatDate(competition.competition_date)}</td>
                 {#if showsDivision}
-                  <th class="px-3 py-2 text-left font-medium text-zinc-400">Division</th>
+                  <td class="{TABLE_CELL} {CELL.data}">{competition.division || NO_VALUE}</td>
                 {/if}
-                <th class="px-3 py-2 text-left font-medium text-zinc-400">Category</th>
-                <th class="px-3 py-2 text-center font-medium text-zinc-400">Rank</th>
-                <th class="px-3 py-2 text-center font-medium text-zinc-400">Total</th>
-                <th class="px-3 py-2 text-center font-medium text-zinc-400">RIS Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each athlete.competitions as competition (competition.competition_id)}
-                <tr
-                  class="border-b border-zinc-800/50 transition-colors even:bg-zinc-900/60 hover:bg-zinc-800/50 {competition.status !==
-                  'competed'
-                    ? 'opacity-50'
-                    : ''}"
-                >
-                  <td class="px-3 py-2">
-                    <a
-                      href={resolve(`/competitions/${competition.competition_slug}`)}
-                      class="text-white underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+                <td class="{TABLE_CELL} {CELL.data}">{competition.category_name}</td>
+                <td class="{TABLE_CELL} text-center {CELL.identity}">
+                  {#if competition.status !== 'competed'}
+                    <span class={STATUS_FLAG} title={statusTitle(competition.status, null)}
+                      >{STATUS_LABEL[competition.status]}</span
                     >
-                      {competition.competition_name}
-                    </a>
-                  </td>
-                  <td class="px-3 py-2 {CELL.data}">{formatDate(competition.competition_date)}</td>
-                  {#if showsDivision}
-                    <td class="px-3 py-2 {CELL.data}">{competition.division || NO_VALUE}</td>
+                  {:else}
+                    {competition.rank || NO_VALUE}
                   {/if}
-                  <td class="px-3 py-2 {CELL.data}">{competition.category_name}</td>
-                  <td class="px-3 py-2 text-center {CELL.identity}">
-                    {#if competition.status !== 'competed'}
-                      <span class={STATUS_FLAG} title={statusTitle(competition.status, null)}
-                        >{STATUS_LABEL[competition.status]}</span
-                      >
-                    {:else}
-                      {competition.rank || NO_VALUE}
-                    {/if}
-                  </td>
-                  <td class="px-3 py-2 text-center {CELL.counted}">
-                    {formatWeight(competition.total)}
-                  </td>
-                  <td class="px-3 py-2 text-center {CELL.counted}">
-                    {formatScore(competition.ris_score)}
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+                </td>
+                <td class="{TABLE_CELL} text-center {CELL.counted}">
+                  {formatWeight(competition.total)}
+                </td>
+                <td class="{TABLE_CELL} text-center {CELL.counted}">
+                  {formatScore(competition.ris_score)}
+                </td>
+              </tr>
+            {/each}
+          {/snippet}
+        </Table>
+      </div>
 
       <!-- Mobile Card Layout -->
       <div class="grid gap-3 md:hidden">
