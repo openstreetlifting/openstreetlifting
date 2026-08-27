@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = ["https://www.dcs-verband.de/dm-weighted-calisthenics"]
+
+[competition]
+name = "Deutsche Meisterschaft Weighted Calisthenics"
+start_date = "2022-08-20"
+end_date = "2022-08-21"
+city = "Wetzlar"
+region = "Hessen"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "DCSV"
+abbreviation = "DCSV"
+country = "DE"
