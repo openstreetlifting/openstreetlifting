@@ -80,6 +80,32 @@
 
   const isLifted = (competition: Competition) => competition.status !== 'upcoming';
 
+  const monthLabel = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' });
+
+  function dayOfMonth(date: string | null): string {
+    return date ? date.slice(8, 10) : '';
+  }
+
+  // A countdown only tells the reader something while it is short. On a meet
+  // half a year out every row reads "in 5 months" and the column is noise.
+  function isSoon(date: string | null): boolean {
+    if (!date) return false;
+    return new Date(date).getTime() - Date.now() < 31 * 86_400_000;
+  }
+
+  function groupByMonth(list: Competition[]) {
+    const months: { label: string; competitions: Competition[] }[] = [];
+    for (const competition of list) {
+      const label = competition.start_date
+        ? monthLabel.format(new Date(competition.start_date))
+        : 'Date to be confirmed';
+      const last = months.at(-1);
+      if (last?.label === label) last.competitions.push(competition);
+      else months.push({ label, competitions: [competition] });
+    }
+    return months;
+  }
+
   const SELECT = `w-full ${FIELD} px-3 py-2 sm:w-auto`;
 </script>
 
@@ -97,27 +123,47 @@
 
   {#if upcoming.length > 0}
     <section class="mb-8">
-      <h2 class="mb-3 text-xs font-medium tracking-wider text-zinc-500 uppercase">
-        Next competitions
-      </h2>
-      <div class="grid gap-2">
-        {#each upcoming as competition (competition.slug)}
-          <div
-            class="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-lg border border-zinc-800/60 bg-zinc-900/30 px-4 py-3"
-          >
-            <span class="text-xs text-zinc-300">{competition.name}</span>
-            <span class="text-xs text-zinc-500">
-              {formatDate(competition.start_date)}
-            </span>
-            {#if formatLocation(competition.country, competition.city)}
-              <span class="text-xs text-zinc-600"
-                >{formatLocation(competition.country, competition.city)}</span
-              >
-            {/if}
-            <span class="ml-auto text-xs text-zinc-400"
-              >{formatCountdown(competition.start_date)}</span
+      <div class="mb-3 flex items-baseline justify-between">
+        <h2 class="{TEXT.micro} font-medium tracking-wider text-zinc-500 uppercase">
+          Next competitions
+        </h2>
+        <button
+          onclick={() => apply({ view: 'upcoming' })}
+          class="text-xs text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+        >
+          See all planned
+        </button>
+      </div>
+
+      <div class="rounded-lg border border-zinc-800/60 bg-zinc-900/30 px-4 py-3">
+        {#each groupByMonth(upcoming) as month (month.label)}
+          <h3 class="mt-3 mb-1.5 {TEXT.micro} tracking-wider text-zinc-600 uppercase first:mt-0">
+            {month.label}
+          </h3>
+          {#each month.competitions as competition (competition.slug)}
+            <a
+              href={resolve(`/competitions/${competition.slug}`)}
+              class="flex items-baseline gap-3 rounded py-1 text-xs hover:bg-zinc-800/40 focus:ring-2 focus:ring-zinc-500 focus:outline-none"
             >
-          </div>
+              <span class="w-6 shrink-0 text-right tabular-nums text-zinc-500">
+                {dayOfMonth(competition.start_date)}
+              </span>
+              <span class="truncate text-zinc-300">{competition.name}</span>
+              <span class="shrink-0 text-zinc-600"
+                >{competition.federation.abbreviation || competition.federation.name}</span
+              >
+              {#if formatLocation(competition.country, competition.city)}
+                <span class="truncate text-zinc-600">
+                  {formatLocation(competition.country, competition.city)}
+                </span>
+              {/if}
+              {#if isSoon(competition.start_date)}
+                <span class="ml-auto shrink-0 text-zinc-400">
+                  {formatCountdown(competition.start_date)}
+                </span>
+              {/if}
+            </a>
+          {/each}
         {/each}
       </div>
     </section>
