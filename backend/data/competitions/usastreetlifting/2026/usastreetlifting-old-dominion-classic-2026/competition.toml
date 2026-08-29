@@ -1,7 +1,7 @@
 event = "PD"
 sources = [
-    "FinalRep app, /events-api/v1/events/{id}/statistics",
-    "https://final-rep.com/event-calendar/",
+  "FinalRep app, /events-api/v1/events/{id}/statistics",
+  "https://final-rep.com/event-calendar/",
 ]
 
 [competition]

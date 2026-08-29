@@ -1,11 +1,11 @@
 event = "MPDS"
 sources = [
-    "FinalRep app, /events-api/v1/events/{id}/statistics",
-    "https://final-rep.com/event-calendar/",
+  "FinalRep app, /events-api/v1/events/{id}/statistics",
+  "https://final-rep.com/event-calendar/",
 ]
 
 [competition]
-name = "Czechia Open 2026"
+name = "Czechia Open"
 start_date = "2026-05-02"
 end_date = "2026-05-03"
 country = "CZ"

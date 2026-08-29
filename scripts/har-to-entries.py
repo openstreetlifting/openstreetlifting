@@ -168,8 +168,20 @@ def build_rows(payload, default_country=None):
                 ordered = sorted(attempts, key=lambda a: a["attempt"])
                 if len(ordered) > 3:
                     raise ValueError(f"{name}: {api_name} has {len(ordered)} attempts")
-                for i, attempt in enumerate(ordered, 1):
-                    row[f"{column}{i}Kg"] = cell(attempt)
+                # A 0 kg attempt following a real weight is the app's filler for an
+                # attempt never taken, so it gets an empty cell rather than reading
+                # as a bodyweight lift the athlete missed.
+                lifted_real = False
+                for attempt in ordered:
+                    if attempt["weight"]:
+                        lifted_real = True
+                    elif lifted_real:
+                        notes.append(
+                            f"filler  {name!r} {api_name} attempt {attempt['attempt']}"
+                            " is a 0 kg placeholder after a real weight, left empty"
+                        )
+                        continue
+                    row[f"{column}{attempt['attempt']}Kg"] = cell(attempt)
                 if any(a["success"] for a in ordered):
                     lifted = True
                 elif ordered:

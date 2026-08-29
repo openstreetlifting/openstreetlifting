@@ -1,11 +1,11 @@
 event = "MPDS"
 sources = [
-    "FinalRep app, /events-api/v1/events/{id}/statistics",
-    "https://final-rep.com/event-calendar/",
+  "FinalRep app, /events-api/v1/events/{id}/statistics",
+  "https://final-rep.com/event-calendar/",
 ]
 
 [competition]
-name = "Brazil Open 2026"
+name = "Brazil Open"
 start_date = "2026-03-07"
 end_date = "2026-03-07"
 country = "BR"

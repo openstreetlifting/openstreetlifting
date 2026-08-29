@@ -1,11 +1,11 @@
 event = "MPDS"
 sources = [
-    "FinalRep app, /events-api/v1/events/{id}/statistics",
-    "https://final-rep.com/event-calendar/",
+  "FinalRep app, /events-api/v1/events/{id}/statistics",
+  "https://final-rep.com/event-calendar/",
 ]
 
 [competition]
-name = "Australian Open 2026 Event 4"
+name = "Australian Open Event 4"
 start_date = "2026-07-06"
 end_date = "2026-07-06"
 country = "AU"

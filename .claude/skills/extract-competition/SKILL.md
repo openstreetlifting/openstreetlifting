@@ -208,7 +208,7 @@ sources = [                       # where the results came from
 ]
 
 [competition]                     # required
-name = "FNSL Elite 2026"          # required
+name = "Elite"                    # required, no federation and no year
 start_date = "2026-05-15"         # required, quoted
 end_date = "2026-05-17"           # required, quoted
 city = "Sevran"
@@ -223,6 +223,28 @@ country = "FR"
 ```
 
 Dates are **quoted strings**, not bare TOML dates.
+
+### The name is the meet, nothing else
+
+`name` carries the competition's own name and no more. The federation lives in
+`[federation]` and the year lives in `start_date`, so repeating either in the name
+duplicates a field the importer already has and makes the same meet read differently
+from one season to the next.
+
+| Instead of | Write |
+| --- | --- |
+| `DSN Dutch Streetlifting Nationals 2026` | `Dutch Streetlifting Nationals` |
+| `SLI Italian National 2026` | `Italian National` |
+| `Bodystrong UK & IRE Nationals 2026` | `UK & IRE Nationals` |
+| `Brazil Open 2026` | `Brazil Open` |
+
+The directory keeps both, because a slug has to stay unique across seasons and
+federations: `dsn/2026/dsn-dutch-streetlifting-nationals-2026`. Only `name` is
+trimmed.
+
+Keep a number that is part of the meet's identity rather than its date, such as
+`Australian Open Event 3` or `USA Streetlifting Nationals 3`. A source that brands the
+year into the title, like `EUROS 24`, still gets the year dropped.
 
 `event` is the movements the competition contested, as letters in this fixed order:
 
@@ -381,7 +403,7 @@ no `entries.csv` at all**, and `status = "upcoming"`:
 sources = ["https://..."]
 
 [competition]
-name = "FNSL Nationals 2027"
+name = "Nationals"
 start_date = "2027-06-12"
 end_date = "2027-06-12"
 city = "Sevran"
@@ -393,7 +415,8 @@ name = "FNSL"
 country = "FR"
 ```
 
-It lives at `backend/data/competitions/fnsl/2027/fnsl-nationals-2027/`. Include
+It lives at `backend/data/competitions/fnsl/2027/fnsl-nationals-2027/`, so the
+year and federation live in the path while `name` stays `Nationals`. Include
 `event` only if the calendar actually states the format.
 
 Results land by **adding `entries.csv` to this same directory**, never by

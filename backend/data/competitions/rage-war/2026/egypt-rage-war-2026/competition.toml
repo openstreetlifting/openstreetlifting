@@ -1,11 +1,11 @@
 event = "MPDS"
 sources = [
-    "FinalRep app, /events-api/v1/events/{id}/statistics",
-    "https://final-rep.com/event-calendar/",
+  "FinalRep app, /events-api/v1/events/{id}/statistics",
+  "https://final-rep.com/event-calendar/",
 ]
 
 [competition]
-name = "Egypt Rage War 2026"
+name = "Egypt Rage War"
 start_date = "2026-04-03"
 end_date = "2026-04-03"
 country = "EG"

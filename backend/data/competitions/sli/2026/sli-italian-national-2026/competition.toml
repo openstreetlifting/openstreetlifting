@@ -1,11 +1,11 @@
 event = "MPDS"
 sources = [
-    "FinalRep app, /events-api/v1/events/{id}/statistics",
-    "https://final-rep.com/event-calendar/",
+  "FinalRep app, /events-api/v1/events/{id}/statistics",
+  "https://final-rep.com/event-calendar/",
 ]
 
 [competition]
-name = "SLI Italian National 2026"
+name = "Italian National"
 start_date = "2026-04-18"
 end_date = "2026-04-19"
 country = "IT"

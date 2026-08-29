@@ -1,14 +1,15 @@
 event = "MPDS"
 sources = [
-    "FinalRep app, /events-api/v1/events/{id}/statistics",
-    "https://final-rep.com/event-calendar/",
+  "FinalRep app, /events-api/v1/events/{id}/statistics",
+  "https://final-rep.com/event-calendar/",
 ]
 
 [competition]
-name = "Bodystrong London Regionals 2026"
+name = "London Regionals"
 start_date = "2026-03-01"
 end_date = "2026-03-01"
 city = "London"
+region = "England"
 country = "GB"
 status = "completed"
 
