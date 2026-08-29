@@ -5,7 +5,7 @@ sources = [
 ]
 
 [competition]
-name = "Final Rep Chilean Open 2026"
+name = "Chilean Open"
 start_date = "2026-07-25"
 end_date = "2026-07-26"
 city = "Valparaíso"
