@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, event result screens, one per weight class",
+    "https://final-rep.com/costa-rican-open-26-recap/",
+]
+
+[competition]
+name = "Costa Rican Open 2026"
+start_date = "2026-07-19"
+end_date = "2026-07-19"
+city = "Cartago"
+region = "Cartago"
+country = "CR"
+status = "completed"
+
+[federation]
+name = "FinalRep"

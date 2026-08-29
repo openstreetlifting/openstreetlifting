@@ -1,0 +1,10 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Walter,Garcia,,CR,,90.01,competed,,22.5,27.5x,27.5,27.5,72.5,77.5,82.5x,77.5,100,107.5,112.5x,107.5,145,155,165,165
+M,66,Adrian,Gonzalez,,CR,,70.21,competed,,12.5,15,17.5x,15,50,55,60x,55,92.5,97.5x,97.5x,92.5,115,125,130x,125
+M,66,Erickson,Rodríguez,,CR,,60.96,competed,,15,20x,20x,15,55,60x,60x,55,55,60,65,65,115,120,125x,120
+M,73,Jose David,Torres Solis,,CR,,89.86,competed,,10,15x,15,15,57.5,60,62.5,62.5,120,127.5,130x,127.5,205x,205x,205,205
+M,87,Sebastián,Fallas,,CR,,56.6,disqualified,Bombed the dips,22.5,25,27.5x,25,75,77.5,80x,77.5,100x,100x,100x,,190,195x,195x,190
+M,87,Javier,Mesén Gómez,,CR,,87.24,competed,,20,25,30x,25,70,75,77.5x,75,115,120,125,125,205,220,230,230
+F,63,Vanessa,Abarca,,CR,,50.35,disqualified,Bombed the muscle-up,0x,0x,0x,,10,17.5,20x,17.5,20,27.5,32.5x,27.5,75,85,95,95
+F,63,Raquel,Alvarez Valverde,,CR,,83.04,competed,,2.5,5,7.5x,5,32.5,37.5,40,40,52.5,57.5,60,60,115,125,127.5x,125
+F,70,Lianneth M.,Ocanto,,CR,,74.03,competed,,0,2.5,5,5,32.5,37.5,40x,37.5,55,57.5x,57.5x,55,100,105,110,110
