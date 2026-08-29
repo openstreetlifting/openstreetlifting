@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Australian Open 2026"
+start_date = "2026-03-21"
+end_date = "2026-03-22"
+city = "Melbourne"
+region = "Victoria"
+country = "AU"
+status = "completed"
+
+[federation]
+name = "Streetlifting Australia"
+country = "AU"

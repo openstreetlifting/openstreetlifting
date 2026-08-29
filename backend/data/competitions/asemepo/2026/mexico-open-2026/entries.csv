@@ -1,0 +1,43 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Iván,Calderón,,MX,,66.25,competed,,10x,10,12.5x,10,55,57.5x,57.5x,55,70,75,77.5,77.5,130,135x,137.5,137.5
+M,66,Juan Pablo,Estrada Olivares,,MX,,73.1,competed,,17.5x,22.5,26x,22.5,55,60,65x,60,75,77.5,82.5x,77.5,110,120,135,135
+M,66,César,Ferreira Martagón,,MX,,0,no_show,,,,,,,,,,,,,,,,,
+M,66,Julio,Flores,,MX,,78.88,competed,,17.5,20,26x,20,57,60,65,65,80,85,90,90,140x,145,155,155
+M,66,,Rafitness,,MX,,81.46,competed,,20,25x,25x,20,55,62.5,67.5x,62.5,100,110,117.5,117.5,135,142.5,150x,142.5
+M,66,Leo,Rodriguez,,MX,,90.43,competed,,20,21.25,26x,21.25,60,70,75x,70,100,105x,105x,100,160,170,180,180
+M,66,Carlos,Román Coutiño,,MX,,54.81,competed,,5,7.5x,8.75,8.75,30,35,38.75,38.75,50,55,60x,55,115,122.5,130x,122.5
+M,66,pedro antonio,medina estevan,,MX,,0,no_show,,,,,,,,,,,,,,,,,
+M,73,Franco,Diaz,,MX,,84.54,competed,,15,17.5,20x,17.5,65,70,72.5,72.5,100,105,110x,105,180x,185x,185,185
+M,73,Leonardo,Garcia,,MX,,72.24,competed,,10x,15,18.75x,15,50,57.5,63.5,63.5,85,95,100x,95,135x,140,150,150
+M,73,César,Martínez,,MX,,59.78,competed,,14,17,20,20,52,55,61x,55,64,70,75x,70,107,112.5x,120,120
+M,73,Fabrizio,Medina,,MX,,0,disqualified,Bombed the dips and muscle-up and pull-up and squat,0x,0x,31.25x,,0x,0x,0x,,0x,0x,0x,,0x,0x,0x,
+M,73,Elder,Paredes,,MX,,115.39,competed,,30,35,37.5x,35,82.5,90,91.25x,90,130,142.5,150,150,232.5x,235,245,245
+M,73,Angel R.,Torres Mendez,,MX,,66.98,competed,,5,7.5,10,10,47.5,55,60,60,65,77.5,85,85,135,147.5,152.5,152.5
+M,73,Balandra,Workout,,MX,,79.09,competed,,25,30,32.5,32.5,65,72.5,77.5,77.5,80,81.25,90,90,120,140x,160,160
+M,73,jose pablo,llamas velasco,,MX,,57.65,competed,,15,18.75,22.5,22.5,60,67.5,72.5,72.5,90,102.5x,102.5x,90,40,60,80,80
+M,80,José,Argüello,,MX,,12.39,disqualified,Bombed the dips and muscle-up and squat,7.5x,7.5x,7.5x,,46.25,53.75,60,60,76.25x,77.5x,77.5x,,0x,0x,0x,
+M,80,Fabrizio,Figueroa,,MX,,89.59,competed,,25x,32.5x,35,35,85,92.5,97.5,97.5,110x,120,121.25,121.25,160,180,185x,180
+M,80,Carlos Ignacio,García gutierrez,,MX,,54.68,competed,,1.25x,1.25,2.5,2.5,30,45,60x,45,40,60,65x,60,130x,140,155,155
+M,80,Pablo,Gómez,,MX,,85.81,competed,,20,25x,27.5x,20,75,90x,90x,75,110,120,127.5,127.5,190x,200x,200,200
+M,80,Alejandro,Hevia Cortés,,MX,,63.7,competed,,10,15x,15,15,47.5,55x,65x,47.5,80,85x,85,85,157.5x,162.5,170x,162.5
+M,80,Gabriel,Peregrina Juarez,,MX,,75.87,competed,,22.5,25,27.5,27.5,60,65,72.5x,65,95,100x,105,105,160,170,175,175
+M,80,Mauricio,Solís,,MX,,67.28,competed,,10x,15,20,20,50,57.5x,62.5,62.5,80x,85,92.5,92.5,155,165x,165x,155
+M,80,manuel,chavez,,MX,,31.19,disqualified,Bombed the muscle-up,0x,0x,0x,,20,25,30,30,30,35,40x,35,80,90,95x,90
+M,80,hector chavez,de rosas,,MX,,62.83,competed,,12.5x,15,15,15,55,65,75x,65,80x,90,100,100,140,140,150x,140
+M,87,Miguel,Angel Arteaga,,MX,,59.31,competed,,5,10x,10x,5,50,60,70x,60,60x,70,85,85,160,180x,200x,160
+M,87,pantro,Isaac,,MX,,71.88,competed,,12.5,15,20,20,55x,55,60,60,95,105,115,115,165x,165,175,175
+M,87,Gabriel,Peregrina Juarez,,MX,,0,disqualified,Bombed the dips and muscle-up and pull-up and squat,0x,0x,0x,,60x,60x,60x,,0x,0x,0x,,0x,0x,0x,
+M,87,Eduardo,Quevedo,,MX,,57.41,competed,,7.5,10,12.5,12.5,45,55,61.25,61.25,67.5,72,82,82,135,145,157.5x,145
+M,87,Jose Emiliano,Ramirez Campos,,MX,,56.01,competed,,7.5,10,15,15,50,57.5,63.75,63.75,60,72.5,82.25x,72.5,115,130,140x,130
+M,94,Spencer,Aldana,,MX,,0,disqualified,Bombed the dips and muscle-up and pull-up and squat,0x,0x,0x,,35x,35x,35x,,0x,0x,0x,,0x,0x,0x,
+M,94,Juan Antonio,Barragan Rodriguez,,MX,,53.6,disqualified,Bombed the muscle-up,2.5x,2.5x,2.5x,,50x,55,60x,55,75,80,87.5x,80,140x,140,150,150
+M,94,Victor Alexis,Valdivia Carrasco,,MX,,77.32,competed,,27.5,30,35x,30,60x,75,83.75,83.75,115,120,123.5x,120,160,170,175,175
+M,94,cris,tadeo M.,,MX,,46.75,disqualified,Bombed the dips,5x,7.5,10x,7.5,50,60x,60,60,90x,100x,100x,,170,175,180,180
+M,94,andres,zavala,,MX,,0,disqualified,Bombed the dips and muscle-up and pull-up and squat,0x,0x,0x,,72.5x,72.5x,72.5x,,0x,0x,0x,,0x,0x,0x,
+F,52,Mariana,Anguiano,,MX,,65.93,disqualified,Bombed the muscle-up,0x,0x,0x,,20,21.25,30x,21.25,30,40,40x,40,107.5x,115x,115,115
+F,57,Rosa Elia,Perez Gonzalez,,MX,,65.48,competed,,2.5,3.75,10,10,20,25.5,32x,25.5,35,45,47.5x,45,95,102.5x,105x,95
+F,57,Adriana,Uribe Hernández,,MX,,14.76,disqualified,Bombed the muscle-up and squat,0x,0x,0x,,12.5,15x,15x,12.5,25,27.5x,27.5x,25,80x,80x,80x,
+F,63,Judit,Arjona,,MX,,84.21,competed,,11.25,15,17.5x,15,28.75,32.5,33.75x,32.5,46.25,51.25x,51.25,51.25,127.5,135,142.5x,135
+F,63,Daniela,Ramirez,,MX,,0,disqualified,Bombed the muscle-up and squat,0x,0x,0x,,18.75,20,25,25,30,35,40,40,85x,85x,90x,
+F,70,Evelyn Marlen,Rodríguez Lomeli,,MX,,71.97,disqualified,Bombed the muscle-up,0x,0x,0x,,17.5,22.5,26.25x,22.5,17.5,22.5x,25,25,145x,155,165x,155
+F,70,Leslie,Salinas,,MX,,0,no_show,,,,,,,,,,,,,,,,,

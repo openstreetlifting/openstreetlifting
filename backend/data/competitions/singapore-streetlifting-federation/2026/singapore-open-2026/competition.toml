@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Singapore Open 2026"
+start_date = "2026-04-11"
+end_date = "2026-04-12"
+country = "SG"
+status = "completed"
+
+[federation]
+name = "Singapore Streetlifting Federation"
+country = "SG"

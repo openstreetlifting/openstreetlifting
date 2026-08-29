@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Serbian Open 2026"
+start_date = "2026-05-24"
+end_date = "2026-05-24"
+country = "RS"
+status = "completed"
+
+[federation]
+name = "Serbian Streetlifting Federation"
+country = "RS"

@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Canadian Nationals 2026"
+start_date = "2026-07-11"
+end_date = "2026-07-12"
+city = "Mississauga"
+region = "Ontario"
+country = "CA"
+status = "completed"
+
+[federation]
+name = "Calisthenics Canada"
+country = "CA"

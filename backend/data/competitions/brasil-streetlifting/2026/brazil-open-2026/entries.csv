@@ -1,0 +1,19 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Daniel,Corbalan Cruz,,BR,,100.66,competed,,25,30,32.5x,30,70,75,77.5,77.5,100,107.5,108.75x,107.5,180,190,200x,190
+M,66,Samuel,Jonatas,,BR,,76.06,competed,,0,5,10,10,52.5,57.5,65,65,55,67.5,80,80,150,165,167.5x,165
+M,66,Guilherme,Lui,,BR,,67.42,competed,,15,17.5,20,20,60,62.5,66.25x,62.5,65,70,71.25x,70,110,115,117.5x,115
+M,66,Bruno,Manoel Lima,,BR,,76.06,competed,,0,5x,7.5x,0,45,52.5,57.5,57.5,80,95,102.5,102.5,140,150x,160,160
+M,73,Marcio,Henrique Canedos,,BR,,73.18,competed,,0,5,10x,5,60,65,67.5x,65,75,85,90,90,150,162.5x,170,170
+M,73,Luciano,Motta,,BR,,68.49,competed,,12.5,17.5x,17.5x,12.5,55,57.5,62.5x,57.5,85,90x,90x,85,150x,155,160,160
+M,73,Gustavo,Nóia,,BR,,76.37,competed,,10,12.5,15,15,55,60,67.5,67.5,80,85,88.75,88.75,162.5,172.5,180,180
+M,73,João,Vitor,,BR,,78.27,competed,,2.5,6.25,8.75x,6.25,50,57.5,58.75,58.75,70,82.5,87.5,87.5,200,207.5,213x,207.5
+M,73,Luis Henrique Santos,de Andrade,,BR,,88.52,competed,,15,20x,20,20,65,70,72.5,72.5,90,95,100,100,170,180,185,185
+M,80,Christian,Gajardo Madariaga,,CL,,89.11,competed,,22.5,27.5x,27.5,27.5,67.5,72.5,80x,72.5,120,125,130x,125,210,215,220x,215
+M,80,Yuri,Gomes,,BR,,63.14,competed,,0,5,10x,5,45,52.5,57.5x,52.5,55,65,77.5,77.5,150,162.5,175,175
+M,87,Kauê,Alvarenga,,BR,,81.95,competed,,10,13.75x,13.75x,10,57.5,63.75,65,65,100,112.5,116.25,116.25,225,235,245x,235
+M,87,Niccolo,Foresti,,PE,,84.89,competed,,15x,15x,15,15,60,65,70x,65,120,130x,130,130,210,220,225,225
+M,94,Josué,Saldanha,,BR,,62.78,disqualified,Bombed the muscle-up,0x,0x,0x,,50,57.5,58.75x,57.5,72.5,78.75,82.5,82.5,187.5,197.5,205x,197.5
+M,101+,Mohamad,Houbbi,,BR,,93.6,competed,,10,15,20,20,70,75,77.5,77.5,150,165x,175,175,220,230,240,240
+F,57,Federica,Mauri,,IT,,0,no_show,,,,,,,,,,,,,,,,,
+F,57,Priscila,Vidal,,BR,,75.15,competed,,0,2.5x,2.5x,0,30,33.75,35,35,40,43.75,47.5x,43.75,115,120,127.5x,120
+F,63,Lilian,Silva Monteiro,,BR,,80.88,competed,,10,12.5,15,15,20,25,30,30,50,57.5,62.5x,57.5,110,120,130x,120
