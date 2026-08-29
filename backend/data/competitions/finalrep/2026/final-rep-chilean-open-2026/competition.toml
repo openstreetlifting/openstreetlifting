@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, event result screens, one per weight class",
+    "https://final-rep.com/chilean-open-26-recap/",
+]
+
+[competition]
+name = "Final Rep Chilean Open 2026"
+start_date = "2026-07-25"
+end_date = "2026-07-26"
+city = "Valparaíso"
+region = "Valparaíso"
+country = "CL"
+status = "completed"
+
+[federation]
+name = "FinalRep"
