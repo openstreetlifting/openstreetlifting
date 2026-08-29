@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.16.0...v0.17.0) (2026-08-29)
+
+
+### Features
+
+* **competitions:** add the Costa Rican Open 2026 ([#510](https://github.com/openstreetlifting/openstreetlifting/issues/510)) ([5c66795](https://github.com/openstreetlifting/openstreetlifting/commit/5c667955e891e724b9473afddb028b15ccd0cdac))
+* **competitions:** add the Final Rep Chilean Open 2026 ([#508](https://github.com/openstreetlifting/openstreetlifting/issues/508)) ([7ad4b85](https://github.com/openstreetlifting/openstreetlifting/commit/7ad4b859fce7513322913cdeed1dbfccb2475130))
+* **competitions:** add twenty-three 2026 meets from the FinalRep app ([#512](https://github.com/openstreetlifting/openstreetlifting/issues/512)) ([1b4252a](https://github.com/openstreetlifting/openstreetlifting/commit/1b4252a1bb17d9ef2016930bf87ed74ec418fd69))
+
 ## [0.16.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.15.0...v0.16.0) (2026-08-27)
 
 
