@@ -1,0 +1,24 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Zion,Cheng,,AU,,73.97,competed,,22.5,26.25,27.5x,26.25,65,67.5x,67.5x,65,75x,75,81.25,81.25,120,130,135,135
+M,66,Jordan,Komsky,,AU,,66.96,competed,,10,15x,15x,10,47.5,52.5,55x,52.5,65x,65,72.5,72.5,110,120,125,125
+M,66,Alvin,Ng,,AU,,68.56,competed,,10,13.75,15,15,50,57.5,60,60,60,70,75,75,120,130,135,135
+M,66,Ansh,Singh,,IN,,50.38,competed,,5,10,15x,10,55,60,65x,60,40,45,50,50,60,70,75,75
+M,66,Luis,Zhang,,AU,,57.13,competed,,10,12.5x,15,15,50x,55,57.5x,55,60,65,67.5,67.5,90,95x,95,95
+M,73,Daniel,Chan,,MY,,62.64,disqualified,Bombed the muscle-up,10x,12.5x,12.5x,,55,60x,60x,55,85,90x,90,90,140x,145x,145,145
+M,73,Isra,Ghofur,,AU,,67.36,competed,,5,10x,15,15,55,65,70x,65,55,65,70,70,140,150,160,160
+M,73,Harris,Zender,,MY,,63.87,disqualified,Bombed the muscle-up,5x,5x,5x,,47.5x,47.5x,47.5,47.5,100x,100,105,105,140,142.5x,,140
+M,80,Joey,Delle Coste,,AU,,69.93,disqualified,Bombed the muscle-up,15x,16.25x,16.25x,,67.5,71.25x,71.25x,67.5,95,100,105x,100,160x,160,170,170
+M,80,Byron,Watts,,AU,,66.06,competed,,2.5,7.5,12.5,12.5,40,50,55,55,75,85,95,95,140,150,155,155
+M,87,Darren,Concannon,,IE,,57.31,competed,,0x,0x,0,0,37.5,45,50x,45,65,72.5,80,80,150,160,170,170
+M,87,,Donell,,ZW,,80.64,competed,,20,28.75,32.5x,28.75,70,78.75x,78.75,78.75,90,102.5,112.5x,102.5,170,182.5,192.5,192.5
+M,87,David,Pena,,NC,,59.55,competed,,15x,15x,15,15,50,60,65x,60,85,105,120x,105,130,140x,140x,130
+M,94,Adriano,Di Marco,,IT,,63.88,competed,,5,10,12.5x,10,50,55x,60x,50,80,90,100x,90,165,175,185,185
+M,94,David,Fordyce,,AU,,63.34,competed,,1.25x,2.5,5x,2.5,42.5,47.5,52.5,52.5,85x,92.5,97.5x,92.5,172.5,182.5,187.5,187.5
+M,94,Chris,Nixon,,AU,,61.69,competed,,2.5,7.5,12.5,12.5,40x,45,52.5,52.5,85,95,110,110,135,150x,150,150
+M,94,Hamish,Wylie,,AU,,75.16,competed,,15,17.5,21.25x,17.5,62.5,67.5x,67.5,67.5,125x,125,126.25x,125,150,170,185,185
+M,101+,Andrew,Xenikos,,AU,,57.5,disqualified,Bombed the muscle-up,0x,0x,0x,,47.5,57.5,71.25,71.25,55,62.5,70,70,155,162.5,175,175
+F,52,Mariah,Stock Tambunan,,AT,,83.54,competed,,0x,1.25x,2.5,2.5,32.5,42.5,50x,42.5,35,42.5,50,50,90,97.5,102.5x,97.5
+F,63,Catherine,Clark,,AU,,59.12,competed,,2.5,5,6.25x,5,25,27.5,30,30,25,27.5,30,30,90,95,100,100
+F,63,Demi,Mason,,AU,,33.72,disqualified,Bombed the muscle-up,0x,0x,0x,,22.5,25,27.5,27.5,5,10,15,15,50,65x,65x,50
+F,70,Ilena,Susup,,AU,,92.91,competed,,13.75,15x,15x,13.75,35x,37.5,40,40,50,55,60x,55,145,150,152.5,152.5
+F,70,michaela,smith,,AU,,63.61,competed,,7.5,10,12.5x,10,22.5,25,28.75,28.75,35x,40,45,45,87.5,95,102.5x,95

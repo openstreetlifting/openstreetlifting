@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Norddeutsche Meisterschaft"
+start_date = "2026-06-13"
+end_date = "2026-06-13"
+city = "Rostock"
+region = "Mecklenburg-Vorpommern"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "DCSV"
+country = "DE"

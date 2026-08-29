@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Dutch Streetlifting Nationals"
+start_date = "2026-04-03"
+end_date = "2026-04-05"
+country = "NL"
+status = "completed"
+
+[federation]
+name = "NCA"
+country = "NL"

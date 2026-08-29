@@ -1,0 +1,21 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Ash,Steele,,GB,,42.35,competed,,0,2.5,5x,2.5,30,40x,42.5x,30,40,55,67.5x,55,90,110x,120x,90
+M,73,,Jp,,GB,,68.15,competed,,10,15,17.5x,15,55,60,62.5x,60,100,110,115,115,115x,115,122.5,122.5
+M,73,Junior,Mikajo,,GB,,68.53,competed,,15,17.5,20x,17.5,55,60,62.5x,60,80,87.5x,87.5x,80,140,150,155,155
+M,73,Michael,Portsmouth,,GB,,68.77,competed,,7.5,12.5,15x,12.5,57.5,65,70x,65,75,90x,91.25,91.25,120,140,150x,140
+M,80,Joey,Alfrink,,NL,,56.09,competed,,0,2.5,6.25,6.25,40,46.25,50,50,72.5,81.25x,81.25x,72.5,132.5,142.5,150,150
+M,80,Ben,Bennett,,GB,,49.37,competed,,3.75x,3.75x,3.75,3.75,67.5x,71.25,76.25,76.25,60,71.25x,77.5,77.5,60,82.5,87.5x,82.5
+M,80,Apostolos,Florakis,,GR,,0,no_show,,,,,,,,,,,,,,,,,
+M,80,Alex,Galovič,,SK,,71.86,competed,,10,15,20x,15,50,55,60x,55,80,90,100,100,160,170,175,175
+M,80,Zach,Hussey,,GB,,73.71,competed,,5x,7.5,12.5x,7.5,42.5x,42.5,47.5,47.5,85,100,102.5x,100,185,192.5,200,200
+M,87,Dan,Simpson,,GB,,66.55,competed,,7.5,12.5,15,15,52.5,60,65,65,85,92.5,100x,92.5,165,172.5,177.5x,172.5
+M,87,Joseph,Willshaw,,GB,,72.16,competed,,10x,15,22.5x,15,65,70,72.5x,70,92.5,101.25,110,110,165x,175,180,180
+M,87,shane,lauri,,GB,,76.95,competed,,27.5,32.5x,32.5,32.5,75,80,85x,80,115,122.5,130x,122.5,150,165,167.5x,165
+F,57,Emily,Atalar,,GB,,68.26,competed,,5,7.5,10,10,20,25,27.5,27.5,40,43.75x,43.75x,40,90,97.5,100,100
+F,57,Kelly,Cho,,HK,,76.78,competed,,5,10,13.75,13.75,27.5,33.75,37.5,37.5,40,45,47.5,47.5,90,97.5,102.5,102.5
+F,57,Maddy,Dawson,,GB,,82.11,competed,,2.5,5,7.5x,5,30,35,37.5,37.5,40,45,47.5,47.5,112.5,117.5,122.5,122.5
+F,57,Shernelle,Francois,,GB,,76.39,competed,,12.5,16.25x,17.5,17.5,25,30x,32.5,32.5,30,37.5,45,45,100x,100x,107.5,107.5
+F,57,Cindy,Ha,,GB,,81.62,competed,,2.5,3.75,5x,3.75,25,30,32.5x,30,45,50,51.25x,50,120,130,135,135
+F,57,maryam,ahmed,,GB,,5.64,disqualified,Bombed the dips and muscle-up and squat,0x,0x,0x,,12.5x,15,20x,15,25x,30x,35x,,0x,0x,0x,
+F,63,Lucy,Joslin,,GB,,59.96,competed,,0x,0,1.25,1.25,26.25,30,32.5x,30,35,37.5x,37.5x,35,90,95,100,100
+F,70+,Amanda,Khok,,HK,,79.05,competed,,0,1.25,2.5x,1.25,27.5,32.5,36.25,36.25,42.5x,47.5,52.5,52.5,127.5,132.5,137.5x,132.5

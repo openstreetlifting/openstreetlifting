@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Ace Cup"
+start_date = "2026-05-23"
+end_date = "2026-05-24"
+city = "Montgeron"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "Ace Squad"
+country = "FR"

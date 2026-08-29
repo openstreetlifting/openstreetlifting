@@ -1,0 +1,34 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Abdelrahman,Shams,,DE,,85.81,competed,,15,20,22.5x,20,63.75,68.75,70x,68.75,110,117.5,125x,117.5,150,155,165x,155
+M,73,Mehmet,Alp Puslu,,DE,,52.68,competed,,0,0x,0x,0,52.5,56.25x,56.25x,52.5,82.5x,82.5,83.75,83.75,105x,105,107.5x,105
+M,73,,Florian,,DE,,74.06,competed,,12.5,15,17.5,17.5,65,70,75,75,70,80,85,85,150,160,165,165
+M,73,Max,Julius Manthey,,DE,,73.43,competed,,10,15x,15,15,55,62.5,65x,62.5,90,100,102.5,102.5,140,150,157.5,157.5
+M,73,Tomass,Kreilis,,DE,,69.96,competed,,10,15,20,20,60,70x,70x,60,95,105x,105x,95,135,145,155x,145
+M,73,,Litfit_t,,DE,,57.6,competed,,10,15,20x,15,45,52.5,57.5,57.5,52.5,60x,67.5x,52.5,120x,130,140x,130
+M,73,Mathis,Mira,,DE,,65.4,competed,,10,15x,15,15,60x,65,67.5x,65,65x,67.5,72.5,72.5,125,135,140,140
+M,73,Marian-Alexandru,Oprisa,,RO,,78.91,competed,,10,15,17.5x,15,50,60,65,65,80,90x,90,90,150,160,170,170
+M,73,Christian,Peters,,DE,,47.93,competed,,0,5x,5x,0,50,55,57.5x,55,55x,55,60x,55,100,105x,105x,100
+M,73,Til,Puhlmann,,DE,,47.61,competed,,6.25,10x,10x,6.25,50,52.5x,52.5,52.5,50,55x,55,55,92.5,100,100x,100
+M,80,Lukas,B.,,DE,,0,competed,,7.5,12.5,16.25x,12.5,45,52.5,57.5,57.5,72.5,82.5,90x,82.5,135x,145,155,155
+M,80,Hans-Albert,Haase,,DE,,0,disqualified,Bombed the squat,0,0x,0x,0,30,37.5,40,40,80x,85,95x,85,185x,185x,185x,
+M,80,The,Hung Pham,,DE,,0,competed,,10,13.75,15x,13.75,50,57.5,65x,57.5,0,1.25x,1.25x,0,190,205,216,216
+M,80,Laurenz,Jung,,DE,,0,competed,,0,5,7.5,7.5,40,47.5,50x,47.5,65,72.5x,72.5x,65,100,110,120x,110
+M,80,Sagar,Kuppast,,DE,,0,competed,,3.75,7.5,10x,7.5,50,57.5,61.25x,57.5,100,110x,110,110,175,185x,185x,175
+M,80,Paul,Lieberich,,DE,,0,competed,,10,16.25,20,20,65,73.75,73.75x,73.75,105,130,140,140,165x,175,190,190
+M,80,Daniel,Seibke,,DE,,0,competed,,0x,0,5,5,50x,50,57.5x,50,65,75x,75x,65,100x,100,115,115
+M,80,Nico,Thode,,DE,,0,competed,,0,7.5,12.5x,7.5,40,50,52.5x,50,65,75,80,80,120,135x,135x,120
+M,87,Tony,Bernhagen,,DE,,60.55,competed,,10,15,17.5,17.5,55,62.5x,62.5x,55,90,100x,100x,90,140,145,150,150
+M,87,Bosse,Reglitzki,,DE,,64.74,competed,,15x,20,27.5x,20,72.5,80,85,85,70,80,85x,80,140,150,155x,150
+M,87,Michael,Szczechura,,DE,,41.23,competed,,0x,0,2.5,2.5,35,40,45x,40,40,50,60x,50,100,110,120,120
+M,87,onur,yuecel,,DE,,61.76,competed,,0,10x,10x,0,50,60,65x,60,100,107.5x,107.5,107.5,140x,150x,150,150
+M,94,Mahdi,Hammoud,,DE,,0,competed,,12.5,17.5,22.5,22.5,70,77.5,82.5,82.5,125,136.25,151.25x,136.25,170,177.5,185,185
+M,94,Lukas,Schröder,,DE,,0,competed,,5,10,13.75x,10,47.5,55,62.5,62.5,97.5,107.5,115,115,200,212.5,225,225
+M,94,pit,delgado,,DE,,0,competed,,0,2.5,5,5,55,62.5,66.25,66.25,95,105,110,110,170,187.5,190x,187.5
+M,101+,Maxim,Derlein,,DE,,0,competed,,0x,0,5x,0,60,72.5,82.5x,72.5,80,95,102.5x,95,175,185,192.5x,185
+M,101+,Christian,Nytra,,DE,,0,disqualified,Bombed the muscle-up,0x,0x,0x,,35,42.5x,42.5x,35,70,77.5,81.25,81.25,210,225,235,235
+M,101+,Moritz,Sievers,,DE,,0,competed,,12.5,17.5,21.25,21.25,65,72.5,80,80,112.5,130,141.25,141.25,190,207.5,222.5x,207.5
+M,101+,Paul,Winkler,,DE,,0,disqualified,Bombed the muscle-up,0x,0x,0x,,30,37.5,45x,37.5,45,55,65,65,130,140x,150x,130
+M,101+,Gunnar,Wirth,,DE,,0,competed,,0,5,10,10,45,52.5,60,60,67.5,77.5,87.5,87.5,152.5,165,175x,165
+F,57,Daina,V,,LV,,58.56,competed,,0,1.25,2.5x,1.25,15,21.25,23.75,23.75,25,31.25,32.5,32.5,85,92.5,97.5,97.5
+F,63,Laura-Celine,Clasen,,DE,,67.8,competed,,0,1.25,3.75,3.75,15,22.5,23.75,23.75,37.5,45,50x,45,100,110,115,115
+F,70+,Käthe,Neuss,,DE,,52.79,competed,,0,1.25,3.75,3.75,15,21.25,25,25,20x,20,25,25,80,87.5,95,95
