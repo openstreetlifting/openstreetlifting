@@ -2,10 +2,10 @@ use serde::{Deserialize, Serialize};
 
 /// Outcome of an athlete's participation in a competition.
 ///
-/// Only `Competed` counts for rankings and records. `Disqualified` covers a
-/// lifter who took attempts and was ruled out, whether by failing every attempt
-/// in a movement or by a procedural call; `NoShow` covers an entrant who never
-/// lifted at all, which has no bodyweight and no attempts behind it.
+/// `Competed` counts for rankings and records.
+/// `Disqualified` covers a athlete who took attempts and was disqualified, either by 'bombing'
+/// movement or by a judge call.
+/// `NoShow` covers an athlete that has not competed
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum AthleteStatus {
@@ -23,7 +23,6 @@ impl AthleteStatus {
         }
     }
 
-    /// Whether the result stands, which is what every ranking and record asks.
     pub fn competed(&self) -> bool {
         matches!(self, Self::Competed)
     }

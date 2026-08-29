@@ -1,6 +1,3 @@
-//! `list_distinct_classes` is built with a QueryBuilder, so nothing checks its
-//! SQL at compile time the way the `query!` macros are checked.
-
 use osl_db::repository::ranking::RankingRepository;
 use rust_decimal::Decimal;
 use sqlx::PgPool;
@@ -137,7 +134,6 @@ async fn a_gender_only_sees_its_own_classes(pool: PgPool) {
     );
 }
 
-/// Two divisions contest the same class, and the dropdown offers it once.
 #[sqlx::test(migrations = "./migrations")]
 async fn one_class_run_by_two_divisions_is_listed_once(pool: PgPool) {
     let competition = competition(&pool).await;

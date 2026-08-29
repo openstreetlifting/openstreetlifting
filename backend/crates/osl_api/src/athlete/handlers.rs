@@ -74,7 +74,6 @@ pub async fn get_athlete(
 
     let repo = AthleteRepository::new(state.db.pool());
 
-    // Only pay for the join-heavy query when something was actually asked for.
     if ATHLETE_INCLUDES.iter().any(|name| query.include.has(name)) {
         let detail = repo.find_by_slug_detailed(&slug).await?;
         return Ok(Json(AthleteResponse::from_detail(detail, &query.include)));

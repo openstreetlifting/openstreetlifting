@@ -27,17 +27,12 @@ pub struct CompetitionResponse {
     pub country: Option<String>,
     pub start_date: Option<NaiveDate>,
     pub end_date: Option<NaiveDate>,
-    /// Present only when requested via `?include=federation`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub federation: Option<FederationInfo>,
-    /// Present only when requested via `?include=movements`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub movements: Option<Vec<MovementInfo>>,
-    /// Present only when requested via `?include=results`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<CategoryDetail>>,
-    /// How many lifters the competition recorded. Absent on a single competition,
-    /// where the results themselves carry it.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lifter_count: Option<i64>,
 }
@@ -64,12 +59,10 @@ pub struct CategoryDetail {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CategoryInfo {
-    /// What the contest is called, e.g. `Elite Men -80kg`.
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub division: Option<String>,
     pub gender: String,
-    /// The class alone, e.g. `-80kg`.
     pub weight_class: String,
 }
 
@@ -82,6 +75,7 @@ pub struct ParticipantDetail {
     /// `computed` when the score was worked out from a bodyweight and a
     /// total, `reported` when the source stated it and it cannot be
     /// restated on the current formula. Absent alongside a missing score.
+    /// TOOD introduce a enum varient for this ?
     pub ris_source: Option<String>,
     pub status: String,
     pub status_reason: Option<String>,
@@ -232,7 +226,6 @@ impl From<CategoryParticipants> for CategoryDetail {
 }
 
 impl CompetitionResponse {
-    /// Builds a list entry, attaching only the sections the caller asked for.
     pub fn from_list_item(item: CompetitionListItem, include: &Include) -> Self {
         let CompetitionListItem {
             competition,
@@ -252,8 +245,6 @@ impl CompetitionResponse {
         response
     }
 
-    /// Builds a single competition, attaching only the sections the caller
-    /// asked for.
     pub fn from_detail(detail: CompetitionDetail, include: &Include) -> Self {
         let CompetitionDetail {
             competition,

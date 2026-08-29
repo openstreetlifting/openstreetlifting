@@ -1,6 +1,3 @@
-//! The unique constraint on bounds is the only thing preventing duplicate
-//! weight classes, so it is worth asserting rather than assuming.
-
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 
@@ -37,8 +34,6 @@ async fn the_same_bounds_cannot_be_inserted_twice(pool: PgPool) {
 
 #[sqlx::test(migrations = "./migrations")]
 async fn an_open_class_cannot_be_inserted_twice(pool: PgPool) {
-    // NULLS NOT DISTINCT is what makes this fail. A plain UNIQUE would let
-    // both rows through, since Postgres reads two NULLs as different values.
     insert(&pool, "M", Some(120), None).await.unwrap();
     assert!(insert(&pool, "M", Some(120), None).await.is_err());
 }

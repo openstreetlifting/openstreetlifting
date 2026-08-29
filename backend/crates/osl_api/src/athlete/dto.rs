@@ -19,10 +19,8 @@ pub struct AthleteResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instagram_handle: Option<String>,
     pub created_at: NaiveDateTime,
-    /// Present only when requested via `?include=competitions`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub competitions: Option<Vec<AthleteCompetitionSummary>>,
-    /// Present only when requested via `?include=records`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub personal_records: Option<Vec<PersonalRecord>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -44,6 +42,7 @@ pub struct AthleteCompetitionSummary {
     /// `computed` when the score was worked out from a bodyweight and a
     /// total, `reported` when the source stated it and it cannot be
     /// restated on the current formula. Absent alongside a missing score.
+    /// TODO: introduce a enum constant for this
     pub ris_source: Option<String>,
     pub status: String,
 }
@@ -112,8 +111,6 @@ impl From<PersonalRecordRow> for PersonalRecord {
 }
 
 impl AthleteResponse {
-    /// Builds the response from a fully-loaded detail, keeping only the
-    /// sections the caller asked for.
     pub fn from_detail(detail: AthleteDetail, include: &Include) -> Self {
         let AthleteDetail {
             athlete,

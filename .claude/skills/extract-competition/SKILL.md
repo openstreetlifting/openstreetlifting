@@ -77,13 +77,25 @@ athlete never competed. That is not an attempt and gets an empty cell. Tell
 them apart the same way as any other attempt, by whether the source marks it
 successful. If the source gives you no way to tell, ask.
 
+One reading settles most of these without asking: **a 0 kg squat is not a lift
+anyone can attempt.** So a row showing `0 kg` on the squat, and especially a row
+showing `0 kg` across all four movements, is a placeholder for an athlete who
+never lifted, not twelve misses at bodyweight. Compare it against a genuine bomb
+in the same competition, which prints the real weights the athlete called and failed
+(`20 / 50 / 90 / 160`, all missed). Placeholder rows get empty attempt cells and the status
+`no_show`, which exists for exactly this: an entrant who never lifted at all, with
+no bodyweight and no attempts behind it. They are not `disqualified`, which is for
+someone who took attempts and was ruled out. The validator rejects a `no_show`
+carrying any lift.
+
 An athlete who missed every attempt in a movement still gets those cells, each
 with its `x`. Do not blank the movement and do not invent a zero for it: they
 contested it and lifted nothing, which is different from lifting their
 bodyweight.
 
 Bombing a movement ends their competition, so that athlete is `disqualified`,
-never `competed`. Sources say the same thing in their own way, printing a dash
+never `competed` and never `no_show`: they turned up and lifted, the standing is
+what changed. Sources say the same thing in their own way, printing a dash
 for the place and the total. The importer refuses a bombed athlete left as
 `competed` rather than correcting it for you, because a status is something the
 source states and not something to infer. Their missed attempts stay in the
@@ -122,6 +134,66 @@ your source does not show. Nothing read from the API gets written into a file
 as if the source had printed it. **Never invent a value** still holds, and an
 API lookup that contradicts the source is a reason to stop and ask, not to
 overwrite either one.
+
+## Reading a FinalRep app screenshot
+
+FinalRep meets are usually handed over as one PNG per weight class, named for the
+class (`-73.png`). They are the best source there is for these competitions: three
+attempts per movement, the counted best, the total and a provided RIS.
+
+The colour code is the whole thing:
+
+- **green** — made, but superseded by a later attempt
+- **orange, boxed** — the counted best for that movement
+- **red** — failed
+
+All three red on a movement is a bomb; the row turns pink and the Place column reads
+`Dis`. The header pill states sex and class outright (`Female -52kg`, `Male -94kg`), so
+nothing needs inferring — and the two ladders are disjoint anyway.
+
+What they do **not** carry is bodyweight. That only comes from the organiser, so these
+meets are `Ris`-only rows.
+
+Two traps. The app **truncates long names** in the display (`Camila Valenzuela Za…`),
+and the cut-off surname is exactly what becomes the athlete's permanent key, so a
+truncated name is something to ask about, never to write as-is. And its **Place column
+is not always total order** — at the Chilean Open 2026 the two highest totals in `-73`
+were listed 5th and 6th. Placings are recomputed on import, so this costs nothing, but
+do not use the column to sanity-check your reading.
+
+Screenshots are small. Crop the table into overlapping bands and upscale before
+reading them, or the quarter-kilo increments (`26.25` vs `26.75`) blur.
+
+## Check your reading before showing the diff
+
+Every source that prints a total gives you a free proof: **the four `Best*` columns
+`fmt` derived from your attempt cells must sum to the total the source printed**, row
+by row. Run it over the whole file after `fmt`. It catches a misread colour, a dropped
+attempt and a transposed digit in one pass, and it is the difference between "I read
+the screenshots" and "the numbers reconcile".
+
+Report the result in the summary. A row that will not reconcile is a finding to raise,
+not a number to nudge.
+
+## Aggregators are a cross-check, never a source
+
+Third-party sites republish these results — `rankings.officialstreetlifting.com`,
+`streetliftings.fr` / `.com`, calibase and friends. Ask the organiser or federation for
+the official results instead, and offer to draft that message.
+
+They are worth reading as a *cross-check*, and worth distrusting when they disagree
+with the source. Both of the above have been caught being wrong in ways that do not
+announce themselves:
+
+- silently dropping an athlete's third attempt, leaving a total that still looks
+  self-consistent
+- printing a whole class's RIS as `0.00`
+- printing `0.00` for bodyweight and `0` for RIS, meaning "not recorded"
+- publishing best-per-movement with no attempt breakdown
+- listing the *attempted* maxima of a disqualified athlete as if they had been made
+- losing nationalities that the official source shows plainly
+
+Their JSON endpoints are usually thinner than their HTML, so parse the page.
 
 ## competition.toml
 
@@ -193,12 +265,21 @@ Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 | `Country` | Required, ISO 3166-1 alpha-2 |
 | `BodyweightKg` | Never set alongside `Ris` |
 | `Ris` | Only when the source gives a score and no bodyweight |
-| `Status` | `competed` or `disqualified`. Empty means competed. A bombed movement means `disqualified` |
+| `Status` | `competed`, `disqualified` or `no_show`. Empty means competed. A bombed movement means `disqualified`; an entrant who never lifted is `no_show` |
 | `StatusReason` | Why they were disqualified |
 
 `Country` is part of who an athlete *is*: the same name with a different
 country imports as a different person. Use the country the source lists them
 under, and keep it consistent for one person across competitions.
+
+When the source gives an athlete **no** country at all — a grey globe in the
+FinalRep app, an empty flag cell — write the **host country of the meet** rather
+than holding the row back. `Country` is required, so the alternative is dropping a
+real result, and at a national open the large majority are locals. Say in the PR body
+which rows were defaulted, so the guess is on the record. This is the one column that
+gets a default: bodyweights, attempts and RIS stay empty when unknown. Note the
+consequence before doing it at scale — because the country is part of the identity
+key, a later correction creates a new athlete rather than editing the existing one.
 
 The category is not stored. It is derived from `Division`, `Sex` and
 `WeightClassKg`, so `M` + `80` renders as "Men -80kg", `M` + `101+` as

@@ -1,6 +1,7 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-/// ISO 3166-1 alpha-2 country code.
+/// The CountryCode is represented as ISO 3166-1
+/// https://en.wikipedia.org/wiki/ISO_3166-2
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct CountryCode([u8; 2]);
 

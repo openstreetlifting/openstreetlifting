@@ -11,7 +11,6 @@
 
 use crate::movement::Movement;
 
-/// The full four movements, in display order.
 pub const FULL_EVENT: &str = "MPDS";
 
 /// Whether a total and a RIS mean anything for this event.

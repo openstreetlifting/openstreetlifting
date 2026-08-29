@@ -22,13 +22,10 @@ pub struct CompetitionListQuery {
     #[serde(default)]
     pub include: Include,
     pub status: Option<String>,
-    /// Federation name, exactly as `/competitions/federations` lists it.
     pub federation: Option<String>,
     pub country: Option<String>,
     pub year: Option<i32>,
-    /// Case insensitive substring of the name, federation or city.
     pub q: Option<String>,
-    /// Results read newest first by default, a calendar wants `asc`.
     #[serde(default)]
     pub direction: Direction,
     #[serde(flatten)]
@@ -90,7 +87,6 @@ pub async fn list_competitions(
     let page = query.pagination.to_page();
     let filter = query.to_db_filter(status);
 
-    // The per-row federation and movement lookups are only worth it when asked for.
     let (data, total_items) = if LIST_INCLUDES.iter().any(|name| query.include.has(name)) {
         let (items, total) = repo.list_with_details(&page, &filter).await?;
         let data = items

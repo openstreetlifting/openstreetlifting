@@ -51,20 +51,15 @@ pub struct GlobalRankingFilter {
     pub pagination: crate::shared::dto::PaginationParams,
     pub gender: Option<String>,
     pub country: Option<String>,
-    /// Case insensitive substring of the athlete's full name.
     pub q: Option<String>,
     #[serde(default)]
     pub movement: Movement,
     #[serde(default)]
     pub direction: Direction,
-    /// Which event to rank totals within, defaulting to the four movements.
-    /// Ignored when ranking by a single movement.
     pub event: Option<String>,
-    /// Weight class label, e.g. `-73kg`, matched regardless of gender.
     pub category: Option<String>,
 
     pub year: Option<i32>,
-    /// Narrows the ranking to one competition, e.g. for a per-competition leaderboard.
     pub competition_id: Option<Uuid>,
 }
 
@@ -121,18 +116,13 @@ pub struct GlobalRankingEntry {
     pub category: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub division: Option<String>,
-    /// Absent when no score could be established, rather than zero.
     pub ris: Option<f64>,
     pub ris_source: Option<String>,
-    /// Absent outside the four-movement event, where a total is not
-    /// comparable and no RIS is computed.
     pub total: Option<f64>,
-    /// Absent when the competition did not contest the movement.
     pub muscleup: Option<f64>,
     pub pullup: Option<f64>,
     pub dips: Option<f64>,
     pub squat: Option<f64>,
-    /// Which movements the competition contested, e.g. `MPDS` for all four.
     pub event: Option<String>,
     pub competition: CompetitionInfo,
     pub federation: FederationInfo,
