@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.18.0...v0.19.0) (2026-08-30)
+
+
+### Features
+
+* **canonical:** import the FNSL 2026 interrégionale competitions ([#532](https://github.com/openstreetlifting/openstreetlifting/issues/532)) ([13e6d59](https://github.com/openstreetlifting/openstreetlifting/commit/13e6d59c98c07ed3390db31f3123c6f2dc1e2b68))
+
+
+### Bug Fixes
+
+* François Delaveau country is French not Australia ([2a2a323](https://github.com/openstreetlifting/openstreetlifting/commit/2a2a3230e45e26a9fd04ce00f9fd700d1696d35d))
+* rename Ludovic Adamantium to real name Adigery ([df62dcd](https://github.com/openstreetlifting/openstreetlifting/commit/df62dcdfc79b20c1e6dad841008b83b43ece1799))
+
 ## [0.18.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.17.0...v0.18.0) (2026-08-30)
 
 
