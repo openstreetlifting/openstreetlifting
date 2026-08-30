@@ -1333,7 +1333,7 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
 name = "osl_api"
-version = "0.19.0"
+version = "0.20.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -1358,7 +1358,7 @@ dependencies = [
 
 [[package]]
 name = "osl_db"
-version = "0.19.0"
+version = "0.20.0"
 dependencies = [
  "chrono",
  "osl_domain",
@@ -1369,7 +1369,7 @@ dependencies = [
 
 [[package]]
 name = "osl_domain"
-version = "0.19.0"
+version = "0.20.0"
 dependencies = [
  "chrono",
  "rust_decimal",
@@ -1382,7 +1382,7 @@ dependencies = [
 
 [[package]]
 name = "osl_importer"
-version = "0.19.0"
+version = "0.20.0"
 dependencies = [
  "anyhow",
  "chrono",
