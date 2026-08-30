@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.17.0...v0.18.0) (2026-08-30)
+
+
+### Features
+
+* **athletes:** add instagram handles for the top ranked athletes ([#521](https://github.com/openstreetlifting/openstreetlifting/issues/521)) ([aa19125](https://github.com/openstreetlifting/openstreetlifting/commit/aa191255578f54213dde82c6d24ae0ee7fc7508d))
+* **competitions:** add the Annecy 4 Lift 2024 and 2025 ([#520](https://github.com/openstreetlifting/openstreetlifting/issues/520)) ([129b8a2](https://github.com/openstreetlifting/openstreetlifting/commit/129b8a29d5921cbc865c02a805704f61d62d729b))
+* **competitions:** add the FinalRep Worlds 2025 ([#514](https://github.com/openstreetlifting/openstreetlifting/issues/514)) ([7522edd](https://github.com/openstreetlifting/openstreetlifting/commit/7522edd41468d45054ebf0deb735da5cb50a5728))
+* **competitions:** add the FNSL CNSL 2021 to 2024 ([#518](https://github.com/openstreetlifting/openstreetlifting/issues/518)) ([c3cf77b](https://github.com/openstreetlifting/openstreetlifting/commit/c3cf77b6b4fdd8e4521ce676c2e7a63c81dd8028))
+
+
+### Refactoring
+
+* **competitions:** normalize the Chilean and Costa Rican Open ([#513](https://github.com/openstreetlifting/openstreetlifting/issues/513)) ([6f3b075](https://github.com/openstreetlifting/openstreetlifting/commit/6f3b075232e3611910ca4bebadbcae9dbdb46fd2))
+
 ## [0.17.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.16.0...v0.17.0) (2026-08-29)
 
 
