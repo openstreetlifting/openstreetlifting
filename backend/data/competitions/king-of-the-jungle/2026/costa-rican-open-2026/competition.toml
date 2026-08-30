@@ -5,7 +5,7 @@ sources = [
 ]
 
 [competition]
-name = "Costa Rican Open 2026"
+name = "Costa Rican Open"
 start_date = "2026-07-19"
 end_date = "2026-07-19"
 city = "Cartago"
@@ -14,4 +14,5 @@ country = "CR"
 status = "completed"
 
 [federation]
-name = "FinalRep"
+name = "King of the Jungle"
+country = "CR"
