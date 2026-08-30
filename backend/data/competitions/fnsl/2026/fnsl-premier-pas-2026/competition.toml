@@ -1,0 +1,13 @@
+event = "MPDS"
+sources = ["FNSL results spreadsheet, FNSL Premiers Pas 2026.xlsx"]
+
+[competition]
+name = "Premier Pas"
+start_date = "2026-04-04"
+end_date = "2026-04-05"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+country = "FR"
