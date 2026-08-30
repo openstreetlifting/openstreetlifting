@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = ["Annecy Street Event result posters, one per weight class"]
+
+[competition]
+name = "Annecy 4 Lift"
+start_date = "2024-11-02"
+end_date = "2024-11-03"
+city = "Epagny Metz-Tessy"
+region = "Auvergne-Rhône-Alpes"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "Annecy Street Event"
+country = "FR"
