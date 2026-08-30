@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "https://final-rep.com/worlds25/",
+    "https://drive.google.com/file/d/1qmCwuNIYj_yWchg6B24vIkhDpNlXolZk/view",
+]
+
+[competition]
+name = "Worlds"
+start_date = "2025-10-04"
+end_date = "2025-10-05"
+city = "Halle (Saale)"
+region = "Sachsen-Anhalt"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "FinalRep"
