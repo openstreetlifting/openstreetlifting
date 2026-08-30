@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Santiago Street Lifting Open"
+start_date = "2025-03-15"
+end_date = "2025-03-16"
+country = "CL"
+status = "completed"
+
+[federation]
+name = "FinalRep"
