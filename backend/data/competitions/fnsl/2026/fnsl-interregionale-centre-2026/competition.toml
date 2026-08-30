@@ -1,0 +1,13 @@
+event = "MPDS"
+sources = ["FNSL results spreadsheet, FNSL Centre 2026.xlsx"]
+
+[competition]
+name = "Interrégionale Centre"
+start_date = "2026-04-11"
+end_date = "2026-04-12"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+country = "FR"

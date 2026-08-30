@@ -1,0 +1,13 @@
+event = "MPDS"
+sources = ["FNSL weigh-in sheet, (Sud-Ouest) Inter-Régionale - Ath_Pesée.pdf"]
+
+[competition]
+name = "Interrégionale Sud-Ouest"
+start_date = "2026-04-26"
+end_date = "2026-04-26"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+country = "FR"

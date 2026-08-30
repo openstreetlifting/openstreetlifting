@@ -1,0 +1,25 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Guillaume,Brossard,,FR,66,,competed,,2.5,5,7.5,7.5,45,52.5x,52.5x,45,40,47.5,52.5x,47.5,120,130,137.5x,130
+M,66,Anthony,Dubot,,FR,62.5,,competed,,5x,5,10,10,45,55x,57.5,57.5,70,82.5x,85x,70,145,155,160,160
+M,66,Dorig,Eucheloup,,FR,65.6,,competed,,3.75,7.5x,7.5,7.5,43.75,50,52.5,52.5,77.5,85x,85,85,130,142.5x,145x,130
+M,66,Axel,Giorgi,,FR,64,,competed,,20,25,26.25x,25,45,52.5x,52.5,52.5,70,80x,80x,70,100,120,135,135
+M,66,Achille,Greco,,FR,65.2,,disqualified,Bombed pull-up,16.25,18.75x,21.25x,16.25,50x,55x,55x,,80,85,90,90,130,140,150,150
+M,66,Nathan,Norbert,,FR,64.8,,competed,,20,25,27.5x,25,55,60,65,65,80,90x,90,90,140,147.5,155,155
+M,73,Thomas,Bouillet,,FR,71.9,,competed,,17.5,21.25,22.5,22.5,60,67.5,70x,67.5,107.5,115,121.25,121.25,180,190,195,195
+M,73,Thibault,Degenne,,FR,72.2,,competed,,15,18.75,20,20,57.5,62.5,66.25x,62.5,100,110,,110,220,227.5x,227.5,227.5
+M,73,Hicham,Hansri,,FR,71.3,,disqualified,Did not attempt muscle-up or pull-up,,,,,,,,,90,100,102.5x,100,130,140x,140,140
+M,73,Thomas,Lamour,,FR,72,,competed,,15,20x,20x,15,57.5,62.5,65x,62.5,100,110,117.5x,110,185,195,205x,195
+M,73,Rwaandon,Nullet,,FR,73,,competed,,7.5,11.25,13.75,13.75,42.5,50x,50,50,80,90,101.25x,90,172.5,185x,190x,172.5
+M,80,Bislan,Bataev,,FR,79.1,,competed,,5,7.5,10,10,60x,65,70x,65,90x,95,100,100,190,200x,210x,190
+M,80,Paolo,Denis,,FR,77.1,,competed,,10,15,16.25,16.25,55,60x,60x,55,105,110,112.5x,110,182.5,190,200x,190
+M,80,Arthur,Fortin,,FR,78.8,,competed,,11.25,13.75,16.25x,13.75,57.5,62.5,65x,62.5,90,100x,100x,90,202.5,212.5,217.5x,212.5
+M,80,Pierrick,Jaouen,,FR,79,,competed,,3.75,6.25,10,10,45,52.5,55x,52.5,85,95,102.5x,95,165,175,182.5,182.5
+M,80,Cédric,Perchemnier,,FR,76.2,,competed,,22.5,27.5,30x,27.5,55,60,65,65,120,130,135.5,135.5,205,220,230,230
+M,80,Bastien,Sirot,,FR,76.5,,competed,,20,23.75,27.5,27.5,63.75,70,73.75x,70,92.5,97.5,102.5,102.5,167.5,177.5,187.5x,177.5
+M,87,Augustin,Florency,,FR,87,,competed,,6.25,10,12.5,12.5,52.5,57.5,65x,57.5,100x,110,120x,110,180,190,200,200
+M,87,Julian,Letestu,,FR,83.6,,competed,,5,6.25x,6.25,6.25,47.5,53.75,56.25,56.25,77.5,85,90x,85,192.5,205,215,215
+M,87,Johnny,Philippon,,FR,85.8,,competed,,1.25,5,10x,5,50,57.5,63.75,63.75,110,120,125,125,235,250,260x,250
+M,87,Hugo,Poulet,,FR,86,,competed,,10,15,17.5,17.5,55,60,63.75,63.75,110x,120,127.5,127.5,205,222.5,225,225
+M,94,Léo,Dufort,,FR,92.7,,competed,,1.25x,1.25,5x,1.25,45,52.5,60x,52.5,100,107.5,113.75x,107.5,212.5,222.5,232.5,232.5
+F,52,Fanny,Corve,,FR,51.1,,competed,,6.25,10,12.5,12.5,25,30,33.75,33.75,31.25,37.5,41.25,41.25,95,102.5,107.5,107.5
+F,57,Lucie,David,,FR,55,,disqualified,,0,1.25x,,0,10,13.75,15,15,15,20,22.5,22.5,80,87.5,95,95

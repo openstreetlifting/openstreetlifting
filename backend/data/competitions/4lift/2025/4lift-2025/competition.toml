@@ -1,8 +1,8 @@
 event = "MPDS"
 sources = [
-  "https://liftcontrol.fr/live/annecy-4-lift-2025-dimanche-matin-39",
-  "https://liftcontrol.fr/live/annecy-4-lift-2025-dimanche-apres-midi-40",
-  "https://www.instagram.com/p/DQrox40jeBc",
+    "https://liftcontrol.fr/live/annecy-4-lift-2025-dimanche-matin-39",
+    "https://liftcontrol.fr/live/annecy-4-lift-2025-dimanche-apres-midi-40",
+    "https://www.instagram.com/p/DQrox40jeBc",
 ]
 
 [competition]
