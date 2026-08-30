@@ -1,0 +1,15 @@
+event = "MPDS"
+
+[competition]
+name = "CNSL"
+start_date = "2023-12-10"
+end_date = "2023-12-10"
+city = "La Courneuve"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
