@@ -1,83 +1,83 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-M,66,Nana,Boison,,DE,,,competed,,,,,27.5,,,,82.5,,,,120,,,,205
-M,66,Walid,Boulaghzalate,,IT,,,competed,,,,,31.25,,,,76.25,,,,131.25,,,,207.5
-M,66,Julien,Capdeville,,FR,,,competed,,,,,30,,,,70,,,,143.25,,,,197.5
-M,66,Alessio,Ceragioli,,IT,,,competed,,,,,25,,,,80,,,,100,,,,210
-M,66,Parth,Chamaria,,IN,,,competed,,,,,30,,,,75,,,,110,,,,190
-M,66,Carlos,Czeszak,,BR,,,competed,,,,,27.5,,,,77.5,,,,122.5,,,,207.5
-M,66,Ashura,Youssef Bouida,,TN,,,competed,,,,,43,,,,100,,,,117.5,,,,187.5
-M,73,Lionel,Da Silva,,PT,,,competed,,,,,41.25,,,,87.5,,,,135,,,,217.5
-M,73,Benjamin,Ibánez,,CL,,,disqualified,Bombed the squat,,,,42.5,,,,100,,,,145,,,,
-M,73,Francois,Li,,FR,,,competed,,,,,36.25,,,,88.75,,,,142.5,,,,192.5
-M,73,Johan,Sanon,,FR,,,competed,,,,,33.75,,,,90,,,,158,,,,220
-M,73,Amedeo,Simonelli,,IT,,,competed,,,,,21.25,,,,81.25,,,,130,,,,210
-M,73,Jesus,Toscano,,ES,,,no_show,,,,,,,,,,,,,,,,,
-M,73,Enzo,Zezza,,IT,,,disqualified,Bombed the squat,,,,33.75,,,,75,,,,126.25,,,,
-M,80,Chevillard,Aubin,,FR,,,competed,,,,,46.5,,,,106,,,,160.25,,,,220
-M,80,Aditya,Magoo,,IN,,,competed,,,,,37.5,,,,87.5,,,,145,,,,222.5
-M,80,Mattia,Martinelli,,IT,,,competed,,,,,35,,,,90,,,,135,,,,230
-M,80,Barto,Orchowski,,PL,,,competed,,,,,35,,,,90,,,,161,,,,220
-M,80,Elder,Paredes,,MX,,,competed,,,,,30,,,,90,,,,151.25,,,,247.5
-M,80,Raul,Teslevici,,FR,,,competed,,,,,40,,,,101.25,,,,142.5,,,,235
-M,80,Daniel,Wassenaar,,NL,,,competed,,,,,32.5,,,,100,,,,161.25,,,,222.5
-M,87,Marc,Altarriba,,ES,,,competed,,,,,30,,,,82.5,,,,170,,,,265
-M,87,Gökcan,Aydin,,DE,,,competed,,,,,12.5,,,,97.5,,,,140,,,,262.5
-M,87,Diego,Corazza,,IT,,,disqualified,Bombed the squat,,,,32.5,,,,92.5,,,,132.5,,,,
-M,87,Tony,D'Agostino,,IT,,,competed,,,,,27.5,,,,85,,,,122.5,,,,275
-M,87,Kevin,Gogo,,FR,,,competed,,,,,32.5,,,,81.25,,,,160,,,,237.5
-M,87,Gwendal Scott,Roy Simon,,BE,,,disqualified,Bombed the dips,,,,35,,,,80,,,,,,,,242.5
-M,87,Lucian,Stanut,,RO,,,competed,,,,,42.5,,,,100,,,,140,,,,240
-M,94,Charlie,Cameron,,GB,,,competed,,,,,32.5,,,,91.25,,,,155,,,,262.5
-M,94,Théo,Goutte-Toquet,,FR,,,competed,,,,,17.5,,,,93.75,,,,180,,,,255
-M,94,Daniel,Lisek Lis,,PL,,,disqualified,Bombed the dips and squat,,,,30,,,,80,,,,,,,,
-M,94,Xavier,Macias,,IT,,,competed,,,,,44,,,,114,,,,152.5,,,,290
-M,94,Robin,Stoltze,,DE,,,competed,,,,,30,,,,81.25,,,,142.5,,,,247.5
-M,94,Timo,Wunnenberg,,DE,,,competed,,,,,27.5,,,,95,,,,130,,,,260
-M,94,Badreddine,van der Stoel,,NL,,,competed,,,,,30,,,,90,,,,170,,,,230
-M,101,Daniel,Cassieri,,AR,,,competed,,,,,26.25,,,,88.75,,,,146.25,,,,242.5
-M,101,Mohamad,Houbbi,,BR,,,competed,,,,,20,,,,75,,,,150,,,,220
-M,101,David,Klimek,,CZ,,,competed,,,,,20,,,,85,,,,130,,,,280
-M,101,Tintin,Mike,,FR,,,competed,,,,,16.25,,,,67.5,,,,155,,,,267.5
-M,101,Valerio,Naldi,,IT,,,competed,,,,,20,,,,103.75,,,,160,,,,242.5
-M,101,Jermaine,Straker,,GB,,,competed,,,,,20,,,,90,,,,155,,,,255
-M,101,Mathew,Zlat,,RU,,,competed,,,,,37.5,,,,100,,,,175,,,,250
-M,101+,Francesco,De Simone,,IT,,,competed,,,,,26.25,,,,67.5,,,,145,,,,265
-M,101+,Rok,Didakovic,,HR,,,competed,,,,,6.25,,,,60,,,,145,,,,290
-M,101+,Daniele,Mariani,,IT,,,competed,,,,,20,,,,80,,,,140,,,,265
-M,101+,Davide,Molinaro,,CZ,,,competed,,,,,12.5,,,,67.5,,,,95,,,,200
-M,101+,Jakub,Racewicz,,PL,,,competed,,,,,17.5,,,,91.25,,,,130,,,,250
-M,101+,Moritz,Sievers,,DE,,,competed,,,,,20,,,,75,,,,115,,,,200
-M,101+,Tonio,Zeidler,,DE,,,competed,,,,,15,,,,90,,,,187.5,,,,285
-F,52,Ludivine,Compain,,FR,,,competed,,,,,17.5,,,,36.25,,,,62.5,,,,135
-F,52,Lindsay,Depaepe,,BE,,,competed,,,,,1.25,,,,32.5,,,,40,,,,102.5
-F,52,Katrena Goh,Jia Min,,SG,,,competed,,,,,12.5,,,,44.5,,,,70,,,,105
-F,52,Anais,Lozano,,ES,,,competed,,,,,12.5,,,,32.5,,,,60,,,,140
-F,52,Selly,Ortis,,IT,,,competed,,,,,5,,,,32.5,,,,50,,,,130
-F,52,Aurora,Riccardi,,IT,,,competed,,,,,12.5,,,,33.75,,,,61.25,,,,125
-F,52,Clara,Torriani,,FR,,,competed,,,,,10,,,,35,,,,55,,,,112.5
-F,57,Lylia,Ammour,,FR,,,no_show,,,,,,,,,,,,,,,,,
-F,57,Allison,Bassa,,CL,,,competed,,,,,17.5,,,,40,,,,62.5,,,,130
-F,57,Julie,Brion,,FR,,,competed,,,,,8.75,,,,37.5,,,,75,,,,160
-F,57,Nadine,Hettinga,,NL,,,competed,,,,,22.5,,,,55,,,,81.25,,,,132.5
-F,57,Martha,Lubczynskyj,,GB,,,competed,,,,,31.5,,,,62.75,,,,71.25,,,,125
-F,57,Julia,Längerer,,DE,,,competed,,,,,16.25,,,,47.5,,,,60,,,,135
-F,63,Frida,Austigard Petersen,,NO,,,competed,,,,,13.75,,,,32.5,,,,63.75,,,,166
-F,63,Faye,Butler,,GB,,,competed,,,,,16.25,,,,46.25,,,,84,,,,140
-F,63,Giorgia,Galasi,,IT,,,competed,,,,,15,,,,50,,,,70,,,,130
-F,63,Laura,Garcia Bitrian,,ES,,,competed,,,,,20,,,,45,,,,75,,,,135
-F,63,Mar,Martinez,,ES,,,competed,,,,,18.75,,,,41.25,,,,61.25,,,,135
-F,63,Meike,Pohl,,DE,,,competed,,,,,10,,,,36.25,,,,70,,,,155
-F,63,Gianna,Webbe,,GB,,,competed,,,,,16.25,,,,55,,,,82.5,,,,130
-F,70,Elly,Ball,,GB,,,competed,,,,,7.5,,,,32.5,,,,41.25,,,,132.5
-F,70,Myriam,Chebira,,FR,,,disqualified,Bombed the muscle-up,,,,,,,,46.25,,,,70,,,,162.5
-F,70,Christina,Fröhlich,,DE,,,competed,,,,,20,,,,56.25,,,,75,,,,142.5
-F,70,Danae,Morgan,,US,,,competed,,,,,13.75,,,,57.25,,,,75,,,,137.5
-F,70,Lynn,Narings,,NL,,,competed,,,,,23.25,,,,42.5,,,,75.5,,,,152.5
-F,70,Nadine,Schulz,,DE,,,competed,,,,,21.25,,,,37.5,,,,80.5,,,,140
-F,70,Florence,Wong,,FR,,,competed,,,,,12.5,,,,55,,,,70,,,,155
-F,70+,Sarah,Anyamele,,DE,,,competed,,,,,27.5,,,,45,,,,85,,,,180
-F,70+,Gesa,Bimmermann,,DE,,,competed,,,,,10,,,,31.25,,,,67.5,,,,145
-F,70+,Judith,Kleinhansl,,AT,,,competed,,,,,15,,,,37.5,,,,52.5,,,,130
-F,70+,Katerina,Najmanova,,CZ,,,competed,,,,,12.5,,,,35,,,,65,,,,127.5
-F,70+,Elena,Paradiso,,IT,,,disqualified,Bombed the muscle-up,,,,,,,,40,,,,72.5,,,,180
-F,70+,Claudia,van Osch,,NL,,,no_show,,,,,,,,,,,,,,,,,
+M,66,Nana,Boison,,DE,,106.93,competed,,27.5x,27.5,32.5x,27.5,72.5,82.5,83.75x,82.5,105,115,120,120,190,205,207.5x,205
+M,66,Walid,Boulaghzalate,,IT,,110.46,competed,,26.25,30x,31.25,31.25,72.5,76.25x,76.25,76.25,121.25,131.25,140x,131.25,192.5x,202.5,207.5,207.5
+M,66,Julien,Capdeville,,FR,,108.64,competed,,23.75,27.5,30,30,70,75x,76.25x,70,133.75,138,143.25,143.25,197.5x,197.5,207.5x,197.5
+M,66,Alessio,Ceragioli,,IT,,103.15,competed,,25,30x,30x,25,73.75,77.5,80,80,100,106.25x,106.25x,100,200,210,220x,210
+M,66,Parth,Chamaria,,IN,,100.25,competed,,25,30,32.5x,30,67.5,75,80x,75,97.5,105,110,110,182.5,190,200x,190
+M,66,Carlos,Czeszak,,BR,,107.08,competed,,22.5,27.5,30x,27.5,77.5,83.75x,83.75x,77.5,115,122.5x,122.5,122.5,190,197.5,207.5,207.5
+M,66,Ashura,Youssef Bouida,,TN,,109.21,competed,,40.5,43,45x,43,95x,100x,100,100,110,117.5,122.5x,117.5,180,185x,187.5,187.5
+M,73,Lionel,Da Silva,,PT,,107.59,competed,,35,40,41.25,41.25,80,86.25,87.5,87.5,135x,135x,135,135,210,217.5,220x,217.5
+M,73,Benjamín,Ibáñez,,CL,,63.96,disqualified,Bombed the squat,42.5x,42.5,45x,42.5,90,97.5,100,100,140x,145x,145,145,200x,210x,212.5x,
+M,73,François,Li,,FR,,103.09,competed,,31.25,36.25,37.5x,36.25,88.75,93.75x,93.75x,88.75,142.5,150x,150x,142.5,182.5,192.5,200x,192.5
+M,73,Amedeo,Simonelli,,IT,,98.44,competed,,17.5,21.25,25x,21.25,70,77.5,81.25,81.25,115x,125,130,130,205x,210,220x,210
+M,73,Jesus,Toscano,,ES,,0,disqualified,"Bombed the muscle-up, pull-up, dips and squat",1.25x,1.25x,1.25x,,80x,81.25x,81.25x,,150x,150x,150x,,230x,230x,230x,
+M,73,Enzo,Zezza,,IT,,53.13,disqualified,Bombed the squat,25,30,33.75,33.75,67.5,75,77.5x,75,120,126.25,133.75x,126.25,200x,217.5x,217.5x,
+M,73,johan,sanon,,FR,,111.89,competed,,27.5,33.75,35x,33.75,80,85,90,90,147.5,158x,158,158,210,217.5,220,220
+M,80,Aubin,Chevillard,,FR,,111.09,competed,,40,45,46.5,46.5,97.5x,100,106,106,150,156.25,160.25,160.25,210,220,225x,220
+M,80,Aditya,Magoo,,IN,,101.89,competed,,35,37.5,40x,37.5,82.5,87.5,90x,87.5,140x,145x,145,145,215x,215x,222.5,222.5
+M,80,Mattia,Martinelli,,IT,,101.9,competed,,30,35,40x,35,77.5x,85,90,90,117.5,130x,135,135,215,230,240x,230
+M,80,Bartlomiej,Orchowski,,PL,,105.23,competed,,35,40x,40x,35,82.5,90,95x,90,140,150,161,161,210x,220,235x,220
+M,80,Elder,Paredes,,MX,,112.25,competed,,25,30,33.75x,30,80,86.25,90,90,145,151.25,156.25x,151.25,240x,240,247.5,247.5
+M,80,Raul,Teslevici,,FR,,111.52,competed,,40x,40x,40,40,95,101.25,106.25x,101.25,132.5,142.5,147.5x,142.5,235x,235,250x,235
+M,80,Daniël,Wassenaar,,NL,,108.96,competed,,27.5,32.5,35x,32.5,95,100,102.5x,100,150,157.5x,161.25,161.25,200,215,222.5,222.5
+M,87,Marc,Altarriba Coronado,,ES,,109.3,competed,,26.25x,28.75,30,30,72.5,80x,82.5,82.5,160,170,175x,170,255x,255,265,265
+M,87,Gökcan,Aydin,,DE,,101.07,competed,,12.5,20x,20x,12.5,75,90,97.5,97.5,130,140,150x,140,237.5,250,262.5,262.5
+M,87,Diego,Corazza,,IT,,51.05,disqualified,Bombed the squat,32.5x,32.5,37.5x,32.5,82.5,87.5,92.5,92.5,125,132.5,137.5x,132.5,225x,225x,225x,
+M,87,Tony,D'Agostino,,IT,,103.08,competed,,22.5,26.25,27.5,27.5,85,90x,90x,85,115x,122.5,125x,122.5,265,275,278x,275
+M,87,Kevin,Gogo,,FR,,101.3,competed,,27.5,32.5,35x,32.5,77.5,81.25x,81.25,81.25,155,160,161.25x,160,220,232.5,237.5,237.5
+M,87,Gwendal Scott,Roy Simon,,BE,,70.54,disqualified,Bombed the dips,30,35,37.5x,35,80,90x,90x,80,150x,155x,155x,,235x,242.5,252.5x,242.5
+M,87,Lucian,Stanut,,RO,,103.31,competed,,32.5,40,42.5,42.5,82.5,92.5,100,100,125x,140x,140,140,240,255x,265x,240
+M,94,Charlie,Cameron,,GB,,104.61,competed,,25,30,32.5,32.5,80,86.25,91.25,91.25,145,155,160x,155,245,255,262.5,262.5
+M,94,Théo,Goutte-toquet,,FR,,105.26,competed,,17.5x,17.5,25x,17.5,80,90,93.75,93.75,167.5x,180,187.5x,180,232.5,247.5,255,255
+M,94,Daniel,Lisek Lis,,PL,,21.49,disqualified,Bombed the dips and squat,27.5,30,32.5x,30,77.5,80x,80,80,170x,170x,170x,,260x,260x,260x,
+M,94,Xavier,Macias,,IT,,116.6,competed,,36.25,41.25,44,44,107.5,111,114,114,145,152.5,157.5x,152.5,290,300.5x,310.5x,290
+M,94,Robin,Stoltze,,DE,,96.71,competed,,25,30x,30,30,75,81.25,86.25x,81.25,140x,142.5,152.5x,142.5,220,235,247.5,247.5
+M,94,Timo,Wunnenberg,,DE,,99.22,competed,,25,26.25,27.5,27.5,81.25,90,95,95,121.25,130x,130,130,245,260,282.5x,260
+M,94,Badreddine,van der Stoel,,NL,,100.46,competed,,30x,30x,30,30,90,93.75x,93.75x,90,170,175x,175x,170,230x,230,250x,230
+M,101,Daniel,Cassieri,,AR,,96.21,competed,,13.75,20,26.25,26.25,88.75,97.5x,100x,88.75,140x,146.25x,146.25,146.25,225,242.5,252.5x,242.5
+M,101,Mohamad,Houbbi,,BR,,88.95,competed,,10,15,20,20,70x,70,75,75,145x,150,165x,150,220,230x,230x,220
+M,101,David,Klimek,,CZ,,98.07,competed,,12.5,17.5,20,20,75,85,90x,85,130,145x,145x,130,265,280,287.5x,280
+M,101,Valerio,Naldi,,IT,,99.81,competed,,20,25x,25x,20,90,100,103.75,103.75,135,150,160,160,225x,230,242.5,242.5
+M,101,Jomei,Straker,,GB,,98.85,competed,,15,20,22.5x,20,80,86.25,90,90,145,155,160x,155,240,250x,255,255
+M,101,Mike,Tintin,,FR,,96.25,competed,,10,15x,16.25,16.25,67.5,75x,75x,67.5,140,150x,155,155,245,260x,267.5,267.5
+M,101,Mathew,Zlat,,RU,,106.91,competed,,30,37.5,41.25x,37.5,100,115x,115x,100,175,190x,195x,175,250,265x,265x,250
+M,101+,Francesco,De Simone,,IT,,94.83,competed,,17.5,22.5,26.25,26.25,67.5x,67.5,73.75x,67.5,130,137.5,145,145,255,265x,265,265
+M,101+,Rok,Didaković,,HR,,93.68,competed,,0,6.25,15x,6.25,60x,60,77.5x,60,145x,145,150x,145,290,302.5x,310.5x,290
+M,101+,Daniele,Mariani,,IT,,95.14,competed,,15,20,25x,20,70,75,80,80,130x,130,140,140,255x,260,265,265
+M,101+,Davide,Molinaro,,CZ,,70.94,competed,,12.5,17.5x,20x,12.5,62.5,67.5x,67.5,67.5,95,100x,100x,95,200x,200,225x,200
+M,101+,Jakub,Racewicz,,PL,,91.9,competed,,10,15,17.5,17.5,80,90x,91.25,91.25,120x,130,137.5x,130,220,237.5,250,250
+M,101+,Moritz,Sievers,,DE,,77.55,competed,,10,15,20,20,62.5,70,75,75,115x,115x,115,115,185,200,210x,200
+M,101+,Tonio,Zeidler,,DE,,108.25,competed,,15,20x,25x,15,80,90,95x,90,175,187.5,200.5x,187.5,265,285x,285,285
+F,52,Ludivine,Compain,,FR,,120.42,competed,,13.75x,13.75,17.5,17.5,31.25,36.25x,36.25,36.25,56.25,62.5x,62.5,62.5,135,140x,140.5x,135
+F,52,Lindsay,Depaepe,,BE,,82.83,competed,,1.25,2.5x,2.5x,1.25,28.75,32.5,36.25x,32.5,30,35,40,40,102.5,110x,110x,102.5
+F,52,Katrena Goh,Jia Min,,SG,,111.59,competed,,7.5x,7.5,12.5,12.5,32.5,40,44.5,44.5,60,65,70,70,105,110x,110x,105
+F,52,Anaïs,Lozano,,ES,,115.76,competed,,12.5,15x,16.25x,12.5,28.75,32.5,35x,32.5,60x,60,63.75x,60,140x,140,146.5x,140
+F,52,Aurora,Riccardi,,IT,,110.05,competed,,10x,12.5,15.5x,12.5,30,33.75,35x,33.75,55x,55,61.25,61.25,125x,125x,125,125
+F,52,Clara,Torriani,,FR,,104.4,competed,,5,10,12.5x,10,27.5x,30,35,35,47.5x,50,55,55,105,112.5,115x,112.5
+F,52,selly,ortis,,IT,,105.56,competed,,2.5,5x,5,5,28.75,31.25,32.5,32.5,46.25,50x,50,50,125,130,130x,130
+F,57,Allison,Bassa,,CL,,109.51,competed,,15,17.5,20x,17.5,35,40,42.5x,40,62.5,67.5x,67.5x,62.5,120,130,140x,130
+F,57,Julie,Brion,,FR,,123.92,competed,,5,8.75,11.25x,8.75,30,35,37.5,37.5,67.5x,67.5,75,75,150,160,169.5x,160
+F,57,Nadine,Hettinga,,NL,,127.43,competed,,17.5,22.5x,22.5,22.5,45,51.25,55,55,75x,81.25,83.75x,81.25,122.5,130,132.5,132.5
+F,57,Martha,Lubczynskyj,,GB,,127.69,competed,,26.25,30,31.5,31.5,55,60,62.75,62.75,65,71.25,75x,71.25,117.5,125,130x,125
+F,57,Julia,Längerer,,DE,,115.51,competed,,12.5,16.25,18.75x,16.25,40,45,47.5,47.5,55,60,62.5x,60,127.5,135,137.5x,135
+F,57,lylia,ammour,,FR,,0,no_show,,,,,,,,,,,,,,,,,
+F,63,Frida,Austigard Petersen,,NO,,115.81,competed,,7.5,11.25,13.75,13.75,26.25,30,32.5,32.5,56.25,63.75,65x,63.75,157.5x,160,166,166
+F,63,Faye,Butler,,GB,,122.34,competed,,10,13.75,16.25,16.25,38.75x,43.75,46.25,46.25,75,81.25,84,84,135,140,147.5x,140
+F,63,Giorgia,Galasi,,IT,,113.08,competed,,10x,10,15,15,42.5x,45,50,50,65x,65,70,70,130,135x,140x,130
+F,63,Laura,García Bitrian,,ES,,116.08,competed,,15,17.5,20,20,37.5,42.5,45,45,70,75,77.5x,75,135,142.5x,147.5x,135
+F,63,Mar,Martinez,,ES,,107.72,competed,,16.25x,16.25,18.75,18.75,37.5,41.25,45x,41.25,61.25,65x,65x,61.25,125,130,135,135
+F,63,Meike,Pohl,,DE,,115.52,competed,,10x,10x,10,10,30,36.25,38.75x,36.25,62.5,70,75x,70,140,150x,155,155
+F,63,Gianna,Webbe,,GB,,120.2,competed,,7.5,12.5,16.25,16.25,45,50,55,55,72.5,78.75,82.5,82.5,115,130,140x,130
+F,70,Elly,Ball,,GB,,89.33,competed,,2.5,5,7.5,7.5,25,30,32.5,32.5,35,40,41.25,41.25,115,125,132.5,132.5
+F,70,Myriam,Chebira,,FR,,115.81,disqualified,Bombed the muscle-up,7.5x,7.5x,7.5x,,40,43.75,46.25,46.25,57.5x,70,73.75x,70,152.5,162.5,166x,162.5
+F,70,Christina,Fröhlich,,DE,,121.95,competed,,17.5x,20x,20,20,45,53.75,56.25,56.25,67.5,75x,75,75,135x,142.5,150x,142.5
+F,70,Danae,Morgan,,US,,117.66,competed,,13.75,20x,20x,13.75,50,57.25,60x,57.25,62.5,70,75,75,137.5x,137.5,145x,137.5
+F,70,Lynn,Narings,,NL,,122.45,competed,,16.25,20,23.25,23.25,35,40,42.5,42.5,75.5x,75.5,80.25x,75.5,145,152.5,160x,152.5
+F,70,Nadine,Schulz,,DE,,115.91,competed,,17.5,21.25,23.25x,21.25,33.75,37.5,40x,37.5,70,77.5,80.5,80.5,132.5,140,145x,140
+F,70,Florence,Wong,,FR,,121.5,competed,,7.5,10,12.5,12.5,45,51.25,55,55,65x,70,75x,70,135,145,155,155
+F,70+,Sarah,Anyamele,,DE,,139.71,competed,,20,25,27.5,27.5,40,45,50x,45,77.5x,85,95x,85,170,180x,180,180
+F,70+,Gesa,Bimmermann,,DE,,105.01,competed,,5,7.5x,10,10,27.5,31.25,35x,31.25,55x,60,67.5,67.5,130,137.5,145,145
+F,70+,Judith,Kleinhansl,,AT,,97.33,competed,,7.5,12.5,15,15,30,37.5x,37.5,37.5,52.5,60x,60x,52.5,127.5x,130x,130,130
+F,70+,Katerina,Najmanova,,CZ,,99.37,competed,,5,10,12.5,12.5,35x,35,41.25x,35,65x,65,70x,65,127.5x,127.5x,127.5,127.5
+F,70+,Elena,Paradiso,,IT,,121.16,disqualified,Bombed the muscle-up,1.25x,2.5x,2.5x,,35,40,45x,40,65,70,72.5,72.5,165,180,185x,180
+F,70+,Claudia,van Osch,,NL,,0,no_show,,,,,,,,,,,,,,,,,
