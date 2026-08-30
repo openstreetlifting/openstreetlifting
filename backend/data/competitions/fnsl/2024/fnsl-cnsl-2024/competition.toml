@@ -1,0 +1,13 @@
+event = "MPDS"
+
+[competition]
+name = "CNSL"
+start_date = "2024-06-23"
+end_date = "2024-06-23"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"

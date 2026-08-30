@@ -1,0 +1,39 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Youssef,Bouida,,FR,65.7,,competed,,,,,30,,,,85,,,,95,,,,155
+M,66,Walid,Boulaghzalate,,IT,62.9,,competed,,,,,20,,,,65,,,,105,,,,167.5
+M,66,Lucas,Brancourt,,FR,65.7,,competed,,,,,26.25,,,,70,,,,105,,,,130
+M,66,Cyril,Brau,,FR,63.4,,disqualified,Bombed the dips,,,,22.5,,,,60,,,,,,,,170
+M,66,Jean-Christophe,Danglades,,FR,65.8,,disqualified,Bombed the squat,,,,13.75,,,,57.5,,,,67.5,,,,
+M,66,Justin,Hebert,,FR,63.7,,competed,,,,,15,,,,55,,,,70,,,,110
+M,66,Etienne,Sahel,,FR,66,,competed,,,,,10,,,,55,,,,90,,,,155
+M,73,Aubin,Chevillard,,FR,73,,competed,,,,,40,,,,90,,,,130,,,,172.5
+M,73,Siravath,Duong,,FR,72.8,,competed,,,,,32.5,,,,75,,,,140,,,,160
+M,73,Matthias,Gisselbrecht,,FR,72.2,,competed,,,,,22.5,,,,60,,,,90,,,,142.5
+M,73,François,Li,,FR,71.7,,competed,,,,,25,,,,75,,,,132.5,,,,187.5
+M,73,Paul,Merat,,FR,72.8,,competed,,,,,27.5,,,,60,,,,107.5,,,,135
+M,73,Waris,Radji,,FR,72.6,,competed,,,,,27.5,,,,85,,,,110,,,,175
+M,73,Damien,Thenaisy,,FR,73,,competed,,,,,10,,,,50,,,,90,,,,170
+M,80,Abderrahmen,Dellaoui,,FR,76.6,,competed,,,,,27.5,,,,77.5,,,,115,,,,192.5
+M,80,Dylan,Gaveriaux,,FR,78.9,,competed,,,,,15,,,,65,,,,110,,,,160
+M,80,Victor,Lafoucrière,,FR,79.9,,competed,,,,,15,,,,73.75,,,,120,,,,215
+M,80,Georges,Louvel,,FR,77,,competed,,,,,22.5,,,,70,,,,115,,,,215
+M,80,Steven,Ormile,,FR,79.9,,competed,,,,,15,,,,60,,,,100,,,,160
+M,80,Dylan,Pion,,FR,78.8,,disqualified,Bombed the squat,,,,5,,,,62.5,,,,87.5,,,,
+M,80,Pascal,Prinzivalli,,FR,78.9,,disqualified,Bombed the squat,,,,10,,,,60,,,,105,,,,
+M,87,Fodil,Bouchareb,,FR,84.1,,competed,,,,,15,,,,70,,,,125,,,,210
+M,87,Alix,Davy,,FR,86.2,,competed,,,,,20,,,,82.5,,,,120,,,,140
+M,87,Olivier,Duvillage,,FR,82.2,,competed,,,,,10,,,,60,,,,95,,,,120
+M,87,Kevin,Gogo,,FR,86.4,,competed,,,,,17.5,,,,70,,,,110,,,,200
+M,87,Cedric,Jamet,,FR,80.1,,competed,,,,,25,,,,70,,,,100,,,,130
+M,87,Olivier,N'Guessan,,FR,86.9,,competed,,,,,15,,,,90,,,,140,,,,225
+M,87,Issam,Toure,,FR,85.3,,competed,,,,,20,,,,70,,,,120,,,,170
+M,94,Bilal,Annabi,,FR,93.1,,competed,,,,,15,,,,70,,,,100,,,,180
+M,94,Robin,Dolinar,,FR,92.3,,competed,,,,,17.5,,,,60,,,,90,,,,170
+M,94,Bakary,Fofana,,FR,90.5,,competed,,,,,20,,,,90,,,,117.5,,,,110
+M,94,Theo,Goutte-Toquet,,FR,91.1,,competed,,,,,25,,,,77.5,,,,150,,,,220
+M,94,Adrien,Poujouly,,FR,89.6,,competed,,,,,5,,,,50,,,,95,,,,170
+M,94,Rudolph,Wone,,FR,89.1,,competed,,,,,17.5,,,,90,,,,85,,,,175
+M,104,Jean Claude,Calpas,,FR,113.7,,competed,,,,,1.25,,,,45,,,,105,,,,210
+M,104,Jawad,Ouabass,,FR,111,,disqualified,"Bombed the muscle-up, dips and squat",,,,,,,,36.5,,,,,,,,
+F,57,Pauline,Robert,,FR,55.8,,disqualified,Bombed the squat,,,,,,,,40,,,,45,,,,
+F,57,Barbara,Santos,,FR,57,,competed,,,,,,,,,17.5,,,,27.5,,,,110

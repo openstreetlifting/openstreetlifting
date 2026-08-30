@@ -1,0 +1,56 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Youssef,Bouida,,FR,65.9,,competed,,,,,36.25,,,,88.75,,,,103,,,,170
+M,66,Walid,Boulaghzalate,,IT,63.6,,competed,,,,,25,,,,69,,,,113.5,,,,180
+M,66,Cyril,Brau,,FR,66,,competed,,,,,20,,,,60,,,,100,,,,190
+M,66,Julien,Capdeville,,FR,65.4,,competed,,,,,25,,,,65,,,,127.5,,,,181
+M,66,Lionel,Da Silva,,PT,65.2,,disqualified,Bombed the dips,,,,37.5,,,,87.5,,,,,,,,150
+M,66,Justin,Hebert,,FR,63.9,,competed,,,,,24,,,,66.25,,,,90,,,,180
+M,66,Florian,Marrec,,FR,65.5,,competed,,,,,25,,,,78,,,,112.5,,,,162.5
+M,66,Etienne,Sahel,,FR,65.4,,competed,,,,,17.5,,,,64,,,,82.5,,,,182.5
+M,73,Yohan,Capdeville,,FR,72.2,,competed,,,,,29,,,,80,,,,121,,,,160
+M,73,Thavisay,Chanthaboun,,FR,73,,competed,,,,,22,,,,73,,,,112,,,,200
+M,73,Siravath,Duong,,FR,72.8,,competed,,,,,32.5,,,,85,,,,140,,,,180
+M,73,Yanis,Hadjarab,,FR,72.6,,competed,,,,,23,,,,73,,,,107.5,,,,180
+M,73,Julien,Le Niou,,FR,71.3,,competed,,,,,25,,,,65,,,,110,,,,185
+M,73,André,Martins,,FR,72.1,,competed,,,,,10,,,,65,,,,105,,,,185
+M,73,Raul,Teslavici,,FR,72.6,,competed,,,,,40.25,,,,90,,,,112.5,,,,180
+M,73,Théodore,Thézenas,,FR,71.5,,competed,,,,,15,,,,66.25,,,,102.5,,,,220
+M,80,Marc,Bertaux,,FR,77.9,,competed,,,,,24,,,,82.5,,,,110,,,,207.5
+M,80,Fodil,Bouchareb,,FR,79.2,,competed,,,,,20.25,,,,72.5,,,,120,,,,215
+M,80,Mathieu,Bourgeois,,FR,79.4,,competed,,,,,30,,,,75,,,,120,,,,175
+M,80,Abderrahmen,Dellaoui,,FR,76.8,,competed,,,,,26.25,,,,80,,,,125,,,,225
+M,80,Julien,Delourme,,FR,77.2,,competed,,,,,22.5,,,,75,,,,110,,,,177.5
+M,80,Fabian,Flamant,,FR,74,,competed,,,,,25,,,,80,,,,110,,,,185
+M,80,Nicolas,Poignant,,FR,79.2,,disqualified,Bombed the dips and squat,,,,17.5,,,,70,,,,,,,,
+M,80,Titouan,Thibault,,FR,79.3,,competed,,,,,18,,,,75,,,,115,,,,192.5
+M,87,Erman,Blagbo,,FR,85.7,,competed,,,,,7.5,,,,62.5,,,,100,,,,250
+M,87,Enzo,Chartier,,FR,82.2,,competed,,,,,16.25,,,,57.5,,,,112.5,,,,190
+M,87,Jacques,Daryl,,FR,84.2,,disqualified,Bombed the muscle-up,,,,,,,,65,,,,127.5,,,,230
+M,87,Thibault,Essabar,,FR,84.7,,competed,,,,,2.5,,,,57.5,,,,122.5,,,,222.5
+M,87,Kevin,Gogo,,FR,87,,competed,,,,,20,,,,80,,,,125,,,,225
+M,87,Paul,Mérat,,FR,86.4,,competed,,,,,30,,,,75,,,,137.5,,,,202.5
+M,87,Salih,Yolartiran,,FR,86,,competed,,,,,25,,,,85,,,,125,,,,212.5
+M,87,José,d'Almeida,,FR,86.3,,competed,,,,,32.5,,,,82.5,,,,133,,,,217.5
+M,94,Bilal,Annabi,,FR,93.6,,competed,,,,,15,,,,74,,,,110,,,,186
+M,94,Tom,Berthier,,FR,90.1,,competed,,,,,25,,,,75,,,,140,,,,230
+M,94,Alix,Davy,,FR,91.6,,competed,,,,,20,,,,87.5,,,,100,,,,195
+M,94,Robin,Dolinar,,FR,93.1,,competed,,,,,20,,,,65,,,,100,,,,210
+M,94,Théo,Goutte-Toquet,,FR,92.9,,competed,,,,,22.5,,,,86.25,,,,162.5,,,,250
+M,94,Aghiles,Hamiti,,DZ,91.8,,competed,,,,,10,,,,57.5,,,,90,,,,190
+M,94,Dylan,Heurteux,,FR,93,,competed,,,,,40,,,,100,,,,160,,,,235
+M,94,Loïs,Rasphone,,FR,92.1,,competed,,,,,20,,,,75,,,,110,,,,155
+M,104,Marc,Yeurc'h,,FR,94.7,,competed,,,,,0.5,,,,57.5,,,,90,,,,197.5
+M,104+,Jean-Claude,Calpas,,FR,111.7,,competed,,,,,0.25,,,,35,,,,110,,,,235
+M,104+,Sophiane,Chappot,,FR,111.4,,disqualified,Bombed the muscle-up,,,,,,,,35,,,,87.5,,,,250
+M,104+,Maxime,Humily,,FR,112.5,,competed,,,,,7.5,,,,65,,,,120,,,,237.5
+M,104+,David,Vonflie,,FR,115.1,,competed,,,,,10,,,,60,,,,115,,,,170
+F,57,Julie,Brion,,FR,55.2,,competed,,,,,2.5,,,,27.5,,,,47.5,,,,130
+F,57,Pauline,Robert,,FR,56,,competed,,,,,12.5,,,,41.25,,,,45,,,,125
+F,57,Ines,Taoussara,,FR,56.4,,competed,,,,,12,,,,40,,,,45,,,,85
+F,63,Clarisse,Drissa,,FR,63,,competed,,,,,5,,,,21,,,,30,,,,125
+F,63,Inès,Marius,,FR,62,,competed,,,,,4,,,,38,,,,55,,,,142.5
+F,63,Margaux,Sanchez,,FR,57.2,,competed,,,,,5,,,,35,,,,45,,,,120
+F,63,Luna,Socquet,,FR,60.1,,competed,,,,,0.25,,,,17.5,,,,25,,,,75
+F,70,Axelle,Ditacroute,,FR,65.6,,disqualified,Bombed the muscle-up,,,,,,,,35,,,,40,,,,90
+F,70,Alice,Mathieu,,FR,66,,competed,,,,,0.25,,,,26.25,,,,32.5,,,,90
+F,70,Claire,Potiez,,FR,67.7,,competed,,,,,4,,,,27.5,,,,40,,,,135
