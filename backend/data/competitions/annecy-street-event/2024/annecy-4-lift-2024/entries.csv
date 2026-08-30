@@ -1,0 +1,40 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Zacharie,Duloisy,,FR,58,,competed,,,,,10,,,,38.75,,,,60,,,,120
+M,66,Adame,Ichchou,,FR,65.4,,competed,,,,,15,,,,61.25,,,,100,,,,135
+M,66,Mateo,Moure Losada,,FR,62.8,,competed,,,,,11.25,,,,53.75,,,,50,,,,110
+M,66,Florent,Riou,,FR,65,,competed,,,,,18.75,,,,52.5,,,,85,,,,135
+M,66,Enzo,Vanin,,FR,65,,competed,,,,,7.5,,,,40,,,,58.75,,,,150
+M,73,Nassim,Akeb,,FR,70.9,,disqualified,,,,,23.75,,,,65,,,,82.5,,,,192.5
+M,73,Remi,Boucka,,FR,71.6,,competed,,,,,16.25,,,,57.5,,,,82.5,,,,155
+M,73,Donan,Claret,,FR,71.5,,competed,,,,,30,,,,68.75,,,,105,,,,150
+M,73,Sam,Demarecaux,,FR,71.6,,competed,,,,,6.25,,,,45,,,,63.75,,,,130
+M,73,Dylan,Grandhaie,,FR,70.5,,competed,,,,,15,,,,50,,,,95,,,,145
+M,73,Ali,Lessig,,FR,72,,competed,,,,,30,,,,82.5,,,,105,,,,200
+M,73,Axel,Marhuenda,,FR,71.8,,competed,,,,,26.25,,,,68.75,,,,110,,,,190
+M,73,Nathan,Potier,,FR,71.3,,competed,,,,,16.25,,,,66.25,,,,82.5,,,,175
+M,80,Léo,Barrali,,FR,79.6,,competed,,,,,10,,,,50,,,,75,,,,180
+M,80,Kevin,Blavier,,FR,79.5,,competed,,,,,20,,,,52.5,,,,90,,,,145
+M,80,Alexis,Bonnaud,,FR,76.9,,competed,,,,,2.5,,,,45,,,,65,,,,140
+M,80,Rémy,Cardy,,FR,76.5,,competed,,,,,17.5,,,,67.5,,,,80,,,,140
+M,80,Mikaël,Gomes Correia,,FR,78.6,,competed,,,,,22.5,,,,76.25,,,,97.5,,,,187.5
+M,80,Axel,Jolyot,,FR,77.8,,competed,,,,,12.5,,,,55,,,,80,,,,160
+M,80,Nathan,Melisse,,FR,78.3,,competed,,,,,17.5,,,,77.5,,,,85,,,,155
+M,80,Lorian,Paysant,,FR,78.4,,competed,,,,,25,,,,72.5,,,,112.5,,,,175
+M,80,Nicolas,Routier-Scappucci,,FR,77.5,,competed,,,,,33.75,,,,83.75,,,,110,,,,190
+M,80,Mathieu,Sebastien,,FR,79,,competed,,,,,5,,,,55,,,,85,,,,170
+M,87,Martin,Boutry,,FR,81.8,,competed,,,,,13.75,,,,63.75,,,,93.75,,,,147.5
+M,87,Mathieu,Dekegelaire,,FR,85.1,,competed,,,,,2.5,,,,57.5,,,,80,,,,140
+M,87,Enzo,Ingrassia,,FR,77.2,,disqualified,,,,,25,,,,57.5,,,,107.5,,,,220
+M,87,Rémy,Quercy,,FR,81.3,,competed,,,,,6.25,,,,60,,,,100,,,,187.5
+M,87,Andry,Rakotojoelina,,FR,84.7,,disqualified,Bombed the squat,,,,20,,,,65,,,,102.5,,,,
+M,87,Antoine,Rembur,,FR,85.4,,competed,,,,,5,,,,45,,,,65,,,,137.5
+M,87,Antoine,Roncin,,FR,85.8,,competed,,,,,1.25,,,,45,,,,60,,,,130
+M,87,Edgar,Streit,,FR,82.3,,competed,,,,,6.75,,,,52.5,,,,70,,,,135
+M,87+,Fabien,Figueroa,,FR,87.7,,disqualified,Bombed the dips,,,,1.25,,,,55,,,,,,,,180
+M,87+,Jérémie,François,,FR,90.3,,competed,,,,,12.5,,,,55,,,,115,,,,182.5
+M,87+,Gwendal,Nadiya,,FR,92.1,,competed,,,,,17.5,,,,72.5,,,,122.5,,,,205
+M,87+,Marlony,Pina,,FR,91.5,,competed,,,,,15,,,,73.75,,,,110,,,,142.5
+F,57,Louane,Emond,,FR,55.5,,competed,,,,,1.25,,,,27.5,,,,32.5,,,,112.5
+F,57,Clara,Torriani,,FR,50.9,,competed,,,,,2.5,,,,20,,,,37.5,,,,105
+F,57+,Myriam,Chebira,,FR,66.9,,competed,,,,,5,,,,37.5,,,,50,,,,145
+F,57+,Rebecca,Cohen,,FR,67.8,,competed,,,,,0,,,,15,,,,22.5,,,,100
