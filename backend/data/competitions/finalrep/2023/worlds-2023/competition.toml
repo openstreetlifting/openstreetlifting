@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/world-championship/",
+]
+
+[competition]
+name = "Worlds"
+start_date = "2023-09-30"
+end_date = "2023-10-01"
+city = "Cologne"
+region = "Nordrhein-Westfalen"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "FinalRep"

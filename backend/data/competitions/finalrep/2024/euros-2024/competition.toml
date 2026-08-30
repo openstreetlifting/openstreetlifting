@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Euros"
+start_date = "2024-11-02"
+end_date = "2024-11-03"
+city = "Dessau"
+region = "Sachsen-Anhalt"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "FinalRep"
