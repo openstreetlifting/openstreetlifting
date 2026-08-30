@@ -1,12 +1,12 @@
 event = "MPDS"
 sources = [
-    "https://liftcontrol.fr/live/annecy-4-lift-2025-dimanche-matin-39",
-    "https://liftcontrol.fr/live/annecy-4-lift-2025-dimanche-apres-midi-40",
-    "Annecy Street Event result posters, one per weight class",
+  "https://liftcontrol.fr/live/annecy-4-lift-2025-dimanche-matin-39",
+  "https://liftcontrol.fr/live/annecy-4-lift-2025-dimanche-apres-midi-40",
+  "https://www.instagram.com/p/DQrox40jeBc",
 ]
 
 [competition]
-name = "Annecy 4 Lift"
+name = "4Lift"
 start_date = "2025-11-01"
 end_date = "2025-11-02"
 city = "Epagny Metz-Tessy"
@@ -15,5 +15,5 @@ country = "FR"
 status = "completed"
 
 [federation]
-name = "Annecy Street Event"
+name = "4Lift"
 country = "FR"

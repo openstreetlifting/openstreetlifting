@@ -1,8 +1,8 @@
 event = "MPDS"
-sources = ["Annecy Street Event result posters, one per weight class"]
+sources = ["https://www.instagram.com/p/DCz138VoNVR"]
 
 [competition]
-name = "Annecy 4 Lift"
+name = "4Lift"
 start_date = "2024-11-02"
 end_date = "2024-11-03"
 city = "Epagny Metz-Tessy"
@@ -11,5 +11,5 @@ country = "FR"
 status = "completed"
 
 [federation]
-name = "Annecy Street Event"
+name = "4Lift"
 country = "FR"
