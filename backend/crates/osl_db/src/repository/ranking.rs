@@ -4,8 +4,8 @@ use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
 use crate::error::Result;
-use crate::params::{RankingFilter, RankingMovement};
-use crate::projections::ranking::RankingRow;
+use crate::params::{RankingFilter, RankingMovement, SortDirection};
+use crate::projections::ranking::{AthleteClassStandingRow, AthleteStandingRow, RankingRow};
 
 pub struct RankingRepository<'a> {
     pool: &'a PgPool,
@@ -220,6 +220,133 @@ impl<'a> RankingRepository<'a> {
         let rows: Vec<RankingRow> = query.build_query_as().fetch_all(self.pool).await?;
 
         Ok(rows)
+    }
+
+    pub async fn get_athlete_standing(
+        &self,
+        athlete_id: Uuid,
+    ) -> Result<Option<AthleteStandingRow>> {
+        let filter = RankingFilter {
+            gender: None,
+            country: None,
+            federation: None,
+            name: None,
+            movement: RankingMovement::Ris,
+            direction: SortDirection::Desc,
+            event: String::new(),
+            category: None,
+            year: None,
+            competition_id: None,
+            offset: 0,
+            limit: 1,
+        };
+
+        let mut query = Self::movement_weights(&filter);
+        Self::push_eligible(&mut query, &filter);
+        Self::push_ranking_pool(&mut query, &filter);
+
+        query.push(
+            r#"
+            , placed AS (
+                SELECT
+                    athlete_id,
+                    country,
+                    ris_score,
+                    ROW_NUMBER() OVER (ORDER BY ris_score DESC) AS global_place,
+                    COUNT(*) OVER () AS global_field,
+                    ROW_NUMBER() OVER (PARTITION BY country ORDER BY ris_score DESC) AS country_place,
+                    COUNT(*) OVER (PARTITION BY country) AS country_field
+                FROM ranking_pool
+            )
+            SELECT ris_score, global_place, global_field, country, country_place, country_field
+            FROM placed
+            WHERE athlete_id =
+            "#,
+        );
+        query.push_bind(athlete_id);
+
+        let standing: Option<AthleteStandingRow> =
+            query.build_query_as().fetch_optional(self.pool).await?;
+
+        Ok(standing)
+    }
+
+    pub async fn get_athlete_class_standing(
+        &self,
+        athlete_id: Uuid,
+    ) -> Result<Option<AthleteClassStandingRow>> {
+        let filter = RankingFilter {
+            gender: None,
+            country: None,
+            federation: None,
+            name: None,
+            movement: RankingMovement::Total,
+            direction: SortDirection::Desc,
+            event: osl_domain::FULL_EVENT.to_string(),
+            category: None,
+            year: None,
+            competition_id: None,
+            offset: 0,
+            limit: 1,
+        };
+
+        let mut query = Self::movement_weights(&filter);
+        Self::push_eligible(&mut query, &filter);
+
+        query.push(
+            r#"
+            , mine AS (
+                SELECT gender, weight_class_min, weight_class_max
+                FROM eligible
+                WHERE athlete_id =
+            "#,
+        );
+        query.push_bind(athlete_id);
+        query.push(
+            r#"
+                ORDER BY total DESC
+                LIMIT 1
+            )
+            , in_class AS (
+                SELECT DISTINCT ON (eligible.athlete_id) eligible.*
+                FROM eligible, mine
+                WHERE eligible.gender = mine.gender
+                  AND eligible.weight_class_min IS NOT DISTINCT FROM mine.weight_class_min
+                  AND eligible.weight_class_max IS NOT DISTINCT FROM mine.weight_class_max
+                ORDER BY eligible.athlete_id, eligible.total DESC
+            )
+            , placed AS (
+                SELECT
+                    athlete_id,
+                    country,
+                    total,
+                    weight_class_min,
+                    weight_class_max,
+                    ROW_NUMBER() OVER (ORDER BY total DESC) AS class_place,
+                    COUNT(*) OVER () AS class_field,
+                    ROW_NUMBER() OVER (PARTITION BY country ORDER BY total DESC) AS class_country_place,
+                    COUNT(*) OVER (PARTITION BY country) AS class_country_field
+                FROM in_class
+            )
+            SELECT
+                total,
+                weight_class_min,
+                weight_class_max,
+                country,
+                class_place,
+                class_field,
+                class_country_place,
+                class_country_field
+            FROM placed
+            WHERE athlete_id =
+            "#,
+        );
+        query.push_bind(athlete_id);
+
+        let standing: Option<AthleteClassStandingRow> =
+            query.build_query_as().fetch_optional(self.pool).await?;
+
+        Ok(standing)
     }
 
     /// Distinct weight classes, sorted by weight so the filter dropdown reads

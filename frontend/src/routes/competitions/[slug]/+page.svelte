@@ -5,7 +5,7 @@
     Breadcrumb,
     Pagination,
     Flag,
-    SearchInput,
+    FilterBar,
     Table,
     RisHeader,
     RisScore,
@@ -15,8 +15,8 @@
     FROZEN_HEAD_CELL,
     FROZEN_EDGE,
     FROZEN_RANK,
-    FROZEN_ATHLETE,
-    FROZEN_ATHLETE_CONTENT,
+    ATHLETE_COLUMN,
+    ATHLETE_CONTENT,
   } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
@@ -29,18 +29,11 @@
     formatWeight,
     formatAthleteName,
   } from '$lib/utils';
-  import {
-    CELL,
-    STATUS_FLAG,
-    SORTED_COLUMN,
-    NO_VALUE,
-    NO_RESULT,
-    EDGE_TO_EDGE,
-  } from '$lib/constants/table';
+  import { CELL, STATUS_FLAG, SORTED_COLUMN, NO_VALUE, NO_RESULT } from '$lib/constants/table';
   import { GitHubIcon } from '$lib/components/icons';
   import {
-    RANKING_MOVEMENTS,
     RANKING_SORTS,
+    RANKING_SORTS_NO_RIS,
     RANKING_GENDERS,
     defaultRankingSort,
     hasRis,
@@ -92,9 +85,14 @@
   const pagination = $derived(data.pagination);
   const busy = $derived(navigating.to?.url.pathname === page.url.pathname);
 
-  const movements = RANKING_MOVEMENTS;
-  const sorts = $derived(risAvailable ? RANKING_SORTS : RANKING_MOVEMENTS);
+  const sorts = $derived(risAvailable ? RANKING_SORTS : RANKING_SORTS_NO_RIS);
   const genders = RANKING_GENDERS;
+
+  const sorted = (column: string) => (table.movementFilter === column ? SORTED_COLUMN : '');
+
+  const activeFilters = $derived(
+    [table.countryFilter, table.genderFilter, table.categoryFilter].filter(Boolean).length
+  );
 
   // The event code names the movements a competition contested, so a column with no
   // weight can be read as bombed rather than never lifted.
@@ -161,7 +159,17 @@
 
   // Which movements the competition ran. Every row shares it, and a lifter with
   // no lifts at all has nothing of their own to read it from.
-  const event = $derived(rankings.find((entry) => entry.event)?.event ?? null);
+  const event = $derived(competition.event_code ?? null);
+
+  const contested = $derived(
+    event ? LIFTS.filter((lift) => event.includes(lift.code)) : [...LIFTS]
+  );
+
+  const eventLegend = $derived(
+    competition.movements
+      .map((movement) => `${movement.code ?? '?'} ${movement.movement_name}`)
+      .join(' · ')
+  );
 
   // The rankings query joins through lifts and keeps only competed lifters, so
   // it can never return these. The competition's own results list them, and a
@@ -267,7 +275,7 @@
   ]}
 />
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
+<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-4 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
       { label: 'Rankings', href: '/' },
@@ -276,85 +284,68 @@
     ]}
   />
 
-  <!-- Competition Header -->
-  <div class="mb-12">
-    <h1 class="mb-4 {TEXT.title} text-white">
-      {competition.name}
+  <div class="mb-6 sm:mb-10">
+    <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-white">
+      {#if competition.country}
+        <Flag countryCode={competition.country} class="shrink-0 [--flag-height:0.8em]" />
+      {/if}
+      <span class="truncate">{competition.name}</span>
     </h1>
 
-    <div class="flex flex-wrap gap-x-6 gap-y-3 text-base text-zinc-400">
-      <div class="flex items-center gap-2">
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-          />
-        </svg>
-        <span>
-          {#if competition.start_date}
-            {formatDate(competition.start_date)}
-            {#if competition.end_date && competition.start_date !== competition.end_date}
-              - {formatDate(competition.end_date)}
-            {/if}
+    <p class="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-zinc-400 sm:text-sm">
+      {#if competition.start_date}
+        <span class="whitespace-nowrap">
+          {formatDate(competition.start_date)}
+          {#if competition.end_date && competition.end_date !== competition.start_date}
+            - {formatDate(competition.end_date)}
           {/if}
         </span>
-      </div>
+      {/if}
+      {#if formatLocation(competition.city, competition.region)}
+        <span aria-hidden="true">&middot;</span>
+        <span>{formatLocation(competition.city, competition.region)}</span>
+      {/if}
+      <span aria-hidden="true">&middot;</span>
+      <span title={competition.federation.name}>{federationLabel}</span>
+      {#if published}
+        <span aria-hidden="true">&middot;</span>
+        <span class="whitespace-nowrap">{lifterCount} lifters</span>
+      {/if}
+    </p>
 
-      <div class="flex items-center gap-2">
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-          />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
-        <span>{formatLocation(competition.country, competition.region, competition.city)}</span>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <circle cx="12" cy="9" r="6" />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.5 13.9 17 22l-5-3-5 3 1.5-8.1"
-          />
-        </svg>
-        <span>{federationLabel}</span>
-      </div>
-    </div>
+    {#if event}
+      <p class="mt-2 flex items-center gap-2 text-xs text-zinc-500 sm:text-sm">
+        Format
+        <span
+          class="inline-flex items-center rounded border border-zinc-800 px-1.5 py-0.5 font-mono text-[0.7rem] tracking-wider text-zinc-400 sm:text-xs"
+          title={eventLegend}
+          aria-label="Format: {eventLegend}"
+        >
+          {event}
+        </span>
+      </p>
+    {/if}
 
     {#if editPath}
       <a
         href={`https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/data/competitions/${editPath}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="mt-6 inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-xs text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+        class="mt-3 inline-flex items-center gap-1.5 rounded-md border border-zinc-800 px-2 py-1 text-xs text-zinc-400 transition-colors hover:border-zinc-700 hover:bg-zinc-900 hover:text-white focus:ring-2 focus:ring-zinc-500 focus:outline-none sm:px-2.5 sm:py-1.5 sm:text-sm"
       >
-        <GitHubIcon class="h-4 w-4" />
+        <GitHubIcon class="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         Edit on GitHub
       </a>
     {/if}
   </div>
 
   {#if published}
-    <div
-      class="{EDGE_TO_EDGE} mb-6 flex flex-wrap items-center gap-3 rounded-none border border-x-0 border-zinc-800 bg-zinc-900/30 p-3 sm:rounded-lg sm:border-x"
+    <FilterBar
+      bind:search={table.searchFilter}
+      placeholder="Search an athlete"
+      onSearch={() => table.handleFilterChange()}
+      activeCount={activeFilters}
     >
-      <div class="w-full sm:w-64">
-        <SearchInput
-          bind:value={table.searchFilter}
-          placeholder="Search an athlete"
-          onSearch={() => table.handleFilterChange()}
-        />
-      </div>
-
       <select
         bind:value={table.countryFilter}
         onchange={() => table.handleFilterChange()}
@@ -401,7 +392,7 @@
           {/each}
         </select>
       </div>
-    </div>
+    </FilterBar>
   {/if}
 
   {#if !published}
@@ -439,66 +430,54 @@
       </div>
     {/snippet}
 
-    <div class="mb-3">
+    <div class="hidden sm:mb-3 sm:block">
       {@render paginationBar()}
     </div>
 
     <Table {busy}>
       {#snippet head()}
-        <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} align-top text-zinc-400"
+        <th
+          class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} align-top text-zinc-400"
           >Rank</th
         >
-        <th
-          class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {FROZEN_EDGE} align-top text-zinc-400"
-          >Athlete</th
-        >
-        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Sex</th>
-        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Class</th>
-        {#each movements as movement (movement.value)}
-          <th
-            class="{TABLE_HEAD_CELL} align-top text-zinc-400 {table.movementFilter ===
-            movement.value
-              ? SORTED_COLUMN
-              : ''}"
-          >
-            {movement.label}
-            {#if movement.value !== 'total'}
-              <span class="{ATTEMPT_ROW} mt-1 text-[0.6rem] font-normal text-zinc-600">
-                <span class="text-right">1</span>
-                <span class="text-right">2</span>
-                <span class="text-right">3</span>
-                <span class="text-right">Best</span>
-              </span>
-            {/if}
-          </th>
-        {/each}
+        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} align-top text-zinc-400">Athlete</th>
+        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400 {sorted('total')}">Total</th>
         {#if risAvailable}
-          <th
-            class="{TABLE_HEAD_CELL} align-top text-zinc-400 {table.movementFilter === 'ris'
-              ? SORTED_COLUMN
-              : ''}"
-          >
+          <th class="{TABLE_HEAD_CELL} align-top text-zinc-400 {sorted('ris')}">
             <RisHeader />
           </th>
         {/if}
+        {#each contested as lift (lift.key)}
+          <th class="{TABLE_HEAD_CELL} align-top text-zinc-400 {sorted(lift.key)}">
+            {lift.label}
+            <span class="{ATTEMPT_ROW} mt-1 text-[0.6rem] font-normal text-zinc-600">
+              <span class="text-right">1</span>
+              <span class="text-right">2</span>
+              <span class="text-right">3</span>
+              <span class="text-right">Best</span>
+            </span>
+          </th>
+        {/each}
+        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Sex</th>
+        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Class</th>
       {/snippet}
 
       {#snippet body()}
         {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
           {@const participant = participants.get(entry.athlete.athlete_id)}
           <tr class="border-b border-zinc-800/50 transition-colors">
-            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
+            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
               {entry.rank}
             </td>
-            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {FROZEN_EDGE} {CELL.identity}">
-              <span class="flex items-center gap-1.5 {FROZEN_ATHLETE_CONTENT}">
+            <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+              <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                 <a
                   href={resolve(`/athletes/${entry.athlete.slug}`)}
                   class="flex min-w-0 items-center gap-2.5 hover:text-zinc-300"
                 >
                   <Flag
                     countryCode={entry.athlete.country}
-                    class="-ml-1 shrink-0 [--flag-height:1.25em]"
+                    class="shrink-0 [--flag-height:1.25em]"
                   />
                   <span class="truncate underline">
                     {formatAthleteName(entry.athlete)}
@@ -514,9 +493,13 @@
                 {/if}
               </span>
             </td>
-            <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
-            {#each LIFTS as lift (lift.key)}
+            <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
+            {#if risAvailable}
+              <td class="{TABLE_CELL} {CELL.counted}">
+                <RisScore value={entry.ris} source={entry.ris_source} />
+              </td>
+            {/if}
+            {#each contested as lift (lift.key)}
               {@const cell = rankedCell(entry, lift.key, lift.code, lift.movement)}
               <td class="{TABLE_CELL} whitespace-nowrap">
                 <span class={ATTEMPT_ROW}>
@@ -557,28 +540,26 @@
                 </span>
               </td>
             {/each}
-            <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
-            {#if risAvailable}
-              <td class="{TABLE_CELL} {CELL.counted}">
-                <RisScore value={entry.ris} source={entry.ris_source} />
-              </td>
-            {/if}
+            <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
+            <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
           </tr>
         {/each}
 
         {#if onLastPage}
           {#each notPlaced as { category, participant } (participant.athlete.athlete_id)}
             <tr class="border-b border-zinc-800/50 transition-colors">
-              <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.absent}">{NO_VALUE}</td>
-              <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {FROZEN_EDGE} {CELL.identity}">
-                <span class="flex items-center gap-1.5 {FROZEN_ATHLETE_CONTENT}">
+              <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.absent}"
+                >{NO_VALUE}</td
+              >
+              <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+                <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                   <a
                     href={resolve(`/athletes/${participant.athlete.slug}`)}
                     class="flex min-w-0 items-center gap-2.5 hover:text-zinc-300"
                   >
                     <Flag
                       countryCode={participant.athlete.country}
-                      class="-ml-1 shrink-0 [--flag-height:1.25em]"
+                      class="shrink-0 [--flag-height:1.25em]"
                     />
                     <span class="truncate underline">
                       {formatAthleteName(participant.athlete)}
@@ -592,9 +573,11 @@
                   </span>
                 </span>
               </td>
-              <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
-              <td class="{TABLE_CELL} {CELL.data}">{category.category.weight_class}</td>
-              {#each LIFTS as lift (lift.key)}
+              <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
+              {#if risAvailable}
+                <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
+              {/if}
+              {#each contested as lift (lift.key)}
                 {@const cell = participantCell(participant, lift.code, lift.movement)}
                 <td class="{TABLE_CELL} whitespace-nowrap">
                   <span class={ATTEMPT_ROW}>
@@ -626,8 +609,8 @@
                   </span>
                 </td>
               {/each}
-              <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
-              <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
+              <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
+              <td class="{TABLE_CELL} {CELL.data}">{category.category.weight_class}</td>
             </tr>
           {/each}
         {/if}

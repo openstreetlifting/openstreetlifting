@@ -1,13 +1,17 @@
-export const RANKING_MOVEMENTS = [
+export const RANKING_LIFTS = [
   { value: 'muscleup', label: 'Muscle Up' },
   { value: 'pullup', label: 'Pull Up' },
   { value: 'dips', label: 'Dips' },
   { value: 'squat', label: 'Squat' },
-  { value: 'total', label: 'Total' },
 ] as const;
 
-/** Every column a rankings table can be sorted on, in table order. */
-export const RANKING_SORTS = [...RANKING_MOVEMENTS, { value: 'ris', label: 'RIS' }] as const;
+export const RANKING_SORTS = [
+  { value: 'total', label: 'Total' },
+  { value: 'ris', label: 'RIS' },
+  ...RANKING_LIFTS,
+] as const;
+
+export const RANKING_SORTS_NO_RIS = RANKING_SORTS.filter((sort) => sort.value !== 'ris');
 
 export const RANKING_GENDERS = [
   { value: null, label: 'All Sex' },

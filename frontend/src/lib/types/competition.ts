@@ -8,6 +8,7 @@ export interface Federation {
 export interface Movement {
   movement_name: string;
   display_order: number | null;
+  code?: string | null;
 }
 
 export type CompetitionStatus = 'draft' | 'upcoming' | 'live' | 'completed' | 'cancelled';
@@ -113,6 +114,7 @@ export interface CompetitionDetail {
   end_date: string | null;
   federation: Federation;
   movements: Movement[];
+  event_code?: string | null;
   categories: CategoryDetail[];
 }
 

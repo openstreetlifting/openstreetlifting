@@ -11,6 +11,33 @@ export interface AthleteSummary {
   created_at: string;
 }
 
+export interface StandingPlace {
+  place: number;
+  field: number;
+}
+
+export interface CountryStanding extends StandingPlace {
+  code: string;
+}
+
+export interface RisStanding {
+  score?: string | null;
+  global: StandingPlace;
+  country: CountryStanding;
+}
+
+export interface WeightClassStanding {
+  class: string;
+  total?: string | null;
+  global: StandingPlace;
+  country: CountryStanding;
+}
+
+export interface AthleteStanding {
+  ris?: RisStanding | null;
+  weight_class?: WeightClassStanding | null;
+}
+
 export interface AthleteDetail {
   athlete_id: string;
   first_name: string;
@@ -25,6 +52,7 @@ export interface AthleteDetail {
   competitions: AthleteCompetitionSummary[];
   personal_records: PersonalRecord[];
   total_competitions: number;
+  standing?: AthleteStanding | null;
 }
 
 export interface AthleteCompetitionSummary {

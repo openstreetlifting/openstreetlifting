@@ -1,5 +1,6 @@
 use chrono::NaiveDateTime;
 use osl_db::projections::athlete::{AthleteCompetitionRow, AthleteDetail, PersonalRecordRow};
+use osl_db::projections::ranking::{AthleteClassStandingRow, AthleteStandingRow};
 use osl_db::rows::athlete::AthleteRow;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -27,6 +28,81 @@ pub struct AthleteResponse {
     pub personal_records: Option<Vec<PersonalRecord>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_competitions: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standing: Option<AthleteStanding>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct StandingPlace {
+    pub place: i64,
+    pub field: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct CountryStanding {
+    pub code: String,
+    pub place: i64,
+    pub field: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct RisStanding {
+    pub score: Option<rust_decimal::Decimal>,
+    pub global: StandingPlace,
+    pub country: CountryStanding,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct WeightClassStanding {
+    pub class: String,
+    pub total: Option<rust_decimal::Decimal>,
+    pub global: StandingPlace,
+    pub country: CountryStanding,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct AthleteStanding {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ris: Option<RisStanding>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub weight_class: Option<WeightClassStanding>,
+}
+
+impl From<AthleteStandingRow> for RisStanding {
+    fn from(row: AthleteStandingRow) -> Self {
+        Self {
+            score: row.ris_score,
+            global: StandingPlace {
+                place: row.global_place,
+                field: row.global_field,
+            },
+            country: CountryStanding {
+                code: row.country,
+                place: row.country_place,
+                field: row.country_field,
+            },
+        }
+    }
+}
+
+impl WeightClassStanding {
+    pub fn from_row(row: AthleteClassStandingRow) -> Option<Self> {
+        let class = osl_domain::WeightClass::of(row.weight_class_min, row.weight_class_max)?;
+
+        Some(Self {
+            class: class.to_string(),
+            total: row.total,
+            global: StandingPlace {
+                place: row.class_place,
+                field: row.class_field,
+            },
+            country: CountryStanding {
+                code: row.country,
+                place: row.class_country_place,
+                field: row.class_country_field,
+            },
+        })
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -74,6 +150,7 @@ impl From<AthleteRow> for AthleteResponse {
             competitions: None,
             personal_records: None,
             total_competitions: None,
+            standing: None,
         }
     }
 }

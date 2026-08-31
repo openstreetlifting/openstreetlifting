@@ -9,13 +9,13 @@
   let { items }: { items: BreadcrumbItem[] } = $props();
 </script>
 
-<nav aria-label="Breadcrumb" class="mb-6">
-  <ol class="flex flex-wrap items-center gap-2 text-sm text-zinc-500">
+<nav aria-label="Breadcrumb" class="mb-3 sm:mb-5">
+  <ol class="flex flex-wrap items-center gap-1.5 text-xs text-zinc-500 sm:gap-2 sm:text-sm">
     {#each items as item, index (item.label)}
       {#if index > 0}
         <li>
           <svg
-            class="h-4 w-4"
+            class="h-3 w-3 sm:h-4 sm:w-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

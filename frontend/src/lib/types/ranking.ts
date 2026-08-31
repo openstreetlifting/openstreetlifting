@@ -32,6 +32,7 @@ export type RankingsResponse = Paginated<RankingEntry>;
 
 export interface RankingFilters {
   page: number;
+  page_size?: number;
   gender?: string | null;
   country?: string | null;
   /** Federation name, as listed by `/rankings/federations`. */

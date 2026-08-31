@@ -7,7 +7,7 @@ use osl_db::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
     federation::FederationRow,
 };
-use osl_domain::WeightClass;
+use osl_domain::{Movement, WeightClass};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -32,6 +32,8 @@ pub struct CompetitionResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub movements: Option<Vec<MovementInfo>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub event_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<CategoryDetail>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lifter_count: Option<i64>,
@@ -49,6 +51,8 @@ pub struct FederationInfo {
 pub struct MovementInfo {
     pub movement_name: String,
     pub display_order: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -125,6 +129,7 @@ impl From<CompetitionRow> for CompetitionResponse {
             end_date: comp.end_date,
             federation: None,
             movements: None,
+            event_code: None,
             categories: None,
             lifter_count: None,
         }
@@ -142,11 +147,27 @@ impl From<FederationRow> for FederationInfo {
     }
 }
 
+fn event_code(movements: &[MovementInfo]) -> Option<String> {
+    if movements.is_empty() {
+        return None;
+    }
+
+    movements
+        .iter()
+        .map(|movement| movement.code.as_deref())
+        .collect::<Option<Vec<&str>>>()
+        .map(|codes| codes.concat())
+}
+
 impl From<CompetitionMovementRow> for MovementInfo {
     fn from(row: CompetitionMovementRow) -> Self {
+        let code =
+            Movement::from_name(&row.movement_name).map(|movement| movement.code().to_string());
+
         Self {
             movement_name: row.movement_name,
             display_order: row.display_order,
+            code,
         }
     }
 }
@@ -240,7 +261,9 @@ impl CompetitionResponse {
             response.federation = Some(federation.into());
         }
         if include.has("movements") {
-            response.movements = Some(movements.into_iter().map(Into::into).collect());
+            let movements: Vec<MovementInfo> = movements.into_iter().map(Into::into).collect();
+            response.event_code = event_code(&movements);
+            response.movements = Some(movements);
         }
         response
     }
@@ -258,7 +281,9 @@ impl CompetitionResponse {
             response.federation = Some(federation.into());
         }
         if include.has("movements") {
-            response.movements = Some(movements.into_iter().map(Into::into).collect());
+            let movements: Vec<MovementInfo> = movements.into_iter().map(Into::into).collect();
+            response.event_code = event_code(&movements);
+            response.movements = Some(movements);
         }
         if include.has("results") {
             response.categories = Some(categories.into_iter().map(Into::into).collect());

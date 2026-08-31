@@ -5,13 +5,14 @@ use axum::{
     extract::{Path, Query, State},
 };
 use osl_db::repository::athlete::AthleteRepository;
+use osl_db::repository::ranking::RankingRepository;
 use serde::Deserialize;
 
-use super::dto::AthleteResponse;
+use super::dto::{AthleteResponse, AthleteStanding, WeightClassStanding};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
-const ATHLETE_INCLUDES: &[&str] = &["competitions", "records"];
+const ATHLETE_INCLUDES: &[&str] = &["competitions", "records", "standing"];
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct AthleteQuery {
@@ -76,7 +77,28 @@ pub async fn get_athlete(
 
     if ATHLETE_INCLUDES.iter().any(|name| query.include.has(name)) {
         let detail = repo.find_by_slug_detailed(&slug).await?;
-        return Ok(Json(AthleteResponse::from_detail(detail, &query.include)));
+        let athlete_id = detail.athlete.athlete_id;
+
+        let mut response = AthleteResponse::from_detail(detail, &query.include);
+
+        if query.include.has("standing") {
+            let rankings = RankingRepository::new(state.db.pool());
+
+            let ris = rankings.get_athlete_standing(athlete_id).await?;
+            let weight_class = rankings
+                .get_athlete_class_standing(athlete_id)
+                .await?
+                .and_then(WeightClassStanding::from_row);
+
+            if ris.is_some() || weight_class.is_some() {
+                response.standing = Some(AthleteStanding {
+                    ris: ris.map(Into::into),
+                    weight_class,
+                });
+            }
+        }
+
+        return Ok(Json(response));
     }
 
     let athlete = repo.find_by_slug(&slug).await?;
