@@ -32,8 +32,6 @@ pub struct AthleteResponse {
     pub standing: Option<AthleteStanding>,
 }
 
-/// A place is only worth reading next to the field it was taken in, so each one
-/// carries its own.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct StandingPlace {
     pub place: i64,
@@ -47,30 +45,21 @@ pub struct CountryStanding {
     pub field: i64,
 }
 
-/// The global board, which is ordered on RIS.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RisStanding {
-    /// The score the place was taken on.
     pub score: Option<rust_decimal::Decimal>,
     pub global: StandingPlace,
     pub country: CountryStanding,
 }
 
-/// The same two places read on total instead, among the lifters in the class
-/// this athlete set their best total in.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct WeightClassStanding {
-    /// The class itself, e.g. `-73kg`.
     pub class: String,
-    /// The total the place was taken on.
     pub total: Option<rust_decimal::Decimal>,
     pub global: StandingPlace,
     pub country: CountryStanding,
 }
 
-/// Where the athlete stands, on each of the two measures a result carries.
-/// Either half is absent when the board behind it does not rank them: RIS needs
-/// a four movement total, and a total only compares inside its own event.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteStanding {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -97,7 +86,6 @@ impl From<AthleteStandingRow> for RisStanding {
 }
 
 impl WeightClassStanding {
-    /// A row whose bounds do not name a class cannot be reported as one.
     pub fn from_row(row: AthleteClassStandingRow) -> Option<Self> {
         let class = osl_domain::WeightClass::of(row.weight_class_min, row.weight_class_max)?;
 

@@ -1,4 +1,3 @@
-/** The four contested lifts, in the order a meet runs them. */
 export const RANKING_LIFTS = [
   { value: 'muscleup', label: 'Muscle Up' },
   { value: 'pullup', label: 'Pull Up' },
@@ -6,18 +5,12 @@ export const RANKING_LIFTS = [
   { value: 'squat', label: 'Squat' },
 ] as const;
 
-/**
- * Every column a rankings table can be sorted on, in table order. Total and RIS
- * lead: they are what a ranking is read for, and on a phone they are all that
- * fits beside the athlete without scrolling.
- */
 export const RANKING_SORTS = [
   { value: 'total', label: 'Total' },
   { value: 'ris', label: 'RIS' },
   ...RANKING_LIFTS,
 ] as const;
 
-/** The same columns for a competition that ran too few movements to have a RIS. */
 export const RANKING_SORTS_NO_RIS = RANKING_SORTS.filter((sort) => sort.value !== 'ris');
 
 export const RANKING_GENDERS = [

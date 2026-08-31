@@ -3,7 +3,6 @@ import type { PageServerLoad } from './$types';
 import type { CompetitionStatus } from '$lib/types/competition';
 import { COMPETITION_STATUS_FILTERS } from '$lib/constants/competition';
 
-// The archive is what people come for, so results are the tab the page opens on.
 const RESULTS_STATUS: CompetitionStatus = 'completed';
 const UPCOMING_STATUS: CompetitionStatus = 'upcoming';
 
@@ -27,10 +26,6 @@ export const load: PageServerLoad = async ({ url }) => {
   const other = status === UPCOMING_STATUS ? RESULTS_STATUS : UPCOMING_STATUS;
 
   try {
-    // The tab that is not open still says how much is behind it, which costs one
-    // row. It carries the same filters as the open one, so both numbers answer
-    // the same question. A count that cannot be read leaves the number off
-    // rather than the page.
     const [{ data: competitions, pagination }, facets, otherCount] = await Promise.all([
       competitionsService.getAll({
         status,
@@ -38,7 +33,6 @@ export const load: PageServerLoad = async ({ url }) => {
         country,
         year,
         q,
-        // Results read newest first, a calendar reads soonest first.
         direction: status === UPCOMING_STATUS ? 'asc' : 'desc',
         page,
       }),

@@ -21,19 +21,8 @@
    */
   export const FROZEN_EDGE = 'border-r border-zinc-800 sm:border-r-0';
 
-  // The rank carries its width here rather than taking it from its longest
-  // value, since a column that renders narrower than the offset it is pinned at
-  // shows whatever is scrolling past underneath. An auto-layout table treats
-  // `w-` as advisory, which is what the min-width answers. Right aligned, so a
-  // one digit rank sits close to the flag beside it rather than leaving the gap
-  // the four digit ones need.
   export const FROZEN_RANK = 'w-10 min-w-10 text-right tabular-nums sm:w-14 sm:min-w-14 left-0';
 
-  // The athlete column is fixed rather than sized by its longest name, so one
-  // long name cannot push a row off screen. The width is where the curve bends:
-  // it spells out 98% of the names in the archive, and every 16px past it buys
-  // one more percent at the cost of the window the other columns are read
-  // through.
   export const ATHLETE_COLUMN = 'w-44 min-w-44 pl-1 sm:w-56 sm:min-w-56 sm:pl-3';
 
   // An auto-layout table treats a width on a cell as a suggestion and widens
@@ -88,8 +77,6 @@
     --row-bg: var(--table-row-hover);
   }
 
-  /* Set by a page that was linked to with one row in mind. It wins over the
-     zebra tint, which is why it is stated last. */
   .osl-table :global(tbody tr[data-focused]) {
     --row-bg: var(--table-row-focus);
   }

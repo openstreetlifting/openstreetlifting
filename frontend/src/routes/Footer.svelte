@@ -8,9 +8,6 @@
   const ICON = 'text-zinc-400 transition-colors hover:text-white';
 </script>
 
-<!-- Five links do not need four headed columns: headings for one link each are
-     what turned this into a screen of its own on a phone. One row that wraps
-     reads the same at every width. -->
 <footer class="border-t border-zinc-800/50 bg-zinc-950">
   <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-6 sm:px-6 sm:py-10">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

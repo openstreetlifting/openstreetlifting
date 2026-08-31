@@ -71,22 +71,13 @@
 
   const GENDER_LABEL: Record<string, string> = { M: 'Men', F: 'Women' };
 
-  // Every card on this page is a label, a figure and a caption, at the same
-  // three sizes, so a placing and a personal record read as the same kind of
-  // fact rather than two designs sharing a page.
   const CARD_LABEL = `flex items-center gap-1.5 ${TEXT.micro} tracking-wider text-zinc-500 uppercase`;
   const CARD_FIGURE = 'text-xl font-semibold text-white tabular-nums sm:text-2xl';
   const CARD_CAPTION = 'text-xs text-zinc-500';
   const CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
 
-  // The board pages fifty at a time, so a place says which page it is on.
   const RANKING_PAGE_SIZE = 50;
 
-  /**
-   * A standing is a row on the board, so the card opens the board at it: the
-   * same filters the place was computed under, the page it falls on, and the
-   * slug that marks the row once there.
-   */
   function boardQuery(place: number, filters: Record<string, string> = {}): string {
     const params = new SvelteURLSearchParams(filters);
     const target = Math.ceil(place / RANKING_PAGE_SIZE);
@@ -136,8 +127,6 @@
 
   <div class="mb-6 sm:mb-10">
     <div class="flex items-center gap-3">
-      <!-- The flag is sized off the heading rather than a fixed pixel height, so
-           it lands on the cap height of the name at either breakpoint. -->
       <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-white">
         <Flag countryCode={athlete.country} class="shrink-0 [--flag-height:0.8em]" />
         <span class="truncate">{athleteName}</span>
@@ -169,16 +158,6 @@
     </p>
   </div>
 
-  <!-- The flag does the reading a country name makes you do. There is no flag
-       for everyone, so the global card takes the globe from our own icon set
-       rather than borrowing one that would look like a country.
-       Scope and measure sit on the same line: a place is meaningless until you
-       know which board it was taken on, so the card says both before the number. -->
-  <!-- The flag says whose board it is and the glyph says everyone's, so neither
-       needs spelling out; what does need saying is which of the two measures the
-       place was taken on, which is why that sits on the label rather than under
-       the number. There is no flag for everyone, so the global card takes the
-       globe from our own icon set rather than one that would read as a country. -->
   {#snippet standing(
     country: string | null,
     basis: string,
@@ -299,9 +278,6 @@
   <div class="mt-8 sm:mt-10">
     <h2 class="mb-2 {CARD_LABEL}">Competition history</h2>
     {#if athlete.competitions && athlete.competitions.length > 0}
-      <!-- The same table the rankings board is, at every width: the place stays
-           pinned while the rest pans, and what the result was worth is read
-           before the meta that describes it. -->
       <Table>
         {#snippet head()}
           <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-zinc-400"

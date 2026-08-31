@@ -31,9 +31,6 @@ pub struct CompetitionResponse {
     pub federation: Option<FederationInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub movements: Option<Vec<MovementInfo>>,
-    /// The event this competition ran, e.g. `MPDS`. Its letters are the
-    /// movements it contested in display order, which is what gives one set of
-    /// movements exactly one spelling.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub event_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -54,9 +51,6 @@ pub struct FederationInfo {
 pub struct MovementInfo {
     pub movement_name: String,
     pub display_order: Option<i32>,
-    /// The letter this movement contributes to an event code. Absent for a
-    /// movement the domain does not know, which is the only honest answer:
-    /// spelling one here would invent a code nothing can read back.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<String>,
 }
@@ -153,10 +147,6 @@ impl From<FederationRow> for FederationInfo {
     }
 }
 
-/// The letters of the movements contested, in the order they are shown. A
-/// movement the domain cannot name has no letter, and a code missing a letter
-/// would name a different event, so the whole code is withheld rather than a
-/// wrong one returned.
 fn event_code(movements: &[MovementInfo]) -> Option<String> {
     if movements.is_empty() {
         return None;

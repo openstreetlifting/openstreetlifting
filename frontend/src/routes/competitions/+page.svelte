@@ -25,9 +25,6 @@
   const pagination = $derived(data.pagination);
   const busy = $derived(navigating.to?.url.pathname === currentPage.url.pathname);
 
-  // Past and future are two lists, not two filters on one: they sort in opposite
-  // directions and answer different questions, so they are tabs rather than a
-  // segmented control sitting among the filters that narrow them.
   const TABS = [
     { status: 'completed', label: 'Results' },
     { status: 'upcoming', label: 'Upcoming' },
@@ -105,8 +102,6 @@
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-4 sm:px-6 sm:py-12">
   <Breadcrumb items={[{ label: 'Rankings', href: '/' }, { label: 'Competitions' }]} />
 
-  <!-- The breadcrumb above says which page this is, so the heading would only
-       repeat it. It stays in the document for screen readers and crawlers. -->
   <h1 class="sr-only">Streetlifting competitions</h1>
 
   <nav class="mb-4 flex items-center gap-5 border-b border-zinc-800/60">
@@ -189,8 +184,6 @@
       </div>
     </Card>
   {:else}
-    <!-- The same table at every width, like the rankings board: it pans sideways
-         on a phone rather than becoming a different thing to read. -->
     <Table>
       {#snippet head()}
         <th class="{TABLE_HEAD_CELL} text-zinc-400">Competition</th>

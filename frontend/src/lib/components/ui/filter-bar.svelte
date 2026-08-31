@@ -9,7 +9,6 @@
     search: string;
     placeholder?: string;
     onSearch: () => void;
-    /** How many filters are set, so a closed panel still says it is narrowing the table. */
     activeCount?: number;
     children: Snippet;
   }
@@ -25,10 +24,6 @@
   let open = $state(false);
 </script>
 
-<!-- Six controls above the table push the first rows off a phone screen, so
-     below sm only the search stays out and the rest collapses behind a toggle.
-     The panel is display:contents from sm, which drops the wrapper back out of
-     the way and leaves the desktop bar laid out exactly as it was. -->
 <div
   class="{EDGE_TO_EDGE} mb-4 flex flex-wrap items-center gap-3 rounded-none border border-x-0 border-zinc-800 bg-zinc-900/30 p-3 sm:mb-6 sm:rounded-lg sm:border-x"
 >

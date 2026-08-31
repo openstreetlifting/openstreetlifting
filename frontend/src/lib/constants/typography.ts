@@ -16,11 +16,6 @@ export const TEXT = {
 /** Buttons, pagination and counts sit with the data, not with prose. */
 export const CONTROL = 'text-xs font-medium';
 
-/**
- * The header and the footer are the same kind of thing, so they read the same:
- * light, one step under the page, with the current page told apart by colour
- * rather than by weight.
- */
 export const NAV_LINK = 'text-sm font-light transition-colors hover:text-white';
 
 /** Shared chrome for every filter control. Each caller adds its own padding and width. */

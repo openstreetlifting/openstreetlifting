@@ -222,13 +222,6 @@ impl<'a> RankingRepository<'a> {
         Ok(rows)
     }
 
-    /// Where one athlete stands, read off the same board the rankings page shows
-    /// rather than a second definition of a place that could drift from it: the
-    /// pool, the deduplication and the ordering are the board's own.
-    ///
-    /// Both places come out of one pass. Partitioning by country ranks every
-    /// country at once, and the counts beside them are the field each place is
-    /// out of, which is what turns a number into a standing.
     pub async fn get_athlete_standing(
         &self,
         athlete_id: Uuid,
@@ -278,19 +271,6 @@ impl<'a> RankingRepository<'a> {
         Ok(standing)
     }
 
-    /// Where one athlete stands on what they lifted rather than on RIS, inside
-    /// the weight class they lifted it in.
-    ///
-    /// Totals only compare within one event, which is why the board's own
-    /// eligibility rule is reused rather than restated: a muscle-up-only meet
-    /// has a total too, and it is not the same measurement.
-    ///
-    /// Which class is theirs comes off their best total, since a lifter moves
-    /// between classes over a career. Who else is in it is then the same
-    /// question the board answers when it is filtered to that class: everyone
-    /// who has competed in it, each at their best there. Ranking the class any
-    /// other way would give a number the board disagrees with, and this standing
-    /// is a link into that board.
     pub async fn get_athlete_class_standing(
         &self,
         athlete_id: Uuid,
@@ -313,9 +293,6 @@ impl<'a> RankingRepository<'a> {
         let mut query = Self::movement_weights(&filter);
         Self::push_eligible(&mut query, &filter);
 
-        // A class is only a class within one gender: a women's -70kg and a men's
-        // -70kg are different rooms. The bounds compare null safe, since the
-        // heaviest class has no upper one.
         query.push(
             r#"
             , mine AS (

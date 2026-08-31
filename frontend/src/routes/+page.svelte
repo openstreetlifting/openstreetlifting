@@ -43,14 +43,8 @@
 
   const seo = $derived(listingSeo(page.url));
 
-  // A standing card on an athlete's page links here at the page their row is on.
-  // The slug only marks the row; it never narrows the board.
   const focused = $derived(page.url.searchParams.get('athlete'));
 
-  // After a navigation, not during one: SvelteKit puts the scroll back to the
-  // top once the page is mounted, so a scroll fired from an effect is undone a
-  // moment later. afterNavigate runs behind that, and the frame lets the rows
-  // paint before one of them is looked for.
   afterNavigate(() => {
     if (!focused) return;
     requestAnimationFrame(() => {
@@ -80,10 +74,6 @@
 />
 
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-3 sm:px-6 sm:py-12">
-  <!-- The nav already says which page this is and the table says what it holds,
-       so the heading would only repeat them. It stays in the document for the
-       readers that need one, screen readers and crawlers, without taking the
-       first screen of a phone to say something obvious. -->
   <h1 class="sr-only">Streetlifting rankings</h1>
 
   <FilterBar
@@ -277,9 +267,6 @@
                 {entry.federation.abbreviation || entry.federation.name}
               </span>
             </td>
-            <!-- Without this the column collapses to its shortest token and the
-                 date breaks over three lines, which sets the height of every row
-                 in the table. -->
             <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap">
               {formatDate(entry.competition.date)}
             </td>

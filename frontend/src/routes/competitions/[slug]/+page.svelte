@@ -161,11 +161,6 @@
   // no lifts at all has nothing of their own to read it from.
   const event = $derived(competition.event_code ?? null);
 
-  // The code is four letters at most, so the legend that expands it is the
-  // movements themselves, in the order they are lifted.
-  // A meet that ran two movements has no muscle-up column to leave empty: the
-  // event says which columns exist. Without one, nothing is known to be absent,
-  // so all four stay.
   const contested = $derived(
     event ? LIFTS.filter((lift) => event.includes(lift.code)) : [...LIFTS]
   );
@@ -289,9 +284,6 @@
     ]}
   />
 
-  <!-- Three icons, three labels and a bordered button spent half a phone screen
-       saying what one line says. The same shape as an athlete's header: the name,
-       what is true about it under that, and the way in to correct it. -->
   <div class="mb-6 sm:mb-10">
     <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-white">
       {#if competition.country}
@@ -322,9 +314,6 @@
     </p>
 
     {#if event}
-      <!-- The format is a code, so it is set as one and given its own line: the
-           letters carry the meaning and the legend is a hover away rather than
-           spelled out beside every competition. -->
       <p class="mt-2 flex items-center gap-2 text-xs text-zinc-500 sm:text-sm">
         Format
         <span

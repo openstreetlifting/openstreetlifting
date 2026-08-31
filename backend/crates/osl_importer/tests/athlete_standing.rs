@@ -1,8 +1,3 @@
-//! A standing is one row of the board, read where an athlete sits on it: once
-//! over everyone, once inside their own country. It has to be the board's own
-//! ranking, not a second definition of a place that could disagree with what
-//! the rankings page shows.
-
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::Movement;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
@@ -13,7 +8,6 @@ mod common;
 
 use common::{athlete, category, from, import, lifting, men_80, weighing};
 
-/// Three lifters, two of them French, ordered by what they totalled.
 async fn a_board(pool: &PgPool) {
     import(
         pool,
@@ -83,8 +77,6 @@ async fn the_country_place_only_counts_that_country(pool: PgPool) {
     );
 }
 
-/// A competition that ran two movements scores no RIS, and the board is ordered
-/// on RIS, so there is no place to report.
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn an_athlete_the_board_does_not_rank_has_no_standing(pool: PgPool) {
     let mut half: CanonicalFormat = common::competition(
@@ -110,8 +102,6 @@ fn two_lifts(lifter: AthleteData) -> AthleteData {
     )
 }
 
-/// The same three lifters, plus one in a lighter class who out-totals none of
-/// them. A class ranking has to ignore him entirely.
 async fn two_classes(pool: &PgPool) {
     a_board(pool).await;
     import(
@@ -178,10 +168,6 @@ async fn the_class_country_place_narrows_both_ways(pool: PgPool) {
     );
 }
 
-/// A lifter who has competed in two classes belongs to both boards, at their
-/// best in each. Which class the card shows is the one their best total was set
-/// in, but the field it is measured against is whoever else has lifted there,
-/// exactly as the board reads when it is filtered to that class.
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_class_counts_everyone_who_has_lifted_in_it(pool: PgPool) {
     a_board(&pool).await;
@@ -199,7 +185,6 @@ async fn a_class_counts_everyone_who_has_lifted_in_it(pool: PgPool) {
         ),
     )
     .await;
-    // The same lifter again, heavier, and better: this is now their best total.
     import(
         &pool,
         common::competition(
