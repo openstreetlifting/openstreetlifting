@@ -1,15 +1,18 @@
 <script lang="ts">
   import { EmailIcon, InstagramIcon, GitHubIcon, DiscordIcon } from '$lib/components/icons';
   import { TEXT } from '$lib/constants/typography';
+  import Seo from '$lib/components/seo.svelte';
+  import { absolute } from '$lib/seo';
 
   const rowClass =
     'flex items-center gap-3 py-4 text-sm text-zinc-400 transition-colors hover:text-white';
 </script>
 
-<svelte:head>
-  <title>Contact - OpenStreetlifting</title>
-  <meta name="description" content="Get in touch with OpenStreetlifting" />
-</svelte:head>
+<Seo
+  title="Contact"
+  description="Get in touch with OpenStreetlifting to report a wrong result, send competition results, or contribute to the archive."
+  canonical={absolute('/contact')}
+/>
 
 <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
   <h1 class="mb-4 {TEXT.title} text-white">Get in touch</h1>

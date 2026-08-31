@@ -1,9 +1,9 @@
 import { rankingsService } from '$lib/server/api';
 import type { PageServerLoad } from './$types';
 
-const title = 'OpenStreetlifting';
+const title = 'Streetlifting rankings and records';
 const description =
-  'OpenStreetlifting is an open, collaborative project building a permanent and traceable archive of all Streetlifting data, freely accessible to everyone.';
+  'Global streetlifting rankings from every competition in the archive: muscle up, pull up, dips and squat results, RIS scores and athlete records.';
 
 export const load: PageServerLoad = async ({ url }) => {
   const gender = url.searchParams.get('gender') || null;

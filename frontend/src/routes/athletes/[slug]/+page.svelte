@@ -13,7 +13,9 @@
   } from '$lib/components/ui';
   import { InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
-  import { formatDate, formatWeight, formatAthleteName } from '$lib/utils';
+  import { formatDate, formatWeight, formatAthleteName, countryName } from '$lib/utils';
+  import Seo from '$lib/components/seo.svelte';
+  import { absolute, athleteLd, breadcrumbLd } from '$lib/seo';
   import { CELL, STATUS_FLAG, NO_VALUE } from '$lib/constants/table';
 
   // The badge is two letters, so the title carries the meaning. A reason from
@@ -55,15 +57,42 @@
 
     return [...records].sort((a, b) => getPriority(a.movement_name) - getPriority(b.movement_name));
   }
+
+  const athleteName = $derived(formatAthleteName(athlete));
+
+  const seoBests = $derived(
+    sortPersonalRecords(athlete.personal_records)
+      .map(
+        (record) => `${record.movement_name.toLowerCase()} ${formatWeight(record.max_weight)} kg`
+      )
+      .join(', ')
+  );
+
+  const seoDescription = $derived(
+    [
+      athleteName,
+      athlete.native_name ? ` (${athlete.native_name})` : '',
+      athlete.country ? `, ${countryName(athlete.country)}` : '',
+      '. Streetlifting results and personal records',
+      seoBests ? `: ${seoBests}` : '',
+      `. ${athlete.total_competitions} ${athlete.total_competitions === 1 ? 'competition' : 'competitions'} in the OpenStreetlifting archive.`,
+    ].join('')
+  );
 </script>
 
-<svelte:head>
-  <title>{formatAthleteName(athlete)} - OpenStreetlifting</title>
-  <meta
-    name="description"
-    content="Competition history and personal records for {formatAthleteName(athlete)}"
-  />
-</svelte:head>
+<Seo
+  title="{athleteName} - Streetlifting results"
+  description={seoDescription}
+  canonical={absolute(`/athletes/${athlete.slug}`)}
+  type="profile"
+  jsonLd={[
+    athleteLd(athlete, seoDescription),
+    breadcrumbLd([
+      { name: 'Rankings', path: '/' },
+      { name: athleteName, path: `/athletes/${athlete.slug}` },
+    ]),
+  ]}
+/>
 
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <Breadcrumb items={[{ label: 'Rankings', href: '/' }, { label: formatAthleteName(athlete) }]} />

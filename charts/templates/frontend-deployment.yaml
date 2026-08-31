@@ -28,6 +28,8 @@ spec:
           env:
             - name: BACKEND_URL
               value: {{ .Values.frontend.env.backendUrl | quote }}
+            - name: PUBLIC_SITE_URL
+              value: {{ .Values.frontend.env.siteUrl | quote }}
             - name: PORT
               value: {{ .Values.frontend.service.port | quote }}
             - name: PUBLIC_APP_VERSION

@@ -22,6 +22,7 @@
   import { page, navigating } from '$app/state';
   import {
     formatDate,
+    formatLongDate,
     formatLocation,
     countryName,
     slugify,
@@ -48,6 +49,8 @@
   import type { RankingEntry } from '$lib/types/ranking';
   import type { Attempt, Participant, CategoryDetail } from '$lib/types/competition';
   import { FIELD, TEXT } from '$lib/constants/typography';
+  import Seo from '$lib/components/seo.svelte';
+  import { breadcrumbLd, competitionLd, listingSeo } from '$lib/seo';
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
@@ -211,12 +214,58 @@
     const name = STATUS_TITLE[status] ?? status;
     return reason ? `${name}: ${reason.toLowerCase()}` : name;
   }
+
+  const seo = $derived(listingSeo(page.url));
+
+  // Half the meets are named after the federation alone, so the year is what
+  // tells one edition from the next in a search result.
+  const seoYear = $derived(competition.start_date?.slice(0, 4) ?? '');
+  const seoName = $derived(
+    seoYear && !competition.name.includes(seoYear)
+      ? `${competition.name} ${seoYear}`
+      : competition.name
+  );
+
+  const lifterCount = $derived(
+    competition.categories.reduce((total, category) => total + category.participants.length, 0)
+  );
+
+  const seoWhere = $derived(
+    formatLocation(competition.city, competition.country && countryName(competition.country))
+  );
+
+  const seoMovements = $derived(
+    competition.movements.map((movement) => movement.movement_name.toLowerCase()).join(', ')
+  );
+
+  const seoDescription = $derived(
+    [
+      published
+        ? `Full results and standings from ${competition.name}`
+        : `${competition.name}, a ${federationLabel} streetlifting competition`,
+      competition.start_date ? `, ${formatLongDate(competition.start_date)}` : '',
+      seoWhere ? `, ${seoWhere}` : '',
+      published
+        ? `. ${lifterCount} lifters ranked on ${seoMovements}.`
+        : '. Entered in the OpenStreetlifting calendar.',
+    ].join('')
+  );
 </script>
 
-<svelte:head>
-  <title>{competition.name} - OpenStreetlifting</title>
-  <meta name="description" content="Results and details for {competition.name}" />
-</svelte:head>
+<Seo
+  title={published ? `${seoName} results` : seoName}
+  description={seoDescription}
+  canonical={seo.canonical}
+  noindex={seo.noindex}
+  jsonLd={[
+    competitionLd(competition, seoDescription),
+    breadcrumbLd([
+      { name: 'Rankings', path: '/' },
+      { name: 'Competitions', path: '/competitions' },
+      { name: competition.name, path: `/competitions/${competition.slug}` },
+    ]),
+  ]}
+/>
 
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <Breadcrumb

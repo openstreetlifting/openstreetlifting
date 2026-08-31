@@ -8,6 +8,19 @@ export function formatDate(dateString: string | null): string {
   return `${day}-${month}-${date.getFullYear()}`;
 }
 
+const longDate = new Intl.DateTimeFormat('en', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+export function formatLongDate(dateString: string | null): string {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return Number.isNaN(date.getTime()) ? '' : longDate.format(date);
+}
+
 export function formatLocation(...parts: (string | null | undefined)[]): string {
   return parts.filter(Boolean).join(', ');
 }

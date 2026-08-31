@@ -1,14 +1,14 @@
 <script lang="ts">
   import { TEXT } from '$lib/constants/typography';
+  import Seo from '$lib/components/seo.svelte';
+  import { absolute } from '$lib/seo';
 </script>
 
-<svelte:head>
-  <title>Privacy Policy - OpenStreetlifting</title>
-  <meta
-    name="description"
-    content="OpenStreetlifting privacy policy and data protection information"
-  />
-</svelte:head>
+<Seo
+  title="Privacy Policy"
+  description="OpenStreetlifting privacy policy and data protection information."
+  canonical={absolute('/privacy')}
+/>
 
 <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
   <div class="mb-16">

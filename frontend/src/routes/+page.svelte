@@ -18,6 +18,7 @@
     FROZEN_ATHLETE_CONTENT,
   } from '$lib/components/ui';
   import { InstagramIcon } from '$lib/components/icons';
+  import Seo from '$lib/components/seo.svelte';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { formatDate, countryName, formatWeight, formatAthleteName } from '$lib/utils';
@@ -25,6 +26,7 @@
   import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import { FIELD, TEXT } from '$lib/constants/typography';
+  import { listingSeo, websiteLd } from '$lib/seo';
 
   let { data }: { data: PageData } = $props();
 
@@ -37,16 +39,21 @@
   const movements = RANKING_MOVEMENTS;
   const sorts = RANKING_SORTS;
   const genders = RANKING_GENDERS;
+
+  const seo = $derived(listingSeo(page.url));
 </script>
 
-<svelte:head>
-  <title>{data.title}</title>
-  <meta name="description" content={data.description} />
-</svelte:head>
+<Seo
+  title={data.title}
+  description={data.description}
+  canonical={seo.canonical}
+  noindex={seo.noindex}
+  jsonLd={[websiteLd()]}
+/>
 
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <div class="mb-6">
-    <h1 class="mb-4 {TEXT.title} text-white">Rankings</h1>
+    <h1 class="mb-4 {TEXT.title} text-white">Streetlifting rankings</h1>
   </div>
 
   <div
