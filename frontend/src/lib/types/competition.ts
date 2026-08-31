@@ -8,6 +8,8 @@ export interface Federation {
 export interface Movement {
   movement_name: string;
   display_order: number | null;
+  /** The letter this movement contributes to an event code, e.g. `M`. */
+  code?: string | null;
 }
 
 export type CompetitionStatus = 'draft' | 'upcoming' | 'live' | 'completed' | 'cancelled';
@@ -113,6 +115,8 @@ export interface CompetitionDetail {
   end_date: string | null;
   federation: Federation;
   movements: Movement[];
+  /** The event contested, e.g. `MPDS`. Absent when the movements are unknown. */
+  event_code?: string | null;
   categories: CategoryDetail[];
 }
 

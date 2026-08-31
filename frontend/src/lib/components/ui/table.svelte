@@ -1,39 +1,46 @@
 <script module lang="ts">
   // Cell padding lives here so the three tables cannot drift apart. Colour is
   // left to the caller, since an active or highlighted cell overrides it.
-  export const TABLE_HEAD_CELL = 'px-1.5 py-1.5 text-left font-medium sm:px-3 sm:py-2';
-  export const TABLE_CELL = 'px-1.5 py-1.5 sm:px-3 sm:py-2';
+  export const TABLE_HEAD_CELL = 'px-1.5 py-1 text-left font-medium sm:px-3 sm:py-2';
+  export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-2';
 
   // A results table is wider than a phone and always will be, so the cost of
-  // reading one is horizontal scrolling. What that destroys is knowing whose
-  // row you are on, so the columns that answer it stay pinned while the rest
-  // pans underneath. They repaint the row background themselves, since what
+  // reading one is horizontal scrolling. The rank stays pinned through it, since
+  // an ordered list read sideways still has to say which place each row is.
+  // The name does not: it sits beside Total and RIS, which is what the table is
+  // scrolled to for, and pinning it too would spend two thirds of a phone screen
+  // holding an anchor still while the columns it anchors are read through what
+  // is left. Pinned cells repaint the row background themselves, since what
   // scrolls behind them would otherwise show through.
   export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
   export const FROZEN_HEAD_CELL = 'sticky z-10 bg-zinc-900';
   /**
    * The edge that shows the columns to its right have moved. Only below sm:
    * from there the table fits without scrolling, nothing slides under the
-   * pinned columns, and the rule is then just a line through the row.
+   * pinned column, and the rule is then just a line through the row.
    */
   export const FROZEN_EDGE = 'border-r border-zinc-800 sm:border-r-0';
 
-  // Both pinned columns carry their width here rather than taking it from the
-  // longest value in them, so a long name truncates instead of pushing the
-  // rest of its row off screen, and so the left offsets stay exact: the
-  // athlete column starts where the rank column ends.
-  // The min-widths are not decoration. An auto-layout table gives a column its
-  // content's width and treats `w-` as advisory, so without them the rank
-  // column renders narrower than the offset the athlete column is pinned at,
-  // and the gap between the two shows whatever is scrolling past underneath.
-  export const FROZEN_RANK = 'w-11 min-w-11 sm:w-14 sm:min-w-14 left-0';
-  export const FROZEN_ATHLETE = 'w-32 min-w-32 sm:w-56 sm:min-w-56 left-11 sm:left-14';
+  // The rank carries its width here rather than taking it from its longest
+  // value, since a column that renders narrower than the offset it is pinned at
+  // shows whatever is scrolling past underneath. An auto-layout table treats
+  // `w-` as advisory, which is what the min-width answers. Right aligned, so a
+  // one digit rank sits close to the flag beside it rather than leaving the gap
+  // the four digit ones need.
+  export const FROZEN_RANK = 'w-10 min-w-10 text-right tabular-nums sm:w-14 sm:min-w-14 left-0';
+
+  // The athlete column is fixed rather than sized by its longest name, so one
+  // long name cannot push a row off screen. The width is where the curve bends:
+  // it spells out 98% of the names in the archive, and every 16px past it buys
+  // one more percent at the cost of the window the other columns are read
+  // through.
+  export const ATHLETE_COLUMN = 'w-44 min-w-44 pl-1 sm:w-56 sm:min-w-56 sm:pl-3';
 
   // An auto-layout table treats a width on a cell as a suggestion and widens
   // the column to whatever its longest value wants, which for a name column is
   // most of the screen. Capping the content is what actually holds the column,
-  // so this belongs on whatever sits inside a pinned athlete cell.
-  export const FROZEN_ATHLETE_CONTENT = 'max-w-[7rem] sm:max-w-[12.5rem]';
+  // so this belongs on whatever sits inside an athlete cell.
+  export const ATHLETE_CONTENT = 'max-w-[10.5rem] sm:max-w-[12.5rem]';
 </script>
 
 <script lang="ts">
@@ -79,5 +86,11 @@
 
   .osl-table :global(tbody tr:hover) {
     --row-bg: var(--table-row-hover);
+  }
+
+  /* Set by a page that was linked to with one row in mind. It wins over the
+     zebra tint, which is why it is stated last. */
+  .osl-table :global(tbody tr[data-focused]) {
+    --row-bg: var(--table-row-focus);
   }
 </style>

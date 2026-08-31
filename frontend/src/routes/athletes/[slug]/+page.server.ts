@@ -6,9 +6,7 @@ export const load: PageServerLoad = async ({ params }) => {
   try {
     const athlete = await athletesService.getBySlug(params.slug);
 
-    return {
-      athlete,
-    };
+    return { athlete };
   } catch (err) {
     console.error('Failed to fetch athlete:', err);
     throw error(404, 'Athlete not found');

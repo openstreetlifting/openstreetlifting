@@ -3,8 +3,9 @@
   import { afterNavigate } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { GitHubIcon, InstagramIcon, MenuIcon, CloseIcon } from '$lib/components/icons';
+  import { NAV_LINK } from '$lib/constants/typography';
 
-  const linkClass = 'text-sm font-medium transition-colors hover:text-white';
+  const linkClass = NAV_LINK;
 
   let menuOpen = $state(false);
 
@@ -25,10 +26,10 @@
 
 <header class="bg-zinc-950">
   <nav
-    class="mx-auto flex max-w-[var(--content-max-width)] flex-wrap items-center justify-between px-4 py-4 sm:px-6"
+    class="mx-auto flex max-w-[var(--content-max-width)] flex-wrap items-center justify-between px-4 py-3 sm:px-6 sm:py-4"
   >
     <a href={resolve('/')} class="opacity-90 transition-opacity hover:opacity-100">
-      <img src="/logowidth.png" alt="OpenStreetlifting" class="h-8 w-auto" />
+      <img src="/logowidth.png" alt="OpenStreetlifting" class="h-7 w-auto sm:h-8" />
     </a>
 
     <button
@@ -50,7 +51,7 @@
     {#snippet comingSoon(label: string)}
       <li>
         <span
-          class="cursor-not-allowed text-sm font-medium text-zinc-600"
+          class="{NAV_LINK} cursor-not-allowed text-zinc-600 hover:text-zinc-600"
           aria-disabled="true"
           title="Coming soon"
         >
@@ -118,7 +119,7 @@
           class="text-zinc-400 transition-colors hover:text-white"
           aria-label="GitHub"
         >
-          <GitHubIcon />
+          <GitHubIcon class="h-5 w-5" />
         </a>
         <a
           href="https://www.instagram.com/openstreetlifting"
@@ -127,7 +128,7 @@
           class="text-zinc-400 transition-colors hover:text-white"
           aria-label="Instagram"
         >
-          <InstagramIcon />
+          <InstagramIcon class="h-5 w-5" />
         </a>
       </li>
     </ul>

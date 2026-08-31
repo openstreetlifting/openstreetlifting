@@ -34,6 +34,17 @@ export const REPORTED_MARK = `${STATUS_FLAG} ml-px align-super text-[0.75em] lea
 export const REPORTED_GLYPH = 'R';
 export const REPORTED_TITLE = 'RIS reported by federation, missing bodyweight we need to recompute';
 
+/**
+ * A free text column takes its width from its longest value, so a competition
+ * with a long name would otherwise widen every row on the page. Both are capped
+ * and truncated instead, tightest on a phone where they sit last.
+ */
+export const TEXT_CELL = {
+  competition: 'block max-w-[9rem] truncate sm:max-w-[16rem]',
+  location: 'block max-w-[7rem] truncate sm:max-w-none',
+  federation: 'block max-w-[5rem] truncate sm:max-w-none',
+} as const;
+
 export const NO_VALUE = '-';
 export const NO_RESULT = '—';
 

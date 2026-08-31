@@ -28,4 +28,6 @@
   --table-row: #101013;
   --table-row-alt: #151518;
   --table-row-hover: #1c1c1f;
+  /* The row a deep link points at, bright enough to find in a page of fifty. */
+  --table-row-focus: #26262b;
 }

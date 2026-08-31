@@ -4,7 +4,7 @@
     Card,
     Pagination,
     Flag,
-    SearchInput,
+    FilterBar,
     Table,
     RisHeader,
     RisScore,
@@ -14,18 +14,19 @@
     FROZEN_HEAD_CELL,
     FROZEN_EDGE,
     FROZEN_RANK,
-    FROZEN_ATHLETE,
-    FROZEN_ATHLETE_CONTENT,
+    ATHLETE_COLUMN,
+    ATHLETE_CONTENT,
   } from '$lib/components/ui';
   import { InstagramIcon } from '$lib/components/icons';
   import Seo from '$lib/components/seo.svelte';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
+  import { afterNavigate } from '$app/navigation';
   import { formatDate, countryName, formatWeight, formatAthleteName } from '$lib/utils';
-  import { CELL, SORTED_COLUMN, EDGE_TO_EDGE } from '$lib/constants/table';
-  import { RANKING_MOVEMENTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
+  import { CELL, SORTED_COLUMN, TEXT_CELL } from '$lib/constants/table';
+  import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
-  import { FIELD, TEXT } from '$lib/constants/typography';
+  import { FIELD } from '$lib/constants/typography';
   import { listingSeo, websiteLd } from '$lib/seo';
 
   let { data }: { data: PageData } = $props();
@@ -36,11 +37,38 @@
   const pagination = $derived(data.pagination);
   const busy = $derived(navigating.to?.url.pathname === page.url.pathname);
 
-  const movements = RANKING_MOVEMENTS;
+  const lifts = RANKING_LIFTS;
   const sorts = RANKING_SORTS;
   const genders = RANKING_GENDERS;
 
   const seo = $derived(listingSeo(page.url));
+
+  // A standing card on an athlete's page links here at the page their row is on.
+  // The slug only marks the row; it never narrows the board.
+  const focused = $derived(page.url.searchParams.get('athlete'));
+
+  // After a navigation, not during one: SvelteKit puts the scroll back to the
+  // top once the page is mounted, so a scroll fired from an effect is undone a
+  // moment later. afterNavigate runs behind that, and the frame lets the rows
+  // paint before one of them is looked for.
+  afterNavigate(() => {
+    if (!focused) return;
+    requestAnimationFrame(() => {
+      document.querySelector('[data-focused]')?.scrollIntoView({ block: 'center' });
+    });
+  });
+
+  const sorted = (column: string) => (table.movementFilter === column ? SORTED_COLUMN : '');
+
+  const activeFilters = $derived(
+    [
+      table.countryFilter,
+      table.federationFilter,
+      table.yearFilter,
+      table.genderFilter,
+      table.categoryFilter,
+    ].filter(Boolean).length
+  );
 </script>
 
 <Seo
@@ -51,22 +79,19 @@
   jsonLd={[websiteLd()]}
 />
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
-  <div class="mb-6">
-    <h1 class="mb-4 {TEXT.title} text-white">Streetlifting rankings</h1>
-  </div>
+<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-3 sm:px-6 sm:py-12">
+  <!-- The nav already says which page this is and the table says what it holds,
+       so the heading would only repeat them. It stays in the document for the
+       readers that need one, screen readers and crawlers, without taking the
+       first screen of a phone to say something obvious. -->
+  <h1 class="sr-only">Streetlifting rankings</h1>
 
-  <div
-    class="{EDGE_TO_EDGE} mb-6 flex flex-wrap items-center gap-3 rounded-none border border-x-0 border-zinc-800 bg-zinc-900/30 p-3 sm:rounded-lg sm:border-x"
+  <FilterBar
+    bind:search={table.searchFilter}
+    placeholder="Search an athlete"
+    onSearch={() => table.handleFilterChange()}
+    activeCount={activeFilters}
   >
-    <div class="w-full sm:w-64">
-      <SearchInput
-        bind:value={table.searchFilter}
-        placeholder="Search an athlete"
-        onSearch={() => table.handleFilterChange()}
-      />
-    </div>
-
     <select
       bind:value={table.countryFilter}
       onchange={() => table.handleFilterChange()}
@@ -133,7 +158,7 @@
         {/each}
       </select>
     </div>
-  </div>
+  </FilterBar>
 
   {#if data.error}
     <Card class="p-8">
@@ -168,55 +193,50 @@
       </div>
     {/snippet}
 
-    <div class="mb-3">
+    <div class="hidden sm:mb-3 sm:block">
       {@render paginationBar()}
     </div>
 
     <Table {busy}>
       {#snippet head()}
-        <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-zinc-400">Rank</th>
-        <th
-          class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {FROZEN_EDGE} text-zinc-400"
-          >Athlete</th
+        <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-zinc-400"
+          >Rank</th
         >
+        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-zinc-400">Athlete</th>
+        <th class="{TABLE_HEAD_CELL} text-zinc-400 {sorted('total')}">Total</th>
+        <th class="{TABLE_HEAD_CELL} text-zinc-400 {sorted('ris')}">
+          <RisHeader />
+        </th>
+        {#each lifts as lift (lift.value)}
+          <th class="{TABLE_HEAD_CELL} text-zinc-400 {sorted(lift.value)}">
+            {lift.label}
+          </th>
+        {/each}
         <th class="{TABLE_HEAD_CELL} text-zinc-400">Competition</th>
         <th class="{TABLE_HEAD_CELL} text-zinc-400">Federation</th>
         <th class="{TABLE_HEAD_CELL} text-zinc-400">Date</th>
         <th class="{TABLE_HEAD_CELL} text-zinc-400">Sex</th>
         <th class="{TABLE_HEAD_CELL} text-zinc-400">Class</th>
-        {#each movements as movement (movement.value)}
-          <th
-            class="{TABLE_HEAD_CELL} text-zinc-400 {table.movementFilter === movement.value
-              ? SORTED_COLUMN
-              : ''}"
-          >
-            {movement.label}
-          </th>
-        {/each}
-        <th
-          class="{TABLE_HEAD_CELL} text-zinc-400 {table.movementFilter === 'ris'
-            ? SORTED_COLUMN
-            : ''}"
-        >
-          <RisHeader />
-        </th>
       {/snippet}
 
       {#snippet body()}
         {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
-          <tr class="border-b border-zinc-800/50 transition-colors">
-            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
+          <tr
+            class="border-b border-zinc-800/50 transition-colors"
+            data-focused={entry.athlete.slug === focused ? '' : undefined}
+          >
+            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
               {entry.rank}
             </td>
-            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {FROZEN_EDGE} {CELL.identity}">
-              <span class="flex items-center gap-1.5 {FROZEN_ATHLETE_CONTENT}">
+            <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+              <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                 <a
                   href={resolve(`/athletes/${entry.athlete.slug}`)}
                   class="flex min-w-0 items-center gap-2.5 hover:text-zinc-300"
                 >
                   <Flag
                     countryCode={entry.athlete.country}
-                    class="-ml-1 shrink-0 [--flag-height:1.25em]"
+                    class="shrink-0 [--flag-height:1.25em]"
                   />
                   <span class="truncate underline">
                     {formatAthleteName(entry.athlete)}
@@ -236,28 +256,35 @@
                 {/if}
               </span>
             </td>
+            <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
+            <td class="{TABLE_CELL} {CELL.counted}">
+              <RisScore value={entry.ris} source={entry.ris_source} />
+            </td>
+            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.muscleup)}</td>
+            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.pullup)}</td>
+            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.dips)}</td>
+            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.squat)}</td>
             <td class="{TABLE_CELL} {CELL.data}">
               <a
                 href={resolve(`/competitions/${entry.competition.slug}`)}
-                class="block max-w-[9rem] truncate underline hover:text-zinc-300 sm:max-w-[16rem]"
+                class="{TEXT_CELL.competition} underline hover:text-zinc-300"
               >
                 {entry.competition.name}
               </a>
             </td>
             <td class="{TABLE_CELL} {CELL.data}" title={entry.federation.name}>
-              {entry.federation.abbreviation || entry.federation.name}
+              <span class={TEXT_CELL.federation}>
+                {entry.federation.abbreviation || entry.federation.name}
+              </span>
             </td>
-            <td class="{TABLE_CELL} {CELL.data}">{formatDate(entry.competition.date)}</td>
+            <!-- Without this the column collapses to its shortest token and the
+                 date breaks over three lines, which sets the height of every row
+                 in the table. -->
+            <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap">
+              {formatDate(entry.competition.date)}
+            </td>
             <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
             <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.muscleup)}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.pullup)}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.dips)}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.squat)}</td>
-            <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
-            <td class="{TABLE_CELL} {CELL.counted}">
-              <RisScore value={entry.ris} source={entry.ris_source} />
-            </td>
           </tr>
         {/each}
       {/snippet}

@@ -7,6 +7,10 @@ export const rankingsService = {
       page: filters.page,
     };
 
+    if (filters.page_size) {
+      params.page_size = filters.page_size;
+    }
+
     if (filters.gender) {
       params.gender = filters.gender;
     }

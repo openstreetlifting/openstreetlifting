@@ -7,7 +7,7 @@ use osl_db::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
     federation::FederationRow,
 };
-use osl_domain::WeightClass;
+use osl_domain::{Movement, WeightClass};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -31,6 +31,11 @@ pub struct CompetitionResponse {
     pub federation: Option<FederationInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub movements: Option<Vec<MovementInfo>>,
+    /// The event this competition ran, e.g. `MPDS`. Its letters are the
+    /// movements it contested in display order, which is what gives one set of
+    /// movements exactly one spelling.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub event_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<CategoryDetail>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -49,6 +54,11 @@ pub struct FederationInfo {
 pub struct MovementInfo {
     pub movement_name: String,
     pub display_order: Option<i32>,
+    /// The letter this movement contributes to an event code. Absent for a
+    /// movement the domain does not know, which is the only honest answer:
+    /// spelling one here would invent a code nothing can read back.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -125,6 +135,7 @@ impl From<CompetitionRow> for CompetitionResponse {
             end_date: comp.end_date,
             federation: None,
             movements: None,
+            event_code: None,
             categories: None,
             lifter_count: None,
         }
@@ -142,11 +153,31 @@ impl From<FederationRow> for FederationInfo {
     }
 }
 
+/// The letters of the movements contested, in the order they are shown. A
+/// movement the domain cannot name has no letter, and a code missing a letter
+/// would name a different event, so the whole code is withheld rather than a
+/// wrong one returned.
+fn event_code(movements: &[MovementInfo]) -> Option<String> {
+    if movements.is_empty() {
+        return None;
+    }
+
+    movements
+        .iter()
+        .map(|movement| movement.code.as_deref())
+        .collect::<Option<Vec<&str>>>()
+        .map(|codes| codes.concat())
+}
+
 impl From<CompetitionMovementRow> for MovementInfo {
     fn from(row: CompetitionMovementRow) -> Self {
+        let code =
+            Movement::from_name(&row.movement_name).map(|movement| movement.code().to_string());
+
         Self {
             movement_name: row.movement_name,
             display_order: row.display_order,
+            code,
         }
     }
 }
@@ -240,7 +271,9 @@ impl CompetitionResponse {
             response.federation = Some(federation.into());
         }
         if include.has("movements") {
-            response.movements = Some(movements.into_iter().map(Into::into).collect());
+            let movements: Vec<MovementInfo> = movements.into_iter().map(Into::into).collect();
+            response.event_code = event_code(&movements);
+            response.movements = Some(movements);
         }
         response
     }
@@ -258,7 +291,9 @@ impl CompetitionResponse {
             response.federation = Some(federation.into());
         }
         if include.has("movements") {
-            response.movements = Some(movements.into_iter().map(Into::into).collect());
+            let movements: Vec<MovementInfo> = movements.into_iter().map(Into::into).collect();
+            response.event_code = event_code(&movements);
+            response.movements = Some(movements);
         }
         if include.has("results") {
             response.categories = Some(categories.into_iter().map(Into::into).collect());

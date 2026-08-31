@@ -4,8 +4,8 @@ use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
 use crate::error::Result;
-use crate::params::{RankingFilter, RankingMovement};
-use crate::projections::ranking::RankingRow;
+use crate::params::{RankingFilter, RankingMovement, SortDirection};
+use crate::projections::ranking::{AthleteClassStandingRow, AthleteStandingRow, RankingRow};
 
 pub struct RankingRepository<'a> {
     pool: &'a PgPool,
@@ -220,6 +220,156 @@ impl<'a> RankingRepository<'a> {
         let rows: Vec<RankingRow> = query.build_query_as().fetch_all(self.pool).await?;
 
         Ok(rows)
+    }
+
+    /// Where one athlete stands, read off the same board the rankings page shows
+    /// rather than a second definition of a place that could drift from it: the
+    /// pool, the deduplication and the ordering are the board's own.
+    ///
+    /// Both places come out of one pass. Partitioning by country ranks every
+    /// country at once, and the counts beside them are the field each place is
+    /// out of, which is what turns a number into a standing.
+    pub async fn get_athlete_standing(
+        &self,
+        athlete_id: Uuid,
+    ) -> Result<Option<AthleteStandingRow>> {
+        let filter = RankingFilter {
+            gender: None,
+            country: None,
+            federation: None,
+            name: None,
+            movement: RankingMovement::Ris,
+            direction: SortDirection::Desc,
+            event: String::new(),
+            category: None,
+            year: None,
+            competition_id: None,
+            offset: 0,
+            limit: 1,
+        };
+
+        let mut query = Self::movement_weights(&filter);
+        Self::push_eligible(&mut query, &filter);
+        Self::push_ranking_pool(&mut query, &filter);
+
+        query.push(
+            r#"
+            , placed AS (
+                SELECT
+                    athlete_id,
+                    country,
+                    ris_score,
+                    ROW_NUMBER() OVER (ORDER BY ris_score DESC) AS global_place,
+                    COUNT(*) OVER () AS global_field,
+                    ROW_NUMBER() OVER (PARTITION BY country ORDER BY ris_score DESC) AS country_place,
+                    COUNT(*) OVER (PARTITION BY country) AS country_field
+                FROM ranking_pool
+            )
+            SELECT ris_score, global_place, global_field, country, country_place, country_field
+            FROM placed
+            WHERE athlete_id =
+            "#,
+        );
+        query.push_bind(athlete_id);
+
+        let standing: Option<AthleteStandingRow> =
+            query.build_query_as().fetch_optional(self.pool).await?;
+
+        Ok(standing)
+    }
+
+    /// Where one athlete stands on what they lifted rather than on RIS, inside
+    /// the weight class they lifted it in.
+    ///
+    /// Totals only compare within one event, which is why the board's own
+    /// eligibility rule is reused rather than restated: a muscle-up-only meet
+    /// has a total too, and it is not the same measurement.
+    ///
+    /// Which class is theirs comes off their best total, since a lifter moves
+    /// between classes over a career. Who else is in it is then the same
+    /// question the board answers when it is filtered to that class: everyone
+    /// who has competed in it, each at their best there. Ranking the class any
+    /// other way would give a number the board disagrees with, and this standing
+    /// is a link into that board.
+    pub async fn get_athlete_class_standing(
+        &self,
+        athlete_id: Uuid,
+    ) -> Result<Option<AthleteClassStandingRow>> {
+        let filter = RankingFilter {
+            gender: None,
+            country: None,
+            federation: None,
+            name: None,
+            movement: RankingMovement::Total,
+            direction: SortDirection::Desc,
+            event: osl_domain::FULL_EVENT.to_string(),
+            category: None,
+            year: None,
+            competition_id: None,
+            offset: 0,
+            limit: 1,
+        };
+
+        let mut query = Self::movement_weights(&filter);
+        Self::push_eligible(&mut query, &filter);
+
+        // A class is only a class within one gender: a women's -70kg and a men's
+        // -70kg are different rooms. The bounds compare null safe, since the
+        // heaviest class has no upper one.
+        query.push(
+            r#"
+            , mine AS (
+                SELECT gender, weight_class_min, weight_class_max
+                FROM eligible
+                WHERE athlete_id =
+            "#,
+        );
+        query.push_bind(athlete_id);
+        query.push(
+            r#"
+                ORDER BY total DESC
+                LIMIT 1
+            )
+            , in_class AS (
+                SELECT DISTINCT ON (eligible.athlete_id) eligible.*
+                FROM eligible, mine
+                WHERE eligible.gender = mine.gender
+                  AND eligible.weight_class_min IS NOT DISTINCT FROM mine.weight_class_min
+                  AND eligible.weight_class_max IS NOT DISTINCT FROM mine.weight_class_max
+                ORDER BY eligible.athlete_id, eligible.total DESC
+            )
+            , placed AS (
+                SELECT
+                    athlete_id,
+                    country,
+                    total,
+                    weight_class_min,
+                    weight_class_max,
+                    ROW_NUMBER() OVER (ORDER BY total DESC) AS class_place,
+                    COUNT(*) OVER () AS class_field,
+                    ROW_NUMBER() OVER (PARTITION BY country ORDER BY total DESC) AS class_country_place,
+                    COUNT(*) OVER (PARTITION BY country) AS class_country_field
+                FROM in_class
+            )
+            SELECT
+                total,
+                weight_class_min,
+                weight_class_max,
+                country,
+                class_place,
+                class_field,
+                class_country_place,
+                class_country_field
+            FROM placed
+            WHERE athlete_id =
+            "#,
+        );
+        query.push_bind(athlete_id);
+
+        let standing: Option<AthleteClassStandingRow> =
+            query.build_query_as().fetch_optional(self.pool).await?;
+
+        Ok(standing)
     }
 
     /// Distinct weight classes, sorted by weight so the filter dropdown reads
