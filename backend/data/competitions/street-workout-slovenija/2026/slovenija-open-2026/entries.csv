@@ -1,7 +1,7 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Michał,Fila,,PL,,95.98,competed,,25,30,32.5x,30,90,95,100x,95,115,121.25x,121.25x,115,160,170x,170x,160
 M,66,Lovro,Topic,,HR,,93.83,competed,,15,20,22.5,22.5,67.5,72.5,76.25,76.25,102.5,110,115,115,160,170,177.5x,170
-M,73,𝐁𝐮𝐝𝐢,(Abdelrahman Hesham),,EG,,78.65,competed,,13.75,18.75,21.25,21.25,58.75,63.75,65,65,85,95,100x,95,160,172.5,182.5x,172.5
+M,73,Abdelrahman,Hesham,,EG,,78.65,competed,,13.75,18.75,21.25,21.25,58.75,63.75,65,65,85,95,100x,95,160,172.5,182.5x,172.5
 M,73,Filip,Baćić,,HR,,64.76,competed,,12.5x,13.75,16.25,16.25,57.5,65x,67.5,67.5,57.5,67.5,73.75,73.75,115,122.5x,125,125
 M,73,Johannes,Schertler,,AT,,61.12,competed,,5,7.5,10x,7.5,50,51.25x,51.25x,50,85,90,95,95,120,125,130x,125
 M,73,Oskar,Viler,,SI,,54.99,competed,,5,10,15,15,45,55,62.5x,55,50,65,75x,65,95,105x,110,110
@@ -9,7 +9,7 @@ M,73,Gorazd,Zafirovski,,MK,,56.48,competed,,2.5x,2.5,5x,2.5,40,46.25,50x,46.25,8
 M,80,Nik,Bavec,,SI,,94.13,competed,,25,30,33,33,67.5,80,83,83,120,130,132x,130,207.5,220.5,232x,220.5
 M,80,Maksym,Muzhylo,,UA,,57.17,competed,,5,10x,12.5x,5,52.5,60,65,65,85,95,100x,95,115,122.5x,130x,115
 M,80,Matthias,Sepin,,AT,,61.33,competed,,0,2.5x,2.5,2.5,42.5,46.25x,46.25,46.25,70,77.5,86.25x,77.5,150,162.5,175,175
-M,80,jaka,golob,,SI,,75.18,competed,,10,13.75,15,15,55,62.5,68.75x,62.5,85,93.75,100,100,182.5,192.5,200x,192.5
+M,80,Jaka,Golob,,SI,,75.18,competed,,10,13.75,15,15,55,62.5,68.75x,62.5,85,93.75,100,100,182.5,192.5,200x,192.5
 M,80,Mark,Škofič,,SI,,37.68,disqualified,Bombed the squat,15,20,25x,20,65,75x,75x,65,100,110x,110x,100,200x,200x,200x,
 M,87,Sabo,Andi,,RO,,0,no_show,,,,,,,,,,,,,,,,,
 M,87,Piotr,Czubkowski,,PL,,82.65,competed,,15x,17.5,20x,17.5,70,71.25x,77.5,77.5,140x,140x,140,140,190,195x,195x,190
