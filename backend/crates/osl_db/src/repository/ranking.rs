@@ -89,6 +89,11 @@ impl<'a> RankingRepository<'a> {
             query.push_bind(country);
         }
 
+        if let Some(ref federation) = filter.federation {
+            query.push(" AND f.name = ");
+            query.push_bind(federation);
+        }
+
         match filter.category {
             Some(WeightClass::UpTo(max)) => {
                 query.push(" AND wc.max_kg = ");
@@ -264,6 +269,24 @@ impl<'a> RankingRepository<'a> {
         classes.dedup();
 
         Ok(classes)
+    }
+
+    /// Federations someone has actually competed under, alphabetical, so the
+    /// dropdown never offers a filter that returns nothing.
+    pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
+        let federations: Vec<String> = sqlx::query_scalar(
+            r#"
+            SELECT DISTINCT f.name
+            FROM federations f
+            INNER JOIN competitions c ON c.federation_id = f.federation_id
+            INNER JOIN competition_participants cp ON cp.competition_id = c.competition_id
+            ORDER BY f.name
+            "#,
+        )
+        .fetch_all(self.pool)
+        .await?;
+
+        Ok(federations)
     }
 
     /// Distinct competition years, most recent first.

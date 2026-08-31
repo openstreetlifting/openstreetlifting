@@ -19,6 +19,7 @@ async fn board(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
     let filter = RankingFilter {
         gender: None,
         country: None,
+        federation: None,
         name: None,
         movement,
         direction: SortDirection::Desc,

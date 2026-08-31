@@ -15,6 +15,10 @@ export const rankingsService = {
       params.country = filters.country;
     }
 
+    if (filters.federation) {
+      params.federation = filters.federation;
+    }
+
     if (filters.q) {
       params.q = filters.q;
     }
@@ -50,6 +54,10 @@ export const rankingsService = {
     if (gender) params.gender = gender;
     if (competitionId) params.competition_id = competitionId;
     return apiClient.get<string[]>('/api/v1/rankings/classes', { params });
+  },
+
+  async getRankingFederations(): Promise<string[]> {
+    return apiClient.get<string[]>('/api/v1/rankings/federations');
   },
 
   async getRankingYears(): Promise<number[]> {

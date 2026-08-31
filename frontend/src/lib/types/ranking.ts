@@ -34,6 +34,8 @@ export interface RankingFilters {
   page: number;
   gender?: string | null;
   country?: string | null;
+  /** Federation name, as listed by `/rankings/federations`. */
+  federation?: string | null;
   /** Case insensitive substring of the athlete's full name. */
   q?: string | null;
   movement?: string;

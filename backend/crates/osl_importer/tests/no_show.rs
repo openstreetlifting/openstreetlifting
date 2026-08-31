@@ -63,6 +63,7 @@ async fn only_the_lifter_who_competed_is_ranked(pool: PgPool) {
         .get_global_ranking(&RankingFilter {
             gender: None,
             country: None,
+            federation: None,
             name: None,
             movement: RankingMovement::Total,
             direction: SortDirection::Desc,

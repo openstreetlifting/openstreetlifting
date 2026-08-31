@@ -71,6 +71,16 @@
       {/each}
     </select>
     <select
+      bind:value={table.federationFilter}
+      onchange={() => table.handleFilterChange()}
+      class="w-full {FIELD} px-3 py-2 sm:w-auto"
+    >
+      <option value={null}>All Federations</option>
+      {#each data.federations as federationOption (federationOption)}
+        <option value={federationOption}>{federationOption}</option>
+      {/each}
+    </select>
+    <select
       bind:value={table.yearFilter}
       onchange={() => table.handleFilterChange()}
       class="w-full {FIELD} px-3 py-2 sm:w-auto"
