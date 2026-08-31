@@ -1,0 +1,20 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,73,Sebastjan,Emersic,,SI,,,competed,,6.25,10,13.75x,10,47.5,52.5,55,55,87.5,95,100,100,152.5,162.5,170x,162.5
+M,73,Žiga,Hribernik,,SI,,,competed,,23.75x,28.75x,28.75,28.75,65,72.5,80,80,55,70,85x,70,35,37.5x,37.5x,35
+M,80,Nik,Bavec,,SI,,,competed,,23.75,30,32.5x,30,67.5,75,82.5,82.5,117.5,130,132.5x,130,205,215,220,220
+M,80,Jaka,Golob,,SI,,,competed,,3.5x,6.5,10,10,50,56.25,61.25x,56.25,70,77.5,85,85,170,180,187.5,187.5
+M,80,Tim,Jambriško,,SI,,,competed,,12.5,15,17.5,17.5,52.5,60,63.75,63.75,95,107.5,115,115,152.5,162.5,170,170
+M,80,Jaka,Lesjak,,SI,,,competed,,11.25,15,16.25,16.25,55,61.25x,65,65,80,87.5,95,95,152.5,162.5,167.5x,162.5
+M,80,Benedikt,Lončar,,SI,,,competed,,15,20,25x,20,60,70,75,75,100,110,115x,110,150,170x,170,170
+M,80,Jernej,Silvester,,SI,,,competed,,16.25,21.25,23.75x,21.25,65,72.5,77.5,77.5,92.5,100,105,105,160,172.5,180,180
+M,87,Antonio,Novak,,HR,,,competed,,15x,20,23.75x,20,60,68.75,73.75x,68.75,95,105,115,115,160,177.5,192.5,192.5
+M,87,Kristijan,Ramljak,,SI,,,competed,,0,1.25,3.75,3.75,30,42.5,50x,42.5,65,77.5,95,95,140,155,165x,155
+M,94,Saš,Mišvelj,,SI,,,competed,,22.5,27.5,30x,27.5,70,75,80x,75,140,150,155x,150,210,220,227.5,227.5
+M,94,Georg,Rauch,,AT,,,competed,,20,25,27.5x,25,75,80,85x,80,110,117.5,125,125,220,230,235,235
+M,94,Aldin,Turkeš,,SI,,,disqualified,Bombed the muscle-up,0x,0x,0x,,30,35,45,45,90x,100,105x,100,100,120,130,130
+M,101,Filip,Budiša,,SI,,,competed,,40,45.5,47.5x,45.5,100,108.75,113,113,80,100,115x,100,140,170x,200,200
+M,101,David,Milićević,,SI,,,competed,,15,20x,20x,15,60,65,67.5x,65,110,120,125,125,225,237.5,255,255
+F,57,Lara,Šušmelj,,SI,,,competed,,7.5,10.5,11.25x,10.5,25,27.5,30x,27.5,40,45,47.5x,45,107.5,110,112.5x,110
+F,63,Katja,Bezjak,,SI,,,competed,,0,1.25,2.5x,1.25,17.5,21.25,23.75,23.75,32.5,37.5,42.5,42.5,92.5,100,107.5x,100
+F,63,Eva,Božič,,SI,,,competed,,2.5,5x,6.25,6.25,25,30,31.25,31.25,27.5,30,32.5,32.5,100,105,110,110
+F,63,Maruša,Ftičar,,SI,,,competed,,0,1.25,2.5,2.5,16.25,20,23.75,23.75,20,25,28.75,28.75,100,110,115x,110

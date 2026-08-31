@@ -1,0 +1,50 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Marko,Stepic,,RS,,97.09,competed,,40,42.5,45x,42.5,80,82.5,85,85,110,120x,120x,110,150,157.5,162.5x,157.5
+M,73,Horea,Giloan,,RO,,74.04,competed,,10x,10,25x,10,50,60,65,65,80,90,110x,90,140,160,180x,160
+M,80,Nik,Bavec,,SI,,96.22,competed,,22.5,27.5,31.25,31.25,65,75,81.25,81.25,115,125,130,130,200,210,217.5,217.5
+M,80,Veljko,Bogićević,,BA,,79.24,competed,,10,15x,17.5x,10,55,60,65,65,90,97.5,102.5,102.5,185,195,202.5,202.5
+M,80,Giovanni,Distefano,,IT,,,disqualified,Bombed every movement,10x,15x,15x,,62.5x,62.5x,62.5x,,100x,100x,100x,,200x,200x,200x,
+M,80,Marko,Gredelj,,HR,,65.68,disqualified,Bombed the muscle-up,0x,0x,0x,,40,50,55x,50,65x,75,82.5x,75,180,192.5,205x,192.5
+M,80,Klemen,Hrovat,,SI,,85.36,competed,,20,25,27.5x,25,70x,75,80,80,90,100,105x,100,190,202.5x,202.5,202.5
+M,80,Miloš,Matić,,RS,,66.08,competed,,12.5,17.5,22.5,22.5,45,55,61.25,61.25,75,85,92.5x,85,132.5,142.5,150,150
+M,80,Antonio,Novak,,HR,,73.77,competed,,15,20,25x,20,65,72.5,80x,72.5,90,100,107.5x,100,120,150x,160,160
+M,80,Jernej,Silvester,,SI,,78.36,competed,,15,20,25x,20,65,70,75,75,82.5,95,100,100,162.5,172.5,177.5,177.5
+M,80,Harry,Twister,,BA,,69.29,competed,,20x,20,27.5,27.5,50,60,65,65,90,100,110,110,100,115x,125,125
+M,80,Koray,Yılmaz,,TR,,91.21,competed,,40,40x,40x,40,90,100x,100x,90,115,120,125x,120,170,180,182.5x,180
+M,87,Diego,Corazza,,IT,,0,no_show,,,,,,,,,,,,,,,,,
+M,87,Filip,Gojković,,SI,,81.26,competed,,5,10,15x,10,50,60,65x,60,90,100,110x,100,215,235,245x,235
+M,87,Łukasz,Langner,,PL,,87.2,competed,,25,30,32.5x,30,77.5,81.25,83.75,83.75,115,120,127.5x,120,190,200,207.5x,200
+M,87,Saš,Mišvelj,,SI,,91.05,competed,,25x,30,35x,30,75,85,86.25x,85,130x,140,150x,140,180,190,205,205
+M,87,Andrea,Popovic,,HR,,99.13,competed,,27.5x,30,35,35,92.5,100,102.5x,100,120,135,145,145,205,215,217.5x,215
+M,87,Sebastian,Stepnowski,,PL,,90.7,competed,,20,25,27.5x,25,67.5,70,73.75,73.75,130,137.5x,137.5x,130,215,225,232.5x,225
+M,87,Yavuzhan,Zorlu,,TR,,41.38,disqualified,Bombed the squat,10,20x,20x,10,65,72.5,77.5x,72.5,115,122.5,130x,122.5,175x,180x,180x,
+M,94,Antonino,Andrea Pensabene,,IT,,81.21,competed,,20,25,30x,25,77.5,82.5,87.5x,82.5,112.5,120,125,125,170,180,185,185
+M,94,Erik,Ašič,,SI,,85.79,competed,,25,30x,30x,25,72.5,77.5,81.25,81.25,110,117.5,121.25x,117.5,210,215,220,220
+M,94,Ivan,Milenkovski,,MK,,79.61,competed,,25x,25x,27.5,27.5,80x,80,85x,80,90,95,96.25,96.25,200x,210,230x,210
+M,94,Emanuele,Palilla,,IT,,89.39,competed,,10,12.5,15,15,65,72.5,75,75,112.5x,120x,120,120,235,245,250,250
+M,94,Arda,Sarıkaya,,TR,,90.59,competed,,20,25,27.5x,25,60,65,70,70,120,130x,130x,120,240,250x,250,250
+M,94,Ozkan,Turkoglu,,TR,,16.6,disqualified,Bombed the dips and the squat,15,20x,20,20,60,65,70x,65,120x,130x,130x,,150x,150x,150x,
+M,94,Dávid,Weinhardt,,HU,,78.13,competed,,0,2.5,5x,2.5,57.5,65,70x,65,105,120,125,125,190,205,210,210
+M,101,Atanas,Debnikov,,MK,,76.18,competed,,10,15x,17.5x,10,65,70x,70,70,102.5x,110,115x,110,210x,210,215x,210
+M,101,David,Milićević,,SI,,89.92,competed,,15,20,25,25,60,70,76.25,76.25,110,120,130,130,220,235,242.5,242.5
+M,101+,Rok,Didaković,,HR,,95.77,competed,,0,5x,5x,0,60,67.5x,67.5x,60,120,135,142.5,142.5,270,292.5,310,310
+M,101+,Jovan,Mastilovic,,RS,,98.3,competed,,0x,0,1.25,1.25,70,77.5,83.75x,77.5,140,160,171.25,171.25,250,270,275,275
+M,101+,Stefan,Stanojevic,,RS,,92.82,competed,,5x,10,15,15,70,80,85,85,110,125,135x,125,250,270,285x,270
+M,101+,Martin,Takov,,BG,,0,no_show,,,,,,,,,,,,,,,,,
+F,52,Cristina,Coco,,IT,,92.32,competed,,5,7.5,10x,7.5,17.5,22.5,26.25,26.25,32.5,37.5,42.5,42.5,95,102.5,110x,102.5
+F,52,Vittoria,Grazioli,,IT,,0,no_show,,,,,,,,,,,,,,,,,
+F,52,Lydia,Koedoot,,SE,,75.89,competed,,5,10,16.25x,10,25,32.5,35x,32.5,25,35,40x,35,75x,80,90x,80
+F,57,Katja,Bezjak,,SI,,69.93,competed,,0,1.25,2.5,2.5,15,20,23.75x,20,27.5,32.5,37.5,37.5,87.5,95,100,100
+F,63,Krisztina,Kos,,HU,,63.6,disqualified,Bombed the muscle-up,0x,0x,0x,,18.75,21.25,23.75x,21.25,35,40,42.5x,40,85,90,92.5x,90
+F,63,Julijana,Kovacic,,RS,,100.91,competed,,0x,0x,0,0,25,30,32.5x,30,30,42.5,50x,42.5,150,160,167.5,167.5
+F,63,Veronika,Martinčič,,SI,,101.14,competed,,5,10,11.25x,10,27.5,35,38.75x,35,47.5,52.5,56.25,56.25,127.5,135,137.5,137.5
+F,63,Majda,Rekanovic,,SE,,61.05,competed,,0,1.25x,1.25x,0,20,25,26.25x,25,35,40x,40x,35,75,80,85,85
+F,63,Maria,Travagliante,,IT,,86.89,competed,,1.25,3.75,6.25,6.25,22.5,27.5,30x,27.5,45,50,53.75x,50,110,115x,120,120
+F,63,Ina,Vestin,,SE,,87.42,competed,,5,10x,10,10,27.5,35,36.25,36.25,47.5,52.5,56.25x,52.5,97.5,102.5,107.5,107.5
+F,70,Ana,Grimšičar,,SI,,102.94,competed,,0,2.5,3.75,3.75,21.25,27.5,30,30,45,52.5,58.75,58.75,142.5x,145,155,155
+F,70,Marina,Milkov,,RS,,82.55,disqualified,Bombed the muscle-up,0x,0x,0x,,15,21.25,26.25x,21.25,35,42.5,50,50,107.5,117.5,127.5,127.5
+F,70,Märta,Paulsson,,SE,,102.44,competed,,7.5,11.25,12.5,12.5,31.25,36.25,38.75,38.75,50,57.5,60x,57.5,122.5,132.5,137.5,137.5
+F,70,Anastasia,Zafeiropoulou,,GR,,74.15,disqualified,Bombed the muscle-up,0x,0x,0x,,25,27.5,30x,27.5,30,35,38.75x,35,100,110,115,115
+F,70+,Judith,Kleinhansl,,AT,,106.11,competed,,7.5,12.5,16.25,16.25,32.5,37.5,42.5,42.5,55,60x,60,60,125,132.5,137.5,137.5
+F,70+,Anastasija,Odzic,,RS,,104.71,competed,,0,2.5,5,5,30x,36.25,40,40,47.5x,52.5,57.5,57.5,140,150,158x,150
+F,70+,Milana,Popovic,,RS,,107.5,competed,,3.75,7.5,11.25,11.25,25,30,33.75x,30,47.5x,53.75,60,60,145.5,155.5,158,158

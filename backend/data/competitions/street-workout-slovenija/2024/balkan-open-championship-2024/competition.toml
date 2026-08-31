@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Balkan Open Championship"
+start_date = "2024-06-29"
+end_date = "2024-06-30"
+city = "Maribor"
+country = "SI"
+status = "completed"
+
+[federation]
+name = "Street Workout Slovenija"
+country = "SI"
