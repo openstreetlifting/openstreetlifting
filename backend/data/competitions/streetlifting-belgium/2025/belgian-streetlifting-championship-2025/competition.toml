@@ -1,0 +1,13 @@
+event = "MPDS"
+sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
+
+[competition]
+name = "Belgian Streetlifting Championship"
+start_date = "2025-06-07"
+end_date = "2025-06-08"
+country = "BE"
+status = "completed"
+
+[federation]
+name = "Streetlifting Belgium"
+country = "BE"

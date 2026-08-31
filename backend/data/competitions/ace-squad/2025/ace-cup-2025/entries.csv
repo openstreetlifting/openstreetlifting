@@ -1,0 +1,24 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Julien,Capdeville,,FR,,108.5,competed,,22.5,25x,26.25,26.25,68.75,72.5,76.25,76.25,125,132.5,138.25,138.25,185,195,202.5,202.5
+M,66,Jonathan,Fenech,,MT,,78.64,competed,,17.5x,20x,20,20,55x,60x,60,60,90,96.25,101.25,101.25,120x,130x,140,140
+M,66,Luck,Menn,,FR,,92.41,competed,,15,18.75,21.25x,18.75,52.5,57.5,61.25,61.25,100,107.5,115,115,175,182.5,190x,182.5
+M,66,Hamzeh,Yakhout,,JO,,101.46,competed,,25,30,35x,30,75,81.25,86.25x,81.25,110,117.5,122.5,122.5,165,175,180x,175
+M,73,Andoni,Carrica,,FR,,103.17,competed,,27.5,32.5,35x,32.5,75,81.25,86.25,86.25,125,130,132.5,132.5,205,212.5,220x,212.5
+M,73,Abderrahmen,Dellaoui,,FR,,98.88,competed,,20,25,30x,25,80,83.75,85x,83.75,112x,120,126.25,126.25,210,220x,225x,210
+M,73,Etienne,Iliou,,FR,,63.79,competed,,5x,10x,10,10,40,47.5,50,50,65,72.5,80,80,120,130,140,140
+M,73,Trobrillant,Matteo,,FR,,68.63,competed,,3.75,7.5,10x,7.5,41.25,47.5,51.25,51.25,76.25,85x,85,85,147.5,157.5,165x,157.5
+M,73,Hugo,Scolan,,FR,,99.49,disqualified,,33.75,37.5,42.5x,37.5,85,93.75,100,100,125,132.5,140x,132.5,180x,190,200,200
+M,80,Evan,Devecchi,,FR,,97.06,competed,,20x,22.5,26.25x,22.5,72.5,77.5,82.5,82.5,127.5,132.5,137.5,137.5,210,220,230x,220
+M,80,Akeb,Nassim,,FR,,84.79,competed,,20,25,27.5,27.5,57.5,62.5,67.5,67.5,77.5,85,90,90,187.5,195,202.5,202.5
+M,80,Maxime,Poitevin,,FR,,99.81,competed,,22.5,26.25x,26.25x,22.5,82.5,88.75,91.25,91.25,122.5,132.5,137.5x,132.5,212.5,220,225x,220
+M,87,Romain,Garcia,,FR,,90.02,competed,,20x,25x,25,25,70,72.5x,72.5x,70,125,135,140,140,200,215,217.5,217.5
+M,87,Waly-Pierre,Le Coz,,FR,,44.71,disqualified,Bombed the muscle-up,2.5x,2.5x,2.5x,,35,42.5,47.5,47.5,30,37.5,45x,37.5,140,155x,160x,140
+M,87,Chistrel,Romain,,FR,,91.65,competed,,10x,10,15x,10,60,65,67.5x,65,130,140x,145,145,220,230,235,235
+M,94,Dylan,Heurteux,,FR,,0,no_show,,,,,,,,,,,,,,,,,
+M,101,David,Tegam,,DK,,0,no_show,,,,,,,,,,,,,,,,,
+M,101,Mike,Tintin,,FR,,0,no_show,,,,,,,,,,,,,,,,,
+M,101+,Daniel,Caruana Mansueto,,MT,,93.13,competed,,17.5,22.5x,22.5x,17.5,75,81.25x,81.25,81.25,135,142.5x,142.5x,135,230,240,260,260
+M,101+,Maxime,Humily,,FR,,89.74,competed,,5x,5,12.5,12.5,65,72.5,80x,72.5,100,120,130,130,230,262.5,285x,262.5
+F,52,Chloe,Lambert,,FR,,76.82,competed,,0x,0,1.25x,0,17.5,21.25,23.75,23.75,37.5,42.5,47.5,47.5,82.5,87.5,92.5,92.5
+F,63,Lise,Thiere,,FR,,108.26,competed,,10,15,17.5x,15,30,35,36.25x,35,65,70x,70x,65,122.5,130,135,135
+F,70,Myriam,Chebira,,FR,,0,no_show,,,,,,,,,,,,,,,,,

@@ -1,0 +1,12 @@
+event = "MPDS"
+sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
+
+[competition]
+name = "Portuguese Open"
+start_date = "2025-03-01"
+end_date = "2025-03-01"
+country = "PT"
+status = "completed"
+
+[federation]
+name = "FinalRep"
