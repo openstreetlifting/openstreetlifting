@@ -1,11 +1,11 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Stoyan,Banov,,BG,,89.48,competed,,35,40,43.75,43.75,75,80,85x,80,135,140,142.5x,140,105x,110,112.5,112.5
 M,66,Djordje,Krstic,,BA,,71.44,competed,,2.5,5x,5,5,45,52.5,55,55,90,95,100,100,140x,140,155x,140
+M,66,Nikola,Popovic,,RS,,52.05,disqualified,Bombed the muscle-up,7.5x,10x,10x,,50,60,65x,60,70,80,90,90,70,80x,85x,70
 M,66,Aleksej,Popović,,RS,,22.85,disqualified,Bombed the muscle-up,0x,0x,0x,,20x,20,27.5x,20,20x,25,30x,25,30,35,40,40
 M,66,Marko,Stepic,,RS,,99.84,competed,,40,45,47.5x,45,80,85,87.5x,85,115,125,130x,125,150,160,167.5,167.5
-M,66,nikola,popovic,,RS,,52.05,disqualified,Bombed the muscle-up,7.5x,10x,10x,,50,60,65x,60,70,80,90,90,70,80x,85x,70
 M,73,Petar,Andonovski,,MK,,50.07,disqualified,Bombed the muscle-up,15x,15x,15x,,50x,50,60,60,80x,80x,80,80,80x,80,82.5,82.5
-M,73,Alexie,BĂRBIERU,,RO,,54.87,competed,,7.5x,7.5,10x,7.5,35,40,45x,40,72.5,80,85x,80,115,125,135x,125
+M,73,Alexie,Bărbieru,,RO,,54.87,competed,,7.5x,7.5,10x,7.5,35,40,45x,40,72.5,80,85x,80,115,125,135x,125
 M,73,Igor,Panic,,RS,,40.3,competed,,35,40x,45,45,85x,95,100x,95,25,26.25x,26.25x,25,20,22.5x,22.5x,20
 M,73,Dule,Pavlovic,,RS,,79.12,competed,,22.5x,22.5x,22.5,22.5,70,75,80x,75,102.5,107.5x,107.5x,102.5,165,172.5x,172.5x,165
 M,73,Радован,Репац,,RS,,96.96,competed,,17.5,22.5,25x,22.5,70,77.5,80x,77.5,145x,145x,145,145,170,182.5,192.5,192.5
@@ -16,7 +16,7 @@ M,80,Luka,Jankovic,,RS,,23.73,disqualified,Bombed the dips and squat,30,32.5x,35
 M,80,,Krsman,,RS,,40.4,disqualified,Bombed the squat,20,27.5,32.5x,27.5,70,77.5x,80x,70,90,100x,100x,90,110x,110x,110x,
 M,80,Nikola,Mitrović,,RS,,86.41,competed,,15x,20,25x,20,60,70,76.25,76.25,105,120,130,130,175,190x,200,200
 M,80,Hristijan,Strkovski,,MK,,89.06,competed,,15x,17.5x,17.5,17.5,72.5x,76.25,80,80,100x,100,115,115,180,190,210,210
-M,80,,uki_citywalker,,RS,,44.17,disqualified,Bombed the squat,30,35,40x,35,80,85x,85,85,90,95x,95x,90,100x,100x,100x,
+M,80,,Uki Citywalker,,RS,,44.17,disqualified,Bombed the squat,30,35,40x,35,80,85x,85,85,90,95x,95x,90,100x,100x,100x,
 M,87,David,Berki,,HU,,0,no_show,,,,,,,,,,,,,,,,,
 M,87,Damjan,Blagojevic,,RS,,0,no_show,,,,,,,,,,,,,,,,,
 M,87,Ridvan,Dolovac,,RS,,0,disqualified,Bombed the dips and muscle-up and pull-up and squat,0x,0x,0x,,0x,0x,0x,,0x,0x,0x,,155x,155x,155x,
@@ -24,10 +24,10 @@ M,87,Horea,Giloan,,RS,,91.18,competed,,5,10x,15,15,60,70,80,80,120,130,140,140,2
 M,87,Ali,Kurt,,RS,,68.78,competed,,0,1.25x,5,5,50,60,70x,60,90,100,115x,100,160,180,190,190
 M,87,Teodor,Rusev,,BG,,82.94,competed,,30,33.5,37.5,37.5,85,90,95,95,135,145,155,155,125,135,142.5,142.5
 M,87,Stefan,Stankovic,,RS,,74.04,competed,,16.25,20,22.5,22.5,67.5,75,80x,75,117.5x,117.5,122.5x,117.5,150,160,170,170
+M,94,Lazar,Djuran,,RS,,47.77,competed,,0,2.5x,2.5x,0,37.5,43.75,50,50,77.5,83.75,90x,83.75,120x,120x,120,120
 M,94,Andrej,Kovačević,,RS,,53.39,competed,,0x,0x,0,0,45x,45,52.5x,45,70,80,90x,80,150x,150,155,155
 M,94,David,Radić,,RS,,67.51,competed,,0,5x,5x,0,55,62.5x,65x,55,102.5,107.5,112.5x,107.5,192.5x,200,210x,200
 M,94,Lazar,Stojmirovic,,RS,,71.6,competed,,0x,0x,0,0,45,55,60,60,100,110,122.5x,110,190,200,212.5,212.5
-M,94,lazar,djuran,,RS,,47.77,competed,,0,2.5x,2.5x,0,37.5,43.75,50,50,77.5,83.75,90x,83.75,120x,120x,120,120
 M,101,Ilija,Cvetkovic,,RS,,68.99,competed,,0,5,12.5x,5,65x,70,77.5,77.5,130x,130,140x,130,155x,165,180x,165
 M,101,Marko,Rosandic,,RS,,41.25,disqualified,Bombed the squat,7.5,11.25,15,15,80,87.5x,87.5x,80,130,145x,146.25x,130,230x,230x,230x,
 M,101+,Jovan,Mastilovic,,RS,,99.17,competed,,0,2.5,5x,2.5,75,85,92.5,92.5,160,180,185x,180,250,265,275,275

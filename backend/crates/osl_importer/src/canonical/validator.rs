@@ -1,6 +1,6 @@
 use super::models::CanonicalFormat;
 use crate::{ImporterError, Result};
-use osl_domain::{AthleteStatus, CompetitionStatus, NormalizedAthleteName, slugify};
+use osl_domain::{AthleteStatus, CompetitionStatus, NormalizedAthleteName, check_name, slugify};
 use rust_decimal::Decimal;
 use std::collections::{HashMap, HashSet};
 use tracing::warn;
@@ -49,13 +49,16 @@ impl CanonicalValidator {
         Self::check_announcement(canonical, &mut report);
         Self::check_divisions(canonical, &mut report);
         Self::check_athletes(canonical, &mut report);
+        Self::check_athlete_names(canonical, &mut report);
         Self::check_athlete_identities(canonical, &mut report);
 
         if !report.errors.is_empty() {
+            // One problem per line: a competition can fail a dozen checks at once,
+            // and a single joined line is unreadable at exactly that moment.
             Err(ImporterError::ValidationError(format!(
-                "Validation failed with {} error(s): {}",
+                "{} problem(s)\n    {}",
                 report.errors.len(),
-                report.errors.join("; ")
+                report.errors.join("\n    ")
             )))
         } else {
             Ok(report)
@@ -237,6 +240,21 @@ impl CanonicalValidator {
                             lift.movement
                         ));
                     }
+                }
+            }
+        }
+    }
+
+    /// A name is spelled once, by hand, in the file. Nothing downstream can
+    /// repair capitals it never received, so a name that is not written the way
+    /// it is read stops the import rather than entering the database wrong.
+    fn check_athlete_names(canonical: &CanonicalFormat, report: &mut ValidationReport) {
+        for category in &canonical.categories {
+            for athlete in &category.athletes {
+                for problem in check_name(&athlete.first_name, &athlete.last_name) {
+                    report
+                        .errors
+                        .push(format!("Category '{}': {problem}", category.label()));
                 }
             }
         }

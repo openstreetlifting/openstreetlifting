@@ -282,7 +282,7 @@ Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 | `Division` | Only when the competition ran divisions. See below |
 | `Sex` | `M`, `F` or `MX`. Required |
 | `WeightClassKg` | `80` for −80, `101+` for +101. Required |
-| `FirstName` `LastName` | As the source spells them. `LastName` is required, `FirstName` is not |
+| `FirstName` `LastName` | Spelled the way the name is read, see below. `LastName` is required, `FirstName` is not |
 | `Disambiguation` | Only to separate two real people sharing a name |
 | `Country` | Required, ISO 3166-1 alpha-2 |
 | `BodyweightKg` | Never set alongside `Ris` |
@@ -427,10 +427,31 @@ next to `status = "upcoming"`.
 
 ## Names and who is who
 
-Write the name the way the source spells it. Matching already ignores accents,
-capitalisation and punctuation, so `MERANDON`, `Mérandon` and `merandon` are
-one person however the source wrote it, and so are `Jean-Luc` and `Jean Luc`.
-Never "fix" a name to make it match one you have seen before.
+Write the name the way it is **read**, not the way the source formatted it. A
+registration sheet shouts `MERANDON`, an Instagram export styles it, a form
+leaves it `merandon`; all three are written `Mérandon` here. The importer no
+longer re-cases anything, so the file is the spelling that reaches the site, and
+the validator rejects a name that breaks the rules below.
+
+| Rule | Write it as |
+|---|---|
+| Every word starts with a capital, on both sides of a hyphen | `Anne-Sophie`, not `Anne-sophie` |
+| Capitals inside a word are kept | `DeFrancesco`, `McDonald`, `D'Almeida` |
+| Never in full capitals | `Gitton`, not `GITTON` |
+| Particles stay lowercase away from the front | `Martina de Iturbe`, `Franck da Silva` |
+| Accents are kept | `Mérandon`, `Clément`, `Bărbieru` |
+| Only letters, space, `-`, `'` | no digits, `_`, brackets, emoji, styled or full-width letters |
+| No nickname, handle or job title | `Loan Bernard-Bodier`, not `Loan "Seraf" Bernard-Bodier`; drop a trailing `PT` |
+| Suffixes without a period, numerals in capitals | `Spigner IV`, `Morin B`, never `Jr.` |
+
+Matching still ignores accents, capitalisation and punctuation, so a name
+already in the database is not split by a source that spells it differently.
+That is what makes it safe to write the correct spelling: never "fix" a name to
+make it match one you have seen before.
+
+When the source writes surname first — `LEFEVRE Siméon` — put each half in its
+own column the right way round. `FirstName` and `LastName` decide identity, so
+swapping them makes a different person.
 
 A source sometimes gives only one name. Put it in `LastName` and leave
 `FirstName` empty, so the athlete reads and sorts as that one name. Never
@@ -456,7 +477,8 @@ letter, a repeated letter, or letters out of `MPDS` order; a missing, unknown or
 duplicated column in `entries.csv`; a negative weight; a cell filled for a
 movement outside the event; a
 `Disambiguation` below 1; both `BodyweightKg` and `Ris` on one row; a
-bodyweight of zero or less; the same athlete twice in one class; and a
+bodyweight of zero or less; the same athlete twice in one class; a name that
+breaks the spelling rules above; and a
 directory whose year does not match `start_date`.
 
 No `entries.csv` unless `status` is `upcoming`, and an `entries.csv` when it is.
