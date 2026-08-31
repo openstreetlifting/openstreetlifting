@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.21.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.20.0...v0.21.0) (2026-08-31)
+
+
+### Features
+
+* **importer:** keep an athlete's name in its own alphabet beside the Latin one ([#541](https://github.com/openstreetlifting/openstreetlifting/issues/541)) ([71e53ac](https://github.com/openstreetlifting/openstreetlifting/commit/71e53ac4939b011c9e5507f38a715e4380fd32a2))
+* **importer:** validate athlete name spelling instead of rewriting it ([#538](https://github.com/openstreetlifting/openstreetlifting/issues/538)) ([29180b4](https://github.com/openstreetlifting/openstreetlifting/commit/29180b4b64d9c9afa9d0850b7278cc05826eee32))
+
 ## [0.20.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.19.0...v0.20.0) (2026-08-30)
 
 
