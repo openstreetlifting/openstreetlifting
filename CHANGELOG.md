@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.22.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.21.0...v0.22.0) (2026-08-31)
+
+
+### Features
+
+* **canonical:** import three Street Workout Slovenija meets ([#542](https://github.com/openstreetlifting/openstreetlifting/issues/542)) ([9add30e](https://github.com/openstreetlifting/openstreetlifting/commit/9add30e9b95ff893c864df69f16f1fec00c82b15))
+
 ## [0.21.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.20.0...v0.21.0) (2026-08-31)
 
 
