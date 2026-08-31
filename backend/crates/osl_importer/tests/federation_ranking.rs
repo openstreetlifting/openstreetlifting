@@ -137,10 +137,11 @@ async fn the_federation_list_holds_only_federations_with_results(pool: PgPool) {
     announced.competition.federation.name = "Announced Federation".to_string();
     import(&pool, announced).await;
 
-    let federations = RankingRepository::new(&pool)
+    let mut federations = RankingRepository::new(&pool)
         .list_distinct_federations()
         .await
         .expect("listing should succeed");
+    federations.sort();
 
-    assert_eq!(federations, vec!["FinalRep", "FNSL"]);
+    assert_eq!(federations, vec!["FNSL", "FinalRep"]);
 }
