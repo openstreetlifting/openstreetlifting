@@ -18,6 +18,7 @@ fn filter(movement: RankingMovement, competition_id: Option<Uuid>) -> RankingFil
     RankingFilter {
         gender: None,
         country: None,
+        federation: None,
         name: None,
         movement,
         direction: SortDirection::Desc,

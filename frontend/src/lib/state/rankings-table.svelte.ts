@@ -25,6 +25,7 @@ export class RankingsTable {
   genderFilter = $state<string | null>(null);
   categoryFilter = $state<string | null>(null);
   countryFilter = $state<string | null>(null);
+  federationFilter = $state<string | null>(null);
   searchFilter = $state('');
   yearFilter = $state<number | null>(null);
   movementFilter = $state('ris');
@@ -43,6 +44,7 @@ export class RankingsTable {
     this.genderFilter = params.get('gender') || null;
     this.categoryFilter = params.get('category') || null;
     this.countryFilter = params.get('country') || null;
+    this.federationFilter = params.get('federation') || null;
     this.searchFilter = params.get('q') ?? '';
     this.yearFilter = this.includeYear ? Number(params.get('year')) || null : null;
     this.movementFilter = params.get('movement') || this.defaultSort;
@@ -62,6 +64,7 @@ export class RankingsTable {
     if (this.categoryFilter) params.set('category', this.categoryFilter);
     if (this.includeYear && this.yearFilter) params.set('year', String(this.yearFilter));
     if (this.countryFilter) params.set('country', this.countryFilter);
+    if (this.federationFilter) params.set('federation', this.federationFilter);
     if (this.searchQuery) params.set('q', this.searchQuery);
     if (targetPage > 1) params.set('page', String(targetPage));
 
@@ -83,6 +86,7 @@ export class RankingsTable {
     this.genderFilter = null;
     this.categoryFilter = null;
     this.countryFilter = null;
+    this.federationFilter = null;
     this.yearFilter = null;
     this.searchFilter = '';
     this.movementFilter = this.defaultSort;

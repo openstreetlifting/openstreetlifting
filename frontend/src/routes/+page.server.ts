@@ -8,16 +8,18 @@ const description =
 export const load: PageServerLoad = async ({ url }) => {
   const gender = url.searchParams.get('gender') || null;
 
-  const [classes, years, countries] = await Promise.all([
+  const [classes, years, countries, federations] = await Promise.all([
     rankingsService.getRankingClasses(gender).catch(() => []),
     rankingsService.getRankingYears().catch(() => []),
     rankingsService.getRankingCountries().catch(() => []),
+    rankingsService.getRankingFederations().catch(() => []),
   ]);
 
   try {
     const movement = url.searchParams.get('movement') || 'ris';
     const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
     const country = url.searchParams.get('country') || null;
+    const federation = url.searchParams.get('federation') || null;
     const q = url.searchParams.get('q') || null;
     const category = url.searchParams.get('category') || null;
     const year = Number(url.searchParams.get('year')) || null;
@@ -29,6 +31,7 @@ export const load: PageServerLoad = async ({ url }) => {
       direction,
       gender,
       country,
+      federation,
       category,
       year,
       q,
@@ -42,6 +45,7 @@ export const load: PageServerLoad = async ({ url }) => {
       classes,
       years,
       countries,
+      federations,
     };
   } catch (error) {
     console.error('Error loading rankings:', error);
@@ -59,6 +63,7 @@ export const load: PageServerLoad = async ({ url }) => {
       classes,
       years,
       countries,
+      federations,
     };
   }
 };

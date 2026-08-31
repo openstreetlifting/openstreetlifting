@@ -51,6 +51,7 @@ pub struct GlobalRankingFilter {
     pub pagination: crate::shared::dto::PaginationParams,
     pub gender: Option<String>,
     pub country: Option<String>,
+    pub federation: Option<String>,
     pub q: Option<String>,
     #[serde(default)]
     pub movement: Movement,
@@ -85,6 +86,7 @@ impl GlobalRankingFilter {
         RankingFilter {
             gender: self.gender.clone(),
             country: self.country.clone(),
+            federation: self.federation.clone(),
             name: self
                 .q
                 .as_deref()

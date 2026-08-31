@@ -51,6 +51,23 @@ pub async fn list_ranking_countries(
 
 #[utoipa::path(
     get,
+    path = "/api/v1/rankings/federations",
+    responses(
+        (status = 200, description = "Federations athletes have competed under, alphabetical", body = Vec<String>),
+    ),
+    tag = "rankings"
+)]
+pub async fn list_ranking_federations(
+    State(state): State<AppState>,
+) -> WebResult<Json<Vec<String>>> {
+    let repo = RankingRepository::new(state.db.pool());
+    let federations = repo.list_distinct_federations().await?;
+
+    Ok(Json(federations))
+}
+
+#[utoipa::path(
+    get,
     path = "/api/v1/rankings/years",
     responses(
         (status = 200, description = "Distinct competition years, most recent first", body = Vec<i32>),

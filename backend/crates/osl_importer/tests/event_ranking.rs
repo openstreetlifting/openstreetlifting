@@ -37,6 +37,7 @@ fn filter(movement: RankingMovement) -> RankingFilter {
     RankingFilter {
         gender: None,
         country: None,
+        federation: None,
         name: None,
         movement,
         direction: SortDirection::Desc,
