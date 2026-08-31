@@ -17,6 +17,8 @@
   import { CELL, EDGE_TO_EDGE } from '$lib/constants/table';
   import type { Competition } from '$lib/types/competition';
   import { FIELD, TEXT, CONTROL } from '$lib/constants/typography';
+  import Seo from '$lib/components/seo.svelte';
+  import { breadcrumbLd, listingSeo } from '$lib/seo';
 
   let { data }: { data: PageData } = $props();
 
@@ -107,18 +109,38 @@
   }
 
   const SELECT = `w-full ${FIELD} px-3 py-2 sm:w-auto`;
+
+  const seo = $derived(listingSeo(currentPage.url));
+
+  const description = $derived(
+    narrowed
+      ? 'Streetlifting competition results by federation, country and year, with muscle up, pull up, dips and squat standings for every meet in the archive.'
+      : `Results from ${pagination.total_items} streetlifting competitions worldwide, with muscle up, pull up, dips and squat standings, plus the calendar of upcoming meets.`
+  );
 </script>
 
-<svelte:head>
-  <title>Competitions - OpenStreetlifting</title>
-  <meta name="description" content="List of availables competitions" />
-</svelte:head>
+<Seo
+  title="Streetlifting competition results"
+  {description}
+  canonical={seo.canonical}
+  noindex={seo.noindex}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Rankings', path: '/' },
+      { name: 'Competitions', path: '/competitions' },
+    ]),
+  ]}
+/>
 
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-8 sm:px-6 sm:py-12">
   <Breadcrumb items={[{ label: 'Rankings', href: '/' }, { label: 'Competitions' }]} />
 
   <div class="mb-8">
-    <h1 class="mb-4 {TEXT.title} text-white">Competitions</h1>
+    <h1 class="mb-4 {TEXT.title} text-white">Streetlifting competitions</h1>
+    <p class="max-w-2xl text-sm font-light text-zinc-500">
+      Full results from every streetlifting competition in the archive, and the calendar of the
+      meets still to come.
+    </p>
   </div>
 
   {#if upcoming.length > 0}

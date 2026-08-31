@@ -1,5 +1,16 @@
 import type { RisSource } from './competition';
 
+export interface AthleteSummary {
+  athlete_id: string;
+  first_name: string;
+  last_name: string;
+  slug: string;
+  gender: string;
+  country: string;
+  profile_picture_url: string | null;
+  created_at: string;
+}
+
 export interface AthleteDetail {
   athlete_id: string;
   first_name: string;

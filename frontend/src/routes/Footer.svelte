@@ -26,14 +26,6 @@
               Competitions
             </a>
           </li>
-          <li>
-            <a
-              href={resolve('/athletes')}
-              class="text-sm font-light text-zinc-400 transition-colors hover:text-white"
-            >
-              Athletes
-            </a>
-          </li>
         </ul>
       </div>
 
