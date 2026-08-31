@@ -1,5 +1,4 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-M,66,Youssef,Bouida,,FR,65.9,,competed,,,,,36.25,,,,88.75,,,,103,,,,170
 M,66,Walid,Boulaghzalate,,IT,63.6,,competed,,,,,25,,,,69,,,,113.5,,,,180
 M,66,Cyril,Brau,,FR,66,,competed,,,,,20,,,,60,,,,100,,,,190
 M,66,Julien,Capdeville,,FR,65.4,,competed,,,,,25,,,,65,,,,127.5,,,,181
@@ -7,12 +6,13 @@ M,66,Lionel,Da Silva,,PT,65.2,,disqualified,Bombed the dips,,,,37.5,,,,87.5,,,,,
 M,66,Justin,Hebert,,FR,63.9,,competed,,,,,24,,,,66.25,,,,90,,,,180
 M,66,Florian,Marrec,,FR,65.5,,competed,,,,,25,,,,78,,,,112.5,,,,162.5
 M,66,Etienne,Sahel,,FR,65.4,,competed,,,,,17.5,,,,64,,,,82.5,,,,182.5
+M,66,Ashura,Youssef Bouida,,TN,65.9,,competed,,,,,36.25,,,,88.75,,,,103,,,,170
+M,73,André,Alves Martins,,PT,72.1,,competed,,,,,10,,,,65,,,,105,,,,185
 M,73,Yohann,Capdeville,,FR,72.2,,competed,,,,,29,,,,80,,,,121,,,,160
 M,73,Thavisay,Chanthaboun,,FR,73,,competed,,,,,22,,,,73,,,,112,,,,200
 M,73,Siravath,Duong,,FR,72.8,,competed,,,,,32.5,,,,85,,,,140,,,,180
 M,73,Yanis,Hadjarab,,FR,72.6,,competed,,,,,23,,,,73,,,,107.5,,,,180
 M,73,Julien,Le Niou,,FR,71.3,,competed,,,,,25,,,,65,,,,110,,,,185
-M,73,André,Martins,,FR,72.1,,competed,,,,,10,,,,65,,,,105,,,,185
 M,73,Raul,Teslavici,,FR,72.6,,competed,,,,,40.25,,,,90,,,,112.5,,,,180
 M,73,Théodore,Thézenas,,FR,71.5,,competed,,,,,15,,,,66.25,,,,102.5,,,,220
 M,80,Marc,Bertaux,,FR,77.9,,competed,,,,,24,,,,82.5,,,,110,,,,207.5
@@ -26,10 +26,10 @@ M,80,Titouan,Thibault,,FR,79.3,,competed,,,,,18,,,,75,,,,115,,,,192.5
 M,87,Erman,Blagbo,,FR,85.7,,competed,,,,,7.5,,,,62.5,,,,100,,,,250
 M,87,Enzo,Chartier,,FR,82.2,,competed,,,,,16.25,,,,57.5,,,,112.5,,,,190
 M,87,José,D'Almeida,,FR,86.3,,competed,,,,,32.5,,,,82.5,,,,133,,,,217.5
-M,87,Jacques,Daryl,,FR,84.2,,disqualified,Bombed the muscle-up,,,,,,,,65,,,,127.5,,,,230
 M,87,Thibault,Essabar,,FR,84.7,,competed,,,,,2.5,,,,57.5,,,,122.5,,,,222.5
 M,87,Kevin,Gogo,,FR,87,,competed,,,,,20,,,,80,,,,125,,,,225
 M,87,Paul,Mérat,,FR,86.4,,competed,,,,,30,,,,75,,,,137.5,,,,202.5
+M,87,Jacques Daryl,Ndongo,,FR,84.2,,disqualified,Bombed the muscle-up,,,,,,,,65,,,,127.5,,,,230
 M,87,Salih,Yolartiran,,FR,86,,competed,,,,,25,,,,85,,,,125,,,,212.5
 M,94,Bilal,Annabi,,FR,93.6,,competed,,,,,15,,,,74,,,,110,,,,186
 M,94,Tom,Berthier,,FR,90.1,,competed,,,,,25,,,,75,,,,140,,,,230
@@ -53,4 +53,4 @@ F,63,Margaux,Sanchez,,FR,57.2,,competed,,,,,5,,,,35,,,,45,,,,120
 F,63,Luna,Socquet,,FR,60.1,,competed,,,,,0.25,,,,17.5,,,,25,,,,75
 F,70,Axelle,Ditacroute,,FR,65.6,,disqualified,Bombed the muscle-up,,,,,,,,35,,,,40,,,,90
 F,70,Alice,Mathieu,,FR,66,,competed,,,,,0.25,,,,26.25,,,,32.5,,,,90
-F,70,Claire,Potiez,,FR,67.7,,competed,,,,,4,,,,27.5,,,,40,,,,135
+F,70,Claire,Potiez Forest,,FR,67.7,,competed,,,,,4,,,,27.5,,,,40,,,,135

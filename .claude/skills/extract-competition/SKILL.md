@@ -35,13 +35,16 @@ never put two competitions in one.
    category, sometimes one movement.
 3. **Merge.** Add new rows to `entries.csv`. Fill in cells that were
    previously empty. Leave everything else exactly as it was.
-4. **Format and validate**, from `backend/`:
+4. **Look up every athlete the source introduces** against the API, so a
+   reversed or misspelled name does not become a second athlete. See
+   [Before writing a new athlete, look them up](#before-writing-a-new-athlete-look-them-up).
+5. **Format and validate**, from `backend/`:
    ```bash
    cargo run -p osl_importer --bin import -- fmt data/competitions/<federation>/<year>/<slug>
    cargo run -p osl_importer --bin import -- canonical data/competitions/<federation>/<year>/<slug> --validate-only
    ```
-5. **Fix and repeat** until validation passes.
-6. **Show the user `git diff`** and say what you added, what you could not
+6. **Fix and repeat** until validation passes.
+7. **Show the user `git diff`** and say what you added, what you could not
    read, and anything that looked contradictory.
 
 Do not commit. The user reviews the diff and commits.
@@ -110,6 +113,7 @@ or a spelling, query the project's own read-only API before asking the user:
 - Base: `https://api.openstreetlifting.org/api/v1`
 
 ```
+GET /rankings?q=<name>&page_size=50
 GET /athletes?page=1&page_size=50
 GET /athletes/{slug}?include=competitions,records
 GET /competitions?page=1&page_size=50&include=federation,movements
@@ -120,6 +124,10 @@ Everything is a plain GET, no auth. Use it to answer: is this athlete already
 known and how is their name spelled, does this competition already exist under
 a slug, which movements did this federation run last year, is the person in
 this post the same one who lifted in another competition.
+
+`/rankings?q=` is the only name search there is: `/athletes` takes nothing but
+pagination, and `/athletes/{slug}` needs the slug you are trying to work out.
+See [Before writing a new athlete, look them up](#before-writing-a-new-athlete-look-them-up).
 
 Two limits, both important.
 
@@ -450,6 +458,47 @@ Matching still ignores accents, capitalisation and punctuation, so a name
 already in the database is not split by a source that spells it differently.
 That is what makes it safe to write the correct spelling: never "fix" a name to
 make it match one you have seen before.
+
+### Before writing a new athlete, look them up
+
+The folded name is the athlete's permanent key, and everything folding does not
+cover splits a person in two. A reversed pair of columns or one wrong letter
+does not fail the validator: it quietly creates a second athlete, halves both
+their histories, and shows up in the diff as an ordinary new row. This has
+already happened — `Chevillard Aubin` lifted a whole meet next to
+`Aubin Chevillard`, and `Kuecuekyareli` spent three FinalRep meets apart from
+`Kücükyareli`.
+
+The rankings search runs over `first_name || ' ' || last_name`, so querying
+**one half of the name** finds the athlete whichever way round they are stored:
+
+```bash
+curl -s "https://api.openstreetlifting.org/api/v1/rankings?q=chevillard&page_size=50"
+```
+
+Search the surname on its own, and the first name on its own when the surname
+is the half you are unsure of. Read `athlete.first_name`, `athlete.last_name`
+and `athlete.athlete_id` off every hit, then:
+
+- **Same person, same order** — write the spelling the database already has.
+- **Same person, reversed** — the source has its columns swapped. Write
+  `FirstName` and `LastName` round the right way, matching the existing athlete.
+- **Same person, spelled differently** — accents, case and punctuation fold
+  together already and need nothing. Anything else is a real split: a
+  transliterated `ue` for `ü`, a swapped letter, a middle name present in one
+  meet and absent in the next. Say which spellings you found and ask which one
+  is canonical.
+- **A different person who shares the name** — that is what `Disambiguation`
+  is for, under the rules below.
+- **No hit** — a new athlete. Write what the source shows.
+
+Two hits carrying the same name in different orders, under **different
+`athlete_id`s**, are one person already split in two. That is a finding to
+raise, not a reason to add a third spelling.
+
+Worth doing for every athlete a source introduces, and not optional when the
+source prints a name in one block (`CHEVILLARD Aubin`) and you are the one
+deciding which half is the surname.
 
 ### A name that is not written in Latin
 
