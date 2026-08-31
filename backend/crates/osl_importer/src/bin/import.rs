@@ -166,7 +166,7 @@ async fn handle_recompute_ris(database_url: &str) -> Result<()> {
         .context("connecting to the database")?;
 
     let count = osl_db::services::ris_computation::recompute_all_ris(&pool, None).await?;
-    tracing::info!("✓ Recomputed RIS for {} participant(s)", count);
+    tracing::info!("Recomputed RIS for {} participant(s)", count);
 
     Ok(())
 }
@@ -388,11 +388,11 @@ async fn handle_bulk_import(
         match process_competition(competition, validate_only, pool.as_ref()).await {
             Ok(_) => {
                 success_count += 1;
-                tracing::info!("  \u{2713} Success");
+                tracing::info!("  imported");
             }
             Err(e) => {
                 error_count += 1;
-                tracing::error!("  \u{2717} Error: {}", e);
+                tracing::error!("  {}", e);
             }
         }
     }
