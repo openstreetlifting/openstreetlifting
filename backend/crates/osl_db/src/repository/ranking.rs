@@ -89,12 +89,6 @@ impl<'a> RankingRepository<'a> {
             query.push_bind(country);
         }
 
-        if let Some(ref name) = filter.name {
-            query.push(" AND (a.first_name || ' ' || a.last_name) ILIKE '%' || ");
-            query.push_bind(escape_like(name));
-            query.push(" || '%' ");
-        }
-
         match filter.category {
             Some(WeightClass::UpTo(max)) => {
                 query.push(" AND wc.max_kg = ");
@@ -174,11 +168,22 @@ impl<'a> RankingRepository<'a> {
         query.push(" DESC NULLS LAST ) ");
     }
 
+    fn push_name_match(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
+        let Some(name) = filter.name.as_ref() else {
+            return;
+        };
+
+        query.push(" WHERE (first_name || ' ' || last_name) ILIKE '%' || ");
+        query.push_bind(escape_like(name));
+        query.push(" || '%' ");
+    }
+
     async fn count_participants(&self, filter: &RankingFilter) -> Result<i64> {
         let mut query = Self::movement_weights(filter);
         Self::push_eligible(&mut query, filter);
         Self::push_ranking_pool(&mut query, filter);
         query.push(" SELECT COUNT(*) FROM ranking_pool ");
+        Self::push_name_match(&mut query, filter);
 
         let count = query
             .build_query_scalar::<i64>()
@@ -200,7 +205,9 @@ impl<'a> RankingRepository<'a> {
         query.push(" ");
         query.push(filter.direction.as_sql());
         query.push(") as rank FROM ranking_pool ) ");
-        query.push(" SELECT * FROM ranked_movements ORDER BY rank LIMIT ");
+        query.push(" SELECT * FROM ranked_movements ");
+        Self::push_name_match(&mut query, filter);
+        query.push(" ORDER BY rank LIMIT ");
         query.push_bind(filter.limit);
         query.push(" OFFSET ");
         query.push_bind(filter.offset);

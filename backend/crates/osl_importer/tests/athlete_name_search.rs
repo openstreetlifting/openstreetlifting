@@ -6,10 +6,10 @@ use uuid::Uuid;
 
 mod common;
 
-use common::{import, lifting, men_80};
+use common::{from, import, lifting, men_80};
 
-fn athlete(first: &str, last: &str) -> AthleteData {
-    lifting(common::athlete(first, last), ["50", "90", "100", "150"])
+fn athlete(first: &str, last: &str, squat: &str) -> AthleteData {
+    lifting(common::athlete(first, last), ["50", "90", "100", squat])
 }
 
 fn competition(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
@@ -38,27 +38,33 @@ async fn seed(pool: &PgPool) {
         competition(
             "search-competition",
             vec![
-                athlete("Jean", "Dupont"),
-                athlete("Marie", "Dupont"),
-                athlete("Pierre", "Martin"),
+                athlete("Jean", "Dupont", "150"),
+                athlete("Marie", "Dupont", "130"),
+                athlete("Pierre", "Martin", "140"),
             ],
         ),
     )
     .await;
 }
 
-async fn search(pool: &PgPool, filter: &RankingFilter) -> (Vec<String>, i64) {
+async fn placings(pool: &PgPool, filter: &RankingFilter) -> (Vec<(String, i64)>, i64) {
     let (rows, total) = RankingRepository::new(pool)
         .get_global_ranking(filter)
         .await
         .expect("ranking should succeed");
 
-    let names = rows
+    let placings = rows
         .into_iter()
-        .map(|row| format!("{} {}", row.first_name, row.last_name))
+        .map(|row| (format!("{} {}", row.first_name, row.last_name), row.rank))
         .collect();
 
-    (names, total)
+    (placings, total)
+}
+
+async fn search(pool: &PgPool, filter: &RankingFilter) -> (Vec<String>, i64) {
+    let (placings, total) = placings(pool, filter).await;
+
+    (placings.into_iter().map(|(name, _)| name).collect(), total)
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
@@ -144,4 +150,53 @@ async fn like_wildcards_are_matched_literally(pool: PgPool) {
         let (_, total) = search(&pool, &filter(Some(wildcard))).await;
         assert_eq!(total, 0, "{wildcard} should match nobody");
     }
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn a_match_keeps_the_place_the_whole_ranking_gave_it(pool: PgPool) {
+    seed(&pool).await;
+
+    let (placings, _) = placings(&pool, &filter(Some("pierre"))).await;
+
+    assert_eq!(placings, vec![("Pierre Martin".to_string(), 2)]);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn several_matches_each_keep_their_own_place(pool: PgPool) {
+    seed(&pool).await;
+
+    let (placings, _) = placings(&pool, &filter(Some("dupont"))).await;
+
+    assert_eq!(
+        placings,
+        vec![
+            ("Jean Dupont".to_string(), 1),
+            ("Marie Dupont".to_string(), 3),
+        ]
+    );
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn a_place_follows_the_ranking_filters_and_not_the_search(pool: PgPool) {
+    seed(&pool).await;
+    import(
+        &pool,
+        competition(
+            "german-competition",
+            vec![from(athlete("Klaus", "Meyer", "200"), "DE")],
+        ),
+    )
+    .await;
+
+    let (worldwide, _) = placings(&pool, &filter(Some("jean"))).await;
+
+    assert_eq!(worldwide, vec![("Jean Dupont".to_string(), 2)]);
+
+    let french = RankingFilter {
+        country: Some("FR".to_string()),
+        ..filter(Some("jean"))
+    };
+    let (french, _) = placings(&pool, &french).await;
+
+    assert_eq!(french, vec![("Jean Dupont".to_string(), 1)]);
 }
