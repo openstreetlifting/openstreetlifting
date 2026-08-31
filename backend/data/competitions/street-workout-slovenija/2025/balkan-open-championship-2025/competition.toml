@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Balkan Open Championship"
+start_date = "2025-06-07"
+end_date = "2025-06-08"
+city = "Kranj"
+country = "SI"
+status = "completed"
+
+[federation]
+name = "Street Workout Slovenija"
+country = "SI"
