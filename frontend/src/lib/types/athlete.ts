@@ -4,6 +4,7 @@ export interface AthleteDetail {
   athlete_id: string;
   first_name: string;
   last_name: string;
+  native_name?: string | null;
   slug: string;
   gender: string;
   country: string;

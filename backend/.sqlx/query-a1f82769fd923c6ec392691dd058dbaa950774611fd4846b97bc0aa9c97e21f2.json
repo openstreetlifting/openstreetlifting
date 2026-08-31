@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT athlete_id, first_name, last_name, gender, created_at,\n                   country, profile_picture_url, slug,\n                   COALESCE(slug_history, '[]'::jsonb) as \"slug_history!: sqlx::types::Json<Vec<String>>\"\n            FROM athletes\n            WHERE athlete_id = $1\n            ",
+  "query": "\n            SELECT athlete_id, first_name, last_name, native_name, gender, created_at,\n                   country, profile_picture_url, slug,\n                   COALESCE(slug_history, '[]'::jsonb) as \"slug_history!: sqlx::types::Json<Vec<String>>\"\n            FROM athletes\n            WHERE athlete_id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -38,6 +38,17 @@
       },
       {
         "ordinal": 3,
+        "name": "native_name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "native_name"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
         "name": "gender",
         "type_info": "Varchar",
         "origin": {
@@ -48,7 +59,7 @@
         }
       },
       {
-        "ordinal": 4,
+        "ordinal": 5,
         "name": "created_at",
         "type_info": "Timestamp",
         "origin": {
@@ -59,7 +70,7 @@
         }
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "country",
         "type_info": "Varchar",
         "origin": {
@@ -70,7 +81,7 @@
         }
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "profile_picture_url",
         "type_info": "Varchar",
         "origin": {
@@ -81,7 +92,7 @@
         }
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "slug",
         "type_info": "Varchar",
         "origin": {
@@ -92,7 +103,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "slug_history!: sqlx::types::Json<Vec<String>>",
         "type_info": "Jsonb",
         "origin": "Expression"
@@ -107,6 +118,7 @@
       false,
       false,
       false,
+      true,
       false,
       false,
       false,
@@ -115,5 +127,5 @@
       null
     ]
   },
-  "hash": "06d96433ef48b4de73e0bb3f0f227998d1ed313a4df7f3ad1332701fe8f7312c"
+  "hash": "a1f82769fd923c6ec392691dd058dbaa950774611fd4846b97bc0aa9c97e21f2"
 }

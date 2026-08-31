@@ -22,7 +22,7 @@ impl<'a> AthleteRepository<'a> {
         let athletes = sqlx::query_as!(
             AthleteRow,
             r#"
-            SELECT athlete_id, first_name, last_name, gender, created_at,
+            SELECT athlete_id, first_name, last_name, native_name, gender, created_at,
                    country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
@@ -46,7 +46,7 @@ impl<'a> AthleteRepository<'a> {
         let athlete = sqlx::query_as!(
             AthleteRow,
             r#"
-            SELECT athlete_id, first_name, last_name, gender, created_at,
+            SELECT athlete_id, first_name, last_name, native_name, gender, created_at,
                    country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
@@ -64,7 +64,7 @@ impl<'a> AthleteRepository<'a> {
         let athlete_from_history = sqlx::query_as!(
             AthleteRow,
             r#"
-            SELECT athlete_id, first_name, last_name, gender, created_at,
+            SELECT athlete_id, first_name, last_name, native_name, gender, created_at,
                    country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
@@ -83,7 +83,7 @@ impl<'a> AthleteRepository<'a> {
         let athlete = sqlx::query_as!(
             AthleteRow,
             r#"
-            SELECT athlete_id, first_name, last_name, gender, created_at,
+            SELECT athlete_id, first_name, last_name, native_name, gender, created_at,
                    country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes

@@ -363,7 +363,7 @@ impl<'a> CompetitionRepository<'a> {
             for participant in participants {
                 let athlete = sqlx::query_as!(
                     AthleteRow,
-                    r#"SELECT athlete_id, first_name, last_name, gender, created_at,
+                    r#"SELECT athlete_id, first_name, last_name, native_name, gender, created_at,
                             country, profile_picture_url, slug,
                             COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
                      FROM athletes

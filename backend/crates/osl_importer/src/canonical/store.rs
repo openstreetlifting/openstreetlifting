@@ -219,6 +219,7 @@ fn read_entry(
     // A mononym goes in LastName, so that is the required half of a name.
     let first_name = optional(columns, record, entries::FIRST_NAME).unwrap_or_default();
     let last_name = required(columns, record, entries::LAST_NAME)?;
+    let native_name = optional(columns, record, entries::NATIVE_NAME);
     let country = CountryCode::parse(columns.get(record, entries::COUNTRY))?;
 
     let disambiguation = match optional(columns, record, entries::DISAMBIGUATION) {
@@ -243,6 +244,7 @@ fn read_entry(
     let athlete = AthleteData {
         first_name,
         last_name,
+        native_name,
         disambiguation,
         gender: Some(gender),
         country,
@@ -310,20 +312,28 @@ fn read_lifts(
 fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
     let mut writer = csv::Writer::from_writer(Vec::new());
 
-    let divisioned = canonical
-        .categories
-        .iter()
-        .any(|category| category.division.is_some());
+    let layout = entries::Layout {
+        divisioned: canonical
+            .categories
+            .iter()
+            .any(|category| category.division.is_some()),
+        native_names: canonical
+            .categories
+            .iter()
+            .flat_map(|category| &category.athletes)
+            .any(|athlete| athlete.native_name.is_some()),
+    };
 
     writer
-        .write_record(entries::headers(divisioned))
+        .write_record(entries::headers(layout))
         .map_err(|e| ImporterError::ImportError(format!("writing {}: {e}", entries::FILE_NAME)))?;
 
     for category in &canonical.categories {
         let weight_class = weight_class_cell(category);
 
         for athlete in &category.athletes {
-            let mut row: Vec<String> = divisioned
+            let mut row: Vec<String> = layout
+                .divisioned
                 .then(|| category.division.clone().unwrap_or_default())
                 .into_iter()
                 .collect();
@@ -343,6 +353,10 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                 athlete.status.as_str().to_string(),
                 athlete.status_reason.clone().unwrap_or_default(),
             ]);
+
+            if layout.native_names {
+                row.push(athlete.native_name.clone().unwrap_or_default());
+            }
 
             for movement in Movement::ALL {
                 let lift = athlete.lifts.iter().find(|l| l.movement == movement);

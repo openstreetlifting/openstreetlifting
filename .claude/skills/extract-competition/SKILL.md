@@ -284,6 +284,7 @@ Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 | `WeightClassKg` | `80` for −80, `101+` for +101. Required |
 | `FirstName` `LastName` | Spelled the way the name is read, see below. `LastName` is required, `FirstName` is not |
 | `Disambiguation` | Only to separate two real people sharing a name |
+| `NativeName` | Only for a name not written in Latin. Omit the column otherwise |
 | `Country` | Required, ISO 3166-1 alpha-2 |
 | `BodyweightKg` | Never set alongside `Ris` |
 | `Ris` | Only when the source gives a score and no bodyweight |
@@ -440,6 +441,7 @@ the validator rejects a name that breaks the rules below.
 | Never in full capitals | `Gitton`, not `GITTON` |
 | Particles stay lowercase away from the front | `Martina de Iturbe`, `Franck da Silva` |
 | Accents are kept | `Mérandon`, `Clément`, `Bărbieru` |
+| Latin letters only | a name in another alphabet goes in `NativeName`, see below |
 | Only letters, space, `-`, `'` | no digits, `_`, brackets, emoji, styled or full-width letters |
 | No nickname, handle or job title | `Loan Bernard-Bodier`, not `Loan "Seraf" Bernard-Bodier`; drop a trailing `PT` |
 | Suffixes without a period, numerals in capitals | `Spigner IV`, `Morin B`, never `Jr.` |
@@ -448,6 +450,25 @@ Matching still ignores accents, capitalisation and punctuation, so a name
 already in the database is not split by a source that spells it differently.
 That is what makes it safe to write the correct spelling: never "fix" a name to
 make it match one you have seen before.
+
+### A name that is not written in Latin
+
+`FirstName` and `LastName` are always Latin, because identity, search and the
+URL are built on them: nobody types `Радован Репац` into a search box, and the
+day a meet romanises him he becomes a second athlete. Write the transliteration
+there and keep the original in the optional `NativeName` column, which is
+displayed beside it and never used to match anyone.
+
+```
+Sex,WeightClassKg,FirstName,LastName,Country,...,NativeName
+M,80,Radovan,Repac,RS,...,Радован Репац
+```
+
+Leave the column out of a file where no athlete needs it. Cyrillic, Greek, Han,
+Japanese and Korean are recognised, and the script is read off the characters
+rather than declared. Transliteration is a judgement about a real person, so ask
+rather than invent one: Serbian and Greek are mechanical, Chinese and Japanese
+are not.
 
 When the source writes surname first — `LEFEVRE Siméon` — put each half in its
 own column the right way round. `FirstName` and `LastName` decide identity, so

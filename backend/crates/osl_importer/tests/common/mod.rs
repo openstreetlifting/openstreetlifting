@@ -88,6 +88,7 @@ pub fn athlete(first: &str, last: &str) -> AthleteData {
     AthleteData {
         first_name: first.to_string(),
         last_name: last.to_string(),
+        native_name: None,
         disambiguation: None,
         gender: Some(Gender::M),
         country: CountryCode::parse("FR").unwrap(),

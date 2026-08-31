@@ -12,6 +12,8 @@ pub struct AthleteResponse {
     pub athlete_id: Uuid,
     pub first_name: String,
     pub last_name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub native_name: Option<String>,
     pub slug: String,
     pub gender: String,
     pub country: String,
@@ -62,6 +64,7 @@ impl From<AthleteRow> for AthleteResponse {
             athlete_id: athlete.athlete_id,
             first_name: athlete.first_name,
             last_name: athlete.last_name,
+            native_name: athlete.native_name,
             slug: athlete.slug,
             gender: athlete.gender,
             country: athlete.country,
