@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE athletes\n                SET match_key = $1,\n                    native_name = COALESCE($2, native_name),\n                    native_script = COALESCE($3, native_script)\n                WHERE athlete_id = $4\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f6f96151e5bc0b87921f5ee9d34125c925158962ccbf18868a8d2dfba728f36a"
+}

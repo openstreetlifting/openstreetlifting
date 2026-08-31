@@ -1,6 +1,6 @@
 use super::models::*;
 use crate::{ImporterError, Result};
-use osl_domain::{Movement, NormalizedAthleteName};
+use osl_domain::{Movement, NativeScript, NormalizedAthleteName};
 use sqlx::PgPool;
 use tracing::info;
 use uuid::Uuid;
@@ -442,6 +442,11 @@ impl<'a> CanonicalTransformer<'a> {
     ) -> Result<Uuid> {
         let gender = athlete.gender.unwrap_or(category.gender).as_str();
 
+        let script = athlete
+            .native_name
+            .as_deref()
+            .and_then(NativeScript::detect);
+
         let normalized_name = NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name);
         let (db_first_name, db_last_name) = normalized_name.as_database_tuple();
 
@@ -465,16 +470,22 @@ impl<'a> CanonicalTransformer<'a> {
         .fetch_optional(&mut **tx)
         .await?;
 
+        let native_script = script.map(NativeScript::as_str);
+
         if let Some(id) = existing {
             // match_key is rewritten so a row backfilled by the migration takes
             // the importer's fold, which is the authority.
             sqlx::query!(
                 r#"
                 UPDATE athletes
-                SET match_key = $1
-                WHERE athlete_id = $2
+                SET match_key = $1,
+                    native_name = COALESCE($2, native_name),
+                    native_script = COALESCE($3, native_script)
+                WHERE athlete_id = $4
                 "#,
                 match_key,
+                athlete.native_name,
+                native_script,
                 id
             )
             .execute(&mut **tx)
@@ -489,8 +500,8 @@ impl<'a> CanonicalTransformer<'a> {
 
         let athlete_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO athletes (first_name, last_name, gender, country, slug, match_key, disambiguation)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            INSERT INTO athletes (first_name, last_name, gender, country, slug, match_key, disambiguation, native_name, native_script)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING athlete_id as "athlete_id: Uuid"
             "#,
             db_first_name,
@@ -499,7 +510,9 @@ impl<'a> CanonicalTransformer<'a> {
             athlete.country.as_str(),
             slug,
             match_key,
-            athlete.disambiguation
+            athlete.disambiguation,
+            athlete.native_name,
+            native_script
         )
         .fetch_one(&mut **tx)
         .await?;

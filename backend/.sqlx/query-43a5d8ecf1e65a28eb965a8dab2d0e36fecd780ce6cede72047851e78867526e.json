@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            INSERT INTO athletes (first_name, last_name, gender, country, slug, match_key, disambiguation)\n            VALUES ($1, $2, $3, $4, $5, $6, $7)\n            RETURNING athlete_id as \"athlete_id: Uuid\"\n            ",
+  "query": "\n            INSERT INTO athletes (first_name, last_name, gender, country, slug, match_key, disambiguation, native_name, native_script)\n            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)\n            RETURNING athlete_id as \"athlete_id: Uuid\"\n            ",
   "describe": {
     "columns": [
       {
@@ -23,12 +23,14 @@
         "Varchar",
         "Varchar",
         "Text",
-        "Int2"
+        "Int2",
+        "Text",
+        "Text"
       ]
     },
     "nullable": [
       false
     ]
   },
-  "hash": "1e693669fd27105d84113c35adaf77acab9b89863893acc9a54f328073853a28"
+  "hash": "43a5d8ecf1e65a28eb965a8dab2d0e36fecd780ce6cede72047851e78867526e"
 }

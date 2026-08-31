@@ -67,6 +67,7 @@ impl CategoryData {
 pub struct AthleteData {
     pub first_name: String,
     pub last_name: String,
+    pub native_name: Option<String>,
     pub disambiguation: Option<i16>,
     pub gender: Option<Gender>,
     pub country: CountryCode,

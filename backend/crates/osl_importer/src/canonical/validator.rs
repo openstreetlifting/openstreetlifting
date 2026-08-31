@@ -1,6 +1,8 @@
 use super::models::CanonicalFormat;
 use crate::{ImporterError, Result};
-use osl_domain::{AthleteStatus, CompetitionStatus, NormalizedAthleteName, check_name, slugify};
+use osl_domain::{
+    AthleteStatus, CompetitionStatus, NormalizedAthleteName, check_name, check_native_name, slugify,
+};
 use rust_decimal::Decimal;
 use std::collections::{HashMap, HashSet};
 use tracing::warn;
@@ -251,7 +253,17 @@ impl CanonicalValidator {
     fn check_athlete_names(canonical: &CanonicalFormat, report: &mut ValidationReport) {
         for category in &canonical.categories {
             for athlete in &category.athletes {
-                for problem in check_name(&athlete.first_name, &athlete.last_name) {
+                let problems = check_name(&athlete.first_name, &athlete.last_name)
+                    .into_iter()
+                    .chain(
+                        athlete
+                            .native_name
+                            .as_deref()
+                            .map(check_native_name)
+                            .unwrap_or_default(),
+                    );
+
+                for problem in problems {
                     report
                         .errors
                         .push(format!("Category '{}': {problem}", category.label()));
@@ -354,6 +366,7 @@ mod tests {
         AthleteData {
             first_name: first.to_string(),
             last_name: last.to_string(),
+            native_name: None,
             disambiguation: None,
             gender: Some(Gender::M),
             country: CountryCode::parse("FR").unwrap(),

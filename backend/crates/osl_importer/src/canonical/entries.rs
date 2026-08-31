@@ -16,6 +16,11 @@ pub const BODYWEIGHT: &str = "BodyweightKg";
 pub const RIS: &str = "Ris";
 pub const STATUS: &str = "Status";
 pub const STATUS_REASON: &str = "StatusReason";
+pub const NATIVE_NAME: &str = "NativeName";
+
+/// Left out entirely when nothing fills them, rather than sat empty on every
+/// row. Reading tolerates either shape.
+pub const OPTIONAL_COLUMNS: [&str; 2] = [DIVISION, NATIVE_NAME];
 
 pub const IDENTITY_COLUMNS: [&str; 10] = [
     SEX,
@@ -40,15 +45,24 @@ pub fn best_column(movement: Movement) -> String {
     format!("Best{}Kg", movement.column_prefix())
 }
 
-/// We leave the column out entirely when a competition ran no divisions, rather than
-/// carry an empty one on every row. Reading tolerates either shape.
-pub fn headers(divisioned: bool) -> Vec<String> {
-    let mut headers: Vec<String> = divisioned
+#[derive(Debug, Clone, Copy, Default)]
+pub struct Layout {
+    pub divisioned: bool,
+    pub native_names: bool,
+}
+
+pub fn headers(layout: Layout) -> Vec<String> {
+    let mut headers: Vec<String> = layout
+        .divisioned
         .then(|| DIVISION.to_string())
         .into_iter()
         .collect();
 
     headers.extend(IDENTITY_COLUMNS.iter().map(|c| (*c).to_string()));
+
+    if layout.native_names {
+        headers.push(NATIVE_NAME.to_string());
+    }
 
     for movement in Movement::ALL {
         for attempt in 1..=ATTEMPTS_PER_MOVEMENT {
@@ -144,11 +158,14 @@ impl Columns {
             }
         }
 
-        let expected = headers(true);
+        let expected = headers(Layout {
+            divisioned: true,
+            native_names: true,
+        });
 
         let missing: Vec<&String> = expected
             .iter()
-            .filter(|c| *c != DIVISION && !index.contains_key(*c))
+            .filter(|c| !OPTIONAL_COLUMNS.contains(&c.as_str()) && !index.contains_key(*c))
             .collect();
         if !missing.is_empty() {
             return Err(format!(
@@ -241,7 +258,7 @@ mod tests {
 
     #[test]
     fn headers_cover_every_movement() {
-        let headers = headers(false);
+        let headers = headers(Layout::default());
         assert_eq!(headers.len(), 10 + 4 * 4);
         assert!(headers.contains(&"MuscleUp1Kg".to_string()));
         assert!(headers.contains(&"BestSquatKg".to_string()));
@@ -249,14 +266,17 @@ mod tests {
 
     #[test]
     fn a_divisioned_meet_leads_with_the_division() {
-        let headers = headers(true);
+        let headers = headers(Layout {
+            divisioned: true,
+            native_names: false,
+        });
         assert_eq!(headers.len(), 11 + 4 * 4);
         assert_eq!(headers[0], DIVISION);
     }
 
     #[test]
     fn an_unknown_column_is_rejected() {
-        let mut header = csv::StringRecord::from(headers(false));
+        let mut header = csv::StringRecord::from(headers(Layout::default()));
         header.push_field("Total");
         let error = Columns::read(&header).unwrap_err();
         assert!(error.contains("Total"), "{error}");
@@ -264,7 +284,7 @@ mod tests {
 
     #[test]
     fn a_missing_column_is_rejected() {
-        let mut fields = headers(false);
+        let mut fields = headers(Layout::default());
         fields.retain(|c| c != "BestSquatKg");
         let error = Columns::read(&csv::StringRecord::from(fields)).unwrap_err();
         assert!(error.contains("BestSquatKg"), "{error}");
@@ -272,7 +292,22 @@ mod tests {
 
     #[test]
     fn a_file_without_a_division_column_is_accepted() {
-        assert!(Columns::read(&csv::StringRecord::from(headers(false))).is_ok());
-        assert!(Columns::read(&csv::StringRecord::from(headers(true))).is_ok());
+        for layout in [
+            Layout::default(),
+            Layout {
+                divisioned: true,
+                native_names: false,
+            },
+            Layout {
+                divisioned: false,
+                native_names: true,
+            },
+            Layout {
+                divisioned: true,
+                native_names: true,
+            },
+        ] {
+            assert!(Columns::read(&csv::StringRecord::from(headers(layout))).is_ok());
+        }
     }
 }

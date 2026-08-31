@@ -13,6 +13,7 @@
 //! international lifter names, so a name spelled for one reads correctly in the
 //! other.
 
+use crate::native_script::NativeScript;
 use unicode_normalization::UnicodeNormalization;
 
 /// Words that stay lowercase inside a name, mostly articles and patronymic
@@ -55,6 +56,16 @@ pub fn check_name(first_name: &str, last_name: &str) -> Vec<String> {
     }
 
     check_characters(&full, &mut problems);
+
+    // Identity, search and the URL are built on the Latin spelling.
+    if let Some(script) = NativeScript::detect(&full) {
+        problems.push(format!(
+            "'{full}' is written in {script}. Put the Latin spelling here and '{full}' in \
+             NativeName"
+        ));
+        return problems;
+    }
+
     check_words(&full, &mut problems);
 
     if full.ends_with('.') {
@@ -171,6 +182,38 @@ fn check_capitals(full: &str, word: &str, stem: &str, problems: &mut Vec<String>
     }
 }
 
+/// ```
+/// use osl_domain::name_rules::check_native_name;
+///
+/// assert!(check_native_name("Радован Репац").is_empty());
+/// assert!(check_native_name("").is_empty());
+/// assert!(!check_native_name("Radovan Repac").is_empty());
+/// ```
+pub fn check_native_name(native_name: &str) -> Vec<String> {
+    let mut problems = Vec::new();
+    let native_name = native_name.trim();
+
+    if native_name.is_empty() {
+        return problems;
+    }
+
+    if native_name.chars().any(NativeScript::is_latin) {
+        problems.push(format!(
+            "native name '{native_name}' has Latin letters in it. It holds the name in its own \
+             alphabet, and the Latin spelling belongs in FirstName and LastName"
+        ));
+    }
+
+    if NativeScript::detect(native_name).is_none() {
+        problems.push(format!(
+            "native name '{native_name}' is not written in one alphabet this database records. \
+             Use Cyrillic, Greek, Han, Japanese or Korean"
+        ));
+    }
+
+    problems
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -263,6 +306,34 @@ mod tests {
     #[test]
     fn nicknames_are_not_part_of_the_name() {
         assert!(problems("Loan", "'Seraf' Bernard-Bodier").contains("nickname"));
+    }
+
+    #[test]
+    fn a_name_in_another_alphabet_belongs_in_the_native_column() {
+        let flagged = problems("", "Радован Репац");
+        assert!(flagged.contains("written in cyrillic"), "{flagged}");
+        assert!(flagged.contains("NativeName"), "{flagged}");
+        assert!(problems("", "조정우").contains("written in korean"));
+        // Latin with accents is not another alphabet.
+        assert!(check_name("Alexie", "Bărbieru").is_empty());
+    }
+
+    #[test]
+    fn the_native_name_holds_only_its_own_alphabet() {
+        assert!(check_native_name("Радован Репац").is_empty());
+        assert!(check_native_name("조정우").is_empty());
+        assert!(check_native_name("").is_empty());
+
+        assert!(
+            check_native_name("Radovan Repac")
+                .join(" ")
+                .contains("Latin letters")
+        );
+        assert!(
+            check_native_name("Радован 조정우")
+                .join(" ")
+                .contains("not written in one alphabet")
+        );
     }
 
     #[test]

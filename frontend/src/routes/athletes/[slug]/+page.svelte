@@ -89,6 +89,10 @@
       {/if}
     </div>
 
+    {#if athlete.native_name}
+      <p class="mb-4 text-xl text-zinc-400">{athlete.native_name}</p>
+    {/if}
+
     <div class="flex flex-wrap gap-x-6 gap-y-3 text-base text-zinc-400">
       <div class="flex items-center gap-2">
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
