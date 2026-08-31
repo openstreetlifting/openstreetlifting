@@ -1,0 +1,13 @@
+event = "MPDS"
+sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
+
+[competition]
+name = "Ace Cup"
+start_date = "2025-04-26"
+end_date = "2025-04-26"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "Ace Squad"
+country = "FR"
