@@ -1,13 +1,13 @@
 use unicode_normalization::UnicodeNormalization;
 
-/// Athlete name normalized to a single canonical form.
-/// Sources spell the same athlete differently ("ADRIEN PELFRESNE", "Adrien Pelfresne").
-/// This can create duplicates.
+/// Athlete name in the two forms the database needs.
 ///
-/// Two forms come out of this. The database form keeps the accents and the
-/// capitalisation a reader expects to see. The match form is folded down until
-/// every spelling of one person collapses onto the same string, and is only
-/// ever compared, never displayed.
+/// Sources spell the same athlete differently ("ADRIEN PELFRESNE", "Adrien
+/// Pelfresne"), which would create duplicates. The match form is folded down
+/// until every spelling of one person collapses onto the same string, and is
+/// only ever compared, never displayed. The database form is what the file
+/// says, trimmed, because capitalisation is a spelling the file has to get
+/// right rather than one this type can derive.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NormalizedAthleteName {
     first_name: String,
@@ -20,14 +20,10 @@ impl NormalizedAthleteName {
     /// ```
     /// use osl_domain::normalized_name::NormalizedAthleteName;
     ///
-    /// let name1 = NormalizedAthleteName::new("adrien", "pelfresne");
-    /// let name2 = NormalizedAthleteName::new("ADRIEN", "PELFRESNE");
-    /// let name3 = NormalizedAthleteName::new("Adrien", "Pelfresne");
+    /// let name = NormalizedAthleteName::new("  Anne-Sophie  ", "Gherardi");
     ///
-    /// assert_eq!(name1.database_first_name(), "Adrien");
-    /// assert_eq!(name1.database_last_name(), "Pelfresne");
-    /// assert_eq!(name1, name2);
-    /// assert_eq!(name2, name3);
+    /// assert_eq!(name.database_first_name(), "Anne-Sophie");
+    /// assert_eq!(name.database_last_name(), "Gherardi");
     /// ```
     pub fn new(first_name: impl Into<String>, last_name: impl Into<String>) -> Self {
         let first_name = normalize_name_part(first_name.into());
@@ -107,17 +103,12 @@ fn fold(name: &str) -> String {
     spaced.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
+/// Only whitespace is taken off. Casing is left exactly as the file spells it:
+/// `Anne-Sophie`, `D'Almeida` and `DeFrancesco` all have capitals no rule can
+/// rebuild once they are lost, so the file is the authority and
+/// [`crate::name_rules`] refuses a name that is spelled wrongly.
 fn normalize_name_part(name: String) -> String {
-    let trimmed = name.trim();
-    if trimmed.is_empty() {
-        return String::new();
-    }
-
-    let mut chars = trimmed.chars();
-    match chars.next() {
-        None => String::new(),
-        Some(first) => first.to_uppercase().collect::<String>() + &chars.as_str().to_lowercase(),
-    }
+    name.trim().to_string()
 }
 
 #[cfg(test)]
@@ -132,15 +123,22 @@ mod tests {
     }
 
     #[test]
-    fn test_normalization_title_case() {
-        let name1 = NormalizedAthleteName::new("adrien", "pelfresne");
-        let name2 = NormalizedAthleteName::new("ADRIEN", "PELFRESNE");
-        let name3 = NormalizedAthleteName::new("Adrien", "Pelfresne");
+    fn the_file_decides_how_a_name_is_capitalised() {
+        // Casing a machine cannot rebuild has to survive the trip to the
+        // database, so it is carried through rather than recomputed.
+        for spelling in ["Anne-Sophie", "D'Almeida", "DeFrancesco", "McDonald"] {
+            assert_eq!(
+                NormalizedAthleteName::new(spelling, "X").database_first_name(),
+                spelling
+            );
+        }
+    }
 
-        assert_eq!(name1.database_first_name(), "Adrien");
-        assert_eq!(name1.database_last_name(), "Pelfresne");
-        assert_eq!(name1, name2);
-        assert_eq!(name2, name3);
+    #[test]
+    fn capitalisation_still_does_not_split_a_person() {
+        let shouted = NormalizedAthleteName::new("ADRIEN", "PELFRESNE");
+        let plain = NormalizedAthleteName::new("Adrien", "Pelfresne");
+        assert_eq!(shouted.match_name(), plain.match_name());
     }
 
     #[test]
@@ -170,7 +168,7 @@ mod tests {
 
     #[test]
     fn the_displayed_name_keeps_its_accents() {
-        let name = NormalizedAthleteName::new("léa", "mérandon");
+        let name = NormalizedAthleteName::new("Léa", "Mérandon");
         assert_eq!(name.database_first_name(), "Léa");
         assert_eq!(name.database_last_name(), "Mérandon");
         assert_eq!(name.match_name(), "lea merandon");
