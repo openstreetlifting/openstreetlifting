@@ -150,6 +150,12 @@ fn check_words(full: &str, problems: &mut Vec<String>) {
 /// name is read, and it is the one casing a machine cannot restore: `MCDONALD`
 /// could be `McDonald` or `Macdonald`. So it is refused rather than guessed at.
 fn check_capitals(full: &str, word: &str, stem: &str, problems: &mut Vec<String>) {
+    // Initials are read letter by letter, so their capitals are the spelling
+    // rather than a shout: `S.E.M Visser` is written exactly that way.
+    if word.contains('.') {
+        return;
+    }
+
     for part in stem.split('-') {
         let letters: Vec<char> = part.chars().filter(|c| c.is_alphabetic()).collect();
 
@@ -257,6 +263,12 @@ mod tests {
     #[test]
     fn nicknames_are_not_part_of_the_name() {
         assert!(problems("Loan", "'Seraf' Bernard-Bodier").contains("nickname"));
+    }
+
+    #[test]
+    fn initials_keep_their_capitals() {
+        assert!(check_name("S.E.M", "Visser").is_empty());
+        assert!(check_name("Émilie", "L").is_empty());
     }
 
     #[test]
