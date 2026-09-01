@@ -1,6 +1,6 @@
 # OpenStreetlifting
 
-<img src="images/logowidth.png">
+<img src="./frontend/static/logo_width.svg">
 
 OpenStreetlifting is an **open**, **collaborative** project building a **permanent** and **traceable** archive of all Streetlifting data, freely accessible to everyone.
 
