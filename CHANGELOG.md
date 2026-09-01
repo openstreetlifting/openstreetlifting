@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.28.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.27.0...v0.28.0) (2026-09-01)
+
+
+### Features
+
+* add brand folder ([b169474](https://github.com/openstreetlifting/openstreetlifting/commit/b1694742c7ffb728a71155b4a6527b6c5033d2e8))
+* **canonical:** import the five Munich Underground meets ([#578](https://github.com/openstreetlifting/openstreetlifting/issues/578)) ([18feb60](https://github.com/openstreetlifting/openstreetlifting/commit/18feb603e9afc649da54000838a5c3fbf7b8c4de))
+
+
+### Bug Fixes
+
+* **doc:** use new logo ([4b19d4b](https://github.com/openstreetlifting/openstreetlifting/commit/4b19d4b9ffbc382caf401b05467a5bd95bf8e9ad))
+
 ## [0.27.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.26.0...v0.27.0) (2026-09-01)
 
 
