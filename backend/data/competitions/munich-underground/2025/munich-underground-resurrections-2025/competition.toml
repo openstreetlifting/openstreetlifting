@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
+
+[competition]
+name = "Underground Munich Resurrections"
+start_date = "2025-10-18"
+end_date = "2025-10-18"
+city = "Munich"
+region = "Bayern"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "Munich Underground"
+country = "DE"

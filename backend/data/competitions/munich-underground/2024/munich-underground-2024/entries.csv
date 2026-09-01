@@ -1,0 +1,21 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,73,Vladyslav,Bryukhan,,DE,,45.34,competed,,0,1.25,3.75,3.75,37.5,45,50,50,40,47.5x,52.5,52.5,80,90,100,100
+M,73,Richard,Jegg,,DE,,66.74,competed,,5,11.25x,11.25x,5,40,45x,45,45,72.5x,72.5x,75,75,160x,167.5,175,175
+M,73,Ramazan,Kilic,,DE,,45.62,competed,,0x,0,2.5x,0,37.5,42.5,46.25x,42.5,50x,56.25x,57.5,57.5,100x,100x,100,100
+M,73,Fabian,Schrott,,IT,,57.2,competed,,0,6.25x,6.25x,0,47.5,52.5,55,55,50x,52.5x,52.5,52.5,120,132.5,140,140
+M,73,Severin,Wolf,,DE,,58.14,competed,,0,5,7.5,7.5,42.5,50,53.75x,50,55x,60x,60,60,130,140,150,150
+M,80,Tim,Ahrens,,DE,,53.71,competed,,0,2.5x,2.5x,0,37.5,41.25,45,45,52.5,57.5,61.25x,57.5,145,155,165,165
+M,80,David,Benz,,DE,,49.05,competed,,0x,0,2.5,2.5,37.5,42.5,47.5x,42.5,45,55,70,70,110,120,135x,120
+M,80,Thomas,Bühler,,DE,,48.1,disqualified,Bombed the muscle-up,0x,0x,0x,,30,40x,40x,30,52.5x,57.5x,57.5,57.5,130,140,145,145
+M,80,Leon,Conradi,,DE,,53.98,competed,,0,1.25,2.5x,1.25,42.5,47.5x,47.5,47.5,75,82.5,90x,82.5,115,125,135x,125
+M,80,Lorenz,Fritsch,,DE,,56.35,competed,,7.5,12.5,13.75x,12.5,50,55x,55,55,70,75,80x,75,110,120x,125,125
+M,80,Johannes,Geys,,DE,,68.87,competed,,15x,15,20x,15,65,70,75,75,95,105,110,110,110,120,130,130
+M,80,Samuel David,Hučín,,CZ,,62.67,disqualified,Bombed the pull-up,17.5,22.5x,22.5,22.5,65x,70x,70x,,100x,110,117.5x,110,155,165,170x,165
+M,87,Florian,Birkeneder,,DE,,55.26,disqualified,Bombed the muscle-up,0x,0x,0x,,30,40,45,45,40,50,60,60,165x,180x,180,180
+M,87,Marc,Grohmann,,DE,,43.95,disqualified,Bombed the muscle-up,0x,0x,0x,,27.5,35,37.5,37.5,40x,40,50x,40,130,140,150,150
+M,87,Korbinian,Hengl,,DE,,54.3,competed,,0,1.25,3.75,3.75,37.5x,42.5,48.75,48.75,65,75,81.25,81.25,120,130,140,140
+M,94,Moritz,Baumgartner,,AT,,48.12,disqualified,Bombed the muscle-up,0x,0x,0x,,35,40,45x,40,50,60x,60,60,137.5,145,152.5,152.5
+F,57,Leo,Hosp,,AT,,57.24,competed,,0,3.75,5,5,12.5,16.25,18.75x,16.25,20x,20x,20,20,75,82.5,90,90
+F,57,Michelle,Thanei,,AT,,72.8,competed,,0,2.5,6.25,6.25,10,15,18.75,18.75,35,40,45,45,80,95,100,100
+F,63,,Nanina,,DE,,62.38,disqualified,Bombed the muscle-up,0x,0x,0x,,20,25,30x,25,20,25,30x,25,100,107.5x,110x,100
+F,63,Katharina,Schloss,,DE,,58.67,disqualified,Bombed the muscle-up,0x,0x,0x,,10,13.75,16.25,16.25,15,20x,20x,15,95,105,110,110

@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
+
+[competition]
+name = "Underground Munich Homecoming"
+start_date = "2026-03-21"
+end_date = "2026-03-21"
+city = "Munich"
+region = "Bayern"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "Munich Underground"
+country = "DE"
