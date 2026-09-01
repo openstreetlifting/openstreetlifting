@@ -1,9 +1,21 @@
 use osl_domain::Gender;
 use rust_decimal::Decimal;
+use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
 
+use crate::projections::competition::AttemptSummary;
 use crate::rows::athlete::AthleteRow;
+
+/// The best an athlete made on one movement at one competition. A row with no
+/// weight is a movement they contested and never made, which the athlete page
+/// reads differently from a movement the meet never ran.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AthleteLiftRow {
+    pub movement_name: String,
+    pub best_weight: Option<Decimal>,
+    pub attempts: Vec<AttemptSummary>,
+}
 
 #[derive(Debug, FromRow)]
 pub struct AthleteCompetitionRow {
@@ -20,6 +32,8 @@ pub struct AthleteCompetitionRow {
     pub ris_score: Option<Decimal>,
     pub ris_source: Option<String>,
     pub status: String,
+    pub event_code: Option<String>,
+    pub lifts: Vec<AthleteLiftRow>,
 }
 
 #[derive(Debug, FromRow)]

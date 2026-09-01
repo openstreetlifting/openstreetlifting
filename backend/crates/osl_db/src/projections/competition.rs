@@ -1,5 +1,6 @@
 use osl_domain::Gender;
 use rust_decimal::Decimal;
+use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
 
@@ -73,7 +74,7 @@ pub struct LiftDetail {
     pub attempts: Vec<AttemptSummary>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AttemptSummary {
     pub attempt_number: i16,
     pub weight: Decimal,

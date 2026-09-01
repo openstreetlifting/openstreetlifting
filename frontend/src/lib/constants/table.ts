@@ -40,6 +40,14 @@ export const TEXT_CELL = {
   federation: 'block max-w-[5rem] truncate sm:max-w-none',
 } as const;
 
+/**
+ * Four fixed slots per movement, the three attempts then the best. Fixing the
+ * widths is what lets the bold figure land at the same offset on every row, so
+ * a column can be read straight down to compare lifts.
+ */
+export const ATTEMPT_ROW =
+  'grid grid-cols-[2.5rem_2.5rem_2.5rem_2.9rem] gap-x-1.5 items-baseline tabular-nums';
+
 export const NO_VALUE = '-';
 export const NO_RESULT = '—';
 

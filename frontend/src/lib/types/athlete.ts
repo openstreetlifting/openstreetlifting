@@ -1,4 +1,4 @@
-import type { RisSource } from './competition';
+import type { Attempt, RisSource } from './competition';
 
 export interface AthleteSummary {
   athlete_id: string;
@@ -55,6 +55,12 @@ export interface AthleteDetail {
   standing?: AthleteStanding | null;
 }
 
+export interface AthleteLift {
+  movement_name: string;
+  best_weight: string | null;
+  attempts: Attempt[];
+}
+
 export interface AthleteCompetitionSummary {
   competition_id: string;
   competition_name: string;
@@ -67,6 +73,8 @@ export interface AthleteCompetitionSummary {
   ris_score: string | null;
   ris_source: RisSource | null;
   status: 'competed' | 'disqualified' | 'no_show';
+  event?: string | null;
+  lifts: AthleteLift[];
 }
 
 export interface PersonalRecord {
