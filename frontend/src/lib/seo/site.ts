@@ -19,9 +19,9 @@ const environment = env.PUBLIC_ENVIRONMENT ?? '';
 export const INDEXABLE = environment === '' || environment === 'production';
 
 export const OG_IMAGE = {
-  url: `${SITE_URL}/logowidth.png`,
-  width: 809,
-  height: 121,
+  url: `${SITE_URL}/og-image.png`,
+  width: 1200,
+  height: 630,
 } as const;
 
 export function absolute(path: string): string {

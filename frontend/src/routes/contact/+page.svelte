@@ -15,8 +15,16 @@
 />
 
 <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
+  <!-- The h1 carries the page, so the plate is decoration and stays out of the
+       accessibility tree rather than repeating the name to a screen reader. -->
+  <img
+    src="/logo_plate_full.svg"
+    alt=""
+    aria-hidden="true"
+    class="mx-auto mb-8 h-44 w-44 sm:mb-10 sm:h-60 sm:w-60"
+  />
   <h1 class="mb-4 {TEXT.title} text-white">Get in touch</h1>
-  <p class="mb-10 text-base font-light text-zinc-500">
+  <p class="mb-10 text-base text-zinc-500">
     If you have a question, want to help me, or simply want to connect, reach out through any of
     these channels. I'm a solo developer on this project, I may take a little bit of time to
     respond.

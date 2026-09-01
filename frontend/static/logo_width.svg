@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3442 512" width="3442" height="512" role="img" aria-label="OpenStreetlifting">
+<defs>
+    <!-- light reads top-left; one sweep instead of modelled gradients -->
+    <linearGradient id="pl-sweep" x1="0.15" y1="0.05" x2="0.85" y2="0.95">
+      <stop offset="0"    stop-color="#FFFFFF" stop-opacity="0.10"/>
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.60" stop-color="#341117" stop-opacity="0"/>
+      <stop offset="1"    stop-color="#341117" stop-opacity="0.20"/>
+    </linearGradient>
+
+    <linearGradient id="pl-edge" x1="0.14" y1="0.03" x2="0.86" y2="0.97">
+      <stop offset="0"    stop-color="#C65367" stop-opacity="0.95"/>
+      <stop offset="0.38" stop-color="#AE3A4E" stop-opacity="0.25"/>
+      <stop offset="0.62" stop-color="#341117" stop-opacity="0.25"/>
+      <stop offset="1"    stop-color="#341117" stop-opacity="0.85"/>
+    </linearGradient>
+
+    <linearGradient id="pl-collar" x1="0.15" y1="0.05" x2="0.85" y2="0.95">
+      <stop offset="0"    stop-color="#969DA5"/>
+      <stop offset="0.50" stop-color="#6E757D"/>
+      <stop offset="1"    stop-color="#4C535A"/>
+    </linearGradient>
+
+    <filter id="pl-drop" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#341117" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#pl-drop)">
+    <!-- outer rim band -->
+    <circle cx="256" cy="256" r="230" fill="#69232F"/>
+
+    <!-- face -->
+    <circle cx="256" cy="256" r="202" fill="#7F2A39"/>
+    <circle cx="256" cy="256" r="202" fill="none" stroke="#5A1E28" stroke-width="2"/>
+
+    <!-- hub, one flat step lighter -->
+    <circle cx="256" cy="256" r="122" fill="#862E3D"/>
+    <circle cx="256" cy="256" r="122" fill="none" stroke="#5A1E28" stroke-width="1.5" stroke-opacity="0.45"/>
+
+    <!-- grey collar around the bar hole -->
+    <circle cx="256" cy="256" r="41" fill="none" stroke="url(#pl-collar)" stroke-width="30"/>
+    <circle cx="256" cy="256" r="56" fill="none" stroke="#3B4148" stroke-width="1.5" stroke-opacity="0.75"/>
+
+    <!-- bore -->
+    <circle cx="256" cy="256" r="26" fill="#241014"/>
+    <circle cx="256" cy="256" r="26" fill="none" stroke="#3E444B" stroke-width="1.5" stroke-opacity="0.8"/>
+  </g>
+
+  <!-- light sweep + lit/shaded outer edge -->
+  <circle cx="256" cy="256" r="230" fill="url(#pl-sweep)"/>
+  <circle cx="256" cy="256" r="229" fill="none" stroke="url(#pl-edge)" stroke-width="2.5"/>
+  <g fill="#E6E2DF"><g transform="translate(-1331.93,0)"><path d="M679 189Q679 143 665.5 105.5Q652 68 618.0 41.0Q584 14 523.5 -0.5Q463 -15 369 -15Q275 -15 214.5 -0.5Q154 14 120.0 41.0Q86 68 72.0 105.5Q58 143 58 189V530Q58 576 72.0 613.5Q86 651 120.0 678.0Q154 705 214.5 720.0Q275 735 369 735Q463 735 523.5 720.0Q584 705 618.0 678.0Q652 651 665.5 613.5Q679 576 679 530ZM285 225Q285 205 300.0 191.5Q315 178 369 178Q424 178 438.5 191.5Q453 205 453 225V494Q453 514 438.5 527.0Q424 540 369 540Q315 540 300.0 527.0Q285 514 285 494Z" transform="translate(1905.33,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(-1156.18,0)"><path d="M260 0H105Q69 0 69 36V684Q69 720 105 720H411Q502 720 553.5 695.5Q605 671 626.0 627.0Q647 583 647 525V397Q647 339 626.0 295.0Q605 251 553.5 226.5Q502 202 411 202H296V36Q296 0 260 0ZM294 533V382H384Q413 382 422.0 397.0Q431 412 431 431V484Q431 504 422.0 518.5Q413 533 384 533Z" transform="translate(1912.00,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(-990.51,0)"><path d="M569 0H105Q69 0 69 36V684Q69 720 105 720H569Q605 720 605 684V567Q605 531 569 531H293V454H488Q524 454 524 418V311Q524 275 488 275H293V189H569Q605 189 605 153V36Q605 0 569 0Z" transform="translate(1915.40,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(-816.22,0)"><path d="M255 0H105Q69 0 69 36V684Q69 720 105 720H209Q245 720 268 693L462 471V684Q462 720 498 720H648Q684 720 684 684V36Q684 0 648 0H498Q462 0 462 36V159L291 366V36Q291 0 255 0Z" transform="translate(1903.39,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(-642.41,0)"><path d="M403 0H87Q51 0 51 36V153Q51 189 87 189H356Q369 189 375.5 197.5Q382 206 382 218Q382 235 375.5 243.0Q369 251 356 252L206 273Q136 284 93.5 319.5Q51 355 51 439V544Q51 630 106.0 675.0Q161 720 258 720H538Q574 720 574 684V565Q574 529 538 529H305Q278 529 278 499Q278 470 305 467L454 447Q501 440 536.0 422.5Q571 405 590.5 371.0Q610 337 610 281V176Q610 91 555.0 45.5Q500 0 403 0Z" transform="translate(1915.89,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(-480.38,0)"><path d="M409 0H247Q211 0 211 36V527H64Q28 527 28 563V684Q28 720 64 720H592Q628 720 628 684V563Q628 527 592 527H445V36Q445 0 409 0Z" transform="translate(1915.16,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(-307.07,0)"><path d="M259 0H105Q69 0 69 36V684Q69 720 105 720H438Q513 720 556.0 699.0Q599 678 617.0 640.5Q635 603 635 553V507Q635 465 623.0 436.0Q611 407 579 393Q634 387 667.0 349.0Q700 311 700 248V36Q700 0 664 0H509Q473 0 473 36V189Q473 212 464.5 222.0Q456 232 435 232H295V36Q295 0 259 0ZM295 540V412H370Q396 412 405.0 425.5Q414 439 414 459V493Q414 513 405.0 526.5Q396 540 370 540Z" transform="translate(1904.60,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(-133.99,0)"><path d="M569 0H105Q69 0 69 36V684Q69 720 105 720H569Q605 720 605 684V567Q605 531 569 531H293V454H488Q524 454 524 418V311Q524 275 488 275H293V189H569Q605 189 605 153V36Q605 0 569 0Z" transform="translate(1915.40,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(28.28,0)"><path d="M569 0H105Q69 0 69 36V684Q69 720 105 720H569Q605 720 605 684V567Q605 531 569 531H293V454H488Q524 454 524 418V311Q524 275 488 275H293V189H569Q605 189 605 153V36Q605 0 569 0Z" transform="translate(1915.40,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(190.80,0)"><path d="M409 0H247Q211 0 211 36V527H64Q28 527 28 563V684Q28 720 64 720H592Q628 720 628 684V563Q628 527 592 527H445V36Q445 0 409 0Z" transform="translate(1915.16,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(358.29,0)"><path d="M614 0H105Q69 0 69 36V684Q69 720 105 720H260Q296 720 296 684V189H433V351Q433 387 469 387H614Q650 387 650 351V36Q650 0 614 0Z" transform="translate(1910.43,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(519.59,0)"><path d="M89 0Q53 0 53 36V155Q53 191 89 191H188V527H89Q53 527 53 563V684Q53 720 89 720H515Q551 720 551 684V563Q551 527 515 527H418V191H515Q551 191 551 155V36Q551 0 515 0Z" transform="translate(1921.35,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(671.55,0)"><path d="M260 0H105Q69 0 69 36V684Q69 720 105 720H551Q587 720 587 684V565Q587 529 551 529H296V425H470Q506 425 506 389V269Q506 233 470 233H296V36Q296 0 260 0Z" transform="translate(1919.77,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(829.69,0)"><path d="M409 0H247Q211 0 211 36V527H64Q28 527 28 563V684Q28 720 64 720H592Q628 720 628 684V563Q628 527 592 527H445V36Q445 0 409 0Z" transform="translate(1915.16,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(986.26,0)"><path d="M89 0Q53 0 53 36V155Q53 191 89 191H188V527H89Q53 527 53 563V684Q53 720 89 720H515Q551 720 551 684V563Q551 527 515 527H418V191H515Q551 191 551 155V36Q551 0 515 0Z" transform="translate(1921.35,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(1154.60,0)"><path d="M255 0H105Q69 0 69 36V684Q69 720 105 720H209Q245 720 268 693L462 471V684Q462 720 498 720H648Q684 720 684 684V36Q684 0 648 0H498Q462 0 462 36V159L291 366V36Q291 0 255 0Z" transform="translate(1903.39,343.40) scale(0.24278,-0.24278)"/></g><g transform="translate(1335.45,0)"><path d="M619 0H304Q178 0 118.0 50.0Q58 100 58 204V516Q58 620 118.0 670.0Q178 720 304 720H554Q590 720 590 684V563Q590 527 554 527H346Q285 527 285 477V238Q285 189 331 189H428V345Q428 381 464 381H619Q655 381 655 345V36Q655 0 619 0Z" transform="translate(1908.85,343.40) scale(0.24278,-0.24278)"/></g></g>
+</svg>

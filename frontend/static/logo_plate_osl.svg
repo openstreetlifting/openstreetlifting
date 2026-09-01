@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="OpenStreetlifting plate">
+  <defs>
+    <!-- light reads top-left; one sweep instead of modelled gradients -->
+    <linearGradient id="pl-sweep" x1="0.15" y1="0.05" x2="0.85" y2="0.95">
+      <stop offset="0"    stop-color="#FFFFFF" stop-opacity="0.10"/>
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.60" stop-color="#341117" stop-opacity="0"/>
+      <stop offset="1"    stop-color="#341117" stop-opacity="0.20"/>
+    </linearGradient>
+
+    <linearGradient id="pl-edge" x1="0.14" y1="0.03" x2="0.86" y2="0.97">
+      <stop offset="0"    stop-color="#C65367" stop-opacity="0.95"/>
+      <stop offset="0.38" stop-color="#AE3A4E" stop-opacity="0.25"/>
+      <stop offset="0.62" stop-color="#341117" stop-opacity="0.25"/>
+      <stop offset="1"    stop-color="#341117" stop-opacity="0.85"/>
+    </linearGradient>
+
+    <linearGradient id="pl-collar" x1="0.15" y1="0.05" x2="0.85" y2="0.95">
+      <stop offset="0"    stop-color="#969DA5"/>
+      <stop offset="0.50" stop-color="#6E757D"/>
+      <stop offset="1"    stop-color="#4C535A"/>
+    </linearGradient>
+
+    <filter id="pl-drop" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#341117" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#pl-drop)">
+    <!-- outer rim band -->
+    <circle cx="256" cy="256" r="230" fill="#69232F"/>
+
+    <!-- face -->
+    <circle cx="256" cy="256" r="202" fill="#7F2A39"/>
+    <circle cx="256" cy="256" r="202" fill="none" stroke="#5A1E28" stroke-width="2"/>
+
+    <!-- hub, one flat step lighter -->
+    <circle cx="256" cy="256" r="122" fill="#862E3D"/>
+    <circle cx="256" cy="256" r="122" fill="none" stroke="#5A1E28" stroke-width="1.5" stroke-opacity="0.45"/>
+
+    <!-- grey collar around the bar hole -->
+    <circle cx="256" cy="256" r="41" fill="none" stroke="url(#pl-collar)" stroke-width="30"/>
+    <circle cx="256" cy="256" r="56" fill="none" stroke="#3B4148" stroke-width="1.5" stroke-opacity="0.75"/>
+
+    <!-- bore -->
+    <circle cx="256" cy="256" r="26" fill="#241014"/>
+    <circle cx="256" cy="256" r="26" fill="none" stroke="#3E444B" stroke-width="1.5" stroke-opacity="0.8"/>
+  </g>
+
+  <!-- light sweep + lit/shaded outer edge -->
+  <circle cx="256" cy="256" r="230" fill="url(#pl-sweep)"/>
+  <circle cx="256" cy="256" r="229" fill="none" stroke="url(#pl-edge)" stroke-width="2.5"/>
+
+
+  <g id="osl"><g fill="#5C1F29" opacity="0.55" transform="translate(2.5,3)"><g transform="rotate(-7.071,256.0,538.0)"><path d="M679 189Q679 143 665.5 105.5Q652 68 618.0 41.0Q584 14 523.5 -0.5Q463 -15 369 -15Q275 -15 214.5 -0.5Q154 14 120.0 41.0Q86 68 72.0 105.5Q58 143 58 189V530Q58 576 72.0 613.5Q86 651 120.0 678.0Q154 705 214.5 720.0Q275 735 369 735Q463 735 523.5 720.0Q584 705 618.0 678.0Q652 651 665.5 613.5Q679 576 679 530ZM285 225Q285 205 300.0 191.5Q315 178 369 178Q424 178 438.5 191.5Q453 205 453 225V494Q453 514 438.5 527.0Q424 540 369 540Q315 540 300.0 527.0Q285 514 285 494Z" transform="translate(231.43,118.00) scale(0.06667,-0.06667)"/></g><g transform="rotate(0.191,256.0,538.0)"><path d="M403 0H87Q51 0 51 36V153Q51 189 87 189H356Q369 189 375.5 197.5Q382 206 382 218Q382 235 375.5 243.0Q369 251 356 252L206 273Q136 284 93.5 319.5Q51 355 51 439V544Q51 630 106.0 675.0Q161 720 258 720H538Q574 720 574 684V565Q574 529 538 529H305Q278 529 278 499Q278 470 305 467L454 447Q501 440 536.0 422.5Q571 405 590.5 371.0Q610 337 610 281V176Q610 91 555.0 45.5Q500 0 403 0Z" transform="translate(234.33,118.00) scale(0.06667,-0.06667)"/></g><g transform="rotate(7.262,256.0,538.0)"><path d="M614 0H105Q69 0 69 36V684Q69 720 105 720H260Q296 720 296 684V189H433V351Q433 387 469 387H614Q650 387 650 351V36Q650 0 614 0Z" transform="translate(232.83,118.00) scale(0.06667,-0.06667)"/></g></g><g fill="#E6E2DF"><g transform="rotate(-7.071,256.0,538.0)"><path d="M679 189Q679 143 665.5 105.5Q652 68 618.0 41.0Q584 14 523.5 -0.5Q463 -15 369 -15Q275 -15 214.5 -0.5Q154 14 120.0 41.0Q86 68 72.0 105.5Q58 143 58 189V530Q58 576 72.0 613.5Q86 651 120.0 678.0Q154 705 214.5 720.0Q275 735 369 735Q463 735 523.5 720.0Q584 705 618.0 678.0Q652 651 665.5 613.5Q679 576 679 530ZM285 225Q285 205 300.0 191.5Q315 178 369 178Q424 178 438.5 191.5Q453 205 453 225V494Q453 514 438.5 527.0Q424 540 369 540Q315 540 300.0 527.0Q285 514 285 494Z" transform="translate(231.43,118.00) scale(0.06667,-0.06667)"/></g><g transform="rotate(0.191,256.0,538.0)"><path d="M403 0H87Q51 0 51 36V153Q51 189 87 189H356Q369 189 375.5 197.5Q382 206 382 218Q382 235 375.5 243.0Q369 251 356 252L206 273Q136 284 93.5 319.5Q51 355 51 439V544Q51 630 106.0 675.0Q161 720 258 720H538Q574 720 574 684V565Q574 529 538 529H305Q278 529 278 499Q278 470 305 467L454 447Q501 440 536.0 422.5Q571 405 590.5 371.0Q610 337 610 281V176Q610 91 555.0 45.5Q500 0 403 0Z" transform="translate(234.33,118.00) scale(0.06667,-0.06667)"/></g><g transform="rotate(7.262,256.0,538.0)"><path d="M614 0H105Q69 0 69 36V684Q69 720 105 720H260Q296 720 296 684V189H433V351Q433 387 469 387H614Q650 387 650 351V36Q650 0 614 0Z" transform="translate(232.83,118.00) scale(0.06667,-0.06667)"/></g></g></g>
+  <use href="#osl" transform="rotate(180 256 256)"/>
+</svg>

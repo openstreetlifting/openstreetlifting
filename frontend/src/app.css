@@ -1,10 +1,13 @@
 @import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
 
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
 @theme {
   --font-sans: 'Inter Variable', sans-serif;
+
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 :root {
@@ -15,6 +18,14 @@
      dark page. color-scheme settles scrollbars and form controls the same way. */
   color-scheme: dark;
   background-color: var(--color-zinc-950);
+
+  /* Every figure here is meant to be read down a column and compared, so digits
+     are fixed-width for the whole site rather than remembered per call site: a
+     proportional digit shifts the column as the rows change under sorting and
+     paging. The slashed zero keeps 0 apart from O in slugs and federation codes.
+     Tailwind's tabular-nums utility replaces this whole property, so setting it
+     on an element silently drops the slashed zero - leave it off and inherit. */
+  font-variant-numeric: tabular-nums slashed-zero;
 
   /* Shared page width for the header, footer, and full-width content pages
      (rankings, athletes, competitions). Narrow prose pages (contact,

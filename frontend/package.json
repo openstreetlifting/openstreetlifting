@@ -50,6 +50,8 @@
     "vitest-browser-svelte": "^3.0.0"
   },
   "dependencies": {
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
     "@motionone/svelte": "^10.16.4"
   }
 }

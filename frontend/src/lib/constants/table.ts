@@ -45,8 +45,18 @@ export const TEXT_CELL = {
  * widths is what lets the bold figure land at the same offset on every row, so
  * a column can be read straight down to compare lifts.
  */
-export const ATTEMPT_ROW =
-  'grid grid-cols-[2.5rem_2.5rem_2.5rem_2.9rem] gap-x-1.5 items-baseline tabular-nums';
+export const ATTEMPT_ROW = 'grid grid-cols-[2.5rem_2.5rem_2.5rem_2.9rem] gap-x-1.5 items-baseline';
+
+/**
+ * A measured value, the kind read down a column and compared against the rows
+ * above and below: lifts, totals, scores, counts. The mono is the point, since a
+ * lift is a quantity rather than a word. It sets optically larger than the sans
+ * at a given size, so it is trimmed back to keep one line across a mixed row.
+ *
+ * Dates, ranks, classes and divisions are labels rather than magnitudes, and are
+ * read rather than compared, so they stay in the sans.
+ */
+export const FIGURE = 'font-mono text-[0.95em]';
 
 export const NO_VALUE = '-';
 export const NO_RESULT = '—';

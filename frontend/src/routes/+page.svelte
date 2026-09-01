@@ -23,7 +23,7 @@
   import { page, navigating } from '$app/state';
   import { afterNavigate } from '$app/navigation';
   import { formatDate, countryName, formatWeight, formatAthleteName } from '$lib/utils';
-  import { CELL, SORTED_COLUMN, TEXT_CELL } from '$lib/constants/table';
+  import { CELL, FIGURE, SORTED_COLUMN, TEXT_CELL } from '$lib/constants/table';
   import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import { FIELD } from '$lib/constants/typography';
@@ -250,14 +250,14 @@
                 {/if}
               </span>
             </td>
-            <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
-            <td class="{TABLE_CELL} {CELL.counted}">
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.total)}</td>
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
               <RisScore value={entry.ris} source={entry.ris_source} />
             </td>
-            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.muscleup)}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.pullup)}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.dips)}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{formatWeight(entry.squat)}</td>
+            <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{formatWeight(entry.muscleup)}</td>
+            <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{formatWeight(entry.pullup)}</td>
+            <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{formatWeight(entry.dips)}</td>
+            <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{formatWeight(entry.squat)}</td>
             <td class="{TABLE_CELL} {CELL.data}">
               <a
                 href={resolve(`/competitions/${entry.competition.slug}`)}

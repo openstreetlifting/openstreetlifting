@@ -33,7 +33,7 @@
       title="OpenStreetlifting, back to the full rankings"
       class="opacity-90 transition-opacity hover:opacity-100"
     >
-      <img src="/logowidth.png" alt="OpenStreetlifting" class="h-7 w-auto sm:h-8" />
+      <img src="/logo_width.svg" alt="OpenStreetlifting" class="h-7 w-auto sm:h-8" />
     </a>
 
     <button

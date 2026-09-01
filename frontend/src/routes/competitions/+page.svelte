@@ -14,7 +14,7 @@
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
   import { formatDate, formatLocation, formatCountdown, countryName } from '$lib/utils';
-  import { CELL, TEXT_CELL } from '$lib/constants/table';
+  import { CELL, FIGURE, TEXT_CELL } from '$lib/constants/table';
   import { FIELD, TEXT, CONTROL } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
   import { breadcrumbLd, listingSeo } from '$lib/seo';
@@ -120,13 +120,11 @@
         onclick={() => apply({ status: tab.status })}
         aria-current={active ? 'page' : undefined}
         class="-mb-px flex items-baseline gap-1.5 border-b-2 pb-2 {CONTROL} transition-colors focus:ring-2 focus:ring-zinc-500 focus:outline-none
-          {active
-          ? 'border-white text-white'
-          : 'border-transparent text-zinc-500 hover:text-zinc-300'}"
+ {active ? 'border-white text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300'}"
       >
         {tab.label}
         {#if data.counts[tab.status] !== undefined}
-          <span class="{TEXT.micro} tabular-nums {active ? 'text-zinc-400' : 'text-zinc-600'}">
+          <span class="{TEXT.micro} {active ? 'text-zinc-400' : 'text-zinc-600'}">
             {data.counts[tab.status]}
           </span>
         {/if}
@@ -215,7 +213,7 @@
                 {competition.name}
               </a>
             </td>
-            <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap tabular-nums">
+            <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap {showsUpcoming ? '' : FIGURE}">
               {showsUpcoming
                 ? formatCountdown(competition.start_date)
                 : (competition.lifter_count ?? 0)}

@@ -31,6 +31,7 @@
   import {
     ATTEMPT_ROW,
     CELL,
+    FIGURE,
     STATUS_FLAG,
     NO_VALUE,
     NO_RESULT,
@@ -129,7 +130,7 @@
   const GENDER_LABEL: Record<string, string> = { M: 'Men', F: 'Women' };
 
   const CARD_LABEL = `flex items-center gap-1.5 ${TEXT.micro} tracking-wider text-zinc-500 uppercase`;
-  const CARD_FIGURE = 'text-xl font-semibold text-white tabular-nums sm:text-2xl';
+  const CARD_FIGURE = 'font-mono text-xl font-semibold text-white sm:text-2xl';
   const CARD_CAPTION = 'text-xs text-zinc-500';
   const CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
 
@@ -218,6 +219,7 @@
   {#snippet standing(
     country: string | null,
     basis: string,
+    basisValue: string,
     place: number,
     field: number,
     query: string
@@ -233,14 +235,16 @@
           <GlobeIcon class="h-3.5 w-3.5 shrink-0 text-zinc-400" />
           <span class="sr-only">Global</span>
         {/if}
-        <span class="truncate text-zinc-400">{basis}</span>
+        <span class="truncate text-zinc-400"
+          >{basis}{#if basisValue}<span class="{FIGURE} ml-1">{basisValue}</span>{/if}</span
+        >
         <ChevronIcon
           class="ml-auto h-3 w-3 shrink-0 -rotate-90 text-zinc-700 transition-colors group-hover:text-zinc-400"
         />
       </div>
       <div class="mt-1 flex items-baseline gap-1.5">
         <span class={CARD_FIGURE}>#{place}</span>
-        <span class="{CARD_CAPTION} tabular-nums">/ {field}</span>
+        <span class="{CARD_CAPTION} {FIGURE}">/ {field}</span>
       </div>
     </a>
   {/snippet}
@@ -248,7 +252,8 @@
   {#if athlete.standing?.ris || athlete.standing?.weight_class}
     {@const ris = athlete.standing.ris}
     {@const inClass = athlete.standing.weight_class}
-    {@const risBasis = ris?.score ? `RIS ${formatScore(ris.score)}` : 'RIS'}
+    {@const risBasis = 'RIS'}
+    {@const risValue = ris?.score ? formatScore(ris.score) : ''}
     {@const inClassFilters = inClass
       ? {
           movement: 'total',
@@ -256,9 +261,8 @@
           ...(athlete.gender ? { gender: athlete.gender } : {}),
         }
       : {}}
-    {@const classBasis = inClass?.total
-      ? `${inClass.class} · ${formatWeight(inClass.total)} kg`
-      : (inClass?.class ?? '')}
+    {@const classBasis = inClass?.total ? `${inClass.class} ·` : (inClass?.class ?? '')}
+    {@const classValue = inClass?.total ? `${formatWeight(inClass.total)} kg` : ''}
     <div class="mb-6 sm:mb-8">
       <h2 class="{CARD_LABEL} mb-2">Ranking</h2>
       <div class={CARD_GRID}>
@@ -266,6 +270,7 @@
           {@render standing(
             null,
             risBasis,
+            risValue,
             ris.global.place,
             ris.global.field,
             boardQuery(ris.global.place)
@@ -275,6 +280,7 @@
           {@render standing(
             null,
             classBasis,
+            classValue,
             inClass.global.place,
             inClass.global.field,
             boardQuery(inClass.global.place, inClassFilters)
@@ -285,6 +291,7 @@
           {@render standing(
             ris.country.code,
             risBasis,
+            risValue,
             ris.country.place,
             ris.country.field,
             boardQuery(ris.country.place, { country: ris.country.code })
@@ -294,6 +301,7 @@
           {@render standing(
             inClass.country.code,
             classBasis,
+            classValue,
             inClass.country.place,
             inClass.country.field,
             boardQuery(inClass.country.place, {
@@ -386,16 +394,16 @@
                   {competition.competition_name}
                 </a>
               </td>
-              <td class="{TABLE_CELL} {CELL.counted}">
+              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
                 {formatWeight(competition.total)}
               </td>
-              <td class="{TABLE_CELL} {CELL.counted}">
+              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
                 <RisScore value={competition.ris_score} source={competition.ris_source} />
               </td>
               {#each contested as lift (lift.key)}
                 {@const cell = liftCell(competition, lift)}
                 <td class="{TABLE_CELL} whitespace-nowrap">
-                  <span class={ATTEMPT_ROW}>
+                  <span class="{ATTEMPT_ROW} {FIGURE}">
                     {#if cell.kind === 'attempts'}
                       {#each [1, 2, 3] as slot (slot)}
                         {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}

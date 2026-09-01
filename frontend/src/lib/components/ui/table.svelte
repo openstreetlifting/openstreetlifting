@@ -21,7 +21,7 @@
    */
   export const FROZEN_EDGE = 'border-r border-zinc-800 sm:border-r-0';
 
-  export const FROZEN_RANK = 'w-10 min-w-10 text-right tabular-nums sm:w-14 sm:min-w-14 left-0';
+  export const FROZEN_RANK = 'w-10 min-w-10 text-right sm:w-14 sm:min-w-14 left-0';
 
   export const ATHLETE_COLUMN = 'w-44 min-w-44 pl-1 sm:w-56 sm:min-w-56 sm:pl-3';
 
@@ -41,7 +41,7 @@
 </script>
 
 <!-- On a phone the table runs edge to edge, so the page gutter and the card
-     chrome are cancelled below sm rather than eating 50px of a 375px screen. -->
+ chrome are cancelled below sm rather than eating 50px of a 375px screen. -->
 <div class={EDGE_TO_EDGE}>
   <Card class="rounded-none border-x-0 p-0 sm:rounded-xl sm:border-x sm:p-4">
     <div class="osl-table overflow-x-auto">
@@ -61,9 +61,9 @@
 
 <style>
   /* The rows are the caller's, so the row colour is published to them as a
-     custom property that the pinned cells can paint themselves with. Setting
-     it here is what keeps a pinned cell and the rest of its row the same
-     colour through zebra striping and hover. */
+ custom property that the pinned cells can paint themselves with. Setting
+ it here is what keeps a pinned cell and the rest of its row the same
+ colour through zebra striping and hover. */
   .osl-table :global(tbody tr) {
     --row-bg: var(--table-row);
     background-color: var(--row-bg);

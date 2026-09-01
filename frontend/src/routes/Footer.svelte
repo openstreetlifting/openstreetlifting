@@ -63,7 +63,7 @@
     <div
       class="mt-5 flex flex-col gap-1.5 border-t border-zinc-800/50 pt-4 sm:mt-6 sm:flex-row sm:items-center sm:justify-between sm:pt-5"
     >
-      <p class="text-xs font-light text-zinc-500">
+      <p class="text-xs text-zinc-500">
         Code licensed under
         <a
           href="https://www.gnu.org/licenses/agpl-3.0.html"
@@ -79,7 +79,7 @@
           class="text-zinc-400 transition-colors hover:text-white">CC BY 4.0</a
         >
       </p>
-      <p class="font-mono text-xs font-light text-zinc-600">
+      <p class="font-mono text-xs text-zinc-600">
         {#if buildInfo.label}
           <span class="text-zinc-500">{buildInfo.label}</span>
         {/if}
