@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.26.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.25.0...v0.26.0) (2026-09-01)
+
+
+### Features
+
+* show attempts in athlete history and clear filters ([#566](https://github.com/openstreetlifting/openstreetlifting/issues/566)) ([2f7e5cd](https://github.com/openstreetlifting/openstreetlifting/commit/2f7e5cd0693baf009c983ab6bbe7a96f7df0990d))
+
 ## [0.25.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.24.0...v0.25.0) (2026-08-31)
 
 
