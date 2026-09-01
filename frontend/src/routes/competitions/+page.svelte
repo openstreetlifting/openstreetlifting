@@ -10,7 +10,7 @@
     TABLE_HEAD_CELL,
   } from '$lib/components/ui';
   import { resolve } from '$app/paths';
-  import { goto } from '$app/navigation';
+  import { goto, afterNavigate } from '$app/navigation';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
   import { formatDate, formatLocation, formatCountdown, countryName } from '$lib/utils';
@@ -36,6 +36,15 @@
   let federation = $state(data.federation ?? null);
   let country = $state(data.country ?? null);
   let year = $state(data.year ?? null);
+
+  // The page outlives a navigation, so a link that drops the query string has to
+  // reach the controls as well as the rows.
+  afterNavigate(() => {
+    search = data.q ?? '';
+    federation = data.federation ?? null;
+    country = data.country ?? null;
+    year = data.year ?? null;
+  });
 
   const narrowed = $derived(Boolean(search || federation || country || year));
 
@@ -130,6 +139,8 @@
     placeholder="Search a competition"
     onSearch={() => apply()}
     activeCount={activeFilters}
+    onClear={clearFilters}
+    clearable={narrowed}
   >
     <select bind:value={federation} onchange={() => apply()} class={SELECT}>
       <option value={null}>All Federations</option>

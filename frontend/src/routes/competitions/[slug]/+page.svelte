@@ -20,6 +20,7 @@
   } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
+  import { afterNavigate } from '$app/navigation';
   import {
     formatDate,
     formatLongDate,
@@ -29,7 +30,14 @@
     formatWeight,
     formatAthleteName,
   } from '$lib/utils';
-  import { CELL, STATUS_FLAG, SORTED_COLUMN, NO_VALUE, NO_RESULT } from '$lib/constants/table';
+  import {
+    ATTEMPT_ROW,
+    CELL,
+    STATUS_FLAG,
+    SORTED_COLUMN,
+    NO_VALUE,
+    NO_RESULT,
+  } from '$lib/constants/table';
   import { GitHubIcon } from '$lib/components/icons';
   import {
     RANKING_SORTS,
@@ -81,6 +89,8 @@
     defaultSort: defaultRankingSort(data.competition.movements.length),
   });
 
+  afterNavigate(() => table.syncFromUrl(page.url));
+
   const rankings = $derived(data.initialRankings);
   const pagination = $derived(data.pagination);
   const busy = $derived(navigating.to?.url.pathname === page.url.pathname);
@@ -112,12 +122,6 @@
         .map((participant) => [participant.athlete.athlete_id, participant])
     )
   );
-
-  // Four fixed slots per movement, the three attempts then the best. Fixing the
-  // widths is what lets the bold figure land at the same offset on every row,
-  // so a column can be read straight down to compare athletes.
-  const ATTEMPT_ROW =
-    'grid grid-cols-[2.5rem_2.5rem_2.5rem_2.9rem] gap-x-1.5 items-baseline tabular-nums';
 
   type LiftCell =
     /** The competition never contested the movement. */
@@ -345,6 +349,8 @@
       placeholder="Search an athlete"
       onSearch={() => table.handleFilterChange()}
       activeCount={activeFilters}
+      onClear={() => table.clearFilters()}
+      clearable={table.narrowed}
     >
       <select
         bind:value={table.countryFilter}
@@ -379,7 +385,7 @@
         {/each}
       </select>
 
-      <div class="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
+      <div class="flex w-full items-center gap-2 sm:w-auto">
         <label for="sort-by" class="text-sm text-zinc-500">Sort by</label>
         <select
           id="sort-by"
