@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
+
+[competition]
+name = "Underground Munich Reloaded"
+start_date = "2024-10-12"
+end_date = "2024-10-12"
+city = "Munich"
+region = "Bayern"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "Munich Underground"
+country = "DE"
