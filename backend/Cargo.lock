@@ -1363,6 +1363,7 @@ dependencies = [
  "chrono",
  "osl_domain",
  "rust_decimal",
+ "serde",
  "sqlx",
  "uuid",
 ]

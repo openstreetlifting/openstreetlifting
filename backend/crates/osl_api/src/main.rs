@@ -69,6 +69,7 @@ pub struct AppState {
             crate::competition::dto::MovementInfo,
             crate::athlete::dto::AthleteResponse,
             crate::athlete::dto::AthleteCompetitionSummary,
+            crate::athlete::dto::AthleteLift,
             crate::athlete::dto::PersonalRecord,
             crate::shared::dto::PaginationMeta,
             crate::shared::dto::PaginationParams,

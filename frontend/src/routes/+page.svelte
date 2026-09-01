@@ -46,6 +46,8 @@
   const focused = $derived(page.url.searchParams.get('athlete'));
 
   afterNavigate(() => {
+    table.syncFromUrl(page.url);
+
     if (!focused) return;
     requestAnimationFrame(() => {
       document.querySelector('[data-focused]')?.scrollIntoView({ block: 'center' });
@@ -81,6 +83,8 @@
     placeholder="Search an athlete"
     onSearch={() => table.handleFilterChange()}
     activeCount={activeFilters}
+    onClear={() => table.clearFilters()}
+    clearable={table.narrowed}
   >
     <select
       bind:value={table.countryFilter}
@@ -135,7 +139,7 @@
       {/each}
     </select>
 
-    <div class="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
+    <div class="flex w-full items-center gap-2 sm:w-auto">
       <label for="sort-by" class="text-sm text-zinc-500">Sort by</label>
       <select
         id="sort-by"

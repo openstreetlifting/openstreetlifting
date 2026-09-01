@@ -30,6 +30,12 @@ export class RankingsTable {
   yearFilter = $state<number | null>(null);
   movementFilter = $state('ris');
   sortDirection = $state<'asc' | 'desc'>('desc');
+  /**
+   * The athlete a link asked the board to scroll to and highlight. Not a filter,
+   * so it never narrows the rows and never survives a filter change, but it is
+   * state a visitor arrived with and should be able to drop.
+   */
+  focusedAthlete = $state<string | null>(null);
 
   readonly includeYear: boolean;
   readonly defaultSort: string;
@@ -40,7 +46,16 @@ export class RankingsTable {
     this.includeYear = config.includeYear ?? false;
     this.defaultSort = config.defaultSort ?? 'ris';
 
-    const params = config.initialUrl.searchParams;
+    this.syncFromUrl(config.initialUrl);
+  }
+
+  /**
+   * Read the controls back off the URL. The class outlives a navigation, so a
+   * link that drops the query string (the header logo, back to the unfiltered
+   * board) has to reach the selects as well as the rows.
+   */
+  syncFromUrl(url: URL) {
+    const params = url.searchParams;
     this.genderFilter = params.get('gender') || null;
     this.categoryFilter = params.get('category') || null;
     this.countryFilter = params.get('country') || null;
@@ -49,6 +64,22 @@ export class RankingsTable {
     this.yearFilter = this.includeYear ? Number(params.get('year')) || null : null;
     this.movementFilter = params.get('movement') || this.defaultSort;
     this.sortDirection = params.get('direction') === 'asc' ? 'asc' : 'desc';
+    this.focusedAthlete = params.get('athlete') || null;
+  }
+
+  /** Whether anything but the defaults is in play, so clearing would do something. */
+  get narrowed(): boolean {
+    return Boolean(
+      this.genderFilter ||
+      this.categoryFilter ||
+      this.countryFilter ||
+      this.federationFilter ||
+      this.yearFilter ||
+      this.searchQuery ||
+      this.focusedAthlete ||
+      this.movementFilter !== this.defaultSort ||
+      this.sortDirection !== 'desc'
+    );
   }
 
   private get searchQuery(): string {
@@ -89,6 +120,7 @@ export class RankingsTable {
     this.federationFilter = null;
     this.yearFilter = null;
     this.searchFilter = '';
+    this.focusedAthlete = null;
     this.movementFilter = this.defaultSort;
     this.sortDirection = 'desc';
     await this.navigate(1);

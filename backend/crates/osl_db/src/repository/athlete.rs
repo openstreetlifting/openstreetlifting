@@ -4,7 +4,9 @@ use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
 use crate::params::Page;
-use crate::projections::athlete::{AthleteCompetitionRow, AthleteDetail, PersonalRecordRow};
+use crate::projections::athlete::{
+    AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
+};
 use crate::repository::parse_gender;
 use crate::rows::athlete::AthleteRow;
 
@@ -148,17 +150,44 @@ impl<'a> AthleteRepository<'a> {
                 END as "total: Decimal",
                 cp.ris_score,
                 cp.ris_source,
-                cp.status
+                cp.status,
+                c.event_code,
+                COALESCE(
+                    jsonb_agg(
+                        jsonb_build_object(
+                            'movement_name', l.movement_name,
+                            'best_weight', l.max_weight::text,
+                            'attempts', COALESCE(
+                                (
+                                    SELECT jsonb_agg(
+                                               jsonb_build_object(
+                                                   'attempt_number', a.attempt_number,
+                                                   'weight', a.weight::text,
+                                                   'is_successful', a.is_successful
+                                               )
+                                               ORDER BY a.attempt_number
+                                           )
+                                    FROM attempts a
+                                    WHERE a.lift_id = l.lift_id
+                                ),
+                                '[]'::jsonb
+                            )
+                        )
+                        ORDER BY m.display_order
+                    ) FILTER (WHERE l.lift_id IS NOT NULL),
+                    '[]'::jsonb
+                ) as "lifts!: sqlx::types::Json<Vec<AthleteLiftRow>>"
             FROM competition_participants cp
             JOIN competitions c ON cp.competition_id = c.competition_id
             JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
             LEFT JOIN divisions d ON d.division_id = cp.division_id
             LEFT JOIN lifts l ON l.participant_id = cp.participant_id
+            LEFT JOIN movements m ON m.name = l.movement_name
             LEFT JOIN placed ON placed.participant_id = cp.participant_id
             WHERE cp.athlete_id = $1
-            GROUP BY c.competition_id, c.name, c.slug, c.start_date, d.name, wc.gender,
-                     wc.min_kg, wc.max_kg, placed.place, cp.ris_score, cp.ris_source,
-                     cp.status
+            GROUP BY c.competition_id, c.name, c.slug, c.start_date, c.event_code, d.name,
+                     wc.gender, wc.min_kg, wc.max_kg, placed.place, cp.ris_score,
+                     cp.ris_source, cp.status
             ORDER BY c.start_date DESC NULLS LAST
             "#,
             athlete.athlete_id
@@ -183,6 +212,8 @@ impl<'a> AthleteRepository<'a> {
                     ris_score: row.ris_score,
                     ris_source: row.ris_source,
                     status: row.status,
+                    event_code: row.event_code,
+                    lifts: row.lifts.0,
                 })
             })
             .collect::<Result<Vec<_>>>()?;

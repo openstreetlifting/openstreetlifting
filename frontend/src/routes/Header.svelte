@@ -28,7 +28,11 @@
   <nav
     class="mx-auto flex max-w-[var(--content-max-width)] flex-wrap items-center justify-between px-4 py-3 sm:px-6 sm:py-4"
   >
-    <a href={resolve('/')} class="opacity-90 transition-opacity hover:opacity-100">
+    <a
+      href={resolve('/')}
+      title="OpenStreetlifting, back to the full rankings"
+      class="opacity-90 transition-opacity hover:opacity-100"
+    >
       <img src="/logowidth.png" alt="OpenStreetlifting" class="h-7 w-auto sm:h-8" />
     </a>
 

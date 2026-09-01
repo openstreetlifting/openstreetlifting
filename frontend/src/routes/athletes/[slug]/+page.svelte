@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import type { PersonalRecord } from '$lib/types/athlete';
+  import type { AthleteCompetitionSummary, PersonalRecord } from '$lib/types/athlete';
+  import type { Attempt } from '$lib/types/competition';
   import {
     Card,
     Breadcrumb,
@@ -27,7 +28,14 @@
   } from '$lib/utils';
   import Seo from '$lib/components/seo.svelte';
   import { absolute, athleteLd, breadcrumbLd } from '$lib/seo';
-  import { CELL, STATUS_FLAG, NO_VALUE, TEXT_CELL } from '$lib/constants/table';
+  import {
+    ATTEMPT_ROW,
+    CELL,
+    STATUS_FLAG,
+    NO_VALUE,
+    NO_RESULT,
+    TEXT_CELL,
+  } from '$lib/constants/table';
 
   // The badge is two letters, so the title carries the meaning. A reason from
   // the source is better than either, when there is one.
@@ -46,6 +54,55 @@
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
   const showsDivision = $derived(athlete.competitions.some((c) => c.division));
+
+  const LIFTS = [
+    { key: 'muscleup', code: 'M', movement: 'Muscle-up', label: 'Muscle Up' },
+    { key: 'pullup', code: 'P', movement: 'Pull-up', label: 'Pull Up' },
+    { key: 'dips', code: 'D', movement: 'Dips', label: 'Dips' },
+    { key: 'squat', code: 'S', movement: 'Squat', label: 'Squat' },
+  ] as const;
+
+  type Lift = (typeof LIFTS)[number];
+
+  // The event code names the movements a competition contested, so a column with
+  // no weight can be read as bombed rather than never lifted. Older rows carry no
+  // event, and there the lifts themselves are all the history says.
+  function contestedBy(competition: AthleteCompetitionSummary, lift: Lift): boolean {
+    return competition.event
+      ? competition.event.includes(lift.code)
+      : competition.lifts.some((candidate) => candidate.movement_name === lift.movement);
+  }
+
+  type LiftCell =
+    /** The competition never contested the movement. */
+    | { kind: 'absent' }
+    /** Contested, and every attempt failed, with nothing recorded behind it. */
+    | { kind: 'bombed' }
+    /** The source published a best with no attempt breakdown behind it. */
+    | { kind: 'best'; best: string }
+    | { kind: 'attempts'; attempts: Attempt[]; best: string | null };
+
+  function liftCell(competition: AthleteCompetitionSummary, lift: Lift): LiftCell {
+    if (!contestedBy(competition, lift)) return { kind: 'absent' };
+
+    const made = competition.lifts.find((candidate) => candidate.movement_name === lift.movement);
+
+    if (made?.attempts.length) {
+      const attempts = [...made.attempts].sort((a, b) => a.attempt_number - b.attempt_number);
+      return { kind: 'attempts', attempts, best: made.best_weight };
+    }
+
+    return made?.best_weight == null
+      ? { kind: 'bombed' }
+      : { kind: 'best', best: made.best_weight };
+  }
+
+  // A column no meet in the history ran would be dashes all the way down.
+  const contested = $derived(
+    LIFTS.filter((lift) =>
+      athlete.competitions.some((competition) => contestedBy(competition, lift))
+    )
+  );
 
   function sortPersonalRecords(records: PersonalRecord[]) {
     const movementPriority: Record<string, number> = {
@@ -286,6 +343,17 @@
           <th class="{TABLE_HEAD_CELL} text-zinc-400">Competition</th>
           <th class="{TABLE_HEAD_CELL} text-zinc-400">Total</th>
           <th class="{TABLE_HEAD_CELL} text-zinc-400"><RisHeader /></th>
+          {#each contested as lift (lift.key)}
+            <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">
+              {lift.label}
+              <span class="{ATTEMPT_ROW} mt-1 text-[0.6rem] font-normal text-zinc-600">
+                <span class="text-right">1</span>
+                <span class="text-right">2</span>
+                <span class="text-right">3</span>
+                <span class="text-right">Best</span>
+              </span>
+            </th>
+          {/each}
           <th class="{TABLE_HEAD_CELL} text-zinc-400">Date</th>
           <th class="{TABLE_HEAD_CELL} text-zinc-400">Class</th>
           {#if showsDivision}
@@ -324,6 +392,45 @@
               <td class="{TABLE_CELL} {CELL.counted}">
                 <RisScore value={competition.ris_score} source={competition.ris_source} />
               </td>
+              {#each contested as lift (lift.key)}
+                {@const cell = liftCell(competition, lift)}
+                <td class="{TABLE_CELL} whitespace-nowrap">
+                  <span class={ATTEMPT_ROW}>
+                    {#if cell.kind === 'attempts'}
+                      {#each [1, 2, 3] as slot (slot)}
+                        {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
+                        <span
+                          class="text-right {attempt && !attempt.is_successful
+                            ? CELL.discounted
+                            : CELL.data}"
+                          title={attempt
+                            ? `Attempt ${slot}: ${attempt.weight} kg, ${attempt.is_successful ? 'good lift' : 'no lift'}`
+                            : `Attempt ${slot} not recorded`}
+                        >
+                          {attempt ? attempt.weight : ''}
+                        </span>
+                      {/each}
+                    {:else}
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    {/if}
+
+                    <span class="text-right {CELL.counted}">
+                      {#if cell.kind === 'absent'}
+                        <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
+                      {:else if cell.kind === 'bombed' || cell.best === null}
+                        <span
+                          class="font-normal {CELL.nothing}"
+                          title="No successful {lift.label.toLowerCase()}">{NO_RESULT}</span
+                        >
+                      {:else}
+                        {formatWeight(cell.best)}
+                      {/if}
+                    </span>
+                  </span>
+                </td>
+              {/each}
               <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap">
                 {formatDate(competition.competition_date)}
               </td>

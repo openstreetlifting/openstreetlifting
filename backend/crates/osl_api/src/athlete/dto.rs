@@ -1,11 +1,14 @@
 use chrono::NaiveDateTime;
-use osl_db::projections::athlete::{AthleteCompetitionRow, AthleteDetail, PersonalRecordRow};
+use osl_db::projections::athlete::{
+    AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
+};
 use osl_db::projections::ranking::{AthleteClassStandingRow, AthleteStandingRow};
 use osl_db::rows::athlete::AthleteRow;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+use crate::competition::dto::AttemptInfo;
 use crate::shared::query::Include;
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -105,6 +108,16 @@ impl WeightClassStanding {
     }
 }
 
+/// An athlete's best on one movement at one competition. A missing weight is a
+/// movement they contested and never made, which is not the same as a movement
+/// the competition never ran, and `event` is what tells the two apart.
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct AthleteLift {
+    pub movement_name: String,
+    pub best_weight: Option<rust_decimal::Decimal>,
+    pub attempts: Vec<AttemptInfo>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteCompetitionSummary {
     pub competition_id: Uuid,
@@ -123,6 +136,10 @@ pub struct AthleteCompetitionSummary {
     /// TODO: introduce a enum constant for this
     pub ris_source: Option<String>,
     pub status: String,
+    /// The movements the competition ran, as letters of MPDS.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub event: Option<String>,
+    pub lifts: Vec<AthleteLift>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -174,6 +191,18 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
             ris_score: row.ris_score,
             ris_source: row.ris_source,
             status: row.status,
+            event: row.event_code,
+            lifts: row.lifts.into_iter().map(AthleteLift::from).collect(),
+        }
+    }
+}
+
+impl From<AthleteLiftRow> for AthleteLift {
+    fn from(row: AthleteLiftRow) -> Self {
+        Self {
+            movement_name: row.movement_name,
+            best_weight: row.best_weight,
+            attempts: row.attempts.into_iter().map(AttemptInfo::from).collect(),
         }
     }
 }
