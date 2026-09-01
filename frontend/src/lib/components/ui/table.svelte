@@ -64,6 +64,16 @@
  custom property that the pinned cells can paint themselves with. Setting
  it here is what keeps a pinned cell and the rest of its row the same
  colour through zebra striping and hover. */
+  /* Rows that are being replaced fade rather than empty out, so the wait keeps
+ the table's height and the reader's place in it. */
+  .osl-table :global(tbody) {
+    transition: opacity 120ms ease-out;
+  }
+
+  .osl-table :global(table[aria-busy='true'] tbody) {
+    opacity: 0.55;
+  }
+
   .osl-table :global(tbody tr) {
     --row-bg: var(--table-row);
     background-color: var(--row-bg);

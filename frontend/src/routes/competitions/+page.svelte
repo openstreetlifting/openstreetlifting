@@ -10,6 +10,8 @@
     TABLE_HEAD_CELL,
   } from '$lib/components/ui';
   import { resolve } from '$app/paths';
+  import { rankingsHref } from '$lib/state/rankings-return.svelte';
+  import { slowNavigation } from '$lib/state/slow-navigation.svelte';
   import { goto, afterNavigate } from '$app/navigation';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
@@ -23,7 +25,8 @@
 
   const competitions = $derived(data.competitions);
   const pagination = $derived(data.pagination);
-  const busy = $derived(navigating.to?.url.pathname === currentPage.url.pathname);
+  const loading = slowNavigation(() => navigating.to?.url.pathname === currentPage.url.pathname);
+  const busy = $derived(loading.current);
 
   const TABS = [
     { status: 'completed', label: 'Results' },
@@ -109,7 +112,7 @@
 />
 
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-4 sm:px-6 sm:py-12">
-  <Breadcrumb items={[{ label: 'Rankings', href: '/' }, { label: 'Competitions' }]} />
+  <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: 'Competitions' }]} />
 
   <h1 class="sr-only">Streetlifting competitions</h1>
 

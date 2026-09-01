@@ -3,10 +3,14 @@
 
   type BreadcrumbItem = {
     label: string;
+    /** A path, optionally with the query string a visitor left the page on. */
     href?: string;
   };
 
   let { items }: { items: BreadcrumbItem[] } = $props();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- an href carrying a query string is not a literal route
+  const target = (href: string) => resolve(href as any);
 </script>
 
 <nav aria-label="Breadcrumb" class="mb-3 sm:mb-5">
@@ -28,7 +32,7 @@
       <li>
         {#if item.href && index < items.length - 1}
           <a
-            href={resolve(item.href)}
+            href={target(item.href)}
             class="rounded transition-colors hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
           >
             {item.label}

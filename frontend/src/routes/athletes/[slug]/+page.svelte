@@ -18,6 +18,7 @@
   } from '$lib/components/ui';
   import { ChevronIcon, GlobeIcon, InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
+  import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import {
     formatDate,
@@ -181,7 +182,7 @@
 />
 
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-4 sm:px-6 sm:py-12">
-  <Breadcrumb items={[{ label: 'Rankings', href: '/' }, { label: athleteName }]} />
+  <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: athleteName }]} />
 
   <div class="mb-6 sm:mb-10">
     <div class="flex items-center gap-3">

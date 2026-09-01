@@ -26,6 +26,8 @@
   import { CELL, FIGURE, SORTED_COLUMN, TEXT_CELL } from '$lib/constants/table';
   import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
+  import { rememberRankings } from '$lib/state/rankings-return.svelte';
+  import { slowNavigation } from '$lib/state/slow-navigation.svelte';
   import { FIELD } from '$lib/constants/typography';
   import { listingSeo, websiteLd } from '$lib/seo';
 
@@ -35,7 +37,8 @@
 
   const rankings = $derived(data.initialRankings);
   const pagination = $derived(data.pagination);
-  const busy = $derived(navigating.to?.url.pathname === page.url.pathname);
+  const loading = slowNavigation(() => navigating.to?.url.pathname === page.url.pathname);
+  const busy = $derived(loading.current);
 
   const lifts = RANKING_LIFTS;
   const sorts = RANKING_SORTS;
@@ -45,9 +48,15 @@
 
   const focused = $derived(page.url.searchParams.get('athlete'));
 
-  afterNavigate(() => {
+  // The controls follow the URL in the same pass that brings the new rows in.
+  // Catching them up afterwards instead repaints the board a second time, a
+  // frame behind the rows the visitor is already reading.
+  $effect(() => {
     table.syncFromUrl(page.url);
+    rememberRankings(page.url.search);
+  });
 
+  afterNavigate(() => {
     if (!focused) return;
     requestAnimationFrame(() => {
       document.querySelector('[data-focused]')?.scrollIntoView({ block: 'center' });

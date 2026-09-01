@@ -19,6 +19,8 @@
     ATHLETE_CONTENT,
   } from '$lib/components/ui';
   import { resolve } from '$app/paths';
+  import { rankingsHref } from '$lib/state/rankings-return.svelte';
+  import { slowNavigation } from '$lib/state/slow-navigation.svelte';
   import { page, navigating } from '$app/state';
   import { afterNavigate } from '$app/navigation';
   import {
@@ -93,7 +95,8 @@
 
   const rankings = $derived(data.initialRankings);
   const pagination = $derived(data.pagination);
-  const busy = $derived(navigating.to?.url.pathname === page.url.pathname);
+  const loading = slowNavigation(() => navigating.to?.url.pathname === page.url.pathname);
+  const busy = $derived(loading.current);
 
   const sorts = $derived(risAvailable ? RANKING_SORTS : RANKING_SORTS_NO_RIS);
   const genders = RANKING_GENDERS;
@@ -282,7 +285,7 @@
 <div class="mx-auto max-w-[var(--content-max-width)] px-4 py-4 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
-      { label: 'Rankings', href: '/' },
+      { label: 'Rankings', href: rankingsHref() },
       { label: 'Competitions', href: '/competitions' },
       { label: competition.name },
     ]}
