@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024"><rect width="1024" height="1024" fill="#09090b"/><g transform="translate(-69.28,-69.28) scale(2.2706)"><defs>
+    <!-- light reads top-left; one sweep instead of modelled gradients -->
+    <linearGradient id="pl-sweep" x1="0.15" y1="0.05" x2="0.85" y2="0.95">
+      <stop offset="0"    stop-color="#FFFFFF" stop-opacity="0.10"/>
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.60" stop-color="#341117" stop-opacity="0"/>
+      <stop offset="1"    stop-color="#341117" stop-opacity="0.20"/>
+    </linearGradient>
+
+    <linearGradient id="pl-edge" x1="0.14" y1="0.03" x2="0.86" y2="0.97">
+      <stop offset="0"    stop-color="#C65367" stop-opacity="0.95"/>
+      <stop offset="0.38" stop-color="#AE3A4E" stop-opacity="0.25"/>
+      <stop offset="0.62" stop-color="#341117" stop-opacity="0.25"/>
+      <stop offset="1"    stop-color="#341117" stop-opacity="0.85"/>
+    </linearGradient>
+
+    <linearGradient id="pl-collar" x1="0.15" y1="0.05" x2="0.85" y2="0.95">
+      <stop offset="0"    stop-color="#969DA5"/>
+      <stop offset="0.50" stop-color="#6E757D"/>
+      <stop offset="1"    stop-color="#4C535A"/>
+    </linearGradient>
+
+    <filter id="pl-drop" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#341117" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+
+  <g>
+    <!-- outer rim band -->
+    <circle cx="256" cy="256" r="230" fill="#69232F"/>
+
+    <!-- face -->
+    <circle cx="256" cy="256" r="202" fill="#7F2A39"/>
+    <circle cx="256" cy="256" r="202" fill="none" stroke="#5A1E28" stroke-width="2"/>
+
+    <!-- hub, one flat step lighter -->
+    <circle cx="256" cy="256" r="122" fill="#862E3D"/>
+    <circle cx="256" cy="256" r="122" fill="none" stroke="#5A1E28" stroke-width="1.5" stroke-opacity="0.45"/>
+
+    <!-- grey collar around the bar hole -->
+    <circle cx="256" cy="256" r="41" fill="none" stroke="url(#pl-collar)" stroke-width="30"/>
+    <circle cx="256" cy="256" r="56" fill="none" stroke="#3B4148" stroke-width="1.5" stroke-opacity="0.75"/>
+
+    <!-- bore -->
+    <circle cx="256" cy="256" r="26" fill="#241014"/>
+    <circle cx="256" cy="256" r="26" fill="none" stroke="#3E444B" stroke-width="1.5" stroke-opacity="0.8"/>
+  </g>
+
+  <!-- light sweep + lit/shaded outer edge -->
+  <circle cx="256" cy="256" r="230" fill="url(#pl-sweep)"/>
+  <circle cx="256" cy="256" r="229" fill="none" stroke="url(#pl-edge)" stroke-width="2.5"/></g></svg>
