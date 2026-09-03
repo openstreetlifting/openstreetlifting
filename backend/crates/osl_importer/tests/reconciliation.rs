@@ -220,13 +220,17 @@ fn full_event_file(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn ris_history_goes_with_the_participant(pool: PgPool) {
+async fn a_dropped_participant_takes_its_score(pool: PgPool) {
     import(
         &pool,
         full_event_file("test-competition", two_lifters_full_event()),
     )
     .await;
-    let scored: i64 = count(&pool, "SELECT COUNT(*) FROM ris_scores_history").await;
+    let scored: i64 = count(
+        &pool,
+        "SELECT COUNT(*) FROM competition_participants WHERE ris_score IS NOT NULL",
+    )
+    .await;
     assert_eq!(scored, 2, "both lifters should have been scored");
 
     let dropped: Uuid = sqlx::query_scalar(
@@ -242,11 +246,12 @@ async fn ris_history_goes_with_the_participant(pool: PgPool) {
     let remaining = vec![athlete("Ada", "Lovelace", four_lifts())];
     import(&pool, full_event_file("test-competition", remaining)).await;
 
-    let orphaned: i64 =
-        sqlx::query_scalar("SELECT COUNT(*) FROM ris_scores_history WHERE participant_id = $1")
-            .bind(dropped)
-            .fetch_one(&pool)
-            .await
-            .unwrap();
+    let orphaned: i64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM competition_participants WHERE participant_id = $1",
+    )
+    .bind(dropped)
+    .fetch_one(&pool)
+    .await
+    .unwrap();
     assert_eq!(orphaned, 0);
 }

@@ -174,11 +174,16 @@ async fn no_ris_is_computed_outside_the_full_event(pool: PgPool) {
         "a one-movement total measured against a four-lift benchmark would be meaningless"
     );
 
-    let history: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM ris_scores_history")
-        .fetch_one(&pool)
-        .await
-        .unwrap();
-    assert_eq!(history, 1, "and nothing is written to the history either");
+    let editions: Vec<Option<i32>> =
+        sqlx::query_scalar("SELECT ris_edition FROM competition_participants ORDER BY ris_edition")
+            .fetch_all(&pool)
+            .await
+            .unwrap();
+    assert_eq!(
+        editions,
+        vec![Some(2026), None],
+        "a score names its edition and an unscored row names none"
+    );
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

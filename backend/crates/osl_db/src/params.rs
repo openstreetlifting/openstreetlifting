@@ -5,7 +5,6 @@
 //! bodies into these on the way in.
 
 use osl_domain::WeightClass;
-use rust_decimal::Decimal;
 use uuid::Uuid;
 
 /// A slice of a collection, already resolved to SQL `LIMIT` / `OFFSET`.
@@ -96,14 +95,4 @@ pub struct CompetitionFilter {
     pub search: Option<String>,
     /// Results read newest first, an upcoming calendar reads soonest first.
     pub direction: SortDirection,
-}
-
-/// Score to upsert into `ris_scores_history`.
-#[derive(Debug, Clone, Copy)]
-pub struct RisScoreUpsert {
-    pub participant_id: Uuid,
-    pub formula_id: Uuid,
-    pub ris_score: Decimal,
-    pub bodyweight: Decimal,
-    pub total_weight: Decimal,
 }
