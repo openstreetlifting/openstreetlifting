@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT\n            cp.participant_id,\n            cp.bodyweight,\n            a.gender,\n            COALESCE(SUM(l.max_weight), 0) as \"total!: rust_decimal::Decimal\"\n        FROM competition_participants cp\n        INNER JOIN athletes a ON cp.athlete_id = a.athlete_id\n        LEFT JOIN lifts l ON l.participant_id = cp.participant_id\n        WHERE cp.bodyweight IS NOT NULL\n        GROUP BY cp.participant_id, cp.bodyweight, a.gender\n        ",
+  "query": "\n        SELECT\n            cp.participant_id,\n            cp.bodyweight as \"bodyweight!\",\n            a.gender,\n            COALESCE(SUM(l.max_weight), 0) as \"total!\"\n        FROM competition_participants cp\n        INNER JOIN athletes a ON cp.athlete_id = a.athlete_id\n        INNER JOIN competitions c ON c.competition_id = cp.competition_id\n        LEFT JOIN lifts l ON l.participant_id = cp.participant_id\n        WHERE c.event_code = $1\n          AND cp.status = 'competed'\n          AND cp.ris_source IS DISTINCT FROM 'reported'\n          AND cp.bodyweight IS NOT NULL\n          AND ($2::uuid IS NULL OR cp.competition_id = $2)\n        GROUP BY cp.participant_id, cp.bodyweight, a.gender\n        ",
   "describe": {
     "columns": [
       {
@@ -16,7 +16,7 @@
       },
       {
         "ordinal": 1,
-        "name": "bodyweight",
+        "name": "bodyweight!",
         "type_info": "Numeric",
         "origin": {
           "Table": {
@@ -38,13 +38,16 @@
       },
       {
         "ordinal": 3,
-        "name": "total!: rust_decimal::Decimal",
+        "name": "total!",
         "type_info": "Numeric",
         "origin": "Expression"
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Text",
+        "Uuid"
+      ]
     },
     "nullable": [
       false,
@@ -53,5 +56,5 @@
       null
     ]
   },
-  "hash": "2ce97fdf843c00fb9974df56255615a71faebfc60eb53be1e6d1d6622d785d3a"
+  "hash": "012058ca83e22c7866948faf58f12224fc029a64d304752290726a3835ae7662"
 }

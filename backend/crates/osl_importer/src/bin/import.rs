@@ -187,7 +187,7 @@ async fn handle_recompute_ris(database_url: &str) -> Result<()> {
         .await
         .context("connecting to the database")?;
 
-    let count = osl_db::services::ris_computation::recompute_all_ris(&pool, None).await?;
+    let count = osl_db::services::ris_computation::recompute_all_ris(&pool).await?;
     tracing::info!("Recomputed RIS for {} participant(s)", count);
 
     Ok(())

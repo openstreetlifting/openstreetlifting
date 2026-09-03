@@ -646,76 +646,59 @@ impl<'a> CanonicalTransformer<'a> {
                 ImporterError::TransformationError(format!("No current RIS formula: {e}"))
             })?;
 
-        let participants = sqlx::query!(
-            r#"
-            SELECT
-                cp.participant_id,
-                cp.athlete_id,
-                cp.bodyweight,
-                a.gender,
-                COALESCE(SUM(l.max_weight), 0) as "total!: rust_decimal::Decimal"
-            FROM competition_participants cp
-            INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
-            LEFT JOIN lifts l ON l.participant_id = cp.participant_id
-            WHERE cp.competition_id = $1
-              AND cp.status = 'competed'
-              AND cp.ris_source IS DISTINCT FROM 'reported'
-            GROUP BY cp.participant_id, cp.athlete_id, cp.bodyweight, a.gender
-            "#,
-            competition_id
+        let participants = osl_db::services::ris_computation::scorable_participants(
+            &mut **tx,
+            Some(competition_id),
         )
-        .fetch_all(&mut **tx)
         .await?;
 
         let participant_count = participants.len();
 
         for participant in participants {
-            if let Some(bodyweight) = participant.bodyweight {
-                let ris_score = osl_domain::ris::compute_ris(
-                    bodyweight,
-                    participant.total,
-                    &participant.gender,
-                    &formula,
-                )
-                .map_err(|e| {
-                    ImporterError::TransformationError(format!(
-                        "Failed to compute RIS for participant {}: {}",
-                        participant.participant_id, e
-                    ))
-                })?;
+            let ris_score = osl_domain::ris::compute_ris(
+                participant.bodyweight,
+                participant.total,
+                &participant.gender,
+                &formula,
+            )
+            .map_err(|e| {
+                ImporterError::TransformationError(format!(
+                    "Failed to compute RIS for participant {}: {}",
+                    participant.participant_id, e
+                ))
+            })?;
 
-                sqlx::query!(
-                    r#"
-                    UPDATE competition_participants
-                    SET ris_score = $1, ris_source = 'computed'
-                    WHERE participant_id = $2
-                    "#,
-                    ris_score,
-                    participant.participant_id
-                )
-                .execute(&mut **tx)
-                .await?;
+            sqlx::query!(
+                r#"
+                UPDATE competition_participants
+                SET ris_score = $1, ris_source = 'computed'
+                WHERE participant_id = $2
+                "#,
+                ris_score,
+                participant.participant_id
+            )
+            .execute(&mut **tx)
+            .await?;
 
-                sqlx::query!(
-                    r#"
-                    INSERT INTO ris_scores_history (participant_id, formula_id, ris_score, bodyweight, total_weight)
-                    VALUES ($1, $2, $3, $4, $5)
-                    ON CONFLICT (participant_id, formula_id)
-                    DO UPDATE SET
-                        ris_score = EXCLUDED.ris_score,
-                        bodyweight = EXCLUDED.bodyweight,
-                        total_weight = EXCLUDED.total_weight,
-                        computed_at = CURRENT_TIMESTAMP
-                    "#,
-                    participant.participant_id,
-                    formula.formula_id,
-                    ris_score,
-                    bodyweight,
-                    participant.total
-                )
-                .execute(&mut **tx)
-                .await?;
-            }
+            sqlx::query!(
+                r#"
+                INSERT INTO ris_scores_history (participant_id, formula_id, ris_score, bodyweight, total_weight)
+                VALUES ($1, $2, $3, $4, $5)
+                ON CONFLICT (participant_id, formula_id)
+                DO UPDATE SET
+                    ris_score = EXCLUDED.ris_score,
+                    bodyweight = EXCLUDED.bodyweight,
+                    total_weight = EXCLUDED.total_weight,
+                    computed_at = CURRENT_TIMESTAMP
+                "#,
+                participant.participant_id,
+                formula.formula_id,
+                ris_score,
+                participant.bodyweight,
+                participant.total
+            )
+            .execute(&mut **tx)
+            .await?;
         }
 
         info!("Computed RIS for {} participants", participant_count);
