@@ -25,21 +25,49 @@ jobs:
   imports:
     name: Import files
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: openstreetlifting
+          POSTGRES_PASSWORD: openstreetlifting
+          POSTGRES_DB: openstreetlifting
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       SQLX_OFFLINE: true
+      DATABASE_URL: postgres://openstreetlifting:openstreetlifting@localhost:5432/openstreetlifting
     steps:
       - uses: actions/checkout@v7
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           cache-workspaces: backend
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: sqlx-cli
       # Canonical files are reviewed as diffs, so an unformatted one makes a
       # small change look like a rewrite.
       - name: Check canonical files are formatted
         working-directory: backend
         run: cargo run -p osl_importer --bin import -- fmt --check
-      - name: Validate canonical files
+      - name: Run migrations
         working-directory: backend
-        run: cargo run -p osl_importer --bin import -- bulk-import --validate-only
+        run: sqlx migrate run --source crates/osl_db/migrations
+      # Imported rather than only validated, because a handle names an athlete
+      # and the athletes have to exist before the next step can look one up.
+      # The import validates every file on its way in.
+      - name: Import canonical files
+        working-directory: backend
+        run: cargo run -p osl_importer --bin import -- bulk-import
+      # A competition arriving with a second athlete of the same name is what
+      # takes a name in instagram.csv from naming one person to naming two.
+      # Checking against the imported tree puts that failure on the pull
+      # request that causes it rather than on the deploy.
       - name: Validate athlete social handles
         working-directory: backend
         run: cargo run -p osl_importer --bin import -- instagram --validate-only
