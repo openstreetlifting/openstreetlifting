@@ -1,4 +1,3 @@
-use chrono::NaiveDate;
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -76,29 +75,6 @@ impl<'a> RisRepository<'a> {
         Ok(formula)
     }
 
-    pub async fn get_formula_for_date(&self, date: NaiveDate) -> Result<RisFormulaVersionRow> {
-        let formula = sqlx::query_as!(
-            RisFormulaVersionRow,
-            r#"
-            SELECT formula_id, year, effective_from, effective_until, is_current,
-                   men_a, men_k, men_b, men_v, men_q,
-                   women_a, women_k, women_b, women_v, women_q,
-                   notes, created_at
-            FROM ris_formula_versions
-            WHERE effective_from <= $1
-              AND (effective_until IS NULL OR effective_until > $1)
-            ORDER BY effective_from DESC
-            LIMIT 1
-            "#,
-            date
-        )
-        .fetch_optional(self.pool)
-        .await?
-        .ok_or(StorageError::NotFound)?;
-
-        Ok(formula)
-    }
-
     pub async fn list_all_formulas(&self) -> Result<Vec<RisFormulaVersionRow>> {
         let formulas = sqlx::query_as!(
             RisFormulaVersionRow,
@@ -161,27 +137,6 @@ impl<'a> RisRepository<'a> {
         .await?;
 
         Ok(history)
-    }
-
-    pub async fn get_participant_ris_for_formula(
-        &self,
-        participant_id: Uuid,
-        formula_id: Uuid,
-    ) -> Result<Option<RisScoreHistoryRow>> {
-        let score = sqlx::query_as!(
-            RisScoreHistoryRow,
-            r#"
-            SELECT ris_score_id, participant_id, formula_id, ris_score, bodyweight, total_weight, computed_at
-            FROM ris_scores_history
-            WHERE participant_id = $1 AND formula_id = $2
-            "#,
-            participant_id,
-            formula_id
-        )
-        .fetch_optional(self.pool)
-        .await?;
-
-        Ok(score)
     }
 
     pub async fn update_participant_current_ris(
