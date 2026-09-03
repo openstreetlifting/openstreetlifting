@@ -35,10 +35,8 @@ fn competition_held_in(year: i32, slug: &str) -> CanonicalFormat {
 
 async fn scored_with(pool: &PgPool, slug: &str) -> (Decimal, i32) {
     sqlx::query_as(
-        "SELECT h.ris_score, f.year
-         FROM ris_scores_history h
-         JOIN ris_formula_versions f USING (formula_id)
-         JOIN competition_participants cp USING (participant_id)
+        "SELECT cp.ris_score, cp.ris_edition
+         FROM competition_participants cp
          JOIN competitions c USING (competition_id)
          WHERE c.slug = $1",
     )
@@ -54,7 +52,7 @@ async fn a_meet_older_than_the_formula_is_still_scored(pool: PgPool) {
 
     let (score, year) = scored_with(&pool, "old-competition").await;
 
-    assert_eq!(year, 2025);
+    assert_eq!(year, 2026);
     assert!(score > Decimal::ZERO);
 }
 

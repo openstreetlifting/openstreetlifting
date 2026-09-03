@@ -1,26 +1,13 @@
-use chrono::{NaiveDate, NaiveDateTime};
-use osl_domain::{FormulaConstants, RisFormula};
+use osl_domain::{Constants, Edition, Gender};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
-use uuid::Uuid;
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct RisScoreResponse {
-    pub formula_year: i32,
-    pub ris_score: Decimal,
-    pub bodyweight: Decimal,
-    pub total_weight: Decimal,
-    pub computed_at: NaiveDateTime,
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RisFormulaResponse {
-    pub formula_id: Uuid,
     pub year: i32,
     pub is_current: bool,
-    pub effective_from: NaiveDate,
-    pub effective_until: Option<NaiveDate>,
+    pub credit: String,
     pub constants: RisConstants,
 }
 
@@ -32,11 +19,11 @@ pub struct RisConstants {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct GenderConstants {
-    pub a: Decimal,
-    pub k: Decimal,
-    pub b: Decimal,
-    pub v: Decimal,
-    pub q: Decimal,
+    pub a: f64,
+    pub k: f64,
+    pub b: f64,
+    pub v: f64,
+    pub q: f64,
 }
 
 #[derive(Debug, Clone, Deserialize, ToSchema)]
@@ -53,8 +40,8 @@ pub struct ComputeRisResponse {
     pub formula_year: i32,
 }
 
-impl From<FormulaConstants> for GenderConstants {
-    fn from(constants: FormulaConstants) -> Self {
+impl From<Constants> for GenderConstants {
+    fn from(constants: Constants) -> Self {
         Self {
             a: constants.a,
             k: constants.k,
@@ -65,17 +52,15 @@ impl From<FormulaConstants> for GenderConstants {
     }
 }
 
-impl From<RisFormula> for RisFormulaResponse {
-    fn from(formula: RisFormula) -> Self {
+impl From<Edition> for RisFormulaResponse {
+    fn from(edition: Edition) -> Self {
         Self {
-            formula_id: formula.formula_id,
-            year: formula.year,
-            is_current: formula.is_current,
-            effective_from: formula.effective_from,
-            effective_until: formula.effective_until,
+            year: edition.year(),
+            is_current: edition == Edition::CURRENT,
+            credit: edition.credit().to_string(),
             constants: RisConstants {
-                men: formula.men.into(),
-                women: formula.women.into(),
+                men: edition.constants(Gender::M).into(),
+                women: edition.constants(Gender::F).into(),
             },
         }
     }

@@ -54,7 +54,6 @@ pub struct AppState {
         ris::handlers::get_current_formula,
         ris::handlers::get_formula_by_year,
         ris::handlers::calculate_ris,
-        ris::handlers::get_participant_ris_scores,
     ),
     components(
         schemas(
@@ -83,7 +82,6 @@ pub struct AppState {
             crate::ris::dto::RisFormulaResponse,
             crate::ris::dto::RisConstants,
             crate::ris::dto::GenderConstants,
-            crate::ris::dto::RisScoreResponse,
             crate::ris::dto::ComputeRisRequest,
             crate::ris::dto::ComputeRisResponse,
         )

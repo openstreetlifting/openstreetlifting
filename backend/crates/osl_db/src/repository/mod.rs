@@ -1,7 +1,6 @@
 pub mod athlete;
 pub mod competition;
 pub mod ranking;
-pub mod ris;
 
 use osl_domain::Gender;
 use std::str::FromStr;

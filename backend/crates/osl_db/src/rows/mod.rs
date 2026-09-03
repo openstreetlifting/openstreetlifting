@@ -8,7 +8,5 @@ pub mod federation;
 pub mod lift;
 pub mod movement;
 pub mod record;
-pub mod ris_formula;
-pub mod ris_score;
 pub mod rulebook;
 pub mod social;

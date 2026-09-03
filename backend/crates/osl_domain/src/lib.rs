@@ -24,7 +24,7 @@ pub use movement::Movement;
 pub use name_rules::{check_name, check_native_name};
 pub use native_script::NativeScript;
 pub use normalized_name::{NormalizedAthleteName, display_name};
-pub use ris::{FormulaConstants, RisFormula};
+pub use ris::{Constants, Edition};
 pub use ris_source::RisSource;
 pub use slug::slugify;
 pub use weight_class::{WeightClass, WeightClassSlug};

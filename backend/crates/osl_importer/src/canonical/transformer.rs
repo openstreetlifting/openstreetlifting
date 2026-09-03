@@ -1,6 +1,6 @@
 use super::models::*;
 use crate::{ImporterError, Result};
-use osl_domain::{Movement, NativeScript, NormalizedAthleteName};
+use osl_domain::{Edition, Movement, NativeScript, NormalizedAthleteName};
 use sqlx::PgPool;
 use tracing::info;
 use uuid::Uuid;
@@ -640,12 +640,6 @@ impl<'a> CanonicalTransformer<'a> {
         competition_id: Uuid,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
-        let formula = osl_db::services::ris_computation::get_current_formula(self.pool)
-            .await
-            .map_err(|e| {
-                ImporterError::TransformationError(format!("No current RIS formula: {e}"))
-            })?;
-
         let participants = osl_db::services::ris_computation::scorable_participants(
             &mut **tx,
             Some(competition_id),
@@ -654,50 +648,12 @@ impl<'a> CanonicalTransformer<'a> {
 
         let participant_count = participants.len();
 
-        for participant in participants {
-            let ris_score = osl_domain::ris::compute_ris(
-                participant.bodyweight,
-                participant.total,
-                &participant.gender,
-                &formula,
+        for participant in &participants {
+            osl_db::services::ris_computation::score_participant(
+                &mut **tx,
+                participant,
+                Edition::CURRENT,
             )
-            .map_err(|e| {
-                ImporterError::TransformationError(format!(
-                    "Failed to compute RIS for participant {}: {}",
-                    participant.participant_id, e
-                ))
-            })?;
-
-            sqlx::query!(
-                r#"
-                UPDATE competition_participants
-                SET ris_score = $1, ris_source = 'computed'
-                WHERE participant_id = $2
-                "#,
-                ris_score,
-                participant.participant_id
-            )
-            .execute(&mut **tx)
-            .await?;
-
-            sqlx::query!(
-                r#"
-                INSERT INTO ris_scores_history (participant_id, formula_id, ris_score, bodyweight, total_weight)
-                VALUES ($1, $2, $3, $4, $5)
-                ON CONFLICT (participant_id, formula_id)
-                DO UPDATE SET
-                    ris_score = EXCLUDED.ris_score,
-                    bodyweight = EXCLUDED.bodyweight,
-                    total_weight = EXCLUDED.total_weight,
-                    computed_at = CURRENT_TIMESTAMP
-                "#,
-                participant.participant_id,
-                formula.formula_id,
-                ris_score,
-                participant.bodyweight,
-                participant.total
-            )
-            .execute(&mut **tx)
             .await?;
         }
 
