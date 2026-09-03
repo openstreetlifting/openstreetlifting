@@ -1,0 +1,74 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT athlete_id as \"athlete_id: Uuid\", match_key, gender, country, disambiguation\n        FROM athletes\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "athlete_id: Uuid",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "athlete_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "match_key",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "match_key"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "gender",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "gender"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "country",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "country"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "disambiguation",
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "disambiguation"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "f27689ac8d2b386ca3df71c1ccdd667ed2855d0a0b7e5529f3b37d151c9aa954"
+}

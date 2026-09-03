@@ -114,7 +114,7 @@ async fn main() -> Result<()> {
             file,
             validate_only,
         } => {
-            let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
+            let database_url = optional_database_url(cli.database_url.as_deref(), validate_only)?;
             handle_instagram(file, validate_only, database_url).await?;
         }
         Commands::RecomputeRis => {
@@ -130,19 +130,35 @@ async fn main() -> Result<()> {
 }
 
 fn require_database_url(database_url: Option<&str>, validate_only: bool) -> Result<&str> {
+    Ok(optional_database_url(database_url, validate_only)?.unwrap_or_default())
+}
+
+/// A `--validate-only` run does not need a database, but it checks more when
+/// it has one: whether a name still names exactly one athlete can only be
+/// answered against the athletes.
+fn optional_database_url(database_url: Option<&str>, validate_only: bool) -> Result<Option<&str>> {
     match database_url {
-        Some(url) => Ok(url),
-        None if validate_only => Ok(""),
+        Some(url) => Ok(Some(url)),
+        None if validate_only => Ok(None),
         None => bail!("DATABASE_URL is required to import. Pass --validate-only to skip it"),
     }
 }
 
-async fn handle_instagram(file: PathBuf, validate_only: bool, database_url: &str) -> Result<()> {
-    if validate_only {
+async fn handle_instagram(
+    file: PathBuf,
+    validate_only: bool,
+    database_url: Option<&str>,
+) -> Result<()> {
+    let Some(database_url) = database_url else {
         let count = osl_importer::social::validate_file(&file)?;
-        tracing::info!("{} handle(s) in {}", count, file.display());
+        tracing::warn!(
+            "{} handle(s) in {}. Set DATABASE_URL to also check that each name still names one \
+             athlete",
+            count,
+            file.display()
+        );
         return Ok(());
-    }
+    };
 
     tracing::info!("Connecting to database...");
     let pool = PgPoolOptions::new()
@@ -150,6 +166,12 @@ async fn handle_instagram(file: PathBuf, validate_only: bool, database_url: &str
         .connect(database_url)
         .await
         .context("connecting to the database")?;
+
+    if validate_only {
+        let report = osl_importer::social::check_instagram_handles(&file, &pool).await?;
+        tracing::info!("{} handle(s) name one athlete", report.matched);
+        return Ok(());
+    }
 
     let report = osl_importer::social::load_instagram_handles(&file, &pool).await?;
     tracing::info!("Attached {} handle(s)", report.matched);
