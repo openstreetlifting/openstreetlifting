@@ -1,6 +1,10 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import type { AthleteCompetitionSummary, PersonalRecord } from '$lib/types/athlete';
+  import type {
+    AthleteCompetitionSummary,
+    MetricStanding,
+    PersonalRecord,
+  } from '$lib/types/athlete';
   import type { Attempt } from '$lib/types/competition';
   import {
     Card,
@@ -20,6 +24,7 @@
   import { resolve } from '$app/paths';
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
+  import { RANKING_SORTS } from '$lib/constants/ranking';
   import {
     formatDate,
     formatWeight,
@@ -51,7 +56,7 @@
     const name = STATUS_TITLE[status] ?? status;
     return reason ? `${name}: ${reason.toLowerCase()}` : name;
   }
-  import { TEXT } from '$lib/constants/typography';
+  import { FIELD, TEXT } from '$lib/constants/typography';
 
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
@@ -134,6 +139,41 @@
   const CARD_FIGURE = 'font-mono text-xl font-semibold text-white sm:text-2xl';
   const CARD_CAPTION = 'text-xs text-zinc-500';
   const CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
+  const RANKING_CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4';
+
+  type RankingMetric = (typeof RANKING_SORTS)[number]['value'];
+  type SelectedStanding = Omit<MetricStanding, 'class'> & { class?: string };
+  let selectedMetric = $state<RankingMetric>('ris');
+
+  const selectedMetricLabel = $derived(
+    RANKING_SORTS.find((metric) => metric.value === selectedMetric)?.label ?? 'RIS'
+  );
+
+  const selectedStanding = $derived.by((): SelectedStanding | null => {
+    if (!athlete.standing) return null;
+
+    if (selectedMetric === 'ris') {
+      const ris = athlete.standing.ris;
+      return ris
+        ? {
+            value: ris.score ?? '',
+            global: ris.global,
+            country: ris.country,
+          }
+        : null;
+    }
+
+    return athlete.standing[selectedMetric] ?? null;
+  });
+
+  const selectedMetricValue = $derived(
+    selectedStanding
+      ? selectedMetric === 'ris'
+        ? formatScore(selectedStanding.value)
+        : `${formatWeight(selectedStanding.value)} kg`
+      : 'Not ranked'
+  );
+  const selectedCountry = $derived(selectedStanding?.country.code ?? athlete.country);
 
   const RANKING_PAGE_SIZE = 50;
 
@@ -217,100 +257,110 @@
     </p>
   </div>
 
-  {#snippet standing(
+  {#snippet standingContent(
     country: string | null,
-    basis: string,
-    basisValue: string,
-    place: number,
-    field: number,
-    query: string
+    scope: string,
+    place: number | undefined,
+    field: number | undefined
   )}
-    <a
-      href={resolve(`/?${query}`)}
-      class="group block rounded-xl border border-zinc-800/60 bg-zinc-900/30 p-3 transition-colors hover:border-zinc-700 hover:bg-zinc-900/60 focus:ring-2 focus:ring-zinc-500 focus:outline-none"
-    >
-      <div class={CARD_LABEL}>
-        {#if country}
-          <Flag countryCode={country} class="shrink-0 [--flag-height:1.2em]" />
-        {:else}
-          <GlobeIcon class="h-3.5 w-3.5 shrink-0 text-zinc-400" />
-          <span class="sr-only">Global</span>
-        {/if}
-        <span class="truncate text-zinc-400"
-          >{basis}{#if basisValue}<span class="{FIGURE} ml-1">{basisValue}</span>{/if}</span
-        >
+    <div class={CARD_LABEL}>
+      {#if country}
+        <Flag countryCode={country} class="shrink-0 [--flag-height:1.2em]" />
+      {:else}
+        <GlobeIcon class="h-3.5 w-3.5 shrink-0 text-zinc-400" />
+      {/if}
+      <span class="truncate text-zinc-400">{scope}</span>
+      {#if place !== undefined}
         <ChevronIcon
           class="ml-auto h-3 w-3 shrink-0 -rotate-90 text-zinc-700 transition-colors group-hover:text-zinc-400"
         />
-      </div>
-      <div class="mt-1 flex items-baseline gap-1.5">
+      {/if}
+    </div>
+    <div class="mt-1 flex items-baseline gap-1.5">
+      {#if place !== undefined && field !== undefined}
         <span class={CARD_FIGURE}>#{place}</span>
         <span class="{CARD_CAPTION} {FIGURE}">/ {field}</span>
-      </div>
-    </a>
+      {:else}
+        <span class="text-sm font-medium text-zinc-400">Not ranked</span>
+      {/if}
+    </div>
+    <div class="mt-1 {CARD_CAPTION}">
+      {selectedMetricLabel} · {selectedMetricValue}{#if selectedStanding?.class}
+        · {selectedStanding.class}
+      {/if}
+    </div>
   {/snippet}
 
-  {#if athlete.standing?.ris || athlete.standing?.weight_class}
-    {@const ris = athlete.standing.ris}
-    {@const inClass = athlete.standing.weight_class}
-    {@const risBasis = 'RIS'}
-    {@const risValue = ris?.score ? formatScore(ris.score) : ''}
-    {@const inClassFilters = inClass
-      ? {
-          movement: 'total',
-          category: inClass.class,
-          ...(athlete.gender ? { gender: athlete.gender } : {}),
-        }
-      : {}}
-    {@const classBasis = inClass?.total ? `${inClass.class} ·` : (inClass?.class ?? '')}
-    {@const classValue = inClass?.total ? `${formatWeight(inClass.total)} kg` : ''}
-    <div class="mb-6 sm:mb-8">
-      <h2 class="{CARD_LABEL} mb-2">Ranking</h2>
-      <div class={CARD_GRID}>
-        {#if ris}
-          {@render standing(
-            null,
-            risBasis,
-            risValue,
-            ris.global.place,
-            ris.global.field,
-            boardQuery(ris.global.place)
-          )}
-        {/if}
-        {#if inClass}
-          {@render standing(
-            null,
-            classBasis,
-            classValue,
-            inClass.global.place,
-            inClass.global.field,
-            boardQuery(inClass.global.place, inClassFilters)
-          )}
-        {/if}
+  {#snippet standing(
+    country: string | null,
+    scope: string,
+    place: number | undefined,
+    field: number | undefined,
+    query: string | undefined
+  )}
+    {#if query}
+      <a
+        href={resolve(`/?${query}`)}
+        class="group block rounded-xl border border-zinc-800/60 bg-zinc-900/30 p-3 transition-colors hover:border-zinc-700 hover:bg-zinc-900/60 focus:ring-2 focus:ring-zinc-500 focus:outline-none"
+      >
+        {@render standingContent(country, scope, place, field)}
+      </a>
+    {:else}
+      <div class="rounded-xl border border-zinc-800/60 bg-zinc-900/30 p-3">
+        {@render standingContent(country, scope, place, field)}
+      </div>
+    {/if}
+  {/snippet}
 
-        {#if ris}
-          {@render standing(
-            ris.country.code,
-            risBasis,
-            risValue,
-            ris.country.place,
-            ris.country.field,
-            boardQuery(ris.country.place, { country: ris.country.code })
-          )}
-        {/if}
-        {#if inClass}
-          {@render standing(
-            inClass.country.code,
-            classBasis,
-            classValue,
-            inClass.country.place,
-            inClass.country.field,
-            boardQuery(inClass.country.place, {
-              ...inClassFilters,
-              country: inClass.country.code,
-            })
-          )}
-        {/if}
+  {#if athlete.standing}
+    <div class="mb-6 sm:mb-8">
+      <div class="mb-2 flex items-center justify-between gap-3">
+        <h2 class={CARD_LABEL}>Ranking</h2>
+        <label class="flex items-center gap-2 text-xs text-zinc-500">
+          <span>Metric</span>
+          <select bind:value={selectedMetric} class="{FIELD} px-2.5 py-1.5">
+            {#each RANKING_SORTS as metric (metric.value)}
+              <option value={metric.value}>{metric.label}</option>
+            {/each}
+          </select>
+        </label>
+      </div>
+      <div class={RANKING_CARD_GRID}>
+        {@render standing(
+          null,
+          'Global',
+          selectedStanding?.global.place,
+          selectedStanding?.global.field,
+          selectedStanding
+            ? boardQuery(selectedStanding.global.place, {
+                ...(selectedMetric === 'ris'
+                  ? {}
+                  : {
+                      movement: selectedMetric,
+                      gender: athlete.gender,
+                      category: selectedStanding.class ?? '',
+                    }),
+              })
+            : undefined
+        )}
+        {@render standing(
+          selectedCountry,
+          countryName(selectedCountry),
+          selectedStanding?.country.place,
+          selectedStanding?.country.field,
+          selectedStanding
+            ? boardQuery(selectedStanding.country.place, {
+                ...(selectedMetric === 'ris'
+                  ? {}
+                  : {
+                      movement: selectedMetric,
+                      gender: athlete.gender,
+                      category: selectedStanding.class ?? '',
+                    }),
+                country: selectedCountry,
+              })
+            : undefined
+        )}
       </div>
     </div>
   {/if}

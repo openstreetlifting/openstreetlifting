@@ -5,7 +5,9 @@ use uuid::Uuid;
 
 use crate::error::Result;
 use crate::params::{RankingFilter, RankingMovement, SortDirection};
-use crate::projections::ranking::{AthleteClassStandingRow, AthleteStandingRow, RankingRow};
+use crate::projections::ranking::{
+    AthleteClassStandingRow, AthleteMetricStandingRow, AthleteStandingRow, RankingRow,
+};
 
 pub struct RankingRepository<'a> {
     pool: &'a PgPool,
@@ -226,6 +228,31 @@ impl<'a> RankingRepository<'a> {
         &self,
         athlete_id: Uuid,
     ) -> Result<Option<AthleteStandingRow>> {
+        let standing = self
+            .get_athlete_metric_standings(athlete_id)
+            .await?
+            .into_iter()
+            .find(|standing| standing.metric == "ris")
+            .map(|standing| AthleteStandingRow {
+                ris_score: Some(standing.value),
+                global_place: standing.global_place,
+                global_field: standing.global_field,
+                country: standing.country,
+                country_place: standing.country_place,
+                country_field: standing.country_field,
+            });
+
+        Ok(standing)
+    }
+
+    /// Returns the athlete's global and country place for every metric exposed
+    /// by the rankings board. RIS remains an open comparison. Kilogram metrics
+    /// compare athletes of the same sex and weight class; totals also stay
+    /// within the four-movement event while individual lifts span every event.
+    pub async fn get_athlete_metric_standings(
+        &self,
+        athlete_id: Uuid,
+    ) -> Result<Vec<AthleteMetricStandingRow>> {
         let filter = RankingFilter {
             gender: None,
             country: None,
@@ -242,33 +269,103 @@ impl<'a> RankingRepository<'a> {
         };
 
         let mut query = Self::movement_weights(&filter);
-        Self::push_eligible(&mut query, &filter);
-        Self::push_ranking_pool(&mut query, &filter);
-
         query.push(
             r#"
-            , placed AS (
+            metric_candidates AS (
+                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
+                       'ris' AS metric, ris_score AS value
+                FROM movement_weights
+                WHERE ris_score IS NOT NULL
+                UNION ALL
+                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
+                       'total' AS metric, total AS value
+                FROM movement_weights
+                WHERE total IS NOT NULL AND event_code =
+            "#,
+        );
+        query.push_bind(osl_domain::FULL_EVENT);
+        query.push(
+            r#"
+                UNION ALL
+                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
+                       'muscleup' AS metric, muscleup AS value
+                FROM movement_weights
+                WHERE muscleup IS NOT NULL
+                UNION ALL
+                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
+                       'pullup' AS metric, pullup AS value
+                FROM movement_weights
+                WHERE pullup IS NOT NULL
+                UNION ALL
+                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
+                       'dips' AS metric, dips AS value
+                FROM movement_weights
+                WHERE dips IS NOT NULL
+                UNION ALL
+                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
+                       'squat' AS metric, squat AS value
+                FROM movement_weights
+                WHERE squat IS NOT NULL
+            ),
+            mine AS (
+                SELECT DISTINCT ON (metric)
+                    metric, gender, weight_class_min, weight_class_max
+                FROM metric_candidates
+                WHERE athlete_id =
+            "#,
+        );
+        query.push_bind(athlete_id);
+        query.push(
+            r#"
+                ORDER BY metric, value DESC
+            ),
+            comparable AS (
+                SELECT candidate.*
+                FROM metric_candidates candidate
+                INNER JOIN mine
+                    ON mine.metric = candidate.metric
+                   AND (
+                       candidate.metric = 'ris'
+                       OR (
+                           mine.gender = candidate.gender
+                           AND mine.weight_class_min IS NOT DISTINCT FROM candidate.weight_class_min
+                           AND mine.weight_class_max IS NOT DISTINCT FROM candidate.weight_class_max
+                       )
+                   )
+            ),
+            ranking_pool AS (
+                SELECT DISTINCT ON (metric, athlete_id)
+                    metric, athlete_id, country, value, weight_class_min, weight_class_max
+                FROM comparable
+                ORDER BY metric, athlete_id, value DESC
+            ),
+            placed AS (
                 SELECT
+                    metric,
                     athlete_id,
                     country,
-                    ris_score,
-                    ROW_NUMBER() OVER (ORDER BY ris_score DESC) AS global_place,
-                    COUNT(*) OVER () AS global_field,
-                    ROW_NUMBER() OVER (PARTITION BY country ORDER BY ris_score DESC) AS country_place,
-                    COUNT(*) OVER (PARTITION BY country) AS country_field
+                    value,
+                    weight_class_min,
+                    weight_class_max,
+                    ROW_NUMBER() OVER (PARTITION BY metric ORDER BY value DESC) AS global_place,
+                    COUNT(*) OVER (PARTITION BY metric) AS global_field,
+                    ROW_NUMBER() OVER (PARTITION BY metric, country ORDER BY value DESC) AS country_place,
+                    COUNT(*) OVER (PARTITION BY metric, country) AS country_field
                 FROM ranking_pool
             )
-            SELECT ris_score, global_place, global_field, country, country_place, country_field
+            SELECT metric, value, weight_class_min, weight_class_max,
+                   global_place, global_field, country, country_place, country_field
             FROM placed
             WHERE athlete_id =
             "#,
         );
         query.push_bind(athlete_id);
+        query.push(" ORDER BY metric ");
 
-        let standing: Option<AthleteStandingRow> =
-            query.build_query_as().fetch_optional(self.pool).await?;
+        let standings: Vec<AthleteMetricStandingRow> =
+            query.build_query_as().fetch_all(self.pool).await?;
 
-        Ok(standing)
+        Ok(standings)
     }
 
     pub async fn get_athlete_class_standing(

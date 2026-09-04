@@ -84,18 +84,13 @@ pub async fn get_athlete(
         if query.include.has("standing") {
             let rankings = RankingRepository::new(state.db.pool());
 
-            let ris = rankings.get_athlete_standing(athlete_id).await?;
+            let metric_standings = rankings.get_athlete_metric_standings(athlete_id).await?;
             let weight_class = rankings
                 .get_athlete_class_standing(athlete_id)
                 .await?
                 .and_then(WeightClassStanding::from_row);
 
-            if ris.is_some() || weight_class.is_some() {
-                response.standing = Some(AthleteStanding {
-                    ris: ris.map(Into::into),
-                    weight_class,
-                });
-            }
+            response.standing = AthleteStanding::from_rows(metric_standings, weight_class);
         }
 
         return Ok(Json(response));

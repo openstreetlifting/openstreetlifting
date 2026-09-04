@@ -33,9 +33,21 @@ export interface WeightClassStanding {
   country: CountryStanding;
 }
 
+export interface MetricStanding {
+  value: string;
+  class: string;
+  global: StandingPlace;
+  country: CountryStanding;
+}
+
 export interface AthleteStanding {
   ris?: RisStanding | null;
   weight_class?: WeightClassStanding | null;
+  total?: MetricStanding | null;
+  muscleup?: MetricStanding | null;
+  pullup?: MetricStanding | null;
+  dips?: MetricStanding | null;
+  squat?: MetricStanding | null;
 }
 
 export interface AthleteDetail {

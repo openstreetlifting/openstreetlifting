@@ -2,7 +2,7 @@ use chrono::NaiveDateTime;
 use osl_db::projections::athlete::{
     AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
 };
-use osl_db::projections::ranking::{AthleteClassStandingRow, AthleteStandingRow};
+use osl_db::projections::ranking::{AthleteClassStandingRow, AthleteMetricStandingRow};
 use osl_db::rows::athlete::AthleteRow;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -64,28 +64,29 @@ pub struct WeightClassStanding {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct MetricStanding {
+    pub value: rust_decimal::Decimal,
+    pub class: String,
+    pub global: StandingPlace,
+    pub country: CountryStanding,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteStanding {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ris: Option<RisStanding>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weight_class: Option<WeightClassStanding>,
-}
-
-impl From<AthleteStandingRow> for RisStanding {
-    fn from(row: AthleteStandingRow) -> Self {
-        Self {
-            score: row.ris_score,
-            global: StandingPlace {
-                place: row.global_place,
-                field: row.global_field,
-            },
-            country: CountryStanding {
-                code: row.country,
-                place: row.country_place,
-                field: row.country_field,
-            },
-        }
-    }
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total: Option<MetricStanding>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub muscleup: Option<MetricStanding>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pullup: Option<MetricStanding>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dips: Option<MetricStanding>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub squat: Option<MetricStanding>,
 }
 
 impl WeightClassStanding {
@@ -105,6 +106,94 @@ impl WeightClassStanding {
                 field: row.class_country_field,
             },
         })
+    }
+}
+
+impl MetricStanding {
+    fn from_row(row: AthleteMetricStandingRow) -> Option<Self> {
+        let class = osl_domain::WeightClass::of(row.weight_class_min, row.weight_class_max)?;
+
+        Some(Self {
+            value: row.value,
+            class: class.to_string(),
+            global: StandingPlace {
+                place: row.global_place,
+                field: row.global_field,
+            },
+            country: CountryStanding {
+                code: row.country,
+                place: row.country_place,
+                field: row.country_field,
+            },
+        })
+    }
+}
+
+impl From<AthleteMetricStandingRow> for RisStanding {
+    fn from(row: AthleteMetricStandingRow) -> Self {
+        Self {
+            score: Some(row.value),
+            global: StandingPlace {
+                place: row.global_place,
+                field: row.global_field,
+            },
+            country: CountryStanding {
+                code: row.country,
+                place: row.country_place,
+                field: row.country_field,
+            },
+        }
+    }
+}
+
+impl AthleteStanding {
+    pub fn from_rows(
+        rows: Vec<AthleteMetricStandingRow>,
+        weight_class: Option<WeightClassStanding>,
+    ) -> Option<Self> {
+        let mut standing = Self {
+            ris: None,
+            weight_class,
+            total: None,
+            muscleup: None,
+            pullup: None,
+            dips: None,
+            squat: None,
+        };
+
+        for row in rows {
+            let metric = row.metric.clone();
+            if metric == "ris" {
+                standing.ris = Some(row.into());
+                continue;
+            }
+
+            let Some(metric_standing) = MetricStanding::from_row(row) else {
+                continue;
+            };
+
+            match metric.as_str() {
+                "total" => standing.total = Some(metric_standing),
+                "muscleup" => standing.muscleup = Some(metric_standing),
+                "pullup" => standing.pullup = Some(metric_standing),
+                "dips" => standing.dips = Some(metric_standing),
+                "squat" => standing.squat = Some(metric_standing),
+                _ => {}
+            }
+        }
+
+        if standing.ris.is_some()
+            || standing.weight_class.is_some()
+            || standing.total.is_some()
+            || standing.muscleup.is_some()
+            || standing.pullup.is_some()
+            || standing.dips.is_some()
+            || standing.squat.is_some()
+        {
+            Some(standing)
+        } else {
+            None
+        }
     }
 }
 
