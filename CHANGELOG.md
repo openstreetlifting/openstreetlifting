@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.29.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.28.0...v0.29.0) (2026-09-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** move the RIS editions out of the database ([#589](https://github.com/openstreetlifting/openstreetlifting/issues/589))
+
+### Features
+
+* **api:** move the RIS editions out of the database ([#589](https://github.com/openstreetlifting/openstreetlifting/issues/589)) ([7c1175c](https://github.com/openstreetlifting/openstreetlifting/commit/7c1175caafdc8245f2ccefca9a430bc45fa1f105))
+* **athletes:** compare ranks by metric ([#592](https://github.com/openstreetlifting/openstreetlifting/issues/592)) ([549d76e](https://github.com/openstreetlifting/openstreetlifting/commit/549d76e7ec65036906113f30b2e6d9536727a873))
+* indonesian data + ui optimization ([6dbd7f3](https://github.com/openstreetlifting/openstreetlifting/commit/6dbd7f35f7020ace4abbe1b4cecaceb32c622748))
+
+
+### Bug Fixes
+
+* **importer:** skip an ambiguous handle, not every handle ([#587](https://github.com/openstreetlifting/openstreetlifting/issues/587)) ([42105de](https://github.com/openstreetlifting/openstreetlifting/commit/42105deace79f5d40dfd6509c0f37dc12839c48e))
+* **ris:** stop recompute-ris scoring rows it should skip ([#588](https://github.com/openstreetlifting/openstreetlifting/issues/588)) ([f24472b](https://github.com/openstreetlifting/openstreetlifting/commit/f24472b5d533f8933a0eed4bbb5147172a0a9e99))
+
 ## [0.28.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.27.0...v0.28.0) (2026-09-01)
 
 
