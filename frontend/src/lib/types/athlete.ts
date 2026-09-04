@@ -20,29 +20,15 @@ export interface CountryStanding extends StandingPlace {
   code: string;
 }
 
-export interface RisStanding {
-  score?: string | null;
-  global: StandingPlace;
-  country: CountryStanding;
-}
-
-export interface WeightClassStanding {
-  class: string;
-  total?: string | null;
-  global: StandingPlace;
-  country: CountryStanding;
-}
-
 export interface MetricStanding {
   value: string;
-  class: string;
+  class?: string;
   global: StandingPlace;
   country: CountryStanding;
 }
 
 export interface AthleteStanding {
-  ris?: RisStanding | null;
-  weight_class?: WeightClassStanding | null;
+  ris?: MetricStanding | null;
   total?: MetricStanding | null;
   muscleup?: MetricStanding | null;
   pullup?: MetricStanding | null;

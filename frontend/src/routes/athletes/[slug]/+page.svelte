@@ -1,10 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import type {
-    AthleteCompetitionSummary,
-    MetricStanding,
-    PersonalRecord,
-  } from '$lib/types/athlete';
+  import type { AthleteCompetitionSummary, PersonalRecord } from '$lib/types/athlete';
   import type { Attempt } from '$lib/types/competition';
   import {
     Card,
@@ -142,29 +138,13 @@
   const RANKING_CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4';
 
   type RankingMetric = (typeof RANKING_SORTS)[number]['value'];
-  type SelectedStanding = Omit<MetricStanding, 'class'> & { class?: string };
   let selectedMetric = $state<RankingMetric>('ris');
 
   const selectedMetricLabel = $derived(
     RANKING_SORTS.find((metric) => metric.value === selectedMetric)?.label ?? 'RIS'
   );
 
-  const selectedStanding = $derived.by((): SelectedStanding | null => {
-    if (!athlete.standing) return null;
-
-    if (selectedMetric === 'ris') {
-      const ris = athlete.standing.ris;
-      return ris
-        ? {
-            value: ris.score ?? '',
-            global: ris.global,
-            country: ris.country,
-          }
-        : null;
-    }
-
-    return athlete.standing[selectedMetric] ?? null;
-  });
+  const selectedStanding = $derived(athlete.standing?.[selectedMetric] ?? null);
 
   const selectedMetricValue = $derived(
     selectedStanding
@@ -174,6 +154,15 @@
       : 'Not ranked'
   );
   const selectedCountry = $derived(selectedStanding?.country.code ?? athlete.country);
+  const selectedBoardFilters = $derived.by((): Record<string, string> =>
+    selectedMetric === 'ris'
+      ? {}
+      : {
+          movement: selectedMetric,
+          gender: athlete.gender,
+          category: selectedStanding?.class ?? '',
+        }
+  );
 
   const RANKING_PAGE_SIZE = 50;
 
@@ -332,15 +321,7 @@
           selectedStanding?.global.place,
           selectedStanding?.global.field,
           selectedStanding
-            ? boardQuery(selectedStanding.global.place, {
-                ...(selectedMetric === 'ris'
-                  ? {}
-                  : {
-                      movement: selectedMetric,
-                      gender: athlete.gender,
-                      category: selectedStanding.class ?? '',
-                    }),
-              })
+            ? boardQuery(selectedStanding.global.place, selectedBoardFilters)
             : undefined
         )}
         {@render standing(
@@ -350,13 +331,7 @@
           selectedStanding?.country.field,
           selectedStanding
             ? boardQuery(selectedStanding.country.place, {
-                ...(selectedMetric === 'ris'
-                  ? {}
-                  : {
-                      movement: selectedMetric,
-                      gender: athlete.gender,
-                      category: selectedStanding.class ?? '',
-                    }),
+                ...selectedBoardFilters,
                 country: selectedCountry,
               })
             : undefined

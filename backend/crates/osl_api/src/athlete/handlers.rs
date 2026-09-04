@@ -8,7 +8,7 @@ use osl_db::repository::athlete::AthleteRepository;
 use osl_db::repository::ranking::RankingRepository;
 use serde::Deserialize;
 
-use super::dto::{AthleteResponse, AthleteStanding, WeightClassStanding};
+use super::dto::{AthleteResponse, AthleteStanding};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
@@ -85,12 +85,7 @@ pub async fn get_athlete(
             let rankings = RankingRepository::new(state.db.pool());
 
             let metric_standings = rankings.get_athlete_metric_standings(athlete_id).await?;
-            let weight_class = rankings
-                .get_athlete_class_standing(athlete_id)
-                .await?
-                .and_then(WeightClassStanding::from_row);
-
-            response.standing = AthleteStanding::from_rows(metric_standings, weight_class);
+            response.standing = AthleteStanding::from_rows(metric_standings);
         }
 
         return Ok(Json(response));
