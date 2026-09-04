@@ -84,6 +84,22 @@ impl AthleteData {
     }
 }
 
+impl LiftData {
+    /// What the competition page shows for the movement, and what the importer
+    /// stores as `max_weight`. Derived whenever the attempts are known, so the
+    /// column can never contradict them.
+    pub fn best(&self) -> Option<Decimal> {
+        match self.attempts.as_ref() {
+            Some(attempts) => attempts
+                .iter()
+                .filter(|attempt| attempt.is_successful)
+                .map(|attempt| attempt.weight)
+                .max(),
+            None => self.best_lift,
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct LiftData {
     pub movement: Movement,

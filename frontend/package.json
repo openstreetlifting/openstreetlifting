@@ -30,6 +30,7 @@
     "@twemoji/svg": "15.0.0",
     "@types/d3-scale": "^4.0.9",
     "@types/d3-time": "^3.0.4",
+    "@types/katex": "^0.16.8",
     "@types/node": "^24.12.4",
     "@vitest/browser-playwright": "^5.0.0",
     "clsx": "^2.1.1",
@@ -58,6 +59,7 @@
     "@motionone/svelte": "^10.16.4",
     "d3-scale": "^4.0.2",
     "d3-time": "^3.1.0",
+    "katex": "^0.18.5",
     "layerchart": "^2.4.0"
   }
 }

@@ -376,7 +376,7 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                     row.push(cell);
                 }
 
-                row.push(entries::render_decimal(lift.and_then(best_of)));
+                row.push(entries::render_decimal(lift.and_then(|lift| lift.best())));
             }
 
             writer.write_record(&row).map_err(|e| {
@@ -391,20 +391,6 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
 
     String::from_utf8(bytes)
         .map_err(|e| ImporterError::ImportError(format!("writing {}: {e}", entries::FILE_NAME)))
-}
-
-/// What the competition page shows for the movement, and what the importer stores as
-/// `max_weight`. Derived whenever the attempts are known, so the column can
-/// never contradict them.
-fn best_of(lift: &LiftData) -> Option<Decimal> {
-    match lift.attempts.as_ref() {
-        Some(attempts) => attempts
-            .iter()
-            .filter(|a| a.is_successful)
-            .map(|a| a.weight)
-            .max(),
-        None => lift.best_lift,
-    }
 }
 
 fn required(

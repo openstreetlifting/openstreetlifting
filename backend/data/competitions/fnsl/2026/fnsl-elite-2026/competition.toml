@@ -1,4 +1,5 @@
 event = "MPDS"
+sources = ["Bodyweight recovered by reversing the 2026 RIS formula on the published score"]
 
 [competition]
 name = "Élite"
