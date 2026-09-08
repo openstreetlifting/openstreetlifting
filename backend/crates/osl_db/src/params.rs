@@ -33,9 +33,7 @@ pub enum RankingMovement {
 }
 
 impl RankingMovement {
-    /// Every metric a standing is worked out for. The athlete standings query
-    /// builds one `UNION ALL` branch per entry, so adding a variant here is what
-    /// puts it in the ranking rather than a new block of copied SQL.
+    /// Every metric a standing is worked out for.
     pub const ALL: [RankingMovement; 6] = [
         RankingMovement::Ris,
         RankingMovement::Total,
@@ -57,9 +55,8 @@ impl RankingMovement {
         }
     }
 
-    /// What the metric is called once it has been unioned into one column, and
-    /// so what comes back on `AthleteMetricStandingRow::metric`. Only RIS
-    /// differs from its column, which is why the two are not the same method.
+    /// What the metric is called once unioned into one column. Only RIS differs
+    /// from its column.
     pub fn as_str(&self) -> &'static str {
         match self {
             Self::Muscleup => "muscleup",

@@ -13,7 +13,7 @@ use crate::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
     federation::FederationRow, lift::LiftRow,
 };
-use osl_domain::{AthleteStatus, CompetitionStatus, Gender, RisSource};
+use osl_domain::{AthleteStatus, CompetitionStatus, Gender, Movement, RisSource};
 
 pub struct CompetitionRepository<'a> {
     pool: &'a PgPool,
@@ -132,10 +132,11 @@ impl<'a> CompetitionRepository<'a> {
 
             let movements = sqlx::query_as!(
                 CompetitionMovementRow,
-                "SELECT competition_id, movement_name, display_order
+                r#"SELECT competition_id, movement_name as "movement_name: Movement",
+                        display_order
                  FROM competition_movements
                  WHERE competition_id = $1
-                 ORDER BY display_order",
+                 ORDER BY display_order"#,
                 competition.competition_id
             )
             .fetch_all(self.pool)
@@ -307,10 +308,11 @@ impl<'a> CompetitionRepository<'a> {
 
         let movements = sqlx::query_as!(
             CompetitionMovementRow,
-            "SELECT competition_id, movement_name, display_order
+            r#"SELECT competition_id, movement_name as "movement_name: Movement",
+                    display_order
              FROM competition_movements
              WHERE competition_id = $1
-             ORDER BY display_order",
+             ORDER BY display_order"#,
             competition.competition_id
         )
         .fetch_all(self.pool)
@@ -375,9 +377,11 @@ impl<'a> CompetitionRepository<'a> {
 
                 let lifts = sqlx::query_as!(
                     LiftRow,
-                    "SELECT lift_id, participant_id, movement_name, max_weight, updated_at
+                    r#"SELECT lift_id, participant_id,
+                            movement_name as "movement_name: Movement",
+                            max_weight, updated_at
                      FROM lifts
-                     WHERE participant_id = $1",
+                     WHERE participant_id = $1"#,
                     participant.participant_id
                 )
                 .fetch_all(self.pool)
@@ -400,7 +404,7 @@ impl<'a> CompetitionRepository<'a> {
                     total += lift.max_weight.unwrap_or(Decimal::ZERO);
 
                     lift_details.push(LiftDetail {
-                        movement_name: lift.movement_name.clone(),
+                        movement_name: lift.movement_name,
                         best_weight: lift.max_weight,
                         attempts: attempts
                             .into_iter()

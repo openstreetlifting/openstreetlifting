@@ -17,3 +17,6 @@ sqlx = { workspace = true, features = [
 thiserror.workspace = true
 unicode-normalization = "0.1"
 uuid.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

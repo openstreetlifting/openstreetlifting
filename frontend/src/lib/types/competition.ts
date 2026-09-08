@@ -1,6 +1,6 @@
-import type { AthleteStatus, CompetitionStatus, Gender, RisSource } from './enums';
+import type { AthleteStatus, CompetitionStatus, Gender, Movement, RisSource } from './enums';
 
-export type { AthleteStatus, CompetitionStatus, Gender, RisSource } from './enums';
+export type { AthleteStatus, CompetitionStatus, Gender, Movement, RisSource } from './enums';
 
 export interface Federation {
   federation_id: string;
@@ -9,10 +9,11 @@ export interface Federation {
   country: string | null;
 }
 
-export interface Movement {
-  movement_name: string;
+export interface CompetitionMovement {
+  movement_name: Movement;
   display_order: number | null;
-  code?: string | null;
+  /** Its letter in the event code, so all four read as `MPDS`. */
+  code: string;
 }
 
 export interface Competition {
@@ -27,7 +28,7 @@ export interface Competition {
   start_date: string | null;
   end_date: string | null;
   federation: Federation;
-  movements: Movement[];
+  movements: CompetitionMovement[];
   lifter_count?: number;
 }
 
@@ -66,7 +67,7 @@ export interface Attempt {
 }
 
 export interface Lift {
-  movement_name: string;
+  movement_name: Movement;
   best_weight: string | null;
   attempts: Attempt[];
 }
@@ -108,7 +109,7 @@ export interface CompetitionDetail {
   start_date: string | null;
   end_date: string | null;
   federation: Federation;
-  movements: Movement[];
+  movements: CompetitionMovement[];
   event_code?: string | null;
   categories: CategoryDetail[];
 }

@@ -1,5 +1,5 @@
 import { rankingsService } from '$lib/server/api';
-import { asRankedGender, asRankingMovement } from '$lib/types/enums';
+import { asRankedGender, asRankingMetric } from '$lib/types/enums';
 import type { PageServerLoad } from './$types';
 
 const title = 'Streetlifting rankings and records';
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ url }) => {
   ]);
 
   try {
-    const movement = asRankingMovement(url.searchParams.get('movement')) ?? 'ris';
+    const movement = asRankingMetric(url.searchParams.get('movement')) ?? 'ris';
     const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
     const country = url.searchParams.get('country') || null;
     const federation = url.searchParams.get('federation') || null;

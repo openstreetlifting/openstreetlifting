@@ -1,4 +1,4 @@
-use osl_domain::{AthleteStatus, Gender, RisSource};
+use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
@@ -12,7 +12,7 @@ use crate::rows::athlete::AthleteRow;
 /// reads differently from a movement the meet never ran.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AthleteLiftRow {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub best_weight: Option<Decimal>,
     pub attempts: Vec<AttemptSummary>,
 }
@@ -38,7 +38,7 @@ pub struct AthleteCompetitionRow {
 
 #[derive(Debug, FromRow)]
 pub struct PersonalRecordRow {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub max_weight: Decimal,
     pub competition_name: String,
     pub competition_slug: String,

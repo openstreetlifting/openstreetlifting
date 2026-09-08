@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT lift_id, participant_id, movement_name, max_weight, updated_at\n                     FROM lifts\n                     WHERE participant_id = $1",
+  "query": "SELECT lift_id, participant_id,\n                            movement_name as \"movement_name: Movement\",\n                            max_weight, updated_at\n                     FROM lifts\n                     WHERE participant_id = $1",
   "describe": {
     "columns": [
       {
@@ -27,7 +27,7 @@
       },
       {
         "ordinal": 2,
-        "name": "movement_name",
+        "name": "movement_name: Movement",
         "type_info": "Varchar",
         "origin": {
           "Table": {
@@ -72,5 +72,5 @@
       true
     ]
   },
-  "hash": "e720c128304971281a065cb7822affdd7587c6826a967f9b7b04ef6c36dc12dc"
+  "hash": "22b94d1e49a9e3d277501c00663de98e3aa9715e773bfb3cee6d58e908e37178"
 }

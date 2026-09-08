@@ -10,7 +10,7 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::competition::dto::AttemptInfo;
-use crate::shared::enums::{AthleteStatus, Gender, RisSource};
+use crate::shared::enums::{AthleteStatus, Gender, Movement, RisSource};
 use crate::shared::query::Include;
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -164,8 +164,8 @@ impl AthleteStanding {
         };
 
         for row in rows {
-            // RIS is an open comparison with no weight class behind it, so it
-            // is taken before the class is worked out rather than after.
+            // RIS has no weight class behind it, so it is taken before the
+            // class is worked out.
             if row.metric == RankingMovement::Ris {
                 standing.ris = Some(row.into());
                 continue;
@@ -207,7 +207,7 @@ impl AthleteStanding {
 /// the competition never ran, and `event` is what tells the two apart.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteLift {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub best_weight: Option<rust_decimal::Decimal>,
     pub attempts: Vec<AttemptInfo>,
 }
@@ -235,7 +235,7 @@ pub struct AthleteCompetitionSummary {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct PersonalRecord {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub max_weight: rust_decimal::Decimal,
     pub competition_name: String,
     pub competition_slug: String,
@@ -291,7 +291,7 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
 impl From<AthleteLiftRow> for AthleteLift {
     fn from(row: AthleteLiftRow) -> Self {
         Self {
-            movement_name: row.movement_name,
+            movement_name: row.movement_name.into(),
             best_weight: row.best_weight,
             attempts: row.attempts.into_iter().map(AttemptInfo::from).collect(),
         }
@@ -301,7 +301,7 @@ impl From<AthleteLiftRow> for AthleteLift {
 impl From<PersonalRecordRow> for PersonalRecord {
     fn from(row: PersonalRecordRow) -> Self {
         Self {
-            movement_name: row.movement_name,
+            movement_name: row.movement_name.into(),
             max_weight: row.max_weight,
             competition_name: row.competition_name,
             competition_slug: row.competition_slug,

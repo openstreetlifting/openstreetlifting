@@ -391,7 +391,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/Movement"
+              "$ref": "#/components/schemas/RankingMetric"
             }
           },
           {
@@ -867,7 +867,7 @@
             ]
           },
           "movement_name": {
-            "type": "string"
+            "$ref": "#/components/schemas/Movement"
           }
         }
       },
@@ -1499,7 +1499,7 @@
             "description": "Best successful attempt. Zero is a bodyweight-only lift, and absent\nmeans the movement was contested with no attempt succeeding."
           },
           "movement_name": {
-            "type": "string"
+            "$ref": "#/components/schemas/Movement"
           }
         }
       },
@@ -1528,26 +1528,24 @@
       },
       "Movement": {
         "type": "string",
+        "description": "One of the four lifts.",
         "enum": [
-          "muscleup",
-          "pullup",
-          "dips",
-          "squat",
-          "total",
-          "ris"
+          "Muscle-up",
+          "Pull-up",
+          "Dips",
+          "Squat"
         ]
       },
       "MovementInfo": {
         "type": "object",
         "required": [
-          "movement_name"
+          "movement_name",
+          "code"
         ],
         "properties": {
           "code": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "description": "Its letter in the event code, so a competition running all four reads\nas `MPDS`."
           },
           "display_order": {
             "type": [
@@ -1557,7 +1555,7 @@
             "format": "int32"
           },
           "movement_name": {
-            "type": "string"
+            "$ref": "#/components/schemas/Movement"
           }
         }
       },
@@ -2030,16 +2028,28 @@
             "type": "string"
           },
           "movement_name": {
-            "type": "string"
+            "$ref": "#/components/schemas/Movement"
           }
         }
       },
       "RankedGender": {
         "type": "string",
-        "description": "The genders a ranking can be drawn for.\n\nNarrower than `Gender` on purpose: weight classes are only drawn for men and\nwomen, so a mixed board would compare an athlete against an empty field.\nKeeping that in the type rather than in a `validate` call is what makes the\nschema advertise `M` and `F` for the parameter instead of advertising `MX`\nand then refusing it.",
+        "description": "The genders a ranking can be drawn for. Weight classes are only drawn for\nmen and women, so a mixed board would compare an athlete against an empty\nfield.",
         "enum": [
           "M",
           "F"
+        ]
+      },
+      "RankingMetric": {
+        "type": "string",
+        "description": "What a ranking board is sorted by. Not only movements: a total and a RIS\nscore are ranked from the same list.",
+        "enum": [
+          "muscleup",
+          "pullup",
+          "dips",
+          "squat",
+          "total",
+          "ris"
         ]
       },
       "RisConstants": {

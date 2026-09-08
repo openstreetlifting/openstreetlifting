@@ -21,9 +21,11 @@ pub struct CountriesFilter {
     pub competition_id: Option<Uuid>,
 }
 
+/// What a ranking board is sorted by. Not only movements: a total and a RIS
+/// score are ranked from the same list.
 #[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "lowercase")]
-pub enum Movement {
+pub enum RankingMetric {
     Muscleup,
     Pullup,
     Dips,
@@ -33,15 +35,15 @@ pub enum Movement {
     Ris,
 }
 
-impl From<Movement> for RankingMovement {
-    fn from(movement: Movement) -> Self {
-        match movement {
-            Movement::Muscleup => Self::Muscleup,
-            Movement::Pullup => Self::Pullup,
-            Movement::Dips => Self::Dips,
-            Movement::Squat => Self::Squat,
-            Movement::Total => Self::Total,
-            Movement::Ris => Self::Ris,
+impl From<RankingMetric> for RankingMovement {
+    fn from(metric: RankingMetric) -> Self {
+        match metric {
+            RankingMetric::Muscleup => Self::Muscleup,
+            RankingMetric::Pullup => Self::Pullup,
+            RankingMetric::Dips => Self::Dips,
+            RankingMetric::Squat => Self::Squat,
+            RankingMetric::Total => Self::Total,
+            RankingMetric::Ris => Self::Ris,
         }
     }
 }
@@ -55,7 +57,7 @@ pub struct GlobalRankingFilter {
     pub federation: Option<String>,
     pub q: Option<String>,
     #[serde(default)]
-    pub movement: Movement,
+    pub movement: RankingMetric,
     #[serde(default)]
     pub direction: Direction,
     pub event: Option<String>,

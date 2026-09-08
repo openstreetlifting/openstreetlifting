@@ -126,7 +126,7 @@ impl<'a> CanonicalTransformer<'a> {
         let movement_names: Vec<String> = canonical
             .movements
             .iter()
-            .map(|movement| movement.name().to_string())
+            .map(|movement| movement.as_str().to_string())
             .collect();
 
         let movements = sqlx::query!(
@@ -296,7 +296,7 @@ impl<'a> CanonicalTransformer<'a> {
                     display_order = EXCLUDED.display_order
                 "#,
                 competition_id,
-                movement.name(),
+                movement.as_str(),
                 movement.display_order() as i32
             )
             .execute(&mut **tx)
@@ -585,7 +585,7 @@ impl<'a> CanonicalTransformer<'a> {
             RETURNING lift_id as "lift_id: Uuid"
             "#,
             participant_id,
-            lift.movement.name(),
+            lift.movement.as_str(),
             max_weight
         )
         .fetch_one(&mut **tx)

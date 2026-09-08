@@ -1,15 +1,7 @@
 //! The domain's closed vocabularies, as they appear on the wire.
 //!
-//! These mirror `osl_domain` rather than reusing it. The spellings here are a
-//! published contract that clients and the OpenAPI document both depend on, so
-//! they should not be able to change because someone renamed a variant inside
-//! the domain for a reason of its own. Mirroring turns that into a compile error
-//! in the `From` impl below, which is the whole point of paying for the
-//! duplication. It also keeps `utoipa`, which is purely an HTTP concern, out of
-//! `osl_domain`.
-//!
-//! Add a variant on both sides or neither: the `From` impls are exhaustive, so
-//! the compiler will not let one drift ahead of the other.
+//! Mirrored rather than reused so that a rename inside `osl_domain` is a
+//! compile error here instead of a silent change to the published contract.
 
 use std::str::FromStr;
 
@@ -23,6 +15,46 @@ pub enum Gender {
     M,
     F,
     Mx,
+}
+
+/// One of the four lifts.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+pub enum Movement {
+    #[serde(rename = "Muscle-up")]
+    MuscleUp,
+    #[serde(rename = "Pull-up")]
+    PullUp,
+    Dips,
+    Squat,
+}
+
+impl Movement {
+    /// Its letter in an event code, so `MPDS` is all four.
+    pub fn code(self) -> char {
+        osl_domain::Movement::from(self).code()
+    }
+}
+
+impl From<osl_domain::Movement> for Movement {
+    fn from(movement: osl_domain::Movement) -> Self {
+        match movement {
+            osl_domain::Movement::MuscleUp => Self::MuscleUp,
+            osl_domain::Movement::PullUp => Self::PullUp,
+            osl_domain::Movement::Dips => Self::Dips,
+            osl_domain::Movement::Squat => Self::Squat,
+        }
+    }
+}
+
+impl From<Movement> for osl_domain::Movement {
+    fn from(movement: Movement) -> Self {
+        match movement {
+            Movement::MuscleUp => Self::MuscleUp,
+            Movement::PullUp => Self::PullUp,
+            Movement::Dips => Self::Dips,
+            Movement::Squat => Self::Squat,
+        }
+    }
 }
 
 /// Where a competition is in its life.
@@ -56,13 +88,8 @@ pub enum RisSource {
     Reported,
 }
 
-/// Reads a query parameter or request field through the domain's own parser.
-///
-/// `Gender` and `CompetitionStatus` arrive from callers, and the domain accepts
-/// them trimmed and in any case. Going through `FromStr` rather than serde's
-/// exact variant match keeps that, so no request that worked before this type
-/// existed starts failing. The response is still only ever the canonical
-/// spelling, which is what `Serialize` and the schema describe.
+/// Reads input through the domain's parser, which trims and ignores case.
+/// Responses are still only ever the canonical spelling.
 fn parse<'de, D, T>(deserializer: D) -> Result<T, D::Error>
 where
     D: Deserializer<'de>,
@@ -73,13 +100,9 @@ where
     T::from_str(&raw).map_err(serde::de::Error::custom)
 }
 
-/// The genders a ranking can be drawn for.
-///
-/// Narrower than `Gender` on purpose: weight classes are only drawn for men and
-/// women, so a mixed board would compare an athlete against an empty field.
-/// Keeping that in the type rather than in a `validate` call is what makes the
-/// schema advertise `M` and `F` for the parameter instead of advertising `MX`
-/// and then refusing it.
+/// The genders a ranking can be drawn for. Weight classes are only drawn for
+/// men and women, so a mixed board would compare an athlete against an empty
+/// field.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum RankedGender {
@@ -195,9 +218,8 @@ mod tests {
         serde_json::to_string(&value).unwrap()
     }
 
-    /// The spellings are the published contract, so they are asserted rather
-    /// than left to whatever `rename_all` happens to produce. A change that
-    /// breaks every client should have to break this test first.
+    /// The spellings are the published contract, so a change that breaks every
+    /// client has to break this test first.
     #[test]
     fn the_wire_spellings_are_fixed() {
         assert_eq!(wire(Gender::M), "\"M\"");
@@ -218,10 +240,8 @@ mod tests {
         assert_eq!(wire(RisSource::Reported), "\"reported\"");
     }
 
-    /// The mirror is what clients read; the domain's `as_str` is what gets
-    /// bound into Postgres. Nothing in the type system ties the two together,
-    /// so without this a rename on one side would leave the API answering `MX`
-    /// while the ranking filter searched the column for something else.
+    /// The mirror is what clients read, the domain's `as_str` is what gets
+    /// bound into Postgres, and nothing in the type system ties them together.
     #[test]
     fn the_database_spells_them_the_same_way() {
         for gender in [
@@ -270,8 +290,6 @@ mod tests {
         }
     }
 
-    /// A mirror is only useful while it still matches, so every variant has to
-    /// survive the round trip through the domain and back.
     #[test]
     fn every_variant_round_trips_through_the_domain() {
         for gender in [Gender::M, Gender::F, Gender::Mx] {
@@ -292,8 +310,6 @@ mod tests {
         }
     }
 
-    /// The domain trims and ignores case, and dropping that would break
-    /// requests that work today.
     #[test]
     fn input_is_read_as_leniently_as_the_domain_reads_it() {
         assert_eq!(

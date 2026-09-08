@@ -1,4 +1,4 @@
-import type { AthleteStatus, Gender, RisSource } from './enums';
+import type { AthleteStatus, Gender, Movement, RisSource } from './enums';
 import type { Attempt } from './competition';
 
 export interface AthleteSummary {
@@ -69,7 +69,7 @@ export interface AthleteDetail {
 }
 
 export interface AthleteLift {
-  movement_name: string;
+  movement_name: Movement;
   best_weight: string | null;
   attempts: Attempt[];
 }
@@ -91,7 +91,7 @@ export interface AthleteCompetitionSummary {
 }
 
 export interface PersonalRecord {
-  movement_name: string;
+  movement_name: Movement;
   max_weight: string;
   competition_name: string;
   competition_slug: string;

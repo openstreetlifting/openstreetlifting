@@ -1,5 +1,5 @@
 import type { AthleteInfo, CompetitionInfo } from './competition';
-import type { RankedGender, RankingMovement, RisSource, SortDirection } from './enums';
+import type { RankedGender, RankingMetric, RisSource, SortDirection } from './enums';
 import type { Paginated } from './pagination';
 
 export interface RankingFederationInfo {
@@ -40,7 +40,7 @@ export interface RankingFilters {
   federation?: string | null;
   /** Case insensitive substring of the athlete's full name. */
   q?: string | null;
-  movement?: RankingMovement;
+  movement?: RankingMetric;
   direction?: SortDirection;
   /** Which event to rank totals within. Ignored for single-movement boards. */
   event?: string | null;

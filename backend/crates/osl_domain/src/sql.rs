@@ -1,20 +1,9 @@
-//! Postgres encoding for the enums that are stored as text.
-//!
-//! Every one of them lives in a `VARCHAR` column constrained by a `CHECK`, so
-//! it travels as the spelling `as_str` produces and comes back through
-//! `FromStr`. Doing that once here is what lets a query name the column as
-//! `status as "status: AthleteStatus"` and get the enum rather than a `String`
-//! nobody has checked.
-//!
-//! This is the only part of the crate that knows about a database. It is kept
-//! in its own module so that it stays easy to see, and easy to move if
-//! `osl_domain` ever has to become storage agnostic.
+//! Postgres encoding for the enums stored as text.
 
-/// Teaches Postgres to read and write an enum as the text it is stored as.
+/// Reads and writes an enum as the text in its column.
 ///
 /// Takes any type with an inherent `as_str(&self) -> &'static str` and a
-/// `FromStr<Err = String>`. `osl_db` uses it for its own enums too, so the
-/// encoding is written once rather than once per crate.
+/// `FromStr<Err = String>`.
 #[macro_export]
 macro_rules! text_enum {
     ($($enum:ty),+ $(,)?) => {$(
@@ -23,9 +12,6 @@ macro_rules! text_enum {
                 <str as ::sqlx::Type<::sqlx::Postgres>>::type_info()
             }
 
-            /// The columns are `VARCHAR`, the literals in the queries are
-            /// `TEXT`, and both have to decode, so compatibility is whatever
-            /// `str` accepts rather than one named type.
             fn compatible(ty: &::sqlx::postgres::PgTypeInfo) -> bool {
                 <str as ::sqlx::Type<::sqlx::Postgres>>::compatible(ty)
             }
@@ -60,5 +46,6 @@ text_enum!(
     crate::AthleteStatus,
     crate::CompetitionStatus,
     crate::Gender,
+    crate::Movement,
     crate::RisSource,
 );

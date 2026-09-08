@@ -1,4 +1,4 @@
-use osl_domain::{AthleteStatus, Gender, RisSource};
+use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -220,7 +220,7 @@ impl<'a> AthleteRepository<'a> {
             PersonalRecordRow,
             r#"
             SELECT DISTINCT ON (l.movement_name)
-                l.movement_name,
+                l.movement_name as "movement_name: Movement",
                 -- Not null thanks to the filter below, which sqlx cannot infer.
                 l.max_weight as "max_weight!",
                 c.name as competition_name,

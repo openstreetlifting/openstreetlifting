@@ -177,11 +177,6 @@ impl<'a> RankingRepository<'a> {
 
     /// Folds every metric into one `metric` / `value` pair so they can be
     /// placed by the same window functions.
-    ///
-    /// One branch per `RankingMovement::ALL`, so a new metric is a new variant
-    /// rather than another copy of this SELECT that someone has to remember to
-    /// keep in step with the name the API matches on. The interpolated names
-    /// come from the enum and never from a caller.
     fn push_metric_candidates(query: &mut QueryBuilder<Postgres>) {
         query.push(" metric_candidates AS ( ");
 
@@ -198,8 +193,7 @@ impl<'a> RankingRepository<'a> {
                  FROM movement_weights WHERE {column} IS NOT NULL "
             ));
 
-            // A total only means something within one event, so unlike the
-            // single movements it does not compare across all of them.
+            // A total only means something within one event.
             if movement == RankingMovement::Total {
                 query.push(" AND event_code = ");
                 query.push_bind(osl_domain::FULL_EVENT);

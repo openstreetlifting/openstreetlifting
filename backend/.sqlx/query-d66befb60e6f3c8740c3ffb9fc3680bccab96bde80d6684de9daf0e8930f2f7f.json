@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT competition_id, movement_name, display_order\n             FROM competition_movements\n             WHERE competition_id = $1\n             ORDER BY display_order",
+  "query": "SELECT competition_id, movement_name as \"movement_name: Movement\",\n                        display_order\n                 FROM competition_movements\n                 WHERE competition_id = $1\n                 ORDER BY display_order",
   "describe": {
     "columns": [
       {
@@ -16,7 +16,7 @@
       },
       {
         "ordinal": 1,
-        "name": "movement_name",
+        "name": "movement_name: Movement",
         "type_info": "Varchar",
         "origin": {
           "Table": {
@@ -48,5 +48,5 @@
       true
     ]
   },
-  "hash": "7d7d2193a3ace2f3cf3f75a5c392e6468a27cb6be654a3ecfb7fc0ad0f87facd"
+  "hash": "d66befb60e6f3c8740c3ffb9fc3680bccab96bde80d6684de9daf0e8930f2f7f"
 }

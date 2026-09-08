@@ -1,11 +1,11 @@
 import type { RequestHandler } from './$types';
 import { rankingsService } from '$lib/server/api';
-import { asRankedGender, asRankingMovement } from '$lib/types/enums';
+import { asRankedGender, asRankingMetric } from '$lib/types/enums';
 
 export const GET: RequestHandler = async ({ url }) => {
   const data = await rankingsService.getGlobalRankings({
     page: Number(url.searchParams.get('page') ?? 1),
-    movement: asRankingMovement(url.searchParams.get('movement')) ?? 'ris',
+    movement: asRankingMetric(url.searchParams.get('movement')) ?? 'ris',
     direction: url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc',
     gender: asRankedGender(url.searchParams.get('gender')),
     country: url.searchParams.get('country') ?? null,

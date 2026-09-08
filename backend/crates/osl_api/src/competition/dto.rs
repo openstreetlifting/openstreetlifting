@@ -7,12 +7,12 @@ use osl_db::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
     federation::FederationRow,
 };
-use osl_domain::{Movement, WeightClass};
+use osl_domain::WeightClass;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
-use crate::shared::enums::{AthleteStatus, CompetitionStatus, Gender, RisSource};
+use crate::shared::enums::{AthleteStatus, CompetitionStatus, Gender, Movement, RisSource};
 use crate::shared::query::Include;
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -50,10 +50,11 @@ pub struct FederationInfo {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct MovementInfo {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub display_order: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub code: Option<String>,
+    /// Its letter in the event code, so a competition running all four reads
+    /// as `MPDS`.
+    pub code: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -97,7 +98,7 @@ pub struct AthleteInfo {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct LiftDetail {
-    pub movement_name: String,
+    pub movement_name: Movement,
     /// Best successful attempt. Zero is a bodyweight-only lift, and absent
     /// means the movement was contested with no attempt succeeding.
     pub best_weight: Option<rust_decimal::Decimal>,
@@ -150,22 +151,22 @@ fn event_code(movements: &[MovementInfo]) -> Option<String> {
         return None;
     }
 
-    movements
-        .iter()
-        .map(|movement| movement.code.as_deref())
-        .collect::<Option<Vec<&str>>>()
-        .map(|codes| codes.concat())
+    Some(
+        movements
+            .iter()
+            .map(|movement| movement.code.as_str())
+            .collect(),
+    )
 }
 
 impl From<CompetitionMovementRow> for MovementInfo {
     fn from(row: CompetitionMovementRow) -> Self {
-        let code =
-            Movement::from_name(&row.movement_name).map(|movement| movement.code().to_string());
+        let movement = Movement::from(row.movement_name);
 
         Self {
-            movement_name: row.movement_name,
+            movement_name: movement,
             display_order: row.display_order,
-            code,
+            code: movement.code().to_string(),
         }
     }
 }
@@ -212,7 +213,7 @@ impl From<AttemptSummary> for AttemptInfo {
 impl From<DbLiftDetail> for LiftDetail {
     fn from(lift: DbLiftDetail) -> Self {
         Self {
-            movement_name: lift.movement_name,
+            movement_name: lift.movement_name.into(),
             best_weight: lift.best_weight,
             attempts: lift.attempts.into_iter().map(Into::into).collect(),
         }

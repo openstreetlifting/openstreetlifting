@@ -1,4 +1,4 @@
-use osl_domain::Gender;
+use osl_domain::{Gender, Movement};
 use rust_decimal::Decimal;
 use sqlx::FromRow;
 use uuid::Uuid;
@@ -9,7 +9,7 @@ pub struct RecordRow {
     pub record_type: String,
     pub weight_class_id: Uuid,
     pub division_id: Option<Uuid>,
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub athlete_id: Uuid,
     pub competition_id: Uuid,
     pub date_set: chrono::NaiveDate,

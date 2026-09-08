@@ -76,9 +76,10 @@ pub struct AppState {
             crate::shared::enums::AthleteStatus,
             crate::shared::enums::CompetitionStatus,
             crate::shared::enums::Gender,
+            crate::shared::enums::Movement,
             crate::shared::enums::RankedGender,
             crate::shared::enums::RisSource,
-            crate::ranking::dto::Movement,
+            crate::ranking::dto::RankingMetric,
             crate::shared::dto::Direction,
             crate::ranking::dto::GlobalRankingEntry,
             crate::ranking::dto::AthleteInfo,
@@ -112,12 +113,7 @@ impl MakeRequestId for MakeRequestUuid {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // The schema is the contract the frontend is checked against, so it has to
-    // be readable without a database or a running server:
-    //
-    //     cargo run -p osl_api -- --dump-openapi > openapi.json
-    //
-    // The result is committed as backend/openapi.json.
+    // cargo run -p osl_api -- --dump-openapi > openapi.json
     if std::env::args().any(|arg| arg == "--dump-openapi") {
         println!("{}", ApiDoc::openapi().to_pretty_json()?);
         return Ok(());
@@ -265,9 +261,6 @@ async fn shutdown_signal() {
 mod tests {
     use super::*;
 
-    /// `backend/openapi.json` is what the frontend's type tests are checked
-    /// against, so a stale copy silently stops guarding anything. Compiling it
-    /// in costs nothing and fails here instead.
     #[test]
     fn the_committed_schema_is_current() {
         let committed = include_str!("../../../openapi.json");
