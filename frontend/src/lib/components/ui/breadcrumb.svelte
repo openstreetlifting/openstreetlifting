@@ -3,7 +3,6 @@
 
   type BreadcrumbItem = {
     label: string;
-    /** A path, optionally with the query string a visitor left the page on. */
     href?: string;
   };
 
@@ -14,7 +13,7 @@
 </script>
 
 <nav aria-label="Breadcrumb" class="mb-3 sm:mb-5">
-  <ol class="flex flex-wrap items-center gap-1.5 text-xs text-zinc-500 sm:gap-2 sm:text-sm">
+  <ol class="flex flex-wrap items-center gap-1.5 text-xs text-muted sm:gap-2 sm:text-sm">
     {#each items as item, index (item.label)}
       {#if index > 0}
         <li>
@@ -33,12 +32,12 @@
         {#if item.href && index < items.length - 1}
           <a
             href={target(item.href)}
-            class="rounded transition-colors hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+            class="rounded transition-colors hover:text-secondary focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none"
           >
             {item.label}
           </a>
         {:else}
-          <span class="text-zinc-400">{item.label}</span>
+          <span class="text-secondary">{item.label}</span>
         {/if}
       </li>
     {/each}

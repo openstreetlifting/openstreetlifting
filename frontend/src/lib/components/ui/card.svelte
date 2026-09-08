@@ -14,7 +14,7 @@
 </script>
 
 <div
-  class={cn('rounded-xl border border-zinc-800 bg-zinc-900/50 text-zinc-50 shadow', className)}
+  class={cn('w-full max-w-card rounded-xl border border-stroke bg-surface text-ink', className)}
   {...restProps}
 >
   {#if children}

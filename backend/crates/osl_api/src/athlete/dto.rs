@@ -1,6 +1,6 @@
 use chrono::NaiveDateTime;
 use osl_db::projections::athlete::{
-    AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
+    AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, AthleteStrengthRow, PersonalRecordRow,
 };
 use osl_db::projections::ranking::AthleteMetricStandingRow;
 use osl_db::rows::athlete::AthleteRow;
@@ -33,6 +33,47 @@ pub struct AthleteResponse {
     pub total_competitions: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standing: Option<AthleteStanding>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub strength_profile: Option<StrengthProfile>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct StrengthProfile {
+    pub category: String,
+    pub lifts: Vec<StrengthComparison>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct StrengthComparison {
+    pub movement_name: String,
+    pub value: Option<rust_decimal::Decimal>,
+    /// Percentage of other athletes below this result, with ties counting as half.
+    pub percentile: Option<f64>,
+    /// Other athletes with a valid best for this lift in the same sex and weight class.
+    pub field: i64,
+}
+
+impl StrengthProfile {
+    pub fn from_rows(rows: Vec<AthleteStrengthRow>) -> Option<Self> {
+        let first = rows.first()?;
+        Some(Self {
+            category: osl_domain::category_label(
+                None,
+                first.category_gender,
+                first.weight_class_min,
+                first.weight_class_max,
+            ),
+            lifts: rows
+                .into_iter()
+                .map(|row| StrengthComparison {
+                    movement_name: row.movement_name,
+                    value: row.value,
+                    percentile: row.percentile,
+                    field: row.field,
+                })
+                .collect(),
+        })
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -117,27 +158,23 @@ impl AthleteStanding {
         };
 
         for row in rows {
-            let metric = row.metric.clone();
-            let metric_standing = MetricStanding::from_row(row);
-
-            match metric.as_str() {
-                "ris" => standing.ris = Some(metric_standing),
-                "total" => standing.total = Some(metric_standing),
-                "muscleup" => standing.muscleup = Some(metric_standing),
-                "pullup" => standing.pullup = Some(metric_standing),
-                "dips" => standing.dips = Some(metric_standing),
-                "squat" => standing.squat = Some(metric_standing),
+            let slot = match row.metric.as_str() {
+                "ris" => &mut standing.ris,
+                "total" => &mut standing.total,
+                "muscleup" => &mut standing.muscleup,
+                "pullup" => &mut standing.pullup,
+                "dips" => &mut standing.dips,
+                "squat" => &mut standing.squat,
                 _ => unreachable!("metric_candidates only emits known ranking metrics"),
-            }
+            };
+            *slot = Some(MetricStanding::from_row(row));
         }
 
         Some(standing)
     }
 }
 
-/// An athlete's best on one movement at one competition. A missing weight is a
-/// movement they contested and never made, which is not the same as a movement
-/// the competition never ran, and `event` is what tells the two apart.
+/// No best weight means a bombed movement; `event` distinguishes it from an uncontested one.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteLift {
     pub movement_name: String,
@@ -157,10 +194,7 @@ pub struct AthleteCompetitionSummary {
     pub rank: Option<i32>,
     pub total: Option<rust_decimal::Decimal>,
     pub ris_score: Option<rust_decimal::Decimal>,
-    /// `computed` when the score was worked out from a bodyweight and a
-    /// total, `reported` when the source stated it and it cannot be
-    /// restated on the current formula. Absent alongside a missing score.
-    /// TODO: introduce a enum constant for this
+    /// Reported scores cannot be re-scored without bodyweight; computed scores use the current formula.
     pub ris_source: Option<String>,
     pub status: String,
     /// The movements the competition ran, as letters of MPDS.
@@ -195,6 +229,7 @@ impl From<AthleteRow> for AthleteResponse {
             personal_records: None,
             total_competitions: None,
             standing: None,
+            strength_profile: None,
         }
     }
 }

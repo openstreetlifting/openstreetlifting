@@ -51,6 +51,19 @@ export interface AthleteDetail {
   personal_records: PersonalRecord[];
   total_competitions: number;
   standing?: AthleteStanding | null;
+  strength_profile?: StrengthProfile | null;
+}
+
+export interface StrengthProfile {
+  category: string;
+  lifts: StrengthComparison[];
+}
+
+export interface StrengthComparison {
+  movement_name: string;
+  value: string | null;
+  percentile: number | null;
+  field: number;
 }
 
 export interface AthleteLift {

@@ -1,3 +1,4 @@
+use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::projections::ranking::AthleteMetricStandingRow;
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::{Gender, Movement};
@@ -299,4 +300,107 @@ async fn a_class_counts_everyone_who_has_lifted_in_it(pool: PgPool) {
         standing.global_place, 3,
         "370 sits behind the two bigger totals in that class"
     );
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn tied_card_places_match_both_linked_leaderboards(pool: PgPool) {
+    import(
+        &pool,
+        common::competition(
+            "tied",
+            vec![men_80(vec![
+                lifting(athlete("Alice", "French"), ["40", "60", "80", "120"]),
+                from(
+                    lifting(athlete("Bella", "Italian"), ["40", "60", "80", "120"]),
+                    "IT",
+                ),
+                lifting(athlete("Clara", "French"), ["40", "60", "80", "120"]),
+                from(
+                    lifting(athlete("Diana", "Italian"), ["40", "60", "80", "120"]),
+                    "IT",
+                ),
+            ])],
+        ),
+    )
+    .await;
+    let repo = RankingRepository::new(&pool);
+    for (name, movement) in [
+        ("ris", RankingMovement::Ris),
+        ("total", RankingMovement::Total),
+        ("muscleup", RankingMovement::Muscleup),
+        ("pullup", RankingMovement::Pullup),
+        ("dips", RankingMovement::Dips),
+        ("squat", RankingMovement::Squat),
+    ] {
+        for country in [None, Some("FR"), Some("IT")] {
+            let filter = RankingFilter {
+                gender: (movement != RankingMovement::Ris).then(|| "M".to_string()),
+                category: (movement != RankingMovement::Ris)
+                    .then(|| osl_domain::WeightClass::UpTo(common::decimal("80"))),
+                country: country.map(str::to_string),
+                federation: None,
+                name: None,
+                movement,
+                direction: SortDirection::Desc,
+                event: osl_domain::FULL_EVENT.to_string(),
+                year: None,
+                competition_id: None,
+                offset: 0,
+                limit: 50,
+            };
+            let (rows, field) = repo.get_global_ranking(&filter).await.unwrap();
+            let ids: Vec<_> = rows.iter().map(|row| row.athlete_id).collect();
+            let mut ordered_ids = ids.clone();
+            ordered_ids.sort();
+            assert_eq!(ids, ordered_ids, "ties use a stable athlete order");
+            for row in rows {
+                let standings = repo
+                    .get_athlete_metric_standings(row.athlete_id)
+                    .await
+                    .unwrap();
+                let standing = metric(&standings, name);
+                let actual = if country.is_some() {
+                    (standing.country_place, standing.country_field)
+                } else {
+                    (standing.global_place, standing.global_field)
+                };
+                assert_eq!(
+                    actual,
+                    (row.rank, field),
+                    "{name} card must match its board"
+                );
+            }
+        }
+    }
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn equally_good_results_choose_the_latest_weight_class(pool: PgPool) {
+    let lifter = || lifting(athlete("Moving", "Class"), ["40", "60", "80", "120"]);
+    import(
+        &pool,
+        common::competition(
+            "earlier",
+            vec![category(
+                osl_domain::WeightClassSlug::M66,
+                vec![weighing(lifter(), "66")],
+            )],
+        ),
+    )
+    .await;
+    let mut later = common::competition("later", vec![men_80(vec![lifter()])]);
+    later.competition.start_date = chrono::NaiveDate::from_ymd_opt(2026, 2, 1).unwrap();
+    later.competition.end_date = later.competition.start_date;
+    import(&pool, later).await;
+
+    let standings = standings(&pool, "Class").await;
+    for name in ["total", "muscleup", "pullup", "dips", "squat"] {
+        let standing = metric(&standings, name);
+        assert_eq!(
+            standing.weight_class_max,
+            Some(common::decimal("80")),
+            "{name}"
+        );
+        assert_eq!((standing.global_place, standing.global_field), (1, 1));
+    }
 }

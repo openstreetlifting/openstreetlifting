@@ -3,15 +3,14 @@
 
   interface Props {
     countryCode: string;
+    background?: boolean;
     class?: string;
   }
 
-  let { countryCode, class: className = '' }: Props = $props();
+  let { countryCode, background = false, class: className = '' }: Props = $props();
 
-  // Flag is decorative; the country name carries the accessible label.
   const label = $derived(countryCode && countryCode.length === 2 ? countryName(countryCode) : null);
 
-  // Self-hosted Twemoji flag SVGs, named by regional-indicator codepoints in hex.
   const fileName = $derived(
     [...countryCode.toUpperCase()]
       .map((char) => (char.codePointAt(0)! + 127397).toString(16))
@@ -20,13 +19,24 @@
 </script>
 
 {#if label}
-  <span
-    class="flag {className}"
-    style="background-image: url('/flags/{fileName}.svg')"
-    role="img"
-    aria-label={label}
-    title={label}
-  ></span>
+  {#if background}
+    <svg
+      class="h-full w-full {className}"
+      viewBox="0 5 36 26"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <image href="/flags/{fileName}.svg" width="36" height="36" />
+    </svg>
+  {:else}
+    <span
+      class="flag {className}"
+      style="background-image: url('/flags/{fileName}.svg')"
+      role="img"
+      aria-label={label}
+      title={label}
+    ></span>
+  {/if}
 {/if}
 
 <style>

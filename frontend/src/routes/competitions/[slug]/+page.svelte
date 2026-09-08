@@ -91,7 +91,14 @@
     defaultSort: defaultRankingSort(data.competition.movements.length),
   });
 
-  afterNavigate(() => table.syncFromUrl(page.url));
+  afterNavigate(() => {
+    table.syncFromUrl(page.url);
+    if (table.focusedAthlete) {
+      requestAnimationFrame(() => {
+        document.querySelector('[data-focused]')?.scrollIntoView({ block: 'center' });
+      });
+    }
+  });
 
   const rankings = $derived(data.initialRankings);
   const pagination = $derived(data.pagination);
@@ -282,7 +289,7 @@
   ]}
 />
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-4 sm:px-6 sm:py-12">
+<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
       { label: 'Rankings', href: rankingsHref() },
@@ -292,14 +299,14 @@
   />
 
   <div class="mb-6 sm:mb-10">
-    <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-white">
+    <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-ink">
       {#if competition.country}
         <Flag countryCode={competition.country} class="shrink-0 [--flag-height:0.8em]" />
       {/if}
       <span class="truncate">{competition.name}</span>
     </h1>
 
-    <p class="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-zinc-400 sm:text-sm">
+    <p class="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-secondary sm:text-sm">
       {#if competition.start_date}
         <span class="whitespace-nowrap">
           {formatDate(competition.start_date)}
@@ -321,10 +328,10 @@
     </p>
 
     {#if event}
-      <p class="mt-2 flex items-center gap-2 text-xs text-zinc-500 sm:text-sm">
+      <p class="mt-2 flex items-center gap-2 text-xs text-muted sm:text-sm">
         Format
         <span
-          class="inline-flex items-center rounded border border-zinc-800 px-1.5 py-0.5 font-mono text-[0.7rem] tracking-wider text-zinc-400 sm:text-xs"
+          class="inline-flex items-center rounded border border-stroke px-1.5 py-0.5 font-mono text-[0.7rem] tracking-wider text-secondary sm:text-xs"
           title={eventLegend}
           aria-label="Format: {eventLegend}"
         >
@@ -338,7 +345,7 @@
         href={`https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/data/competitions/${editPath}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="mt-3 inline-flex items-center gap-1.5 rounded-md border border-zinc-800 px-2 py-1 text-xs text-zinc-400 transition-colors hover:border-zinc-700 hover:bg-zinc-900 hover:text-white focus:ring-2 focus:ring-zinc-500 focus:outline-none sm:px-2.5 sm:py-1.5 sm:text-sm"
+        class="mt-3 inline-flex items-center gap-1.5 rounded-md border border-stroke px-2 py-1 text-xs text-secondary transition-colors hover:border-stroke-strong hover:bg-surface-hover hover:text-ink focus:ring-2 focus:ring-focus focus:outline-none sm:px-2.5 sm:py-1.5 sm:text-sm"
       >
         <GitHubIcon class="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         Edit on GitHub
@@ -389,7 +396,7 @@
       </select>
 
       <div class="flex w-full items-center gap-2 sm:w-auto">
-        <label for="sort-by" class="text-sm text-zinc-500">Sort by</label>
+        <label for="sort-by" class="text-sm text-muted">Sort by</label>
         <select
           id="sort-by"
           bind:value={table.movementFilter}
@@ -405,20 +412,20 @@
   {/if}
 
   {#if !published}
-    <div class="border-l-2 border-zinc-700 py-1 pl-5">
-      <p class="text-lg text-white">This competition has not been lifted yet.</p>
-      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+    <div class="border-l-2 border-stroke-strong py-1 pl-5">
+      <p class="text-lg text-ink">This competition has not been lifted yet.</p>
+      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-secondary">
         {competition.name} is scheduled for {formatDate(competition.start_date)}. There is nothing
         to rank until the platform closes, and the results will land on this page once they are in.
       </p>
     </div>
   {:else if rankings.length === 0 && !busy}
-    <Card class="p-8">
+    <Card class="max-w-summary p-8">
       <div class="text-center">
-        <p class="text-zinc-400">No results found for the selected filters</p>
+        <p class="text-secondary">No results found for the selected filters</p>
         <button
           onclick={() => table.clearFilters()}
-          class="mt-4 text-sm text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+          class="mt-4 text-sm text-muted underline hover:text-secondary focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none"
         >
           Clear filters
         </button>
@@ -427,7 +434,7 @@
   {:else}
     {#snippet paginationBar()}
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <span class="text-xs text-zinc-500">
+        <span class="text-xs text-muted">
           Page {pagination.page} of {pagination.total_pages} &middot; {fieldSize} athletes
         </span>
         <Pagination
@@ -445,21 +452,20 @@
 
     <Table {busy}>
       {#snippet head()}
-        <th
-          class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} align-top text-zinc-400"
+        <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
           >Rank</th
         >
-        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} align-top text-zinc-400">Athlete</th>
-        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400 {sorted('total')}">Total</th>
+        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">Athlete</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}">Total</th>
         {#if risAvailable}
-          <th class="{TABLE_HEAD_CELL} align-top text-zinc-400 {sorted('ris')}">
+          <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
             <RisHeader />
           </th>
         {/if}
         {#each contested as lift (lift.key)}
-          <th class="{TABLE_HEAD_CELL} align-top text-zinc-400 {sorted(lift.key)}">
+          <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
             {lift.label}
-            <span class="{ATTEMPT_ROW} mt-1 text-[0.6rem] font-normal text-zinc-600">
+            <span class="{ATTEMPT_ROW} mt-1 text-[0.6rem] font-normal text-muted">
               <span class="text-right">1</span>
               <span class="text-right">2</span>
               <span class="text-right">3</span>
@@ -467,14 +473,17 @@
             </span>
           </th>
         {/each}
-        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Sex</th>
-        <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">Class</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Sex</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Class</th>
       {/snippet}
 
       {#snippet body()}
         {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
           {@const participant = participants.get(entry.athlete.athlete_id)}
-          <tr class="border-b border-zinc-800/50 transition-colors">
+          <tr
+            class="transition-colors"
+            data-focused={entry.athlete.slug === table.focusedAthlete ? '' : undefined}
+          >
             <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
               {entry.rank}
             </td>
@@ -482,7 +491,7 @@
               <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                 <a
                   href={resolve(`/athletes/${entry.athlete.slug}`)}
-                  class="flex min-w-0 items-center gap-2.5 hover:text-zinc-300"
+                  class="flex min-w-0 items-center gap-2.5 hover:text-secondary"
                 >
                   <Flag
                     countryCode={entry.athlete.country}
@@ -556,7 +565,7 @@
 
         {#if onLastPage}
           {#each notPlaced as { category, participant } (participant.athlete.athlete_id)}
-            <tr class="border-b border-zinc-800/50 transition-colors">
+            <tr class="transition-colors">
               <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.absent}"
                 >{NO_VALUE}</td
               >
@@ -564,7 +573,7 @@
                 <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                   <a
                     href={resolve(`/athletes/${participant.athlete.slug}`)}
-                    class="flex min-w-0 items-center gap-2.5 hover:text-zinc-300"
+                    class="flex min-w-0 items-center gap-2.5 hover:text-secondary"
                   >
                     <Flag
                       countryCode={participant.athlete.country}

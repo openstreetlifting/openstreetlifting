@@ -5,8 +5,6 @@
   import { GitHubIcon, InstagramIcon, MenuIcon, CloseIcon } from '$lib/components/icons';
   import { NAV_LINK } from '$lib/constants/typography';
 
-  const linkClass = NAV_LINK;
-
   let menuOpen = $state(false);
 
   afterNavigate(() => {
@@ -24,9 +22,9 @@
   }}
 />
 
-<header class="bg-zinc-950">
+<header class="bg-canvas">
   <nav
-    class="mx-auto flex max-w-[var(--content-max-width)] flex-wrap items-center justify-between px-4 py-3 sm:px-6 sm:py-4"
+    class="mx-auto flex max-w-page flex-wrap items-center justify-between px-4 py-3 sm:px-6 sm:py-4"
   >
     <a
       href={resolve('/')}
@@ -42,7 +40,7 @@
       aria-expanded={menuOpen}
       aria-controls="primary-nav"
       aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-      class="rounded-lg p-2 text-zinc-400 transition-colors hover:text-white focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none md:hidden"
+      class="rounded-lg p-2 text-secondary transition-colors hover:text-ink focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none md:hidden"
     >
       {#if menuOpen}
         <CloseIcon />
@@ -55,7 +53,7 @@
     {#snippet comingSoon(label: string)}
       <li>
         <span
-          class="{NAV_LINK} cursor-not-allowed text-zinc-600 hover:text-zinc-600"
+          class="{NAV_LINK} cursor-not-allowed text-muted hover:text-muted"
           aria-disabled="true"
           title="Coming soon"
         >
@@ -73,9 +71,9 @@
       <li>
         <a
           href={resolve('/')}
-          class={linkClass}
-          class:text-white={isActive('/')}
-          class:text-zinc-400={!isActive('/')}
+          class={NAV_LINK}
+          class:text-ink={isActive('/')}
+          class:text-secondary={!isActive('/')}
           aria-current={isActive('/') ? 'page' : undefined}
         >
           Rankings
@@ -84,9 +82,9 @@
       <li>
         <a
           href={resolve('/competitions')}
-          class={linkClass}
-          class:text-white={isActive('/competitions')}
-          class:text-zinc-400={!isActive('/competitions')}
+          class={NAV_LINK}
+          class:text-ink={isActive('/competitions')}
+          class:text-secondary={!isActive('/competitions')}
           aria-current={isActive('/competitions') ? 'page' : undefined}
         >
           Competitions
@@ -99,7 +97,7 @@
           href="https://docs.openstreetlifting.org/"
           target="_blank"
           rel="noopener noreferrer"
-          class="{linkClass} text-zinc-400"
+          class={NAV_LINK}
         >
           Docs
         </a>
@@ -107,9 +105,9 @@
       <li>
         <a
           href={resolve('/contact')}
-          class={linkClass}
-          class:text-white={isActive('/contact')}
-          class:text-zinc-400={!isActive('/contact')}
+          class={NAV_LINK}
+          class:text-ink={isActive('/contact')}
+          class:text-secondary={!isActive('/contact')}
           aria-current={isActive('/contact') ? 'page' : undefined}
         >
           Contact
@@ -120,7 +118,7 @@
           href="https://github.com/openstreetlifting/openstreetlifting"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-zinc-400 transition-colors hover:text-white"
+          class="text-secondary transition-colors hover:text-ink"
           aria-label="GitHub"
         >
           <GitHubIcon class="h-5 w-5" />
@@ -129,7 +127,7 @@
           href="https://www.instagram.com/openstreetlifting"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-zinc-400 transition-colors hover:text-white"
+          class="text-secondary transition-colors hover:text-ink"
           aria-label="Instagram"
         >
           <InstagramIcon class="h-5 w-5" />
@@ -137,5 +135,5 @@
       </li>
     </ul>
   </nav>
-  <div class="h-px bg-zinc-800/50"></div>
+  <div class="h-px bg-stroke"></div>
 </header>

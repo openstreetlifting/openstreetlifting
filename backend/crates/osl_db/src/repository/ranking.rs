@@ -174,7 +174,7 @@ impl<'a> RankingRepository<'a> {
 
         query.push(" , ranking_pool AS ( SELECT DISTINCT ON (athlete_id) * FROM eligible ORDER BY athlete_id, ");
         query.push(filter.movement.as_column());
-        query.push(" DESC NULLS LAST ) ");
+        query.push(" DESC NULLS LAST, start_date DESC, participant_id ) ");
     }
 
     fn push_name_match(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
@@ -213,7 +213,7 @@ impl<'a> RankingRepository<'a> {
         query.push(sort_column);
         query.push(" ");
         query.push(filter.direction.as_sql());
-        query.push(") as rank FROM ranking_pool ) ");
+        query.push(", athlete_id, participant_id) as rank FROM ranking_pool ) ");
         query.push(" SELECT * FROM ranked_movements ");
         Self::push_name_match(&mut query, filter);
         query.push(" ORDER BY rank LIMIT ");
@@ -239,6 +239,8 @@ impl<'a> RankingRepository<'a> {
             r#"
             metric_candidates AS (
                 SELECT movement_weights.athlete_id,
+                       movement_weights.participant_id,
+                       movement_weights.start_date,
                        movement_weights.country,
                        movement_weights.weight_class_id,
                        movement_weights.weight_class_min,
@@ -273,7 +275,7 @@ impl<'a> RankingRepository<'a> {
         query.push_bind(athlete_id);
         query.push(
             r#"
-                ORDER BY metric, value DESC
+                ORDER BY metric, value DESC, start_date DESC, participant_id
             ),
             comparable AS (
                 SELECT candidate.*
@@ -289,7 +291,7 @@ impl<'a> RankingRepository<'a> {
                 SELECT DISTINCT ON (metric, athlete_id)
                     metric, athlete_id, country, value, weight_class_min, weight_class_max
                 FROM comparable
-                ORDER BY metric, athlete_id, value DESC
+                ORDER BY metric, athlete_id, value DESC, start_date DESC, participant_id
             ),
             placed AS (
                 SELECT
@@ -299,9 +301,9 @@ impl<'a> RankingRepository<'a> {
                     value,
                     weight_class_min,
                     weight_class_max,
-                    ROW_NUMBER() OVER (PARTITION BY metric ORDER BY value DESC) AS global_place,
+                    ROW_NUMBER() OVER (PARTITION BY metric ORDER BY value DESC, athlete_id) AS global_place,
                     COUNT(*) OVER (PARTITION BY metric) AS global_field,
-                    ROW_NUMBER() OVER (PARTITION BY metric, country ORDER BY value DESC) AS country_place,
+                    ROW_NUMBER() OVER (PARTITION BY metric, country ORDER BY value DESC, athlete_id) AS country_place,
                     COUNT(*) OVER (PARTITION BY metric, country) AS country_field
                 FROM ranking_pool
             )

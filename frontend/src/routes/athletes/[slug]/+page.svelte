@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import type { AthleteCompetitionSummary, PersonalRecord } from '$lib/types/athlete';
+  import type { AthleteCompetitionSummary } from '$lib/types/athlete';
   import type { Attempt } from '$lib/types/competition';
   import {
     Card,
@@ -18,17 +18,17 @@
   } from '$lib/components/ui';
   import { ChevronIcon, GlobeIcon, InstagramIcon } from '$lib/components/icons';
   import { resolve } from '$app/paths';
+  import { page } from '$app/state';
+  import { goto } from '$app/navigation';
+  import { athleteFilters } from '$lib/utils/athlete-filters';
+  import { totalFormats } from '$lib/utils/athlete-progress';
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { RANKING_SORTS } from '$lib/constants/ranking';
-  import {
-    formatDate,
-    formatWeight,
-    formatScore,
-    formatAthleteName,
-    countryName,
-  } from '$lib/utils';
+  import { formatDate, formatWeight, formatAthleteName, countryName } from '$lib/utils';
   import Seo from '$lib/components/seo.svelte';
+  import AthleteProgress from '$lib/components/athlete-progress.svelte';
+  import AthleteStrength from '$lib/components/athlete-strength.svelte';
   import { absolute, athleteLd, breadcrumbLd } from '$lib/seo';
   import {
     ATTEMPT_ROW,
@@ -39,20 +39,13 @@
     NO_RESULT,
     TEXT_CELL,
   } from '$lib/constants/table';
+  import { FIELD, TEXT } from '$lib/constants/typography';
 
-  // The badge is two letters, so the title carries the meaning. A reason from
-  // the source is better than either, when there is one.
   const STATUS_LABEL: Record<string, string> = { disqualified: 'DQ', no_show: 'NS' };
   const STATUS_TITLE: Record<string, string> = {
     disqualified: 'Disqualified',
     no_show: 'Did not lift',
   };
-
-  function statusTitle(status: string, reason: string | null): string {
-    const name = STATUS_TITLE[status] ?? status;
-    return reason ? `${name}: ${reason.toLowerCase()}` : name;
-  }
-  import { FIELD, TEXT } from '$lib/constants/typography';
 
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
@@ -67,9 +60,7 @@
 
   type Lift = (typeof LIFTS)[number];
 
-  // The event code names the movements a competition contested, so a column with
-  // no weight can be read as bombed rather than never lifted. Older rows carry no
-  // event, and there the lifts themselves are all the history says.
+  // Without an event code, recorded lifts are the only evidence of contested movements.
   function contestedBy(competition: AthleteCompetitionSummary, lift: Lift): boolean {
     return competition.event
       ? competition.event.includes(lift.code)
@@ -91,8 +82,7 @@
     const made = competition.lifts.find((candidate) => candidate.movement_name === lift.movement);
 
     if (made?.attempts.length) {
-      const attempts = [...made.attempts].sort((a, b) => a.attempt_number - b.attempt_number);
-      return { kind: 'attempts', attempts, best: made.best_weight };
+      return { kind: 'attempts', attempts: made.attempts, best: made.best_weight };
     }
 
     return made?.best_weight == null
@@ -100,59 +90,54 @@
       : { kind: 'best', best: made.best_weight };
   }
 
-  // A column no meet in the history ran would be dashes all the way down.
   const contested = $derived(
     LIFTS.filter((lift) =>
       athlete.competitions.some((competition) => contestedBy(competition, lift))
     )
   );
 
-  function sortPersonalRecords(records: PersonalRecord[]) {
-    const movementPriority: Record<string, number> = {
-      'muscle up': 1,
-      'muscle-up': 1,
-      muscleup: 1,
-      'pull up': 2,
-      'pull-up': 2,
-      pullup: 2,
-      dips: 3,
-      dip: 3,
-      squat: 4,
-      squats: 4,
-    };
-
-    const getPriority = (movementName: string): number => {
-      const normalized = movementName.toLowerCase().trim();
-      return movementPriority[normalized] ?? 999; // Unknown movements go to the end
-    };
-
-    return [...records].sort((a, b) => getPriority(a.movement_name) - getPriority(b.movement_name));
-  }
-
   const GENDER_LABEL: Record<string, string> = { M: 'Men', F: 'Women' };
+  const genderLabel = $derived(GENDER_LABEL[athlete.gender] ?? athlete.gender);
+  const latestCategory = $derived(
+    athlete.strength_profile?.category ??
+      athlete.competitions.find((competition) => competition.status === 'competed')?.category_name
+  );
+  const latestWeightClass = $derived(
+    latestCategory?.startsWith(`${genderLabel} `)
+      ? latestCategory.slice(genderLabel.length + 1)
+      : latestCategory
+  );
 
-  const CARD_LABEL = `flex items-center gap-1.5 ${TEXT.micro} tracking-wider text-zinc-500 uppercase`;
-  const CARD_FIGURE = 'font-mono text-xl font-semibold text-white sm:text-2xl';
-  const CARD_CAPTION = 'text-xs text-zinc-500';
-  const CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
+  const CARD_LABEL =
+    'flex items-center gap-1.5 text-xs font-medium tracking-wider text-secondary uppercase';
+  const CARD_FIGURE = 'font-mono text-xl font-semibold text-ink sm:text-2xl';
+  const CARD_CAPTION = 'text-xs text-muted';
+  const CARD_SURFACE = 'border border-stroke bg-surface';
+  const CARD_GRID = 'grid max-w-records grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
   const RANKING_CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4';
 
-  type RankingMetric = (typeof RANKING_SORTS)[number]['value'];
-  let selectedMetric = $state<RankingMetric>('ris');
+  const formats = $derived(totalFormats(athlete.competitions));
+  const filters = $derived(athleteFilters(page.url.searchParams, formats));
+  const selectedMetric = $derived(filters.ranking);
 
-  const selectedMetricLabel = $derived(
-    RANKING_SORTS.find((metric) => metric.value === selectedMetric)?.label ?? 'RIS'
-  );
+  function updateFilter(key: 'ranking' | 'performance' | 'event', value: string) {
+    const params = new SvelteURLSearchParams(page.url.searchParams);
+    const defaults = {
+      ranking: 'ris',
+      performance: 'total',
+      event: formats[0] ?? 'MPDS',
+    };
+    if (value === defaults[key]) params.delete(key);
+    else params.set(key, value);
+    const query = params.toString();
+    return goto(resolve(`/athletes/${athlete.slug}${query ? `?${query}` : ''}${page.url.hash}`), {
+      replaceState: true,
+      keepFocus: true,
+      noScroll: true,
+    });
+  }
 
   const selectedStanding = $derived(athlete.standing?.[selectedMetric] ?? null);
-
-  const selectedMetricValue = $derived(
-    selectedStanding
-      ? selectedMetric === 'ris'
-        ? formatScore(selectedStanding.value)
-        : `${formatWeight(selectedStanding.value)} kg`
-      : 'Not ranked'
-  );
   const selectedCountry = $derived(selectedStanding?.country.code ?? athlete.country);
   const selectedBoardFilters = $derived.by((): Record<string, string> =>
     selectedMetric === 'ris'
@@ -177,7 +162,7 @@
   const athleteName = $derived(formatAthleteName(athlete));
 
   const seoBests = $derived(
-    sortPersonalRecords(athlete.personal_records)
+    athlete.personal_records
       .map(
         (record) => `${record.movement_name.toLowerCase()} ${formatWeight(record.max_weight)} kg`
       )
@@ -210,12 +195,12 @@
   ]}
 />
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-4 sm:px-6 sm:py-12">
+<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
   <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: athleteName }]} />
 
   <div class="mb-6 sm:mb-10">
     <div class="flex items-center gap-3">
-      <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-white">
+      <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-ink">
         <Flag countryCode={athlete.country} class="shrink-0 [--flag-height:0.8em]" />
         <span class="truncate">{athleteName}</span>
       </h1>
@@ -225,7 +210,7 @@
           href={`https://www.instagram.com/${athlete.instagram_handle}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="shrink-0 text-white transition-colors hover:text-zinc-300"
+          class="shrink-0 text-ink transition-colors hover:text-secondary"
           aria-label="{athleteName} on Instagram"
           title="@{athlete.instagram_handle}"
         >
@@ -235,14 +220,14 @@
     </div>
 
     {#if athlete.native_name}
-      <p class="mt-1 text-base text-zinc-400 sm:text-xl">{athlete.native_name}</p>
+      <p class="mt-1 text-base text-secondary sm:text-xl">{athlete.native_name}</p>
     {/if}
 
-    <p class="mt-2 text-xs text-zinc-400 sm:text-sm">
-      {GENDER_LABEL[athlete.gender] ?? athlete.gender}
-      &middot;
-      {athlete.total_competitions}
-      {athlete.total_competitions === 1 ? 'competition' : 'competitions'}
+    <p class="mt-2 {TEXT.heading} text-secondary">
+      {genderLabel}
+      {#if latestWeightClass}
+        {latestWeightClass.replace(/(\d)\s*(?:kg)?$/i, '$1 kg')}
+      {/if}
     </p>
   </div>
 
@@ -252,30 +237,32 @@
     place: number | undefined,
     field: number | undefined
   )}
-    <div class={CARD_LABEL}>
+    <div class="ranking-art" class:ranking-flag={country !== null} aria-hidden="true">
       {#if country}
-        <Flag countryCode={country} class="shrink-0 [--flag-height:1.2em]" />
+        <Flag countryCode={country} background />
       {:else}
-        <GlobeIcon class="h-3.5 w-3.5 shrink-0 text-zinc-400" />
-      {/if}
-      <span class="truncate text-zinc-400">{scope}</span>
-      {#if place !== undefined}
-        <ChevronIcon
-          class="ml-auto h-3 w-3 shrink-0 -rotate-90 text-zinc-700 transition-colors group-hover:text-zinc-400"
-        />
+        <GlobeIcon class="h-40 w-40 shrink-0 text-secondary" />
       {/if}
     </div>
-    <div class="mt-1 flex items-baseline gap-1.5">
-      {#if place !== undefined && field !== undefined}
-        <span class={CARD_FIGURE}>#{place}</span>
-        <span class="{CARD_CAPTION} {FIGURE}">/ {field}</span>
-      {:else}
-        <span class="text-sm font-medium text-zinc-400">Not ranked</span>
-      {/if}
-    </div>
-    <div class="mt-1 {CARD_CAPTION}">
-      {selectedMetricLabel} · {selectedMetricValue}{#if selectedStanding?.class}
-        · {selectedStanding.class}
+    <div class="relative">
+      <div class={CARD_LABEL}>
+        <span class="truncate text-secondary">{scope}</span>
+        {#if place !== undefined}
+          <ChevronIcon
+            class="ml-auto h-3 w-3 shrink-0 -rotate-90 text-faint transition-colors group-hover:text-secondary"
+          />
+        {/if}
+      </div>
+      <div class="mt-1 flex items-baseline gap-1.5">
+        {#if place !== undefined && field !== undefined}
+          <span class={CARD_FIGURE}>#{place}</span>
+          <span class="{CARD_CAPTION} {FIGURE}">/ {field}</span>
+        {:else}
+          <span class="text-sm font-medium text-secondary">Not ranked</span>
+        {/if}
+      </div>
+      {#if selectedStanding?.class}
+        <div class="mt-1 {CARD_CAPTION}">in category {selectedStanding.class}</div>
       {/if}
     </div>
   {/snippet}
@@ -290,24 +277,28 @@
     {#if query}
       <a
         href={resolve(`/?${query}`)}
-        class="group block rounded-xl border border-zinc-800/60 bg-zinc-900/30 p-3 transition-colors hover:border-zinc-700 hover:bg-zinc-900/60 focus:ring-2 focus:ring-zinc-500 focus:outline-none"
+        class="group relative isolate block overflow-hidden rounded-xl {CARD_SURFACE} p-3 transition-colors hover:border-stroke-strong hover:bg-surface-hover focus:ring-2 focus:ring-focus focus:outline-none"
       >
         {@render standingContent(country, scope, place, field)}
       </a>
     {:else}
-      <div class="rounded-xl border border-zinc-800/60 bg-zinc-900/30 p-3">
+      <div class="relative isolate overflow-hidden rounded-xl {CARD_SURFACE} p-3">
         {@render standingContent(country, scope, place, field)}
       </div>
     {/if}
   {/snippet}
 
   {#if athlete.standing}
-    <div class="mb-6 sm:mb-8">
-      <div class="mb-2 flex items-center justify-between gap-3">
-        <h2 class={CARD_LABEL}>Ranking</h2>
-        <label class="flex items-center gap-2 text-xs text-zinc-500">
-          <span>Metric</span>
-          <select bind:value={selectedMetric} class="{FIELD} px-2.5 py-1.5">
+    <div class="mb-6 max-w-summary sm:mb-8">
+      <div class="mb-3 flex items-center justify-between gap-3">
+        <h2 class="{TEXT.heading} text-ink">Ranking</h2>
+        <label class="flex items-center gap-2 text-xs text-muted">
+          <span class="sr-only">Metric</span>
+          <select
+            value={selectedMetric}
+            onchange={(event) => updateFilter('ranking', event.currentTarget.value)}
+            class="{FIELD} px-2.5 py-1.5"
+          >
             {#each RANKING_SORTS as metric (metric.value)}
               <option value={metric.value}>{metric.label}</option>
             {/each}
@@ -340,18 +331,23 @@
     </div>
   {/if}
 
-  {#if athlete.personal_records && athlete.personal_records.length > 0}
+  {#if athlete.personal_records.length > 0}
     <div class="mb-6 sm:mb-8">
-      <h2 class="mb-2 {CARD_LABEL}">Personal records</h2>
+      <h2 class="mb-3 {TEXT.heading} text-ink">Personal records</h2>
       <div class={CARD_GRID}>
-        {#each sortPersonalRecords(athlete.personal_records) as pr (pr.movement_name)}
-          <Card class="p-3 transition-colors hover:border-zinc-700/60">
+        {#each athlete.personal_records as pr (pr.movement_name)}
+          <Card class="p-3">
             <div class={CARD_LABEL}>{pr.movement_name}</div>
-            <div class="mt-0.5 {CARD_FIGURE}">{formatWeight(pr.max_weight)}</div>
+            <div class="mt-0.5 flex items-baseline gap-1.5">
+              <span class="font-mono text-xl sm:text-2xl {CELL.counted}"
+                >{formatWeight(pr.max_weight)}</span
+              >
+              <span class="text-xs text-muted">kg</span>
+            </div>
             <div class={CARD_CAPTION}>
               <a
                 href={resolve(`/competitions/${pr.competition_slug}`)}
-                class="underline hover:text-zinc-300"
+                class="underline hover:text-secondary"
               >
                 {pr.competition_name}
               </a>
@@ -366,21 +362,36 @@
     </div>
   {/if}
 
+  <div class="mt-8 grid items-start gap-8 sm:mt-10 sm:gap-10 2xl:grid-cols-2">
+    <AthleteProgress
+      athleteSlug={athlete.slug}
+      competitions={athlete.competitions}
+      {formats}
+      metric={filters.performance}
+      format={filters.event}
+      onMetricChange={(value) => updateFilter('performance', value)}
+      onFormatChange={(value) => updateFilter('event', value)}
+    />
+
+    <AthleteStrength profile={athlete.strength_profile} />
+  </div>
+
   <div class="mt-8 sm:mt-10">
-    <h2 class="mb-2 {CARD_LABEL}">Competition history</h2>
-    {#if athlete.competitions && athlete.competitions.length > 0}
+    <h2 class="mb-3 {TEXT.heading} text-ink">Competition history</h2>
+    {#if athlete.competitions.length > 0}
       <Table>
         {#snippet head()}
-          <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-zinc-400"
+          <th
+            class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
             >Rank</th
           >
-          <th class="{TABLE_HEAD_CELL} text-zinc-400">Competition</th>
-          <th class="{TABLE_HEAD_CELL} text-zinc-400">Total</th>
-          <th class="{TABLE_HEAD_CELL} text-zinc-400"><RisHeader /></th>
+          <th class="{TABLE_HEAD_CELL} text-secondary">Competition</th>
+          <th class="{TABLE_HEAD_CELL} text-secondary">Total</th>
+          <th class="{TABLE_HEAD_CELL} text-secondary"><RisHeader /></th>
           {#each contested as lift (lift.key)}
-            <th class="{TABLE_HEAD_CELL} align-top text-zinc-400">
+            <th class="{TABLE_HEAD_CELL} text-secondary">
               {lift.label}
-              <span class="{ATTEMPT_ROW} mt-1 text-[0.6rem] font-normal text-zinc-600">
+              <span class="{ATTEMPT_ROW} mt-1 text-[0.65rem] font-normal text-muted">
                 <span class="text-right">1</span>
                 <span class="text-right">2</span>
                 <span class="text-right">3</span>
@@ -388,24 +399,19 @@
               </span>
             </th>
           {/each}
-          <th class="{TABLE_HEAD_CELL} text-zinc-400">Date</th>
-          <th class="{TABLE_HEAD_CELL} text-zinc-400">Class</th>
+          <th class="{TABLE_HEAD_CELL} text-secondary">Date</th>
+          <th class="{TABLE_HEAD_CELL} text-secondary">Class</th>
           {#if showsDivision}
-            <th class="{TABLE_HEAD_CELL} text-zinc-400">Division</th>
+            <th class="{TABLE_HEAD_CELL} text-secondary">Division</th>
           {/if}
         {/snippet}
 
         {#snippet body()}
-          {#each athlete.competitions as competition (competition.competition_id)}
-            <tr
-              class="border-b border-zinc-800/50 transition-colors {competition.status !==
-              'competed'
-                ? 'opacity-50'
-                : ''}"
-            >
+          {#each athlete.competitions as competition (`${competition.competition_id}:${competition.category_name}:${competition.division ?? ''}`)}
+            <tr class="transition-colors {competition.status !== 'competed' ? 'opacity-50' : ''}">
               <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
                 {#if competition.status !== 'competed'}
-                  <span class={STATUS_FLAG} title={statusTitle(competition.status, null)}
+                  <span class={STATUS_FLAG} title={STATUS_TITLE[competition.status]}
                     >{STATUS_LABEL[competition.status]}</span
                   >
                 {:else}
@@ -415,7 +421,7 @@
               <td class={TABLE_CELL}>
                 <a
                   href={resolve(`/competitions/${competition.competition_slug}`)}
-                  class="{TEXT_CELL.competition} text-white underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:outline-none"
+                  class="{TEXT_CELL.competition} text-ink underline hover:text-secondary focus:ring-2 focus:ring-focus focus:outline-none"
                 >
                   {competition.competition_name}
                 </a>
@@ -479,9 +485,45 @@
         {/snippet}
       </Table>
     {:else}
-      <Card class="p-8">
-        <p class="text-center text-zinc-400">No competition history available</p>
+      <Card class="max-w-summary p-8">
+        <p class="text-center text-secondary">No competition history available</p>
       </Card>
     {/if}
   </div>
 </div>
+
+<style>
+  .ranking-art {
+    position: absolute;
+    inset: 0 -1rem 0 auto;
+    display: flex;
+    width: 55%;
+    align-items: center;
+    justify-content: flex-end;
+    pointer-events: none;
+    opacity: 0.65;
+    mask-image: linear-gradient(to right, transparent, black 75%);
+  }
+
+  .ranking-art :global(svg) {
+    stroke-width: 0.7;
+  }
+
+  .ranking-flag {
+    inset: -15% -1rem auto auto;
+    width: auto;
+    height: 130%;
+    aspect-ratio: 36 / 26;
+  }
+
+  @media (width < 40rem) {
+    .ranking-flag {
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: auto;
+      opacity: 0.2;
+      mask-image: none;
+    }
+  }
+</style>
