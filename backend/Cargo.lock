@@ -1285,7 +1285,7 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
 name = "osl_api"
-version = "0.29.0"
+version = "0.29.1"
 dependencies = [
  "anyhow",
  "axum",
@@ -1310,7 +1310,7 @@ dependencies = [
 
 [[package]]
 name = "osl_db"
-version = "0.29.0"
+version = "0.29.1"
 dependencies = [
  "chrono",
  "osl_domain",
@@ -1323,7 +1323,7 @@ dependencies = [
 
 [[package]]
 name = "osl_domain"
-version = "0.29.0"
+version = "0.29.1"
 dependencies = [
  "chrono",
  "rust_decimal",
@@ -1338,7 +1338,7 @@ dependencies = [
 
 [[package]]
 name = "osl_importer"
-version = "0.29.0"
+version = "0.29.1"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1546,7 +1546,7 @@ checksum = "63b8176103e19a2643978565ca18b50549f6101881c443590420e4dc998a3c69"
 
 [[package]]
 name = "recover-bodyweight"
-version = "0.29.0"
+version = "0.29.1"
 dependencies = [
  "anyhow",
  "clap",
