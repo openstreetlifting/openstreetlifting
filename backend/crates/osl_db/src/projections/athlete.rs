@@ -7,9 +7,7 @@ use uuid::Uuid;
 use crate::projections::competition::AttemptSummary;
 use crate::rows::athlete::AthleteRow;
 
-/// The best an athlete made on one movement at one competition. A row with no
-/// weight is a movement they contested and never made, which the athlete page
-/// reads differently from a movement the meet never ran.
+/// No best weight means the athlete contested the movement but made no successful lift.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AthleteLiftRow {
     pub movement_name: Movement,
@@ -36,7 +34,7 @@ pub struct AthleteCompetitionRow {
     pub lifts: Vec<AthleteLiftRow>,
 }
 
-#[derive(Debug, FromRow)]
+#[derive(Debug)]
 pub struct PersonalRecordRow {
     pub movement_name: Movement,
     pub max_weight: Decimal,
@@ -52,4 +50,15 @@ pub struct AthleteDetail {
     pub personal_records: Vec<PersonalRecordRow>,
     pub total_competitions: i64,
     pub instagram_handle: Option<String>,
+}
+
+#[derive(Debug)]
+pub struct AthleteStrengthRow {
+    pub category_gender: Gender,
+    pub weight_class_min: Option<Decimal>,
+    pub weight_class_max: Option<Decimal>,
+    pub movement_name: Movement,
+    pub value: Option<Decimal>,
+    pub percentile: Option<f64>,
+    pub field: i64,
 }

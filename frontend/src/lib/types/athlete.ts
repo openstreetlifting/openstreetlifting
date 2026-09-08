@@ -21,29 +21,15 @@ export interface CountryStanding extends StandingPlace {
   code: string;
 }
 
-export interface RisStanding {
-  score?: string | null;
-  global: StandingPlace;
-  country: CountryStanding;
-}
-
-export interface WeightClassStanding {
-  class: string;
-  total?: string | null;
-  global: StandingPlace;
-  country: CountryStanding;
-}
-
 export interface MetricStanding {
   value: string;
-  class: string;
+  class?: string;
   global: StandingPlace;
   country: CountryStanding;
 }
 
 export interface AthleteStanding {
-  ris?: RisStanding | null;
-  weight_class?: WeightClassStanding | null;
+  ris?: MetricStanding | null;
   total?: MetricStanding | null;
   muscleup?: MetricStanding | null;
   pullup?: MetricStanding | null;
@@ -66,6 +52,19 @@ export interface AthleteDetail {
   personal_records: PersonalRecord[];
   total_competitions: number;
   standing?: AthleteStanding | null;
+  strength_profile?: StrengthProfile | null;
+}
+
+export interface StrengthProfile {
+  category: string;
+  lifts: StrengthComparison[];
+}
+
+export interface StrengthComparison {
+  movement_name: Movement;
+  value: string | null;
+  percentile: number | null;
+  field: number;
 }
 
 export interface AthleteLift {

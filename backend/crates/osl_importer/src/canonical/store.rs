@@ -3,7 +3,8 @@ use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
 use osl_domain::{
-    AthleteStatus, CountryCode, Gender, Movement, WeightClass, WeightClassSlug, event, slugify,
+    AthleteStatus, CountryCode, Edition, Gender, Movement, WeightClass, WeightClassSlug, event,
+    slugify,
 };
 use rust_decimal::Decimal;
 
@@ -235,6 +236,17 @@ fn read_entry(
 
     let ris = entries::parse_decimal(columns.get(record, entries::RIS))
         .map_err(|e| format!("{}: {e}", entries::RIS))?;
+    let bodyweight_source = optional(columns, record, entries::BODYWEIGHT_SOURCE)
+        .map(|source| source.parse())
+        .transpose()?;
+    let reported_ris_edition = optional(columns, record, entries::REPORTED_RIS_EDITION)
+        .map(|raw| {
+            let year = raw
+                .parse::<i32>()
+                .map_err(|_| format!("ReportedRisEdition '{raw}' is not a year"))?;
+            Edition::from_year(year).ok_or_else(|| format!("unknown ReportedRisEdition '{year}'"))
+        })
+        .transpose()?;
 
     let status = match optional(columns, record, entries::STATUS) {
         Some(raw) => AthleteStatus::from_str(&raw)?,
@@ -249,7 +261,9 @@ fn read_entry(
         gender: Some(gender),
         country,
         bodyweight,
+        bodyweight_source,
         ris,
+        reported_ris_edition,
         status,
         status_reason: optional(columns, record, entries::STATUS_REASON),
         lifts: read_lifts(columns, record, movements)?,
@@ -299,11 +313,15 @@ fn read_lifts(
 
         let has_attempts = !attempts.is_empty();
 
-        lifts.push(LiftData {
+        let lift = LiftData {
             movement,
             attempts: has_attempts.then_some(attempts),
-            best_lift: (!has_attempts).then_some(best).flatten(),
-        });
+            best_lift: best,
+        };
+        if has_attempts && best.is_some() {
+            lift.validated_best()?;
+        }
+        lifts.push(lift);
     }
 
     Ok(lifts)
@@ -322,6 +340,16 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
             .iter()
             .flat_map(|category| &category.athletes)
             .any(|athlete| athlete.native_name.is_some()),
+        bodyweight_sources: canonical
+            .categories
+            .iter()
+            .flat_map(|c| &c.athletes)
+            .any(|athlete| athlete.bodyweight_source.is_some()),
+        reported_ris_editions: canonical
+            .categories
+            .iter()
+            .flat_map(|c| &c.athletes)
+            .any(|athlete| athlete.reported_ris_edition.is_some()),
     };
 
     writer
@@ -357,6 +385,22 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
             if layout.native_names {
                 row.push(athlete.native_name.clone().unwrap_or_default());
             }
+            if layout.bodyweight_sources {
+                row.push(
+                    athlete
+                        .bodyweight_source()
+                        .map(|source| source.as_str().to_string())
+                        .unwrap_or_default(),
+                );
+            }
+            if layout.reported_ris_editions {
+                row.push(
+                    athlete
+                        .reported_ris_edition
+                        .map(|edition| edition.year().to_string())
+                        .unwrap_or_default(),
+                );
+            }
 
             for movement in Movement::ALL {
                 let lift = athlete.lifts.iter().find(|l| l.movement == movement);
@@ -376,7 +420,7 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                     row.push(cell);
                 }
 
-                row.push(entries::render_decimal(lift.and_then(best_of)));
+                row.push(entries::render_decimal(lift.and_then(|lift| lift.best())));
             }
 
             writer.write_record(&row).map_err(|e| {
@@ -391,20 +435,6 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
 
     String::from_utf8(bytes)
         .map_err(|e| ImporterError::ImportError(format!("writing {}: {e}", entries::FILE_NAME)))
-}
-
-/// What the competition page shows for the movement, and what the importer stores as
-/// `max_weight`. Derived whenever the attempts are known, so the column can
-/// never contradict them.
-fn best_of(lift: &LiftData) -> Option<Decimal> {
-    match lift.attempts.as_ref() {
-        Some(attempts) => attempts
-            .iter()
-            .filter(|a| a.is_successful)
-            .map(|a| a.weight)
-            .max(),
-        None => lift.best_lift,
-    }
 }
 
 fn required(

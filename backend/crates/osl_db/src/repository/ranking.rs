@@ -4,10 +4,8 @@ use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
 use crate::error::Result;
-use crate::params::{RankingFilter, RankingMovement, SortDirection};
-use crate::projections::ranking::{
-    AthleteClassStandingRow, AthleteMetricStandingRow, AthleteStandingRow, RankingRow,
-};
+use crate::params::{RankingFilter, RankingMovement};
+use crate::projections::ranking::{AthleteMetricStandingRow, RankingRow};
 
 pub struct RankingRepository<'a> {
     pool: &'a PgPool,
@@ -36,7 +34,7 @@ impl<'a> RankingRepository<'a> {
         Ok((entries, total_items))
     }
 
-    fn movement_weights(filter: &RankingFilter) -> QueryBuilder<Postgres> {
+    fn movement_weights(filter: Option<&RankingFilter>) -> QueryBuilder<Postgres> {
         let mut query = QueryBuilder::new(
             r#"
             WITH movement_weights AS (
@@ -50,6 +48,7 @@ impl<'a> RankingRepository<'a> {
                     a.gender,
                     cp.bodyweight,
                     d.name as division,
+                    cp.weight_class_id,
                     wc.min_kg as weight_class_min,
                     wc.max_kg as weight_class_max,
                     c.competition_id,
@@ -81,47 +80,50 @@ impl<'a> RankingRepository<'a> {
             "#,
         );
 
-        if let Some(gender) = filter.gender {
-            query.push(" AND a.gender = ");
-            query.push_bind(gender.as_str());
-        }
-
-        if let Some(ref country) = filter.country {
-            query.push(" AND a.country = ");
-            query.push_bind(country);
-        }
-
-        if let Some(ref federation) = filter.federation {
-            query.push(" AND f.name = ");
-            query.push_bind(federation);
-        }
-
-        match filter.category {
-            Some(WeightClass::UpTo(max)) => {
-                query.push(" AND wc.max_kg = ");
-                query.push_bind(max);
+        if let Some(filter) = filter {
+            if let Some(gender) = filter.gender {
+                query.push(" AND a.gender = ");
+                query.push_bind(gender.as_str());
             }
-            Some(WeightClass::Above(min)) => {
-                query.push(" AND wc.max_kg IS NULL AND wc.min_kg = ");
-                query.push_bind(min);
+
+            if let Some(ref country) = filter.country {
+                query.push(" AND a.country = ");
+                query.push_bind(country);
             }
-            None => {}
-        }
 
-        if let Some(year) = filter.year {
-            query.push(" AND EXTRACT(YEAR FROM c.start_date)::int = ");
-            query.push_bind(year);
-        }
+            if let Some(ref federation) = filter.federation {
+                query.push(" AND f.name = ");
+                query.push_bind(federation);
+            }
 
-        if let Some(competition_id) = filter.competition_id {
-            query.push(" AND c.competition_id = ");
-            query.push_bind(competition_id);
+            match filter.category {
+                Some(WeightClass::UpTo(max)) => {
+                    query.push(" AND wc.max_kg = ");
+                    query.push_bind(max);
+                }
+                Some(WeightClass::Above(min)) => {
+                    query.push(" AND wc.max_kg IS NULL AND wc.min_kg = ");
+                    query.push_bind(min);
+                }
+                None => {}
+            }
+
+            if let Some(year) = filter.year {
+                query.push(" AND EXTRACT(YEAR FROM c.start_date)::int = ");
+                query.push_bind(year);
+            }
+
+            if let Some(competition_id) = filter.competition_id {
+                query.push(" AND c.competition_id = ");
+                query.push_bind(competition_id);
+            }
         }
 
         query.push(
             r#"
                 GROUP BY cp.participant_id, a.athlete_id, a.first_name, a.last_name,
-                         a.slug, a.country, a.gender, cp.bodyweight, d.name, wc.min_kg, wc.max_kg,
+                         a.slug, a.country, a.gender, cp.bodyweight, d.name, cp.weight_class_id,
+                         wc.min_kg, wc.max_kg,
                          cp.ris_score, cp.ris_source,
                          c.competition_id, c.name, c.slug, c.start_date, c.event_code, f.name, f.abbreviation,
                          ats.handle
@@ -172,35 +174,7 @@ impl<'a> RankingRepository<'a> {
 
         query.push(" , ranking_pool AS ( SELECT DISTINCT ON (athlete_id) * FROM eligible ORDER BY athlete_id, ");
         query.push(filter.movement.as_column());
-        query.push(" DESC NULLS LAST ) ");
-    }
-
-    /// Folds every metric into one `metric` / `value` pair so they can be
-    /// placed by the same window functions.
-    fn push_metric_candidates(query: &mut QueryBuilder<Postgres>) {
-        query.push(" metric_candidates AS ( ");
-
-        for (index, movement) in RankingMovement::ALL.into_iter().enumerate() {
-            if index > 0 {
-                query.push(" UNION ALL ");
-            }
-
-            let (metric, column) = (movement.as_str(), movement.as_column());
-
-            query.push(format!(
-                "SELECT athlete_id, country, gender, weight_class_min, weight_class_max, \
-                 '{metric}' AS metric, {column} AS value \
-                 FROM movement_weights WHERE {column} IS NOT NULL "
-            ));
-
-            // A total only means something within one event.
-            if movement == RankingMovement::Total {
-                query.push(" AND event_code = ");
-                query.push_bind(osl_domain::FULL_EVENT);
-            }
-        }
-
-        query.push(" ), ");
+        query.push(" DESC NULLS LAST, start_date DESC, participant_id ) ");
     }
 
     fn push_name_match(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
@@ -214,7 +188,7 @@ impl<'a> RankingRepository<'a> {
     }
 
     async fn count_participants(&self, filter: &RankingFilter) -> Result<i64> {
-        let mut query = Self::movement_weights(filter);
+        let mut query = Self::movement_weights(Some(filter));
         Self::push_eligible(&mut query, filter);
         Self::push_ranking_pool(&mut query, filter);
         query.push(" SELECT COUNT(*) FROM ranking_pool ");
@@ -231,7 +205,7 @@ impl<'a> RankingRepository<'a> {
     async fn fetch_ranked_entries(&self, filter: &RankingFilter) -> Result<Vec<RankingRow>> {
         let sort_column = filter.movement.as_column();
 
-        let mut query = Self::movement_weights(filter);
+        let mut query = Self::movement_weights(Some(filter));
         Self::push_eligible(&mut query, filter);
         Self::push_ranking_pool(&mut query, filter);
 
@@ -239,7 +213,7 @@ impl<'a> RankingRepository<'a> {
         query.push(sort_column);
         query.push(" ");
         query.push(filter.direction.as_sql());
-        query.push(") as rank FROM ranking_pool ) ");
+        query.push(", athlete_id, participant_id) as rank FROM ranking_pool ) ");
         query.push(" SELECT * FROM ranked_movements ");
         Self::push_name_match(&mut query, filter);
         query.push(" ORDER BY rank LIMIT ");
@@ -252,27 +226,6 @@ impl<'a> RankingRepository<'a> {
         Ok(rows)
     }
 
-    pub async fn get_athlete_standing(
-        &self,
-        athlete_id: Uuid,
-    ) -> Result<Option<AthleteStandingRow>> {
-        let standing = self
-            .get_athlete_metric_standings(athlete_id)
-            .await?
-            .into_iter()
-            .find(|standing| standing.metric == RankingMovement::Ris)
-            .map(|standing| AthleteStandingRow {
-                ris_score: Some(standing.value),
-                global_place: standing.global_place,
-                global_field: standing.global_field,
-                country: standing.country,
-                country_place: standing.country_place,
-                country_field: standing.country_field,
-            });
-
-        Ok(standing)
-    }
-
     /// Returns the athlete's global and country place for every metric exposed
     /// by the rankings board. RIS remains an open comparison. Kilogram metrics
     /// compare athletes of the same sex and weight class; totals also stay
@@ -281,28 +234,49 @@ impl<'a> RankingRepository<'a> {
         &self,
         athlete_id: Uuid,
     ) -> Result<Vec<AthleteMetricStandingRow>> {
-        let filter = RankingFilter {
-            gender: None,
-            country: None,
-            federation: None,
-            name: None,
-            movement: RankingMovement::Ris,
-            direction: SortDirection::Desc,
-            event: String::new(),
-            category: None,
-            year: None,
-            competition_id: None,
-            offset: 0,
-            limit: 1,
-        };
-
-        let mut query = Self::movement_weights(&filter);
-        Self::push_metric_candidates(&mut query);
+        let mut query = Self::movement_weights(None);
         query.push(
             r#"
+            metric_candidates AS (
+                SELECT movement_weights.athlete_id,
+                       movement_weights.participant_id,
+                       movement_weights.start_date,
+                       movement_weights.country,
+                       movement_weights.weight_class_id,
+                       movement_weights.weight_class_min,
+                       movement_weights.weight_class_max,
+                       metric.name AS metric,
+                       metric.value
+                FROM movement_weights
+                CROSS JOIN LATERAL ( VALUES
+            "#,
+        );
+
+        for (index, movement) in RankingMovement::ALL.into_iter().enumerate() {
+            if index > 0 {
+                query.push(", ");
+            }
+
+            query.push(format!("('{}', ", movement.as_str()));
+
+            // A total only means something within one event.
+            if movement == RankingMovement::Total {
+                query.push("CASE WHEN event_code = ");
+                query.push_bind(osl_domain::FULL_EVENT);
+                query.push(" THEN total END)");
+            } else {
+                query.push(format!("{})", movement.as_column()));
+            }
+        }
+
+        query.push(
+            r#"
+                ) AS metric(name, value)
+                WHERE metric.value IS NOT NULL
+            ),
             mine AS (
                 SELECT DISTINCT ON (metric)
-                    metric, gender, weight_class_min, weight_class_max
+                    metric, weight_class_id
                 FROM metric_candidates
                 WHERE athlete_id =
             "#,
@@ -310,7 +284,7 @@ impl<'a> RankingRepository<'a> {
         query.push_bind(athlete_id);
         query.push(
             r#"
-                ORDER BY metric, value DESC
+                ORDER BY metric, value DESC, start_date DESC, participant_id
             ),
             comparable AS (
                 SELECT candidate.*
@@ -319,18 +293,14 @@ impl<'a> RankingRepository<'a> {
                     ON mine.metric = candidate.metric
                    AND (
                        candidate.metric = 'ris'
-                       OR (
-                           mine.gender = candidate.gender
-                           AND mine.weight_class_min IS NOT DISTINCT FROM candidate.weight_class_min
-                           AND mine.weight_class_max IS NOT DISTINCT FROM candidate.weight_class_max
-                       )
+                       OR mine.weight_class_id = candidate.weight_class_id
                    )
             ),
             ranking_pool AS (
                 SELECT DISTINCT ON (metric, athlete_id)
                     metric, athlete_id, country, value, weight_class_min, weight_class_max
                 FROM comparable
-                ORDER BY metric, athlete_id, value DESC
+                ORDER BY metric, athlete_id, value DESC, start_date DESC, participant_id
             ),
             placed AS (
                 SELECT
@@ -340,9 +310,9 @@ impl<'a> RankingRepository<'a> {
                     value,
                     weight_class_min,
                     weight_class_max,
-                    ROW_NUMBER() OVER (PARTITION BY metric ORDER BY value DESC) AS global_place,
+                    ROW_NUMBER() OVER (PARTITION BY metric ORDER BY value DESC, athlete_id) AS global_place,
                     COUNT(*) OVER (PARTITION BY metric) AS global_field,
-                    ROW_NUMBER() OVER (PARTITION BY metric, country ORDER BY value DESC) AS country_place,
+                    ROW_NUMBER() OVER (PARTITION BY metric, country ORDER BY value DESC, athlete_id) AS country_place,
                     COUNT(*) OVER (PARTITION BY metric, country) AS country_field
                 FROM ranking_pool
             )
@@ -359,84 +329,6 @@ impl<'a> RankingRepository<'a> {
             query.build_query_as().fetch_all(self.pool).await?;
 
         Ok(standings)
-    }
-
-    pub async fn get_athlete_class_standing(
-        &self,
-        athlete_id: Uuid,
-    ) -> Result<Option<AthleteClassStandingRow>> {
-        let filter = RankingFilter {
-            gender: None,
-            country: None,
-            federation: None,
-            name: None,
-            movement: RankingMovement::Total,
-            direction: SortDirection::Desc,
-            event: osl_domain::FULL_EVENT.to_string(),
-            category: None,
-            year: None,
-            competition_id: None,
-            offset: 0,
-            limit: 1,
-        };
-
-        let mut query = Self::movement_weights(&filter);
-        Self::push_eligible(&mut query, &filter);
-
-        query.push(
-            r#"
-            , mine AS (
-                SELECT gender, weight_class_min, weight_class_max
-                FROM eligible
-                WHERE athlete_id =
-            "#,
-        );
-        query.push_bind(athlete_id);
-        query.push(
-            r#"
-                ORDER BY total DESC
-                LIMIT 1
-            )
-            , in_class AS (
-                SELECT DISTINCT ON (eligible.athlete_id) eligible.*
-                FROM eligible, mine
-                WHERE eligible.gender = mine.gender
-                  AND eligible.weight_class_min IS NOT DISTINCT FROM mine.weight_class_min
-                  AND eligible.weight_class_max IS NOT DISTINCT FROM mine.weight_class_max
-                ORDER BY eligible.athlete_id, eligible.total DESC
-            )
-            , placed AS (
-                SELECT
-                    athlete_id,
-                    country,
-                    total,
-                    weight_class_min,
-                    weight_class_max,
-                    ROW_NUMBER() OVER (ORDER BY total DESC) AS class_place,
-                    COUNT(*) OVER () AS class_field,
-                    ROW_NUMBER() OVER (PARTITION BY country ORDER BY total DESC) AS class_country_place,
-                    COUNT(*) OVER (PARTITION BY country) AS class_country_field
-                FROM in_class
-            )
-            SELECT
-                total,
-                weight_class_min,
-                weight_class_max,
-                country,
-                class_place,
-                class_field,
-                class_country_place,
-                class_country_field
-            FROM placed
-            WHERE athlete_id =
-            "#,
-        );
-        query.push_bind(athlete_id);
-
-        let standing: Option<AthleteClassStandingRow> =
-            query.build_query_as().fetch_optional(self.pool).await?;
-
-        Ok(standing)
     }
 
     /// Distinct weight classes, sorted by weight so the filter dropdown reads

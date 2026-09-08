@@ -1,12 +1,13 @@
 use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
+use std::collections::HashSet;
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
 use crate::params::Page;
 use crate::projections::athlete::{
-    AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
+    AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, AthleteStrengthRow, PersonalRecordRow,
 };
 use crate::rows::athlete::AthleteRow;
 
@@ -19,7 +20,6 @@ impl<'a> AthleteRepository<'a> {
         Self { pool }
     }
 
-    /// Returns one page of athletes plus the unpaginated total.
     pub async fn list(&self, page: &Page) -> Result<(Vec<AthleteRow>, i64)> {
         let athletes = sqlx::query_as!(
             AthleteRow,
@@ -105,9 +105,72 @@ impl<'a> AthleteRepository<'a> {
         self.get_detailed_athlete(athlete).await
     }
 
-    async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
-        // The placing is worked out from the lifts, the same way the competition page
-        // does it, over the contests this athlete actually entered.
+    pub async fn strength_profile(&self, athlete_id: Uuid) -> Result<Vec<AthleteStrengthRow>> {
+        let rows = sqlx::query!(
+            r#"
+            WITH latest_category AS (
+                SELECT wc.weight_class_id, wc.gender, wc.min_kg, wc.max_kg
+                FROM competition_participants cp
+                JOIN competitions c ON c.competition_id = cp.competition_id
+                JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+                WHERE cp.athlete_id = $1 AND cp.status = 'competed'
+                ORDER BY c.start_date DESC, c.competition_id DESC, cp.participant_id DESC
+                LIMIT 1
+            ), eligible AS (
+                SELECT cp.participant_id, cp.athlete_id
+                FROM competition_participants cp
+                JOIN latest_category category ON category.weight_class_id = cp.weight_class_id
+                JOIN athletes a ON a.athlete_id = cp.athlete_id AND a.gender = category.gender
+                WHERE cp.status = 'competed'
+            ), bests AS (
+                SELECT cp.athlete_id, l.movement_name, MAX(l.max_weight) AS value
+                FROM eligible cp
+                JOIN lifts l ON l.participant_id = cp.participant_id
+                WHERE l.max_weight IS NOT NULL
+                GROUP BY cp.athlete_id, l.movement_name
+            ), standings AS (
+                SELECT m.name AS movement_name, target.value,
+                       COUNT(other.athlete_id) AS field,
+                       (100.0 * AVG(CASE
+                           WHEN target.value IS NULL THEN NULL
+                           WHEN other.value < target.value THEN 1.0
+                           WHEN other.value = target.value THEN 0.5
+                           ELSE 0.0 END) FILTER (WHERE other.athlete_id IS NOT NULL))::double precision AS percentile
+                FROM movements m
+                LEFT JOIN bests target ON target.athlete_id = $1 AND target.movement_name = m.name
+                LEFT JOIN bests other ON other.athlete_id <> $1 AND other.movement_name = m.name
+                GROUP BY m.name, target.value
+            )
+            SELECT category.gender AS "category_gender: Gender",
+                   category.min_kg AS weight_class_min, category.max_kg AS weight_class_max,
+                   m.name AS "movement_name: Movement", standing.value AS "value?",
+                   standing.field AS "field!", standing.percentile AS "percentile?"
+            FROM latest_category category
+            CROSS JOIN movements m
+            JOIN standings standing ON standing.movement_name = m.name
+            WHERE m.name IN ('Muscle-up', 'Pull-up', 'Dips', 'Squat')
+            ORDER BY m.display_order
+            "#,
+            athlete_id
+        )
+        .fetch_all(self.pool)
+        .await?;
+
+        Ok(rows
+            .into_iter()
+            .map(|row| AthleteStrengthRow {
+                category_gender: row.category_gender,
+                weight_class_min: row.weight_class_min,
+                weight_class_max: row.weight_class_max,
+                movement_name: row.movement_name,
+                value: row.value,
+                percentile: row.percentile,
+                field: row.field,
+            })
+            .collect())
+    }
+
+    pub async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
         let rows = sqlx::query!(
             r#"
             WITH entered AS (
@@ -216,41 +279,36 @@ impl<'a> AthleteRepository<'a> {
             })
             .collect();
 
-        let personal_records = sqlx::query_as!(
-            PersonalRecordRow,
-            r#"
-            SELECT DISTINCT ON (l.movement_name)
-                l.movement_name as "movement_name: Movement",
-                -- Not null thanks to the filter below, which sqlx cannot infer.
-                l.max_weight as "max_weight!",
-                c.name as competition_name,
-                c.slug as competition_slug,
-                c.start_date as date
-            FROM lifts l
-            JOIN competition_participants cp ON l.participant_id = cp.participant_id
-            JOIN competitions c ON cp.competition_id = c.competition_id
-            WHERE cp.athlete_id = $1
-              -- A movement where every attempt failed is not a record, and
-              -- DESC would otherwise sort its NULL to the front and pick it.
-              AND l.max_weight IS NOT NULL
-              AND cp.status = 'competed'
-            ORDER BY l.movement_name, l.max_weight DESC
-            "#,
-            athlete.athlete_id
-        )
-        .fetch_all(self.pool)
-        .await?;
+        let personal_records = Movement::ALL
+            .into_iter()
+            .filter_map(|movement| {
+                competitions
+                    .iter()
+                    .filter(|competition| competition.status.competed())
+                    .filter_map(|competition| {
+                        let lift = competition
+                            .lifts
+                            .iter()
+                            .find(|lift| lift.movement_name == movement)?;
+                        Some((competition, lift.best_weight?))
+                    })
+                    .max_by_key(|(competition, weight)| (*weight, competition.competition_date))
+                    .map(|(competition, max_weight)| PersonalRecordRow {
+                        movement_name: movement,
+                        max_weight,
+                        competition_name: competition.competition_name.clone(),
+                        competition_slug: competition.competition_slug.clone(),
+                        date: competition.competition_date,
+                    })
+            })
+            .collect();
 
-        let total_competitions = sqlx::query_scalar!(
-            r#"
-            SELECT COUNT(DISTINCT cp.competition_id)::bigint as "count!"
-            FROM competition_participants cp
-            WHERE cp.athlete_id = $1
-            "#,
-            athlete.athlete_id
-        )
-        .fetch_one(self.pool)
-        .await?;
+        // Entering multiple divisions at one meet still counts as one competition.
+        let total_competitions = competitions
+            .iter()
+            .map(|competition| competition.competition_id)
+            .collect::<HashSet<_>>()
+            .len() as i64;
 
         let instagram_handle = sqlx::query_scalar!(
             r#"

@@ -1,5 +1,8 @@
 event = "MPDS"
-sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "Bodyweight recovered by reversing the 2024 RIS formula on the published score",
+]
 
 [competition]
 name = "Belgian Streetlifting Championship"

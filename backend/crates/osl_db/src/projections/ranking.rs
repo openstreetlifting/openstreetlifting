@@ -40,16 +40,6 @@ pub struct RankingRow {
 }
 
 #[derive(Debug, FromRow)]
-pub struct AthleteStandingRow {
-    pub ris_score: Option<Decimal>,
-    pub global_place: i64,
-    pub global_field: i64,
-    pub country: String,
-    pub country_place: i64,
-    pub country_field: i64,
-}
-
-#[derive(Debug, FromRow)]
 pub struct AthleteMetricStandingRow {
     pub metric: RankingMovement,
     pub value: Decimal,
@@ -60,16 +50,4 @@ pub struct AthleteMetricStandingRow {
     pub country: String,
     pub country_place: i64,
     pub country_field: i64,
-}
-
-#[derive(Debug, FromRow)]
-pub struct AthleteClassStandingRow {
-    pub total: Option<Decimal>,
-    pub weight_class_min: Option<Decimal>,
-    pub weight_class_max: Option<Decimal>,
-    pub country: String,
-    pub class_place: i64,
-    pub class_field: i64,
-    pub class_country_place: i64,
-    pub class_country_field: i64,
 }

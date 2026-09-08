@@ -30,6 +30,18 @@ impl<'a> CanonicalTransformer<'a> {
     }
 
     pub async fn import_to_database(&self, canonical: CanonicalFormat) -> Result<()> {
+        for category in &canonical.categories {
+            for athlete in &category.athletes {
+                athlete
+                    .validate_score_source(category.gender, &canonical.movements)
+                    .map_err(|reason| {
+                        ImporterError::ValidationError(format!(
+                            "{}: {reason}",
+                            athlete.display_name()
+                        ))
+                    })?;
+            }
+        }
         let mut tx = self.pool.begin().await?;
 
         let (competition_id, federation_id) = self
@@ -397,19 +409,28 @@ impl<'a> CanonicalTransformer<'a> {
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
         let athlete_id = self.upsert_athlete(athlete, category, tx).await?;
+        // With a bodyweight, Ris is evidence for recovery, not the ranking score.
+        let ranking_ris = athlete.ris.filter(|_| athlete.bodyweight.is_none());
+        let bodyweight_source = athlete.bodyweight_source().map(BodyweightSource::as_str);
+        let reported_ris_edition = athlete.reported_ris_edition.map(|edition| edition.year());
 
         let participant_id = sqlx::query_scalar!(
             r#"
             INSERT INTO competition_participants
-                (competition_id, weight_class_id, division_id, athlete_id, bodyweight, status, status_reason, ris_score, ris_source)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END)
+                (competition_id, weight_class_id, division_id, athlete_id, bodyweight, status, status_reason, ris_score, ris_source,
+                 bodyweight_source, reported_ris_score, reported_ris_edition)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11)
             ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id)
             DO UPDATE SET
                 bodyweight = EXCLUDED.bodyweight,
                 status = EXCLUDED.status,
                 status_reason = EXCLUDED.status_reason,
                 ris_score = EXCLUDED.ris_score,
-                ris_source = EXCLUDED.ris_source
+                ris_source = EXCLUDED.ris_source,
+                ris_edition = NULL,
+                bodyweight_source = EXCLUDED.bodyweight_source,
+                reported_ris_score = EXCLUDED.reported_ris_score,
+                reported_ris_edition = EXCLUDED.reported_ris_edition
             RETURNING participant_id as "participant_id: Uuid"
             "#,
             competition_id,
@@ -419,7 +440,10 @@ impl<'a> CanonicalTransformer<'a> {
             athlete.bodyweight,
             athlete.status.as_str(),
             athlete.status_reason,
-            athlete.ris
+            ranking_ris,
+            bodyweight_source,
+            athlete.ris,
+            reported_ris_edition
         )
         .fetch_one(&mut **tx)
         .await?;

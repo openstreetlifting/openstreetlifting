@@ -111,23 +111,23 @@
   ]}
 />
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-4 sm:px-6 sm:py-12">
+<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
   <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: 'Competitions' }]} />
 
   <h1 class="sr-only">Streetlifting competitions</h1>
 
-  <nav class="mb-4 flex items-center gap-5 border-b border-zinc-800/60">
+  <nav class="mb-4 flex items-center gap-5 border-b border-stroke">
     {#each TABS as tab (tab.status)}
       {@const active = data.status === tab.status}
       <button
         onclick={() => apply({ status: tab.status })}
         aria-current={active ? 'page' : undefined}
-        class="-mb-px flex items-baseline gap-1.5 border-b-2 pb-2 {CONTROL} transition-colors focus:ring-2 focus:ring-zinc-500 focus:outline-none
- {active ? 'border-white text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300'}"
+        class="-mb-px flex items-baseline gap-1.5 border-b-2 pb-2 {CONTROL} transition-colors focus:ring-2 focus:ring-focus focus:outline-none
+ {active ? 'border-ink text-ink' : 'border-transparent text-muted hover:text-secondary'}"
       >
         {tab.label}
         {#if data.counts[tab.status] !== undefined}
-          <span class="{TEXT.micro} {active ? 'text-zinc-400' : 'text-zinc-600'}">
+          <span class="{TEXT.micro} {active ? 'text-secondary' : 'text-muted'}">
             {data.counts[tab.status]}
           </span>
         {/if}
@@ -166,15 +166,15 @@
   </FilterBar>
 
   {#if data.error}
-    <Card class="p-8">
+    <Card class="max-w-summary p-8">
       <div class="text-center">
-        <p class="text-red-400">{data.error}</p>
+        <p class="text-danger">{data.error}</p>
       </div>
     </Card>
   {:else if competitions.length === 0}
-    <Card class="p-8">
+    <Card class="max-w-summary p-8">
       <div class="text-center">
-        <p class="text-zinc-400">
+        <p class="text-secondary">
           {#if narrowed}
             No competitions match your filters
           {:else if showsUpcoming}
@@ -187,7 +187,7 @@
           {#if narrowed}
             <button
               onclick={clearFilters}
-              class="text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+              class="text-muted underline hover:text-secondary focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none"
             >
               Clear filters
             </button>
@@ -198,20 +198,20 @@
   {:else}
     <Table>
       {#snippet head()}
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Competition</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">{showsUpcoming ? 'When' : 'Lifters'}</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Date</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Location</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Federation</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Competition</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">{showsUpcoming ? 'When' : 'Lifters'}</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Date</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Location</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Federation</th>
       {/snippet}
 
       {#snippet body()}
         {#each competitions as competition (competition.slug)}
-          <tr class="border-b border-zinc-800/50 transition-colors">
+          <tr class="transition-colors">
             <td class="{TABLE_CELL} {CELL.identity}">
               <a
                 href={resolve(`/competitions/${competition.slug}`)}
-                class="{TEXT_CELL.competition} underline hover:text-zinc-300"
+                class="{TEXT_CELL.competition} underline hover:text-secondary"
               >
                 {competition.name}
               </a>
@@ -221,7 +221,7 @@
                 ? formatCountdown(competition.start_date)
                 : (competition.lifter_count ?? 0)}
             </td>
-            <td class="{TABLE_CELL} whitespace-nowrap text-zinc-400">
+            <td class="{TABLE_CELL} whitespace-nowrap text-secondary">
               {competitionDates(competition.start_date, competition.end_date)}
             </td>
             <td class="{TABLE_CELL} {CELL.data}">
@@ -240,7 +240,7 @@
     </Table>
 
     <div class="mt-4 flex flex-wrap items-center justify-between gap-3 sm:mt-8">
-      <span class="text-xs text-zinc-500">
+      <span class="text-xs text-muted">
         {pagination.total_items} streetlifting competitions
         {#if pagination.total_pages > 1}
           &middot; page {pagination.page} of {pagination.total_pages}

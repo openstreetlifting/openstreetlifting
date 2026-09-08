@@ -1,9 +1,9 @@
 use chrono::NaiveDateTime;
 use osl_db::params::RankingMovement;
 use osl_db::projections::athlete::{
-    AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
+    AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, AthleteStrengthRow, PersonalRecordRow,
 };
-use osl_db::projections::ranking::{AthleteClassStandingRow, AthleteMetricStandingRow};
+use osl_db::projections::ranking::AthleteMetricStandingRow;
 use osl_db::rows::athlete::AthleteRow;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -35,6 +35,47 @@ pub struct AthleteResponse {
     pub total_competitions: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standing: Option<AthleteStanding>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub strength_profile: Option<StrengthProfile>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct StrengthProfile {
+    pub category: String,
+    pub lifts: Vec<StrengthComparison>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct StrengthComparison {
+    pub movement_name: Movement,
+    pub value: Option<rust_decimal::Decimal>,
+    /// Percentage of other athletes below this result, with ties counting as half.
+    pub percentile: Option<f64>,
+    /// Other athletes with a valid best for this lift in the same sex and weight class.
+    pub field: i64,
+}
+
+impl StrengthProfile {
+    pub fn from_rows(rows: Vec<AthleteStrengthRow>) -> Option<Self> {
+        let first = rows.first()?;
+        Some(Self {
+            category: osl_domain::category_label(
+                None,
+                first.category_gender,
+                first.weight_class_min,
+                first.weight_class_max,
+            ),
+            lifts: rows
+                .into_iter()
+                .map(|row| StrengthComparison {
+                    movement_name: row.movement_name.into(),
+                    value: row.value,
+                    percentile: row.percentile,
+                    field: row.field,
+                })
+                .collect(),
+        })
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -51,24 +92,10 @@ pub struct CountryStanding {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct RisStanding {
-    pub score: Option<rust_decimal::Decimal>,
-    pub global: StandingPlace,
-    pub country: CountryStanding,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct WeightClassStanding {
-    pub class: String,
-    pub total: Option<rust_decimal::Decimal>,
-    pub global: StandingPlace,
-    pub country: CountryStanding,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct MetricStanding {
     pub value: rust_decimal::Decimal,
-    pub class: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub class: Option<String>,
     pub global: StandingPlace,
     pub country: CountryStanding,
 }
@@ -76,9 +103,7 @@ pub struct MetricStanding {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteStanding {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ris: Option<RisStanding>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub weight_class: Option<WeightClassStanding>,
+    pub ris: Option<MetricStanding>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total: Option<MetricStanding>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -91,50 +116,21 @@ pub struct AthleteStanding {
     pub squat: Option<MetricStanding>,
 }
 
-impl WeightClassStanding {
-    pub fn from_row(row: AthleteClassStandingRow) -> Option<Self> {
-        let class = osl_domain::WeightClass::of(row.weight_class_min, row.weight_class_max)?;
-
-        Some(Self {
-            class: class.to_string(),
-            total: row.total,
-            global: StandingPlace {
-                place: row.class_place,
-                field: row.class_field,
-            },
-            country: CountryStanding {
-                code: row.country,
-                place: row.class_country_place,
-                field: row.class_country_field,
-            },
-        })
-    }
-}
-
 impl MetricStanding {
-    fn from_row(row: AthleteMetricStandingRow) -> Option<Self> {
-        let class = osl_domain::WeightClass::of(row.weight_class_min, row.weight_class_max)?;
+    fn from_row(row: AthleteMetricStandingRow) -> Self {
+        let class = if row.metric == RankingMovement::Ris {
+            None
+        } else {
+            Some(
+                osl_domain::WeightClass::of(row.weight_class_min, row.weight_class_max)
+                    .expect("ranked participants always have a weight class")
+                    .to_string(),
+            )
+        };
 
-        Some(Self {
-            value: row.value,
-            class: class.to_string(),
-            global: StandingPlace {
-                place: row.global_place,
-                field: row.global_field,
-            },
-            country: CountryStanding {
-                code: row.country,
-                place: row.country_place,
-                field: row.country_field,
-            },
-        })
-    }
-}
-
-impl From<AthleteMetricStandingRow> for RisStanding {
-    fn from(row: AthleteMetricStandingRow) -> Self {
         Self {
-            score: Some(row.value),
+            value: row.value,
+            class,
             global: StandingPlace {
                 place: row.global_place,
                 field: row.global_field,
@@ -149,13 +145,13 @@ impl From<AthleteMetricStandingRow> for RisStanding {
 }
 
 impl AthleteStanding {
-    pub fn from_rows(
-        rows: Vec<AthleteMetricStandingRow>,
-        weight_class: Option<WeightClassStanding>,
-    ) -> Option<Self> {
+    pub fn from_rows(rows: Vec<AthleteMetricStandingRow>) -> Option<Self> {
+        if rows.is_empty() {
+            return None;
+        }
+
         let mut standing = Self {
             ris: None,
-            weight_class,
             total: None,
             muscleup: None,
             pullup: None,
@@ -164,47 +160,22 @@ impl AthleteStanding {
         };
 
         for row in rows {
-            // RIS has no weight class behind it, so it is taken before the
-            // class is worked out.
-            if row.metric == RankingMovement::Ris {
-                standing.ris = Some(row.into());
-                continue;
-            }
-
-            let metric = row.metric;
-
-            let Some(metric_standing) = MetricStanding::from_row(row) else {
-                continue;
+            let slot = match row.metric {
+                RankingMovement::Ris => &mut standing.ris,
+                RankingMovement::Total => &mut standing.total,
+                RankingMovement::Muscleup => &mut standing.muscleup,
+                RankingMovement::Pullup => &mut standing.pullup,
+                RankingMovement::Dips => &mut standing.dips,
+                RankingMovement::Squat => &mut standing.squat,
             };
-
-            match metric {
-                RankingMovement::Total => standing.total = Some(metric_standing),
-                RankingMovement::Muscleup => standing.muscleup = Some(metric_standing),
-                RankingMovement::Pullup => standing.pullup = Some(metric_standing),
-                RankingMovement::Dips => standing.dips = Some(metric_standing),
-                RankingMovement::Squat => standing.squat = Some(metric_standing),
-                RankingMovement::Ris => {}
-            }
+            *slot = Some(MetricStanding::from_row(row));
         }
 
-        if standing.ris.is_some()
-            || standing.weight_class.is_some()
-            || standing.total.is_some()
-            || standing.muscleup.is_some()
-            || standing.pullup.is_some()
-            || standing.dips.is_some()
-            || standing.squat.is_some()
-        {
-            Some(standing)
-        } else {
-            None
-        }
+        Some(standing)
     }
 }
 
-/// An athlete's best on one movement at one competition. A missing weight is a
-/// movement they contested and never made, which is not the same as a movement
-/// the competition never ran, and `event` is what tells the two apart.
+/// No best weight means a bombed movement; `event` distinguishes it from an uncontested one.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteLift {
     pub movement_name: Movement,
@@ -224,7 +195,8 @@ pub struct AthleteCompetitionSummary {
     pub rank: Option<i32>,
     pub total: Option<rust_decimal::Decimal>,
     pub ris_score: Option<rust_decimal::Decimal>,
-    /// Absent alongside a missing score.
+    /// Reported scores cannot be re-scored without bodyweight; computed scores
+    /// use the current formula. Absent alongside a missing score.
     pub ris_source: Option<RisSource>,
     pub status: AthleteStatus,
     /// The movements the competition ran, as letters of MPDS.
@@ -259,6 +231,7 @@ impl From<AthleteRow> for AthleteResponse {
             personal_records: None,
             total_competitions: None,
             standing: None,
+            strength_profile: None,
         }
     }
 }

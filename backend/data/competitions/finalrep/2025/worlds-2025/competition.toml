@@ -2,6 +2,7 @@ event = "MPDS"
 sources = [
     "https://final-rep.com/worlds25/",
     "https://drive.google.com/file/d/1qmCwuNIYj_yWchg6B24vIkhDpNlXolZk/view",
+    "Bodyweight recovered by reversing the 2024 RIS formula on the published score",
 ]
 
 [competition]

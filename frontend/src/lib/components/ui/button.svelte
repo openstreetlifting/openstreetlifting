@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
-  import { resolve } from '$app/paths';
+  import type { ResolvedPathname } from '$app/types';
 
   type ButtonVariant = 'default' | 'ghost' | 'outline';
   type ButtonSize = 'default' | 'sm' | 'lg' | 'icon';
@@ -9,7 +9,7 @@
   interface Props extends HTMLButtonAttributes {
     variant?: ButtonVariant;
     size?: ButtonSize;
-    href?: string;
+    href?: ResolvedPathname;
     class?: string;
     children?: Snippet;
   }
@@ -24,12 +24,12 @@
   }: Props = $props();
 
   const baseStyles =
-    'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
+    'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:opacity-50 disabled:pointer-events-none';
 
   const variants = {
-    default: 'bg-white text-zinc-900 hover:bg-zinc-100',
-    ghost: 'hover:bg-zinc-800 hover:text-white',
-    outline: 'border border-zinc-800 hover:bg-zinc-800',
+    default: 'bg-action text-on-action hover:bg-action-hover',
+    ghost: 'hover:bg-surface-hover hover:text-ink',
+    outline: 'border border-stroke hover:bg-surface-hover',
   };
 
   const sizes = {
@@ -43,7 +43,7 @@
 </script>
 
 {#if href}
-  <a href={resolve(href)} class={classes} {...rest as HTMLAnchorAttributes}>
+  <a {href} class={classes} {...rest as HTMLAnchorAttributes}>
     {@render children?.()}
   </a>
 {:else}

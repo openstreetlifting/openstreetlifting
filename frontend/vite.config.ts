@@ -5,6 +5,10 @@ import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
   plugins: [tailwindcss(), sveltekit()],
+  optimizeDeps: {
+    exclude: ['layerchart'],
+    include: ['d3-scale', 'd3-time'],
+  },
   test: {
     expect: { requireAssertions: true },
     projects: [

@@ -157,17 +157,16 @@ impl CanonicalValidator {
             for athlete in &category.athletes {
                 let label = athlete.display_name();
 
-                match (athlete.bodyweight, athlete.ris) {
-                    (Some(_), Some(_)) => report.errors.push(format!(
-                        "Athlete '{label}' sets both bodyweight and ris. We compute the score \
-                         from the bodyweight, so give ris only when the source states a score \
-                         and no bodyweight"
-                    )),
-                    (None, None) => report.warnings.push(format!(
+                if let Err(reason) =
+                    athlete.validate_score_source(category.gender, &canonical.movements)
+                {
+                    report.errors.push(format!("Athlete '{label}': {reason}"));
+                }
+                if athlete.bodyweight.is_none() && athlete.ris.is_none() {
+                    report.warnings.push(format!(
                         "Athlete '{label}' has neither bodyweight nor ris, so no score can be \
                          recorded"
-                    )),
-                    _ => {}
+                    ));
                 }
 
                 if athlete.bodyweight.is_some_and(|w| w <= Decimal::ZERO) {
@@ -371,6 +370,8 @@ mod tests {
             gender: Some(Gender::M),
             country: CountryCode::parse("FR").unwrap(),
             bodyweight: Some(Decimal::from(80)),
+            bodyweight_source: None,
+            reported_ris_edition: None,
             ris: None,
             status: AthleteStatus::Competed,
             status_reason: None,

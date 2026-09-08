@@ -5,29 +5,24 @@
   const RIS_SOURCE_URL = 'https://warisradji.com/ris/';
 </script>
 
-<!-- The note sits on the column rather than on each row, because a whole meet
-     usually shares one provenance and repeating the explanation on every row
-     would say the same thing dozens of times. -->
-<span class="inline-flex items-center whitespace-nowrap">
+<span class="inline-flex items-center align-middle whitespace-nowrap">
   RIS
   <InfoTip label="What a RIS score is and where it came from">
-    <p class="mb-3 font-medium text-zinc-100">What is RIS?</p>
+    <p class="mb-3 font-medium text-ink">What is RIS?</p>
 
-    <!-- Quoted from the source rather than paraphrased, so it is marked as a
-         quotation and attributed. The wording is not ours to present as ours. -->
-    <blockquote cite={RIS_SOURCE_URL} class="mb-2 border-l-2 border-zinc-700 pl-3">
+    <blockquote cite={RIS_SOURCE_URL} class="mb-2 border-l-2 border-stroke-strong pl-3">
       The Relative Index for Streetlifting (RIS) provides the definitive method for comparing
       Streetlifting athletes across weight classes within the same gender. Developed specifically
       for All-4 competitions, this scoring system normalizes strength performance using
       comprehensive data from elite competitors. Updated annually to reflect evolving standards, RIS
       offers a fair benchmark for athletes, coaches, and competition organizers worldwide.
     </blockquote>
-    <p class="mb-3 text-zinc-400">
+    <p class="mb-3 text-secondary">
       <a
         href={RIS_SOURCE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        class="underline transition-colors hover:text-zinc-200">warisradji.com</a
+        class="underline transition-colors hover:text-ink">warisradji.com</a
       >
     </p>
 
@@ -38,6 +33,6 @@
       score is not a lesser result, only one we cannot restate on the same scale as the rest.
     </p>
 
-    <p class="text-zinc-400">RIS formula by Waris Radji and Mathieu Ardoin.</p>
+    <p class="text-secondary">RIS formula by Waris Radji and Mathieu Ardoin.</p>
   </InfoTip>
 </span>

@@ -786,7 +786,7 @@
               },
               {
                 "$ref": "#/components/schemas/RisSource",
-                "description": "Absent alongside a missing score."
+                "description": "Reported scores cannot be re-scored without bodyweight; computed scores\nuse the current formula. Absent alongside a missing score."
               }
             ]
           },
@@ -848,7 +848,7 @@
       },
       "AthleteLift": {
         "type": "object",
-        "description": "An athlete's best on one movement at one competition. A missing weight is a\nmovement they contested and never made, which is not the same as a movement\nthe competition never ran, and `event` is what tells the two apart.",
+        "description": "No best weight means a bombed movement; `event` distinguishes it from an uncontested one.",
         "required": [
           "movement_name",
           "attempts"
@@ -952,6 +952,16 @@
               }
             ]
           },
+          "strength_profile": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/StrengthProfile"
+              }
+            ]
+          },
           "total_competitions": {
             "type": [
               "integer",
@@ -1000,7 +1010,7 @@
                 "type": "null"
               },
               {
-                "$ref": "#/components/schemas/RisStanding"
+                "$ref": "#/components/schemas/MetricStanding"
               }
             ]
           },
@@ -1021,16 +1031,6 @@
               },
               {
                 "$ref": "#/components/schemas/MetricStanding"
-              }
-            ]
-          },
-          "weight_class": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/WeightClassStanding"
               }
             ]
           }
@@ -1507,13 +1507,15 @@
         "type": "object",
         "required": [
           "value",
-          "class",
           "global",
           "country"
         ],
         "properties": {
           "class": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "country": {
             "$ref": "#/components/schemas/CountryStanding"
@@ -1646,6 +1648,16 @@
                     },
                     {
                       "$ref": "#/components/schemas/AthleteStanding"
+                    }
+                  ]
+                },
+                "strength_profile": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "$ref": "#/components/schemas/StrengthProfile"
                     }
                   ]
                 },
@@ -2099,27 +2111,6 @@
           "reported"
         ]
       },
-      "RisStanding": {
-        "type": "object",
-        "required": [
-          "global",
-          "country"
-        ],
-        "properties": {
-          "country": {
-            "$ref": "#/components/schemas/CountryStanding"
-          },
-          "global": {
-            "$ref": "#/components/schemas/StandingPlace"
-          },
-          "score": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
-        }
-      },
       "StandingPlace": {
         "type": "object",
         "required": [
@@ -2137,28 +2128,52 @@
           }
         }
       },
-      "WeightClassStanding": {
+      "StrengthComparison": {
         "type": "object",
         "required": [
-          "class",
-          "global",
-          "country"
+          "movement_name",
+          "field"
         ],
         "properties": {
-          "class": {
-            "type": "string"
+          "field": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Other athletes with a valid best for this lift in the same sex and weight class."
           },
-          "country": {
-            "$ref": "#/components/schemas/CountryStanding"
+          "movement_name": {
+            "$ref": "#/components/schemas/Movement"
           },
-          "global": {
-            "$ref": "#/components/schemas/StandingPlace"
+          "percentile": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Percentage of other athletes below this result, with ties counting as half."
           },
-          "total": {
+          "value": {
             "type": [
               "string",
               "null"
             ]
+          }
+        }
+      },
+      "StrengthProfile": {
+        "type": "object",
+        "required": [
+          "category",
+          "lifts"
+        ],
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "lifts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StrengthComparison"
+            }
           }
         }
       }

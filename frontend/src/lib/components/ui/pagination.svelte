@@ -8,7 +8,6 @@
 
   let { page, totalPages, disabled = false, onNavigate }: Props = $props();
 
-  // Always show first, last, current +/-1, and ellipses for the gaps.
   const items = $derived.by(() => {
     const result: (number | 'ellipsis')[] = [];
     const add = (value: number | 'ellipsis') => result.push(value);
@@ -32,13 +31,13 @@
   });
 
   const buttonBase =
-    'inline-flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-xs font-medium sm:px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:pointer-events-none disabled:opacity-40';
+    'inline-flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-xs font-medium sm:px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:pointer-events-none';
 </script>
 
 <nav aria-label="Pagination" class="flex flex-wrap items-center justify-center gap-1">
   <button
     type="button"
-    class="{buttonBase} gap-1 border border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+    class="{buttonBase} gap-1 border border-stroke text-secondary hover:bg-surface-hover hover:text-ink disabled:opacity-40"
     disabled={disabled || page <= 1}
     onclick={() => onNavigate(page - 1)}
   >
@@ -50,15 +49,15 @@
 
   {#each items as item, index (index)}
     {#if item === 'ellipsis'}
-      <span class="inline-flex h-8 min-w-8 items-center justify-center text-xs text-zinc-500"
+      <span class="inline-flex h-8 min-w-8 items-center justify-center text-xs text-muted"
         >&hellip;</span
       >
     {:else}
       <button
         type="button"
-        class="{buttonBase} {item === page
-          ? 'bg-white text-zinc-900'
-          : 'text-zinc-300 hover:bg-zinc-800 hover:text-white'}"
+        class="{buttonBase} border {item === page
+          ? 'border-stroke-strong bg-surface-selected text-ink'
+          : 'border-transparent text-secondary hover:bg-surface hover:text-ink disabled:opacity-40'}"
         disabled={disabled || item === page}
         aria-current={item === page ? 'page' : undefined}
         onclick={() => onNavigate(item)}
@@ -70,7 +69,7 @@
 
   <button
     type="button"
-    class="{buttonBase} gap-1 border border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+    class="{buttonBase} gap-1 border border-stroke text-secondary hover:bg-surface-hover hover:text-ink disabled:opacity-40"
     disabled={disabled || page >= totalPages}
     onclick={() => onNavigate(page + 1)}
   >

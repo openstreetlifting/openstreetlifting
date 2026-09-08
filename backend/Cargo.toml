@@ -4,6 +4,7 @@ members = [
   "crates/osl_db",
   "crates/osl_domain",
   "crates/osl_importer",
+  "scripts/recover-bodyweight",
 ]
 resolver = "2"
 

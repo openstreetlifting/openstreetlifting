@@ -7,11 +7,11 @@ interface CompetitionStatusOption {
 }
 
 const STATUS_STYLE: Record<CompetitionStatus, Omit<CompetitionStatusOption, 'value'>> = {
-  draft: { label: 'Draft', text: 'text-zinc-600' },
-  upcoming: { label: 'Planned', text: 'text-zinc-300' },
-  live: { label: 'Live', text: 'text-emerald-400' },
-  completed: { label: 'Completed', text: 'text-zinc-400' },
-  cancelled: { label: 'Cancelled', text: 'text-zinc-600 line-through' },
+  draft: { label: 'Draft', text: 'text-muted' },
+  upcoming: { label: 'Planned', text: 'text-secondary' },
+  live: { label: 'Live', text: 'text-success' },
+  completed: { label: 'Completed', text: 'text-secondary' },
+  cancelled: { label: 'Cancelled', text: 'text-muted line-through' },
 };
 
 export const COMPETITION_STATUS_OPTIONS: readonly CompetitionStatusOption[] =
