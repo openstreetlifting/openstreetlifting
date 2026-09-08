@@ -48,7 +48,19 @@
 
 ### Bodyweight and Ris
 
-<!-- Why the two are mutually exclusive. -->
+`BodyweightKg` records a source-provided or recovered bodyweight. `Ris` records the
+original published score. Normally provide one or the other.
+
+Recovery may preserve both by adding `BodyweightSource=recovered` and
+`ReportedRisEdition` (the edition that produced the original score). These optional
+columns are omitted when unused. A bodyweight without a source marker is treated
+as `reported`; this describes its origin, not independent verification of a weigh-in.
+
+A recovered row must have a complete four-movement performance and reproduce its
+original RIS under the recorded source edition. Import stores the original score
+separately and computes the active ranking score using the current RIS edition.
+See [recovering missing bodyweights](./CONTRIBUTING_DATA.md#recovering-missing-bodyweights)
+for the authoring workflow.
 
 ### Attempt and best-lift columns
 
@@ -67,7 +79,17 @@
 
 ### RIS scoring
 
-<!-- Computed vs reported, and when neither is possible. -->
+Import computes RIS for eligible four-movement performances with a bodyweight,
+using the current edition (2026). Global rankings use this computed score, including
+when the bodyweight was recovered from a score published under an older edition.
+
+The original `Ris`, its `ReportedRisEdition`, and the bodyweight's origin are
+preserved separately in the database. Re-importing or running `recompute-ris`
+updates the ranking score without overwriting that evidence. Import must run first
+to load CSV changes; `recompute-ris` only reads the database.
+
+Rows without a bodyweight retain their reported score. Recalculation skips these
+rows, disqualified athletes, no-shows, and events without all four movements.
 
 ## Validation rules
 

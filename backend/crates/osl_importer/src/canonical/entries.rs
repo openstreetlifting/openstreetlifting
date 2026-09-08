@@ -14,13 +14,20 @@ pub const DISAMBIGUATION: &str = "Disambiguation";
 pub const COUNTRY: &str = "Country";
 pub const BODYWEIGHT: &str = "BodyweightKg";
 pub const RIS: &str = "Ris";
+pub const BODYWEIGHT_SOURCE: &str = "BodyweightSource";
+pub const REPORTED_RIS_EDITION: &str = "ReportedRisEdition";
 pub const STATUS: &str = "Status";
 pub const STATUS_REASON: &str = "StatusReason";
 pub const NATIVE_NAME: &str = "NativeName";
 
 /// Left out entirely when nothing fills them, rather than sat empty on every
 /// row. Reading tolerates either shape.
-pub const OPTIONAL_COLUMNS: [&str; 2] = [DIVISION, NATIVE_NAME];
+pub const OPTIONAL_COLUMNS: [&str; 4] = [
+    DIVISION,
+    NATIVE_NAME,
+    BODYWEIGHT_SOURCE,
+    REPORTED_RIS_EDITION,
+];
 
 pub const IDENTITY_COLUMNS: [&str; 10] = [
     SEX,
@@ -49,6 +56,8 @@ pub fn best_column(movement: Movement) -> String {
 pub struct Layout {
     pub divisioned: bool,
     pub native_names: bool,
+    pub bodyweight_sources: bool,
+    pub reported_ris_editions: bool,
 }
 
 pub fn headers(layout: Layout) -> Vec<String> {
@@ -62,6 +71,12 @@ pub fn headers(layout: Layout) -> Vec<String> {
 
     if layout.native_names {
         headers.push(NATIVE_NAME.to_string());
+    }
+    if layout.bodyweight_sources {
+        headers.push(BODYWEIGHT_SOURCE.to_string());
+    }
+    if layout.reported_ris_editions {
+        headers.push(REPORTED_RIS_EDITION.to_string());
     }
 
     for movement in Movement::ALL {
@@ -161,6 +176,8 @@ impl Columns {
         let expected = headers(Layout {
             divisioned: true,
             native_names: true,
+            bodyweight_sources: true,
+            reported_ris_editions: true,
         });
 
         let missing: Vec<&String> = expected
@@ -269,6 +286,7 @@ mod tests {
         let headers = headers(Layout {
             divisioned: true,
             native_names: false,
+            ..Layout::default()
         });
         assert_eq!(headers.len(), 11 + 4 * 4);
         assert_eq!(headers[0], DIVISION);
@@ -297,14 +315,17 @@ mod tests {
             Layout {
                 divisioned: true,
                 native_names: false,
+                ..Layout::default()
             },
             Layout {
                 divisioned: false,
                 native_names: true,
+                ..Layout::default()
             },
             Layout {
                 divisioned: true,
                 native_names: true,
+                ..Layout::default()
             },
         ] {
             assert!(Columns::read(&csv::StringRecord::from(headers(layout))).is_ok());
