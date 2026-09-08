@@ -1,11 +1,12 @@
-import type { Attempt, RisSource } from './competition';
+import type { AthleteStatus, Gender, Movement, RisSource } from './enums';
+import type { Attempt } from './competition';
 
 export interface AthleteSummary {
   athlete_id: string;
   first_name: string;
   last_name: string;
   slug: string;
-  gender: string;
+  gender: Gender;
   country: string;
   profile_picture_url: string | null;
   created_at: string;
@@ -42,7 +43,7 @@ export interface AthleteDetail {
   last_name: string;
   native_name?: string | null;
   slug: string;
-  gender: string;
+  gender: Gender;
   country: string;
   profile_picture_url: string | null;
   instagram_handle: string | null;
@@ -60,14 +61,14 @@ export interface StrengthProfile {
 }
 
 export interface StrengthComparison {
-  movement_name: string;
+  movement_name: Movement;
   value: string | null;
   percentile: number | null;
   field: number;
 }
 
 export interface AthleteLift {
-  movement_name: string;
+  movement_name: Movement;
   best_weight: string | null;
   attempts: Attempt[];
 }
@@ -83,13 +84,13 @@ export interface AthleteCompetitionSummary {
   total: string | null;
   ris_score: string | null;
   ris_source: RisSource | null;
-  status: 'competed' | 'disqualified' | 'no_show';
+  status: AthleteStatus;
   event?: string | null;
   lifts: AthleteLift[];
 }
 
 export interface PersonalRecord {
-  movement_name: string;
+  movement_name: Movement;
   max_weight: string;
   competition_name: string;
   competition_slug: string;

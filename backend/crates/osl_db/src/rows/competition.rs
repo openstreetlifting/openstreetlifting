@@ -1,3 +1,4 @@
+use osl_domain::CompetitionStatus;
 use sqlx::FromRow;
 use uuid::Uuid;
 
@@ -7,7 +8,7 @@ pub struct CompetitionRow {
     pub name: String,
     pub created_at: chrono::NaiveDateTime,
     pub slug: String,
-    pub status: String,
+    pub status: CompetitionStatus,
     pub federation_id: Uuid,
     pub city: Option<String>,
     pub region: Option<String>,

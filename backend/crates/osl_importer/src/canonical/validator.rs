@@ -205,7 +205,7 @@ impl CanonicalValidator {
                             Some(attempts) => !attempts.iter().any(|a| a.is_successful),
                             None => lift.best_lift.is_none(),
                         })
-                        .map(|lift| lift.movement.name())
+                        .map(|lift| lift.movement.as_str())
                         .collect();
 
                     if !bombed.is_empty() {

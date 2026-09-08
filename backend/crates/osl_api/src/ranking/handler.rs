@@ -24,7 +24,7 @@ pub async fn list_ranking_classes(
 ) -> WebResult<Json<Vec<String>>> {
     let repo = RankingRepository::new(state.db.pool());
     let classes = repo
-        .list_distinct_classes(filter.gender.as_deref(), filter.competition_id)
+        .list_distinct_classes(filter.gender, filter.competition_id)
         .await?;
 
     Ok(Json(classes))

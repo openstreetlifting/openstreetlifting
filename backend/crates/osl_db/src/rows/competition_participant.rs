@@ -1,3 +1,4 @@
+use osl_domain::AthleteStatus;
 use rust_decimal::Decimal;
 use sqlx::FromRow;
 use uuid::Uuid;
@@ -10,7 +11,7 @@ pub struct CompetitionParticipantRow {
     pub athlete_id: Uuid,
     pub bodyweight: Option<Decimal>,
     pub rank: Option<i32>,
-    pub status: String,
+    pub status: AthleteStatus,
     pub created_at: Option<chrono::NaiveDateTime>,
     pub status_reason: Option<String>,
     pub ris_score: Option<Decimal>,

@@ -2,6 +2,8 @@
   import type { PageData } from './$types';
   import type { AthleteCompetitionSummary } from '$lib/types/athlete';
   import type { Attempt } from '$lib/types/competition';
+  import type { Gender } from '$lib/types/enums';
+  import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '$lib/constants/athlete-status';
   import {
     Card,
     Breadcrumb,
@@ -40,12 +42,6 @@
     TEXT_CELL,
   } from '$lib/constants/table';
   import { FIELD, TEXT } from '$lib/constants/typography';
-
-  const STATUS_LABEL: Record<string, string> = { disqualified: 'DQ', no_show: 'NS' };
-  const STATUS_TITLE: Record<string, string> = {
-    disqualified: 'Disqualified',
-    no_show: 'Did not lift',
-  };
 
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
@@ -96,7 +92,7 @@
     )
   );
 
-  const GENDER_LABEL: Record<string, string> = { M: 'Men', F: 'Women' };
+  const GENDER_LABEL: Partial<Record<Gender, string>> = { M: 'Men', F: 'Women' };
   const genderLabel = $derived(GENDER_LABEL[athlete.gender] ?? athlete.gender);
   const latestCategory = $derived(
     athlete.strength_profile?.category ??
@@ -411,8 +407,8 @@
             <tr class="transition-colors {competition.status !== 'competed' ? 'opacity-50' : ''}">
               <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
                 {#if competition.status !== 'competed'}
-                  <span class={STATUS_FLAG} title={STATUS_TITLE[competition.status]}
-                    >{STATUS_LABEL[competition.status]}</span
+                  <span class={STATUS_FLAG} title={athleteStatusTitle(competition.status, null)}
+                    >{ATHLETE_STATUS_LABEL[competition.status]}</span
                   >
                 {:else}
                   {competition.rank || NO_VALUE}

@@ -3,7 +3,7 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
-use osl_domain::error::StorageError;
+use osl_db::error::StorageError;
 use serde_json::json;
 use std::fmt;
 
@@ -35,7 +35,6 @@ impl IntoResponse for WebError {
     fn into_response(self) -> Response {
         let status = match &self {
             Self::Storage(StorageError::NotFound) => StatusCode::NOT_FOUND,
-            Self::Storage(StorageError::ConstraintViolation(_)) => StatusCode::CONFLICT,
             Self::Storage(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::BadRequest(_) => StatusCode::BAD_REQUEST,
             Self::Unauthorized => StatusCode::UNAUTHORIZED,
@@ -45,7 +44,6 @@ impl IntoResponse for WebError {
 
         let body = match &self {
             Self::Storage(StorageError::NotFound) => json!({"error": "Resource not found"}),
-            Self::Storage(StorageError::ConstraintViolation(msg)) => json!({"error": msg}),
             Self::Storage(e) => {
                 tracing::error!("Storage error: {:?}", e);
                 json!({"error": "An internal error occurred"})

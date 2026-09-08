@@ -2,16 +2,18 @@ pub mod athlete_status;
 pub mod category;
 pub mod competition_status;
 pub mod country;
-pub mod error;
 pub mod event;
 pub mod gender;
 pub mod movement;
 pub mod name_rules;
 pub mod native_script;
 pub mod normalized_name;
+pub mod parse;
 pub mod ris;
 pub mod ris_source;
 pub mod slug;
+#[cfg(feature = "sqlx")]
+mod sql;
 pub mod weight_class;
 
 pub use athlete_status::AthleteStatus;
@@ -24,6 +26,7 @@ pub use movement::Movement;
 pub use name_rules::{check_name, check_native_name};
 pub use native_script::NativeScript;
 pub use normalized_name::{NormalizedAthleteName, display_name};
+pub use parse::ParseError;
 pub use ris::{Constants, Edition};
 pub use ris_source::RisSource;
 pub use slug::slugify;

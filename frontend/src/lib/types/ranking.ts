@@ -1,4 +1,5 @@
-import type { AthleteInfo, CompetitionInfo, RisSource } from './competition';
+import type { AthleteInfo, CompetitionInfo } from './competition';
+import type { RankedGender, RankingMetric, RisSource, SortDirection } from './enums';
 import type { Paginated } from './pagination';
 
 export interface RankingFederationInfo {
@@ -33,14 +34,14 @@ export type RankingsResponse = Paginated<RankingEntry>;
 export interface RankingFilters {
   page: number;
   page_size?: number;
-  gender?: string | null;
+  gender?: RankedGender | null;
   country?: string | null;
   /** Federation name, as listed by `/rankings/federations`. */
   federation?: string | null;
   /** Case insensitive substring of the athlete's full name. */
   q?: string | null;
-  movement?: string;
-  direction?: 'asc' | 'desc';
+  movement?: RankingMetric;
+  direction?: SortDirection;
   /** Which event to rank totals within. Ignored for single-movement boards. */
   event?: string | null;
   /** Weight class suffix, e.g. `-73kg`, matched regardless of gender. */

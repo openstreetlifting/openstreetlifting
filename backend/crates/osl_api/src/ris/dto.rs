@@ -30,7 +30,8 @@ pub struct GenderConstants {
 pub struct ComputeRisRequest {
     pub bodyweight: Decimal,
     pub total: Decimal,
-    pub gender: String,
+    #[serde(deserialize_with = "crate::shared::dto::from_str")]
+    pub gender: Gender,
     pub formula_year: Option<i32>,
 }
 
@@ -59,8 +60,8 @@ impl From<Edition> for RisFormulaResponse {
             is_current: edition == Edition::CURRENT,
             credit: edition.credit().to_string(),
             constants: RisConstants {
-                men: edition.constants(Gender::M).into(),
-                women: edition.constants(Gender::F).into(),
+                men: edition.constants(osl_domain::Gender::M).into(),
+                women: edition.constants(osl_domain::Gender::F).into(),
             },
         }
     }

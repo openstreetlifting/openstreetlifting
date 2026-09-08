@@ -307,7 +307,7 @@ fn read_lifts(
         if !movements.contains(&movement) {
             return Err(format!(
                 "{} is not in the event, so its columns must be empty",
-                movement.name()
+                movement.as_str()
             ));
         }
 

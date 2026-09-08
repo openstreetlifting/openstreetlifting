@@ -7,7 +7,7 @@ use osl_db::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
     federation::FederationRow,
 };
-use osl_domain::{Movement, WeightClass};
+use osl_domain::{AthleteStatus, CompetitionStatus, Gender, Movement, RisSource, WeightClass};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -20,7 +20,7 @@ pub struct CompetitionResponse {
     pub name: String,
     pub created_at: chrono::NaiveDateTime,
     pub slug: String,
-    pub status: String,
+    pub status: CompetitionStatus,
     pub federation_id: Uuid,
     pub city: Option<String>,
     pub region: Option<String>,
@@ -49,10 +49,11 @@ pub struct FederationInfo {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct MovementInfo {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub display_order: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub code: Option<String>,
+    /// Its letter in the event code, so a competition running all four reads
+    /// as `MPDS`.
+    pub code: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -66,7 +67,7 @@ pub struct CategoryInfo {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub division: Option<String>,
-    pub gender: String,
+    pub gender: Gender,
     pub weight_class: String,
 }
 
@@ -76,12 +77,9 @@ pub struct ParticipantDetail {
     pub bodyweight: Option<rust_decimal::Decimal>,
     pub rank: Option<i32>,
     pub ris_score: Option<rust_decimal::Decimal>,
-    /// `computed` when the score was worked out from a bodyweight and a
-    /// total, `reported` when the source stated it and it cannot be
-    /// restated on the current formula. Absent alongside a missing score.
-    /// TOOD introduce a enum varient for this ?
-    pub ris_source: Option<String>,
-    pub status: String,
+    /// Absent alongside a missing score.
+    pub ris_source: Option<RisSource>,
+    pub status: AthleteStatus,
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,
     pub total: Option<rust_decimal::Decimal>,
@@ -92,14 +90,14 @@ pub struct AthleteInfo {
     pub athlete_id: uuid::Uuid,
     pub first_name: String,
     pub last_name: String,
-    pub gender: String,
+    pub gender: Gender,
     pub country: String,
     pub slug: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct LiftDetail {
-    pub movement_name: String,
+    pub movement_name: Movement,
     /// Best successful attempt. Zero is a bodyweight-only lift, and absent
     /// means the movement was contested with no attempt succeeding.
     pub best_weight: Option<rust_decimal::Decimal>,
@@ -152,22 +150,22 @@ fn event_code(movements: &[MovementInfo]) -> Option<String> {
         return None;
     }
 
-    movements
-        .iter()
-        .map(|movement| movement.code.as_deref())
-        .collect::<Option<Vec<&str>>>()
-        .map(|codes| codes.concat())
+    Some(
+        movements
+            .iter()
+            .map(|movement| movement.code.as_str())
+            .collect(),
+    )
 }
 
 impl From<CompetitionMovementRow> for MovementInfo {
     fn from(row: CompetitionMovementRow) -> Self {
-        let code =
-            Movement::from_name(&row.movement_name).map(|movement| movement.code().to_string());
+        let movement = row.movement_name;
 
         Self {
-            movement_name: row.movement_name,
+            movement_name: movement,
             display_order: row.display_order,
-            code,
+            code: movement.code().to_string(),
         }
     }
 }
@@ -182,7 +180,7 @@ impl From<Contest> for CategoryInfo {
                 contest.weight_class_max,
             ),
             division: contest.division,
-            gender: contest.gender.as_str().to_string(),
+            gender: contest.gender,
             weight_class: WeightClass::label(contest.weight_class_min, contest.weight_class_max),
         }
     }

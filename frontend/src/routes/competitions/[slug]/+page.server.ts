@@ -3,6 +3,7 @@ import { defaultRankingSort } from '$lib/constants/ranking';
 import { formatAthleteName } from '$lib/utils/format';
 import type { PageServerLoad } from './$types';
 import { error, redirect } from '@sveltejs/kit';
+import { asRankedGender, asRankingMetric } from '$lib/types/enums';
 
 // A fresh object per call: one shared literal would be handed to every request
 // this server process serves.
@@ -32,9 +33,10 @@ export const load: PageServerLoad = async ({ params, url }) => {
   }
 
   const movement =
-    url.searchParams.get('movement') || defaultRankingSort(competition.movements.length);
+    asRankingMetric(url.searchParams.get('movement')) ??
+    defaultRankingSort(competition.movements.length);
   const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
-  const gender = url.searchParams.get('gender') || null;
+  const gender = asRankedGender(url.searchParams.get('gender'));
   const category = url.searchParams.get('category') || null;
   const country = url.searchParams.get('country') || null;
   const q = url.searchParams.get('q') || null;

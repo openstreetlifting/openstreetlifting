@@ -1,7 +1,10 @@
 use chrono::NaiveDate;
+use osl_domain::{Gender, RisSource};
 use rust_decimal::Decimal;
 use sqlx::FromRow;
 use uuid::Uuid;
+
+use crate::params::RankingMovement;
 
 #[derive(Debug, FromRow)]
 pub struct RankingRow {
@@ -11,7 +14,7 @@ pub struct RankingRow {
     pub last_name: String,
     pub slug: String,
     pub country: String,
-    pub gender: String,
+    pub gender: Gender,
     pub instagram_handle: Option<String>,
     pub bodyweight: Option<Decimal>,
     pub division: Option<String>,
@@ -33,12 +36,12 @@ pub struct RankingRow {
     pub total: Option<Decimal>,
     pub event_code: Option<String>,
     pub ris_score: Option<Decimal>,
-    pub ris_source: Option<String>,
+    pub ris_source: Option<RisSource>,
 }
 
 #[derive(Debug, FromRow)]
 pub struct AthleteMetricStandingRow {
-    pub metric: String,
+    pub metric: RankingMovement,
     pub value: Decimal,
     pub weight_class_min: Option<Decimal>,
     pub weight_class_max: Option<Decimal>,

@@ -1,3 +1,7 @@
+import type { AthleteStatus, CompetitionStatus, Gender, Movement, RisSource } from './enums';
+
+export type { AthleteStatus, CompetitionStatus, Gender, Movement, RisSource } from './enums';
+
 export interface Federation {
   federation_id: string;
   name: string;
@@ -5,13 +9,12 @@ export interface Federation {
   country: string | null;
 }
 
-export interface Movement {
-  movement_name: string;
+export interface CompetitionMovement {
+  movement_name: Movement;
   display_order: number | null;
-  code?: string | null;
+  /** Its letter in the event code, so all four read as `MPDS`. */
+  code: string;
 }
-
-export type CompetitionStatus = 'draft' | 'upcoming' | 'live' | 'completed' | 'cancelled';
 
 export interface Competition {
   competition_id: string;
@@ -25,7 +28,7 @@ export interface Competition {
   start_date: string | null;
   end_date: string | null;
   federation: Federation;
-  movements: Movement[];
+  movements: CompetitionMovement[];
   lifter_count?: number;
 }
 
@@ -50,7 +53,7 @@ export interface AthleteInfo {
   athlete_id: string;
   first_name: string;
   last_name: string;
-  gender: string;
+  gender: Gender;
   country: string;
   slug: string;
   bodyweight?: number | null;
@@ -64,17 +67,10 @@ export interface Attempt {
 }
 
 export interface Lift {
-  movement_name: string;
+  movement_name: Movement;
   best_weight: string | null;
   attempts: Attempt[];
 }
-
-/**
- * Where a score came from. `computed` was worked out from the athlete's
- * bodyweight and total. `reported` was stated by the source, which gave no
- * bodyweight, so it cannot be restated on the formula everything else uses.
- */
-export type RisSource = 'computed' | 'reported';
 
 export interface Participant {
   athlete: AthleteInfo;
@@ -83,7 +79,7 @@ export interface Participant {
   total: string | null;
   ris_score: string | null;
   ris_source: RisSource | null;
-  status: 'competed' | 'disqualified' | 'no_show';
+  status: AthleteStatus;
   status_reason: string | null;
   lifts: Lift[];
 }
@@ -91,7 +87,7 @@ export interface Participant {
 export interface Category {
   name: string;
   division?: string | null;
-  gender: string;
+  gender: Gender;
   weight_class: string;
   weight_class_min: string | null;
   weight_class_max: string | null;
@@ -113,7 +109,7 @@ export interface CompetitionDetail {
   start_date: string | null;
   end_date: string | null;
   federation: Federation;
-  movements: Movement[];
+  movements: CompetitionMovement[];
   event_code?: string | null;
   categories: CategoryDetail[];
 }

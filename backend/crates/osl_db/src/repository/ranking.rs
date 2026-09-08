@@ -1,4 +1,4 @@
-use osl_domain::WeightClass;
+use osl_domain::{Gender, WeightClass};
 use rust_decimal::Decimal;
 use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
@@ -81,9 +81,9 @@ impl<'a> RankingRepository<'a> {
         );
 
         if let Some(filter) = filter {
-            if let Some(ref gender) = filter.gender {
+            if let Some(gender) = filter.gender {
                 query.push(" AND a.gender = ");
-                query.push_bind(gender);
+                query.push_bind(gender.as_str());
             }
 
             if let Some(ref country) = filter.country {
@@ -248,20 +248,29 @@ impl<'a> RankingRepository<'a> {
                        metric.name AS metric,
                        metric.value
                 FROM movement_weights
-                CROSS JOIN LATERAL (
-                    VALUES
-                        ('ris', ris_score),
-                        ('total', CASE WHEN event_code =
+                CROSS JOIN LATERAL ( VALUES
             "#,
         );
-        query.push_bind(osl_domain::FULL_EVENT);
+
+        for (index, movement) in RankingMovement::ALL.into_iter().enumerate() {
+            if index > 0 {
+                query.push(", ");
+            }
+
+            query.push(format!("('{}', ", movement.as_str()));
+
+            // A total only means something within one event.
+            if movement == RankingMovement::Total {
+                query.push("CASE WHEN event_code = ");
+                query.push_bind(osl_domain::FULL_EVENT);
+                query.push(" THEN total END)");
+            } else {
+                query.push(format!("{})", movement.as_column()));
+            }
+        }
+
         query.push(
             r#"
-                            THEN total END),
-                        ('muscleup', muscleup),
-                        ('pullup', pullup),
-                        ('dips', dips),
-                        ('squat', squat)
                 ) AS metric(name, value)
                 WHERE metric.value IS NOT NULL
             ),
@@ -329,7 +338,7 @@ impl<'a> RankingRepository<'a> {
     /// contested at that competition.
     pub async fn list_distinct_classes(
         &self,
-        gender: Option<&str>,
+        gender: Option<Gender>,
         competition_id: Option<Uuid>,
     ) -> Result<Vec<String>> {
         let mut query = QueryBuilder::new(
@@ -345,7 +354,7 @@ impl<'a> RankingRepository<'a> {
 
         if let Some(gender) = gender {
             query.push(" WHERE wc.gender = ");
-            query.push_bind(gender);
+            query.push_bind(gender.as_str());
             has_where = true;
         }
 

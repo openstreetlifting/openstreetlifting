@@ -95,6 +95,6 @@ async fn bombed_and_uncontested_movements_do_not_create_records(pool: PgPool) {
         .await
         .unwrap();
     assert_eq!(detail.personal_records.len(), 1);
-    assert_eq!(detail.personal_records[0].movement_name, "Pull-up");
+    assert_eq!(detail.personal_records[0].movement_name, Movement::PullUp);
     assert_eq!(detail.personal_records[0].max_weight, common::decimal("60"));
 }

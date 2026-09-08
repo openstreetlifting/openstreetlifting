@@ -73,7 +73,13 @@ pub struct AppState {
             crate::shared::dto::PaginationMeta,
             crate::shared::dto::PaginationParams,
             crate::shared::query::Include,
-            crate::ranking::dto::Movement,
+            osl_domain::AthleteStatus,
+            osl_domain::CompetitionStatus,
+            osl_domain::Gender,
+            osl_domain::Movement,
+            crate::shared::filters::RankedGender,
+            osl_domain::RisSource,
+            crate::ranking::dto::RankingMetric,
             crate::shared::dto::Direction,
             crate::ranking::dto::GlobalRankingEntry,
             crate::ranking::dto::AthleteInfo,
@@ -107,6 +113,12 @@ impl MakeRequestId for MakeRequestUuid {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    // cargo run -p osl_api -- --dump-openapi > openapi.json
+    if std::env::args().any(|arg| arg == "--dump-openapi") {
+        println!("{}", ApiDoc::openapi().to_pretty_json()?);
+        return Ok(());
+    }
+
     dotenvy::dotenv().ok();
 
     let log_format = std::env::var("LOG_FORMAT").unwrap_or_default();
@@ -242,5 +254,22 @@ async fn shutdown_signal() {
     tokio::select! {
         _ = ctrl_c  => { tracing::info!("Received Ctrl-C, shutting down"); }
         _ = sigterm => { tracing::info!("Received SIGTERM, shutting down"); }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn the_committed_schema_is_current() {
+        let committed = include_str!("../../../openapi.json");
+
+        assert_eq!(
+            ApiDoc::openapi().to_pretty_json().unwrap(),
+            committed.trim_end(),
+            "backend/openapi.json is stale, run: \
+             cargo run -p osl_api -- --dump-openapi > openapi.json"
+        );
     }
 }

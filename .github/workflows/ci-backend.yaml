@@ -86,6 +86,15 @@ jobs:
       - name: Run clippy
         working-directory: backend
         run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - name: Check standalone domain has no infrastructure dependencies
+        working-directory: backend
+        run: |
+          cargo check -p osl_domain
+          cargo tree -p osl_domain --prefix none > /tmp/osl-domain-dependencies.txt
+          if grep -E '^(sqlx|utoipa)(-| )' /tmp/osl-domain-dependencies.txt; then
+            echo "osl_domain must build without SQLx or Utoipa by default"
+            exit 1
+          fi
 
   test:
     name: Tests

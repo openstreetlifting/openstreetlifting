@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT athlete_id, first_name, last_name, native_name, gender, created_at,\n                   country, profile_picture_url, slug,\n                   COALESCE(slug_history, '[]'::jsonb) as \"slug_history!: sqlx::types::Json<Vec<String>>\"\n            FROM athletes\n            WHERE athlete_id = $1\n            ",
+  "query": "\n            SELECT athlete_id, first_name, last_name, native_name, gender as \"gender: Gender\", created_at,\n                   country, profile_picture_url, slug,\n                   COALESCE(slug_history, '[]'::jsonb) as \"slug_history!: sqlx::types::Json<Vec<String>>\"\n            FROM athletes\n            ORDER BY last_name, first_name\n            LIMIT $1 OFFSET $2\n            ",
   "describe": {
     "columns": [
       {
@@ -49,7 +49,7 @@
       },
       {
         "ordinal": 4,
-        "name": "gender",
+        "name": "gender: Gender",
         "type_info": "Varchar",
         "origin": {
           "Table": {
@@ -111,7 +111,8 @@
     ],
     "parameters": {
       "Left": [
-        "Uuid"
+        "Int8",
+        "Int8"
       ]
     },
     "nullable": [
@@ -127,5 +128,5 @@
       null
     ]
   },
-  "hash": "a1f82769fd923c6ec392691dd058dbaa950774611fd4846b97bc0aa9c97e21f2"
+  "hash": "5be61bda5d89455de307bf789e318b7d41b8825de5503096eba3ce9a2cb556a5"
 }

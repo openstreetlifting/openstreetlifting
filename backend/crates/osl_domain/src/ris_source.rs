@@ -1,10 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-/// Where a RIS score came from.
-///
-/// A computed score can be reproduced and recomputed when a new formula
-/// version lands. A reported one cannot: the source stated a number without
-/// the bodyweight, so neither the formula nor the year behind it is known.
+/// Where a RIS score came from. `computed` was worked out from the athlete's
+/// bodyweight and total. `reported` was stated by the source, which gave no
+/// bodyweight, so it cannot be restated on the formula everything else uses.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum RisSource {

@@ -1,7 +1,7 @@
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_db::services::ris_computation::recompute_all_ris;
-use osl_domain::{Edition, Gender, WeightClassSlug};
+use osl_domain::{Edition, Gender, RisSource, WeightClassSlug};
 use osl_importer::canonical::models::{BodyweightSource, CanonicalFormat};
 use osl_importer::canonical::{
     store, transformer::CanonicalTransformer, validator::CanonicalValidator,
@@ -183,7 +183,7 @@ async fn recovered_2024_score_is_ranked_using_2026_and_source_survives_recompute
         .unwrap();
     assert_eq!(total, 1);
     assert_eq!(ranking[0].ris_score, Some(expected));
-    assert_eq!(ranking[0].ris_source.as_deref(), Some("computed"));
+    assert_eq!(ranking[0].ris_source, Some(RisSource::Computed));
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

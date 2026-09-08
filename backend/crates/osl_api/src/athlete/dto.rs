@@ -1,9 +1,11 @@
 use chrono::NaiveDateTime;
+use osl_db::params::RankingMovement;
 use osl_db::projections::athlete::{
     AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, AthleteStrengthRow, PersonalRecordRow,
 };
 use osl_db::projections::ranking::AthleteMetricStandingRow;
 use osl_db::rows::athlete::AthleteRow;
+use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -19,7 +21,7 @@ pub struct AthleteResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub native_name: Option<String>,
     pub slug: String,
-    pub gender: String,
+    pub gender: Gender,
     pub country: String,
     pub profile_picture_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -45,7 +47,7 @@ pub struct StrengthProfile {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct StrengthComparison {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub value: Option<rust_decimal::Decimal>,
     /// Percentage of other athletes below this result, with ties counting as half.
     pub percentile: Option<f64>,
@@ -116,7 +118,7 @@ pub struct AthleteStanding {
 
 impl MetricStanding {
     fn from_row(row: AthleteMetricStandingRow) -> Self {
-        let class = if row.metric == "ris" {
+        let class = if row.metric == RankingMovement::Ris {
             None
         } else {
             Some(
@@ -158,14 +160,13 @@ impl AthleteStanding {
         };
 
         for row in rows {
-            let slot = match row.metric.as_str() {
-                "ris" => &mut standing.ris,
-                "total" => &mut standing.total,
-                "muscleup" => &mut standing.muscleup,
-                "pullup" => &mut standing.pullup,
-                "dips" => &mut standing.dips,
-                "squat" => &mut standing.squat,
-                _ => unreachable!("metric_candidates only emits known ranking metrics"),
+            let slot = match row.metric {
+                RankingMovement::Ris => &mut standing.ris,
+                RankingMovement::Total => &mut standing.total,
+                RankingMovement::Muscleup => &mut standing.muscleup,
+                RankingMovement::Pullup => &mut standing.pullup,
+                RankingMovement::Dips => &mut standing.dips,
+                RankingMovement::Squat => &mut standing.squat,
             };
             *slot = Some(MetricStanding::from_row(row));
         }
@@ -177,7 +178,7 @@ impl AthleteStanding {
 /// No best weight means a bombed movement; `event` distinguishes it from an uncontested one.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteLift {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub best_weight: Option<rust_decimal::Decimal>,
     pub attempts: Vec<AttemptInfo>,
 }
@@ -194,9 +195,10 @@ pub struct AthleteCompetitionSummary {
     pub rank: Option<i32>,
     pub total: Option<rust_decimal::Decimal>,
     pub ris_score: Option<rust_decimal::Decimal>,
-    /// Reported scores cannot be re-scored without bodyweight; computed scores use the current formula.
-    pub ris_source: Option<String>,
-    pub status: String,
+    /// Reported scores cannot be re-scored without bodyweight; computed scores
+    /// use the current formula. Absent alongside a missing score.
+    pub ris_source: Option<RisSource>,
+    pub status: AthleteStatus,
     /// The movements the competition ran, as letters of MPDS.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub event: Option<String>,
@@ -205,7 +207,7 @@ pub struct AthleteCompetitionSummary {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct PersonalRecord {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub max_weight: rust_decimal::Decimal,
     pub competition_name: String,
     pub competition_slug: String,

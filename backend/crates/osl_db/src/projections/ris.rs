@@ -1,3 +1,4 @@
+use osl_domain::Gender;
 use rust_decimal::Decimal;
 use uuid::Uuid;
 
@@ -5,6 +6,6 @@ use uuid::Uuid;
 pub struct ScorableParticipant {
     pub participant_id: Uuid,
     pub bodyweight: Decimal,
-    pub gender: String,
+    pub gender: Gender,
     pub total: Decimal,
 }

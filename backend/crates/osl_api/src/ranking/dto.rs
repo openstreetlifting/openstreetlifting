@@ -1,8 +1,9 @@
 use crate::shared::dto::Direction;
+use crate::shared::filters::RankedGender;
 use chrono::NaiveDate;
 use osl_db::params::{RankingFilter, RankingMovement};
 use osl_db::projections::ranking::RankingRow;
-use osl_domain::WeightClass;
+use osl_domain::{Gender, RisSource, WeightClass};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
@@ -11,7 +12,8 @@ use uuid::Uuid;
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct ClassesFilter {
-    pub gender: Option<String>,
+    #[serde(default, deserialize_with = "crate::shared::dto::optional_from_str")]
+    pub gender: Option<Gender>,
     pub competition_id: Option<Uuid>,
 }
 
@@ -20,9 +22,11 @@ pub struct CountriesFilter {
     pub competition_id: Option<Uuid>,
 }
 
+/// What a ranking board is sorted by. Not only movements: a total and a RIS
+/// score are ranked from the same list.
 #[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "lowercase")]
-pub enum Movement {
+pub enum RankingMetric {
     Muscleup,
     Pullup,
     Dips,
@@ -32,15 +36,15 @@ pub enum Movement {
     Ris,
 }
 
-impl From<Movement> for RankingMovement {
-    fn from(movement: Movement) -> Self {
-        match movement {
-            Movement::Muscleup => Self::Muscleup,
-            Movement::Pullup => Self::Pullup,
-            Movement::Dips => Self::Dips,
-            Movement::Squat => Self::Squat,
-            Movement::Total => Self::Total,
-            Movement::Ris => Self::Ris,
+impl From<RankingMetric> for RankingMovement {
+    fn from(metric: RankingMetric) -> Self {
+        match metric {
+            RankingMetric::Muscleup => Self::Muscleup,
+            RankingMetric::Pullup => Self::Pullup,
+            RankingMetric::Dips => Self::Dips,
+            RankingMetric::Squat => Self::Squat,
+            RankingMetric::Total => Self::Total,
+            RankingMetric::Ris => Self::Ris,
         }
     }
 }
@@ -49,12 +53,12 @@ impl From<Movement> for RankingMovement {
 pub struct GlobalRankingFilter {
     #[serde(flatten)]
     pub pagination: crate::shared::dto::PaginationParams,
-    pub gender: Option<String>,
+    pub gender: Option<RankedGender>,
     pub country: Option<String>,
     pub federation: Option<String>,
     pub q: Option<String>,
     #[serde(default)]
-    pub movement: Movement,
+    pub movement: RankingMetric,
     #[serde(default)]
     pub direction: Direction,
     pub event: Option<String>,
@@ -68,13 +72,6 @@ impl GlobalRankingFilter {
     pub fn validate(&self) -> Result<(), String> {
         self.pagination.validate()?;
 
-        if let Some(ref gender) = self.gender
-            && gender != "M"
-            && gender != "F"
-        {
-            return Err("gender must be 'M' or 'F'".to_string());
-        }
-
         if let Some(ref category) = self.category {
             WeightClass::from_str(category)?;
         }
@@ -84,7 +81,7 @@ impl GlobalRankingFilter {
 
     pub fn to_db_filter(&self) -> RankingFilter {
         RankingFilter {
-            gender: self.gender.clone(),
+            gender: self.gender.map(Into::into),
             country: self.country.clone(),
             federation: self.federation.clone(),
             name: self
@@ -119,7 +116,7 @@ pub struct GlobalRankingEntry {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub division: Option<String>,
     pub ris: Option<f64>,
-    pub ris_source: Option<String>,
+    pub ris_source: Option<RisSource>,
     pub total: Option<f64>,
     pub muscleup: Option<f64>,
     pub pullup: Option<f64>,
@@ -137,7 +134,7 @@ pub struct AthleteInfo {
     pub last_name: String,
     pub slug: String,
     pub country: String,
-    pub gender: String,
+    pub gender: Gender,
     pub bodyweight: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instagram_handle: Option<String>,

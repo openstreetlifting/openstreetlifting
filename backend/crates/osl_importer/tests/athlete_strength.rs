@@ -145,18 +145,21 @@ async fn preserves_zero_and_keeps_missing_lifts_or_peers_unscored(pool: PgPool) 
     let rows = profile(&pool).await;
     let muscleup = rows
         .iter()
-        .find(|row| row.movement_name == "Muscle-up")
+        .find(|row| row.movement_name == Movement::MuscleUp)
         .unwrap();
     assert_eq!(muscleup.value, Some(common::decimal("0")));
     assert_eq!(muscleup.percentile, Some(0.0));
     assert_eq!(muscleup.field, 1);
     let pullup = rows
         .iter()
-        .find(|row| row.movement_name == "Pull-up")
+        .find(|row| row.movement_name == Movement::PullUp)
         .unwrap();
     assert_eq!(pullup.field, 0);
     assert_eq!(pullup.percentile, None);
-    let dips = rows.iter().find(|row| row.movement_name == "Dips").unwrap();
+    let dips = rows
+        .iter()
+        .find(|row| row.movement_name == Movement::Dips)
+        .unwrap();
     assert_eq!(dips.value, None);
     assert_eq!(dips.percentile, None);
     assert_eq!(dips.field, 1);

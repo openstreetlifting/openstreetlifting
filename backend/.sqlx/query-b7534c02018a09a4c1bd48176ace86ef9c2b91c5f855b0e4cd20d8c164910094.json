@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS \"division?\", wc.gender,\n                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max\n             FROM competition_participants cp\n             JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n             LEFT JOIN divisions d ON d.division_id = cp.division_id\n             WHERE cp.competition_id = $1",
+  "query": "SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS \"division?\", wc.gender as \"gender: Gender\",\n                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max\n             FROM competition_participants cp\n             JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n             LEFT JOIN divisions d ON d.division_id = cp.division_id\n             WHERE cp.competition_id = $1",
   "describe": {
     "columns": [
       {
@@ -38,7 +38,7 @@
       },
       {
         "ordinal": 3,
-        "name": "gender",
+        "name": "gender: Gender",
         "type_info": "Varchar",
         "origin": {
           "Table": {
@@ -84,5 +84,5 @@
       true
     ]
   },
-  "hash": "08776c5815a64d81eb568e43e45d96587def4d9e7af56ed1180a364658cac359"
+  "hash": "b7534c02018a09a4c1bd48176ace86ef9c2b91c5f855b0e4cd20d8c164910094"
 }

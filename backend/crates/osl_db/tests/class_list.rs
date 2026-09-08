@@ -1,4 +1,5 @@
 use osl_db::repository::ranking::RankingRepository;
+use osl_domain::Gender;
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -103,7 +104,7 @@ async fn classes_are_listed_lightest_first(pool: PgPool) {
     enter(&pool, &competition, "M", Some(73), Some(80), None).await;
 
     let classes = RankingRepository::new(&pool)
-        .list_distinct_classes(Some("M"), None)
+        .list_distinct_classes(Some(Gender::M), None)
         .await
         .unwrap();
 
@@ -120,14 +121,14 @@ async fn a_gender_only_sees_its_own_classes(pool: PgPool) {
 
     assert_eq!(
         repository
-            .list_distinct_classes(Some("F"), None)
+            .list_distinct_classes(Some(Gender::F), None)
             .await
             .unwrap(),
         vec!["-70kg"]
     );
     assert_eq!(
         repository
-            .list_distinct_classes(Some("M"), None)
+            .list_distinct_classes(Some(Gender::M), None)
             .await
             .unwrap(),
         vec!["-80kg"]

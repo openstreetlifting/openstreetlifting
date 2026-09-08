@@ -52,14 +52,14 @@ async fn standings(pool: &PgPool, last_name: &str) -> Vec<AthleteMetricStandingR
         .expect("standings should succeed")
 }
 
-fn metric<'a>(
-    standings: &'a [AthleteMetricStandingRow],
-    name: &str,
-) -> &'a AthleteMetricStandingRow {
+fn metric(
+    standings: &[AthleteMetricStandingRow],
+    wanted: RankingMovement,
+) -> &AthleteMetricStandingRow {
     standings
         .iter()
-        .find(|standing| standing.metric == name)
-        .unwrap_or_else(|| panic!("{name} should be ranked"))
+        .find(|standing| standing.metric == wanted)
+        .unwrap_or_else(|| panic!("{wanted:?} should be ranked"))
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
@@ -67,7 +67,7 @@ async fn a_place_comes_with_the_field_it_was_taken_in(pool: PgPool) {
     a_board(&pool).await;
 
     let standings = standings(&pool, "French").await;
-    let standing = metric(&standings, "ris");
+    let standing = metric(&standings, RankingMovement::Ris);
 
     assert_eq!(standing.global_place, 1);
     assert_eq!(standing.global_field, 3, "everyone with a RIS score");
@@ -77,7 +77,7 @@ async fn a_place_comes_with_the_field_it_was_taken_in(pool: PgPool) {
 async fn the_country_place_only_counts_that_country(pool: PgPool) {
     a_board(&pool).await;
     let standings = standings(&pool, "Italian").await;
-    let italian = metric(&standings, "ris");
+    let italian = metric(&standings, RankingMovement::Ris);
 
     assert_eq!(italian.global_place, 2, "second best RIS score overall");
     assert_eq!(italian.country, "IT");
@@ -95,12 +95,12 @@ async fn every_ranking_metric_has_a_global_and_country_place(pool: PgPool) {
 
     assert_eq!(standings.len(), 6, "RIS, total and all four movements");
 
-    let total = metric(&standings, "total");
+    let total = metric(&standings, RankingMovement::Total);
     assert_eq!(total.value.to_string(), "390");
     assert_eq!((total.global_place, total.global_field), (2, 3));
     assert_eq!((total.country_place, total.country_field), (1, 1));
 
-    let muscleup = metric(&standings, "muscleup");
+    let muscleup = metric(&standings, RankingMovement::Muscleup);
     assert_eq!(muscleup.value.to_string(), "50");
     assert_eq!((muscleup.global_place, muscleup.global_field), (2, 3));
     assert_eq!((muscleup.country_place, muscleup.country_field), (1, 1));
@@ -156,20 +156,20 @@ async fn two_classes(pool: &PgPool) {
 async fn metric_places_only_compare_the_athletes_weight_class(pool: PgPool) {
     two_classes(&pool).await;
     let heavier = standings(&pool, "French").await;
-    let heavier_total = metric(&heavier, "total");
+    let heavier_total = metric(&heavier, RankingMovement::Total);
     assert_eq!(
         (heavier_total.global_place, heavier_total.global_field),
         (1, 3),
         "the lighter class is excluded"
     );
-    let heavier_ris = metric(&heavier, "ris");
+    let heavier_ris = metric(&heavier, RankingMovement::Ris);
     assert_eq!(
         heavier_ris.global_field, 4,
         "RIS still compares every weight class"
     );
 
     let lighter = standings(&pool, "Class").await;
-    let lighter_total = metric(&lighter, "total");
+    let lighter_total = metric(&lighter, RankingMovement::Total);
     assert_eq!(
         (lighter_total.global_place, lighter_total.global_field),
         (1, 1),
@@ -207,14 +207,14 @@ async fn metric_places_do_not_compare_men_and_women(pool: PgPool) {
 
     for last_name in ["Man", "Woman"] {
         let standings = standings(&pool, last_name).await;
-        let total = metric(&standings, "total");
+        let total = metric(&standings, RankingMovement::Total);
         assert_eq!(
             (total.global_place, total.global_field),
             (1, 1),
             "{last_name} only ranks against the same sex"
         );
 
-        let ris = metric(&standings, "ris");
+        let ris = metric(&standings, RankingMovement::Ris);
         assert_eq!(
             (ris.global_field, ris.country_field),
             (2, 2),
@@ -227,7 +227,7 @@ async fn metric_places_do_not_compare_men_and_women(pool: PgPool) {
 async fn a_class_place_only_counts_that_class(pool: PgPool) {
     two_classes(&pool).await;
     let heavier = standings(&pool, "French").await;
-    let heavier = metric(&heavier, "total");
+    let heavier = metric(&heavier, RankingMovement::Total);
 
     assert_eq!(
         (heavier.global_place, heavier.global_field),
@@ -236,7 +236,7 @@ async fn a_class_place_only_counts_that_class(pool: PgPool) {
     );
 
     let lighter = standings(&pool, "Class").await;
-    let lighter = metric(&lighter, "total");
+    let lighter = metric(&lighter, RankingMovement::Total);
 
     assert_eq!(
         (lighter.global_place, lighter.global_field),
@@ -250,7 +250,7 @@ async fn the_class_country_place_narrows_both_ways(pool: PgPool) {
     two_classes(&pool).await;
 
     let italian = standings(&pool, "Italian").await;
-    let italian = metric(&italian, "total");
+    let italian = metric(&italian, RankingMovement::Total);
 
     assert_eq!(italian.global_place, 2, "second best total in the class");
     assert_eq!(
@@ -290,7 +290,7 @@ async fn a_class_counts_everyone_who_has_lifted_in_it(pool: PgPool) {
     .await;
 
     let standings = standings(&pool, "Up").await;
-    let standing = metric(&standings, "total");
+    let standing = metric(&standings, RankingMovement::Total);
 
     assert_eq!(
         standing.global_field, 4,
@@ -324,17 +324,10 @@ async fn tied_card_places_match_both_linked_leaderboards(pool: PgPool) {
     )
     .await;
     let repo = RankingRepository::new(&pool);
-    for (name, movement) in [
-        ("ris", RankingMovement::Ris),
-        ("total", RankingMovement::Total),
-        ("muscleup", RankingMovement::Muscleup),
-        ("pullup", RankingMovement::Pullup),
-        ("dips", RankingMovement::Dips),
-        ("squat", RankingMovement::Squat),
-    ] {
+    for movement in RankingMovement::ALL {
         for country in [None, Some("FR"), Some("IT")] {
             let filter = RankingFilter {
-                gender: (movement != RankingMovement::Ris).then(|| "M".to_string()),
+                gender: (movement != RankingMovement::Ris).then_some(osl_domain::Gender::M),
                 category: (movement != RankingMovement::Ris)
                     .then(|| osl_domain::WeightClass::UpTo(common::decimal("80"))),
                 country: country.map(str::to_string),
@@ -358,7 +351,7 @@ async fn tied_card_places_match_both_linked_leaderboards(pool: PgPool) {
                     .get_athlete_metric_standings(row.athlete_id)
                     .await
                     .unwrap();
-                let standing = metric(&standings, name);
+                let standing = metric(&standings, movement);
                 let actual = if country.is_some() {
                     (standing.country_place, standing.country_field)
                 } else {
@@ -367,7 +360,7 @@ async fn tied_card_places_match_both_linked_leaderboards(pool: PgPool) {
                 assert_eq!(
                     actual,
                     (row.rank, field),
-                    "{name} card must match its board"
+                    "{movement:?} card must match its board"
                 );
             }
         }
@@ -394,12 +387,15 @@ async fn equally_good_results_choose_the_latest_weight_class(pool: PgPool) {
     import(&pool, later).await;
 
     let standings = standings(&pool, "Class").await;
-    for name in ["total", "muscleup", "pullup", "dips", "squat"] {
-        let standing = metric(&standings, name);
+    for movement in RankingMovement::ALL
+        .into_iter()
+        .filter(|m| *m != RankingMovement::Ris)
+    {
+        let standing = metric(&standings, movement);
         assert_eq!(
             standing.weight_class_max,
             Some(common::decimal("80")),
-            "{name}"
+            "{movement:?}"
         );
         assert_eq!((standing.global_place, standing.global_field), (1, 1));
     }

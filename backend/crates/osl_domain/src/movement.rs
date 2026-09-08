@@ -1,13 +1,18 @@
 use serde::{Deserialize, Serialize};
 
+/// One of the four lifts.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Movement {
+    #[serde(rename = "Muscle-up")]
     MuscleUp,
+    #[serde(rename = "Pull-up")]
     PullUp,
     Dips,
     Squat,
 }
 
+// The spellings are the `movements.name` primary key referenced by `movement_name` columns.
 impl Movement {
     pub const ALL: [Movement; 4] = [
         Movement::MuscleUp,
@@ -25,7 +30,7 @@ impl Movement {
         }
     }
 
-    pub fn name(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             Self::MuscleUp => "Muscle-up",
             Self::PullUp => "Pull-up",
@@ -57,13 +62,22 @@ impl Movement {
     }
 
     pub fn from_name(name: &str) -> Option<Self> {
-        Self::ALL.into_iter().find(|m| m.name() == name)
+        Self::ALL.into_iter().find(|m| m.as_str() == name)
+    }
+}
+
+impl std::str::FromStr for Movement {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::from_name(s)
+            .ok_or_else(|| format!("unknown movement: {s}, expected one of MPDS by name"))
     }
 }
 
 impl std::fmt::Display for Movement {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.name())
+        write!(f, "{}", self.as_str())
     }
 }
 
@@ -75,7 +89,7 @@ mod tests {
     fn codes_and_names_round_trip() {
         for movement in Movement::ALL {
             assert_eq!(Movement::from_code(movement.code()), Some(movement));
-            assert_eq!(Movement::from_name(movement.name()), Some(movement));
+            assert_eq!(Movement::from_name(movement.as_str()), Some(movement));
         }
     }
 
@@ -83,6 +97,16 @@ mod tests {
     fn all_is_in_display_order() {
         let orders: Vec<_> = Movement::ALL.iter().map(|m| m.display_order()).collect();
         assert_eq!(orders, vec![1, 2, 3, 4]);
+    }
+
+    #[test]
+    fn serde_spells_them_the_way_the_database_does() {
+        for movement in Movement::ALL {
+            assert_eq!(
+                serde_json::to_string(&movement).unwrap(),
+                format!("\"{}\"", movement.as_str())
+            );
+        }
     }
 
     #[test]

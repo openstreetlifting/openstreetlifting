@@ -1,4 +1,4 @@
-use osl_domain::Gender;
+use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
@@ -58,8 +58,8 @@ pub struct ParticipantDetail {
     /// Placing within the contest, computed from the lifts.
     pub rank: Option<i32>,
     pub ris_score: Option<Decimal>,
-    pub ris_source: Option<String>,
-    pub status: String,
+    pub ris_source: Option<RisSource>,
+    pub status: AthleteStatus,
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,
     pub total: Option<Decimal>,
@@ -67,7 +67,7 @@ pub struct ParticipantDetail {
 
 #[derive(Debug)]
 pub struct LiftDetail {
-    pub movement_name: String,
+    pub movement_name: Movement,
     /// Best successful attempt. 0 is a bodyweight-only lift, and None means
     /// the movement was contested with no attempt succeeding.
     pub best_weight: Option<Decimal>,

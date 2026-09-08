@@ -1,4 +1,4 @@
-use osl_domain::Gender;
+use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
@@ -10,7 +10,7 @@ use crate::rows::athlete::AthleteRow;
 /// No best weight means the athlete contested the movement but made no successful lift.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AthleteLiftRow {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub best_weight: Option<Decimal>,
     pub attempts: Vec<AttemptSummary>,
 }
@@ -28,15 +28,15 @@ pub struct AthleteCompetitionRow {
     pub rank: Option<i32>,
     pub total: Option<Decimal>,
     pub ris_score: Option<Decimal>,
-    pub ris_source: Option<String>,
-    pub status: String,
+    pub ris_source: Option<RisSource>,
+    pub status: AthleteStatus,
     pub event_code: Option<String>,
     pub lifts: Vec<AthleteLiftRow>,
 }
 
 #[derive(Debug)]
 pub struct PersonalRecordRow {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub max_weight: Decimal,
     pub competition_name: String,
     pub competition_slug: String,
@@ -57,7 +57,7 @@ pub struct AthleteStrengthRow {
     pub category_gender: Gender,
     pub weight_class_min: Option<Decimal>,
     pub weight_class_max: Option<Decimal>,
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub value: Option<Decimal>,
     pub percentile: Option<f64>,
     pub field: i64,

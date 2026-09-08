@@ -9,12 +9,11 @@ use crate::projections::competition::{
     AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem,
     CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail,
 };
-use crate::repository::parse_gender;
 use crate::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
     federation::FederationRow, lift::LiftRow,
 };
-use osl_domain::{AthleteStatus, Gender};
+use osl_domain::{AthleteStatus, CompetitionStatus, Gender, Movement, RisSource};
 
 pub struct CompetitionRepository<'a> {
     pool: &'a PgPool,
@@ -76,9 +75,9 @@ impl<'a> CompetitionRepository<'a> {
     fn push_filters(query: &mut QueryBuilder<Postgres>, filter: &CompetitionFilter) {
         query.push(" WHERE TRUE ");
 
-        if let Some(status) = &filter.status {
+        if let Some(status) = filter.status {
             query.push(" AND c.status = ");
-            query.push_bind(status.clone());
+            query.push_bind(status.as_str());
         }
 
         if let Some(federation) = &filter.federation {
@@ -133,10 +132,11 @@ impl<'a> CompetitionRepository<'a> {
 
             let movements = sqlx::query_as!(
                 CompetitionMovementRow,
-                "SELECT competition_id, movement_name, display_order
+                r#"SELECT competition_id, movement_name as "movement_name: Movement",
+                        display_order
                  FROM competition_movements
                  WHERE competition_id = $1
-                 ORDER BY display_order",
+                 ORDER BY display_order"#,
                 competition.competition_id
             )
             .fetch_all(self.pool)
@@ -206,7 +206,8 @@ impl<'a> CompetitionRepository<'a> {
         let competition = sqlx::query_as!(
             CompetitionRow,
             r#"
-            SELECT competition_id, name, created_at, slug, status, federation_id,
+            SELECT competition_id, name, created_at, slug,
+                   status as "status: CompetitionStatus", federation_id,
                    city, region, country, start_date, end_date
             FROM competitions
             WHERE competition_id = $1
@@ -224,7 +225,8 @@ impl<'a> CompetitionRepository<'a> {
         let competition = sqlx::query_as!(
             CompetitionRow,
             r#"
-            SELECT competition_id, name, created_at, slug, status, federation_id,
+            SELECT competition_id, name, created_at, slug,
+                   status as "status: CompetitionStatus", federation_id,
                    city, region, country, start_date, end_date
             FROM competitions
             WHERE slug = $1
@@ -306,17 +308,18 @@ impl<'a> CompetitionRepository<'a> {
 
         let movements = sqlx::query_as!(
             CompetitionMovementRow,
-            "SELECT competition_id, movement_name, display_order
+            r#"SELECT competition_id, movement_name as "movement_name: Movement",
+                    display_order
              FROM competition_movements
              WHERE competition_id = $1
-             ORDER BY display_order",
+             ORDER BY display_order"#,
             competition.competition_id
         )
         .fetch_all(self.pool)
         .await?;
 
         let contests = sqlx::query!(
-            r#"SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS "division?", wc.gender,
+            r#"SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS "division?", wc.gender as "gender: Gender",
                     wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
              FROM competition_participants cp
              JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
@@ -327,30 +330,29 @@ impl<'a> CompetitionRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        let categories = contests
+        let categories: Vec<Contest> = contests
             .into_iter()
-            .map(|row| {
-                Ok(Contest {
-                    weight_class_id: row.weight_class_id,
-                    division_id: row.division_id,
-                    division: row.division,
-                    gender: parse_gender(&row.gender)?,
-                    weight_class_min: row.weight_class_min,
-                    weight_class_max: row.weight_class_max,
-                })
+            .map(|row| Contest {
+                weight_class_id: row.weight_class_id,
+                division_id: row.division_id,
+                division: row.division,
+                gender: row.gender,
+                weight_class_min: row.weight_class_min,
+                weight_class_max: row.weight_class_max,
             })
-            .collect::<Result<Vec<_>>>()?;
+            .collect();
 
         let mut category_details = Vec::with_capacity(categories.len());
 
         for category in categories {
             let participants = sqlx::query!(
-                "SELECT participant_id, competition_id, athlete_id, bodyweight, status,
-                        created_at, status_reason, ris_score, ris_source
+                r#"SELECT participant_id, competition_id, athlete_id, bodyweight,
+                        status as "status: AthleteStatus", created_at, status_reason,
+                        ris_score, ris_source as "ris_source: RisSource"
                  FROM competition_participants
                  WHERE competition_id = $1
                    AND weight_class_id = $2
-                   AND division_id IS NOT DISTINCT FROM $3",
+                   AND division_id IS NOT DISTINCT FROM $3"#,
                 competition.competition_id,
                 category.weight_class_id,
                 category.division_id
@@ -363,7 +365,7 @@ impl<'a> CompetitionRepository<'a> {
             for participant in participants {
                 let athlete = sqlx::query_as!(
                     AthleteRow,
-                    r#"SELECT athlete_id, first_name, last_name, native_name, gender, created_at,
+                    r#"SELECT athlete_id, first_name, last_name, native_name, gender as "gender: Gender", created_at,
                             country, profile_picture_url, slug,
                             COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
                      FROM athletes
@@ -375,9 +377,11 @@ impl<'a> CompetitionRepository<'a> {
 
                 let lifts = sqlx::query_as!(
                     LiftRow,
-                    "SELECT lift_id, participant_id, movement_name, max_weight, updated_at
+                    r#"SELECT lift_id, participant_id,
+                            movement_name as "movement_name: Movement",
+                            max_weight, updated_at
                      FROM lifts
-                     WHERE participant_id = $1",
+                     WHERE participant_id = $1"#,
                     participant.participant_id
                 )
                 .fetch_all(self.pool)
@@ -400,7 +404,7 @@ impl<'a> CompetitionRepository<'a> {
                     total += lift.max_weight.unwrap_or(Decimal::ZERO);
 
                     lift_details.push(LiftDetail {
-                        movement_name: lift.movement_name.clone(),
+                        movement_name: lift.movement_name,
                         best_weight: lift.max_weight,
                         attempts: attempts
                             .into_iter()
@@ -417,16 +421,16 @@ impl<'a> CompetitionRepository<'a> {
 
                 // A disqualified lifter's result does not stand, so the lifts that
                 // did count towards nothing must not read as a total.
-                let result_stands = participant.status == AthleteStatus::Competed.as_str();
+                let result_stands = participant.status.competed();
 
                 participant_details.push(ParticipantDetail {
                     athlete,
                     bodyweight: participant.bodyweight,
                     rank,
                     ris_score: participant.ris_score,
-                    ris_source: participant.ris_source.clone(),
-                    status: participant.status.clone(),
-                    status_reason: participant.status_reason.clone(),
+                    ris_source: participant.ris_source,
+                    status: participant.status,
+                    status_reason: participant.status_reason,
                     total: (result_stands && !lift_details.is_empty()).then_some(total),
                     lifts: lift_details,
                 });

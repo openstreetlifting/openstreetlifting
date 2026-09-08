@@ -2,6 +2,7 @@ import { expect, it } from 'vitest';
 import { render } from 'svelte/server';
 import AthleteProgress from './athlete-progress.svelte';
 import AthleteStrength from './athlete-strength.svelte';
+import { MOVEMENTS } from '$lib/types/enums';
 
 it('renders performance geometry in the initial HTML without client effects', () => {
   const { body } = render(AthleteProgress, {
@@ -35,7 +36,7 @@ it('renders the percentile polygon in the initial HTML with finite coordinates',
     props: {
       profile: {
         category: 'Men -80kg',
-        lifts: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'].map((movement_name) => ({
+        lifts: MOVEMENTS.map((movement_name) => ({
           movement_name,
           value: '50',
           percentile: 75,

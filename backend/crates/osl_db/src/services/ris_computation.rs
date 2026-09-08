@@ -1,11 +1,10 @@
-use osl_domain::Edition;
 use osl_domain::ris::compute;
+use osl_domain::{Edition, Gender};
 use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::error::Result;
 use crate::projections::ris::ScorableParticipant;
-use crate::repository::parse_gender;
 
 /// The formula divides by a benchmark fitted to four-lift totals, so it means
 /// nothing on a shorter event. A reported score came from a source that never
@@ -24,7 +23,7 @@ where
         SELECT
             cp.participant_id,
             cp.bodyweight as "bodyweight!",
-            a.gender,
+            a.gender as "gender: Gender",
             COALESCE(SUM(l.max_weight), 0) as "total!"
         FROM competition_participants cp
         INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
@@ -54,8 +53,12 @@ pub async fn score_participant<'e, E>(
 where
     E: sqlx::PgExecutor<'e>,
 {
-    let gender = parse_gender(&participant.gender)?;
-    let ris_score = compute(participant.bodyweight, participant.total, gender, edition);
+    let ris_score = compute(
+        participant.bodyweight,
+        participant.total,
+        participant.gender,
+        edition,
+    );
 
     sqlx::query!(
         r#"

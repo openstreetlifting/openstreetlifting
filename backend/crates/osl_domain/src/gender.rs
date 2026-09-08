@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+/// Which category an athlete competes in.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Gender {
     #[serde(rename = "M")]

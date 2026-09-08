@@ -3,8 +3,7 @@ use axum::{
     Json,
     extract::{Json as JsonBody, Path},
 };
-use osl_domain::{Edition, Gender};
-use std::str::FromStr;
+use osl_domain::Edition;
 
 use super::dto::{ComputeRisRequest, ComputeRisResponse, RisFormulaResponse};
 
@@ -61,14 +60,13 @@ pub async fn get_formula_by_year(Path(year): Path<i32>) -> WebResult<Json<RisFor
 pub async fn calculate_ris(
     JsonBody(payload): JsonBody<ComputeRisRequest>,
 ) -> WebResult<Json<ComputeRisResponse>> {
-    let gender = Gender::from_str(&payload.gender).map_err(WebError::BadRequest)?;
-
     let edition = match payload.formula_year {
         Some(year) => Edition::from_year(year).ok_or(WebError::NotFound)?,
         None => Edition::CURRENT,
     };
 
-    let ris_score = osl_domain::ris::compute(payload.bodyweight, payload.total, gender, edition);
+    let ris_score =
+        osl_domain::ris::compute(payload.bodyweight, payload.total, payload.gender, edition);
 
     Ok(Json(ComputeRisResponse {
         ris_score,

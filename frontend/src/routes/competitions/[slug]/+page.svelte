@@ -51,6 +51,8 @@
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import type { RankingEntry } from '$lib/types/ranking';
   import type { Attempt, Participant, CategoryDetail } from '$lib/types/competition';
+  import type { AthleteStatus } from '$lib/types/enums';
+  import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '$lib/constants/athlete-status';
   import { FIELD, TEXT } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
   import { breadcrumbLd, competitionLd, listingSeo } from '$lib/seo';
@@ -189,7 +191,7 @@
   // it can never return these. The competition's own results list them, and a
   // competition page is a record of who turned up, not a leaderboard.
   // Disqualified before no_show: one turned up and lifted, the other never did.
-  const NOT_PLACED_ORDER = ['disqualified', 'no_show'];
+  const NOT_PLACED_ORDER: AthleteStatus[] = ['disqualified', 'no_show'];
 
   const notPlaced = $derived(
     competition.categories
@@ -223,19 +225,6 @@
   const fieldSize = $derived(pagination.total_items + notPlaced.length);
 
   const onLastPage = $derived(pagination.page >= pagination.total_pages);
-
-  // The badge is two letters, so the title carries the meaning. A reason from
-  // the source is better than either, when there is one.
-  const STATUS_LABEL: Record<string, string> = { disqualified: 'DQ', no_show: 'NS' };
-  const STATUS_TITLE: Record<string, string> = {
-    disqualified: 'Disqualified',
-    no_show: 'Did not lift',
-  };
-
-  function statusTitle(status: string, reason: string | null): string {
-    const name = STATUS_TITLE[status] ?? status;
-    return reason ? `${name}: ${reason.toLowerCase()}` : name;
-  }
 
   const seo = $derived(listingSeo(page.url));
 
@@ -504,9 +493,9 @@
                 {#if participant && participant.status !== 'competed'}
                   <span
                     class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                    title={statusTitle(participant.status, participant.status_reason)}
+                    title={athleteStatusTitle(participant.status, participant.status_reason)}
                   >
-                    {STATUS_LABEL[participant.status]}
+                    {ATHLETE_STATUS_LABEL[participant.status]}
                   </span>
                 {/if}
               </span>
@@ -585,9 +574,9 @@
                   </a>
                   <span
                     class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                    title={statusTitle(participant.status, participant.status_reason)}
+                    title={athleteStatusTitle(participant.status, participant.status_reason)}
                   >
-                    {STATUS_LABEL[participant.status]}
+                    {ATHLETE_STATUS_LABEL[participant.status]}
                   </span>
                 </span>
               </td>
