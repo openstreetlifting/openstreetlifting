@@ -1,9 +1,9 @@
 use crate::shared::dto::Direction;
-use crate::shared::enums::{Gender, RankedGender, RisSource};
+use crate::shared::filters::RankedGender;
 use chrono::NaiveDate;
 use osl_db::params::{RankingFilter, RankingMovement};
 use osl_db::projections::ranking::RankingRow;
-use osl_domain::WeightClass;
+use osl_domain::{Gender, RisSource, WeightClass};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
@@ -12,6 +12,7 @@ use uuid::Uuid;
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct ClassesFilter {
+    #[serde(default, deserialize_with = "crate::shared::dto::optional_from_str")]
     pub gender: Option<Gender>,
     pub competition_id: Option<Uuid>,
 }
@@ -163,14 +164,14 @@ impl From<RankingRow> for GlobalRankingEntry {
                 last_name: row.last_name,
                 slug: row.slug,
                 country: row.country,
-                gender: row.gender.into(),
+                gender: row.gender,
                 bodyweight: row.bodyweight.map(decimal_to_f64),
                 instagram_handle: row.instagram_handle,
             },
             category: WeightClass::label(row.weight_class_min, row.weight_class_max),
             division: row.division,
             ris: row.ris_score.map(decimal_to_f64),
-            ris_source: row.ris_source.map(Into::into),
+            ris_source: row.ris_source,
             total: row.total.map(decimal_to_f64),
             muscleup: row.muscleup.map(decimal_to_f64),
             pullup: row.pullup.map(decimal_to_f64),

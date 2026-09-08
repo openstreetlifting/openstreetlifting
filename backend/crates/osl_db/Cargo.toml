@@ -5,9 +5,10 @@ version.workspace = true
 publish.workspace = true
 
 [dependencies]
-osl_domain = { path = "../osl_domain" }
+osl_domain = { path = "../osl_domain", features = ["sqlx"] }
 chrono.workspace = true
 rust_decimal.workspace = true
 serde.workspace = true
 sqlx.workspace = true
+thiserror.workspace = true
 uuid.workspace = true

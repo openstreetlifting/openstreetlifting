@@ -6,7 +6,7 @@ publish.workspace = true
 
 [dependencies]
 osl_db = { path = "../osl_db" }
-osl_domain = { path = "../osl_domain" }
+osl_domain = { path = "../osl_domain", features = ["utoipa"] }
 anyhow.workspace = true
 chrono.workspace = true
 dotenvy.workspace = true

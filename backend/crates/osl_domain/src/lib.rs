@@ -2,7 +2,6 @@ pub mod athlete_status;
 pub mod category;
 pub mod competition_status;
 pub mod country;
-pub mod error;
 pub mod event;
 pub mod gender;
 pub mod movement;
@@ -13,6 +12,7 @@ pub mod parse;
 pub mod ris;
 pub mod ris_source;
 pub mod slug;
+#[cfg(feature = "sqlx")]
 mod sql;
 pub mod weight_class;
 

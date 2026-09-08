@@ -1,9 +1,8 @@
-//! Postgres encoding for the enums stored as text.
+//! Postgres decoding for the enums stored as text.
 
-/// Reads and writes an enum as the text in its column.
+/// Reads an enum from the text in its column.
 ///
-/// Takes any type with an inherent `as_str(&self) -> &'static str` and a
-/// `FromStr<Err = String>`.
+/// Takes any type with `FromStr<Err = String>`.
 #[macro_export]
 macro_rules! text_enum {
     ($($enum:ty),+ $(,)?) => {$(
@@ -14,15 +13,6 @@ macro_rules! text_enum {
 
             fn compatible(ty: &::sqlx::postgres::PgTypeInfo) -> bool {
                 <str as ::sqlx::Type<::sqlx::Postgres>>::compatible(ty)
-            }
-        }
-
-        impl<'q> ::sqlx::Encode<'q, ::sqlx::Postgres> for $enum {
-            fn encode_by_ref(
-                &self,
-                buf: &mut ::sqlx::postgres::PgArgumentBuffer,
-            ) -> ::std::result::Result<::sqlx::encode::IsNull, ::sqlx::error::BoxDynError> {
-                <&str as ::sqlx::Encode<'_, ::sqlx::Postgres>>::encode(self.as_str(), buf)
             }
         }
 

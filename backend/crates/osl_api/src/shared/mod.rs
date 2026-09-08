@@ -1,3 +1,3 @@
 pub mod dto;
-pub mod enums;
+pub mod filters;
 pub mod query;

@@ -1,9 +1,7 @@
-use osl_domain::{Constants, Edition};
+use osl_domain::{Constants, Edition, Gender};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
-
-use crate::shared::enums::Gender;
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RisFormulaResponse {
@@ -32,6 +30,7 @@ pub struct GenderConstants {
 pub struct ComputeRisRequest {
     pub bodyweight: Decimal,
     pub total: Decimal,
+    #[serde(deserialize_with = "crate::shared::dto::from_str")]
     pub gender: Gender,
     pub formula_year: Option<i32>,
 }

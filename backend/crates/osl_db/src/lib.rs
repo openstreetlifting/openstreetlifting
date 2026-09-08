@@ -1,6 +1,6 @@
 use sqlx::postgres::{PgPool, PgPoolOptions};
 
-pub use osl_domain::error;
+pub mod error;
 
 pub mod params;
 pub mod projections;

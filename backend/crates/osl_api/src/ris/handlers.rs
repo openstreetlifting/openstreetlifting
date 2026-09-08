@@ -65,12 +65,8 @@ pub async fn calculate_ris(
         None => Edition::CURRENT,
     };
 
-    let ris_score = osl_domain::ris::compute(
-        payload.bodyweight,
-        payload.total,
-        payload.gender.into(),
-        edition,
-    );
+    let ris_score =
+        osl_domain::ris::compute(payload.bodyweight, payload.total, payload.gender, edition);
 
     Ok(Json(ComputeRisResponse {
         ris_score,

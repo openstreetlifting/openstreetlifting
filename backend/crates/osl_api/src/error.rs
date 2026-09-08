@@ -3,7 +3,7 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
-use osl_domain::error::StorageError;
+use osl_db::error::StorageError;
 use serde_json::json;
 use std::fmt;
 

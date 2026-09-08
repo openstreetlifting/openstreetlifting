@@ -5,12 +5,12 @@ use osl_db::projections::athlete::{
 };
 use osl_db::projections::ranking::AthleteMetricStandingRow;
 use osl_db::rows::athlete::AthleteRow;
+use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::competition::dto::AttemptInfo;
-use crate::shared::enums::{AthleteStatus, Gender, Movement, RisSource};
 use crate::shared::query::Include;
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -68,7 +68,7 @@ impl StrengthProfile {
             lifts: rows
                 .into_iter()
                 .map(|row| StrengthComparison {
-                    movement_name: row.movement_name.into(),
+                    movement_name: row.movement_name,
                     value: row.value,
                     percentile: row.percentile,
                     field: row.field,
@@ -222,7 +222,7 @@ impl From<AthleteRow> for AthleteResponse {
             last_name: athlete.last_name,
             native_name: athlete.native_name,
             slug: athlete.slug,
-            gender: athlete.gender.into(),
+            gender: athlete.gender,
             country: athlete.country,
             profile_picture_url: athlete.profile_picture_url,
             instagram_handle: None,
@@ -253,8 +253,8 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
             rank: row.rank,
             total: row.total,
             ris_score: row.ris_score,
-            ris_source: row.ris_source.map(Into::into),
-            status: row.status.into(),
+            ris_source: row.ris_source,
+            status: row.status,
             event: row.event_code,
             lifts: row.lifts.into_iter().map(AthleteLift::from).collect(),
         }
@@ -264,7 +264,7 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
 impl From<AthleteLiftRow> for AthleteLift {
     fn from(row: AthleteLiftRow) -> Self {
         Self {
-            movement_name: row.movement_name.into(),
+            movement_name: row.movement_name,
             best_weight: row.best_weight,
             attempts: row.attempts.into_iter().map(AttemptInfo::from).collect(),
         }
@@ -274,7 +274,7 @@ impl From<AthleteLiftRow> for AthleteLift {
 impl From<PersonalRecordRow> for PersonalRecord {
     fn from(row: PersonalRecordRow) -> Self {
         Self {
-            movement_name: row.movement_name.into(),
+            movement_name: row.movement_name,
             max_weight: row.max_weight,
             competition_name: row.competition_name,
             competition_slug: row.competition_slug,

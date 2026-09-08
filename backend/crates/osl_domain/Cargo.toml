@@ -4,18 +4,19 @@ edition = "2024"
 version.workspace = true
 publish.workspace = true
 
+[features]
+# Infrastructure integrations are opt-in; the shared vocabulary builds without them.
+sqlx = ["dep:sqlx"]
+utoipa = ["dep:utoipa"]
+
 [dependencies]
 chrono.workspace = true
 rust_decimal.workspace = true
 serde.workspace = true
-sqlx = { workspace = true, features = [
-  "postgres",
-  "chrono",
-  "rust_decimal",
-  "uuid",
-] }
+sqlx = { workspace = true, optional = true, features = ["postgres"] }
 thiserror.workspace = true
 unicode-normalization = "0.1"
+utoipa = { workspace = true, optional = true }
 uuid.workspace = true
 
 [dev-dependencies]

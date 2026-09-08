@@ -1317,6 +1317,7 @@ dependencies = [
  "rust_decimal",
  "serde",
  "sqlx",
+ "thiserror",
  "uuid",
 ]
 
@@ -1331,6 +1332,7 @@ dependencies = [
  "sqlx",
  "thiserror",
  "unicode-normalization",
+ "utoipa",
  "uuid",
 ]
 

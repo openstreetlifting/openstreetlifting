@@ -6,11 +6,11 @@ use axum::{
 };
 use osl_db::params::CompetitionFilter;
 use osl_db::repository::competition::CompetitionRepository;
+use osl_domain::CompetitionStatus;
 use serde::Deserialize;
 
 use super::dto::CompetitionResponse;
 use crate::shared::dto::{Direction, PaginatedResponse, PaginationParams};
-use crate::shared::enums::CompetitionStatus;
 use crate::shared::query::Include;
 
 const LIST_INCLUDES: &[&str] = &["federation", "movements"];
@@ -20,6 +20,7 @@ const DETAIL_INCLUDES: &[&str] = &["federation", "results", "movements"];
 pub struct CompetitionListQuery {
     #[serde(default)]
     pub include: Include,
+    #[serde(default, deserialize_with = "crate::shared::dto::optional_from_str")]
     pub status: Option<CompetitionStatus>,
     pub federation: Option<String>,
     pub country: Option<String>,
@@ -34,7 +35,7 @@ pub struct CompetitionListQuery {
 impl CompetitionListQuery {
     fn to_db_filter(&self) -> CompetitionFilter {
         CompetitionFilter {
-            status: self.status.map(Into::into),
+            status: self.status,
             federation: self.federation.clone(),
             country: self.country.clone(),
             year: self.year,
