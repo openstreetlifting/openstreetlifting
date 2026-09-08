@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO competition_participants\n                (competition_id, weight_class_id, division_id, athlete_id, bodyweight, status, status_reason, ris_score, ris_source,\n                 bodyweight_source, reported_ris_score, reported_ris_edition)\n            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11)\n            ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id)\n            DO UPDATE SET\n                bodyweight = EXCLUDED.bodyweight,\n                status = EXCLUDED.status,\n                status_reason = EXCLUDED.status_reason,\n                ris_score = EXCLUDED.ris_score,\n                ris_source = EXCLUDED.ris_source,\n                ris_edition = NULL,\n                bodyweight_source = EXCLUDED.bodyweight_source,\n                reported_ris_score = EXCLUDED.reported_ris_score,\n                reported_ris_edition = EXCLUDED.reported_ris_edition\n            RETURNING participant_id as \"participant_id: Uuid\"\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "participant_id: Uuid",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "participant_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Numeric",
+        "Text",
+        "Text",
+        "Numeric",
+        "Text",
+        "Numeric",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "0e1aa971a63a38ac5946c62544e65de85799ae6031d0dd2a9f05577773a2a9e5"
+}

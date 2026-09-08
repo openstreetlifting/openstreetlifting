@@ -39,6 +39,35 @@
 
 <!-- Edit the file and re-import. What happens to rows removed from a file. -->
 
+### Recovering missing bodyweights
+
+When a source gives a RIS but no bodyweight, recovery can reverse the edition that
+produced that score. Choose the source edition explicitly; the competition year
+does not establish it. From `backend`, preview a competition before writing:
+
+```sh
+SQLX_OFFLINE=true cargo run -p recover-bodyweight -- --edition 2024 --check data/competitions/finalrep/2023/worlds-2023
+```
+
+Remove `--check` to write accepted recoveries. The command also accepts several
+competition directories or a tree containing them.
+
+The performance must have a valid result in all four movements, consistent best
+lifts and attempts, a positive total and RIS, and status `competed`. Existing
+bodyweights are left alone. A successful zero-kilogram lift is valid.
+
+Recovered weights must reproduce the original score, fall within 35–200 kg, and
+fit the class bounds with 0.5 kg tolerance. There is no candidate minimum. If more
+than 20% of eligible candidates fail, valid recoveries in that competition are
+withheld. Output distinguishes ineligible, rejected, withheld and accepted rows.
+These checks do not prove the source edition or bound rounding uncertainty.
+
+Accepted rows retain their original `Ris` and gain `BodyweightKg`,
+`BodyweightSource=recovered`, and `ReportedRisEdition`. Review the CSV changes and
+validate them with `cargo run -p osl_importer --bin import -- bulk-import --validate-only`.
+After migrations and import, rankings use the current RIS edition while source
+evidence remains preserved; see [RIS scoring](./DATA_REFERENCE.md#ris-scoring).
+
 ## Things people get wrong
 
 ### Athletes who share a name

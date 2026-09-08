@@ -1542,6 +1542,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "63b8176103e19a2643978565ca18b50549f6101881c443590420e4dc998a3c69"
 
 [[package]]
+name = "recover-bodyweight"
+version = "0.28.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "osl_domain",
+ "osl_importer",
+ "rust_decimal",
+]
+
+[[package]]
 name = "redox_syscall"
 version = "0.5.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"

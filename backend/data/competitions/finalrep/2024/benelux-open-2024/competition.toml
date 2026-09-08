@@ -2,6 +2,7 @@ event = "MPDS"
 sources = [
     "FinalRep app, /events-api/v1/events/{id}/statistics",
     "https://final-rep.com/beneluxopen24/",
+    "Bodyweight recovered by reversing the 2024 RIS formula on the published score",
 ]
 
 [competition]
