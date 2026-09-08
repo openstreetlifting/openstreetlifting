@@ -8,7 +8,6 @@
     source,
   }: {
     value: number | string | null;
-    /** Null wherever no score exists, which the database enforces. */
     source: RisSource | null;
   } = $props();
 </script>

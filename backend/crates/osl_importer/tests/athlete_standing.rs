@@ -1,3 +1,5 @@
+use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
+use osl_db::projections::ranking::AthleteMetricStandingRow;
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::{Gender, Movement};
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
@@ -43,32 +45,41 @@ async fn athlete_id(pool: &PgPool, last_name: &str) -> Uuid {
         .expect("the imported athlete should exist")
 }
 
+async fn standings(pool: &PgPool, last_name: &str) -> Vec<AthleteMetricStandingRow> {
+    RankingRepository::new(pool)
+        .get_athlete_metric_standings(athlete_id(pool, last_name).await)
+        .await
+        .expect("standings should succeed")
+}
+
+fn metric<'a>(
+    standings: &'a [AthleteMetricStandingRow],
+    name: &str,
+) -> &'a AthleteMetricStandingRow {
+    standings
+        .iter()
+        .find(|standing| standing.metric == name)
+        .unwrap_or_else(|| panic!("{name} should be ranked"))
+}
+
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_place_comes_with_the_field_it_was_taken_in(pool: PgPool) {
     a_board(&pool).await;
 
-    let standing = RankingRepository::new(&pool)
-        .get_athlete_standing(athlete_id(&pool, "French").await)
-        .await
-        .expect("standing should succeed")
-        .expect("a four movement total is ranked");
+    let standings = standings(&pool, "French").await;
+    let standing = metric(&standings, "ris");
 
     assert_eq!(standing.global_place, 1);
-    assert_eq!(standing.global_field, 3, "everyone in the same class");
+    assert_eq!(standing.global_field, 3, "everyone with a RIS score");
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn the_country_place_only_counts_that_country(pool: PgPool) {
     a_board(&pool).await;
-    let repo = RankingRepository::new(&pool);
+    let standings = standings(&pool, "Italian").await;
+    let italian = metric(&standings, "ris");
 
-    let italian = repo
-        .get_athlete_standing(athlete_id(&pool, "Italian").await)
-        .await
-        .unwrap()
-        .unwrap();
-
-    assert_eq!(italian.global_place, 2, "second best score in the class");
+    assert_eq!(italian.global_place, 2, "second best RIS score overall");
     assert_eq!(italian.country, "IT");
     assert_eq!(
         (italian.country_place, italian.country_field),
@@ -80,32 +91,23 @@ async fn the_country_place_only_counts_that_country(pool: PgPool) {
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn every_ranking_metric_has_a_global_and_country_place(pool: PgPool) {
     a_board(&pool).await;
-    let standings = RankingRepository::new(&pool)
-        .get_athlete_metric_standings(athlete_id(&pool, "Italian").await)
-        .await
-        .unwrap();
+    let standings = standings(&pool, "Italian").await;
 
     assert_eq!(standings.len(), 6, "RIS, total and all four movements");
 
-    let total = standings
-        .iter()
-        .find(|standing| standing.metric == "total")
-        .unwrap();
+    let total = metric(&standings, "total");
     assert_eq!(total.value.to_string(), "390");
     assert_eq!((total.global_place, total.global_field), (2, 3));
     assert_eq!((total.country_place, total.country_field), (1, 1));
 
-    let muscleup = standings
-        .iter()
-        .find(|standing| standing.metric == "muscleup")
-        .unwrap();
+    let muscleup = metric(&standings, "muscleup");
     assert_eq!(muscleup.value.to_string(), "50");
     assert_eq!((muscleup.global_place, muscleup.global_field), (2, 3));
     assert_eq!((muscleup.country_place, muscleup.country_field), (1, 1));
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn an_athlete_the_board_does_not_rank_has_no_standing(pool: PgPool) {
+async fn a_partial_event_only_ranks_its_movements(pool: PgPool) {
     let mut half: CanonicalFormat = common::competition(
         "half-event",
         vec![men_80(vec![two_lifts(athlete("No", "Score"))])],
@@ -113,17 +115,7 @@ async fn an_athlete_the_board_does_not_rank_has_no_standing(pool: PgPool) {
     half.movements = vec![Movement::MuscleUp, Movement::PullUp];
     import(&pool, half).await;
 
-    let standing = RankingRepository::new(&pool)
-        .get_athlete_standing(athlete_id(&pool, "Score").await)
-        .await
-        .expect("standing should succeed");
-
-    assert!(standing.is_none(), "no four movement total, no place");
-
-    let metrics = RankingRepository::new(&pool)
-        .get_athlete_metric_standings(athlete_id(&pool, "Score").await)
-        .await
-        .unwrap();
+    let metrics = standings(&pool, "Score").await;
     assert_eq!(
         metrics
             .iter()
@@ -163,38 +155,21 @@ async fn two_classes(pool: &PgPool) {
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn metric_places_only_compare_the_athletes_weight_class(pool: PgPool) {
     two_classes(&pool).await;
-    let repo = RankingRepository::new(&pool);
-
-    let heavier = repo
-        .get_athlete_metric_standings(athlete_id(&pool, "French").await)
-        .await
-        .unwrap();
-    let heavier_total = heavier
-        .iter()
-        .find(|standing| standing.metric == "total")
-        .unwrap();
+    let heavier = standings(&pool, "French").await;
+    let heavier_total = metric(&heavier, "total");
     assert_eq!(
         (heavier_total.global_place, heavier_total.global_field),
         (1, 3),
         "the lighter class is excluded"
     );
-    let heavier_ris = heavier
-        .iter()
-        .find(|standing| standing.metric == "ris")
-        .unwrap();
+    let heavier_ris = metric(&heavier, "ris");
     assert_eq!(
         heavier_ris.global_field, 4,
         "RIS still compares every weight class"
     );
 
-    let lighter = repo
-        .get_athlete_metric_standings(athlete_id(&pool, "Class").await)
-        .await
-        .unwrap();
-    let lighter_total = lighter
-        .iter()
-        .find(|standing| standing.metric == "total")
-        .unwrap();
+    let lighter = standings(&pool, "Class").await;
+    let lighter_total = metric(&lighter, "total");
     assert_eq!(
         (lighter_total.global_place, lighter_total.global_field),
         (1, 1),
@@ -231,24 +206,15 @@ async fn metric_places_do_not_compare_men_and_women(pool: PgPool) {
     .await;
 
     for last_name in ["Man", "Woman"] {
-        let standings = RankingRepository::new(&pool)
-            .get_athlete_metric_standings(athlete_id(&pool, last_name).await)
-            .await
-            .unwrap();
-        let total = standings
-            .iter()
-            .find(|standing| standing.metric == "total")
-            .unwrap();
+        let standings = standings(&pool, last_name).await;
+        let total = metric(&standings, "total");
         assert_eq!(
             (total.global_place, total.global_field),
             (1, 1),
             "{last_name} only ranks against the same sex"
         );
 
-        let ris = standings
-            .iter()
-            .find(|standing| standing.metric == "ris")
-            .unwrap();
+        let ris = metric(&standings, "ris");
         assert_eq!(
             (ris.global_field, ris.country_field),
             (2, 2),
@@ -260,28 +226,20 @@ async fn metric_places_do_not_compare_men_and_women(pool: PgPool) {
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_class_place_only_counts_that_class(pool: PgPool) {
     two_classes(&pool).await;
-    let repo = RankingRepository::new(&pool);
-
-    let heavier = repo
-        .get_athlete_class_standing(athlete_id(&pool, "French").await)
-        .await
-        .unwrap()
-        .expect("a four movement total is ranked in its class");
+    let heavier = standings(&pool, "French").await;
+    let heavier = metric(&heavier, "total");
 
     assert_eq!(
-        (heavier.class_place, heavier.class_field),
+        (heavier.global_place, heavier.global_field),
         (1, 3),
         "three lifters in the class, the lighter one is not one of them"
     );
 
-    let lighter = repo
-        .get_athlete_class_standing(athlete_id(&pool, "Class").await)
-        .await
-        .unwrap()
-        .unwrap();
+    let lighter = standings(&pool, "Class").await;
+    let lighter = metric(&lighter, "total");
 
     assert_eq!(
-        (lighter.class_place, lighter.class_field),
+        (lighter.global_place, lighter.global_field),
         (1, 1),
         "alone in his own class, whatever he totalled"
     );
@@ -291,15 +249,12 @@ async fn a_class_place_only_counts_that_class(pool: PgPool) {
 async fn the_class_country_place_narrows_both_ways(pool: PgPool) {
     two_classes(&pool).await;
 
-    let italian = RankingRepository::new(&pool)
-        .get_athlete_class_standing(athlete_id(&pool, "Italian").await)
-        .await
-        .unwrap()
-        .unwrap();
+    let italian = standings(&pool, "Italian").await;
+    let italian = metric(&italian, "total");
 
-    assert_eq!(italian.class_place, 2, "second best total in the class");
+    assert_eq!(italian.global_place, 2, "second best total in the class");
     assert_eq!(
-        (italian.class_country_place, italian.class_country_field),
+        (italian.country_place, italian.country_field),
         (1, 1),
         "the only Italian in that class"
     );
@@ -334,18 +289,118 @@ async fn a_class_counts_everyone_who_has_lifted_in_it(pool: PgPool) {
     )
     .await;
 
-    let standing = RankingRepository::new(&pool)
-        .get_athlete_class_standing(athlete_id(&pool, "Up").await)
-        .await
-        .unwrap()
-        .unwrap();
+    let standings = standings(&pool, "Up").await;
+    let standing = metric(&standings, "total");
 
     assert_eq!(
-        standing.class_field, 4,
+        standing.global_field, 4,
         "the class of their best total, counting everyone who has lifted in it"
     );
     assert_eq!(
-        standing.class_place, 3,
+        standing.global_place, 3,
         "370 sits behind the two bigger totals in that class"
     );
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn tied_card_places_match_both_linked_leaderboards(pool: PgPool) {
+    import(
+        &pool,
+        common::competition(
+            "tied",
+            vec![men_80(vec![
+                lifting(athlete("Alice", "French"), ["40", "60", "80", "120"]),
+                from(
+                    lifting(athlete("Bella", "Italian"), ["40", "60", "80", "120"]),
+                    "IT",
+                ),
+                lifting(athlete("Clara", "French"), ["40", "60", "80", "120"]),
+                from(
+                    lifting(athlete("Diana", "Italian"), ["40", "60", "80", "120"]),
+                    "IT",
+                ),
+            ])],
+        ),
+    )
+    .await;
+    let repo = RankingRepository::new(&pool);
+    for (name, movement) in [
+        ("ris", RankingMovement::Ris),
+        ("total", RankingMovement::Total),
+        ("muscleup", RankingMovement::Muscleup),
+        ("pullup", RankingMovement::Pullup),
+        ("dips", RankingMovement::Dips),
+        ("squat", RankingMovement::Squat),
+    ] {
+        for country in [None, Some("FR"), Some("IT")] {
+            let filter = RankingFilter {
+                gender: (movement != RankingMovement::Ris).then(|| "M".to_string()),
+                category: (movement != RankingMovement::Ris)
+                    .then(|| osl_domain::WeightClass::UpTo(common::decimal("80"))),
+                country: country.map(str::to_string),
+                federation: None,
+                name: None,
+                movement,
+                direction: SortDirection::Desc,
+                event: osl_domain::FULL_EVENT.to_string(),
+                year: None,
+                competition_id: None,
+                offset: 0,
+                limit: 50,
+            };
+            let (rows, field) = repo.get_global_ranking(&filter).await.unwrap();
+            let ids: Vec<_> = rows.iter().map(|row| row.athlete_id).collect();
+            let mut ordered_ids = ids.clone();
+            ordered_ids.sort();
+            assert_eq!(ids, ordered_ids, "ties use a stable athlete order");
+            for row in rows {
+                let standings = repo
+                    .get_athlete_metric_standings(row.athlete_id)
+                    .await
+                    .unwrap();
+                let standing = metric(&standings, name);
+                let actual = if country.is_some() {
+                    (standing.country_place, standing.country_field)
+                } else {
+                    (standing.global_place, standing.global_field)
+                };
+                assert_eq!(
+                    actual,
+                    (row.rank, field),
+                    "{name} card must match its board"
+                );
+            }
+        }
+    }
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn equally_good_results_choose_the_latest_weight_class(pool: PgPool) {
+    let lifter = || lifting(athlete("Moving", "Class"), ["40", "60", "80", "120"]);
+    import(
+        &pool,
+        common::competition(
+            "earlier",
+            vec![category(
+                osl_domain::WeightClassSlug::M66,
+                vec![weighing(lifter(), "66")],
+            )],
+        ),
+    )
+    .await;
+    let mut later = common::competition("later", vec![men_80(vec![lifter()])]);
+    later.competition.start_date = chrono::NaiveDate::from_ymd_opt(2026, 2, 1).unwrap();
+    later.competition.end_date = later.competition.start_date;
+    import(&pool, later).await;
+
+    let standings = standings(&pool, "Class").await;
+    for name in ["total", "muscleup", "pullup", "dips", "squat"] {
+        let standing = metric(&standings, name);
+        assert_eq!(
+            standing.weight_class_max,
+            Some(common::decimal("80")),
+            "{name}"
+        );
+        assert_eq!((standing.global_place, standing.global_field), (1, 1));
+    }
 }

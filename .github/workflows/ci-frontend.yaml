@@ -47,6 +47,9 @@ jobs:
       - name: Run ESLint
         working-directory: frontend
         run: pnpm exec eslint .
+      - name: Check shared colors
+        working-directory: frontend
+        run: pnpm run lint:colors
 
   build:
     name: Build

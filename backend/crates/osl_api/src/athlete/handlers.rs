@@ -8,11 +8,11 @@ use osl_db::repository::athlete::AthleteRepository;
 use osl_db::repository::ranking::RankingRepository;
 use serde::Deserialize;
 
-use super::dto::{AthleteResponse, AthleteStanding, WeightClassStanding};
+use super::dto::{AthleteResponse, AthleteStanding, StrengthProfile};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
-const ATHLETE_INCLUDES: &[&str] = &["competitions", "records", "standing"];
+const ATHLETE_INCLUDES: &[&str] = &["competitions", "records", "standing", "strength_profile"];
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct AthleteQuery {
@@ -76,22 +76,30 @@ pub async fn get_athlete(
     let repo = AthleteRepository::new(state.db.pool());
 
     if ATHLETE_INCLUDES.iter().any(|name| query.include.has(name)) {
-        let detail = repo.find_by_slug_detailed(&slug).await?;
-        let athlete_id = detail.athlete.athlete_id;
+        let athlete = repo.find_by_slug(&slug).await?;
+        let athlete_id = athlete.athlete_id;
+        let rankings = RankingRepository::new(state.db.pool());
+        let (detail, metric_standings, strength_profile) = tokio::try_join!(
+            repo.get_detailed_athlete(athlete),
+            async {
+                if query.include.has("standing") {
+                    rankings.get_athlete_metric_standings(athlete_id).await
+                } else {
+                    Ok(Vec::new())
+                }
+            },
+            async {
+                if query.include.has("strength_profile") {
+                    repo.strength_profile(athlete_id).await
+                } else {
+                    Ok(Vec::new())
+                }
+            }
+        )?;
 
         let mut response = AthleteResponse::from_detail(detail, &query.include);
-
-        if query.include.has("standing") {
-            let rankings = RankingRepository::new(state.db.pool());
-
-            let metric_standings = rankings.get_athlete_metric_standings(athlete_id).await?;
-            let weight_class = rankings
-                .get_athlete_class_standing(athlete_id)
-                .await?
-                .and_then(WeightClassStanding::from_row);
-
-            response.standing = AthleteStanding::from_rows(metric_standings, weight_class);
-        }
+        response.standing = AthleteStanding::from_rows(metric_standings);
+        response.strength_profile = StrengthProfile::from_rows(strength_profile);
 
         return Ok(Json(response));
     }

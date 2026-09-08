@@ -13,7 +13,7 @@
   {/if}
 </svelte:head>
 
-<div class="flex min-h-screen flex-col bg-zinc-950">
+<div class="flex min-h-screen flex-col bg-canvas">
   <Header />
   <!-- min-w-0 because a flex item defaults to min-width:auto, which refuses to
        shrink below its content. Without it a table wider than the screen widens

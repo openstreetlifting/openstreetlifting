@@ -84,7 +84,7 @@
   jsonLd={[websiteLd()]}
 />
 
-<div class="mx-auto max-w-[var(--content-max-width)] px-4 py-3 sm:px-6 sm:py-12">
+<div class="mx-auto max-w-page px-4 py-3 sm:px-6 sm:py-12">
   <h1 class="sr-only">Streetlifting rankings</h1>
 
   <FilterBar
@@ -149,7 +149,7 @@
     </select>
 
     <div class="flex w-full items-center gap-2 sm:w-auto">
-      <label for="sort-by" class="text-sm text-zinc-500">Sort by</label>
+      <label for="sort-by" class="text-sm text-muted">Sort by</label>
       <select
         id="sort-by"
         bind:value={table.movementFilter}
@@ -164,18 +164,18 @@
   </FilterBar>
 
   {#if data.error}
-    <Card class="p-8">
+    <Card class="max-w-summary p-8">
       <div class="text-center">
-        <p class="text-red-400">{data.error}</p>
+        <p class="text-danger">{data.error}</p>
       </div>
     </Card>
   {:else if rankings.length === 0 && !busy}
-    <Card class="p-8">
+    <Card class="max-w-summary p-8">
       <div class="text-center">
-        <p class="text-zinc-400">No rankings found for the selected filters</p>
+        <p class="text-secondary">No rankings found for the selected filters</p>
         <button
           onclick={() => table.clearFilters()}
-          class="mt-4 text-sm text-zinc-500 underline hover:text-zinc-300 focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+          class="mt-4 text-sm text-muted underline hover:text-secondary focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none"
         >
           Clear filters
         </button>
@@ -184,7 +184,7 @@
   {:else}
     {#snippet paginationBar()}
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <span class="text-xs text-zinc-500">
+        <span class="text-xs text-muted">
           Page {pagination.page} of {pagination.total_pages} &middot; {pagination.total_items} athletes
         </span>
         <Pagination
@@ -202,30 +202,30 @@
 
     <Table {busy}>
       {#snippet head()}
-        <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-zinc-400"
+        <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
           >Rank</th
         >
-        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-zinc-400">Athlete</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400 {sorted('total')}">Total</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400 {sorted('ris')}">
+        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">Athlete</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}">Total</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
           <RisHeader />
         </th>
         {#each lifts as lift (lift.value)}
-          <th class="{TABLE_HEAD_CELL} text-zinc-400 {sorted(lift.value)}">
+          <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.value)}">
             {lift.label}
           </th>
         {/each}
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Competition</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Federation</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Date</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Sex</th>
-        <th class="{TABLE_HEAD_CELL} text-zinc-400">Class</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Competition</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Federation</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Date</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Sex</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">Class</th>
       {/snippet}
 
       {#snippet body()}
         {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
           <tr
-            class="border-b border-zinc-800/50 transition-colors"
+            class="transition-colors"
             data-focused={entry.athlete.slug === focused ? '' : undefined}
           >
             <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
@@ -235,7 +235,7 @@
               <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                 <a
                   href={resolve(`/athletes/${entry.athlete.slug}`)}
-                  class="flex min-w-0 items-center gap-2.5 hover:text-zinc-300"
+                  class="flex min-w-0 items-center gap-2.5 hover:text-secondary"
                 >
                   <Flag
                     countryCode={entry.athlete.country}
@@ -250,7 +250,7 @@
                     href={`https://www.instagram.com/${entry.athlete.instagram_handle}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="inline-flex shrink-0 items-center text-white transition-colors hover:text-zinc-300"
+                    class="inline-flex shrink-0 items-center text-ink transition-colors hover:text-secondary"
                     aria-label="{formatAthleteName(entry.athlete)} on Instagram"
                     title="@{entry.athlete.instagram_handle}"
                   >
@@ -263,14 +263,14 @@
             <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
               <RisScore value={entry.ris} source={entry.ris_source} />
             </td>
-            <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{formatWeight(entry.muscleup)}</td>
-            <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{formatWeight(entry.pullup)}</td>
-            <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{formatWeight(entry.dips)}</td>
-            <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{formatWeight(entry.squat)}</td>
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.muscleup)}</td>
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.pullup)}</td>
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.dips)}</td>
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.squat)}</td>
             <td class="{TABLE_CELL} {CELL.data}">
               <a
                 href={resolve(`/competitions/${entry.competition.slug}`)}
-                class="{TEXT_CELL.competition} underline hover:text-zinc-300"
+                class="{TEXT_CELL.competition} underline hover:text-secondary"
               >
                 {entry.competition.name}
               </a>
