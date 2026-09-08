@@ -73,6 +73,45 @@ where
     T::from_str(&raw).map_err(serde::de::Error::custom)
 }
 
+/// The genders a ranking can be drawn for.
+///
+/// Narrower than `Gender` on purpose: weight classes are only drawn for men and
+/// women, so a mixed board would compare an athlete against an empty field.
+/// Keeping that in the type rather than in a `validate` call is what makes the
+/// schema advertise `M` and `F` for the parameter instead of advertising `MX`
+/// and then refusing it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
+#[serde(rename_all = "UPPERCASE")]
+pub enum RankedGender {
+    M,
+    F,
+}
+
+impl From<RankedGender> for Gender {
+    fn from(gender: RankedGender) -> Self {
+        match gender {
+            RankedGender::M => Self::M,
+            RankedGender::F => Self::F,
+        }
+    }
+}
+
+impl From<RankedGender> for osl_domain::Gender {
+    fn from(gender: RankedGender) -> Self {
+        Gender::from(gender).into()
+    }
+}
+
+impl<'de> Deserialize<'de> for RankedGender {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        match parse::<D, osl_domain::Gender>(deserializer)? {
+            osl_domain::Gender::M => Ok(Self::M),
+            osl_domain::Gender::F => Ok(Self::F),
+            osl_domain::Gender::Mx => Err(serde::de::Error::custom("gender must be 'M' or 'F'")),
+        }
+    }
+}
+
 impl<'de> Deserialize<'de> for Gender {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         parse::<D, osl_domain::Gender>(deserializer).map(Self::from)
@@ -152,59 +191,82 @@ impl From<osl_domain::RisSource> for RisSource {
 mod tests {
     use super::*;
 
-    /// The spellings are the published contract, so they are asserted here
-    /// rather than left to whatever `rename_all` happens to produce. A change
-    /// that breaks every client should have to break this test first.
+    fn wire(value: impl serde::Serialize) -> String {
+        serde_json::to_string(&value).unwrap()
+    }
+
+    /// The spellings are the published contract, so they are asserted rather
+    /// than left to whatever `rename_all` happens to produce. A change that
+    /// breaks every client should have to break this test first.
     #[test]
     fn the_wire_spellings_are_fixed() {
-        let cases = [
-            (serde_json::to_string(&Gender::M).unwrap(), "\"M\""),
-            (serde_json::to_string(&Gender::F).unwrap(), "\"F\""),
-            (serde_json::to_string(&Gender::Mx).unwrap(), "\"MX\""),
-            (
-                serde_json::to_string(&AthleteStatus::Competed).unwrap(),
-                "\"competed\"",
-            ),
-            (
-                serde_json::to_string(&AthleteStatus::Disqualified).unwrap(),
-                "\"disqualified\"",
-            ),
-            (
-                serde_json::to_string(&AthleteStatus::NoShow).unwrap(),
-                "\"no_show\"",
-            ),
-            (
-                serde_json::to_string(&CompetitionStatus::Draft).unwrap(),
-                "\"draft\"",
-            ),
-            (
-                serde_json::to_string(&CompetitionStatus::Upcoming).unwrap(),
-                "\"upcoming\"",
-            ),
-            (
-                serde_json::to_string(&CompetitionStatus::Live).unwrap(),
-                "\"live\"",
-            ),
-            (
-                serde_json::to_string(&CompetitionStatus::Completed).unwrap(),
-                "\"completed\"",
-            ),
-            (
-                serde_json::to_string(&CompetitionStatus::Cancelled).unwrap(),
-                "\"cancelled\"",
-            ),
-            (
-                serde_json::to_string(&RisSource::Computed).unwrap(),
-                "\"computed\"",
-            ),
-            (
-                serde_json::to_string(&RisSource::Reported).unwrap(),
-                "\"reported\"",
-            ),
-        ];
+        assert_eq!(wire(Gender::M), "\"M\"");
+        assert_eq!(wire(Gender::F), "\"F\"");
+        assert_eq!(wire(Gender::Mx), "\"MX\"");
 
-        for (actual, expected) in cases {
-            assert_eq!(actual, expected);
+        assert_eq!(wire(AthleteStatus::Competed), "\"competed\"");
+        assert_eq!(wire(AthleteStatus::Disqualified), "\"disqualified\"");
+        assert_eq!(wire(AthleteStatus::NoShow), "\"no_show\"");
+
+        assert_eq!(wire(CompetitionStatus::Draft), "\"draft\"");
+        assert_eq!(wire(CompetitionStatus::Upcoming), "\"upcoming\"");
+        assert_eq!(wire(CompetitionStatus::Live), "\"live\"");
+        assert_eq!(wire(CompetitionStatus::Completed), "\"completed\"");
+        assert_eq!(wire(CompetitionStatus::Cancelled), "\"cancelled\"");
+
+        assert_eq!(wire(RisSource::Computed), "\"computed\"");
+        assert_eq!(wire(RisSource::Reported), "\"reported\"");
+    }
+
+    /// The mirror is what clients read; the domain's `as_str` is what gets
+    /// bound into Postgres. Nothing in the type system ties the two together,
+    /// so without this a rename on one side would leave the API answering `MX`
+    /// while the ranking filter searched the column for something else.
+    #[test]
+    fn the_database_spells_them_the_same_way() {
+        for gender in [
+            osl_domain::Gender::M,
+            osl_domain::Gender::F,
+            osl_domain::Gender::Mx,
+        ] {
+            assert_eq!(
+                wire(Gender::from(gender)),
+                format!("\"{}\"", gender.as_str())
+            );
+        }
+
+        for status in [
+            osl_domain::AthleteStatus::Competed,
+            osl_domain::AthleteStatus::Disqualified,
+            osl_domain::AthleteStatus::NoShow,
+        ] {
+            assert_eq!(
+                wire(AthleteStatus::from(status)),
+                format!("\"{}\"", status.as_str())
+            );
+        }
+
+        for status in [
+            osl_domain::CompetitionStatus::Draft,
+            osl_domain::CompetitionStatus::Upcoming,
+            osl_domain::CompetitionStatus::Live,
+            osl_domain::CompetitionStatus::Completed,
+            osl_domain::CompetitionStatus::Cancelled,
+        ] {
+            assert_eq!(
+                wire(CompetitionStatus::from(status)),
+                format!("\"{}\"", status.as_str())
+            );
+        }
+
+        for source in [
+            osl_domain::RisSource::Computed,
+            osl_domain::RisSource::Reported,
+        ] {
+            assert_eq!(
+                wire(RisSource::from(source)),
+                format!("\"{}\"", source.as_str())
+            );
         }
     }
 

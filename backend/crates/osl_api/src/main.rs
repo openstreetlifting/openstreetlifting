@@ -76,6 +76,7 @@ pub struct AppState {
             crate::shared::enums::AthleteStatus,
             crate::shared::enums::CompetitionStatus,
             crate::shared::enums::Gender,
+            crate::shared::enums::RankedGender,
             crate::shared::enums::RisSource,
             crate::ranking::dto::Movement,
             crate::shared::dto::Direction,
@@ -257,5 +258,25 @@ async fn shutdown_signal() {
     tokio::select! {
         _ = ctrl_c  => { tracing::info!("Received Ctrl-C, shutting down"); }
         _ = sigterm => { tracing::info!("Received SIGTERM, shutting down"); }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// `backend/openapi.json` is what the frontend's type tests are checked
+    /// against, so a stale copy silently stops guarding anything. Compiling it
+    /// in costs nothing and fails here instead.
+    #[test]
+    fn the_committed_schema_is_current() {
+        let committed = include_str!("../../../openapi.json");
+
+        assert_eq!(
+            ApiDoc::openapi().to_pretty_json().unwrap(),
+            committed.trim_end(),
+            "backend/openapi.json is stale, run: \
+             cargo run -p osl_api -- --dump-openapi > openapi.json"
+        );
     }
 }

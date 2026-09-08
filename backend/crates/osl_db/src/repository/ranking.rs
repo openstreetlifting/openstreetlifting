@@ -190,14 +190,13 @@ impl<'a> RankingRepository<'a> {
                 query.push(" UNION ALL ");
             }
 
-            query
-                .push(" SELECT athlete_id, country, gender, weight_class_min, weight_class_max, '");
-            query.push(movement.as_str());
-            query.push("' AS metric, ");
-            query.push(movement.as_column());
-            query.push(" AS value FROM movement_weights WHERE ");
-            query.push(movement.as_column());
-            query.push(" IS NOT NULL ");
+            let (metric, column) = (movement.as_str(), movement.as_column());
+
+            query.push(format!(
+                "SELECT athlete_id, country, gender, weight_class_min, weight_class_max, \
+                 '{metric}' AS metric, {column} AS value \
+                 FROM movement_weights WHERE {column} IS NOT NULL "
+            ));
 
             // A total only means something within one event, so unlike the
             // single movements it does not compare across all of them.

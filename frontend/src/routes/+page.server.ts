@@ -1,5 +1,5 @@
 import { rankingsService } from '$lib/server/api';
-import { asGender } from '$lib/types/enums';
+import { asRankedGender, asRankingMovement } from '$lib/types/enums';
 import type { PageServerLoad } from './$types';
 
 const title = 'Streetlifting rankings and records';
@@ -7,7 +7,7 @@ const description =
   'Global streetlifting rankings from every competition in the archive: muscle up, pull up, dips and squat results, RIS scores and athlete records.';
 
 export const load: PageServerLoad = async ({ url }) => {
-  const gender = asGender(url.searchParams.get('gender'));
+  const gender = asRankedGender(url.searchParams.get('gender'));
 
   const [classes, years, countries, federations] = await Promise.all([
     rankingsService.getRankingClasses(gender).catch(() => []),
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ url }) => {
   ]);
 
   try {
-    const movement = url.searchParams.get('movement') || 'ris';
+    const movement = asRankingMovement(url.searchParams.get('movement')) ?? 'ris';
     const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
     const country = url.searchParams.get('country') || null;
     const federation = url.searchParams.get('federation') || null;

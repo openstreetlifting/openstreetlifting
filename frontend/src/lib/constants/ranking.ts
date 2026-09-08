@@ -1,3 +1,5 @@
+import type { RankingMovement } from '$lib/types/enums';
+
 export const RANKING_LIFTS = [
   { value: 'muscleup', label: 'Muscle Up' },
   { value: 'pullup', label: 'Pull Up' },
@@ -32,6 +34,6 @@ export function hasRis(movementCount: number): boolean {
 }
 
 /** What a competition's table sorts on before anyone picks a column. */
-export function defaultRankingSort(movementCount: number): string {
+export function defaultRankingSort(movementCount: number): RankingMovement {
   return hasRis(movementCount) ? 'ris' : 'total';
 }

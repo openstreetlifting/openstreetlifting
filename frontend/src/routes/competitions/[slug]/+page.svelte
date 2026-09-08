@@ -52,6 +52,7 @@
   import type { RankingEntry } from '$lib/types/ranking';
   import type { Attempt, Participant, CategoryDetail } from '$lib/types/competition';
   import type { AthleteStatus } from '$lib/types/enums';
+  import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '$lib/constants/athlete-status';
   import { FIELD, TEXT } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
   import { breadcrumbLd, competitionLd, listingSeo } from '$lib/seo';
@@ -217,22 +218,6 @@
   const fieldSize = $derived(pagination.total_items + notPlaced.length);
 
   const onLastPage = $derived(pagination.page >= pagination.total_pages);
-
-  // The badge is two letters, so the title carries the meaning. A reason from
-  // the source is better than either, when there is one.
-  const STATUS_LABEL: Partial<Record<AthleteStatus, string>> = {
-    disqualified: 'DQ',
-    no_show: 'NS',
-  };
-  const STATUS_TITLE: Partial<Record<AthleteStatus, string>> = {
-    disqualified: 'Disqualified',
-    no_show: 'Did not lift',
-  };
-
-  function statusTitle(status: AthleteStatus, reason: string | null): string {
-    const name = STATUS_TITLE[status] ?? status;
-    return reason ? `${name}: ${reason.toLowerCase()}` : name;
-  }
 
   const seo = $derived(listingSeo(page.url));
 
@@ -499,9 +484,9 @@
                 {#if participant && participant.status !== 'competed'}
                   <span
                     class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                    title={statusTitle(participant.status, participant.status_reason)}
+                    title={athleteStatusTitle(participant.status, participant.status_reason)}
                   >
-                    {STATUS_LABEL[participant.status]}
+                    {ATHLETE_STATUS_LABEL[participant.status]}
                   </span>
                 {/if}
               </span>
@@ -580,9 +565,9 @@
                   </a>
                   <span
                     class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                    title={statusTitle(participant.status, participant.status_reason)}
+                    title={athleteStatusTitle(participant.status, participant.status_reason)}
                   >
-                    {STATUS_LABEL[participant.status]}
+                    {ATHLETE_STATUS_LABEL[participant.status]}
                   </span>
                 </span>
               </td>

@@ -16,9 +16,3 @@ impl ParseError {
         Self(message.into())
     }
 }
-
-impl From<String> for ParseError {
-    fn from(message: String) -> Self {
-        Self(message)
-    }
-}

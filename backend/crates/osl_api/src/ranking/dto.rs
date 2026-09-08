@@ -1,5 +1,5 @@
 use crate::shared::dto::Direction;
-use crate::shared::enums::{Gender, RisSource};
+use crate::shared::enums::{Gender, RankedGender, RisSource};
 use chrono::NaiveDate;
 use osl_db::params::{RankingFilter, RankingMovement};
 use osl_db::projections::ranking::RankingRow;
@@ -50,7 +50,7 @@ impl From<Movement> for RankingMovement {
 pub struct GlobalRankingFilter {
     #[serde(flatten)]
     pub pagination: crate::shared::dto::PaginationParams,
-    pub gender: Option<Gender>,
+    pub gender: Option<RankedGender>,
     pub country: Option<String>,
     pub federation: Option<String>,
     pub q: Option<String>,
@@ -68,13 +68,6 @@ pub struct GlobalRankingFilter {
 impl GlobalRankingFilter {
     pub fn validate(&self) -> Result<(), String> {
         self.pagination.validate()?;
-
-        // Weight classes are only drawn for men and women, so a mixed
-        // ranking would compare an athlete against an empty field. Saying so
-        // is better than returning nothing.
-        if self.gender == Some(Gender::Mx) {
-            return Err("gender must be 'M' or 'F'".to_string());
-        }
 
         if let Some(ref category) = self.category {
             WeightClass::from_str(category)?;

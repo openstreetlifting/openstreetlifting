@@ -10,9 +10,6 @@ pub enum StorageError {
 
     #[error("Not found")]
     NotFound,
-
-    #[error("Constraint violation: {0}")]
-    ConstraintViolation(String),
 }
 
 pub type Result<T> = std::result::Result<T, StorageError>;

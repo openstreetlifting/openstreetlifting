@@ -2,7 +2,7 @@ import { competitionsService, rankingsService } from '$lib/server/api';
 import { defaultRankingSort } from '$lib/constants/ranking';
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import { asGender } from '$lib/types/enums';
+import { asRankedGender, asRankingMovement } from '$lib/types/enums';
 
 // A fresh object per call: one shared literal would be handed to every request
 // this server process serves.
@@ -32,9 +32,10 @@ export const load: PageServerLoad = async ({ params, url }) => {
   }
 
   const movement =
-    url.searchParams.get('movement') || defaultRankingSort(competition.movements.length);
+    asRankingMovement(url.searchParams.get('movement')) ??
+    defaultRankingSort(competition.movements.length);
   const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
-  const gender = asGender(url.searchParams.get('gender'));
+  const gender = asRankedGender(url.searchParams.get('gender'));
   const category = url.searchParams.get('category') || null;
   const country = url.searchParams.get('country') || null;
   const q = url.searchParams.get('q') || null;

@@ -6,7 +6,8 @@
     PersonalRecord,
   } from '$lib/types/athlete';
   import type { Attempt } from '$lib/types/competition';
-  import type { AthleteStatus, Gender } from '$lib/types/enums';
+  import type { Gender } from '$lib/types/enums';
+  import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '$lib/constants/athlete-status';
   import {
     Card,
     Breadcrumb,
@@ -45,21 +46,6 @@
     TEXT_CELL,
   } from '$lib/constants/table';
 
-  // The badge is two letters, so the title carries the meaning. A reason from
-  // the source is better than either, when there is one.
-  const STATUS_LABEL: Partial<Record<AthleteStatus, string>> = {
-    disqualified: 'DQ',
-    no_show: 'NS',
-  };
-  const STATUS_TITLE: Partial<Record<AthleteStatus, string>> = {
-    disqualified: 'Disqualified',
-    no_show: 'Did not lift',
-  };
-
-  function statusTitle(status: AthleteStatus, reason: string | null): string {
-    const name = STATUS_TITLE[status] ?? status;
-    return reason ? `${name}: ${reason.toLowerCase()}` : name;
-  }
   import { FIELD, TEXT } from '$lib/constants/typography';
 
   let { data }: { data: PageData } = $props();
@@ -434,8 +420,8 @@
             >
               <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
                 {#if competition.status !== 'competed'}
-                  <span class={STATUS_FLAG} title={statusTitle(competition.status, null)}
-                    >{STATUS_LABEL[competition.status]}</span
+                  <span class={STATUS_FLAG} title={athleteStatusTitle(competition.status, null)}
+                    >{ATHLETE_STATUS_LABEL[competition.status]}</span
                   >
                 {:else}
                   {competition.rank || NO_VALUE}

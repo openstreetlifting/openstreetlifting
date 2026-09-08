@@ -1,4 +1,4 @@
-import type { CompetitionStatus } from '$lib/types/competition';
+import { COMPETITION_STATUSES, type CompetitionStatus } from '$lib/types/enums';
 
 interface CompetitionStatusOption {
   value: CompetitionStatus;
@@ -6,14 +6,17 @@ interface CompetitionStatusOption {
   text: string;
 }
 
-export const COMPETITION_STATUSES: readonly CompetitionStatusOption[] = [
-  { value: 'draft', label: 'Draft', text: 'text-zinc-600' },
-  { value: 'upcoming', label: 'Planned', text: 'text-zinc-300' },
-  { value: 'live', label: 'Live', text: 'text-emerald-400' },
-  { value: 'completed', label: 'Completed', text: 'text-zinc-400' },
-  { value: 'cancelled', label: 'Cancelled', text: 'text-zinc-600 line-through' },
-];
+const STATUS_STYLE: Record<CompetitionStatus, Omit<CompetitionStatusOption, 'value'>> = {
+  draft: { label: 'Draft', text: 'text-zinc-600' },
+  upcoming: { label: 'Planned', text: 'text-zinc-300' },
+  live: { label: 'Live', text: 'text-emerald-400' },
+  completed: { label: 'Completed', text: 'text-zinc-400' },
+  cancelled: { label: 'Cancelled', text: 'text-zinc-600 line-through' },
+};
 
-export const COMPETITION_STATUS_FILTERS = COMPETITION_STATUSES.filter(
+export const COMPETITION_STATUS_OPTIONS: readonly CompetitionStatusOption[] =
+  COMPETITION_STATUSES.map((value) => ({ value, ...STATUS_STYLE[value] }));
+
+export const COMPETITION_STATUS_FILTERS = COMPETITION_STATUS_OPTIONS.filter(
   (status) => status.value === 'upcoming' || status.value === 'completed'
 );

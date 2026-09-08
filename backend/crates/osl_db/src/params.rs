@@ -4,7 +4,7 @@
 //! independent of the HTTP layer. osl_api converts its validated request
 //! bodies into these on the way in.
 
-use osl_domain::{CompetitionStatus, Gender, ParseError, WeightClass};
+use osl_domain::{CompetitionStatus, Gender, WeightClass};
 use uuid::Uuid;
 
 /// A slice of a collection, already resolved to SQL `LIMIT` / `OFFSET`.
@@ -21,7 +21,7 @@ pub struct Page {
 ///
 /// Lives here rather than in osl_api because the variants map directly
 /// onto CTE column names in the ranking query.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum RankingMovement {
     Muscleup,
     Pullup,
@@ -72,42 +72,18 @@ impl RankingMovement {
     }
 }
 
-impl std::fmt::Display for RankingMovement {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.as_str())
-    }
-}
-
 impl std::str::FromStr for RankingMovement {
-    type Err = ParseError;
+    type Err = String;
 
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         Self::ALL
             .into_iter()
             .find(|movement| movement.as_str() == s)
-            .ok_or_else(|| ParseError::new(format!("unknown ranking metric: {s}")))
+            .ok_or_else(|| format!("unknown ranking metric: {s}"))
     }
 }
 
-impl sqlx::Type<sqlx::Postgres> for RankingMovement {
-    fn type_info() -> sqlx::postgres::PgTypeInfo {
-        <str as sqlx::Type<sqlx::Postgres>>::type_info()
-    }
-
-    fn compatible(ty: &sqlx::postgres::PgTypeInfo) -> bool {
-        <str as sqlx::Type<sqlx::Postgres>>::compatible(ty)
-    }
-}
-
-impl<'r> sqlx::Decode<'r, sqlx::Postgres> for RankingMovement {
-    fn decode(
-        value: sqlx::postgres::PgValueRef<'r>,
-    ) -> std::result::Result<Self, sqlx::error::BoxDynError> {
-        let raw = <&str as sqlx::Decode<'_, sqlx::Postgres>>::decode(value)?;
-
-        Ok(raw.parse()?)
-    }
-}
+osl_domain::text_enum!(RankingMovement);
 
 /// Which way the ranking runs. Best-first is the natural reading of a
 /// leaderboard, so it is the default; worst-first is there for anyone who

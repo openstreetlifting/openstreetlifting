@@ -348,7 +348,7 @@
                   "type": "null"
                 },
                 {
-                  "$ref": "#/components/schemas/Gender"
+                  "$ref": "#/components/schemas/RankedGender"
                 }
               ]
             }
@@ -2033,6 +2033,14 @@
             "type": "string"
           }
         }
+      },
+      "RankedGender": {
+        "type": "string",
+        "description": "The genders a ranking can be drawn for.\n\nNarrower than `Gender` on purpose: weight classes are only drawn for men and\nwomen, so a mixed board would compare an athlete against an empty field.\nKeeping that in the type rather than in a `validate` call is what makes the\nschema advertise `M` and `F` for the parameter instead of advertising `MX`\nand then refusing it.",
+        "enum": [
+          "M",
+          "F"
+        ]
       },
       "RisConstants": {
         "type": "object",

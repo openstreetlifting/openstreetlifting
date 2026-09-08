@@ -10,42 +10,47 @@
 //! in its own module so that it stays easy to see, and easy to move if
 //! `osl_domain` ever has to become storage agnostic.
 
-use sqlx::{
-    Decode, Encode, Postgres, Type,
-    encode::IsNull,
-    error::BoxDynError,
-    postgres::{PgArgumentBuffer, PgTypeInfo, PgValueRef},
-};
-
-use crate::ParseError;
-
+/// Teaches Postgres to read and write an enum as the text it is stored as.
+///
+/// Takes any type with an inherent `as_str(&self) -> &'static str` and a
+/// `FromStr<Err = String>`. `osl_db` uses it for its own enums too, so the
+/// encoding is written once rather than once per crate.
+#[macro_export]
 macro_rules! text_enum {
     ($($enum:ty),+ $(,)?) => {$(
-        impl Type<Postgres> for $enum {
-            fn type_info() -> PgTypeInfo {
-                <str as Type<Postgres>>::type_info()
+        impl ::sqlx::Type<::sqlx::Postgres> for $enum {
+            fn type_info() -> ::sqlx::postgres::PgTypeInfo {
+                <str as ::sqlx::Type<::sqlx::Postgres>>::type_info()
             }
 
             /// The columns are `VARCHAR`, the literals in the queries are
             /// `TEXT`, and both have to decode, so compatibility is whatever
             /// `str` accepts rather than one named type.
-            fn compatible(ty: &PgTypeInfo) -> bool {
-                <str as Type<Postgres>>::compatible(ty)
+            fn compatible(ty: &::sqlx::postgres::PgTypeInfo) -> bool {
+                <str as ::sqlx::Type<::sqlx::Postgres>>::compatible(ty)
             }
         }
 
-        impl<'q> Encode<'q, Postgres> for $enum {
-            fn encode_by_ref(&self, buf: &mut PgArgumentBuffer) -> Result<IsNull, BoxDynError> {
-                <&str as Encode<'_, Postgres>>::encode(self.as_str(), buf)
+        impl<'q> ::sqlx::Encode<'q, ::sqlx::Postgres> for $enum {
+            fn encode_by_ref(
+                &self,
+                buf: &mut ::sqlx::postgres::PgArgumentBuffer,
+            ) -> ::std::result::Result<::sqlx::encode::IsNull, ::sqlx::error::BoxDynError> {
+                <&str as ::sqlx::Encode<'_, ::sqlx::Postgres>>::encode(self.as_str(), buf)
             }
         }
 
-        impl<'r> Decode<'r, Postgres> for $enum {
-            fn decode(value: PgValueRef<'r>) -> Result<Self, BoxDynError> {
-                let raw = <&str as Decode<'_, Postgres>>::decode(value)?;
+        impl<'r> ::sqlx::Decode<'r, ::sqlx::Postgres> for $enum {
+            fn decode(
+                value: ::sqlx::postgres::PgValueRef<'r>,
+            ) -> ::std::result::Result<Self, ::sqlx::error::BoxDynError> {
+                let raw = <&str as ::sqlx::Decode<'_, ::sqlx::Postgres>>::decode(value)?;
 
                 raw.parse::<Self>()
-                    .map_err(|message| Box::new(ParseError::new(message)) as BoxDynError)
+                    .map_err(|message| {
+                        ::std::boxed::Box::new($crate::ParseError::new(message))
+                            as ::sqlx::error::BoxDynError
+                    })
             }
         }
     )+};
