@@ -635,6 +635,26 @@
         }
       }
     },
+    "/api/v1/ris/distribution": {
+      "get": {
+        "tags": [
+          "ris"
+        ],
+        "operationId": "get_ris_distribution",
+        "responses": {
+          "200": {
+            "description": "Every scored performance with its athlete and competition",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RisDistributionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/ris/formulas": {
       "get": {
         "tags": [
@@ -2079,6 +2099,28 @@
           }
         }
       },
+      "RisDistributionResponse": {
+        "type": "object",
+        "description": "The archive's own performances, grouped by the reference curve they use.",
+        "required": [
+          "men",
+          "women"
+        ],
+        "properties": {
+          "men": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RisPerformanceResponse"
+            }
+          },
+          "women": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RisPerformanceResponse"
+            }
+          }
+        }
+      },
       "RisFormulaResponse": {
         "type": "object",
         "required": [
@@ -2100,6 +2142,48 @@
           "year": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "RisPerformanceResponse": {
+        "type": "object",
+        "description": "One plotted performance, including links back to its athlete and competition.",
+        "required": [
+          "participant_id",
+          "athlete_name",
+          "athlete_slug",
+          "competition_name",
+          "competition_slug",
+          "competition_date",
+          "bodyweight",
+          "total"
+        ],
+        "properties": {
+          "athlete_name": {
+            "type": "string"
+          },
+          "athlete_slug": {
+            "type": "string"
+          },
+          "bodyweight": {
+            "type": "string"
+          },
+          "competition_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "competition_name": {
+            "type": "string"
+          },
+          "competition_slug": {
+            "type": "string"
+          },
+          "participant_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "total": {
+            "type": "string"
           }
         }
       },

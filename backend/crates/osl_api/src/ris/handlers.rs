@@ -1,11 +1,20 @@
+use crate::AppState;
 use crate::error::{WebError, WebResult};
 use axum::{
     Json,
-    extract::{Json as JsonBody, Path},
+    body::Bytes,
+    extract::{Json as JsonBody, Path, State},
+    http::header,
+    response::{IntoResponse, Response},
 };
 use osl_domain::Edition;
 
-use super::dto::{ComputeRisRequest, ComputeRisResponse, RisFormulaResponse};
+use osl_db::repository::ris::RisRepository;
+
+use super::dto::{
+    ComputeRisRequest, ComputeRisResponse, RisDistributionResponse, RisFormulaResponse,
+    RisPerformanceResponse,
+};
 
 #[utoipa::path(
     get,
@@ -72,4 +81,55 @@ pub async fn calculate_ris(
         ris_score,
         formula_year: edition.year(),
     }))
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/ris/distribution",
+    responses(
+        (status = 200, description = "Every scored performance with its athlete and competition", body = RisDistributionResponse)
+    ),
+    tag = "ris"
+)]
+pub async fn get_ris_distribution(State(state): State<AppState>) -> WebResult<Response> {
+    let body = state
+        .caches
+        .ris_distribution
+        .get_or_try_init(|| load_ris_distribution(&state.db))
+        .await?;
+
+    Ok(([(header::CONTENT_TYPE, "application/json")], body).into_response())
+}
+
+async fn load_ris_distribution(db: &osl_db::Database) -> WebResult<Bytes> {
+    let repo = RisRepository::new(db.pool());
+    let performances = repo.scored_performances().await?;
+
+    let mut response = RisDistributionResponse {
+        men: Vec::new(),
+        women: Vec::new(),
+    };
+
+    for performance in performances {
+        let point = RisPerformanceResponse {
+            participant_id: performance.participant_id,
+            athlete_name: performance.athlete_name,
+            athlete_slug: performance.athlete_slug,
+            competition_name: performance.competition_name,
+            competition_slug: performance.competition_slug,
+            competition_date: performance.competition_date,
+            bodyweight: performance.bodyweight,
+            total: performance.total,
+        };
+
+        match performance.gender.as_str() {
+            "F" => response.women.push(point),
+            _ => response.men.push(point),
+        }
+    }
+
+    // Cache the wire payload as cheap-to-clone bytes, not thousands of owned strings.
+    serde_json::to_vec(&response)
+        .map(Bytes::from)
+        .map_err(|error| WebError::InternalServerError(error.to_string()))
 }

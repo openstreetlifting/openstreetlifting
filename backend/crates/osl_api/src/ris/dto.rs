@@ -66,3 +66,23 @@ impl From<Edition> for RisFormulaResponse {
         }
     }
 }
+
+/// One plotted performance, including links back to its athlete and competition.
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct RisPerformanceResponse {
+    pub participant_id: uuid::Uuid,
+    pub athlete_name: String,
+    pub athlete_slug: String,
+    pub competition_name: String,
+    pub competition_slug: String,
+    pub competition_date: chrono::NaiveDate,
+    pub bodyweight: Decimal,
+    pub total: Decimal,
+}
+
+/// The archive's own performances, grouped by the reference curve they use.
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct RisDistributionResponse {
+    pub men: Vec<RisPerformanceResponse>,
+    pub women: Vec<RisPerformanceResponse>,
+}

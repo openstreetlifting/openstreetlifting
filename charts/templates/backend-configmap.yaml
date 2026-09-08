@@ -9,3 +9,4 @@ data:
   HOST: {{ .Values.backend.config.host | quote }}
   PORT: {{ .Values.backend.config.port | quote }}
   LOG_FORMAT: {{ .Values.backend.config.logFormat | quote }}
+  CACHE_ENABLED: {{ .Values.backend.config.cacheEnabled | quote }}

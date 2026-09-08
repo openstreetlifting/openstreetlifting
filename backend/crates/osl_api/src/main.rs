@@ -19,6 +19,7 @@ use utoipa_swagger_ui::SwaggerUi;
 use uuid::Uuid;
 
 mod athlete;
+mod cache;
 mod competition;
 mod config;
 mod error;
@@ -33,6 +34,7 @@ use config::Config;
 #[derive(Clone)]
 pub struct AppState {
     pub db: Arc<Database>,
+    pub caches: Arc<cache::AppCaches>,
 }
 
 #[derive(OpenApi)]
@@ -54,6 +56,7 @@ pub struct AppState {
         ris::handlers::get_current_formula,
         ris::handlers::get_formula_by_year,
         ris::handlers::calculate_ris,
+        ris::handlers::get_ris_distribution,
     ),
     components(
         schemas(
@@ -90,6 +93,8 @@ pub struct AppState {
             crate::ris::dto::GenderConstants,
             crate::ris::dto::ComputeRisRequest,
             crate::ris::dto::ComputeRisResponse,
+            crate::ris::dto::RisDistributionResponse,
+            crate::ris::dto::RisPerformanceResponse,
         )
     ),
     tags(
@@ -143,7 +148,7 @@ async fn main() -> anyhow::Result<()> {
         }
     }
 
-    tracing::info!("Starting OpenStreetLifting API");
+    tracing::info!("Starting OpenStreetlifting API");
 
     let config = Config::from_env().context("Failed to load API configuration")?;
     tracing::info!("Configuration loaded successfully");
@@ -167,7 +172,14 @@ async fn main() -> anyhow::Result<()> {
         .context("Failed to run migrations")?;
     tracing::info!("Database migrations completed successfully");
 
-    let state = AppState { db: Arc::new(db) };
+    tracing::info!(
+        cache_enabled = config.cache_enabled,
+        "Cache configuration loaded"
+    );
+    let state = AppState {
+        db: Arc::new(db),
+        caches: Arc::new(cache::AppCaches::new(config.cache_enabled)),
+    };
 
     let bind_address = format!("{}:{}", config.host, config.port);
     tracing::info!("Starting server at http://{}", bind_address);

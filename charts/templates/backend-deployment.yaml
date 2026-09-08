@@ -14,6 +14,8 @@ spec:
       {{- include "openstreetlifting.backend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/backend-configmap.yaml") . | sha256sum }}
       labels:
         {{- include "openstreetlifting.backend.selectorLabels" . | nindent 8 }}
     spec:

@@ -1,0 +1,45 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                a.gender,\n                cp.bodyweight as \"bodyweight!\",\n                COALESCE(SUM(l.max_weight), 0) as \"total!\"\n            FROM competition_participants cp\n            INNER JOIN athletes a ON cp.athlete_id = a.athlete_id\n            INNER JOIN lifts l ON l.participant_id = cp.participant_id\n            WHERE cp.ris_source = 'computed'\n              AND cp.bodyweight IS NOT NULL\n            GROUP BY cp.participant_id, a.gender, cp.bodyweight\n            ORDER BY cp.bodyweight\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "gender",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "gender"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "bodyweight!",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "bodyweight"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "total!",
+        "type_info": "Numeric",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true,
+      null
+    ]
+  },
+  "hash": "53abaeb04b8d1ad29dd0a5b578e9874fd5ebd362a483193eb03743cccc86aacb"
+}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from '$app/paths';
   import InfoTip from './info-tip.svelte';
   import { REPORTED_GLYPH, REPORTED_MARK } from '$lib/constants/table';
 
@@ -27,12 +28,18 @@
     </p>
 
     <p class="mb-3">
-      When a federation publishes the athlete's bodyweight, we recompute the score ourselves from
-      that bodyweight and their total. When it does not, we trust the RIS the federation gave and
-      record it as reported, marked <span class={REPORTED_MARK}>{REPORTED_GLYPH}</span>. A reported
-      score is not a lesser result, only one we cannot restate on the same scale as the rest.
+      We recalculate RIS with the current formula, so scores may differ from published results.
     </p>
 
-    <p class="text-secondary">RIS formula by Waris Radji and Mathieu Ardoin.</p>
+    <p class="mb-3">
+      When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise,
+      we keep the reported score, marked <span class={REPORTED_MARK}>{REPORTED_GLYPH}</span>.
+    </p>
+
+    <p class="text-secondary">
+      <a href={resolve('/ris')} class="underline transition-colors hover:text-ink"
+        >Learn more on the ris page of OpenStreetlifting</a
+      >
+    </p>
   </InfoTip>
 </span>

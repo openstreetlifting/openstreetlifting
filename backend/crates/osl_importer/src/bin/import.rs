@@ -12,7 +12,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[derive(Parser)]
 #[command(name = "osl-import")]
-#[command(about = "OpenStreetLifting Competition Data Importer", long_about = None)]
+#[command(about = "OpenStreetlifting Competition Data Importer", long_about = None)]
 #[command(version)]
 struct Cli {
     #[command(subcommand)]

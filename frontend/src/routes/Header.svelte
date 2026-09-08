@@ -90,6 +90,15 @@
           Competitions
         </a>
       </li>
+      <li>
+        <a
+          href={resolve('/ris')}
+          class={NAV_LINK}
+          class:text-ink={isActive('/ris')}
+          class:text-secondary={!isActive('/ris')}
+          aria-current={isActive('/ris') ? 'page' : undefined}>RIS</a
+        >
+      </li>
       {@render comingSoon('Records')}
       {@render comingSoon('FAQ')}
       <li>

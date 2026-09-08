@@ -59,7 +59,7 @@ export const ATTEMPT_ROW = 'grid grid-cols-[2.5rem_2.5rem_2.5rem_2.9rem] gap-x-1
 export const FIGURE = 'font-mono text-[0.95em]';
 
 export const NO_VALUE = '-';
-export const NO_RESULT = '—';
+export const NO_RESULT = 'N/A';
 
 /** Which column the table is sorted on. A tint, so it stays off the brightness scale. */
 export const SORTED_COLUMN = 'rounded-t bg-surface-selected text-ink';
