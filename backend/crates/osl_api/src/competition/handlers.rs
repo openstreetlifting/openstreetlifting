@@ -6,12 +6,11 @@ use axum::{
 };
 use osl_db::params::CompetitionFilter;
 use osl_db::repository::competition::CompetitionRepository;
-use osl_domain::CompetitionStatus;
 use serde::Deserialize;
-use std::str::FromStr;
 
 use super::dto::CompetitionResponse;
 use crate::shared::dto::{Direction, PaginatedResponse, PaginationParams};
+use crate::shared::enums::CompetitionStatus;
 use crate::shared::query::Include;
 
 const LIST_INCLUDES: &[&str] = &["federation", "movements"];
@@ -21,7 +20,7 @@ const DETAIL_INCLUDES: &[&str] = &["federation", "results", "movements"];
 pub struct CompetitionListQuery {
     #[serde(default)]
     pub include: Include,
-    pub status: Option<String>,
+    pub status: Option<CompetitionStatus>,
     pub federation: Option<String>,
     pub country: Option<String>,
     pub year: Option<i32>,
@@ -33,9 +32,9 @@ pub struct CompetitionListQuery {
 }
 
 impl CompetitionListQuery {
-    fn to_db_filter(&self, status: Option<CompetitionStatus>) -> CompetitionFilter {
+    fn to_db_filter(&self) -> CompetitionFilter {
         CompetitionFilter {
-            status: status.map(|status| status.as_str().to_string()),
+            status: self.status.map(Into::into),
             federation: self.federation.clone(),
             country: self.country.clone(),
             year: self.year,
@@ -76,16 +75,9 @@ pub async fn list_competitions(
         .validate(LIST_INCLUDES)
         .map_err(WebError::BadRequest)?;
 
-    let status = query
-        .status
-        .as_deref()
-        .map(CompetitionStatus::from_str)
-        .transpose()
-        .map_err(WebError::BadRequest)?;
-
     let repo = CompetitionRepository::new(state.db.pool());
     let page = query.pagination.to_page();
-    let filter = query.to_db_filter(status);
+    let filter = query.to_db_filter();
 
     let (data, total_items) = if LIST_INCLUDES.iter().any(|name| query.include.has(name)) {
         let (items, total) = repo.list_with_details(&page, &filter).await?;

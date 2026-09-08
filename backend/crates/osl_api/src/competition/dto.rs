@@ -12,6 +12,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+use crate::shared::enums::{AthleteStatus, CompetitionStatus, Gender, RisSource};
 use crate::shared::query::Include;
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -20,7 +21,7 @@ pub struct CompetitionResponse {
     pub name: String,
     pub created_at: chrono::NaiveDateTime,
     pub slug: String,
-    pub status: String,
+    pub status: CompetitionStatus,
     pub federation_id: Uuid,
     pub city: Option<String>,
     pub region: Option<String>,
@@ -66,7 +67,7 @@ pub struct CategoryInfo {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub division: Option<String>,
-    pub gender: String,
+    pub gender: Gender,
     pub weight_class: String,
 }
 
@@ -76,12 +77,9 @@ pub struct ParticipantDetail {
     pub bodyweight: Option<rust_decimal::Decimal>,
     pub rank: Option<i32>,
     pub ris_score: Option<rust_decimal::Decimal>,
-    /// `computed` when the score was worked out from a bodyweight and a
-    /// total, `reported` when the source stated it and it cannot be
-    /// restated on the current formula. Absent alongside a missing score.
-    /// TOOD introduce a enum varient for this ?
-    pub ris_source: Option<String>,
-    pub status: String,
+    /// Absent alongside a missing score.
+    pub ris_source: Option<RisSource>,
+    pub status: AthleteStatus,
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,
     pub total: Option<rust_decimal::Decimal>,
@@ -92,7 +90,7 @@ pub struct AthleteInfo {
     pub athlete_id: uuid::Uuid,
     pub first_name: String,
     pub last_name: String,
-    pub gender: String,
+    pub gender: Gender,
     pub country: String,
     pub slug: String,
 }
@@ -120,7 +118,7 @@ impl From<CompetitionRow> for CompetitionResponse {
             name: comp.name,
             created_at: comp.created_at,
             slug: comp.slug,
-            status: comp.status,
+            status: comp.status.into(),
             federation_id: comp.federation_id,
             city: comp.city,
             region: comp.region,
@@ -182,7 +180,7 @@ impl From<Contest> for CategoryInfo {
                 contest.weight_class_max,
             ),
             division: contest.division,
-            gender: contest.gender.as_str().to_string(),
+            gender: contest.gender.into(),
             weight_class: WeightClass::label(contest.weight_class_min, contest.weight_class_max),
         }
     }
@@ -194,7 +192,7 @@ impl From<AthleteRow> for AthleteInfo {
             athlete_id: row.athlete_id,
             first_name: row.first_name,
             last_name: row.last_name,
-            gender: row.gender,
+            gender: row.gender.into(),
             country: row.country,
             slug: row.slug,
         }
@@ -228,8 +226,8 @@ impl From<DbParticipantDetail> for ParticipantDetail {
             bodyweight: participant.bodyweight,
             rank: participant.rank,
             ris_score: participant.ris_score,
-            ris_source: participant.ris_source,
-            status: participant.status,
+            ris_source: participant.ris_source.map(Into::into),
+            status: participant.status.into(),
             status_reason: participant.status_reason,
             lifts: participant.lifts.into_iter().map(Into::into).collect(),
             total: participant.total,

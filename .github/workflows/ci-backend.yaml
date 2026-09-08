@@ -121,11 +121,33 @@ jobs:
         working-directory: backend
         run: cargo nextest run --workspace --all-features
 
+  openapi:
+    name: OpenAPI schema
+    runs-on: ubuntu-latest
+    env:
+      SQLX_OFFLINE: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache-workspaces: backend
+      # The committed schema is what the frontend checks its types against, so
+      # it has to describe the code in this commit and not an earlier one.
+      - name: Check the committed schema is current
+        working-directory: backend
+        run: |
+          cargo run -p osl_api -- --dump-openapi > /tmp/openapi.json
+          diff -u openapi.json /tmp/openapi.json || {
+            echo "backend/openapi.json is stale."
+            echo "Run: cargo run -p osl_api -- --dump-openapi > openapi.json"
+            exit 1
+          }
+
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
     if: always()
-    needs: [format, imports, lint, test]
+    needs: [format, imports, lint, openapi, test]
     steps:
       - name: Check all jobs passed
         run: |

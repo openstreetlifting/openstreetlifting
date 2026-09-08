@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT participant_id, competition_id, athlete_id, bodyweight, status,\n                        created_at, status_reason, ris_score, ris_source\n                 FROM competition_participants\n                 WHERE competition_id = $1\n                   AND weight_class_id = $2\n                   AND division_id IS NOT DISTINCT FROM $3",
+  "query": "SELECT participant_id, competition_id, athlete_id, bodyweight,\n                        status as \"status: AthleteStatus\", created_at, status_reason,\n                        ris_score, ris_source as \"ris_source: RisSource\"\n                 FROM competition_participants\n                 WHERE competition_id = $1\n                   AND weight_class_id = $2\n                   AND division_id IS NOT DISTINCT FROM $3",
   "describe": {
     "columns": [
       {
@@ -49,7 +49,7 @@
       },
       {
         "ordinal": 4,
-        "name": "status",
+        "name": "status: AthleteStatus",
         "type_info": "Text",
         "origin": {
           "Table": {
@@ -93,7 +93,7 @@
       },
       {
         "ordinal": 8,
-        "name": "ris_source",
+        "name": "ris_source: RisSource",
         "type_info": "Varchar",
         "origin": {
           "Table": {
@@ -122,5 +122,5 @@
       true
     ]
   },
-  "hash": "82093cc35cea1332b1242b2b6e2807e1fa1b9db4a5004f17a791f1c5eed67c70"
+  "hash": "099c7ddd5181b73d339c7868f920b95d9bc4872c10a6da9f89d56ad1f06cf82e"
 }

@@ -1,3 +1,4 @@
+use osl_db::params::RankingMovement;
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::{Gender, Movement};
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
@@ -89,7 +90,7 @@ async fn every_ranking_metric_has_a_global_and_country_place(pool: PgPool) {
 
     let total = standings
         .iter()
-        .find(|standing| standing.metric == "total")
+        .find(|standing| standing.metric == RankingMovement::Total)
         .unwrap();
     assert_eq!(total.value.to_string(), "390");
     assert_eq!((total.global_place, total.global_field), (2, 3));
@@ -97,7 +98,7 @@ async fn every_ranking_metric_has_a_global_and_country_place(pool: PgPool) {
 
     let muscleup = standings
         .iter()
-        .find(|standing| standing.metric == "muscleup")
+        .find(|standing| standing.metric == RankingMovement::Muscleup)
         .unwrap();
     assert_eq!(muscleup.value.to_string(), "50");
     assert_eq!((muscleup.global_place, muscleup.global_field), (2, 3));
@@ -171,7 +172,7 @@ async fn metric_places_only_compare_the_athletes_weight_class(pool: PgPool) {
         .unwrap();
     let heavier_total = heavier
         .iter()
-        .find(|standing| standing.metric == "total")
+        .find(|standing| standing.metric == RankingMovement::Total)
         .unwrap();
     assert_eq!(
         (heavier_total.global_place, heavier_total.global_field),
@@ -180,7 +181,7 @@ async fn metric_places_only_compare_the_athletes_weight_class(pool: PgPool) {
     );
     let heavier_ris = heavier
         .iter()
-        .find(|standing| standing.metric == "ris")
+        .find(|standing| standing.metric == RankingMovement::Ris)
         .unwrap();
     assert_eq!(
         heavier_ris.global_field, 4,
@@ -193,7 +194,7 @@ async fn metric_places_only_compare_the_athletes_weight_class(pool: PgPool) {
         .unwrap();
     let lighter_total = lighter
         .iter()
-        .find(|standing| standing.metric == "total")
+        .find(|standing| standing.metric == RankingMovement::Total)
         .unwrap();
     assert_eq!(
         (lighter_total.global_place, lighter_total.global_field),
@@ -237,7 +238,7 @@ async fn metric_places_do_not_compare_men_and_women(pool: PgPool) {
             .unwrap();
         let total = standings
             .iter()
-            .find(|standing| standing.metric == "total")
+            .find(|standing| standing.metric == RankingMovement::Total)
             .unwrap();
         assert_eq!(
             (total.global_place, total.global_field),
@@ -247,7 +248,7 @@ async fn metric_places_do_not_compare_men_and_women(pool: PgPool) {
 
         let ris = standings
             .iter()
-            .find(|standing| standing.metric == "ris")
+            .find(|standing| standing.metric == RankingMovement::Ris)
             .unwrap();
         assert_eq!(
             (ris.global_field, ris.country_field),

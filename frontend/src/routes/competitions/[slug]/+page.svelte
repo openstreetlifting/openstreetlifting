@@ -51,6 +51,7 @@
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import type { RankingEntry } from '$lib/types/ranking';
   import type { Attempt, Participant, CategoryDetail } from '$lib/types/competition';
+  import type { AthleteStatus } from '$lib/types/enums';
   import { FIELD, TEXT } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
   import { breadcrumbLd, competitionLd, listingSeo } from '$lib/seo';
@@ -182,7 +183,7 @@
   // it can never return these. The competition's own results list them, and a
   // competition page is a record of who turned up, not a leaderboard.
   // Disqualified before no_show: one turned up and lifted, the other never did.
-  const NOT_PLACED_ORDER = ['disqualified', 'no_show'];
+  const NOT_PLACED_ORDER: AthleteStatus[] = ['disqualified', 'no_show'];
 
   const notPlaced = $derived(
     competition.categories
@@ -219,13 +220,16 @@
 
   // The badge is two letters, so the title carries the meaning. A reason from
   // the source is better than either, when there is one.
-  const STATUS_LABEL: Record<string, string> = { disqualified: 'DQ', no_show: 'NS' };
-  const STATUS_TITLE: Record<string, string> = {
+  const STATUS_LABEL: Partial<Record<AthleteStatus, string>> = {
+    disqualified: 'DQ',
+    no_show: 'NS',
+  };
+  const STATUS_TITLE: Partial<Record<AthleteStatus, string>> = {
     disqualified: 'Disqualified',
     no_show: 'Did not lift',
   };
 
-  function statusTitle(status: string, reason: string | null): string {
+  function statusTitle(status: AthleteStatus, reason: string | null): string {
     const name = STATUS_TITLE[status] ?? status;
     return reason ? `${name}: ${reason.toLowerCase()}` : name;
   }

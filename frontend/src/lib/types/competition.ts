@@ -1,3 +1,7 @@
+import type { AthleteStatus, CompetitionStatus, Gender, RisSource } from './enums';
+
+export type { AthleteStatus, CompetitionStatus, Gender, RisSource } from './enums';
+
 export interface Federation {
   federation_id: string;
   name: string;
@@ -10,8 +14,6 @@ export interface Movement {
   display_order: number | null;
   code?: string | null;
 }
-
-export type CompetitionStatus = 'draft' | 'upcoming' | 'live' | 'completed' | 'cancelled';
 
 export interface Competition {
   competition_id: string;
@@ -50,7 +52,7 @@ export interface AthleteInfo {
   athlete_id: string;
   first_name: string;
   last_name: string;
-  gender: string;
+  gender: Gender;
   country: string;
   slug: string;
   bodyweight?: number | null;
@@ -69,13 +71,6 @@ export interface Lift {
   attempts: Attempt[];
 }
 
-/**
- * Where a score came from. `computed` was worked out from the athlete's
- * bodyweight and total. `reported` was stated by the source, which gave no
- * bodyweight, so it cannot be restated on the formula everything else uses.
- */
-export type RisSource = 'computed' | 'reported';
-
 export interface Participant {
   athlete: AthleteInfo;
   bodyweight: string | null;
@@ -83,7 +78,7 @@ export interface Participant {
   total: string | null;
   ris_score: string | null;
   ris_source: RisSource | null;
-  status: 'competed' | 'disqualified' | 'no_show';
+  status: AthleteStatus;
   status_reason: string | null;
   lifts: Lift[];
 }
@@ -91,7 +86,7 @@ export interface Participant {
 export interface Category {
   name: string;
   division?: string | null;
-  gender: string;
+  gender: Gender;
   weight_class: string;
   weight_class_min: string | null;
   weight_class_max: string | null;

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT competition_id, name, created_at, slug, status, federation_id,\n                   city, region, country, start_date, end_date\n            FROM competitions\n            WHERE competition_id = $1\n            ",
+  "query": "\n            SELECT competition_id, name, created_at, slug,\n                   status as \"status: CompetitionStatus\", federation_id,\n                   city, region, country, start_date, end_date\n            FROM competitions\n            WHERE competition_id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -49,7 +49,7 @@
       },
       {
         "ordinal": 4,
-        "name": "status",
+        "name": "status: CompetitionStatus",
         "type_info": "Varchar",
         "origin": {
           "Table": {
@@ -144,5 +144,5 @@
       false
     ]
   },
-  "hash": "fd64f942a50a52576102115f71a8fddf5a93afb7138c1854d17f303e1b1411d6"
+  "hash": "b2d94d3870e7f7fbfee3baa3298cc7507c630f65b8d619e0ab8a816797a174e8"
 }

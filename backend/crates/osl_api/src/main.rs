@@ -73,6 +73,10 @@ pub struct AppState {
             crate::shared::dto::PaginationMeta,
             crate::shared::dto::PaginationParams,
             crate::shared::query::Include,
+            crate::shared::enums::AthleteStatus,
+            crate::shared::enums::CompetitionStatus,
+            crate::shared::enums::Gender,
+            crate::shared::enums::RisSource,
             crate::ranking::dto::Movement,
             crate::shared::dto::Direction,
             crate::ranking::dto::GlobalRankingEntry,
@@ -107,6 +111,17 @@ impl MakeRequestId for MakeRequestUuid {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    // The schema is the contract the frontend is checked against, so it has to
+    // be readable without a database or a running server:
+    //
+    //     cargo run -p osl_api -- --dump-openapi > openapi.json
+    //
+    // The result is committed as backend/openapi.json.
+    if std::env::args().any(|arg| arg == "--dump-openapi") {
+        println!("{}", ApiDoc::openapi().to_pretty_json()?);
+        return Ok(());
+    }
+
     dotenvy::dotenv().ok();
 
     let log_format = std::env::var("LOG_FORMAT").unwrap_or_default();

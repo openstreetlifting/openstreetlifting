@@ -1,4 +1,5 @@
 use crate::shared::dto::Direction;
+use crate::shared::enums::{Gender, RisSource};
 use chrono::NaiveDate;
 use osl_db::params::{RankingFilter, RankingMovement};
 use osl_db::projections::ranking::RankingRow;
@@ -11,7 +12,7 @@ use uuid::Uuid;
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct ClassesFilter {
-    pub gender: Option<String>,
+    pub gender: Option<Gender>,
     pub competition_id: Option<Uuid>,
 }
 
@@ -49,7 +50,7 @@ impl From<Movement> for RankingMovement {
 pub struct GlobalRankingFilter {
     #[serde(flatten)]
     pub pagination: crate::shared::dto::PaginationParams,
-    pub gender: Option<String>,
+    pub gender: Option<Gender>,
     pub country: Option<String>,
     pub federation: Option<String>,
     pub q: Option<String>,
@@ -68,10 +69,10 @@ impl GlobalRankingFilter {
     pub fn validate(&self) -> Result<(), String> {
         self.pagination.validate()?;
 
-        if let Some(ref gender) = self.gender
-            && gender != "M"
-            && gender != "F"
-        {
+        // Weight classes are only drawn for men and women, so a mixed
+        // ranking would compare an athlete against an empty field. Saying so
+        // is better than returning nothing.
+        if self.gender == Some(Gender::Mx) {
             return Err("gender must be 'M' or 'F'".to_string());
         }
 
@@ -84,7 +85,7 @@ impl GlobalRankingFilter {
 
     pub fn to_db_filter(&self) -> RankingFilter {
         RankingFilter {
-            gender: self.gender.clone(),
+            gender: self.gender.map(Into::into),
             country: self.country.clone(),
             federation: self.federation.clone(),
             name: self
@@ -119,7 +120,7 @@ pub struct GlobalRankingEntry {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub division: Option<String>,
     pub ris: Option<f64>,
-    pub ris_source: Option<String>,
+    pub ris_source: Option<RisSource>,
     pub total: Option<f64>,
     pub muscleup: Option<f64>,
     pub pullup: Option<f64>,
@@ -137,7 +138,7 @@ pub struct AthleteInfo {
     pub last_name: String,
     pub slug: String,
     pub country: String,
-    pub gender: String,
+    pub gender: Gender,
     pub bodyweight: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instagram_handle: Option<String>,
@@ -167,14 +168,14 @@ impl From<RankingRow> for GlobalRankingEntry {
                 last_name: row.last_name,
                 slug: row.slug,
                 country: row.country,
-                gender: row.gender,
+                gender: row.gender.into(),
                 bodyweight: row.bodyweight.map(decimal_to_f64),
                 instagram_handle: row.instagram_handle,
             },
             category: WeightClass::label(row.weight_class_min, row.weight_class_max),
             division: row.division,
             ris: row.ris_score.map(decimal_to_f64),
-            ris_source: row.ris_source,
+            ris_source: row.ris_source.map(Into::into),
             total: row.total.map(decimal_to_f64),
             muscleup: row.muscleup.map(decimal_to_f64),
             pullup: row.pullup.map(decimal_to_f64),

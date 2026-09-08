@@ -4,7 +4,7 @@
 //! independent of the HTTP layer. osl_api converts its validated request
 //! bodies into these on the way in.
 
-use osl_domain::WeightClass;
+use osl_domain::{CompetitionStatus, Gender, ParseError, WeightClass};
 use uuid::Uuid;
 
 /// A slice of a collection, already resolved to SQL `LIMIT` / `OFFSET`.
@@ -21,7 +21,7 @@ pub struct Page {
 ///
 /// Lives here rather than in osl_api because the variants map directly
 /// onto CTE column names in the ranking query.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub enum RankingMovement {
     Muscleup,
     Pullup,
@@ -33,6 +33,19 @@ pub enum RankingMovement {
 }
 
 impl RankingMovement {
+    /// Every metric a standing is worked out for. The athlete standings query
+    /// builds one `UNION ALL` branch per entry, so adding a variant here is what
+    /// puts it in the ranking rather than a new block of copied SQL.
+    pub const ALL: [RankingMovement; 6] = [
+        RankingMovement::Ris,
+        RankingMovement::Total,
+        RankingMovement::Muscleup,
+        RankingMovement::Pullup,
+        RankingMovement::Dips,
+        RankingMovement::Squat,
+    ];
+
+    /// The column the value is read from in the `movement_weights` CTE.
     pub fn as_column(&self) -> &'static str {
         match self {
             Self::Muscleup => "muscleup",
@@ -42,6 +55,57 @@ impl RankingMovement {
             Self::Total => "total",
             Self::Ris => "ris_score",
         }
+    }
+
+    /// What the metric is called once it has been unioned into one column, and
+    /// so what comes back on `AthleteMetricStandingRow::metric`. Only RIS
+    /// differs from its column, which is why the two are not the same method.
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::Muscleup => "muscleup",
+            Self::Pullup => "pullup",
+            Self::Dips => "dips",
+            Self::Squat => "squat",
+            Self::Total => "total",
+            Self::Ris => "ris",
+        }
+    }
+}
+
+impl std::fmt::Display for RankingMovement {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
+}
+
+impl std::str::FromStr for RankingMovement {
+    type Err = ParseError;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        Self::ALL
+            .into_iter()
+            .find(|movement| movement.as_str() == s)
+            .ok_or_else(|| ParseError::new(format!("unknown ranking metric: {s}")))
+    }
+}
+
+impl sqlx::Type<sqlx::Postgres> for RankingMovement {
+    fn type_info() -> sqlx::postgres::PgTypeInfo {
+        <str as sqlx::Type<sqlx::Postgres>>::type_info()
+    }
+
+    fn compatible(ty: &sqlx::postgres::PgTypeInfo) -> bool {
+        <str as sqlx::Type<sqlx::Postgres>>::compatible(ty)
+    }
+}
+
+impl<'r> sqlx::Decode<'r, sqlx::Postgres> for RankingMovement {
+    fn decode(
+        value: sqlx::postgres::PgValueRef<'r>,
+    ) -> std::result::Result<Self, sqlx::error::BoxDynError> {
+        let raw = <&str as sqlx::Decode<'_, sqlx::Postgres>>::decode(value)?;
+
+        Ok(raw.parse()?)
     }
 }
 
@@ -66,7 +130,7 @@ impl SortDirection {
 
 #[derive(Debug, Clone)]
 pub struct RankingFilter {
-    pub gender: Option<String>,
+    pub gender: Option<Gender>,
     pub country: Option<String>,
     pub federation: Option<String>,
     pub name: Option<String>,
@@ -88,7 +152,7 @@ pub struct RankingFilter {
 /// those are the three things someone types into one box.
 #[derive(Debug, Clone, Default)]
 pub struct CompetitionFilter {
-    pub status: Option<String>,
+    pub status: Option<CompetitionStatus>,
     pub federation: Option<String>,
     pub country: Option<String>,
     pub year: Option<i32>,

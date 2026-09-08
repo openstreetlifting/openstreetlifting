@@ -6,6 +6,7 @@
     PersonalRecord,
   } from '$lib/types/athlete';
   import type { Attempt } from '$lib/types/competition';
+  import type { AthleteStatus, Gender } from '$lib/types/enums';
   import {
     Card,
     Breadcrumb,
@@ -46,13 +47,16 @@
 
   // The badge is two letters, so the title carries the meaning. A reason from
   // the source is better than either, when there is one.
-  const STATUS_LABEL: Record<string, string> = { disqualified: 'DQ', no_show: 'NS' };
-  const STATUS_TITLE: Record<string, string> = {
+  const STATUS_LABEL: Partial<Record<AthleteStatus, string>> = {
+    disqualified: 'DQ',
+    no_show: 'NS',
+  };
+  const STATUS_TITLE: Partial<Record<AthleteStatus, string>> = {
     disqualified: 'Disqualified',
     no_show: 'Did not lift',
   };
 
-  function statusTitle(status: string, reason: string | null): string {
+  function statusTitle(status: AthleteStatus, reason: string | null): string {
     const name = STATUS_TITLE[status] ?? status;
     return reason ? `${name}: ${reason.toLowerCase()}` : name;
   }
@@ -133,7 +137,7 @@
     return [...records].sort((a, b) => getPriority(a.movement_name) - getPriority(b.movement_name));
   }
 
-  const GENDER_LABEL: Record<string, string> = { M: 'Men', F: 'Women' };
+  const GENDER_LABEL: Partial<Record<Gender, string>> = { M: 'Men', F: 'Women' };
 
   const CARD_LABEL = `flex items-center gap-1.5 ${TEXT.micro} tracking-wider text-zinc-500 uppercase`;
   const CARD_FIGURE = 'font-mono text-xl font-semibold text-white sm:text-2xl';

@@ -1,4 +1,5 @@
 use chrono::NaiveDateTime;
+use osl_db::params::RankingMovement;
 use osl_db::projections::athlete::{
     AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
 };
@@ -9,6 +10,7 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::competition::dto::AttemptInfo;
+use crate::shared::enums::{AthleteStatus, Gender, RisSource};
 use crate::shared::query::Include;
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -19,7 +21,7 @@ pub struct AthleteResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub native_name: Option<String>,
     pub slug: String,
-    pub gender: String,
+    pub gender: Gender,
     pub country: String,
     pub profile_picture_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -162,23 +164,26 @@ impl AthleteStanding {
         };
 
         for row in rows {
-            let metric = row.metric.clone();
-            if metric == "ris" {
+            // RIS is an open comparison with no weight class behind it, so it
+            // is taken before the class is worked out rather than after.
+            if row.metric == RankingMovement::Ris {
                 standing.ris = Some(row.into());
                 continue;
             }
+
+            let metric = row.metric;
 
             let Some(metric_standing) = MetricStanding::from_row(row) else {
                 continue;
             };
 
-            match metric.as_str() {
-                "total" => standing.total = Some(metric_standing),
-                "muscleup" => standing.muscleup = Some(metric_standing),
-                "pullup" => standing.pullup = Some(metric_standing),
-                "dips" => standing.dips = Some(metric_standing),
-                "squat" => standing.squat = Some(metric_standing),
-                _ => {}
+            match metric {
+                RankingMovement::Total => standing.total = Some(metric_standing),
+                RankingMovement::Muscleup => standing.muscleup = Some(metric_standing),
+                RankingMovement::Pullup => standing.pullup = Some(metric_standing),
+                RankingMovement::Dips => standing.dips = Some(metric_standing),
+                RankingMovement::Squat => standing.squat = Some(metric_standing),
+                RankingMovement::Ris => {}
             }
         }
 
@@ -219,12 +224,9 @@ pub struct AthleteCompetitionSummary {
     pub rank: Option<i32>,
     pub total: Option<rust_decimal::Decimal>,
     pub ris_score: Option<rust_decimal::Decimal>,
-    /// `computed` when the score was worked out from a bodyweight and a
-    /// total, `reported` when the source stated it and it cannot be
-    /// restated on the current formula. Absent alongside a missing score.
-    /// TODO: introduce a enum constant for this
-    pub ris_source: Option<String>,
-    pub status: String,
+    /// Absent alongside a missing score.
+    pub ris_source: Option<RisSource>,
+    pub status: AthleteStatus,
     /// The movements the competition ran, as letters of MPDS.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub event: Option<String>,
@@ -248,7 +250,7 @@ impl From<AthleteRow> for AthleteResponse {
             last_name: athlete.last_name,
             native_name: athlete.native_name,
             slug: athlete.slug,
-            gender: athlete.gender,
+            gender: athlete.gender.into(),
             country: athlete.country,
             profile_picture_url: athlete.profile_picture_url,
             instagram_handle: None,
@@ -278,8 +280,8 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
             rank: row.rank,
             total: row.total,
             ris_score: row.ris_score,
-            ris_source: row.ris_source,
-            status: row.status,
+            ris_source: row.ris_source.map(Into::into),
+            status: row.status.into(),
             event: row.event_code,
             lifts: row.lifts.into_iter().map(AthleteLift::from).collect(),
         }

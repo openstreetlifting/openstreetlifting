@@ -1,4 +1,4 @@
-use osl_domain::Gender;
+use osl_domain::{AthleteStatus, Gender, RisSource};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
@@ -30,8 +30,8 @@ pub struct AthleteCompetitionRow {
     pub rank: Option<i32>,
     pub total: Option<Decimal>,
     pub ris_score: Option<Decimal>,
-    pub ris_source: Option<String>,
-    pub status: String,
+    pub ris_source: Option<RisSource>,
+    pub status: AthleteStatus,
     pub event_code: Option<String>,
     pub lifts: Vec<AthleteLiftRow>,
 }

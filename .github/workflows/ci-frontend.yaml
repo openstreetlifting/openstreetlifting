@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - frontend/**
+      # The type tests read the API's schema, so a backend-only change that
+      # renames a variant has to run them too.
+      - backend/openapi.json
       - .github/workflows/ci-frontend.yaml
     branches: [main]
 
@@ -68,11 +71,33 @@ jobs:
         working-directory: frontend
         run: pnpm build
 
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 12
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Install dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+      # Only the node project. The browser one needs a Playwright download and
+      # has no tests of its own yet.
+      - name: Run tests
+        working-directory: frontend
+        run: pnpm exec vitest run --project server
+
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
     if: always()
-    needs: [format, lint, build]
+    needs: [format, lint, build, test]
     steps:
       - name: Check all jobs passed
         run: |

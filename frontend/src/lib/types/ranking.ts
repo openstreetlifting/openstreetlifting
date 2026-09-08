@@ -1,4 +1,5 @@
-import type { AthleteInfo, CompetitionInfo, RisSource } from './competition';
+import type { AthleteInfo, CompetitionInfo } from './competition';
+import type { Gender, RisSource } from './enums';
 import type { Paginated } from './pagination';
 
 export interface RankingFederationInfo {
@@ -33,7 +34,7 @@ export type RankingsResponse = Paginated<RankingEntry>;
 export interface RankingFilters {
   page: number;
   page_size?: number;
-  gender?: string | null;
+  gender?: Gender | null;
   country?: string | null;
   /** Federation name, as listed by `/rankings/federations`. */
   federation?: string | null;

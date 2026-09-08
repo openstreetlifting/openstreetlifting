@@ -1,3 +1,4 @@
+use osl_domain::Gender;
 use rust_decimal::Decimal;
 use sqlx::FromRow;
 use uuid::Uuid;
@@ -13,5 +14,5 @@ pub struct RecordRow {
     pub competition_id: Uuid,
     pub date_set: chrono::NaiveDate,
     pub weight: Decimal,
-    pub gender: Option<String>,
+    pub gender: Option<Gender>,
 }

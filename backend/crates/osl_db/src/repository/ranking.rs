@@ -1,4 +1,4 @@
-use osl_domain::WeightClass;
+use osl_domain::{Gender, WeightClass};
 use rust_decimal::Decimal;
 use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
@@ -81,9 +81,9 @@ impl<'a> RankingRepository<'a> {
             "#,
         );
 
-        if let Some(ref gender) = filter.gender {
+        if let Some(gender) = filter.gender {
             query.push(" AND a.gender = ");
-            query.push_bind(gender);
+            query.push_bind(gender.as_str());
         }
 
         if let Some(ref country) = filter.country {
@@ -175,6 +175,41 @@ impl<'a> RankingRepository<'a> {
         query.push(" DESC NULLS LAST ) ");
     }
 
+    /// Folds every metric into one `metric` / `value` pair so they can be
+    /// placed by the same window functions.
+    ///
+    /// One branch per `RankingMovement::ALL`, so a new metric is a new variant
+    /// rather than another copy of this SELECT that someone has to remember to
+    /// keep in step with the name the API matches on. The interpolated names
+    /// come from the enum and never from a caller.
+    fn push_metric_candidates(query: &mut QueryBuilder<Postgres>) {
+        query.push(" metric_candidates AS ( ");
+
+        for (index, movement) in RankingMovement::ALL.into_iter().enumerate() {
+            if index > 0 {
+                query.push(" UNION ALL ");
+            }
+
+            query
+                .push(" SELECT athlete_id, country, gender, weight_class_min, weight_class_max, '");
+            query.push(movement.as_str());
+            query.push("' AS metric, ");
+            query.push(movement.as_column());
+            query.push(" AS value FROM movement_weights WHERE ");
+            query.push(movement.as_column());
+            query.push(" IS NOT NULL ");
+
+            // A total only means something within one event, so unlike the
+            // single movements it does not compare across all of them.
+            if movement == RankingMovement::Total {
+                query.push(" AND event_code = ");
+                query.push_bind(osl_domain::FULL_EVENT);
+            }
+        }
+
+        query.push(" ), ");
+    }
+
     fn push_name_match(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
         let Some(name) = filter.name.as_ref() else {
             return;
@@ -232,7 +267,7 @@ impl<'a> RankingRepository<'a> {
             .get_athlete_metric_standings(athlete_id)
             .await?
             .into_iter()
-            .find(|standing| standing.metric == "ris")
+            .find(|standing| standing.metric == RankingMovement::Ris)
             .map(|standing| AthleteStandingRow {
                 ris_score: Some(standing.value),
                 global_place: standing.global_place,
@@ -269,44 +304,9 @@ impl<'a> RankingRepository<'a> {
         };
 
         let mut query = Self::movement_weights(&filter);
+        Self::push_metric_candidates(&mut query);
         query.push(
             r#"
-            metric_candidates AS (
-                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
-                       'ris' AS metric, ris_score AS value
-                FROM movement_weights
-                WHERE ris_score IS NOT NULL
-                UNION ALL
-                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
-                       'total' AS metric, total AS value
-                FROM movement_weights
-                WHERE total IS NOT NULL AND event_code =
-            "#,
-        );
-        query.push_bind(osl_domain::FULL_EVENT);
-        query.push(
-            r#"
-                UNION ALL
-                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
-                       'muscleup' AS metric, muscleup AS value
-                FROM movement_weights
-                WHERE muscleup IS NOT NULL
-                UNION ALL
-                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
-                       'pullup' AS metric, pullup AS value
-                FROM movement_weights
-                WHERE pullup IS NOT NULL
-                UNION ALL
-                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
-                       'dips' AS metric, dips AS value
-                FROM movement_weights
-                WHERE dips IS NOT NULL
-                UNION ALL
-                SELECT athlete_id, country, gender, weight_class_min, weight_class_max,
-                       'squat' AS metric, squat AS value
-                FROM movement_weights
-                WHERE squat IS NOT NULL
-            ),
             mine AS (
                 SELECT DISTINCT ON (metric)
                     metric, gender, weight_class_min, weight_class_max
@@ -453,7 +453,7 @@ impl<'a> RankingRepository<'a> {
     /// contested at that competition.
     pub async fn list_distinct_classes(
         &self,
-        gender: Option<&str>,
+        gender: Option<Gender>,
         competition_id: Option<Uuid>,
     ) -> Result<Vec<String>> {
         let mut query = QueryBuilder::new(
@@ -469,7 +469,7 @@ impl<'a> RankingRepository<'a> {
 
         if let Some(gender) = gender {
             query.push(" WHERE wc.gender = ");
-            query.push_bind(gender);
+            query.push_bind(gender.as_str());
             has_where = true;
         }
 

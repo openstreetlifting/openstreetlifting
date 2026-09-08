@@ -1,3 +1,4 @@
+use osl_domain::{AthleteStatus, Gender, RisSource};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -7,7 +8,6 @@ use crate::params::Page;
 use crate::projections::athlete::{
     AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
 };
-use crate::repository::parse_gender;
 use crate::rows::athlete::AthleteRow;
 
 pub struct AthleteRepository<'a> {
@@ -24,7 +24,7 @@ impl<'a> AthleteRepository<'a> {
         let athletes = sqlx::query_as!(
             AthleteRow,
             r#"
-            SELECT athlete_id, first_name, last_name, native_name, gender, created_at,
+            SELECT athlete_id, first_name, last_name, native_name, gender as "gender: Gender", created_at,
                    country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
@@ -48,7 +48,7 @@ impl<'a> AthleteRepository<'a> {
         let athlete = sqlx::query_as!(
             AthleteRow,
             r#"
-            SELECT athlete_id, first_name, last_name, native_name, gender, created_at,
+            SELECT athlete_id, first_name, last_name, native_name, gender as "gender: Gender", created_at,
                    country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
@@ -66,7 +66,7 @@ impl<'a> AthleteRepository<'a> {
         let athlete_from_history = sqlx::query_as!(
             AthleteRow,
             r#"
-            SELECT athlete_id, first_name, last_name, native_name, gender, created_at,
+            SELECT athlete_id, first_name, last_name, native_name, gender as "gender: Gender", created_at,
                    country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
@@ -85,7 +85,7 @@ impl<'a> AthleteRepository<'a> {
         let athlete = sqlx::query_as!(
             AthleteRow,
             r#"
-            SELECT athlete_id, first_name, last_name, native_name, gender, created_at,
+            SELECT athlete_id, first_name, last_name, native_name, gender as "gender: Gender", created_at,
                    country, profile_picture_url, slug,
                    COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
             FROM athletes
@@ -141,7 +141,7 @@ impl<'a> AthleteRepository<'a> {
                 c.slug as competition_slug,
                 c.start_date as competition_date,
                 d.name as "division?",
-                wc.gender as category_gender,
+                wc.gender as "category_gender: Gender",
                 wc.min_kg as weight_class_min,
                 wc.max_kg as weight_class_max,
                 placed.place as "rank?",
@@ -149,8 +149,8 @@ impl<'a> AthleteRepository<'a> {
                      ELSE COALESCE(SUM(l.max_weight), 0)
                 END as "total: Decimal",
                 cp.ris_score,
-                cp.ris_source,
-                cp.status,
+                cp.ris_source as "ris_source: RisSource",
+                cp.status as "status: AthleteStatus",
                 c.event_code,
                 COALESCE(
                     jsonb_agg(
@@ -195,28 +195,26 @@ impl<'a> AthleteRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        let competitions = rows
+        let competitions: Vec<AthleteCompetitionRow> = rows
             .into_iter()
-            .map(|row| {
-                Ok(AthleteCompetitionRow {
-                    competition_id: row.competition_id,
-                    competition_name: row.competition_name,
-                    competition_slug: row.competition_slug,
-                    competition_date: Some(row.competition_date),
-                    division: row.division,
-                    category_gender: parse_gender(&row.category_gender)?,
-                    weight_class_min: row.weight_class_min,
-                    weight_class_max: row.weight_class_max,
-                    rank: row.rank,
-                    total: row.total,
-                    ris_score: row.ris_score,
-                    ris_source: row.ris_source,
-                    status: row.status,
-                    event_code: row.event_code,
-                    lifts: row.lifts.0,
-                })
+            .map(|row| AthleteCompetitionRow {
+                competition_id: row.competition_id,
+                competition_name: row.competition_name,
+                competition_slug: row.competition_slug,
+                competition_date: Some(row.competition_date),
+                division: row.division,
+                category_gender: row.category_gender,
+                weight_class_min: row.weight_class_min,
+                weight_class_max: row.weight_class_max,
+                rank: row.rank,
+                total: row.total,
+                ris_score: row.ris_score,
+                ris_source: row.ris_source,
+                status: row.status,
+                event_code: row.event_code,
+                lifts: row.lifts.0,
             })
-            .collect::<Result<Vec<_>>>()?;
+            .collect();
 
         let personal_records = sqlx::query_as!(
             PersonalRecordRow,

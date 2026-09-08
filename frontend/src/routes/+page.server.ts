@@ -1,4 +1,5 @@
 import { rankingsService } from '$lib/server/api';
+import { asGender } from '$lib/types/enums';
 import type { PageServerLoad } from './$types';
 
 const title = 'Streetlifting rankings and records';
@@ -6,7 +7,7 @@ const description =
   'Global streetlifting rankings from every competition in the archive: muscle up, pull up, dips and squat results, RIS scores and athlete records.';
 
 export const load: PageServerLoad = async ({ url }) => {
-  const gender = url.searchParams.get('gender') || null;
+  const gender = asGender(url.searchParams.get('gender'));
 
   const [classes, years, countries, federations] = await Promise.all([
     rankingsService.getRankingClasses(gender).catch(() => []),
