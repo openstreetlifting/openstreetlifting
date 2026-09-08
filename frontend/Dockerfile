@@ -8,6 +8,9 @@ COPY package.json pnpm-lock.yaml ./
 
 RUN pnpm install --frozen-lockfile
 
+FROM deps AS prod-deps
+RUN pnpm prune --prod --ignore-scripts
+
 FROM node:24-alpine AS builder
 RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
@@ -33,6 +36,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 COPY --from=builder --chown=sveltekit:nodejs /app/build ./build
 COPY --from=builder --chown=sveltekit:nodejs /app/package.json ./package.json
+COPY --from=prod-deps --chown=sveltekit:nodejs /app/node_modules ./node_modules
 
 USER sveltekit
 
