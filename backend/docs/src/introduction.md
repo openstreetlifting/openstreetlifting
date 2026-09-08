@@ -1,11 +1,6 @@
 # OpenStreetlifting
 
-<!-- What this project is, in two or three sentences. Who it is for. -->
-
 ## Why this exists
-
-<!-- The problem: streetlifting results live on Instagram posts and PDFs and
-     disappear. What we do about it. -->
 
 ## What is in here
 
