@@ -185,7 +185,11 @@ fn main() -> Result<()> {
         println!("  refused   {refusal}");
     }
 
-    let verb = if cli.check { "would recover" } else { "recovered" };
+    let verb = if cli.check {
+        "would recover"
+    } else {
+        "recovered"
+    };
     println!(
         "\n{verb} {recovered} bodyweight(s) across {written} competition(s) \
          using the {} edition, {} refused",
@@ -202,7 +206,8 @@ fn main() -> Result<()> {
 fn verify_constants() -> Result<()> {
     for (gender, bodyweight, total, published) in WORLDS_2023 {
         let gender = if gender == "F" { Gender::F } else { Gender::M };
-        let computed = osl_domain::ris::compute(dec(bodyweight), dec(total), gender, Edition::V2024);
+        let computed =
+            osl_domain::ris::compute(dec(bodyweight), dec(total), gender, Edition::V2024);
 
         if computed != dec(published) {
             bail!(
@@ -284,7 +289,9 @@ fn solve_bodyweight(ris: Decimal, total: Decimal, c: Constants) -> Result<Decima
         return Err("the score sits below the curve".into());
     }
     if benchmark >= c.k {
-        return Err("the score sits where the curve has flattened, so no bodyweight solves it".into());
+        return Err(
+            "the score sits where the curve has flattened, so no bodyweight solves it".into(),
+        );
     }
 
     let ratio = (c.k - benchmark) / (c.q * (benchmark - c.a));
