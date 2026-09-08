@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__linear__save_issue",
+      "Bash(git ls-remote *)",
+      "Bash(gh api *)"
+    ]
+  }
+}
