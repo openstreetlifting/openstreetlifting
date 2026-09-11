@@ -2,10 +2,6 @@
 
 <!-- The API is public, read-only and needs no key. Say so up front. -->
 
-## Licence and attribution
-
-<!-- What reusers must do. Link the data licence. -->
-
 ## REST API
 
 ### Base URL and versioning
