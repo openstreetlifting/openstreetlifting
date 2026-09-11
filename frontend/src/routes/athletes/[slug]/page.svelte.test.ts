@@ -6,6 +6,7 @@ import AthletePage from './+page.svelte';
 import type { AthleteCompetitionSummary, AthleteDetail, MetricStanding } from '$lib/types/athlete';
 
 vi.mock('$env/dynamic/public', () => ({ env: {} }));
+vi.mock('$app/paths', () => ({ resolve: (path: string) => path }));
 vi.mock('$app/state', async () => {
   const { SvelteURL } = await import('svelte/reactivity');
   return { page: { url: new SvelteURL('http://localhost/athletes/alex-martin'), state: {} } };
@@ -90,9 +91,9 @@ it('switches both cards and their leaderboard filters for every kilogram metric'
     await page.getByRole('combobox', { name: 'Metric' }).selectOptions(metric);
     const global = page.getByRole('link', { name: /Global.*#51/ });
     const country = page.getByRole('link', { name: /France.*#3/ });
-    await expect.element(global).not.toHaveTextContent(label);
-    await expect.element(global).toHaveTextContent('in category -80');
-    await expect.element(country).toHaveTextContent('in category -80');
+    await expect.element(global).not.toMatchTextContent(label);
+    await expect.element(global).toMatchTextContent('in category -80');
+    await expect.element(country).toMatchTextContent('in category -80');
     expect(Object.fromEntries(query(global.element()))).toEqual({
       movement: metric,
       gender: 'M',
@@ -107,7 +108,7 @@ it('switches both cards and their leaderboard filters for every kilogram metric'
       country: 'FR',
       athlete: 'alex-martin',
     });
-    if (metric === 'muscleup') await expect.element(global).not.toHaveTextContent('0 kg');
+    if (metric === 'muscleup') await expect.element(global).not.toMatchTextContent('0 kg');
   }
   await page.getByRole('combobox', { name: 'Metric' }).selectOptions('ris');
   expect(query(page.getByRole('link', { name: /Global.*#51/ }).element()).has('category')).toBe(
