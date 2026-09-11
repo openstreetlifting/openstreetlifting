@@ -69,12 +69,7 @@
       <h3 class="mb-3 {TEXT.subheading} text-ink">User-Submitted Data</h3>
       <p class="mb-4 leading-relaxed text-secondary">
         If you submit competition results or athlete data to our platform, we collect and store the
-        information you provide. The transformed data is licensed under <a
-          href="https://creativecommons.org/licenses/by/4.0/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-secondary transition-colors hover:text-ink">CC BY 4.0</a
-        >
+        information you provide.
       </p>
     </section>
 
