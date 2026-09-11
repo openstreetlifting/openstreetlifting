@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  BOOK_DIR: "docs"
+  BOOK_DIR: "backend/docs"
 
 permissions:
   contents: read
