@@ -42,7 +42,7 @@
   <meta property="og:image:width" content={String(OG_IMAGE.width)} />
   <meta property="og:image:height" content={String(OG_IMAGE.height)} />
 
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={fullTitle} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={OG_IMAGE.url} />

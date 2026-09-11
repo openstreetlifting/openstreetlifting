@@ -1,5 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { athletesService, competitionsService } from '$lib/server/api';
+import { STATIC_ROUTES } from '$lib/constants/routes';
 import { absolute } from '$lib/seo';
 import type { Paginated } from '$lib/types/pagination';
 import type { RequestHandler } from './$types';
@@ -7,7 +8,7 @@ import type { RequestHandler } from './$types';
 const PAGE_SIZE = 100;
 const CACHE_TTL = 3_600_000;
 
-const STATIC_PATHS = ['/', '/competitions', '/contact', '/privacy'];
+const STATIC_PATHS = STATIC_ROUTES.map((route) => route.path);
 
 let cache: { xml: string; expires: number } | null = null;
 

@@ -87,7 +87,7 @@ export class RankingsTable {
   }
 
   /** Defaults stay out of the query string so a shared link carries only what was chosen. */
-  private navigate(targetPage: number) {
+  pageHref(targetPage: number) {
     const params = new SvelteURLSearchParams();
     if (this.movementFilter !== this.defaultSort) params.set('movement', this.movementFilter);
     if (this.sortDirection !== 'desc') params.set('direction', this.sortDirection);
@@ -102,15 +102,15 @@ export class RankingsTable {
     const queryString = params.toString();
     const path = queryString ? `${this.basePath}?${queryString}` : this.basePath;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- basePath is built at runtime, not a literal route
-    return goto(resolve(path as any), { replaceState: true, keepFocus: true, noScroll: true });
+    return resolve(path as any);
+  }
+
+  private navigate(targetPage: number) {
+    return goto(this.pageHref(targetPage), { replaceState: true, keepFocus: true, noScroll: true });
   }
 
   async handleFilterChange() {
     await this.navigate(1);
-  }
-
-  async goToPage(targetPage: number) {
-    await this.navigate(targetPage);
   }
 
   async clearFilters() {

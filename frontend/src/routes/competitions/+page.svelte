@@ -56,7 +56,7 @@
   // Paging and filtering live in the URL so a page of results can be linked to,
   // and so a filter narrows the whole archive rather than the current page.
   // Defaults stay out of the query string, matching the rankings tables.
-  function apply(next: { status?: string; page?: number } = {}) {
+  function listingHref(next: { status?: string; page?: number } = {}) {
     const target = next.status ?? data.status;
     const params = new SvelteURLSearchParams();
 
@@ -68,7 +68,11 @@
     if (next.page && next.page > 1) params.set('page', String(next.page));
 
     const query = params.toString();
-    return goto(resolve(query ? `/competitions?${query}` : '/competitions'), {
+    return resolve(query ? `/competitions?${query}` : '/competitions');
+  }
+
+  function apply(next: { status?: string; page?: number } = {}) {
+    return goto(listingHref(next), {
       keepFocus: true,
       noScroll: true,
     });
@@ -251,7 +255,7 @@
           page={pagination.page}
           totalPages={pagination.total_pages}
           disabled={busy}
-          onNavigate={(target) => apply({ page: target })}
+          pageHref={(target) => listingHref({ page: target })}
         />
       {/if}
     </div>

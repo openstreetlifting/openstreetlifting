@@ -430,7 +430,8 @@
           page={pagination.page}
           totalPages={pagination.total_pages}
           disabled={busy}
-          onNavigate={(target) => table.goToPage(target)}
+          pageHref={(target) => table.pageHref(target)}
+          replaceState
         />
       </div>
     {/snippet}
