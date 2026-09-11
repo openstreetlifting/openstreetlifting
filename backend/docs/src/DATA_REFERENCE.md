@@ -96,7 +96,3 @@ rows, disqualified athletes, no-shows, and events without all four movements.
 ### Errors
 
 ### Warnings
-
-## Data licence
-
-<!-- What contributors agree to, and how the archive may be reused. -->

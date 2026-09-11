@@ -67,12 +67,15 @@ See [LICENSE](./LICENSE) file.
 
 ### Data
 
-OpenStreetlifting data is licensed under Creative Commons Attribution 4.0 (CC BY 4.0).
+OpenStreetlifting data, everything under `backend/data/`, is dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
+You can copy, modify and redistribute it, including commercially, without asking permission.
 See [LICENSE-DATA](./LICENSE-DATA) file.
 
-> [!important]
-> If you use any of the data, you need to credit the project:
-> Data is coming from the OpenStreetlifting project [openstreetlifting.org](https://openstreetlifting.org)
+> [!note]
+> Credit is not required, but it helps the project grow. If you use the data, please mention:
+> Data from the OpenStreetlifting project [openstreetlifting.org](https://openstreetlifting.org)
+
+The [Licensing chapter](https://docs.openstreetlifting.org/LICENSING.html) of the book details which license applies to each path.
 
 ## versions
 
