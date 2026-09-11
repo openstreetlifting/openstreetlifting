@@ -25,23 +25,6 @@
         <a href={resolve('/privacy')} class={NAV_LINK}>Privacy</a>
       </nav>
 
-      <p class="text-sm text-muted">
-        Code licensed under
-        <a
-          href="https://www.gnu.org/licenses/agpl-3.0.html"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-secondary transition-colors hover:text-ink">AGPLv3</a
-        >
-        &middot; Data licensed under
-        <a
-          href="https://creativecommons.org/licenses/by/4.0/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-secondary transition-colors hover:text-ink">CC BY 4.0</a
-        >
-      </p>
-
       <div class="flex items-center gap-4 xl:ml-auto">
         <span class="font-mono text-sm text-muted">
           {#if buildInfo.label}
