@@ -60,22 +60,10 @@ To report an error, open an issue and include the competition slug, the athlete 
 
 ## Licensing
 
-### Code
+Code is AGPLv3, see [LICENSE](./LICENSE). Data, everything under `backend/data/`, is dedicated to the public domain under CC0 1.0, see [LICENSE-DATA](./LICENSE-DATA).
+Credit is appreciated but not required.
 
-OpenStreetlifting code is free software licensed under AGPLv3.
-See [LICENSE](./LICENSE) file.
-
-### Data
-
-OpenStreetlifting data, everything under `backend/data/`, is dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
-You can copy, modify and redistribute it, including commercially, without asking permission.
-See [LICENSE-DATA](./LICENSE-DATA) file.
-
-> [!note]
-> Credit is not required, but it helps the project grow. If you use the data, please mention:
-> Data from the OpenStreetlifting project [openstreetlifting.org](https://openstreetlifting.org)
-
-The [Licensing chapter](https://docs.openstreetlifting.org/LICENSING.html) of the book details which license applies to each path.
+The [Licensing chapter](https://docs.openstreetlifting.org/LICENSING.html) of the book covers which licence applies to each path, third-party material, and what contributing data commits you to.
 
 ## versions
 
