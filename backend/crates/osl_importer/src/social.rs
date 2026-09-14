@@ -14,10 +14,11 @@ use std::collections::BTreeMap;
 use std::path::Path;
 
 use anyhow::{Context, Result, anyhow, bail};
-use osl_domain::normalized_name::NormalizedAthleteName;
 use osl_domain::{CountryCode, Gender};
 use sqlx::PgPool;
 use uuid::Uuid;
+
+use crate::identity::AthleteQuery;
 
 /// A row of the file.
 ///
@@ -51,20 +52,6 @@ struct HandleRow {
     handle: String,
 }
 
-/// Who the file says the handle belongs to.
-///
-/// A `None` reads as "any", so a unique name needs nothing filled in. It is
-/// deliberately not "unset means NULL": a blank `Disambiguation` next to a
-/// numbered athlete has to stay ambiguous, because a file that means the
-/// unnumbered one has to say so by being narrowed on something else.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-struct AthleteQuery {
-    match_key: String,
-    gender: Option<String>,
-    country: Option<String>,
-    disambiguation: Option<i16>,
-}
-
 /// An athlete as the database identifies them.
 #[derive(Debug)]
 struct AthleteIdentity {
@@ -72,34 +59,6 @@ struct AthleteIdentity {
     gender: String,
     country: String,
     disambiguation: Option<i16>,
-}
-
-impl AthleteQuery {
-    fn matches(&self, athlete: &AthleteIdentity) -> bool {
-        self.gender.as_deref().is_none_or(|g| g == athlete.gender)
-            && self.country.as_deref().is_none_or(|c| c == athlete.country)
-            && self
-                .disambiguation
-                .is_none_or(|number| Some(number) == athlete.disambiguation)
-    }
-
-    /// The narrowing the row asked for, worded for a message that has to say
-    /// why an athlete who exists was not the one this row wanted.
-    fn narrowing(&self) -> String {
-        let mut columns = Vec::new();
-
-        if let Some(gender) = &self.gender {
-            columns.push(format!("Sex '{gender}'"));
-        }
-        if let Some(country) = &self.country {
-            columns.push(format!("Country '{country}'"));
-        }
-        if let Some(number) = self.disambiguation {
-            columns.push(format!("Disambiguation '{number}'"));
-        }
-
-        columns.join(", ")
-    }
 }
 
 impl AthleteIdentity {
@@ -218,8 +177,13 @@ async fn resolve(
             .map(Vec::as_slice)
             .unwrap_or_default();
 
-        let candidates: Vec<&AthleteIdentity> =
-            named.iter().filter(|a| row.query.matches(a)).collect();
+        let candidates: Vec<&AthleteIdentity> = named
+            .iter()
+            .filter(|a| {
+                row.query
+                    .matches_parts(&a.gender, &a.country, a.disambiguation)
+            })
+            .collect();
 
         match candidates.as_slice() {
             [] => report.unknown.push(no_athlete(&row, named)),
@@ -318,6 +282,10 @@ fn parse(record: InstagramRecord) -> Result<HandleRow> {
         bail!("a row has a handle with no name");
     }
 
+    if osl_domain::redaction::RedactedAthlete::parse(&label).is_some() {
+        bail!("'{label}' asked to be taken off the site, so they cannot carry a handle");
+    }
+
     let handle = record.instagram.trim().trim_start_matches('@');
     if handle.is_empty() || handle.len() > 30 {
         bail!("'{}' is not an Instagram handle", record.instagram);
@@ -353,12 +321,12 @@ fn parse(record: InstagramRecord) -> Result<HandleRow> {
     }
 
     Ok(HandleRow {
-        query: AthleteQuery {
-            match_key: match_key(&label),
-            gender: gender.map(|gender| gender.as_str().to_string()),
-            country: country.map(|country| country.as_str().to_string()),
-            disambiguation: record.disambiguation,
-        },
+        query: AthleteQuery::new(
+            &label,
+            gender.map(|gender| gender.as_str().to_string()),
+            country.map(|country| country.as_str().to_string()),
+            record.disambiguation,
+        ),
         label,
         handle: handle.to_string(),
     })
@@ -368,13 +336,6 @@ fn parse(record: InstagramRecord) -> Result<HandleRow> {
 /// nothing or only spaces.
 fn optional(value: Option<&str>) -> Option<&str> {
     value.map(str::trim).filter(|value| !value.is_empty())
-}
-
-fn match_key(full_name: &str) -> String {
-    let mut parts = full_name.trim().splitn(2, char::is_whitespace);
-    let first = parts.next().unwrap_or_default();
-    let last = parts.next().unwrap_or_default();
-    NormalizedAthleteName::new(first, last).match_name()
 }
 
 #[cfg(test)]
@@ -388,66 +349,6 @@ mod tests {
             country: country.to_string(),
             disambiguation,
         }
-    }
-
-    fn query(gender: Option<&str>, country: Option<&str>, number: Option<i16>) -> AthleteQuery {
-        AthleteQuery {
-            match_key: match_key("Tony Nguyen"),
-            gender: gender.map(str::to_string),
-            country: country.map(str::to_string),
-            disambiguation: number,
-        }
-    }
-
-    #[test]
-    fn folds_the_same_way_the_importer_does() {
-        let athlete = NormalizedAthleteName::new("Léa", "Mérandon").match_name();
-        assert_eq!(match_key("Léa Mérandon"), athlete);
-        assert_eq!(match_key("LEA MERANDON"), athlete);
-        assert_eq!(match_key("  lea   merandon "), athlete);
-    }
-
-    #[test]
-    fn a_middle_name_stays_part_of_the_key() {
-        let athlete = NormalizedAthleteName::new("Jean Luc", "Picard").match_name();
-        assert_eq!(match_key("Jean Luc Picard"), athlete);
-        assert_eq!(match_key("Jean-Luc Picard"), athlete);
-    }
-
-    #[test]
-    fn different_people_do_not_collide() {
-        assert_ne!(match_key("Tom Berthier"), match_key("Tom Bertier"));
-    }
-
-    #[test]
-    fn a_blank_column_matches_any_athlete() {
-        let anyone = query(None, None, None);
-
-        assert!(anyone.matches(&identity("M", "FR", None)));
-        assert!(anyone.matches(&identity("F", "US", Some(2))));
-    }
-
-    #[test]
-    fn a_filled_column_only_matches_the_athlete_it_names() {
-        let french = query(None, Some("FR"), None);
-
-        assert!(french.matches(&identity("M", "FR", None)));
-        assert!(!french.matches(&identity("M", "US", None)));
-
-        let second = query(None, None, Some(2));
-
-        assert!(second.matches(&identity("M", "FR", Some(2))));
-        assert!(!second.matches(&identity("M", "FR", None)));
-        assert!(!second.matches(&identity("M", "FR", Some(1))));
-    }
-
-    #[test]
-    fn the_columns_narrow_together() {
-        let one = query(Some("F"), Some("IT"), None);
-
-        assert!(one.matches(&identity("F", "IT", None)));
-        assert!(!one.matches(&identity("M", "IT", None)));
-        assert!(!one.matches(&identity("F", "SM", None)));
     }
 
     fn row(
