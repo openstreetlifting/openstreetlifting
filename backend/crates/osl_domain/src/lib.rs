@@ -9,6 +9,7 @@ pub mod name_rules;
 pub mod native_script;
 pub mod normalized_name;
 pub mod parse;
+pub mod redaction;
 pub mod ris;
 pub mod ris_source;
 pub mod slug;

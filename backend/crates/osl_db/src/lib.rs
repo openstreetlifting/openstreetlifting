@@ -25,6 +25,10 @@ impl Database {
         Ok(Self { pool })
     }
 
+    pub fn from_pool(pool: PgPool) -> Self {
+        Self { pool }
+    }
+
     pub async fn run_migrations(&self) -> Result<()> {
         sqlx::migrate!("./migrations").run(&self.pool).await?;
         Ok(())

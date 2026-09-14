@@ -58,6 +58,8 @@ All competition data in this archive is versioned and traceable. If you spot an 
 
 To report an error, open an issue and include the competition slug, the athlete name, and a description of what is wrong. A source reference (official result sheet, video, federation website) is appreciated. You can also contact me at [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org) I will do my best to correct the issue quickly
 
+If you are an athlete and would rather not be listed at all, your name can be removed while your results stay in the archive. That request goes to [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org), never to a public issue. The [Personal Data chapter](https://docs.openstreetlifting.org/PERSONAL_DATA.html) explains what it does and what it cannot undo.
+
 ## Licensing
 
 ### Code
