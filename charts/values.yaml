@@ -56,8 +56,14 @@ importer:
     pullPolicy: IfNotPresent
   # Every deploy makes the database match the canonical files, deletions
   # included. Drop --yes to have a release only report what it would remove.
+  # Staging adds --directory ./data/staging/competitions to seed its fixtures.
   args: ["bulk-import", "--prune", "--yes"]
   instagramArgs: ["instagram"]
+  # Without the salt the importer cannot tell that a name belongs to someone who
+  # asked to be taken off the site, so it warns instead of guarding.
+  privacy:
+    secretName: osl-privacy
+    saltKey: salt
   backoffLimit: 1
   ttlSecondsAfterFinished: 86400
   resources:
