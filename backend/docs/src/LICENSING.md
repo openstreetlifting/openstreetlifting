@@ -36,6 +36,24 @@ covers this with a fallback: where the waiver does not hold, it grants an
 unconditional licence to the same effect. It also waives the database right that
 EU law gives to the maker of a database.
 
+## CC0 and personal data
+
+CC0 waives copyright and the database right. It cannot waive data protection
+rights, and [says so itself](https://creativecommons.org/publicdomain/zero/1.0/legalcode):
+the dedication does not affect the privacy or publicity rights of anyone whose
+data the work describes.
+
+The files name living people. Taking a copy makes you responsible for what you
+then do with it, on your own account and under your own law, whatever the
+licence allows. That responsibility is yours, not this project's, and CC0 does
+not transfer it.
+
+It also runs one way in time. An athlete who asks to be taken off the archive is
+redacted here, but a snapshot somebody downloaded last year still carries their
+name and nothing can reach into it. If you redistribute the data, take it fresh
+rather than serving an old copy. See
+[Personal Data](./PERSONAL_DATA.md).
+
 ## Credit
 
 Credit is not required. It helps lifters find the archive and brings in the
