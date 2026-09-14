@@ -26,6 +26,24 @@ If you would like to credit the project, you can use:
 When you open a pull request that adds or corrects data in `backend/data/`, you
 agree to share your contribution under CC0 too, so everyone can reuse it.
 
+## CC0 and personal data
+
+CC0 waives copyright and the database right. It cannot waive data protection
+rights, and [says so itself](https://creativecommons.org/publicdomain/zero/1.0/legalcode):
+the dedication does not affect the privacy or publicity rights of anyone whose
+data the work describes.
+
+The files name living people. Taking a copy makes you responsible for what you
+then do with it, on your own account and under your own law, whatever the
+licence allows. That responsibility is yours, not this project's, and CC0 does
+not transfer it.
+
+It also runs one way in time. An athlete who asks to be taken off the archive is
+redacted here, but a snapshot somebody downloaded last year still carries their
+name and nothing can reach into it. If you redistribute the data, take it fresh
+rather than serving an old copy. See
+[Personal Data](./PERSONAL_DATA.md).
+
 ## Code
 
 The code is licensed under the

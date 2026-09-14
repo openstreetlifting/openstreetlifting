@@ -6,3 +6,4 @@
 - [Data Reference](./DATA_REFERENCE.md)
 - [Data Access](./DATA_ACCESS.md)
 - [Licensing](./LICENSING.md)
+- [Personal Data](./PERSONAL_DATA.md)
