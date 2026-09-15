@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           components: rustfmt
           cache-workspaces: backend
@@ -44,7 +44,7 @@ jobs:
       DATABASE_URL: postgres://openstreetlifting:openstreetlifting@localhost:5432/openstreetlifting
     steps:
       - uses: actions/checkout@v7
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           cache-workspaces: backend
       - uses: taiki-e/install-action@v2
@@ -79,7 +79,7 @@ jobs:
       SQLX_OFFLINE: true
     steps:
       - uses: actions/checkout@v7
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           components: clippy
           cache-workspaces: backend
@@ -117,7 +117,7 @@ jobs:
       DATABASE_URL: postgres://openstreetlifting:openstreetlifting@localhost:5432/openstreetlifting
     steps:
       - uses: actions/checkout@v7
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           cache-workspaces: backend
       - uses: taiki-e/install-action@v2
