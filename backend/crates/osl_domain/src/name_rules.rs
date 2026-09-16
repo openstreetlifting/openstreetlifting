@@ -368,8 +368,6 @@ mod tests {
 
     #[test]
     fn the_exemption_reaches_no_further_than_the_stand_in() {
-        // Everything that only looks like one is still a name, and a name
-        // cannot hold a digit.
         assert!(problems("", "Redacted Athlete #07").contains("'0'"));
         assert!(problems("", "Redacted Athlete 7").contains("'7'"));
         assert!(problems("Kevin", "Smith2").contains("'2'"));

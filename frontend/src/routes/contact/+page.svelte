@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from '$app/paths';
   import { EmailIcon, InstagramIcon, GitHubIcon, DiscordIcon } from '$lib/components/icons';
   import { TEXT } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
@@ -24,10 +25,20 @@
     class="mx-auto mb-8 h-44 w-44 sm:mb-10 sm:h-60 sm:w-60"
   />
   <h1 class="mb-4 {TEXT.title} text-ink">Get in touch</h1>
-  <p class="mb-10 text-base text-muted">
-    If you have a question, want to help me, or simply want to connect, reach out through any of
-    these channels. I'm a solo developer on this project, I may take a little bit of time to
-    respond.
+  <p class="mb-4 text-base text-muted">
+    Send a question, report a wrong result, or share competition results. I run OpenStreetlifting on
+    my own, so general enquiries may take a little time.
+  </p>
+  <p class="mb-10 leading-relaxed text-secondary">
+    For a privacy request, email
+    <a
+      href="mailto:contact@openstreetlifting.org"
+      class="underline underline-offset-4 hover:text-ink">contact@openstreetlifting.org</a
+    >. Please keep personal details out of public issues and messages. The
+    <a href={resolve('/privacy')} class="underline underline-offset-4 hover:text-ink"
+      >privacy notice</a
+    >
+    explains your rights and the removal procedure.
   </p>
 
   <ul class="divide-y divide-stroke border-y border-stroke">

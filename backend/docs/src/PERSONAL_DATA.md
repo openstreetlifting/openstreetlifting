@@ -1,121 +1,96 @@
 # Personal Data
 
-This archive is a record of people. It names them, says what they weighed and
-what they lifted, and puts that on a page a search engine can reach. None of
-them were asked first, because a results archive that only holds the people who
-opted in is not a record of the sport.
+OpenStreetlifting brings competition results together on searchable athlete
+pages. An athlete can appear here without having visited the site or submitted
+data. The [privacy notice](https://openstreetlifting.org/privacy) identifies the
+controller, explains the purposes of processing, and sets out your GDPR rights.
 
-This chapter says what is held, why, and what you can do about it. The
-[privacy notice](https://openstreetlifting.org/privacy) is the formal version
-and names the controller; this is the part that explains itself.
+## What the archive holds
 
-## What the archive holds about you
+Results come from federations, organisers, competition platforms, public posts,
+and contributors. They can include names in Latin and original scripts, sex
+category, country, competition details, bodyweight, attempts, scores, placings,
+and participation status. The archive also calculates rankings and performance
+comparisons. Some bodyweights are recovered from published scores rather than
+reported at a weigh-in; their origin is recorded in the data.
 
-| What | Where it comes from |
-| --- | --- |
-| Your name | The result sheet the federation published |
-| Your name in its own alphabet | The same, when the source gives it |
-| Sex and country | The same |
-| Bodyweight | The weigh-in |
-| Every attempt, the placing, the RIS | The same |
-| An Instagram handle | Added by hand, only when the account is obviously yours |
+An Instagram handle may be added when a public account has been matched to an
+athlete. You can ask for the link to be corrected or removed separately from
+competition results.
 
-There is no birth date, no age, no email address, no club, no photograph. The
-files are `backend/data/competitions/{federation}/{year}/{slug}/entries.csv`,
-and the handle, if there is one, is one line in
-`backend/data/athletes/instagram.csv`.
+The proposed basis for publishing results is legitimate interests under GDPR
+Article 6(1)(f): preserving and comparing the sport's record. That basis requires
+necessity and a balance with athletes' rights. Public sources, a CC0 licence, and
+the word “archive” do not settle that balance. Linking results across years and
+to social accounts increases the effect on a person's privacy.
 
-## Why it is published
+Bodyweight and performance information require care. Whether information reveals
+health depends on its context, combinations, and use; being a sports result does
+not automatically exclude it from the rules for health data. See the
+[CNIL's explanation of health data](https://www.cnil.fr/fr/quest-ce-ce-quune-donnee-de-sante).
 
-The results are already public. Federations publish them, competition software
-publishes them, and organisers post them. What the archive adds is that they
-stay published, in one place, in a shape you can compare across meets and years.
-Streetlifting has no governing body keeping that record, so without it the
-results scatter across Instagram posts and dead PDFs.
+## Request a correction or removal
 
-That is the legitimate interest the processing rests on, and it is worth being
-honest about the other half of the balance. A single federation page names you
-once. This archive puts every meet you have entered on one page, cross-links it
-to your Instagram, and hands it to Google. That is more than any of the sources
-did on their own, and it is the reason the chapter you are reading exists rather
-than a line in a footer. Where the two do not balance for you, they do not, and
-the answer is [redaction](#asking-to-be-taken-off-the-site) rather than an
-argument.
+Email [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org) with
+your athlete-page link or enough competition details to identify the record.
+Say whether you want a correction, removal of a social link, removal of your
+name, restriction, or erasure. You do not need to give a reason to use
+the voluntary name-removal procedure.
 
-## What it is not
+Use email to keep the request private. A public issue, pull request, or Discord
+message can expose the information you want removed. A request received through
+another channel still needs to be handled; email is the preferred private route.
 
-None of this is special category data. Sex is not. Bodyweight is a weigh-in
-figure that decides which class you lift in, not a measure of your health, and
-it is recorded because the score cannot be computed without it.
+Requests are normally free and receive a response within one month. A complex
+request may require up to two additional months, with an explanation within the
+first month. Identity evidence is requested only when reasonably needed. The
+[privacy notice](https://openstreetlifting.org/privacy#your-rights) explains
+access, correction, objection, erasure, restriction, portability, consent,
+automated decisions, and complaint rights, including their conditions.
 
-## How long it stays
+## What the removal tool does
 
-Indefinitely. A record that drops the results from ten years ago is not a
-record, and the value of the archive is that a result stays findable after the
-federation's website has gone. Retention is the whole point rather than an
-oversight, which is why the way out is redaction rather than an expiry date.
+The importer replaces matching names in current result files with a numbered
+label such as `Redacted Athlete #7`. It clears the original-script name and
+removes matching Instagram entries. Importing the changed files and pruning the
+old database records updates the website, API, and new downloads and removes
+the old named profile.
 
-## Your options
+The tool preserves competition details, sex category, country, bodyweight,
+attempts, scores, and placings. Those details can still identify someone when
+compared with source results or earlier copies. This is pseudonymisation, not
+guaranteed anonymity or complete erasure. A successful command does not by itself
+resolve an objection or erasure request.
 
-**Fix something wrong.** A misspelled name, a wrong lift, a missing competition.
-Open an issue or a pull request against the file, or email. See
-[Contributing Data](./CONTRIBUTING_DATA.md).
+A public removal record holds a keyed fingerprint of the name, matching fields,
+and the replacement number. The secret key is kept outside the repository. This
+record remains personal data and helps detect later imports of matching names;
+changed spellings or identity fields may need additional checks. The check needs
+the secret key to work.
 
-**Take the handle off.** The Instagram link is the one piece of this that is not
-a competition result, and it is the part that turns a result into a way to find
-you. Ask and the line goes, and nothing else changes.
+For commands and file formats, see the
+[athlete-data README](https://github.com/openstreetlifting/openstreetlifting/blob/main/backend/data/athletes/README.md).
 
-**Be taken off the site.** Your name is removed from the archive and your
-results stay, under a stand-in.
+## Earlier copies and continued retention
 
-## Asking to be taken off the site
+The archive currently has no scheduled expiry for results. Continued retention
+of identifiable records still needs justification and remains subject to your
+rights. The removal record serves a separate purpose: preventing republication
+while future imports remain possible.
 
-Email [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org).
+The tool does not rewrite Git history, remove source result sheets, recall
+copies, or submit search-engine removal requests. Copies under the project's
+control, including history, require their own assessment. Where erasure is
+required, GDPR Article 17(2) also requires reasonable steps to inform other
+controllers using the published data. Article 19 governs notification of
+corrections, erasure, and restrictions to recipients, with its stated exceptions.
+See [the GDPR](https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng).
 
-You do not have to give a reason, and you will not be argued with.
+CC0 does not waive data protection rights. See
+[Licensing](./LICENSING.md#cc0-and-personal-data). Requests to the original
+publisher or a search engine can help with copies they control; they do not
+replace this project's obligations.
 
-**Do not open an issue or a pull request**, and do not ask in the Discord. All
-three are public, and a public request to be forgotten is a second publication
-of the thing you are asking to remove. Email is the only route for this.
-
-## What redaction does
-
-Your name is replaced everywhere it appears with a stand-in, `Redacted Athlete
-#7`. The name in its own alphabet goes. The Instagram handle goes. Your athlete
-page, the rankings, the API and the CSV downloads carry the stand-in from the
-next deploy onward, and your old page stops existing.
-
-The result itself does not move. Sex, country, bodyweight, every attempt and the
-placing stay exactly as they were, so the meet still reconciles and the rankings
-do not shift. This is the trade the archive makes: the sport keeps its record,
-and the record stops being about a named person.
-
-Your name is also recorded against the redaction so that a competition you enter
-next year does not quietly put it back. It is stored as a hash under a key that
-is not in the repository, so the list of people who asked cannot be read off it.
-
-## What redaction cannot undo
-
-Being straight about the limits matters more than sounding thorough.
-
-The archive is a public git repository. Commits made before the redaction still
-contain your name, and history is not rewritten as a matter of course, because
-doing so breaks every clone and fork and does not reach the copies that already
-exist. If your situation makes the history itself the problem, say so in your
-email and it will be looked at.
-
-The data is released under CC0, so anyone may have taken a copy. A redaction
-cannot reach a copy that has already been downloaded, and whoever holds it
-becomes responsible for it on their own account. See
-[Licensing](./LICENSING.md#cc0-and-personal-data).
-
-Search engines are asked to drop the old page, and usually do, but they are not
-under this project's control. If your own name in a search result is what
-brought you here, the search engine has its own removal process and it is worth
-using alongside this one.
-
-## If you are not satisfied
-
-You can complain to the CNIL, the French data protection authority, at
-[cnil.fr](https://www.cnil.fr/). Doing so does not affect anything asked for
-here.
+You can complain to the [CNIL](https://www.cnil.fr/fr/plaintes) or another
+competent EU data protection authority. The privacy notice also explains your
+right to seek a judicial remedy.

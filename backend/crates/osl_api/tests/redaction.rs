@@ -1,6 +1,3 @@
-//! What the API serves for an athlete who asked to be taken off the site: the
-//! results, and no way back to the person.
-
 use axum::body::Body;
 use axum::http::{Request, StatusCode};
 use chrono::NaiveDate;

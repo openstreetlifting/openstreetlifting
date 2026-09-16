@@ -1,6 +1,4 @@
 //! Redaction rewrites the canonical files, because those are what is published.
-//! These tests work on a throwaway tree of real files rather than the database,
-//! which is where the guarantee has to hold.
 
 mod common;
 

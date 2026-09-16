@@ -68,8 +68,7 @@ jobs:
           cargo run -p osl_importer --bin import -- bulk-import \
             --directory ./data/competitions \
             --directory ./data/staging/competitions
-      # Fork pull requests get no salt, so this no-ops there and the deploy job
-      # is what actually gates a name coming back.
+      # Fork pull requests get no salt, so this check is skipped there.
       - name: Check nobody on the privacy list is named
         working-directory: backend
         run: cargo run -p osl_importer --bin import -- privacy --directory ./data/competitions

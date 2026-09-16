@@ -95,8 +95,7 @@ enum Commands {
         #[arg(long, default_value = "./data/competitions")]
         directory: PathBuf,
 
-        /// Fail instead of warning when the salt is missing. Deploys pass this;
-        /// fork pull requests, which get no secrets, do not.
+        /// Fail instead of warning when the salt is missing.
         #[arg(long)]
         require_salt: bool,
     },
