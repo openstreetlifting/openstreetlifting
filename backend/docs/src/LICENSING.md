@@ -1,69 +1,50 @@
 # Licensing
 
-OpenStreetlifting keeps code and data under separate licences. The code is free
-software under the
-[GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.html).
-The data is dedicated to the public domain under
-[CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
+OpenStreetlifting's data is public domain. The code has a separate open-source
+licence.
 
-## Which licence applies where
+## Data
 
-| Path or surface                                                                 | Licence                                               |
-| ------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `backend/data/competitions/`, every `competition.toml` and `entries.csv`        | CC0 1.0                                               |
-| `backend/data/athletes/instagram.csv`                                           | CC0 1.0                                               |
-| API responses from `api.openstreetlifting.org` and CSV downloads on the website | CC0 1.0                                               |
-| `frontend/static/flags/`                                                        | CC BY 4.0, see [Third-party material](#third-party-material) |
-| Everything else in the repository, including the rest of `backend/`, `frontend/`, `charts/` and `osl-bruno/` | AGPLv3 |
+The archive is dedicated to the public domain under
+[CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/). You can
+use, copy, modify and share the data, including commercially, without asking
+permission. Credit is optional, but a mention of OpenStreetlifting would make me
+happy.
 
-The API and the CSV downloads are built from `backend/data`, along with the
-values computed at import such as totals, placings and RIS scores, so they carry
-the same dedication as the files.
+This covers the files in `backend/data/` and the data returned by the API,
+including calculated totals, placings and RIS scores. The full terms are in
+[LICENSE-DATA](https://github.com/openstreetlifting/openstreetlifting/blob/main/LICENSE-DATA).
 
-The full texts sit at the root of the repository:
-[`LICENSE`](https://github.com/openstreetlifting/openstreetlifting/blob/main/LICENSE)
-for the code and
-[`LICENSE-DATA`](https://github.com/openstreetlifting/openstreetlifting/blob/main/LICENSE-DATA)
-for the data.
+### Credit
 
-## Using the data
+If you would like to credit the project, you can use:
 
-CC0 puts no conditions on reuse. You can copy, modify, merge and redistribute the
-data, commercially or not, without asking.
+> Data from [OpenStreetlifting](https://openstreetlifting.org).
 
-Some countries, France among them, do not let an author give up every right. CC0
-covers this with a fallback: where the waiver does not hold, it grants an
-unconditional licence to the same effect. It also waives the database right that
-EU law gives to the maker of a database.
+### Contributing data
 
-## Credit
+When you open a pull request that adds or corrects data in `backend/data/`, you
+agree to share your contribution under CC0 too, so everyone can reuse it.
 
-Credit is not required. It helps lifters find the archive and brings in the
-corrections that keep it accurate, so if you publish something built on the data,
-please mention:
+## Code
 
-> Data from the OpenStreetlifting project, [openstreetlifting.org](https://openstreetlifting.org)
+The code is licensed under the
+[GNU Affero General Public License v3 (AGPLv3)](https://www.gnu.org/licenses/agpl-3.0.html).
+You can use, modify and share it under that licence's terms.
 
-## Contributing data
+AGPLv3 covers the repository outside `backend/data/`, except for third-party
+material with its own licence. The full terms are in
+[LICENSE](https://github.com/openstreetlifting/openstreetlifting/blob/main/LICENSE).
 
-The archive stays public domain only if every contribution is. By opening a pull
-request that adds or changes files under `backend/data/`, you dedicate that
-contribution to the public domain under CC0 1.0.
+## Sources and third-party material
 
-## Sources
+CC0 applies to OpenStreetlifting's data, not to the original scoresheets, photos
+or videos linked as sources. Those materials keep their own rights and licences.
 
-Results are compiled from federation result sheets, competition software such as
-FinalRep and LiftControl, and public posts. Competition results are facts. CC0
-covers OpenStreetlifting's compilation of them; it does not relicense a source's
-own documents, photos or videos, which the
-[`sources`](./DATA_REFERENCE.md#sources) key of each `competition.toml` points to.
-
-## Third-party material
-
-Country flags in `frontend/static/flags/` are
+The country flags in `frontend/static/flags/` are
 [Twemoji](https://github.com/jdecked/twemoji) graphics, copyright Twitter, Inc and
 other contributors, licensed under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-Dependencies, including the Inter, JetBrains Mono and Instrument Serif fonts, keep
-their own licences, stated in their packages.
+Other dependencies, including fonts, keep the licences included in their
+packages.

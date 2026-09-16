@@ -60,7 +60,11 @@
 </script>
 
 <section aria-labelledby="{id}-heading" class="mb-10 sm:mb-12">
-  <h2 id="{id}-heading" class="{TEXT.heading} text-ink">RIS Calculator</h2>
+  <h2 id="{id}-heading" class="{TEXT.heading} text-ink">Calculate your RIS</h2>
+  <p class="mt-3 {TEXT.body} leading-6 text-secondary">
+    Choose your category and enter your bodyweight and MPDS total. Add a target score to explore the
+    corresponding total or bodyweight.
+  </p>
 
   <div class="mt-7 grid items-start gap-6 sm:grid-cols-[auto_1fr_1fr]">
     <div>
