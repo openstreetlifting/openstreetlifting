@@ -1,10 +1,16 @@
 name: "[Documentation] Deploy MdBook"
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/docs/**"
+      - ".github/workflows/book.yaml"
   workflow_dispatch:
 
 env:
-  BOOK_DIR: "docs"
+  BOOK_DIR: "backend/docs"
 
 permissions:
   contents: read

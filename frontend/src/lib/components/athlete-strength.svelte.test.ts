@@ -17,10 +17,10 @@ const profile: StrengthProfile = {
 it('plots all four comparisons, including a real zero percentile, and shows peer details on hover', async () => {
   render(AthleteStrength, { profile });
   await page.getByRole('button', { name: 'Muscle-up: percentile 0' }).hover();
-  await expect.element(page.getByRole('tooltip')).toHaveTextContent('Muscle-up · 0 kg');
+  await expect.element(page.getByRole('tooltip')).toMatchTextContent('Muscle-up · 0 kg');
   await expect
     .element(page.getByRole('tooltip'))
-    .toHaveTextContent('Compared with 10 other athletes');
+    .toMatchTextContent('Compared with 10 other athletes');
 });
 
 it('does not turn an unscored lift into a zero point', async () => {

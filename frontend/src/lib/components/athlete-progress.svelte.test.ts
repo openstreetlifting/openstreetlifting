@@ -1,8 +1,10 @@
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AthleteProgress from './athlete-progress.svelte';
 import type { AthleteCompetitionSummary } from '$lib/types/athlete';
+
+vi.mock('$app/paths', () => ({ resolve: (path: string) => path }));
 
 const competitions: AthleteCompetitionSummary[] = [
   {
