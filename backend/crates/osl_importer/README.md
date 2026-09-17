@@ -11,7 +11,7 @@ cargo run -p osl_importer --bin import -- --help
 cargo run -p osl_importer --bin import -- competitions --dry-run
 ```
 
-The help text and examples below use `osl-import` for the executable. In a source checkout, replace it with `cargo run -p osl_importer --bin import --`.
+The examples below use `osl-import`, the name shown in the CLI help. In a source checkout, replace it with `cargo run -p osl_importer --bin import --` and run from `backend`.
 
 | Command | Purpose |
 | --- | --- |
@@ -22,7 +22,7 @@ The help text and examples below use `osl-import` for the executable. In a sourc
 | `fmt [PATH…]` | Format competition files |
 | `recompute-ris` | Recalculate stored RIS scores |
 
-Use `<command> --help` for options and defaults. Global options, including `--database-url`, `--privacy-file`, and `--verbose`, work before or after the command.
+Use `osl-import <command> --help` for options and defaults. Global options, including `--database-url`, `--privacy-file`, and `--verbose`, work before or after the command.
 
 ## Competition imports
 
@@ -31,21 +31,19 @@ osl-import competitions data/competitions --dry-run
 osl-import competitions data/competitions
 ```
 
-Paths can name individual competitions or directory trees. Overlapping paths are deduplicated. The importer validates every competition before writing to the database; missing paths, empty trees, and invalid files stop the import.
+Paths can point to individual competition directories or directory trees. The importer processes overlapping paths once and validates all competition files before writing to the database. Missing paths, empty trees, and invalid files stop the import.
 
-Each competition is then imported in its own transaction. A database failure can leave earlier competitions imported. Fix the error and run the command again.
+The importer then saves each competition in a separate transaction. If a database write fails, earlier imports remain. Fix the error and rerun the command.
 
-To remove database competitions absent from the supplied files, include the complete dataset and pass `--prune`:
+With `--prune`, the importer deletes database competitions absent from the supplied files, athletes with no competition entries, and federations with no competitions. Pruning runs only after every import succeeds. Supply the complete dataset: passing a single competition would delete all others from the database.
 
 ```sh
 osl-import competitions data/competitions --prune
 ```
 
-Pruning also removes orphaned athletes and federations. It runs only after all imports succeed. Supplying a single competition with `--prune` would remove the others.
-
 ## Dry runs
 
-`--dry-run` prevents writes, with checks appropriate to each command:
+`--dry-run` checks the input without changing files or database records:
 
 | Command | Checks |
 | --- | --- |
@@ -55,32 +53,32 @@ Pruning also removes orphaned athletes and federations. It runs only after all i
 | `fmt` | Files that need formatting |
 | `recompute-ris` | Number of eligible stored scores; requires a database connection |
 
-`competitions --dry-run --prune` validates the files but does not calculate database deletions. `fmt --check` also leaves files unchanged and exits with an error when formatting is needed, making it suitable for CI.
+`competitions --dry-run --prune` validates files without calculating database deletions. For formatting checks in CI, use `fmt --check`: it leaves files unchanged and returns a nonzero exit status if any file needs formatting.
 
 ## Configuration
 
 The CLI loads `.env` from the working directory or its parents.
 
-- `DATABASE_URL` supplies the PostgreSQL connection. Imports and RIS recomputation require it.
-- `OSL_PRIVACY_KEY` verifies suppression records. A nonempty privacy list requires its existing key.
+- `DATABASE_URL` supplies the PostgreSQL connection URL. Competition imports, Instagram synchronization, and RIS recomputation require it. You can also pass `--database-url`.
+- `OSL_PRIVACY_KEY` creates and verifies suppression records. If the privacy list contains records, use the key that created them.
 - `RUST_LOG` overrides the default log filter. `--verbose` enables debug logging when no filter is set.
 
-For fork CI without the privacy key:
+To validate files in a fork's CI without the privacy key:
 
 ```sh
 osl-import competitions --dry-run --skip-privacy-check
 ```
 
-This checks public files without verifying suppressed names. It cannot write to the database. Trusted CI and deployment must check the files with the key.
+This checks public files but skips the check for removed names. The flag requires `--dry-run`, so it cannot write to the database. Trusted CI and deployments must verify suppression records with the key.
 
 ## Athlete data
 
-See [athlete data](../../data/athletes/README.md) for Instagram matching, key setup, and the name-removal procedure. Use the [staging fixtures](../../data/staging/README.md) to test redaction on a disposable copy.
+See the [athlete data guide](../../data/athletes/README.md) for Instagram matching, key setup, and name removal. Use the [staging fixtures](../../data/staging/README.md) to test name removal on a temporary copy.
 
-## Breaking changes
+## Migrate from older commands
 
 Replace `canonical PATH` and `bulk-import --directory PATH` with `competitions PATH`. Pass multiple paths as positional arguments. Use `--dry-run` in place of `--validate-only`.
 
-`competitions --prune` applies deletions after a successful import; it takes no `--yes` flag. Supply the complete dataset. A dry run validates files without importing or pruning.
+`competitions --prune` deletes records after a successful import without a confirmation prompt or `--yes` flag. Supply the complete dataset. A dry run validates files without importing or pruning.
 
 Deploy the chart and importer image together. Staging pins the chart to the application commit used to build its importer; production pins it to the release tag.

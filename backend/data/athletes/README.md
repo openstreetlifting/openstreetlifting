@@ -1,6 +1,6 @@
 # Athlete data
 
-These files link athletes to Instagram accounts and record requests for name removal. Run the examples from `backend`. For a source checkout, replace `osl-import` with `cargo run -p osl_importer --bin import --`.
+These files link athletes to Instagram accounts and prevent removed names from being republished. Run the examples from `backend`. In a source checkout, replace `osl-import` with `cargo run -p osl_importer --bin import --`.
 
 ## Instagram accounts
 
@@ -11,7 +11,7 @@ Name,Sex,Country,Disambiguation,Instagram
 Adrien Pelfresne,,,,dirdros
 ```
 
-Name matching ignores accents and capitalization. Leave the optional identity fields empty unless the name matches more than one athlete. Add only the fields needed to distinguish them, using the values in `entries.csv`:
+Name matching ignores accents and capitalization. Leave `Sex`, `Country`, and `Disambiguation` empty unless the name matches more than one athlete. Fill in only the fields needed to distinguish them, using the values in `entries.csv`:
 
 ```csv
 Name,Sex,Country,Disambiguation,Instagram
@@ -26,27 +26,29 @@ osl-import instagram --dry-run
 osl-import instagram
 ```
 
-With `DATABASE_URL` set, the dry run also checks that each row matches one athlete. Without it, only the file is checked. An ambiguous match stops synchronization before any writes. Removing a row removes the stored handle on the next synchronization.
+With `DATABASE_URL` set, the dry run also checks that each row matches exactly one athlete. Without it, the command checks only the CSV. An unknown or ambiguous athlete stops synchronization before any writes. Removing a row removes the stored handle on the next synchronization.
 
 ## Suppression records
 
-`privacy.csv` records name-removal requests. Results remain under numbered replacement names.
+`privacy.csv` records which names must stay out of published results. Results remain under numbered replacement names.
 
 ```csv
 Hash,Sex,Country,Disambiguation,RedactedId,KeyCheck
 ```
 
-The redaction command maintains this file. `Hash` is an HMAC-SHA256 fingerprint of the normalized name, keyed by `OSL_PRIVACY_KEY`. `KeyCheck` verifies that later commands use the same key. Neither field contains the name or the key. Sex, country, and disambiguation distinguish athletes with the same name.
+The `redact` command maintains this file. `Hash` is an HMAC-SHA256 fingerprint of the normalized name, keyed by `OSL_PRIVACY_KEY`. `KeyCheck` verifies that later commands use the same key. Neither field stores the original name or key. `Sex`, `Country`, and `Disambiguation` distinguish athletes with the same name.
 
-`RedactedId` comes from the dataset, with no reserved environment ranges. Repeated requests reuse the number, including when a later competition restores the original name. Keep suppression records and their IDs while the corresponding results remain published.
+The command assigns each athlete the next available `RedactedId` in the privacy list. No ID ranges are reserved for particular environments. Repeated requests reuse that number, including when a later competition restores the original name. Keep each suppression record and its ID while the corresponding results remain published.
 
 ### Key setup
 
-Generate the key once with `openssl rand -hex 32`. Keep it outside Git and back it up securely. Use the same value locally, in the GitHub Actions secret `OSL_PRIVACY_KEY`, and in the Kubernetes Secret `osl-privacy`, field `key`.
+If the privacy list already contains records, use its existing key. For a new list, generate a key once with `openssl rand -hex 32`. Keep it outside Git and back it up securely. Set `OSL_PRIVACY_KEY` locally and use the same value in the GitHub Actions secret `OSL_PRIVACY_KEY` and the Kubernetes Secret `osl-privacy`, field `key`.
 
-When migrating from `OSL_PRIVACY_SALT`, rename the setting and retain its value. A new key cannot match existing fingerprints. A nonempty list requires the correct key; older experimental lists without `KeyCheck` are rejected.
+When migrating from `OSL_PRIVACY_SALT`, rename the setting and keep its value. A new key cannot match existing fingerprints. Lists with records require the original key; older experimental lists without `KeyCheck` are rejected.
 
 ### Name removal
+
+Preview the changes, then apply them:
 
 ```sh
 osl-import redact --name "Some Athlete" --dry-run
@@ -55,9 +57,9 @@ osl-import redact --name "Some Athlete"
 
 The command replaces one athlete's name across competition entries, clears their native name, removes their Instagram entries, and records the suppression. Use `--sex`, `--country`, or `--disambiguation` to resolve an ambiguous match.
 
-Review and commit the changed files. Deploy them and import the complete dataset with `competitions --prune` to remove the old database profile. See the [backend cache notes](../../README.md#caching) for when changes reach cached responses.
+Review and commit the changed files. Deploy them and import the complete dataset with `competitions --prune` to remove the old database profile. The [backend cache notes](../../README.md#caching) explain when changes reach cached responses.
 
-Run one redaction at a time per checkout. The command prepares all files, saves the suppression record, then replaces each result or social file atomically. An interruption can leave only some files replaced. Run the same command again to finish; the saved record blocks imports of remaining original-name entries.
+Run one redaction at a time per checkout. The command prepares all file changes, saves the suppression record, then replaces each results or Instagram file atomically. If interrupted, some files may still contain the original name. Rerun the same command to finish; the saved record blocks imports of those entries.
 
 ### Verification
 
@@ -65,15 +67,15 @@ Run one redaction at a time per checkout. The command prepares all files, saves 
 osl-import privacy
 ```
 
-Imports perform the same suppression check. They reject competitions that restore a removed name; they do not rewrite those files automatically. Run redaction again to apply the existing replacement identity.
+Imports run the same check and reject competitions that restore a removed name. Rerun `redact` to replace that name with the athlete's existing numbered identity.
 
-Fork CI can check public files without the secret:
+A fork's CI can check public files without the privacy key:
 
 ```sh
 osl-import competitions --dry-run --skip-privacy-check
 ```
 
-This bypass cannot write to the database or approve publication. Trusted CI and deployment must verify suppression records with the key. Imports validate all files before writing, then commit each competition separately. Any import failure prevents pruning.
+This command skips the check for removed names and cannot write to the database. Trusted CI and deployments must verify suppression records with the key before publication. Imports validate all files before writing, then save each competition in a separate transaction. If any import fails, pruning does not run.
 
 ### Requests
 
