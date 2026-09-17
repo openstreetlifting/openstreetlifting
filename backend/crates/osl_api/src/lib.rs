@@ -104,9 +104,9 @@ impl AppState {
         )
     ),
     tags(
-        (name = "competitions", description = "Public competition endpoints"),
-        (name = "athletes", description = "Public athlete endpoints"),
-        (name = "rankings", description = "Public ranking endpoints"),
+        (name = "competitions", description = "Competition endpoints"),
+        (name = "athletes", description = "Athlete endpoints"),
+        (name = "rankings", description = "Ranking endpoints"),
         (name = "ris", description = "RIS formulas and score computation"),
     ),
 )]

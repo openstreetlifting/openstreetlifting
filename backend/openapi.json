@@ -2266,15 +2266,15 @@
   "tags": [
     {
       "name": "competitions",
-      "description": "Public competition endpoints"
+      "description": "Competition endpoints"
     },
     {
       "name": "athletes",
-      "description": "Public athlete endpoints"
+      "description": "Athlete endpoints"
     },
     {
       "name": "rankings",
-      "description": "Public ranking endpoints"
+      "description": "Ranking endpoints"
     },
     {
       "name": "ris",
