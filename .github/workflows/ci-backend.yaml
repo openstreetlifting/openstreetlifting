@@ -42,7 +42,7 @@ jobs:
     env:
       SQLX_OFFLINE: true
       DATABASE_URL: postgres://openstreetlifting:openstreetlifting@localhost:5432/openstreetlifting
-      OSL_PRIVACY_SALT: ${{ secrets.OSL_PRIVACY_SALT }}
+      OSL_PRIVACY_KEY: ${{ secrets.OSL_PRIVACY_KEY }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions-rust-lang/setup-rust-toolchain@v2
@@ -65,11 +65,16 @@ jobs:
       - name: Import canonical files
         working-directory: backend
         run: |
+          args=()
+          if [[ "${{ github.event.pull_request.head.repo.fork }}" == "true" && -z "$OSL_PRIVACY_KEY" ]]; then
+            args+=(--validate-only --skip-privacy-check)
+          fi
           cargo run -p osl_importer --bin import -- bulk-import \
             --directory ./data/competitions \
-            --directory ./data/staging/competitions
-      # Fork pull requests get no salt, so this check is skipped there.
+            --directory ./data/staging/competitions "${args[@]}"
+      # Fork pull requests cannot check suppressed names without the secret.
       - name: Check nobody on the privacy list is named
+        if: github.event.pull_request.head.repo.fork == false
         working-directory: backend
         run: cargo run -p osl_importer --bin import -- privacy --directory ./data/competitions
       # A competition arriving with a second athlete of the same name is what
@@ -78,7 +83,11 @@ jobs:
       # request that causes it rather than on the deploy.
       - name: Validate athlete social handles
         working-directory: backend
-        run: cargo run -p osl_importer --bin import -- instagram --validate-only
+        run: |
+          if [[ "${{ github.event.pull_request.head.repo.fork }}" == "true" && -z "$OSL_PRIVACY_KEY" ]]; then
+            unset DATABASE_URL
+          fi
+          cargo run -p osl_importer --bin import -- instagram --validate-only
 
   lint:
     name: Clippy

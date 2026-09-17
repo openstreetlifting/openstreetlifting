@@ -1,3 +1,4 @@
+mod atomic_file;
 pub mod canonical;
 pub mod error;
 pub mod identity;

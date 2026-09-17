@@ -87,13 +87,11 @@ and search-engine requests. It has no automatic erasure workflow for those
 surfaces. A request to erase personal data must not silently become a request
 to replace a name. The notice explains the distinction.
 
-The deployment chart supplies `OSL_PRIVACY_SALT`; default import arguments are
-`bulk-import --prune --yes`. No `privacy --require-salt` invocation was found in
-this repository's deploy templates or workflows. Missing keys can make imports
-warn and skip the privacy check. Verify the deployed configuration and make the
-required check explicit before promising protection against reimport. Name and
-identity variations are another limitation. This review does not change import
-behaviour.
+The deployment chart supplies `OSL_PRIVACY_KEY`; default import arguments are
+`bulk-import --prune --yes`. Imports require a verified key when suppression
+records exist. Fork CI can explicitly skip suppression checks only in
+validation mode, which cannot write to the database. Verify the deployed
+secret configuration. Name and identity variations remain a limitation.
 
 ## Rights covered by the notice
 

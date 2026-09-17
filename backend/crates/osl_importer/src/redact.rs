@@ -10,10 +10,14 @@ use std::path::{Path, PathBuf};
 use anyhow::{Result, bail};
 use osl_domain::redaction::RedactedAthlete;
 
+use crate::atomic_file::Replacement;
 use crate::canonical::store;
-use crate::canonical::{format as canonical_format, models::CanonicalFormat};
+use crate::canonical::{
+    entries, format as canonical_format, models::CanonicalFormat, validator::CanonicalValidator,
+};
 use crate::identity::{AthleteQuery, match_key};
 use crate::privacy::{PrivacyEntry, PrivacyList};
+use crate::social;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct FileIdentity {
@@ -53,7 +57,7 @@ pub fn plan(
         bail!(
             "{} is not set, so the redaction could not be recorded and the next import would \
              undo it",
-            crate::privacy::SALT_ENV
+            crate::privacy::KEY_ENV
         );
     };
 
@@ -94,6 +98,14 @@ pub fn plan(
         }
     }
 
+    for entry in list.matching(query) {
+        identities.insert(FileIdentity {
+            gender: entry.query.gender.clone().unwrap_or_default(),
+            country: entry.query.country.clone().unwrap_or_default(),
+            disambiguation: entry.query.disambiguation,
+        });
+    }
+
     let identity = match identities.len() {
         0 => bail!(
             "No athlete named '{label}' in {}. Check the spelling against the entries.csv that \
@@ -112,8 +124,16 @@ pub fn plan(
         }
     };
 
-    let redacted = RedactedAthlete::new(list.next_id()).expect("next_id starts at 1");
-    let handles = matching_handles(instagram, query, &identity)?.len();
+    let redacted = match list.lookup(
+        label,
+        &identity.gender,
+        &identity.country,
+        identity.disambiguation,
+    ) {
+        crate::privacy::Lookup::Listed(redacted) => redacted,
+        _ => RedactedAthlete::new(list.next_id()?).expect("next_id starts at 1"),
+    };
+    let handles = handle_changes(instagram, query, &identity)?.map_or(0, |(count, _)| count);
 
     Ok(RedactionPlan {
         label: label.to_string(),
@@ -132,15 +152,25 @@ pub fn apply(
     query: &AthleteQuery,
     plan: &RedactionPlan,
 ) -> Result<()> {
+    let mut replacements = Vec::new();
     for directory in &plan.competitions {
         let mut canonical = store::read(directory)?;
         redact_in_place(&mut canonical, query, plan.redacted);
         canonical_format::normalize(&mut canonical);
-        store::write(directory, &canonical)?;
+        CanonicalValidator::validate(&canonical)?;
+        let (_, rendered) = store::render(&canonical)?;
+        if let Some(rendered) = rendered {
+            replacements.push(Replacement::prepare(
+                &directory.join(entries::FILE_NAME),
+                rendered.as_bytes(),
+            )?);
+        }
+    }
+    if let Some((_, rendered)) = handle_changes(instagram, query, &plan.identity)? {
+        replacements.push(Replacement::prepare(instagram, &rendered)?);
     }
 
-    remove_handles(instagram, query, &plan.identity)?;
-
+    // Record first: an interrupted rewrite must still block publication of the old name.
     list.append(PrivacyEntry {
         hash: plan.hash.clone(),
         query: AthleteQuery {
@@ -150,7 +180,11 @@ pub fn apply(
             disambiguation: plan.identity.disambiguation,
         },
         redacted: plan.redacted,
-    })
+    })?;
+    for replacement in replacements {
+        replacement.commit()?;
+    }
+    Ok(())
 }
 
 /// Sex, country, bodyweight, every attempt and the placing stay, so the
@@ -182,91 +216,34 @@ fn redact_in_place(
     }
 }
 
-const HANDLE_HEADER: &[&str] = &["Name", "Sex", "Country", "Disambiguation", "Instagram"];
-
-fn matching_handles(
+fn handle_changes(
     instagram: &Path,
     query: &AthleteQuery,
     identity: &FileIdentity,
-) -> Result<Vec<usize>> {
+) -> Result<Option<(usize, Vec<u8>)>> {
     if !instagram.exists() {
-        return Ok(Vec::new());
+        return Ok(None);
     }
-
     let mut reader = csv::ReaderBuilder::new()
         .trim(csv::Trim::All)
         .from_path(instagram)?;
-
-    let mut matching = Vec::new();
-
-    for (index, record) in reader.records().enumerate() {
-        if handle_row_names(&record?, query, identity) {
-            matching.push(index);
-        }
-    }
-
-    Ok(matching)
-}
-
-fn handle_row_names(
-    record: &csv::StringRecord,
-    query: &AthleteQuery,
-    identity: &FileIdentity,
-) -> bool {
-    let Some(name) = record.get(0) else {
-        return false;
-    };
-
-    if match_key(name) != query.match_key {
-        return false;
-    }
-
-    let field = |index: usize| record.get(index).map(str::trim).filter(|v| !v.is_empty());
-
-    let row = AthleteQuery {
-        match_key: query.match_key.clone(),
-        gender: field(1).map(str::to_string),
-        country: field(2).map(str::to_string),
-        disambiguation: field(3).and_then(|value| value.parse().ok()),
-    };
-
-    row.matches_parts(&identity.gender, &identity.country, identity.disambiguation)
-}
-
-fn remove_handles(instagram: &Path, query: &AthleteQuery, identity: &FileIdentity) -> Result<()> {
-    if !instagram.exists() {
-        return Ok(());
-    }
-
-    let mut reader = csv::ReaderBuilder::new()
-        .trim(csv::Trim::All)
-        .from_path(instagram)?;
-
-    let mut kept = Vec::new();
+    let headers = reader.headers()?.clone();
+    let mut writer = csv::Writer::from_writer(Vec::new());
+    writer.write_record(&headers)?;
     let mut removed = 0;
-
     for record in reader.records() {
         let record = record?;
-
-        if handle_row_names(&record, query, identity) {
+        let row = social::parse_record(&record, &headers)?;
+        if row.query.match_key == query.match_key
+            && row
+                .query
+                .matches_parts(&identity.gender, &identity.country, identity.disambiguation)
+        {
             removed += 1;
-            continue;
+        } else {
+            writer.write_record(&record)?;
         }
-
-        kept.push(record);
     }
-
-    if removed == 0 {
-        return Ok(());
-    }
-
-    let mut writer = csv::Writer::from_path(instagram)?;
-    writer.write_record(HANDLE_HEADER)?;
-
-    for record in kept {
-        writer.write_record(&record)?;
-    }
-
-    writer.flush()?;
-    Ok(())
+    let rendered = writer.into_inner()?;
+    Ok((removed > 0).then_some((removed, rendered)))
 }

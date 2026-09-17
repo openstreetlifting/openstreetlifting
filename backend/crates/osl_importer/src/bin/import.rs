@@ -39,6 +39,10 @@ enum Commands {
 
         #[arg(long)]
         validate_only: bool,
+
+        /// Validate public files without checking suppressed names; cannot write to the database.
+        #[arg(long, requires = "validate_only")]
+        skip_privacy_check: bool,
     },
     BulkImport {
         /// Repeat to import more than one tree under a single prune.
@@ -47,6 +51,9 @@ enum Commands {
 
         #[arg(long)]
         validate_only: bool,
+
+        #[arg(long, requires = "validate_only")]
+        skip_privacy_check: bool,
 
         /// Delete the competitions no file in the tree claims, and the athletes
         /// they leave without a result. Reports what it would delete unless
@@ -94,10 +101,6 @@ enum Commands {
     Privacy {
         #[arg(long, default_value = "./data/competitions")]
         directory: PathBuf,
-
-        /// Fail instead of warning when the salt is missing.
-        #[arg(long)]
-        require_salt: bool,
     },
     /// Recompute every stored RIS score against the current formula.
     RecomputeRis,
@@ -133,32 +136,33 @@ async fn main() -> Result<()> {
         Commands::Canonical {
             directory,
             validate_only,
+            skip_privacy_check,
         } => {
             let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
-            let privacy = PrivacyList::load(&cli.privacy_file)?;
-            warn_when_unsalted(&privacy);
-            handle_canonical_import(directory, validate_only, database_url, &privacy).await?;
+            let privacy = import_privacy(&cli.privacy_file, skip_privacy_check)?;
+            handle_canonical_import(directory, validate_only, database_url, privacy.as_ref())
+                .await?;
         }
         Commands::BulkImport {
             directories,
             validate_only,
             prune,
             yes,
+            skip_privacy_check,
         } => {
             if prune && validate_only {
                 bail!("--prune writes to the database, so it cannot run with --validate-only");
             }
 
             let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
-            let privacy = PrivacyList::load(&cli.privacy_file)?;
-            warn_when_unsalted(&privacy);
+            let privacy = import_privacy(&cli.privacy_file, skip_privacy_check)?;
             handle_bulk_import(
                 &directories,
                 validate_only,
                 prune,
                 yes,
                 database_url,
-                &privacy,
+                privacy.as_ref(),
             )
             .await?;
         }
@@ -182,11 +186,8 @@ async fn main() -> Result<()> {
                 dry_run,
             )?;
         }
-        Commands::Privacy {
-            directory,
-            require_salt,
-        } => {
-            handle_privacy(&cli.privacy_file, &directory, require_salt)?;
+        Commands::Privacy { directory } => {
+            handle_privacy(&cli.privacy_file, &directory)?;
         }
         Commands::Instagram {
             file,
@@ -257,17 +258,16 @@ async fn handle_instagram(
     Ok(())
 }
 
-fn warn_when_unsalted(privacy: &PrivacyList) {
-    if privacy.is_empty() || privacy.is_salted() {
-        return;
+fn import_privacy(path: &Path, skip: bool) -> Result<Option<PrivacyList>> {
+    if skip {
+        tracing::warn!(
+            "Privacy checks explicitly skipped; this validation does not approve publication"
+        );
+        return Ok(None);
     }
-
-    tracing::warn!(
-        "{} is not set, so the {} name(s) in {} cannot be checked for. Set it to guard the import",
-        privacy::SALT_ENV,
-        privacy.len(),
-        privacy.path().display()
-    );
+    let list = PrivacyList::load(path)?;
+    list.require_key()?;
+    Ok(Some(list))
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -316,7 +316,7 @@ fn handle_redact(
     Ok(())
 }
 
-fn handle_privacy(privacy_file: &Path, directory: &Path, require_salt: bool) -> Result<()> {
+fn handle_privacy(privacy_file: &Path, directory: &Path) -> Result<()> {
     let list = PrivacyList::load(privacy_file)?;
 
     if list.is_empty() {
@@ -324,22 +324,7 @@ fn handle_privacy(privacy_file: &Path, directory: &Path, require_salt: bool) -> 
         return Ok(());
     }
 
-    if !list.is_salted() {
-        if require_salt {
-            bail!(
-                "{} is not set, so {} cannot be checked against the files",
-                privacy::SALT_ENV,
-                list.path().display()
-            );
-        }
-
-        tracing::warn!(
-            "{} is not set, so the {} redaction(s) could not be checked",
-            privacy::SALT_ENV,
-            list.len()
-        );
-        return Ok(());
-    }
+    list.require_key()?;
 
     let mut directories = Vec::new();
     store::collect_competitions(directory, &mut directories)?;
@@ -453,7 +438,7 @@ async fn handle_canonical_import(
     directory: PathBuf,
     validate_only: bool,
     database_url: &str,
-    privacy: &PrivacyList,
+    privacy: Option<&PrivacyList>,
 ) -> Result<()> {
     tracing::info!("Loading competition from: {}", directory.display());
 
@@ -464,7 +449,9 @@ async fn handle_canonical_import(
     tracing::info!("Validating canonical format...");
     let validation_report = CanonicalValidator::validate(&canonical)?;
     validation_report.log_warnings();
-    privacy::check_competition(&canonical, privacy)?;
+    if let Some(privacy) = privacy {
+        privacy::check_competition(&canonical, privacy)?;
+    }
     tracing::info!("\u{2713} Validation successful!");
 
     if validate_only {
@@ -536,7 +523,7 @@ async fn handle_bulk_import(
     prune: bool,
     yes: bool,
     database_url: &str,
-    privacy: &PrivacyList,
+    privacy: Option<&PrivacyList>,
 ) -> Result<()> {
     let mut competitions = Vec::new();
 
@@ -675,12 +662,14 @@ async fn process_competition(
     directory: &Path,
     validate_only: bool,
     pool: Option<&sqlx::PgPool>,
-    privacy: &PrivacyList,
+    privacy: Option<&PrivacyList>,
 ) -> Result<()> {
     let canonical = store::read(directory)?;
     store::check_location(directory, &canonical)?;
 
-    privacy::check_competition(&canonical, privacy)?;
+    if let Some(privacy) = privacy {
+        privacy::check_competition(&canonical, privacy)?;
+    }
 
     let validation_report = CanonicalValidator::validate(&canonical)?;
 

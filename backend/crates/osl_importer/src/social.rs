@@ -44,11 +44,11 @@ struct InstagramRecord {
 /// A row with its columns checked: an athlete to find, and the handle to give
 /// them.
 #[derive(Debug)]
-struct HandleRow {
+pub(crate) struct HandleRow {
     /// The name as the file spells it, so every message about this row can be
     /// found by searching the file for what it says.
     label: String,
-    query: AthleteQuery,
+    pub(crate) query: AthleteQuery,
     handle: String,
 }
 
@@ -248,11 +248,10 @@ fn read_file(file: &Path) -> Result<Vec<HandleRow>> {
     let mut athletes: BTreeMap<AthleteQuery, String> = BTreeMap::new();
     let mut handles: BTreeMap<String, String> = BTreeMap::new();
 
-    for record in reader.deserialize() {
-        let record: InstagramRecord =
-            record.with_context(|| format!("Malformed row in {}", file.display()))?;
-
-        let row = parse(record)?;
+    let headers = reader.headers()?.clone();
+    for record in reader.records() {
+        let record = record.with_context(|| format!("Malformed row in {}", file.display()))?;
+        let row = parse_record(&record, &headers)?;
 
         if let Some(first) = athletes.insert(row.query.clone(), row.label.clone()) {
             bail!("'{}' is listed twice", first);
@@ -276,13 +275,22 @@ fn read_file(file: &Path) -> Result<Vec<HandleRow>> {
     Ok(rows)
 }
 
+pub(crate) fn parse_record(
+    record: &csv::StringRecord,
+    headers: &csv::StringRecord,
+) -> Result<HandleRow> {
+    parse(record.deserialize(Some(headers))?)
+}
+
 fn parse(record: InstagramRecord) -> Result<HandleRow> {
     let label = record.name.trim().to_string();
     if label.is_empty() {
         bail!("a row has a handle with no name");
     }
 
-    if osl_domain::redaction::RedactedAthlete::parse(&label).is_some() {
+    if osl_domain::redaction::RedactedAthlete::from_match_key(&crate::identity::match_key(&label))
+        .is_some()
+    {
         bail!("'{label}' asked to be taken off the site, so they cannot carry a handle");
     }
 

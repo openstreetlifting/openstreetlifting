@@ -5,7 +5,7 @@ use osl_domain::normalized_name::NormalizedAthleteName;
 
 use crate::canonical::models::{AthleteData, CategoryData};
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AthleteQuery {
     pub match_key: String,
     pub gender: Option<String>,

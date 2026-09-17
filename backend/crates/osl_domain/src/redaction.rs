@@ -23,6 +23,12 @@ impl RedactedAthlete {
         (id > 0).then_some(Self(id))
     }
 
+    pub fn from_match_key(key: &str) -> Option<Self> {
+        let number = key.strip_prefix("redacted athlete ")?;
+        let redacted = Self::new(number.parse().ok()?)?;
+        (number == redacted.id().to_string()).then_some(redacted)
+    }
+
     pub fn id(self) -> u32 {
         self.0
     }

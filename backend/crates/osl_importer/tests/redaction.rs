@@ -14,7 +14,7 @@ use osl_importer::redact;
 use rust_decimal::Decimal;
 use uuid::Uuid;
 
-const SALT: &str = "test-salt";
+const KEY: &str = "test-key";
 
 struct Workspace(PathBuf);
 
@@ -39,11 +39,11 @@ impl Workspace {
     }
 
     fn list(&self) -> PrivacyList {
-        PrivacyList::load_with_salt(&self.privacy(), Some(SALT.to_string())).unwrap()
+        PrivacyList::load_with_key(&self.privacy(), Some(KEY.to_string())).unwrap()
     }
 
-    fn unsalted_list(&self) -> PrivacyList {
-        PrivacyList::load_with_salt(&self.privacy(), None).unwrap()
+    fn unkeyed_list(&self) -> PrivacyList {
+        PrivacyList::load_with_key(&self.privacy(), None).unwrap()
     }
 
     fn write_competition(&self, canonical: &CanonicalFormat) -> PathBuf {
@@ -388,7 +388,7 @@ fn the_list_recognises_the_name_it_cannot_show() {
 }
 
 #[test]
-fn without_the_salt_the_list_says_so_rather_than_passing() {
+fn without_the_key_the_list_says_so_rather_than_passing() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -396,25 +396,25 @@ fn without_the_salt_the_list_says_so_rather_than_passing() {
     ));
     redact(&workspace, "Alina Riyaz", None);
 
-    let list = workspace.unsalted_list();
+    let list = workspace.unkeyed_list();
 
-    assert!(!list.is_salted());
+    assert!(!list.has_key());
     assert_eq!(list.len(), 1);
     assert_eq!(
         list.lookup("Alina Riyaz", "M", "FR", None),
-        Lookup::Unsalted
+        Lookup::MissingKey
     );
 }
 
 #[test]
-fn without_the_salt_nothing_is_redacted() {
+fn without_the_key_nothing_is_redacted() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
         vec![men_80(vec![lifter("Alina", "Riyaz")])],
     ));
 
-    let list = workspace.unsalted_list();
+    let list = workspace.unkeyed_list();
     let problem = redact::plan(
         &workspace.competitions(),
         &workspace.instagram(),
@@ -425,7 +425,7 @@ fn without_the_salt_nothing_is_redacted() {
     .unwrap_err()
     .to_string();
 
-    assert!(problem.contains(privacy::SALT_ENV), "{problem}");
+    assert!(problem.contains(privacy::KEY_ENV), "{problem}");
 }
 
 #[test]
@@ -445,20 +445,285 @@ fn two_redactions_get_two_numbers() {
 }
 
 #[test]
-fn the_staging_range_does_not_consume_real_numbers() {
+fn allocation_has_no_reserved_range() {
     let workspace = Workspace::new();
-    std::fs::write(
-        workspace.privacy(),
-        format!(
-            "Hash,Sex,Country,Disambiguation,RedactedId\n{},M,FR,,9001\n",
-            "0".repeat(64)
-        ),
+    let mut list = workspace.list();
+    list.append(privacy::PrivacyEntry {
+        hash: list.hash("Fixture Person").unwrap(),
+        query: query("", None),
+        redacted: osl_domain::redaction::RedactedAthlete::new(9000).unwrap(),
+    })
+    .unwrap();
+    workspace.write_competition(&competition(
+        "meet",
+        vec![men_80(vec![
+            lifter("Alina", "Riyaz"),
+            lifter("Lea", "Merandon"),
+        ])],
+    ));
+    assert_eq!(redact(&workspace, "Alina Riyaz", None).redacted.id(), 9001);
+    assert_eq!(redact(&workspace, "Lea Merandon", None).redacted.id(), 9002);
+}
+
+#[test]
+fn a_returning_athlete_keeps_their_replacement_and_retry_is_a_noop() {
+    let workspace = Workspace::new();
+    let first = workspace.write_competition(&competition(
+        "first",
+        vec![men_80(vec![lifter("Alina", "Riyaz")])],
+    ));
+    redact(&workspace, "Alina Riyaz", None);
+    let later = workspace.write_competition(&competition(
+        "later",
+        vec![men_80(vec![lifter("Alina", "Riyaz")])],
+    ));
+    assert_eq!(redact(&workspace, "Alina Riyaz", None).redacted.id(), 1);
+    assert_eq!(
+        only_athlete(&first).last_name,
+        only_athlete(&later).last_name
+    );
+    let recorded = std::fs::read(workspace.privacy()).unwrap();
+    let retry = redact(&workspace, "Alina Riyaz", None);
+    assert_eq!(retry.entries, 0);
+    assert_eq!(workspace.list().len(), 1);
+    assert_eq!(std::fs::read(workspace.privacy()).unwrap(), recorded);
+}
+
+#[test]
+fn missing_and_incorrect_keys_cannot_approve_an_import() {
+    let workspace = Workspace::new();
+    let original = competition("meet", vec![men_80(vec![lifter("Alina", "Riyaz")])]);
+    workspace.write_competition(&original);
+    redact(&workspace, "Alina Riyaz", None);
+    assert!(privacy::check_competition(&original, &workspace.unkeyed_list()).is_err());
+    for key in ["wrong-key", ""] {
+        let result = PrivacyList::load_with_key(&workspace.privacy(), Some(key.into()));
+        assert!(result.is_err() || result.unwrap().require_key().is_err());
+    }
+}
+
+#[test]
+fn instagram_cleanup_respects_headers_and_preserves_remaining_columns() {
+    for contents in [
+        "Name,Instagram\nAlina Riyaz,alina\nSomeone Else,someone\n",
+        "Instagram,Country,Name,Sex\nalina,fr,Alina Riyaz,m\nsomeone,FR,Someone Else,M\n",
+    ] {
+        let workspace = Workspace::new();
+        workspace.write_competition(&competition(
+            "meet",
+            vec![men_80(vec![lifter("Alina", "Riyaz")])],
+        ));
+        workspace.write_handles(contents);
+        assert_eq!(redact(&workspace, "Alina Riyaz", None).handles, 1);
+        let remaining = workspace.read_handles();
+        assert!(!remaining.contains("Alina"));
+        assert!(remaining.contains("Someone Else"));
+        assert_eq!(remaining.lines().next(), contents.lines().next());
+        assert_eq!(
+            osl_importer::social::validate_file(&workspace.instagram()).unwrap(),
+            1
+        );
+    }
+}
+
+#[test]
+fn malformed_handles_leave_competitions_and_suppression_untouched() {
+    let workspace = Workspace::new();
+    let directory = workspace.write_competition(&competition(
+        "meet",
+        vec![men_80(vec![lifter("Alina", "Riyaz")])],
+    ));
+    workspace.write_handles("Name,Instagram\nSomeone Else,not a handle\n");
+    assert!(
+        redact::plan(
+            &workspace.competitions(),
+            &workspace.instagram(),
+            &workspace.list(),
+            &query("Alina Riyaz", None),
+            "Alina Riyaz"
+        )
+        .is_err()
+    );
+    assert_eq!(only_athlete(&directory).display_name(), "Alina Riyaz");
+    assert!(!workspace.privacy().exists());
+}
+
+#[test]
+fn failure_to_record_suppression_does_not_rewrite_results_or_handles() {
+    let workspace = Workspace::new();
+    let directory = workspace.write_competition(&competition(
+        "meet",
+        vec![men_80(vec![lifter("Alina", "Riyaz")])],
+    ));
+    workspace.write_handles("Name,Instagram\nAlina Riyaz,alina\n");
+    let mut list = workspace.list();
+    let query = query("Alina Riyaz", None);
+    let plan = redact::plan(
+        &workspace.competitions(),
+        &workspace.instagram(),
+        &list,
+        &query,
+        "Alina Riyaz",
     )
     .unwrap();
+    std::fs::create_dir(workspace.privacy()).unwrap();
+    assert!(redact::apply(&workspace.instagram(), &mut list, &query, &plan).is_err());
+    assert_eq!(only_athlete(&directory).display_name(), "Alina Riyaz");
+    assert!(workspace.read_handles().contains("Alina Riyaz"));
+    assert!(list.is_empty());
+}
+
+#[test]
+fn an_interrupted_rewrite_can_resume_using_its_recorded_identity() {
+    let workspace = Workspace::new();
+    let first = workspace.write_competition(&competition(
+        "first",
+        vec![men_80(vec![lifter("Alina", "Riyaz")])],
+    ));
+    redact(&workspace, "Alina Riyaz", None);
+    let pending = workspace.write_competition(&competition(
+        "pending",
+        vec![men_80(vec![lifter("Alina", "Riyaz")])],
+    ));
+    workspace.write_handles("Name,Instagram\nAlina Riyaz,alina\n");
+    assert!(
+        privacy::check_competition(&store::read(&pending).unwrap(), &workspace.list()).is_err()
+    );
+    redact(&workspace, "Alina Riyaz", None);
+    assert_eq!(
+        only_athlete(&first).last_name,
+        only_athlete(&pending).last_name
+    );
+    assert!(!workspace.read_handles().contains("alina"));
+    assert_eq!(workspace.list().len(), 1);
+}
+
+#[test]
+fn an_interruption_after_all_results_still_allows_handle_cleanup() {
+    let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
         vec![men_80(vec![lifter("Alina", "Riyaz")])],
     ));
+    redact(&workspace, "Alina Riyaz", None);
+    workspace.write_handles("Name,Instagram\nAlina Riyaz,alina\n");
+    let resumed = redact(&workspace, "Alina Riyaz", None);
+    assert_eq!(resumed.entries, 0);
+    assert_eq!(resumed.handles, 1);
+    assert!(!workspace.read_handles().contains("alina"));
+}
 
-    assert_eq!(redact(&workspace, "Alina Riyaz", None).redacted.id(), 1);
+#[test]
+fn a_replacement_cannot_carry_a_native_name() {
+    let mut replacement = lifter("", "Redacted Athlete #1");
+    replacement.native_name = Some("Фикстур Альфа".into());
+    let canonical = competition("meet", vec![men_80(vec![replacement])]);
+    let error =
+        osl_importer::canonical::validator::CanonicalValidator::validate(&canonical).unwrap_err();
+    assert!(error.to_string().contains("NativeName"));
+}
+
+#[test]
+fn equivalent_replacement_names_cannot_carry_social_handles() {
+    let workspace = Workspace::new();
+    for name in [
+        "Redacted Athlete #1",
+        "redacted athlete #1",
+        "Redacted Athlete 1",
+        "REDACTED ATHLETE #1",
+    ] {
+        workspace.write_handles(&format!("Name,Instagram\n{name},fixture_handle\n"));
+        assert!(
+            osl_importer::social::validate_file(&workspace.instagram()).is_err(),
+            "{name}"
+        );
+    }
+}
+
+#[test]
+fn an_unnumbered_suppression_does_not_match_another_numbered_person() {
+    let workspace = Workspace::new();
+    workspace.write_competition(&competition(
+        "meet",
+        vec![men_80(vec![lifter("Alina", "Riyaz")])],
+    ));
+    redact(&workspace, "Alina Riyaz", None);
+    let other = competition(
+        "other",
+        vec![men_80(vec![numbered(lifter("Alina", "Riyaz"), 2)])],
+    );
+    assert!(privacy::check_competition(&other, &workspace.list()).is_ok());
+}
+
+#[test]
+fn the_last_available_id_does_not_overflow() {
+    let workspace = Workspace::new();
+    let mut list = workspace.list();
+    list.append(privacy::PrivacyEntry {
+        hash: list.hash("Fixture Person").unwrap(),
+        query: query("", None),
+        redacted: osl_domain::redaction::RedactedAthlete::new(u32::MAX).unwrap(),
+    })
+    .unwrap();
+    assert!(list.next_id().is_err());
+}
+
+#[test]
+fn cli_requires_verified_key_and_only_allows_bypass_for_validation() {
+    let workspace = Workspace::new();
+    let directory = workspace.write_competition(&competition(
+        "meet",
+        vec![men_80(vec![lifter("Alina", "Riyaz")])],
+    ));
+    redact(&workspace, "Alina Riyaz", None);
+    let run = |key: Option<&str>, args: &[&str]| {
+        let mut command = std::process::Command::new(env!("CARGO_BIN_EXE_import"));
+        command
+            .current_dir(&workspace.0)
+            .env_remove("DATABASE_URL")
+            .env_remove(privacy::KEY_ENV);
+        if let Some(key) = key {
+            command.env(privacy::KEY_ENV, key);
+        }
+        command
+            .arg("--privacy-file")
+            .arg(workspace.privacy())
+            .args(args)
+            .output()
+            .unwrap()
+    };
+    let directory = directory.to_str().unwrap();
+    for key in [None, Some("wrong-key")] {
+        assert!(
+            !run(key, &["canonical", directory, "--validate-only"])
+                .status
+                .success()
+        );
+        assert!(
+            !run(key, &["privacy", "--directory", directory])
+                .status
+                .success()
+        );
+    }
+    assert!(
+        run(Some(KEY), &["canonical", directory, "--validate-only"])
+            .status
+            .success()
+    );
+    assert!(
+        run(
+            None,
+            &[
+                "canonical",
+                directory,
+                "--validate-only",
+                "--skip-privacy-check"
+            ]
+        )
+        .status
+        .success()
+    );
+    let refused = run(None, &["canonical", directory, "--skip-privacy-check"]);
+    assert!(!refused.status.success());
+    assert!(String::from_utf8_lossy(&refused.stderr).contains("--validate-only"));
 }

@@ -312,3 +312,52 @@ async fn an_athlete_listed_twice_is_refused(pool: PgPool) {
 
     assert!(problem.contains("listed twice"), "{problem}");
 }
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn replacement_aliases_cannot_restore_a_handle(pool: PgPool) {
+    import(
+        &pool,
+        file("redacted", vec![athlete("", "Redacted Athlete #1")]),
+    )
+    .await;
+    for name in [
+        "redacted athlete #1",
+        "Redacted Athlete 1",
+        "REDACTED ATHLETE #1",
+    ] {
+        let handles = HandleFile::new(&format!("Name,Instagram\n{name},fixture_handle\n"));
+        assert!(load_instagram_handles(handles.path(), &pool).await.is_err());
+        assert!(attached(&pool).await.is_empty());
+    }
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn reimport_clears_identity_details_previously_attached_to_a_replacement(pool: PgPool) {
+    let fixture = || file("redacted", vec![athlete("", "Redacted Athlete #1")]);
+    import(&pool, fixture()).await;
+    sqlx::query("UPDATE athletes SET native_name = 'Фикстур Альфа', native_script = 'cyrillic', profile_picture_url = 'https://example.com/fixture.jpg' WHERE match_key = 'redacted athlete 1'")
+        .execute(&pool).await.unwrap();
+    sqlx::query("INSERT INTO athlete_socials (athlete_id, social_id, handle) SELECT a.athlete_id, s.social_id, 'fixture_handle' FROM athletes a CROSS JOIN socials s WHERE a.match_key = 'redacted athlete 1' AND s.name = 'instagram'")
+        .execute(&pool).await.unwrap();
+    import(&pool, fixture()).await;
+    let details: (Option<String>, Option<String>, Option<String>) = sqlx::query_as("SELECT native_name, native_script, profile_picture_url FROM athletes WHERE match_key = 'redacted athlete 1'")
+        .fetch_one(&pool).await.unwrap();
+    assert_eq!(details, (None, None, None));
+    assert!(attached(&pool).await.is_empty());
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn direct_import_cannot_attach_a_native_name_to_a_replacement(pool: PgPool) {
+    let mut replacement = athlete("", "Redacted Athlete #1");
+    replacement.native_name = Some("Фикстур Альфа".into());
+    let error = osl_importer::canonical::transformer::CanonicalTransformer::new(&pool)
+        .import_to_database(file("redacted", vec![replacement]))
+        .await
+        .unwrap_err();
+    assert!(error.to_string().contains("NativeName"));
+    let count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM athletes")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(count, 0);
+}

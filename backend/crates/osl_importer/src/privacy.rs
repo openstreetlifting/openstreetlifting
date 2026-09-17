@@ -1,10 +1,6 @@
-//! The list of athletes who asked to be taken off the site.
-//!
-//! Names are keyed by HMAC under a salt kept outside the repository: a public
-//! file naming everyone who asked to be forgotten publishes exactly what it was
-//! built to remove. Without the salt the list cannot answer, and says so rather
-//! than passing quietly.
+//! Suppression records for names removed from the published archive.
 
+use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result, anyhow, bail};
@@ -17,11 +13,8 @@ use crate::canonical::models::CanonicalFormat;
 use crate::identity::{AthleteQuery, match_key};
 
 pub const DEFAULT_PATH: &str = "./data/athletes/privacy.csv";
-pub const SALT_ENV: &str = "OSL_PRIVACY_SALT";
-
-/// Numbers from here up belong to the staging fixture, so a real redaction and
-/// the seeded one never land on the same stand-in.
-pub const STAGING_ID_FLOOR: u32 = 9000;
+pub const KEY_ENV: &str = "OSL_PRIVACY_KEY";
+const KEY_CHECK_MESSAGE: &str = "openstreetlifting/privacy-key-check/v1";
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 struct PrivacyRecord {
@@ -35,9 +28,11 @@ struct PrivacyRecord {
     disambiguation: Option<i16>,
     #[serde(rename = "RedactedId")]
     redacted_id: u32,
+    #[serde(rename = "KeyCheck")]
+    key_check: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PrivacyEntry {
     pub hash: String,
     pub query: AthleteQuery,
@@ -47,28 +42,31 @@ pub struct PrivacyEntry {
 #[derive(Debug)]
 pub struct PrivacyList {
     path: PathBuf,
-    salt: Option<String>,
+    key: Option<String>,
     entries: Vec<PrivacyEntry>,
+    by_hash: HashMap<String, Vec<usize>>,
 }
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Lookup {
-    Unsalted,
+    MissingKey,
     NotListed,
     Listed(RedactedAthlete),
 }
 
 impl PrivacyList {
     pub fn load(path: &Path) -> Result<Self> {
-        Self::load_with_salt(path, std::env::var(SALT_ENV).ok().filter(|s| !s.is_empty()))
+        Self::load_with_key(path, std::env::var(KEY_ENV).ok().filter(|s| !s.is_empty()))
     }
 
-    pub fn load_with_salt(path: &Path, salt: Option<String>) -> Result<Self> {
+    pub fn load_with_key(path: &Path, key: Option<String>) -> Result<Self> {
+        let key = key.filter(|key| !key.is_empty());
         if !path.exists() {
             return Ok(Self {
                 path: path.to_path_buf(),
-                salt,
+                key,
                 entries: Vec::new(),
+                by_hash: HashMap::new(),
             });
         }
 
@@ -78,15 +76,29 @@ impl PrivacyList {
             .with_context(|| format!("reading {}", path.display()))?;
 
         let mut entries = Vec::new();
-        let mut seen_ids = Vec::new();
+        let mut seen_ids = HashSet::new();
+        let mut by_hash: HashMap<String, Vec<usize>> = HashMap::new();
+        let mut identities = HashSet::new();
 
         for (index, record) in reader.deserialize::<PrivacyRecord>().enumerate() {
             let line = index + 2;
             let record = record.with_context(|| format!("{}: line {line}", path.display()))?;
+            if let Some(key) = &key {
+                let mut mac = Hmac::<Sha256>::new_from_slice(key.as_bytes())
+                    .expect("HMAC accepts any key length");
+                mac.update(KEY_CHECK_MESSAGE.as_bytes());
+                let check = decode_hash(&record.key_check).with_context(|| {
+                    format!("{}: line {line}: invalid KeyCheck", path.display())
+                })?;
+                mac.verify_slice(&check)
+                    .map_err(|_| anyhow!("{KEY_ENV} does not match {}", path.display()))?;
+            } else {
+                decode_hash(&record.key_check).context("invalid KeyCheck")?;
+            }
             let entry = parse(record)
                 .map_err(|problem| anyhow!("{}: line {line}: {problem}", path.display()))?;
 
-            if seen_ids.contains(&entry.redacted.id()) {
+            if !seen_ids.insert(entry.redacted.id()) {
                 bail!(
                     "{}: line {line}: RedactedId {} is used twice, so two athletes would share \
                      a page",
@@ -95,14 +107,21 @@ impl PrivacyList {
                 );
             }
 
-            seen_ids.push(entry.redacted.id());
+            if !identities.insert((entry.hash.clone(), entry.query.clone())) {
+                bail!("{}: line {line}: identity is listed twice", path.display());
+            }
+            by_hash
+                .entry(entry.hash.clone())
+                .or_default()
+                .push(entries.len());
             entries.push(entry);
         }
 
         Ok(Self {
             path: path.to_path_buf(),
-            salt,
+            key,
             entries,
+            by_hash,
         })
     }
 
@@ -114,28 +133,56 @@ impl PrivacyList {
         self.entries.is_empty()
     }
 
-    pub fn is_salted(&self) -> bool {
-        self.salt.is_some()
+    pub fn has_key(&self) -> bool {
+        self.key.is_some()
     }
 
     pub fn path(&self) -> &Path {
         &self.path
     }
 
-    pub fn next_id(&self) -> u32 {
+    pub fn require_key(&self) -> Result<()> {
+        if !self.is_empty() && self.key.is_none() {
+            bail!("{KEY_ENV} is required to check {}", self.path.display());
+        }
+        Ok(())
+    }
+
+    pub fn next_id(&self) -> Result<u32> {
         self.entries
             .iter()
             .map(|entry| entry.redacted.id())
-            .filter(|id| *id < STAGING_ID_FLOOR)
             .max()
             .unwrap_or(0)
-            + 1
+            .checked_add(1)
+            .context("No replacement IDs remain")
+    }
+
+    pub fn matching<'a>(
+        &'a self,
+        query: &'a AthleteQuery,
+    ) -> impl Iterator<Item = &'a PrivacyEntry> {
+        let hash = self
+            .key
+            .as_deref()
+            .map(|key| hash_with(key, &query.match_key));
+        hash.and_then(|hash| self.by_hash.get(&hash))
+            .into_iter()
+            .flatten()
+            .map(|index| &self.entries[*index])
+            .filter(|entry| {
+                query.matches_parts(
+                    entry.query.gender.as_deref().unwrap_or_default(),
+                    entry.query.country.as_deref().unwrap_or_default(),
+                    entry.query.disambiguation,
+                )
+            })
     }
 
     pub fn hash(&self, full_name: &str) -> Option<String> {
-        self.salt
+        self.key
             .as_deref()
-            .map(|salt| hash_with(salt, &match_key(full_name)))
+            .map(|key| hash_with(key, &match_key(full_name)))
     }
 
     pub fn lookup(
@@ -146,44 +193,75 @@ impl PrivacyList {
         disambiguation: Option<i16>,
     ) -> Lookup {
         let Some(hash) = self.hash(full_name) else {
-            return Lookup::Unsalted;
+            return Lookup::MissingKey;
         };
 
-        self.entries
-            .iter()
+        self.by_hash
+            .get(&hash)
+            .into_iter()
+            .flatten()
+            .map(|index| &self.entries[*index])
             .find(|entry| {
-                entry.hash == hash && entry.query.matches_parts(gender, country, disambiguation)
+                entry.query.matches_parts(gender, country, disambiguation)
+                    && entry.query.disambiguation == disambiguation
             })
             .map_or(Lookup::NotListed, |entry| Lookup::Listed(entry.redacted))
     }
 
     pub fn append(&mut self, entry: PrivacyEntry) -> Result<()> {
-        self.entries.push(entry);
-        self.entries.sort_by_key(|entry| entry.redacted.id());
-        self.write()
-    }
-
-    fn write(&self) -> Result<()> {
-        if let Some(parent) = self.path.parent() {
-            std::fs::create_dir_all(parent)?;
+        let key = self
+            .key
+            .as_deref()
+            .context(format!("{KEY_ENV} is required to record a redaction"))?;
+        if self.entries.iter().any(|existing| {
+            existing.hash == entry.hash
+                && existing.query == entry.query
+                && existing.redacted == entry.redacted
+        }) {
+            return Ok(());
         }
-
-        let mut writer = csv::Writer::from_path(&self.path)
-            .with_context(|| format!("writing {}", self.path.display()))?;
-
-        for entry in &self.entries {
+        anyhow::ensure!(
+            !self
+                .entries
+                .iter()
+                .any(|existing| existing.redacted == entry.redacted
+                    || (existing.hash == entry.hash && existing.query == entry.query)),
+            "Conflicting suppression record; reload the privacy list"
+        );
+        let mut entries: Vec<_> = self.entries.iter().chain(std::iter::once(&entry)).collect();
+        entries.sort_by_key(|entry| entry.redacted.id());
+        let key_check = hash_with(key, KEY_CHECK_MESSAGE);
+        let mut writer = csv::Writer::from_writer(Vec::new());
+        for entry in entries {
             writer.serialize(PrivacyRecord {
                 hash: entry.hash.clone(),
                 sex: entry.query.gender.clone(),
                 country: entry.query.country.clone(),
                 disambiguation: entry.query.disambiguation,
                 redacted_id: entry.redacted.id(),
+                key_check: key_check.clone(),
             })?;
         }
-
-        writer.flush()?;
+        let bytes = writer.into_inner()?;
+        crate::atomic_file::Replacement::prepare(&self.path, &bytes)?.commit()?;
+        self.by_hash
+            .entry(entry.hash.clone())
+            .or_default()
+            .push(self.entries.len());
+        self.entries.push(entry);
         Ok(())
     }
+}
+
+fn decode_hash(value: &str) -> Result<Vec<u8>> {
+    anyhow::ensure!(
+        value.len() == 64 && value.bytes().all(|c| c.is_ascii_hexdigit()),
+        "expected a SHA-256 fingerprint"
+    );
+    (0..64)
+        .step_by(2)
+        .map(|i| u8::from_str_radix(&value[i..i + 2], 16).map_err(Into::into))
+        .collect()
 }
 
 fn parse(record: PrivacyRecord) -> std::result::Result<PrivacyEntry, String> {
@@ -239,9 +317,9 @@ fn optional(value: Option<&str>) -> Option<&str> {
     value.map(str::trim).filter(|value| !value.is_empty())
 }
 
-pub fn hash_with(salt: &str, match_key: &str) -> String {
+pub fn hash_with(key: &str, match_key: &str) -> String {
     let mut mac =
-        Hmac::<Sha256>::new_from_slice(salt.as_bytes()).expect("HMAC takes a key of any length");
+        Hmac::<Sha256>::new_from_slice(key.as_bytes()).expect("HMAC takes a key of any length");
     mac.update(match_key.as_bytes());
 
     mac.finalize()
@@ -253,6 +331,7 @@ pub fn hash_with(salt: &str, match_key: &str) -> String {
 
 /// Keeps the next import from undoing a redaction the files already carry.
 pub fn check_competition(canonical: &CanonicalFormat, list: &PrivacyList) -> Result<()> {
+    list.require_key()?;
     if list.is_empty() {
         return Ok(());
     }
@@ -296,7 +375,7 @@ mod tests {
 
     #[test]
     fn the_hash_hides_the_name() {
-        let hashed = hash_with("salt", &match_key("Alina Riyaz"));
+        let hashed = hash_with("test-key", &match_key("Alina Riyaz"));
 
         assert_eq!(hashed.len(), 64);
         assert!(!hashed.contains("alina"));
@@ -306,13 +385,13 @@ mod tests {
     #[test]
     fn the_same_athlete_spelled_differently_hashes_the_same() {
         assert_eq!(
-            hash_with("salt", &match_key("Léa Mérandon")),
-            hash_with("salt", &match_key("LEA MERANDON"))
+            hash_with("test-key", &match_key("Léa Mérandon")),
+            hash_with("test-key", &match_key("LEA MERANDON"))
         );
     }
 
     #[test]
-    fn a_different_salt_gives_a_different_hash() {
+    fn a_different_key_gives_a_different_hash() {
         assert_ne!(
             hash_with("one", &match_key("Alina Riyaz")),
             hash_with("two", &match_key("Alina Riyaz"))
@@ -322,8 +401,8 @@ mod tests {
     #[test]
     fn different_people_do_not_collide() {
         assert_ne!(
-            hash_with("salt", &match_key("Tom Berthier")),
-            hash_with("salt", &match_key("Tom Bertier"))
+            hash_with("test-key", &match_key("Tom Berthier")),
+            hash_with("test-key", &match_key("Tom Bertier"))
         );
     }
 }

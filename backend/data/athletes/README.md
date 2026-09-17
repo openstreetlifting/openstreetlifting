@@ -40,46 +40,66 @@ Only add a handle when the account is obviously the athlete's.
 
 ## privacy.csv
 
-Athletes who asked to be taken off the site. Their results stay in the archive
-under a stand-in name, so the rankings and the history do not move.
+Suppression records for athletes whose names have been removed. Their results
+remain under a numbered replacement name.
 
 ```csv
-Hash,Sex,Country,Disambiguation,RedactedId
-3f9a1c...,,,,1
+Hash,Sex,Country,Disambiguation,RedactedId,KeyCheck
 ```
 
-`Hash` is the athlete's folded name under HMAC-SHA256, keyed by
-`OSL_PRIVACY_SALT`. The name itself is never written down: a public list of
-everyone who asked to be forgotten would publish what it exists to remove, and
-would be easier to search than the results it took down.
+The redaction command writes this file. `Hash` is an HMAC-SHA256 fingerprint of
+the normalised name, using the secret `OSL_PRIVACY_KEY`. `KeyCheck` verifies that
+a later command has the same key. Neither field contains the name or the key.
+Sex, country and disambiguation distinguish athletes who share a name.
 
-`Sex`, `Country` and `Disambiguation` narrow the same way they do in
-`instagram.csv`, and stay in the clear because they name nobody on their own.
+Generate the key once with `openssl rand -hex 32`. Keep it outside Git and back
+it up securely. Use the same value locally, in the GitHub Actions secret
+`OSL_PRIVACY_KEY`, and in the Kubernetes Secret `osl-privacy`, field `key`.
+If you previously configured `OSL_PRIVACY_SALT`, rename the setting and keep
+its value. Existing fingerprints cannot be matched using a new key.
 
-`RedactedId` is the number in `Redacted Athlete #1`, handed out once so the
-athlete page keeps its URL across re-imports. Numbers from 9000 up belong to
-the staging fixtures in `../staging/`.
-
-Redact with:
+`RedactedId` is allocated from the dataset without environment-specific ranges.
+Repeating a request, including after a new competition restores the name,
+reuses the original number. No suppression records should be deleted or IDs
+reassigned while the corresponding results remain published.
 
 ```sh
 osl-import redact --name "Some Athlete" --dry-run
 osl-import redact --name "Some Athlete"
 ```
 
-It rewrites every `entries.csv` that names them, drops their `instagram.csv`
-line, and records the redaction here. Nothing is written unless the name lands
-on exactly one athlete; narrow it with `--sex`, `--country` or
-`--disambiguation` when it does not.
+The command finds one identity, rewrites its competition entries, clears its
+native name and removes its Instagram entries. Narrow an ambiguous name with
+`--sex`, `--country` or `--disambiguation`. Review and commit the resulting files,
+then deploy and run the full import with `--prune --yes` to remove the old
+profile from the database.
+
+Files are prepared before any replacement. The suppression record is saved
+first, then each result or social file is replaced atomically. This is not a
+transaction across all files: if interrupted, run the same command again.
+The saved record prevents import of any remaining original-name entries.
+Run one redaction command at a time against a checkout.
 
 ```sh
 osl-import privacy
 ```
 
-checks that no canonical file names anyone on the list, which is what stops the
-next competition they enter from putting the name back. Without the salt it
-warns and skips, so it cannot run on a fork; `--require-salt` makes that a
-failure, and the deploy passes it.
+This checks competition files against the suppression list. Imports perform
+the same check and reject competitions that would restore a removed name;
+they do not automatically rewrite those files. A nonempty list requires the
+correct key. Old experimental CSVs without `KeyCheck` are rejected rather than
+accepted with an unverifiable key.
 
-Requests arrive by email and stay there. Never open an issue or a pull request
-naming the person who asked.
+Fork CI can validate file structure without access to the secret:
+
+```sh
+osl-import bulk-import --validate-only --skip-privacy-check
+```
+
+This bypass cannot write to a database and does not approve publication.
+Trusted CI and deployment must run the checks with the key. Bulk imports
+commit each competition separately and skip pruning if any competition fails.
+
+Requests arrive by email and stay there. Never open an issue or pull request
+naming the person who asked. Rewriting these files does not remove names from
+previous Git commits, third-party copies or caches.
