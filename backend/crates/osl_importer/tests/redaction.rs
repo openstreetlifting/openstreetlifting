@@ -695,7 +695,7 @@ fn cli_requires_verified_key_and_only_allows_bypass_for_validation() {
     let directory = directory.to_str().unwrap();
     for key in [None, Some("wrong-key")] {
         assert!(
-            !run(key, &["canonical", directory, "--dry-run"])
+            !run(key, &["competitions", directory, "--dry-run"])
                 .status
                 .success()
         );
@@ -706,19 +706,24 @@ fn cli_requires_verified_key_and_only_allows_bypass_for_validation() {
         );
     }
     assert!(
-        run(Some(KEY), &["canonical", directory, "--dry-run"])
+        run(Some(KEY), &["competitions", directory, "--dry-run"])
             .status
             .success()
     );
     assert!(
         run(
             None,
-            &["canonical", directory, "--dry-run", "--skip-privacy-check"]
+            &[
+                "competitions",
+                directory,
+                "--dry-run",
+                "--skip-privacy-check"
+            ]
         )
         .status
         .success()
     );
-    let refused = run(None, &["canonical", directory, "--skip-privacy-check"]);
+    let refused = run(None, &["competitions", directory, "--skip-privacy-check"]);
     assert!(!refused.status.success());
     assert!(String::from_utf8_lossy(&refused.stderr).contains("--dry-run"));
 }

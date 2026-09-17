@@ -54,9 +54,7 @@ importer:
     repository: ghcr.io/openstreetlifting/importer
     tag: ""
     pullPolicy: IfNotPresent
-  # Keep these arguments compatible with images deployed before the CLI rename.
-  # Deployment workflows switch the command together with the importer image.
-  args: ["bulk-import", "--prune", "--yes"]
+  args: ["competitions", "./data/competitions", "--prune"]
   instagramArgs: ["instagram"]
   privacy:
     secretName: osl-privacy

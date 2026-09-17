@@ -1,8 +1,7 @@
-//! Taking an athlete's name off the archive without taking their results out.
+//! Removes athlete names from published competition files while preserving results.
 //!
-//! The canonical files are published, so a redaction that only reached the
-//! database would leave the name in the repository and in the CSV downloads.
-//! Nothing is written until exactly one athlete has been named.
+//! The site and CSV downloads share these files. Redaction requires an
+//! unambiguous athlete match.
 
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
@@ -187,8 +186,6 @@ pub fn apply(
     Ok(())
 }
 
-/// Sex, country, bodyweight, every attempt and the placing stay, so the
-/// rankings do not move.
 fn redact_in_place(
     canonical: &mut CanonicalFormat,
     query: &AthleteQuery,

@@ -77,8 +77,10 @@ This checks public files without verifying suppressed names. It cannot write to 
 
 See [athlete data](../../data/athletes/README.md) for Instagram matching, key setup, and the name-removal procedure. Use the [staging fixtures](../../data/staging/README.md) to test redaction on a disposable copy.
 
-## Existing callers
+## Breaking changes
 
-`canonical PATH` and `bulk-import --directory PATH` remain available for older callers. Their `--validate-only` flag, and the same flag on `instagram`, remain aliases for `--dry-run`.
+Replace `canonical PATH` and `bulk-import --directory PATH` with `competitions PATH`. Pass multiple paths as positional arguments. Use `--dry-run` in place of `--validate-only`.
 
-Legacy `bulk-import --prune` previews deletions after importing; adding `--yes` applies them. The new `competitions --prune` applies deletions directly. Deployment workflows update the command alongside the importer image so an older image never receives the new command.
+`competitions --prune` applies deletions after a successful import; it takes no `--yes` flag. Supply the complete dataset. A dry run validates files without importing or pruning.
+
+Deploy the chart and importer image together. Staging pins the chart to the application commit used to build its importer; production pins it to the release tag.

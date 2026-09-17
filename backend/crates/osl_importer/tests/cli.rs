@@ -82,24 +82,11 @@ async fn snapshot(pool: &PgPool) -> Vec<String> {
 }
 
 #[test]
-fn dry_run_validates_files_and_legacy_flags_remain_usable() {
+fn dry_run_validates_files_without_a_database() {
     let workspace = Workspace::new();
     let directory = workspace.write(&fixture("meet", "Alpha"));
     let path = directory.to_str().unwrap();
-    for args in [
-        vec!["competitions", path, "--dry-run", "--prune"],
-        vec!["canonical", path, "--validate-only"],
-        vec![
-            "bulk-import",
-            "--directory",
-            path,
-            "--validate-only",
-            "--prune",
-            "--yes",
-        ],
-    ] {
-        success(workspace.run(&args, None));
-    }
+    success(workspace.run(&["competitions", path, "--dry-run", "--prune"], None));
     let overlapping = workspace.run(&["competitions", ".", path, "--dry-run"], None);
     success(overlapping);
     for args in [
@@ -108,6 +95,21 @@ fn dry_run_validates_files_and_legacy_flags_remain_usable() {
         vec!["competitions", path, "--skip-privacy-check"],
     ] {
         assert!(!workspace.run(&args, None).status.success());
+    }
+}
+
+#[test]
+fn removed_commands_and_flags_are_rejected() {
+    let workspace = Workspace::new();
+    for args in [
+        vec!["canonical", ".", "--dry-run"],
+        vec!["bulk-import", "--directory", "."],
+        vec!["competitions", "--validate-only"],
+        vec!["instagram", "--validate-only"],
+        vec!["competitions", "--directory", "."],
+        vec!["competitions", "--prune", "--yes"],
+    ] {
+        assert_eq!(workspace.run(&args, None).status.code(), Some(2));
     }
 }
 
@@ -206,17 +208,6 @@ async fn dry_run_and_invalid_inputs_cannot_import_or_prune(pool: PgPool) {
     workspace.write(&fixture("kept", "Charlie"));
     let before = snapshot(&pool).await;
     success(workspace.run(&["competitions", ".", "--dry-run", "--prune"], Some(&pool)));
-    success(workspace.run(
-        &[
-            "bulk-import",
-            "--directory",
-            ".",
-            "--dry-run",
-            "--prune",
-            "--yes",
-        ],
-        Some(&pool),
-    ));
     assert_eq!(snapshot(&pool).await, before);
     assert!(
         !workspace
@@ -245,14 +236,11 @@ async fn dry_run_and_invalid_inputs_cannot_import_or_prune(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn existing_kubernetes_arguments_still_import_and_prune(pool: PgPool) {
+async fn competition_import_prunes_missing_results(pool: PgPool) {
     let workspace = Workspace::new();
     common::import(&pool, fixture("removed", "Bravo")).await;
     workspace.write(&fixture("kept", "Alpha"));
-    success(workspace.run(
-        &["bulk-import", "--directory", ".", "--prune", "--yes"],
-        Some(&pool),
-    ));
+    success(workspace.run(&["competitions", ".", "--prune"], Some(&pool)));
     let slugs: Vec<String> = sqlx::query_scalar("SELECT slug FROM competitions")
         .fetch_all(&pool)
         .await

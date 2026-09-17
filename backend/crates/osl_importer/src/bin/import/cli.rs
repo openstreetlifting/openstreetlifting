@@ -58,58 +58,6 @@ pub enum Commands {
         )]
         skip_privacy_check: bool,
     },
-    #[command(hide = true, about = "Compatibility command; use competitions")]
-    Canonical {
-        #[arg(help = "Directory containing competition.toml and entries.csv")]
-        directory: PathBuf,
-
-        #[arg(
-            long,
-            alias = "validate-only",
-            help = "Validate inputs without saving changes"
-        )]
-        dry_run: bool,
-
-        #[arg(
-            long,
-            requires = "dry_run",
-            help = "Skip secret-dependent suppression checks"
-        )]
-        skip_privacy_check: bool,
-    },
-    #[command(hide = true, about = "Compatibility command; use competitions")]
-    BulkImport {
-        #[arg(
-            long = "directory",
-            default_value = "./data/competitions",
-            value_name = "PATH",
-            help = "Competition directory or tree; repeat for multiple trees"
-        )]
-        directories: Vec<PathBuf>,
-
-        #[arg(
-            long,
-            alias = "validate-only",
-            help = "Validate inputs without saving changes"
-        )]
-        dry_run: bool,
-
-        #[arg(
-            long,
-            requires = "dry_run",
-            help = "Skip secret-dependent suppression checks"
-        )]
-        skip_privacy_check: bool,
-
-        #[arg(
-            long,
-            help = "Remove database competitions absent from the supplied trees"
-        )]
-        prune: bool,
-
-        #[arg(long, help = "Apply pruning after import")]
-        yes: bool,
-    },
     #[command(about = "Synchronize Instagram handles from a CSV file")]
     Instagram {
         #[arg(
@@ -118,11 +66,7 @@ pub enum Commands {
         )]
         file: PathBuf,
 
-        #[arg(
-            long,
-            alias = "validate-only",
-            help = "Check handles without saving changes"
-        )]
+        #[arg(long, help = "Check handles without saving changes")]
         dry_run: bool,
     },
     #[command(

@@ -28,7 +28,6 @@ impl AthleteQuery {
         }
     }
 
-    /// A `None` reads as "any", so a unique name needs nothing filled in.
     pub fn matches_parts(&self, gender: &str, country: &str, disambiguation: Option<i16>) -> bool {
         self.gender.as_deref().is_none_or(|g| g == gender)
             && self.country.as_deref().is_none_or(|c| c == country)

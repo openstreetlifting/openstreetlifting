@@ -41,49 +41,7 @@ async fn main() -> Result<()> {
         } => {
             let database_url = optional_database_url(cli.database_url.as_deref(), dry_run)?;
             let privacy = import_privacy(&cli.privacy_file, skip_privacy_check)?;
-            handle_bulk_import(&paths, dry_run, prune, true, database_url, privacy.as_ref())
-                .await?;
-        }
-        Commands::Canonical {
-            directory,
-            dry_run,
-            skip_privacy_check,
-        } => {
-            let database_url = optional_database_url(cli.database_url.as_deref(), dry_run)?;
-            let privacy = import_privacy(&cli.privacy_file, skip_privacy_check)?;
-            anyhow::ensure!(
-                store::is_competition_directory(&directory),
-                "{} is not a competition directory",
-                directory.display()
-            );
-            handle_bulk_import(
-                &[directory],
-                dry_run,
-                false,
-                false,
-                database_url,
-                privacy.as_ref(),
-            )
-            .await?;
-        }
-        Commands::BulkImport {
-            directories,
-            dry_run,
-            prune,
-            yes,
-            skip_privacy_check,
-        } => {
-            let database_url = optional_database_url(cli.database_url.as_deref(), dry_run)?;
-            let privacy = import_privacy(&cli.privacy_file, skip_privacy_check)?;
-            handle_bulk_import(
-                &directories,
-                dry_run,
-                prune,
-                yes,
-                database_url,
-                privacy.as_ref(),
-            )
-            .await?;
+            handle_competitions(&paths, dry_run, prune, database_url, privacy.as_ref()).await?;
         }
         Commands::Redact {
             name,
@@ -401,11 +359,10 @@ fn claimed_competition_slugs(directories: &[PathBuf]) -> Result<Vec<String>> {
     )
 }
 
-async fn handle_bulk_import(
+async fn handle_competitions(
     directories: &[PathBuf],
     dry_run: bool,
     prune: bool,
-    yes: bool,
     database_url: Option<&str>,
     privacy: Option<&PrivacyList>,
 ) -> Result<()> {
@@ -454,20 +411,16 @@ async fn handle_bulk_import(
         transformer.import_to_database(canonical).await?;
     }
     if prune {
-        handle_prune(&pool, &claimed_slugs, yes).await?;
+        handle_prune(&pool, &claimed_slugs).await?;
     }
     tracing::info!("Imported {total} competition(s)");
     Ok(())
 }
 
-async fn handle_prune(pool: &sqlx::PgPool, claimed_slugs: &[String], yes: bool) -> Result<()> {
+async fn handle_prune(pool: &sqlx::PgPool, claimed_slugs: &[String]) -> Result<()> {
     let sync = CompetitionSync::new(pool);
 
-    let plan = if yes {
-        sync.apply(claimed_slugs).await?
-    } else {
-        sync.dry_run(claimed_slugs).await?
-    };
+    let plan = sync.apply(claimed_slugs).await?;
 
     if plan.is_empty() {
         tracing::info!("Nothing to prune: every stored competition is claimed by a file");
@@ -495,22 +448,12 @@ async fn handle_prune(pool: &sqlx::PgPool, claimed_slugs: &[String], yes: bool) 
         }
     }
 
-    if yes {
-        tracing::info!(
-            "Deleted {} competition(s), {} athlete(s) and {} federation(s)",
-            plan.competitions.len(),
-            plan.athletes.len(),
-            plan.federations.len()
-        );
-    } else {
-        tracing::warn!(
-            "Would delete {} competition(s), {} athlete(s) and {} federation(s). \
-             Pass --yes to carry it out",
-            plan.competitions.len(),
-            plan.athletes.len(),
-            plan.federations.len()
-        );
-    }
+    tracing::info!(
+        "Deleted {} competition(s), {} athlete(s) and {} federation(s)",
+        plan.competitions.len(),
+        plan.athletes.len(),
+        plan.federations.len()
+    );
 
     Ok(())
 }

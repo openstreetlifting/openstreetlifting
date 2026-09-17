@@ -55,8 +55,6 @@ pub fn is_competition_directory(path: &Path) -> bool {
         && (path.join(competition::FILE_NAME).is_file() || path.join(LEGACY_FILE_NAME).is_file())
 }
 
-/// Gathers every competition directory under `path`, or `path` itself when it
-/// is one.
 pub fn collect_competitions(path: &Path, found: &mut Vec<PathBuf>) -> Result<()> {
     let mut pending = vec![path.to_path_buf()];
 

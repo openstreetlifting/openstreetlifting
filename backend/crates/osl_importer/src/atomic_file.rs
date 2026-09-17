@@ -5,7 +5,6 @@ use std::path::{Path, PathBuf};
 use anyhow::{Context, Result};
 use uuid::Uuid;
 
-/// Stage beside the destination so replacing it is a single filesystem rename.
 pub(crate) struct Replacement {
     temporary: PathBuf,
     destination: PathBuf,

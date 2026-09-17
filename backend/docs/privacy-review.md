@@ -87,8 +87,7 @@ and search-engine requests. It has no automatic erasure workflow for those
 surfaces. A request to erase personal data must not silently become a request
 to replace a name. The notice explains the distinction.
 
-The deployment chart supplies `OSL_PRIVACY_KEY`. The command
-`bulk-import --prune --yes` remains supported during the CLI rollout. New deployments
+The deployment chart supplies `OSL_PRIVACY_KEY`. Deployments
 use `competitions ./data/competitions --prune`. Imports require a verified key when suppression
 records exist. Fork CI can explicitly skip suppression checks only in
 validation mode, which cannot write to the database. Verify the deployed
