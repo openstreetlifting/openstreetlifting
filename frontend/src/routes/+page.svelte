@@ -23,7 +23,13 @@
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { afterNavigate } from '$app/navigation';
-  import { formatDate, countryName, formatWeight, formatAthleteName } from '$lib/utils';
+  import {
+    formatDate,
+    countryName,
+    federationPath,
+    formatWeight,
+    formatAthleteName,
+  } from '$lib/utils';
   import { CELL, FIGURE, SORTED_COLUMN, TEXT_CELL } from '$lib/constants/table';
   import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
@@ -268,9 +274,12 @@
               </a>
             </td>
             <td class="{TABLE_CELL} {CELL.data}" title={entry.federation.name}>
-              <span class={TEXT_CELL.federation}>
+              <a
+                href={resolve(federationPath(entry.federation.name))}
+                class="{TEXT_CELL.federation} underline hover:text-ink"
+              >
                 {entry.federation.abbreviation || entry.federation.name}
-              </span>
+              </a>
             </td>
             <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap">
               {formatDate(entry.competition.date)}

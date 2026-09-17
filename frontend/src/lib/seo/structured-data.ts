@@ -1,6 +1,6 @@
 import type { AthleteDetail } from '$lib/types/athlete';
 import type { CompetitionDetail } from '$lib/types/competition';
-import { countryName, formatAthleteName } from '$lib/utils';
+import { countryName, federationPath, formatAthleteName } from '$lib/utils';
 import { absolute, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from './site';
 
 export type JsonLd = Record<string, unknown>;
@@ -106,6 +106,26 @@ export function competitionLd(competition: CompetitionDetail, description: strin
     },
     isAccessibleForFree: true,
     publisher: organization(),
+  };
+}
+
+export function federationLd(
+  federation: { name: string; abbreviation: string | null; country: string | null },
+  description: string
+): JsonLd {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SportsOrganization',
+    name: federation.name,
+    ...(federation.abbreviation && federation.abbreviation !== federation.name
+      ? { alternateName: federation.abbreviation }
+      : {}),
+    url: absolute(federationPath(federation.name)),
+    description,
+    sport: 'Streetlifting',
+    ...(federation.country
+      ? { address: { '@type': 'PostalAddress', addressCountry: federation.country } }
+      : {}),
   };
 }
 

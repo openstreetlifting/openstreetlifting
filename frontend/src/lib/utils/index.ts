@@ -9,4 +9,4 @@ export {
   formatWeight,
   formatScore,
 } from './format.js';
-export { slugify } from './slug.js';
+export { slugify, federationPath } from './slug.js';

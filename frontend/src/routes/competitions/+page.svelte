@@ -1,22 +1,14 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import {
-    Card,
-    Breadcrumb,
-    Pagination,
-    FilterBar,
-    Table,
-    TABLE_CELL,
-    TABLE_HEAD_CELL,
-  } from '$lib/components/ui';
+  import { Card, Breadcrumb, Pagination, FilterBar } from '$lib/components/ui';
+  import CompetitionsTable from '$lib/components/competitions-table.svelte';
   import { resolve } from '$app/paths';
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import { slowNavigation } from '$lib/state/slow-navigation.svelte';
   import { goto, afterNavigate } from '$app/navigation';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
-  import { formatDate, formatLocation, formatCountdown, countryName } from '$lib/utils';
-  import { CELL, FIGURE, TEXT_CELL } from '$lib/constants/table';
+  import { countryName } from '$lib/utils';
   import { FIELD, TEXT, CONTROL } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
   import { breadcrumbLd, listingSeo } from '$lib/seo';
@@ -84,11 +76,6 @@
     country = null;
     year = null;
     return apply();
-  }
-
-  function competitionDates(start: string | null, end: string | null): string {
-    const from = formatDate(start);
-    return end && end !== start ? `${from} - ${formatDate(end)}` : from;
   }
 
   const SELECT = `w-full ${FIELD} px-3 py-2 sm:w-auto`;
@@ -200,48 +187,7 @@
       </div>
     </Card>
   {:else}
-    <Table>
-      {#snippet head()}
-        <th class="{TABLE_HEAD_CELL} text-secondary">Competition</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary">{showsUpcoming ? 'When' : 'Lifters'}</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary">Date</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary">Location</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary">Federation</th>
-      {/snippet}
-
-      {#snippet body()}
-        {#each competitions as competition (competition.slug)}
-          <tr class="transition-colors">
-            <td class="{TABLE_CELL} {CELL.identity}">
-              <a
-                href={resolve(`/competitions/${competition.slug}`)}
-                class="{TEXT_CELL.competition} underline hover:text-secondary"
-              >
-                {competition.name}
-              </a>
-            </td>
-            <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap {showsUpcoming ? '' : FIGURE}">
-              {showsUpcoming
-                ? formatCountdown(competition.start_date)
-                : (competition.lifter_count ?? 0)}
-            </td>
-            <td class="{TABLE_CELL} whitespace-nowrap text-secondary">
-              {competitionDates(competition.start_date, competition.end_date)}
-            </td>
-            <td class="{TABLE_CELL} {CELL.data}">
-              <span class={TEXT_CELL.location}>
-                {formatLocation(competition.country, competition.region, competition.city)}
-              </span>
-            </td>
-            <td class="{TABLE_CELL} {CELL.data}" title={competition.federation.name}>
-              <span class={TEXT_CELL.federation}>
-                {competition.federation.abbreviation || competition.federation.name}
-              </span>
-            </td>
-          </tr>
-        {/each}
-      {/snippet}
-    </Table>
+    <CompetitionsTable {competitions} upcoming={showsUpcoming} />
 
     <div class="mt-4 flex flex-wrap items-center justify-between gap-3 sm:mt-8">
       <span class="text-xs text-muted">

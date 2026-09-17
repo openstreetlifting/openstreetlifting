@@ -1,8 +1,10 @@
 import { error } from '@sveltejs/kit';
-import { athletesService, competitionsService } from '$lib/server/api';
+import { athletesService } from '$lib/server/api';
+import { collect } from '$lib/server/api/collect';
+import { publishedCompetitions, summarizeFederations } from '$lib/server/federations';
 import { STATIC_ROUTES } from '$lib/constants/routes';
 import { absolute } from '$lib/seo';
-import type { Paginated } from '$lib/types/pagination';
+import { federationPath } from '$lib/utils';
 import type { RequestHandler } from './$types';
 
 const PAGE_SIZE = 100;
@@ -12,33 +14,20 @@ const STATIC_PATHS = STATIC_ROUTES.map((route) => route.path);
 
 let cache: { xml: string; expires: number } | null = null;
 
-async function collect<T>(fetchPage: (page: number) => Promise<Paginated<T>>): Promise<T[]> {
-  const first = await fetchPage(1);
-  const remaining = Math.max(first.pagination.total_pages - 1, 0);
-  const rest = await Promise.all(
-    Array.from({ length: remaining }, (_, index) => fetchPage(index + 2))
-  );
-
-  return [first, ...rest].flatMap((response) => response.data);
-}
-
 function escapeXml(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 async function buildSitemap(): Promise<string> {
   const [competitions, athletes] = await Promise.all([
-    collect((page) => competitionsService.getAll({ page, page_size: PAGE_SIZE })),
+    publishedCompetitions(),
     collect((page) => athletesService.getAll({ page, page_size: PAGE_SIZE })),
   ]);
 
   const paths = [
     ...STATIC_PATHS,
-    // A draft competition is a page nobody has finished checking, so it is left
-    // for a crawler to find once it is published.
-    ...competitions
-      .filter((competition) => competition.status !== 'draft')
-      .map((competition) => `/competitions/${competition.slug}`),
+    ...summarizeFederations(competitions).map((federation) => federationPath(federation.name)),
+    ...competitions.map((competition) => `/competitions/${competition.slug}`),
     ...athletes.map((athlete) => `/athletes/${athlete.slug}`),
   ];
 

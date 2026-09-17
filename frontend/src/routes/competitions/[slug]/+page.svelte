@@ -29,6 +29,7 @@
     formatLocation,
     countryName,
     slugify,
+    federationPath,
     formatWeight,
     formatAthleteName,
   } from '$lib/utils';
@@ -309,7 +310,11 @@
         <span>{formatLocation(competition.city, competition.region)}</span>
       {/if}
       <span aria-hidden="true">&middot;</span>
-      <span title={competition.federation.name}>{federationLabel}</span>
+      <a
+        href={resolve(federationPath(competition.federation.name))}
+        title={competition.federation.name}
+        class="underline hover:text-ink">{federationLabel}</a
+      >
       {#if published}
         <span aria-hidden="true">&middot;</span>
         <span class="whitespace-nowrap">{lifterCount} lifters</span>
