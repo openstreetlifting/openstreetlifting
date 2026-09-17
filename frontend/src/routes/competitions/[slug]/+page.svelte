@@ -274,7 +274,7 @@
     competitionLd(competition, seoDescription),
     breadcrumbLd([
       { name: 'Rankings', path: '/' },
-      { name: 'Competitions', path: '/competitions' },
+      { name: 'Federations', path: '/federations' },
       { name: competition.federation.name, path: federationHref },
       { name: competition.name, path: `/competitions/${competition.slug}` },
     ]),
@@ -285,7 +285,7 @@
   <Breadcrumb
     items={[
       { label: 'Rankings', href: rankingsHref() },
-      { label: 'Competitions', href: '/competitions' },
+      { label: 'Federations', href: '/federations' },
       { label: competition.federation.name, href: federationHref },
       { label: competition.name },
     ]}

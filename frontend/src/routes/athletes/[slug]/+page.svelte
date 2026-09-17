@@ -195,7 +195,10 @@
     breadcrumbLd([
       { name: 'Rankings', path: '/' },
       ...(athlete.country
-        ? [{ name: countryName(athlete.country), path: countryPath(athlete.country) }]
+        ? [
+            { name: 'Countries', path: '/countries' },
+            { name: countryName(athlete.country), path: countryPath(athlete.country) },
+          ]
         : []),
       { name: athleteName, path: `/athletes/${athlete.slug}` },
     ]),
@@ -207,7 +210,10 @@
     items={[
       { label: 'Rankings', href: rankingsHref() },
       ...(athlete.country
-        ? [{ label: countryName(athlete.country), href: countryPath(athlete.country) }]
+        ? [
+            { label: 'Countries', href: '/countries' },
+            { label: countryName(athlete.country), href: countryPath(athlete.country) },
+          ]
         : []),
       { label: athleteName },
     ]}
