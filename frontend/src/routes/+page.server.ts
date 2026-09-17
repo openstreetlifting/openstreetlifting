@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types';
 
 const title = 'Streetlifting rankings and records';
 const description =
-  'Global streetlifting rankings from every competition in the archive: muscle up, pull up, dips and squat results, RIS scores and athlete records.';
+  'Global Streetlifting rankings from every competition in the archive: muscle up, pull up, dips and squat results, RIS scores and athlete records.';
 
 export const load: PageServerLoad = async ({ url }) => {
   const gender = asRankedGender(url.searchParams.get('gender'));

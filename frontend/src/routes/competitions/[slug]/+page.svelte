@@ -255,7 +255,7 @@
     [
       published
         ? `Full results and standings from ${competition.name}`
-        : `${competition.name}, a ${federationLabel} streetlifting competition`,
+        : `${competition.name}, a ${federationLabel} Streetlifting competition`,
       competition.start_date ? `, ${formatLongDate(competition.start_date)}` : '',
       seoWhere ? `, ${seoWhere}` : '',
       published

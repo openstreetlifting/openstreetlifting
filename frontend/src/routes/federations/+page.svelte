@@ -24,7 +24,7 @@
 
 <Seo
   title="Streetlifting federations"
-  description="{federations.length} streetlifting federations and organisers in the OpenStreetlifting archive, with {competitionCount} competitions of muscle up, pull up, dips and squat results."
+  description="{federations.length} Streetlifting federations and organisers in the OpenStreetlifting archive, with {competitionCount} competitions of muscle up, pull up, dips and squat results."
   canonical={absolute('/federations')}
   jsonLd={[
     breadcrumbLd([

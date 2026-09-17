@@ -33,13 +33,13 @@
 
   const title = $derived(
     firstPage
-      ? `${federation.name} streetlifting results and rankings`
-      : `${federation.name} streetlifting rankings, page ${pagination.page}`
+      ? `${federation.name} Streetlifting results and rankings`
+      : `${federation.name} Streetlifting rankings, page ${pagination.page}`
   );
 
   const description = $derived(
     [
-      `${federation.name} streetlifting results`,
+      `${federation.name} Streetlifting results`,
       federation.competitions
         ? `: ${federation.competitions} ${federation.competitions === 1 ? 'competition' : 'competitions'}`
         : '',

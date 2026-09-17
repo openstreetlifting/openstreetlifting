@@ -17,7 +17,7 @@
 
 <Seo
   title="The Relative Index for Streetlifting"
-  description="Understand RIS, calculate your score, and explore streetlifting competition results across bodyweights."
+  description="Understand RIS, calculate your score, and explore Streetlifting competition results across bodyweights."
   canonical={absolute('/ris')}
 />
 
@@ -33,7 +33,7 @@
       RIS was developed by
       <a href="https://warisradji.com/ris/" class="text-ink underline underline-offset-4"
         >Waris Radji and Mathieu Ardoin</a
-      >, using results from leading streetlifting athletes.
+      >, using results from leading Streetlifting athletes.
     </p>
   </header>
 
