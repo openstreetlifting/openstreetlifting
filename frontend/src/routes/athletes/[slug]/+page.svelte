@@ -27,7 +27,13 @@
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { RANKING_SORTS } from '$lib/constants/ranking';
-  import { formatDate, formatWeight, formatAthleteName, countryName } from '$lib/utils';
+  import {
+    formatDate,
+    formatWeight,
+    formatAthleteName,
+    countryName,
+    countryPath,
+  } from '$lib/utils';
   import Seo from '$lib/components/seo.svelte';
   import AthleteProgress from '$lib/components/athlete-progress.svelte';
   import AthleteStrength from '$lib/components/athlete-strength.svelte';
@@ -197,7 +203,7 @@
   <div class="mb-6 sm:mb-10">
     <div class="flex items-center gap-3">
       <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-ink">
-        <Flag countryCode={athlete.country} class="shrink-0 [--flag-height:0.8em]" />
+        <Flag countryCode={athlete.country} link class="shrink-0 [--flag-height:0.8em]" />
         <span class="truncate">{athleteName}</span>
       </h1>
 
@@ -220,6 +226,12 @@
     {/if}
 
     <p class="mt-2 {TEXT.heading} text-secondary">
+      {#if athlete.country}
+        <a href={resolve(countryPath(athlete.country))} class="underline hover:text-ink"
+          >{countryName(athlete.country)}</a
+        >
+        <span class="mx-1" aria-hidden="true">&middot;</span>
+      {/if}
       {genderLabel}
       {#if latestWeightClass}
         {latestWeightClass.replace(/(\d)\s*(?:kg)?$/i, '$1 kg')}

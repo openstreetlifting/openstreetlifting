@@ -1,13 +1,12 @@
 import { error } from '@sveltejs/kit';
-import { athletesService } from '$lib/server/api';
-import { collect } from '$lib/server/api/collect';
+import { rankingsService } from '$lib/server/api';
+import { allAthletes, countryCodes } from '$lib/server/countries';
 import { publishedCompetitions, summarizeFederations } from '$lib/server/federations';
 import { STATIC_ROUTES } from '$lib/constants/routes';
 import { absolute } from '$lib/seo';
-import { federationPath } from '$lib/utils';
+import { countryPath, federationPath } from '$lib/utils';
 import type { RequestHandler } from './$types';
 
-const PAGE_SIZE = 100;
 const CACHE_TTL = 3_600_000;
 
 const STATIC_PATHS = STATIC_ROUTES.map((route) => route.path);
@@ -19,14 +18,16 @@ function escapeXml(value: string): string {
 }
 
 async function buildSitemap(): Promise<string> {
-  const [competitions, athletes] = await Promise.all([
+  const [competitions, athletes, rankedCountries] = await Promise.all([
     publishedCompetitions(),
-    collect((page) => athletesService.getAll({ page, page_size: PAGE_SIZE })),
+    allAthletes(),
+    rankingsService.getRankingCountries(),
   ]);
 
   const paths = [
     ...STATIC_PATHS,
     ...summarizeFederations(competitions).map((federation) => federationPath(federation.name)),
+    ...countryCodes(competitions, rankedCountries).map(countryPath),
     ...competitions.map((competition) => `/competitions/${competition.slug}`),
     ...athletes.map((athlete) => `/athletes/${athlete.slug}`),
   ];

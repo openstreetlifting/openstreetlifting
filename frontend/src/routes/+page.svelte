@@ -231,18 +231,19 @@
             </td>
             <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
               <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
-                <a
-                  href={resolve(`/athletes/${entry.athlete.slug}`)}
-                  class="flex min-w-0 items-center gap-2.5 hover:text-secondary"
-                >
+                <span class="flex min-w-0 items-center gap-2.5">
                   <Flag
+                    link
                     countryCode={entry.athlete.country}
                     class="shrink-0 [--flag-height:1.25em]"
                   />
-                  <span class="truncate underline">
+                  <a
+                    href={resolve(`/athletes/${entry.athlete.slug}`)}
+                    class="truncate underline hover:text-secondary"
+                  >
                     {formatAthleteName(entry.athlete)}
-                  </span>
-                </a>
+                  </a>
+                </span>
                 {#if entry.athlete.instagram_handle}
                   <a
                     href={`https://www.instagram.com/${entry.athlete.instagram_handle}`}

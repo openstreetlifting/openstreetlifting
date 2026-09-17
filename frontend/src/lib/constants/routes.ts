@@ -9,6 +9,7 @@ export const PRIMARY_ROUTES = [
 
 export const SECONDARY_ROUTES = [
   { name: 'Federations', path: '/federations' },
+  { name: 'Countries', path: '/countries' },
   { name: 'Contact', path: '/contact' },
   { name: 'Privacy', path: '/privacy' },
 ] as const;

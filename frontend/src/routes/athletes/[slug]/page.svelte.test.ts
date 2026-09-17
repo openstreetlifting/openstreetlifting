@@ -122,7 +122,11 @@ it('shows unranked cards without links when the selected metric is missing', asy
   render(AthletePage, { data: { athlete: partial } });
   await expect.element(page.getByRole('combobox', { name: 'Metric' })).toHaveValue('ris');
   expect(page.getByRole('link', { name: /Global/ }).elements()).toHaveLength(0);
-  expect(page.getByRole('link', { name: /France/ }).elements()).toHaveLength(0);
+  const countryCards = page
+    .getByRole('link', { name: /France/ })
+    .elements()
+    .filter((link) => link.getAttribute('href')?.startsWith('/?'));
+  expect(countryCards).toHaveLength(0);
   await expect.element(page.getByText('Not ranked', { exact: true }).first()).toBeVisible();
   await page.getByRole('combobox', { name: 'Metric' }).selectOptions('pullup');
   await expect.element(page.getByRole('link', { name: /Global.*#51/ })).toBeVisible();

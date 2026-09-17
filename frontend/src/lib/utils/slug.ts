@@ -13,3 +13,7 @@ export function slugify(text: string): string {
 export function federationPath(name: string): `/federations/${string}` {
   return `/federations/${slugify(name)}`;
 }
+
+export function countryPath(code: string): `/countries/${string}` {
+  return `/countries/${code.toLowerCase()}`;
+}

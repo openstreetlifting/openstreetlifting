@@ -14,6 +14,7 @@
         <a href={resolve('/')} class={NAV_LINK}>Rankings</a>
         <a href={resolve('/competitions')} class={NAV_LINK}>Competitions</a>
         <a href={resolve('/federations')} class={NAV_LINK}>Federations</a>
+        <a href={resolve('/countries')} class={NAV_LINK}>Countries</a>
         <a
           href="https://docs.openstreetlifting.org/"
           target="_blank"
