@@ -1,0 +1,5 @@
+name: staging
+variables:
+  - name: baseUrl
+    value: https://api-staging.openstreetlifting.org
+    description: ""
