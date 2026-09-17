@@ -30,6 +30,7 @@
     countryName,
     slugify,
     federationPath,
+    countryPath,
     formatWeight,
     formatAthleteName,
   } from '$lib/utils';
@@ -254,7 +255,7 @@
     [
       published
         ? `Full results and standings from ${competition.name}`
-        : `${competition.name}, a ${federationLabel} streetlifting competition`,
+        : `${competition.name}, a ${federationLabel} Streetlifting competition`,
       competition.start_date ? `, ${formatLongDate(competition.start_date)}` : '',
       seoWhere ? `, ${seoWhere}` : '',
       published
@@ -291,7 +292,7 @@
   <div class="mb-6 sm:mb-10">
     <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-ink">
       {#if competition.country}
-        <Flag countryCode={competition.country} class="shrink-0 [--flag-height:0.8em]" />
+        <Flag countryCode={competition.country} link class="shrink-0 [--flag-height:0.8em]" />
       {/if}
       <span class="truncate">{competition.name}</span>
     </h1>
@@ -308,6 +309,12 @@
       {#if formatLocation(competition.city, competition.region)}
         <span aria-hidden="true">&middot;</span>
         <span>{formatLocation(competition.city, competition.region)}</span>
+      {/if}
+      {#if competition.country}
+        <span aria-hidden="true">&middot;</span>
+        <a href={resolve(countryPath(competition.country))} class="underline hover:text-ink"
+          >{countryName(competition.country)}</a
+        >
       {/if}
       <span aria-hidden="true">&middot;</span>
       <a
@@ -477,18 +484,19 @@
             </td>
             <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
               <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
-                <a
-                  href={resolve(`/athletes/${entry.athlete.slug}`)}
-                  class="flex min-w-0 items-center gap-2.5 hover:text-secondary"
-                >
+                <span class="flex min-w-0 items-center gap-2.5">
                   <Flag
+                    link
                     countryCode={entry.athlete.country}
                     class="shrink-0 [--flag-height:1.25em]"
                   />
-                  <span class="truncate underline">
+                  <a
+                    href={resolve(`/athletes/${entry.athlete.slug}`)}
+                    class="truncate underline hover:text-secondary"
+                  >
                     {formatAthleteName(entry.athlete)}
-                  </span>
-                </a>
+                  </a>
+                </span>
                 {#if participant && participant.status !== 'competed'}
                   <span
                     class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
@@ -559,18 +567,19 @@
               >
               <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
                 <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
-                  <a
-                    href={resolve(`/athletes/${participant.athlete.slug}`)}
-                    class="flex min-w-0 items-center gap-2.5 hover:text-secondary"
-                  >
+                  <span class="flex min-w-0 items-center gap-2.5">
                     <Flag
+                      link
                       countryCode={participant.athlete.country}
                       class="shrink-0 [--flag-height:1.25em]"
                     />
-                    <span class="truncate underline">
+                    <a
+                      href={resolve(`/athletes/${participant.athlete.slug}`)}
+                      class="truncate underline hover:text-secondary"
+                    >
                       {formatAthleteName(participant.athlete)}
-                    </span>
-                  </a>
+                    </a>
+                  </span>
                   <span
                     class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
                     title={athleteStatusTitle(participant.status, participant.status_reason)}

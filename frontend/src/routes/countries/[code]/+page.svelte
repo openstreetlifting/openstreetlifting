@@ -8,45 +8,36 @@
   import { page as currentPage, navigating } from '$app/state';
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import { slowNavigation } from '$lib/state/slow-navigation.svelte';
-  import { breadcrumbLd, federationLd, listingSeo } from '$lib/seo';
+  import { breadcrumbLd, listingSeo } from '$lib/seo';
   import { countryName, countryPath, federationPath } from '$lib/utils';
   import { TEXT } from '$lib/constants/typography';
 
   let { data }: { data: PageData } = $props();
 
-  const federation = $derived(data.federation);
+  const name = $derived(countryName(data.code));
   const pagination = $derived(data.pagination);
   const firstPage = $derived(pagination.page <= 1);
   const loading = slowNavigation(() => navigating.to?.url.pathname === currentPage.url.pathname);
   const busy = $derived(loading.current);
 
   const seo = $derived(listingSeo(currentPage.url));
-  const path = $derived(federationPath(federation.name));
-
-  const years = $derived(
-    federation.firstYear === null
-      ? null
-      : federation.firstYear === federation.lastYear
-        ? String(federation.firstYear)
-        : `${federation.firstYear} - ${federation.lastYear}`
-  );
+  const path = $derived(countryPath(data.code));
 
   const title = $derived(
     firstPage
-      ? `${federation.name} Streetlifting results and rankings`
-      : `${federation.name} Streetlifting rankings, page ${pagination.page}`
+      ? `Streetlifting in ${name}: results and rankings`
+      : `Streetlifting in ${name}: rankings, page ${pagination.page}`
   );
 
   const description = $derived(
     [
-      `${federation.name} Streetlifting results`,
-      federation.competitions
-        ? `: ${federation.competitions} ${federation.competitions === 1 ? 'competition' : 'competitions'}`
+      `Streetlifting in ${name}: `,
+      `${pagination.total_items} ranked ${pagination.total_items === 1 ? 'athlete' : 'athletes'}`,
+      data.results.length
+        ? ` and ${data.results.length} ${data.results.length === 1 ? 'competition' : 'competitions'} held there`
         : '',
-      federation.countries > 1 ? ` in ${federation.countries} countries` : '',
-      years ? ` (${years})` : '',
-      pagination.total_items ? ` and ${pagination.total_items} ranked athletes` : '',
-      ', with muscle up, pull up, dips and squat standings.',
+      data.federations.length ? `, including ${data.federations.join(', ')}` : '',
+      ', with muscle up, pull up, dips and squat results.',
       firstPage ? '' : ` Page ${pagination.page} of ${pagination.total_pages}.`,
     ].join('')
   );
@@ -60,11 +51,10 @@
   canonical={seo.canonical}
   noindex={seo.noindex}
   jsonLd={[
-    federationLd(federation, description),
     breadcrumbLd([
       { name: 'Rankings', path: '/' },
-      { name: 'Federations', path: '/federations' },
-      { name: federation.name, path },
+      { name: 'Countries', path: '/countries' },
+      { name, path },
     ]),
   ]}
 />
@@ -73,58 +63,44 @@
   <Breadcrumb
     items={[
       { label: 'Rankings', href: rankingsHref() },
-      { label: 'Federations', href: '/federations' },
-      { label: federation.name },
+      { label: 'Countries', href: '/countries' },
+      { label: name },
     ]}
   />
 
   <div class="mb-6 sm:mb-10">
     <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-ink">
-      {#if federation.country}
-        <Flag countryCode={federation.country} link class="shrink-0 [--flag-height:0.8em]" />
-      {/if}
-      <span class="truncate">{federation.name}</span>
+      <Flag countryCode={data.code} class="shrink-0 [--flag-height:0.8em]" />
+      <span class="truncate">{name}</span>
     </h1>
 
     <p class="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-secondary sm:text-sm">
-      {#if federation.abbreviation && federation.abbreviation !== federation.name}
-        <span>{federation.abbreviation}</span>
-        <span aria-hidden="true">&middot;</span>
-      {/if}
-      {#if federation.country}
-        <a href={resolve(countryPath(federation.country))} class="underline hover:text-ink"
-          >{countryName(federation.country)}</a
-        >
-        <span aria-hidden="true">&middot;</span>
-      {/if}
-      <span class="whitespace-nowrap">
-        {federation.competitions}
-        {federation.competitions === 1 ? 'competition' : 'competitions'}
-      </span>
-      {#if federation.countries > 1}
-        <span aria-hidden="true">&middot;</span>
-        <span class="whitespace-nowrap">{federation.countries} countries</span>
-      {/if}
-      {#if years}
-        <span aria-hidden="true">&middot;</span>
-        <span class="whitespace-nowrap">{years}</span>
-      {/if}
-      <span aria-hidden="true">&middot;</span>
       <span class="whitespace-nowrap">{pagination.total_items} ranked athletes</span>
+      <span aria-hidden="true">&middot;</span>
+      <span class="whitespace-nowrap">
+        {data.results.length}
+        {data.results.length === 1 ? 'competition' : 'competitions'}
+      </span>
+      {#each data.federations as federation (federation)}
+        <span aria-hidden="true">&middot;</span>
+        <a href={resolve(federationPath(federation))} class="underline hover:text-ink">
+          {federation}
+        </a>
+      {/each}
     </p>
   </div>
 
   {#if firstPage && data.results.length > 0}
     <section class="mb-8 sm:mb-12">
       <h2 class="mb-3 {TEXT.heading} text-ink">Competitions</h2>
-      <CompetitionsTable competitions={data.results} showFederation={false} />
+      <CompetitionsTable competitions={data.results} />
     </section>
   {/if}
 
   {#if data.rankings.length > 0}
     <section>
       <h2 class="mb-3 {TEXT.heading} text-ink">Athletes</h2>
-      <RankingList entries={data.rankings} showFederation={false} {busy} />
+      <RankingList entries={data.rankings} {busy} />
 
       {#if pagination.total_pages > 1}
         <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
@@ -145,7 +121,7 @@
   {#if firstPage && data.upcoming.length > 0}
     <section class="mt-8 sm:mt-12">
       <h2 class="mb-3 {TEXT.heading} text-ink">Upcoming</h2>
-      <CompetitionsTable competitions={data.upcoming} upcoming showFederation={false} />
+      <CompetitionsTable competitions={data.upcoming} upcoming />
     </section>
   {/if}
 </div>

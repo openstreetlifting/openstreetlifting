@@ -57,13 +57,17 @@
           {entry.rank}
         </td>
         <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
-          <a
-            href={resolve(`/athletes/${entry.athlete.slug}`)}
-            class="flex min-w-0 items-center gap-2.5 hover:text-secondary {ATHLETE_CONTENT}"
-          >
-            <Flag countryCode={entry.athlete.country} class="shrink-0 [--flag-height:1.25em]" />
-            <span class="truncate underline">{formatAthleteName(entry.athlete)}</span>
-          </a>
+          <span class="flex min-w-0 items-center gap-2.5 {ATHLETE_CONTENT}">
+            <Flag
+              link
+              countryCode={entry.athlete.country}
+              class="shrink-0 [--flag-height:1.25em]"
+            />
+            <a
+              href={resolve(`/athletes/${entry.athlete.slug}`)}
+              class="truncate underline hover:text-secondary">{formatAthleteName(entry.athlete)}</a
+            >
+          </span>
         </td>
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.total)}</td>
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">

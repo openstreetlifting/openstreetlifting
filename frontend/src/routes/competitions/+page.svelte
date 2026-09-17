@@ -85,7 +85,7 @@
   const description = $derived(
     narrowed || showsUpcoming
       ? 'Streetlifting competition results by federation, country and year, with muscle up, pull up, dips and squat standings for every meet in the archive.'
-      : `Results from ${pagination.total_items} streetlifting competitions worldwide, with muscle up, pull up, dips and squat standings, plus the calendar of upcoming meets.`
+      : `Results from ${pagination.total_items} Streetlifting competitions worldwide, with muscle up, pull up, dips and squat standings, plus the calendar of upcoming meets.`
   );
 </script>
 
@@ -191,7 +191,7 @@
 
     <div class="mt-4 flex flex-wrap items-center justify-between gap-3 sm:mt-8">
       <span class="text-xs text-muted">
-        {pagination.total_items} streetlifting competitions
+        {pagination.total_items} Streetlifting competitions
         {#if pagination.total_pages > 1}
           &middot; page {pagination.page} of {pagination.total_pages}
         {/if}

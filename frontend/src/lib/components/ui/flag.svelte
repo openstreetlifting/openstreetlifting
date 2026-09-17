@@ -1,13 +1,15 @@
 <script lang="ts">
-  import { countryName } from '$lib/utils';
+  import { resolve } from '$app/paths';
+  import { countryName, countryPath } from '$lib/utils';
 
   interface Props {
     countryCode: string;
     background?: boolean;
+    link?: boolean;
     class?: string;
   }
 
-  let { countryCode, background = false, class: className = '' }: Props = $props();
+  let { countryCode, background = false, link = false, class: className = '' }: Props = $props();
 
   const label = $derived(countryCode && countryCode.length === 2 ? countryName(countryCode) : null);
 
@@ -17,6 +19,16 @@
       .join('-')
   );
 </script>
+
+{#snippet flag()}
+  <span
+    class="flag {className}"
+    style="background-image: url('/flags/{fileName}.svg')"
+    role="img"
+    aria-label={label}
+    title={label}
+  ></span>
+{/snippet}
 
 {#if label}
   {#if background}
@@ -28,14 +40,15 @@
     >
       <image href="/flags/{fileName}.svg" width="36" height="36" />
     </svg>
+  {:else if link}
+    <a
+      href={resolve(countryPath(countryCode))}
+      class="inline-flex shrink-0 rounded-[3px] transition-opacity hover:opacity-75 focus:ring-2 focus:ring-focus focus:outline-none"
+    >
+      {@render flag()}
+    </a>
   {:else}
-    <span
-      class="flag {className}"
-      style="background-image: url('/flags/{fileName}.svg')"
-      role="img"
-      aria-label={label}
-      title={label}
-    ></span>
+    {@render flag()}
   {/if}
 {/if}
 

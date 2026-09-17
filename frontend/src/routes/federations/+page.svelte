@@ -5,7 +5,7 @@
   import { resolve } from '$app/paths';
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import { absolute, breadcrumbLd } from '$lib/seo';
-  import { countryName, federationPath } from '$lib/utils';
+  import { countryName, countryPath, federationPath } from '$lib/utils';
   import { CELL, FIGURE, NO_VALUE } from '$lib/constants/table';
   import { TEXT } from '$lib/constants/typography';
 
@@ -24,7 +24,7 @@
 
 <Seo
   title="Streetlifting federations"
-  description="{federations.length} streetlifting federations and organisers in the OpenStreetlifting archive, with {competitionCount} competitions of muscle up, pull up, dips and squat results."
+  description="{federations.length} Streetlifting federations and organisers in the OpenStreetlifting archive, with {competitionCount} competitions of muscle up, pull up, dips and squat results."
   canonical={absolute('/federations')}
   jsonLd={[
     breadcrumbLd([
@@ -62,10 +62,13 @@
           </td>
           <td class="{TABLE_CELL} {CELL.data}">
             {#if federation.country}
-              <span class="flex items-center gap-2">
+              <a
+                href={resolve(countryPath(federation.country))}
+                class="flex items-center gap-2 hover:text-ink"
+              >
                 <Flag countryCode={federation.country} class="shrink-0 [--flag-height:1.25em]" />
-                {countryName(federation.country)}
-              </span>
+                <span class="underline">{countryName(federation.country)}</span>
+              </a>
             {:else}
               {NO_VALUE}
             {/if}
