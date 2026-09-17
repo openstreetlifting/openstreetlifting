@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.31.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.30.0...v0.31.0) (2026-09-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* add athlete redaction and simplify CLI and RIS APIs ([#612](https://github.com/openstreetlifting/openstreetlifting/issues/612))
+
+### Features
+
+* add a lifting-themed 404 page ([e6da12a](https://github.com/openstreetlifting/openstreetlifting/commit/e6da12abda06e537458e86b0a53408c728779745))
+* add athlete redaction and simplify CLI and RIS APIs ([#612](https://github.com/openstreetlifting/openstreetlifting/issues/612)) ([1e36428](https://github.com/openstreetlifting/openstreetlifting/commit/1e364281ad6c82c283351351a014d78748591164))
+* improve empty athlete search results ([54ebd89](https://github.com/openstreetlifting/openstreetlifting/commit/54ebd89f994f3e3b75a8d6924c173c2277c2929b))
+
+
+### Bug Fixes
+
+* keep the committed OpenAPI schema in step with releases ([#613](https://github.com/openstreetlifting/openstreetlifting/issues/613)) ([873cb29](https://github.com/openstreetlifting/openstreetlifting/commit/873cb292c957cee802a65cbc7f50b453f8ddcea2))
+
+
+### Documentation
+
+* clarify CLI help and command descriptions ([e27f105](https://github.com/openstreetlifting/openstreetlifting/commit/e27f105a73f59796cf3a6a8c3c805f6d43e81230))
+* clarify README guidance for contributors ([2ef017f](https://github.com/openstreetlifting/openstreetlifting/commit/2ef017f9d34b726a097392f9b64eac9932a4f4d5))
+* release the data under CC0 ([#611](https://github.com/openstreetlifting/openstreetlifting/issues/611)) ([b5cd720](https://github.com/openstreetlifting/openstreetlifting/commit/b5cd7209aedd64f503f791e22c5d27657ed68863))
+
 ## [0.30.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.29.1...v0.30.0) (2026-09-11)
 
 
