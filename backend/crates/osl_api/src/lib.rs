@@ -60,7 +60,6 @@ impl AppState {
         ranking::handler::list_ranking_years,
         ris::handlers::list_ris_formulas,
         ris::handlers::get_current_formula,
-        ris::handlers::get_formula_by_year,
         ris::handlers::calculate_ris,
         ris::handlers::get_ris_distribution,
     ),

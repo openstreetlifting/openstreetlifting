@@ -2,9 +2,8 @@ import { apiClient } from '../client';
 import type { RisDistribution, RisFormula, RisPerformance } from '$lib/types/ris';
 
 export const risService = {
-  /** Every published edition, newest last, as the backend holds them. */
-  async getFormulas(): Promise<RisFormula[]> {
-    return apiClient.get<RisFormula[]>('/api/v1/ris/formulas');
+  async getFormulas(year?: number): Promise<RisFormula[]> {
+    return apiClient.get<RisFormula[]>('/api/v1/ris/formulas', { params: { year } });
   },
 
   /**

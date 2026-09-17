@@ -3,11 +3,12 @@ use crate::error::{WebError, WebResult};
 use axum::{
     Json,
     body::Bytes,
-    extract::{Json as JsonBody, Path, State},
+    extract::{Json as JsonBody, Query, State},
     http::header,
     response::{IntoResponse, Response},
 };
 use osl_domain::Edition;
+use serde::Deserialize;
 
 use osl_db::repository::ris::RisRepository;
 
@@ -16,16 +17,29 @@ use super::dto::{
     RisPerformanceResponse,
 };
 
+#[derive(Debug, Deserialize, utoipa::IntoParams)]
+pub struct FormulaQuery {
+    pub year: Option<i32>,
+}
+
 #[utoipa::path(
     get,
     path = "/api/v1/ris/formulas",
+    params(FormulaQuery),
     responses(
-        (status = 200, description = "List every RIS edition", body = Vec<RisFormulaResponse>)
+        (status = 200, description = "RIS editions matching the optional year filter", body = Vec<RisFormulaResponse>),
+        (status = 400, description = "Invalid year")
     ),
     tag = "ris"
 )]
-pub async fn list_ris_formulas() -> Json<Vec<RisFormulaResponse>> {
-    Json(Edition::ALL.into_iter().map(Into::into).collect())
+pub async fn list_ris_formulas(Query(query): Query<FormulaQuery>) -> Json<Vec<RisFormulaResponse>> {
+    Json(
+        Edition::ALL
+            .into_iter()
+            .filter(|edition| query.year.is_none_or(|year| edition.year() == year))
+            .map(Into::into)
+            .collect(),
+    )
 }
 
 #[utoipa::path(
@@ -38,22 +52,6 @@ pub async fn list_ris_formulas() -> Json<Vec<RisFormulaResponse>> {
 )]
 pub async fn get_current_formula() -> Json<RisFormulaResponse> {
     Json(Edition::CURRENT.into())
-}
-
-#[utoipa::path(
-    get,
-    path = "/api/v1/ris/formulas/{year}",
-    params(("year" = i32, Path, description = "Edition year")),
-    responses(
-        (status = 200, description = "RIS edition for this year", body = RisFormulaResponse),
-        (status = 404, description = "No edition was published for this year")
-    ),
-    tag = "ris"
-)]
-pub async fn get_formula_by_year(Path(year): Path<i32>) -> WebResult<Json<RisFormulaResponse>> {
-    let edition = Edition::from_year(year).ok_or(WebError::NotFound)?;
-
-    Ok(Json(edition.into()))
 }
 
 #[utoipa::path(

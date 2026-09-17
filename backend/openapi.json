@@ -661,9 +661,23 @@
           "ris"
         ],
         "operationId": "list_ris_formulas",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "List every RIS edition",
+            "description": "RIS editions matching the optional year filter",
             "content": {
               "application/json": {
                 "schema": {
@@ -674,6 +688,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid year"
           }
         }
       }
@@ -694,41 +711,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/ris/formulas/{year}": {
-      "get": {
-        "tags": [
-          "ris"
-        ],
-        "operationId": "get_formula_by_year",
-        "parameters": [
-          {
-            "name": "year",
-            "in": "path",
-            "description": "Edition year",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "RIS edition for this year",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RisFormulaResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No edition was published for this year"
           }
         }
       }
