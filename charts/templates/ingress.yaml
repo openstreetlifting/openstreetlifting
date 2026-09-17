@@ -8,8 +8,15 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
+    {{- $middlewares := list }}
     {{- if .Values.ingress.noindex }}
-    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-openstreetlifting-noindex@kubernetescrd
+    {{- $middlewares = append $middlewares (printf "%s-openstreetlifting-noindex@kubernetescrd" .Release.Namespace) }}
+    {{- end }}
+    {{- if .Values.ingress.basicAuth.sealedUsers }}
+    {{- $middlewares = append $middlewares (printf "%s-openstreetlifting-basic-auth@kubernetescrd" .Release.Namespace) }}
+    {{- end }}
+    {{- with $middlewares }}
+    traefik.ingress.kubernetes.io/router.middlewares: {{ join "," . }}
     {{- end }}
 spec:
   ingressClassName: traefik

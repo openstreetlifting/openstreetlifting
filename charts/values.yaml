@@ -77,3 +77,5 @@ ingress:
   backendHost: ""
   tls: false
   noindex: false
+  basicAuth:
+    sealedUsers: ""
