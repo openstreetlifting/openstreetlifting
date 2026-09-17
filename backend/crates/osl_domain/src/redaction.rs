@@ -1,5 +1,5 @@
-//! The stand-in identity an athlete is left with after asking to be taken off
-//! the site. The result stays in the archive, the name does not.
+//! Numbered replacement names for athletes who request name removal.
+//! The same number identifies their results across competitions.
 
 use std::fmt;
 
