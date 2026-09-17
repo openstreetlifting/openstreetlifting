@@ -9,3 +9,7 @@ export function slugify(text: string): string {
     .filter(Boolean)
     .join('-');
 }
+
+export function federationPath(name: string): `/federations/${string}` {
+  return `/federations/${slugify(name)}`;
+}

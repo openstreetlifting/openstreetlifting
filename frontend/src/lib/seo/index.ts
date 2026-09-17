@@ -13,6 +13,7 @@ export {
   websiteLd,
   breadcrumbLd,
   competitionLd,
+  federationLd,
   athleteLd,
   jsonLdScript,
 } from './structured-data.js';

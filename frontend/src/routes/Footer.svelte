@@ -13,6 +13,7 @@
       <nav aria-label="Footer" class="flex flex-wrap items-center gap-x-5 gap-y-2">
         <a href={resolve('/')} class={NAV_LINK}>Rankings</a>
         <a href={resolve('/competitions')} class={NAV_LINK}>Competitions</a>
+        <a href={resolve('/federations')} class={NAV_LINK}>Federations</a>
         <a
           href="https://docs.openstreetlifting.org/"
           target="_blank"
