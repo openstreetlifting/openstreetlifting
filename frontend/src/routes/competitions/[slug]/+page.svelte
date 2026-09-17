@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import {
-    Card,
+    RankingsEmpty,
     Breadcrumb,
     Pagination,
     Flag,
@@ -409,17 +409,10 @@
       </p>
     </div>
   {:else if rankings.length === 0 && !busy}
-    <Card class="max-w-summary p-8">
-      <div class="text-center">
-        <p class="text-secondary">No results found for the selected filters</p>
-        <button
-          onclick={() => table.clearFilters()}
-          class="mt-4 text-sm text-muted underline hover:text-secondary focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none"
-        >
-          Clear filters
-        </button>
-      </div>
-    </Card>
+    <RankingsEmpty
+      canReset={table.narrowed || pagination.page > 1}
+      resetHref={resolve(`/competitions/${competition.slug}`)}
+    />
   {:else}
     {#snippet paginationBar()}
       <div class="flex flex-wrap items-center justify-between gap-3">
