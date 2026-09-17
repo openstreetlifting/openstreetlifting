@@ -1,0 +1,55 @@
+info:
+  name: list_ranking_classes
+  type: http
+  seq: 2
+  tags:
+    - rankings
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/rankings/classes"
+  params:
+    - name: gender
+      value: ""
+      type: query
+      disabled: true
+    - name: competition_id
+      value: ""
+      type: query
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: 200 Response
+    description: Distinct weight classes, optionally narrowed to one gender
+    request:
+      url: "{{baseUrl}}/api/v1/rankings/classes"
+      method: GET
+      params:
+        - name: gender
+          value: ""
+          type: query
+          disabled: true
+        - name: competition_id
+          value: ""
+          type: query
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            ""
+          ]

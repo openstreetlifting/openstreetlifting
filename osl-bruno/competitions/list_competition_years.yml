@@ -1,0 +1,37 @@
+info:
+  name: list_competition_years
+  type: http
+  seq: 4
+  tags:
+    - competitions
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/competitions/years"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: 200 Response
+    description: Years a competition was held in, most recent first
+    request:
+      url: "{{baseUrl}}/api/v1/competitions/years"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            0
+          ]

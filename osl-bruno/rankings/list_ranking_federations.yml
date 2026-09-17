@@ -1,0 +1,37 @@
+info:
+  name: list_ranking_federations
+  type: http
+  seq: 4
+  tags:
+    - rankings
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/rankings/federations"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: 200 Response
+    description: Federations athletes have competed under, alphabetical
+    request:
+      url: "{{baseUrl}}/api/v1/rankings/federations"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            ""
+          ]
