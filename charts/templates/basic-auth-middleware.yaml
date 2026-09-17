@@ -1,0 +1,30 @@
+{{- with .Values.ingress.basicAuth.sealedUsers }}
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: openstreetlifting-basic-auth
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "openstreetlifting.labels" $ | nindent 4 }}
+spec:
+  encryptedData:
+    users: {{ . }}
+  template:
+    metadata:
+      name: openstreetlifting-basic-auth
+      namespace: {{ $.Release.Namespace }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: openstreetlifting-basic-auth
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "openstreetlifting.labels" $ | nindent 4 }}
+spec:
+  basicAuth:
+    secret: openstreetlifting-basic-auth
+    realm: OpenStreetlifting
+    removeHeader: true
+{{- end }}
