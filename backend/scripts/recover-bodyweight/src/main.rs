@@ -111,18 +111,18 @@ fn main() -> Result<()> {
         let mut outcome = recover(&mut canonical, edition);
         let slug = &canonical.competition.slug;
         for (reason, count) in &outcome.ineligible {
-            println!("  ineligible {slug}: {count} athlete(s), {reason}");
+            println!("  {slug}: skipped entries: {count}; reason: {reason}");
             ineligible += count;
         }
 
         if outcome.considered() == 0 {
-            println!("  nothing   {slug} has no eligible recovery candidates");
+            println!("  {slug}: no eligible bodyweights to recover");
             continue;
         }
 
         if outcome.refusal_rate() > IMPLAUSIBLE_REFUSAL_RATE {
             println!(
-                "  WITHHELD  {slug}, {} valid recovery/recoveries withheld: {} of {} candidates rejected (over 20%). Check the source data and edition",
+                "  {slug}: withheld bodyweights: {}; rejected: {} of {} candidates (over 20%). Check the source data and RIS edition",
                 outcome.recovered,
                 outcome.refused.len(),
                 outcome.considered(),
@@ -133,11 +133,11 @@ fn main() -> Result<()> {
         }
 
         let cut = match outcome.median_cut() {
-            Some(cut) => format!("median cut {cut:>5} kg under the class limit"),
-            None => "no weight classes to compare against".to_string(),
+            Some(cut) => format!("median difference from class limit: {cut} kg"),
+            None => "no weight class limits to compare".to_string(),
         };
         println!(
-            "  accepted  {slug}, {} recovery/recoveries, {} rejected, {cut}",
+            "  {slug}: accepted bodyweights: {}; rejected: {}; {cut}",
             outcome.recovered,
             outcome.refused.len()
         );
@@ -153,17 +153,17 @@ fn main() -> Result<()> {
     }
 
     for refusal in &refused {
-        println!("  rejected  {refusal}");
+        println!("  Recovery rejected: {refusal}");
     }
 
-    let verb = if cli.check {
-        "would recover"
+    let summary = if cli.check {
+        "Recoverable bodyweights"
     } else {
-        "recovered"
+        "Recovered bodyweights"
     };
     println!(
-        "\n{verb} {recovered} bodyweight(s) across {written} competition(s) \
-         using the {} edition; {} rejected, {withheld} withheld, {ineligible} ineligible",
+        "\n{summary}: {recovered}; competitions: {written}; RIS edition: {}; \
+         rejected: {}; withheld: {withheld}; ineligible: {ineligible}",
         edition.year(),
         refused.len()
     );

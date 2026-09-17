@@ -50,7 +50,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
     return { competitions, pagination, facets, counts, status, federation, country, year, q };
   } catch (error) {
-    console.error('Failed to fetch competitions:', error);
+    console.error('Failed to load competitions', { status, page, error });
     return {
       competitions: [],
       pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },

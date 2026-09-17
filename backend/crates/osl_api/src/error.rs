@@ -45,14 +45,14 @@ impl IntoResponse for WebError {
         let body = match &self {
             Self::Storage(StorageError::NotFound) => json!({"error": "Resource not found"}),
             Self::Storage(e) => {
-                tracing::error!("Storage error: {:?}", e);
+                tracing::error!(error = ?e, "Request failed during a database operation");
                 json!({"error": "An internal error occurred"})
             }
             Self::BadRequest(msg) => json!({"error": msg}),
             Self::Unauthorized => json!({"error": "Unauthorized"}),
             Self::NotFound => json!({"error": "Resource not found"}),
             Self::InternalServerError(msg) => {
-                tracing::error!("Internal server error: {}", msg);
+                tracing::error!(error = %msg, "Request failed with an internal error");
                 json!({"error": "An internal error occurred"})
             }
         };

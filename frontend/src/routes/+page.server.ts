@@ -49,7 +49,7 @@ export const load: PageServerLoad = async ({ url }) => {
       federations,
     };
   } catch (error) {
-    console.error('Error loading rankings:', error);
+    console.error('Failed to load rankings', error);
     return {
       title,
       description,

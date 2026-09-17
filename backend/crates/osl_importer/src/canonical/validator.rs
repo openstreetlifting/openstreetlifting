@@ -43,9 +43,10 @@ impl CanonicalValidator {
         }
 
         if canonical.competition.city.is_none() {
-            report
-                .warnings
-                .push("Competition city is not specified".to_string());
+            report.warnings.push(format!(
+                "Competition '{}': city is not specified",
+                canonical.competition.slug
+            ));
         }
 
         Self::check_announcement(canonical, &mut report);
@@ -164,8 +165,8 @@ impl CanonicalValidator {
                 }
                 if athlete.bodyweight.is_none() && athlete.ris.is_none() {
                     report.warnings.push(format!(
-                        "Athlete '{label}' has neither bodyweight nor ris, so no score can be \
-                         recorded"
+                        "Competition '{}': athlete '{label}' has neither a bodyweight nor a published RIS score",
+                        canonical.competition.slug
                     ));
                 }
 
@@ -182,9 +183,10 @@ impl CanonicalValidator {
                 }
 
                 if athlete.lifts.is_empty() {
-                    report
-                        .warnings
-                        .push(format!("Athlete '{label}' has no lifts"));
+                    report.warnings.push(format!(
+                        "Competition '{}': athlete '{label}' has no lifts",
+                        canonical.competition.slug
+                    ));
                 }
 
                 if athlete.status == AthleteStatus::NoShow && !athlete.lifts.is_empty() {
@@ -314,8 +316,9 @@ impl CanonicalValidator {
         for ((identity, disambiguation), categories) in seen {
             if categories.len() > 1 && disambiguation.is_none() {
                 report.warnings.push(format!(
-                    "'{}' appears in {} categories ({}) and will import as one athlete. Set \
-                     disambiguation if these are different people",
+                    "Competition '{}': '{}' appears in {} categories ({}). Set \
+                     Disambiguation if these entries refer to different athletes",
+                    canonical.competition.slug,
                     identity,
                     categories.len(),
                     categories.join(", ")

@@ -58,7 +58,7 @@ export const GET: RequestHandler = async () => {
     try {
       cache = { xml: await buildSitemap(), expires: Date.now() + CACHE_TTL };
     } catch (err) {
-      console.error('Failed to build the sitemap:', err);
+      console.error('Failed to build sitemap', err);
       // A partial sitemap reads as a shrunken site, so nothing is served rather
       // than a list missing whatever the API could not answer for.
       error(503, 'Sitemap unavailable');

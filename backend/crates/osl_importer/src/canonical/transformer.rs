@@ -2,7 +2,7 @@ use super::models::*;
 use crate::{ImporterError, Result};
 use osl_domain::{Edition, Movement, NativeScript, NormalizedAthleteName};
 use sqlx::PgPool;
-use tracing::info;
+use tracing::debug;
 use uuid::Uuid;
 
 pub struct CanonicalTransformer<'a> {
@@ -78,13 +78,14 @@ impl<'a> CanonicalTransformer<'a> {
         let event_code = self.refresh_event_code(competition_id, &mut tx).await?;
 
         if osl_domain::is_full_event(event_code.as_deref()) {
-            info!("Computing RIS scores for all participants...");
+            debug!(%competition_id, "Computing RIS scores for eligible participants");
             self.compute_ris_for_competition(competition_id, &mut tx)
                 .await?;
         } else {
-            info!(
-                "Event {} is not the full four movements, so no RIS is computed",
-                event_code.as_deref().unwrap_or("(none)")
+            debug!(
+                %competition_id,
+                event = event_code.as_deref().unwrap_or("none"),
+                "RIS computation skipped; the event does not include all four movements"
             );
         }
 
@@ -190,9 +191,13 @@ impl<'a> CanonicalTransformer<'a> {
         .rows_affected();
 
         if movements + participants + lifts + attempts > 0 {
-            info!(
-                "Pruned rows the file no longer lists: {} movement(s), {} participant(s), {} lift(s), {} attempt(s)",
-                movements, participants, lifts, attempts
+            debug!(
+                %competition_id,
+                movements,
+                participants,
+                lifts,
+                attempts,
+                "Removed records absent from the file within the import transaction"
             );
         }
 
@@ -698,7 +703,11 @@ impl<'a> CanonicalTransformer<'a> {
             .await?;
         }
 
-        info!("Computed RIS for {} participants", participant_count);
+        debug!(
+            %competition_id,
+            participants = participant_count,
+            "RIS scores computed within the import transaction"
+        );
         Ok(())
     }
 }

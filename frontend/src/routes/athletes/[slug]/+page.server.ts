@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ params }) => {
     if (err instanceof ApiError && err.status === 404) {
       error(404, 'Athlete not found');
     }
-    console.error('Failed to fetch athlete:', err);
+    console.error('Failed to load athlete', { slug: params.slug, error: err });
     error(503, 'Athlete details are unavailable right now');
   }
 };

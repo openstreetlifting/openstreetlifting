@@ -101,15 +101,14 @@ async fn handle_instagram(file: PathBuf, dry_run: bool, database_url: Option<&st
     let Some(database_url) = database_url else {
         let count = osl_importer::social::validate_file(&file)?;
         tracing::warn!(
-            "{} handle(s) in {}. Set DATABASE_URL to also check that each name still names one \
-             athlete",
-            count,
-            file.display()
+            handles = count,
+            file = %file.display(),
+            "CSV validated without checking athlete matches. Set DATABASE_URL to check matches"
         );
         return Ok(());
     };
 
-    tracing::info!("Connecting to database...");
+    tracing::debug!("Connecting to PostgreSQL");
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(database_url)
@@ -118,12 +117,15 @@ async fn handle_instagram(file: PathBuf, dry_run: bool, database_url: Option<&st
 
     if dry_run {
         let report = osl_importer::social::check_instagram_handles(&file, &pool).await?;
-        tracing::info!("{} handle(s) name one athlete", report.matched);
+        tracing::info!(
+            handles = report.matched,
+            "Instagram handles validated; no database changes"
+        );
         return Ok(());
     }
 
     let report = osl_importer::social::load_instagram_handles(&file, &pool).await?;
-    tracing::info!("Attached {} handle(s)", report.matched);
+    tracing::info!(handles = report.matched, "Instagram handles synchronized");
 
     Ok(())
 }
@@ -131,7 +133,7 @@ async fn handle_instagram(file: PathBuf, dry_run: bool, database_url: Option<&st
 fn import_privacy(path: &Path, skip: bool) -> Result<Option<PrivacyList>> {
     if skip {
         tracing::warn!(
-            "Privacy checks explicitly skipped; this validation does not approve publication"
+            "Skipped checks for removed names. Run validation with OSL_PRIVACY_KEY before publication"
         );
         return Ok(None);
     }
@@ -156,31 +158,28 @@ fn handle_redact(
     let plan = redact::plan(directory, instagram_file, &list, &query, name)?;
 
     tracing::info!(
-        "'{}' ({}) becomes {} across {} competition(s), {} entry(ies)",
-        plan.label,
-        plan.identity.describe(),
-        plan.redacted,
-        plan.competitions.len(),
-        plan.entries
+        athlete = %plan.label,
+        identity = %plan.identity.describe(),
+        replacement = %plan.redacted,
+        competitions = plan.competitions.len(),
+        entries = plan.entries,
+        handles_to_remove = plan.handles,
+        "Redaction planned"
     );
 
     for competition in &plan.competitions {
-        tracing::info!("  {}", competition.display());
-    }
-
-    if plan.handles > 0 {
-        tracing::info!("  {} Instagram handle(s) removed", plan.handles);
+        tracing::info!(directory = %competition.display(), "Redaction target");
     }
 
     if dry_run {
-        tracing::warn!("Nothing was written. Drop --dry-run to carry it out");
+        tracing::info!("Dry run complete; no files changed. Rerun without --dry-run to apply");
         return Ok(());
     }
 
     redact::apply(instagram_file, &mut list, &query, &plan)?;
 
     tracing::info!(
-        "Redacted. Review the diff and commit it, then the next import takes the name off the site"
+        "Redaction saved. Review and commit the changes, then deploy and import the complete dataset with competitions --prune"
     );
 
     Ok(())
@@ -192,7 +191,7 @@ fn handle_privacy(privacy_file: &Path, directory: &Path) -> Result<()> {
     let directories = competition_directories(&[directory.to_path_buf()])?;
 
     if list.is_empty() {
-        tracing::info!("{} lists nobody", list.path().display());
+        tracing::info!(file = %list.path().display(), "No name-removal records");
         return Ok(());
     }
 
@@ -204,7 +203,11 @@ fn handle_privacy(privacy_file: &Path, directory: &Path) -> Result<()> {
         let canonical = store::read(competition)?;
 
         if let Err(problem) = privacy::check_competition(&canonical, &list) {
-            tracing::error!("{}: {problem}", competition.display());
+            tracing::error!(
+                directory = %competition.display(),
+                error = %problem,
+                "Privacy check failed"
+            );
             failures += 1;
         }
     }
@@ -217,16 +220,16 @@ fn handle_privacy(privacy_file: &Path, directory: &Path) -> Result<()> {
     }
 
     tracing::info!(
-        "{} redaction(s) hold across {} competition(s)",
-        list.len(),
-        directories.len()
+        records = list.len(),
+        competitions = directories.len(),
+        "Privacy check passed"
     );
 
     Ok(())
 }
 
 async fn handle_recompute_ris(database_url: &str, dry_run: bool) -> Result<()> {
-    tracing::info!("Connecting to database...");
+    tracing::debug!("Connecting to PostgreSQL");
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(database_url)
@@ -237,11 +240,14 @@ async fn handle_recompute_ris(database_url: &str, dry_run: bool) -> Result<()> {
         let count = osl_db::services::ris_computation::scorable_participants(&pool, None)
             .await?
             .len();
-        tracing::info!("Would recompute RIS for {count} participant(s)");
+        tracing::info!(
+            participants = count,
+            "RIS recomputation preview; no database changes"
+        );
         return Ok(());
     }
     let count = osl_db::services::ris_computation::recompute_all_ris(&pool).await?;
-    tracing::info!("Recomputed RIS for {} participant(s)", count);
+    tracing::info!(participants = count, "RIS scores recomputed");
 
     Ok(())
 }
@@ -264,12 +270,15 @@ async fn handle_fmt(paths: &[PathBuf], check: bool, dry_run: bool) -> Result<()>
     }
 
     if changed.is_empty() {
-        tracing::info!("{} competition(s) already formatted", directories.len());
+        tracing::info!(
+            competitions = directories.len(),
+            "Competition files already formatted"
+        );
         return Ok(());
     }
 
     for directory in &changed {
-        tracing::info!("{}", directory.display());
+        tracing::info!(directory = %directory.display(), "Formatting target");
     }
 
     if check {
@@ -280,9 +289,12 @@ async fn handle_fmt(paths: &[PathBuf], check: bool, dry_run: bool) -> Result<()>
     }
 
     if dry_run {
-        tracing::info!("Would format {} competition(s)", changed.len());
+        tracing::info!(
+            competitions = changed.len(),
+            "Formatting preview; no files changed"
+        );
     } else {
-        tracing::info!("Formatted {} competition(s)", changed.len());
+        tracing::info!(competitions = changed.len(), "Competition files formatted");
     }
     Ok(())
 }
@@ -344,12 +356,12 @@ fn claimed_competition_slugs(directories: &[PathBuf]) -> Result<Vec<String>> {
 
     for (slug, directories) in &clashes {
         tracing::error!(
-            "Competition '{}' is claimed by {} directories:",
-            slug,
-            directories.len()
+            competition = %slug,
+            directories = directories.len(),
+            "Competition slug appears in multiple directories"
         );
         for directory in directories.iter() {
-            tracing::error!("  {}", directory.display());
+            tracing::error!(competition = %slug, directory = %directory.display(), "Duplicate competition directory");
         }
     }
 
@@ -375,7 +387,11 @@ async fn handle_competitions(
             Ok(canonical) => prepared.push(canonical),
             Err(error) => {
                 failures += 1;
-                tracing::error!("{}: {error}", directory.display());
+                tracing::error!(
+                    directory = %directory.display(),
+                    error = %format_args!("{error:#}"),
+                    "Competition validation failed"
+                );
             }
         }
     }
@@ -385,11 +401,11 @@ async fn handle_competitions(
     );
     if dry_run {
         tracing::info!(
-            "Validated {} competition(s); no database changes",
-            prepared.len()
+            competitions = prepared.len(),
+            "Competition files validated; no database changes"
         );
         if prune {
-            tracing::info!("Pruning would run after import; no deletion preview was calculated");
+            tracing::info!("Pruning skipped; dry runs do not preview deletions");
         }
         return Ok(());
     }
@@ -403,17 +419,17 @@ async fn handle_competitions(
     let total = prepared.len();
     for (index, canonical) in prepared.into_iter().enumerate() {
         tracing::info!(
-            "[{}/{}] Importing {}",
-            index + 1,
+            current = index + 1,
             total,
-            canonical.competition.name
+            competition = %canonical.competition.slug,
+            "Importing competition"
         );
         transformer.import_to_database(canonical).await?;
     }
     if prune {
         handle_prune(&pool, &claimed_slugs).await?;
     }
-    tracing::info!("Imported {total} competition(s)");
+    tracing::info!(competitions = total, "Competition import completed");
     Ok(())
 }
 
@@ -423,36 +439,33 @@ async fn handle_prune(pool: &sqlx::PgPool, claimed_slugs: &[String]) -> Result<(
     let plan = sync.apply(claimed_slugs).await?;
 
     if plan.is_empty() {
-        tracing::info!("Nothing to prune: every stored competition is claimed by a file");
+        tracing::info!("Nothing to prune");
         return Ok(());
     }
 
     if !plan.competitions.is_empty() {
-        tracing::info!("Competitions no file claims:");
         for competition in &plan.competitions {
-            tracing::info!("  {} ({})", competition.slug, competition.name);
+            tracing::info!(competition = %competition.slug, name = %competition.name, "Deleted competition absent from the input");
         }
     }
 
     if !plan.athletes.is_empty() {
-        tracing::info!("Athletes left without a result:");
         for athlete in &plan.athletes {
-            tracing::info!("  {}", athlete);
+            tracing::info!(athlete = %athlete, "Deleted athlete with no competition entries");
         }
     }
 
     if !plan.federations.is_empty() {
-        tracing::info!("Federations left without a competition:");
         for federation in &plan.federations {
-            tracing::info!("  {}", federation);
+            tracing::info!(federation = %federation, "Deleted federation with no competitions");
         }
     }
 
     tracing::info!(
-        "Deleted {} competition(s), {} athlete(s) and {} federation(s)",
-        plan.competitions.len(),
-        plan.athletes.len(),
-        plan.federations.len()
+        competitions = plan.competitions.len(),
+        athletes = plan.athletes.len(),
+        federations = plan.federations.len(),
+        "Pruning completed"
     );
 
     Ok(())

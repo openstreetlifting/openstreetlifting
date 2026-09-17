@@ -54,13 +54,13 @@ fn one_candidate_recovers_and_keeps_original_score_while_check_is_read_only() {
     let fixture = Fixture::new(VALID);
     let csv = std::fs::read(fixture.0.join("entries.csv")).unwrap();
     let metadata = std::fs::read(fixture.0.join("competition.toml")).unwrap();
-    assert!(fixture.run(true).contains("would recover 1 bodyweight(s)"));
+    assert!(fixture.run(true).contains("Recoverable bodyweights: 1"));
     assert_eq!(std::fs::read(fixture.0.join("entries.csv")).unwrap(), csv);
     assert_eq!(
         std::fs::read(fixture.0.join("competition.toml")).unwrap(),
         metadata
     );
-    assert!(fixture.run(false).contains("recovered 1 bodyweight(s)"));
+    assert!(fixture.run(false).contains("Recovered bodyweights: 1"));
     let canonical = store::read(&fixture.0).unwrap();
     let athlete = &canonical.categories[0].athletes[0];
     assert_eq!(athlete.bodyweight.unwrap().to_string(), "91.7");
@@ -68,7 +68,7 @@ fn one_candidate_recovers_and_keeps_original_score_while_check_is_read_only() {
     assert_eq!(athlete.bodyweight_source, Some(BodyweightSource::Recovered));
     assert_eq!(athlete.reported_ris_edition, Some(Edition::V2024));
     let recovered_csv = std::fs::read(fixture.0.join("entries.csv")).unwrap();
-    assert!(fixture.run(false).contains("1 ineligible"));
+    assert!(fixture.run(false).contains("ineligible: 1"));
     assert_eq!(
         std::fs::read(fixture.0.join("entries.csv")).unwrap(),
         recovered_csv
@@ -88,7 +88,7 @@ fn incomplete_total_is_rejected_and_valid_rows_are_reported_as_withheld() {
     let output = fixture.run(false);
     assert!(output.contains("missing Squat result"), "{output}");
     assert!(
-        output.contains("1 rejected, 1 withheld, 1 ineligible"),
+        output.contains("rejected: 1; withheld: 1; ineligible: 1"),
         "{output}"
     );
     assert_eq!(
@@ -105,6 +105,6 @@ fn exactly_twenty_percent_rejected_does_not_withhold_valid_recoveries() {
     }
     rows.push_str(&VALID.replace("251.5\n", "\n"));
     let output = Fixture::new(&rows).run(true);
-    assert!(output.contains("would recover 4 bodyweight(s)"), "{output}");
-    assert!(output.contains("1 rejected, 0 withheld"), "{output}");
+    assert!(output.contains("Recoverable bodyweights: 4"), "{output}");
+    assert!(output.contains("rejected: 1; withheld: 0"), "{output}");
 }

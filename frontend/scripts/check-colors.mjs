@@ -61,5 +61,5 @@ if (errors.length) {
   console.error(errors.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log(`Shared colors checked in ${fileURLToPath(source)}`);
+  console.log(`Color checks passed: ${fileURLToPath(source)}`);
 }

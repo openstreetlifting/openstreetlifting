@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   try {
     competition = await competitionsService.getById(params.slug);
   } catch (err) {
-    console.error('Failed to fetch competition:', err);
+    console.error('Failed to load competition', { slug: params.slug, error: err });
     throw error(404, 'Competition not found');
   }
 

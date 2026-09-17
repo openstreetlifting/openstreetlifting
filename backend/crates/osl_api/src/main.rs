@@ -38,41 +38,31 @@ async fn main() -> anyhow::Result<()> {
     tracing::info!("Starting OpenStreetlifting API");
 
     let config = Config::from_env().context("Failed to load API configuration")?;
-    tracing::info!("Configuration loaded successfully");
-
-    tracing::info!(
-        "Connecting to database at: {}",
-        config
-            .database_url
-            .split('@')
-            .next_back()
-            .unwrap_or("unknown")
+    tracing::debug!(
+        cache_enabled = config.cache_enabled,
+        "API configuration loaded"
     );
+    tracing::debug!("Connecting to PostgreSQL");
     let db = Database::new(&config.database_url)
         .await
         .context("Failed to initialize database")?;
-    tracing::info!("Database connection established");
+    tracing::debug!("Connected to PostgreSQL");
 
-    tracing::info!("Running database migrations");
+    tracing::debug!("Running database migrations");
     db.run_migrations()
         .await
         .context("Failed to run migrations")?;
-    tracing::info!("Database migrations completed successfully");
-
-    tracing::info!(
-        cache_enabled = config.cache_enabled,
-        "Cache configuration loaded"
-    );
+    tracing::info!("Database migrations completed");
     let state = AppState::new(db, config.cache_enabled);
 
     let bind_address = format!("{}:{}", config.host, config.port);
-    tracing::info!("Starting server at http://{}", bind_address);
-    tracing::info!(
+    let listener = tokio::net::TcpListener::bind(&bind_address).await?;
+    tracing::info!("API listening at http://{}", bind_address);
+    tracing::debug!(
         "Swagger UI available at http://{}/swagger-ui/",
         bind_address
     );
 
-    let listener = tokio::net::TcpListener::bind(&bind_address).await?;
     axum::serve(listener, app(state))
         .with_graceful_shutdown(shutdown_signal())
         .await?;
