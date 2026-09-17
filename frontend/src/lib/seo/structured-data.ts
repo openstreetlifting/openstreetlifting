@@ -1,7 +1,8 @@
 import type { AthleteDetail } from '$lib/types/athlete';
 import type { CompetitionDetail } from '$lib/types/competition';
 import { countryName, federationPath, formatAthleteName } from '$lib/utils';
-import { absolute, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from './site';
+import { competitionSeoName } from './names';
+import { absolute, OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from './site';
 
 export type JsonLd = Record<string, unknown>;
 
@@ -76,9 +77,10 @@ export function competitionLd(competition: CompetitionDetail, description: strin
   return {
     '@context': 'https://schema.org',
     '@type': 'SportsEvent',
-    name: competition.name,
+    name: competitionSeoName(competition),
     url: absolute(`/competitions/${competition.slug}`),
     description,
+    image: OG_IMAGE.url,
     ...(competition.start_date ? { startDate: competition.start_date } : {}),
     ...(competition.end_date ? { endDate: competition.end_date } : {}),
     eventStatus: EVENT_STATUS[competition.status] ?? 'https://schema.org/EventScheduled',

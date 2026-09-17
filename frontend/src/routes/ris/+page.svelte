@@ -5,7 +5,9 @@
   import RisCategory from '$lib/components/ui/ris-category.svelte';
   import RisSimulator from '$lib/components/ui/ris-simulator.svelte';
   import Seo from '$lib/components/seo.svelte';
-  import { absolute } from '$lib/seo';
+  import { absolute, breadcrumbLd } from '$lib/seo';
+  import { Breadcrumb } from '$lib/components/ui';
+  import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -19,9 +21,17 @@
   title="The Relative Index for Streetlifting"
   description="Understand RIS, calculate your score, and explore Streetlifting competition results across bodyweights."
   canonical={absolute('/ris')}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Rankings', path: '/' },
+      { name: 'RIS', path: '/ris' },
+    ]),
+  ]}
 />
 
 <article class="mx-auto max-w-reading px-4 pt-10 pb-16 sm:px-6 sm:pt-12">
+  <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: 'RIS' }]} />
+
   <header class="mb-10">
     <h1 class="{TEXT.title} text-ink">The Relative Index for Streetlifting</h1>
     <p class="mt-3 text-base leading-7 text-secondary">

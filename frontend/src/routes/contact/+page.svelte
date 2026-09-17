@@ -3,7 +3,9 @@
   import { EmailIcon, InstagramIcon, GitHubIcon, DiscordIcon } from '$lib/components/icons';
   import { TEXT } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
-  import { absolute } from '$lib/seo';
+  import { absolute, breadcrumbLd } from '$lib/seo';
+  import { Breadcrumb } from '$lib/components/ui';
+  import { rankingsHref } from '$lib/state/rankings-return.svelte';
 
   const rowClass =
     'flex items-center gap-3 py-4 text-sm text-secondary transition-colors hover:text-ink';
@@ -13,9 +15,17 @@
   title="Contact"
   description="Get in touch with OpenStreetlifting to report a wrong result, send competition results, or contribute to the archive."
   canonical={absolute('/contact')}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Rankings', path: '/' },
+      { name: 'Contact', path: '/contact' },
+    ]),
+  ]}
 />
 
 <div class="mx-auto max-w-reading px-4 py-10 sm:px-6 sm:py-16">
+  <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: 'Contact' }]} />
+
   <!-- The h1 carries the page, so the plate is decoration and stays out of the
        accessibility tree rather than repeating the name to a screen reader. -->
   <img

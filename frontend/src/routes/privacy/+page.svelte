@@ -1,7 +1,9 @@
 <script lang="ts">
   import { TEXT } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
-  import { absolute } from '$lib/seo';
+  import { absolute, breadcrumbLd } from '$lib/seo';
+  import { Breadcrumb } from '$lib/components/ui';
+  import { rankingsHref } from '$lib/state/rankings-return.svelte';
 
   const linkClass = 'text-secondary underline underline-offset-4 transition-colors hover:text-ink';
 </script>
@@ -10,9 +12,17 @@
   title="Privacy policy"
   description="How OpenStreetlifting uses athlete and visitor data, your GDPR rights, and how to ask for a correction or removal."
   canonical={absolute('/privacy')}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Rankings', path: '/' },
+      { name: 'Privacy', path: '/privacy' },
+    ]),
+  ]}
 />
 
 <div class="mx-auto max-w-reading px-4 py-10 sm:px-6 sm:py-16">
+  <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: 'Privacy' }]} />
+
   <header class="mb-10">
     <h1 class="mb-4 {TEXT.title} text-ink">Privacy policy</h1>
     <p class="mb-6 text-sm text-muted">

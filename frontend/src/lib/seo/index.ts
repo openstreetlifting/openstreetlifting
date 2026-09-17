@@ -18,3 +18,4 @@ export {
   jsonLdScript,
 } from './structured-data.js';
 export type { JsonLd } from './structured-data.js';
+export { competitionSeoName, competitionTitle, athleteTitle, risStanding } from './names.js';
