@@ -37,7 +37,7 @@
   import Seo from '$lib/components/seo.svelte';
   import AthleteProgress from '$lib/components/athlete-progress.svelte';
   import AthleteStrength from '$lib/components/athlete-strength.svelte';
-  import { absolute, athleteLd, breadcrumbLd } from '$lib/seo';
+  import { absolute, athleteLd, athleteTitle, breadcrumbLd, risStanding } from '$lib/seo';
   import {
     ATTEMPT_ROW,
     CELL,
@@ -176,7 +176,9 @@
       athleteName,
       athlete.native_name ? ` (${athlete.native_name})` : '',
       athlete.country ? `, ${countryName(athlete.country)}` : '',
-      '. Streetlifting results and personal records',
+      '. ',
+      risStanding(athlete.standing) ? `${risStanding(athlete.standing)} ` : '',
+      'Streetlifting results and personal records',
       seoBests ? `: ${seoBests}` : '',
       `. ${athlete.total_competitions} ${athlete.total_competitions === 1 ? 'competition' : 'competitions'} in the OpenStreetlifting archive.`,
     ].join('')
@@ -184,7 +186,7 @@
 </script>
 
 <Seo
-  title="{athleteName} - Streetlifting results"
+  title={athleteTitle(athleteName, athlete.country)}
   description={seoDescription}
   canonical={absolute(`/athletes/${athlete.slug}`)}
   type="profile"
@@ -192,13 +194,24 @@
     athleteLd(athlete, seoDescription),
     breadcrumbLd([
       { name: 'Rankings', path: '/' },
+      ...(athlete.country
+        ? [{ name: countryName(athlete.country), path: countryPath(athlete.country) }]
+        : []),
       { name: athleteName, path: `/athletes/${athlete.slug}` },
     ]),
   ]}
 />
 
 <div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
-  <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: athleteName }]} />
+  <Breadcrumb
+    items={[
+      { label: 'Rankings', href: rankingsHref() },
+      ...(athlete.country
+        ? [{ label: countryName(athlete.country), href: countryPath(athlete.country) }]
+        : []),
+      { label: athleteName },
+    ]}
+  />
 
   <div class="mb-6 sm:mb-10">
     <div class="flex items-center gap-3">

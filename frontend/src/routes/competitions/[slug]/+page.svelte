@@ -57,7 +57,13 @@
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '$lib/constants/athlete-status';
   import { FIELD, TEXT } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
-  import { breadcrumbLd, competitionLd, listingSeo } from '$lib/seo';
+  import {
+    breadcrumbLd,
+    competitionLd,
+    competitionSeoName,
+    competitionTitle,
+    listingSeo,
+  } from '$lib/seo';
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
@@ -230,14 +236,8 @@
 
   const seo = $derived(listingSeo(page.url));
 
-  // Half the meets are named after the federation alone, so the year is what
-  // tells one edition from the next in a search result.
-  const seoYear = $derived(competition.start_date?.slice(0, 4) ?? '');
-  const seoName = $derived(
-    seoYear && !competition.name.includes(seoYear)
-      ? `${competition.name} ${seoYear}`
-      : competition.name
-  );
+  const seoName = $derived(competitionSeoName(competition));
+  const federationHref = $derived(federationPath(competition.federation.name));
 
   const lifterCount = $derived(
     competition.categories.reduce((total, category) => total + category.participants.length, 0)
@@ -266,7 +266,7 @@
 </script>
 
 <Seo
-  title={published ? `${seoName} results` : seoName}
+  title={competitionTitle(seoName, published)}
   description={seoDescription}
   canonical={seo.canonical}
   noindex={seo.noindex}
@@ -275,6 +275,7 @@
     breadcrumbLd([
       { name: 'Rankings', path: '/' },
       { name: 'Competitions', path: '/competitions' },
+      { name: competition.federation.name, path: federationHref },
       { name: competition.name, path: `/competitions/${competition.slug}` },
     ]),
   ]}
@@ -285,6 +286,7 @@
     items={[
       { label: 'Rankings', href: rankingsHref() },
       { label: 'Competitions', href: '/competitions' },
+      { label: competition.federation.name, href: federationHref },
       { label: competition.name },
     ]}
   />
@@ -318,7 +320,7 @@
       {/if}
       <span aria-hidden="true">&middot;</span>
       <a
-        href={resolve(federationPath(competition.federation.name))}
+        href={resolve(federationHref)}
         title={competition.federation.name}
         class="underline hover:text-ink">{federationLabel}</a
       >
