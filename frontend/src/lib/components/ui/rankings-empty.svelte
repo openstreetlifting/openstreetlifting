@@ -25,10 +25,9 @@
       </h2>
       <p class="mt-3 text-sm leading-relaxed text-pretty text-secondary">
         {#if canReset}
-          The filters might be doing a little too much heavy lifting. Try another name or clear them
-          for a fresh start.
+          Lighten the filters or try another name.
         {:else}
-          There are no ranked results in this view yet. Check back as more results are added.
+          No ranked results in this view yet.
         {/if}
       </p>
     </div>
