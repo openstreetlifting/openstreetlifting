@@ -2126,15 +2126,11 @@
         "required": [
           "year",
           "is_current",
-          "credit",
           "constants"
         ],
         "properties": {
           "constants": {
             "$ref": "#/components/schemas/RisConstants"
-          },
-          "credit": {
-            "type": "string"
           },
           "is_current": {
             "type": "boolean"

@@ -88,13 +88,6 @@ impl Edition {
         Self::ALL.into_iter().find(|it| it.year() == year)
     }
 
-    pub fn credit(self) -> &'static str {
-        match self {
-            Self::V2024 | Self::V2025 => "Waris Radji and Mathieu Ardoin",
-            Self::V2026 => "FinalRep",
-        }
-    }
-
     /// Mx takes the men's curve, the only other fit that exists.
     pub fn constants(self, gender: Gender) -> Constants {
         match (self, gender) {
