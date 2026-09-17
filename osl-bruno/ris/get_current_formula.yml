@@ -32,36 +32,22 @@ examples:
         type: json
         data: |-
           {
+            "year": 2026,
+            "is_current": true,
             "constants": {
               "men": {
-                "a": "",
-                "b": "",
-                "k": "",
-                "q": "",
-                "v": ""
+                "a": 335.5625,
+                "k": 556.1103380806655,
+                "b": 0.10289374204365953,
+                "v": 76.74125992622565,
+                "q": 0.4973075488457353
               },
               "women": {
-                "a": "",
-                "b": "",
-                "k": "",
-                "q": "",
-                "v": ""
+                "a": 189.0625,
+                "k": 281.8317115772956,
+                "b": 0.28812554082125424,
+                "v": 69.83492229989282,
+                "q": 0.004337919108356886
               }
-            },
-            "effective_from": "",
-            "effective_until": "",
-            "formula_id": "",
-            "is_current": false,
-            "year": 0
+            }
           }
-  - name: 404 Response
-    description: No current formula found
-    request:
-      url: "{{baseUrl}}/api/v1/ris/formulas/current"
-      method: GET
-    response:
-      status: 404
-      statusText: Not Found
-      body:
-        type: text
-        data: ""

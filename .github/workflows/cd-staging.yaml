@@ -36,6 +36,7 @@ jobs:
           filters: |
             backend:
               - 'backend/**'
+              - 'charts/**'
             frontend:
               - 'frontend/**'
       - name: Set SHA tag
@@ -145,6 +146,8 @@ jobs:
           fi
           if [[ "${{ needs.build-importer.result }}" == "success" ]]; then
             yq -i ".importer.image.tag = \"$SHA_TAG\"" "$VALUES"
+            yq -i '.importer.args = ["competitions", "./data/competitions", "--prune"]' "$VALUES"
+            yq -i '(.spec.sources[] | select(.path == "charts/") | .targetRevision) = strenv(GITHUB_SHA)' apps/openstreetlifting-staging.yaml
           fi
           if [[ "${{ needs.build-frontend.result }}" == "success" ]]; then
             yq -i ".frontend.image.tag = \"$SHA_TAG\"" "$VALUES"
@@ -153,7 +156,7 @@ jobs:
         run: |
           git config user.name "osl-ci[bot]"
           git config user.email "315316499+osl-ci[bot]@users.noreply.github.com"
-          git add helm/openstreetlifting/values-staging.yaml
+          git add helm/openstreetlifting/values-staging.yaml apps/openstreetlifting-staging.yaml
           git diff --cached --quiet || git commit \
             -m "chore(staging): deploy ${{ needs.changes.outputs.sha_tag }}" \
             -m "From openstreetlifting@${{ github.sha }}"

@@ -1,0 +1,60 @@
+info:
+  name: get_ris_distribution
+  type: http
+  seq: 2
+  tags:
+    - ris
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/ris/distribution"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: 200 Response
+    description: Every scored performance with its athlete and competition
+    request:
+      url: "{{baseUrl}}/api/v1/ris/distribution"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "men": [
+              {
+                "athlete_name": "",
+                "athlete_slug": "",
+                "bodyweight": "",
+                "competition_date": "",
+                "competition_name": "",
+                "competition_slug": "",
+                "participant_id": "",
+                "total": ""
+              }
+            ],
+            "women": [
+              {
+                "athlete_name": "",
+                "athlete_slug": "",
+                "bodyweight": "",
+                "competition_date": "",
+                "competition_name": "",
+                "competition_slug": "",
+                "participant_id": "",
+                "total": ""
+              }
+            ]
+          }

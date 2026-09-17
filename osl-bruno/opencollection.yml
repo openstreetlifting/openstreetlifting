@@ -22,7 +22,7 @@ extensions:
     openapi:
       - sourceUrl: https://api.openstreetlifting.org/api-docs/openapi.json
         groupBy: tags
-        lastSyncDate: 2026-08-12T14:26:08.108Z
-        specHash: 3f35d36de90c660fc9e1f19f93f82290
+        lastSyncDate: 2026-09-17T06:45:29.875Z
+        specHash: c1cd7bef26c51fa6debb4741330eed9f
         autoCheck: true
         autoCheckInterval: 5

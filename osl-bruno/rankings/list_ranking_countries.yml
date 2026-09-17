@@ -1,0 +1,47 @@
+info:
+  name: list_ranking_countries
+  type: http
+  seq: 3
+  tags:
+    - rankings
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/rankings/countries"
+  params:
+    - name: competition_id
+      value: ""
+      type: query
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: 200 Response
+    description: Distinct countries athletes have competed under, optionally narrowed to one competition
+    request:
+      url: "{{baseUrl}}/api/v1/rankings/countries"
+      method: GET
+      params:
+        - name: competition_id
+          value: ""
+          type: query
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            ""
+          ]

@@ -472,6 +472,14 @@ impl<'a> CanonicalTransformer<'a> {
             .and_then(NativeScript::detect);
 
         let normalized_name = NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name);
+        let redacted =
+            osl_domain::redaction::RedactedAthlete::from_match_key(&normalized_name.match_name())
+                .is_some();
+        if redacted && athlete.native_name.is_some() {
+            return Err(crate::ImporterError::ValidationError(
+                "A redacted athlete cannot carry a NativeName".into(),
+            ));
+        }
         let (db_first_name, db_last_name) = normalized_name.as_database_tuple();
 
         // The folded name is what decides who this is. The stored name keeps
@@ -514,6 +522,15 @@ impl<'a> CanonicalTransformer<'a> {
             )
             .execute(&mut **tx)
             .await?;
+
+            if redacted {
+                sqlx::query("UPDATE athletes SET native_name = NULL, native_script = NULL, profile_picture_url = NULL WHERE athlete_id = $1")
+                    .bind(id).execute(&mut **tx).await?;
+                sqlx::query("DELETE FROM athlete_socials WHERE athlete_id = $1")
+                    .bind(id)
+                    .execute(&mut **tx)
+                    .await?;
+            }
 
             return Ok(id);
         }

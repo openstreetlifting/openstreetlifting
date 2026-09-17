@@ -44,6 +44,7 @@ const ALLOWED_PUNCTUATION: [char; 4] = [' ', '\'', '.', '-'];
 /// assert!(check_name("José", "d'Almeida").is_empty());
 /// assert!(check_name("Andrea", "DeFrancesco").is_empty());
 /// assert!(check_name("", "Darkhan").is_empty());
+/// assert!(check_name("", "Redacted Athlete #3").is_empty());
 /// assert!(!check_name("antoine", "auvray").is_empty());
 /// ```
 pub fn check_name(first_name: &str, last_name: &str) -> Vec<String> {
@@ -52,6 +53,10 @@ pub fn check_name(first_name: &str, last_name: &str) -> Vec<String> {
 
     if full.is_empty() {
         problems.push("has no name".to_string());
+        return problems;
+    }
+
+    if crate::redaction::is_redacted(first_name, last_name) {
         return problems;
     }
 
@@ -353,5 +358,20 @@ mod tests {
         assert!(check_name("", "Darkhan").is_empty());
         assert!(problems("", "svon").contains("'svon' capitalized"));
         assert!(problems("", "").contains("no name"));
+    }
+
+    #[test]
+    fn a_redacted_athlete_is_allowed_its_number() {
+        assert!(check_name("", "Redacted Athlete #1").is_empty());
+        assert!(check_name("", "Redacted Athlete #9001").is_empty());
+    }
+
+    #[test]
+    fn the_exemption_reaches_no_further_than_the_stand_in() {
+        assert!(problems("", "Redacted Athlete #07").contains("'0'"));
+        assert!(problems("", "Redacted Athlete 7").contains("'7'"));
+        assert!(problems("Kevin", "Smith2").contains("'2'"));
+        assert!(problems("Lifter", "2").contains("'2'"));
+        assert!(problems("", "Baki_HD").contains("'_'"));
     }
 }

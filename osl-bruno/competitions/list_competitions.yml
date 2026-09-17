@@ -13,6 +13,34 @@ http:
       value: ""
       type: query
       disabled: true
+    - name: status
+      value: ""
+      type: query
+      disabled: true
+    - name: federation
+      value: ""
+      type: query
+      disabled: true
+    - name: country
+      value: ""
+      type: query
+      disabled: true
+    - name: year
+      value: ""
+      type: query
+      disabled: true
+    - name: q
+      value: ""
+      type: query
+      disabled: true
+    - name: direction
+      value: desc
+      type: query
+      disabled: true
+    - name: direction
+      value: asc
+      type: query
+      disabled: true
     - name: page
       value: "0"
       type: query
@@ -28,6 +56,7 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true
 
 examples:
   - name: 200 Response

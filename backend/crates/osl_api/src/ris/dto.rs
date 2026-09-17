@@ -7,7 +7,6 @@ use utoipa::ToSchema;
 pub struct RisFormulaResponse {
     pub year: i32,
     pub is_current: bool,
-    pub credit: String,
     pub constants: RisConstants,
 }
 
@@ -58,7 +57,6 @@ impl From<Edition> for RisFormulaResponse {
         Self {
             year: edition.year(),
             is_current: edition == Edition::CURRENT,
-            credit: edition.credit().to_string(),
             constants: RisConstants {
                 men: edition.constants(osl_domain::Gender::M).into(),
                 women: edition.constants(osl_domain::Gender::F).into(),

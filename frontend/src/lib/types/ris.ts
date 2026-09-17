@@ -9,7 +9,6 @@ export interface RisConstants {
 export interface RisFormula {
   year: number;
   is_current: boolean;
-  credit: string;
   constants: {
     men: RisConstants;
     women: RisConstants;

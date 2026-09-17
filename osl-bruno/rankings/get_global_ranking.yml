@@ -25,6 +25,14 @@ http:
       value: ""
       type: query
       disabled: true
+    - name: federation
+      value: ""
+      type: query
+      disabled: true
+    - name: q
+      value: ""
+      type: query
+      disabled: true
     - name: movement
       value: muscleup
       type: query
@@ -45,12 +53,33 @@ http:
       value: total
       type: query
       disabled: true
+    - name: movement
+      value: ris
+      type: query
+      disabled: true
+    - name: direction
+      value: desc
+      type: query
+      disabled: true
+    - name: direction
+      value: asc
+      type: query
+      disabled: true
     - name: event
       value: ""
       type: query
-      description: |-
-        Which event to rank totals within, defaulting to the four movements.
-        Ignored when ranking by a single movement.
+      disabled: true
+    - name: category
+      value: ""
+      type: query
+      disabled: true
+    - name: year
+      value: ""
+      type: query
+      disabled: true
+    - name: competition_id
+      value: ""
+      type: query
       disabled: true
   auth: inherit
 
@@ -59,6 +88,7 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true
 
 examples:
   - name: 200 Response

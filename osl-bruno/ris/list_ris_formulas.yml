@@ -8,6 +8,11 @@ info:
 http:
   method: GET
   url: "{{baseUrl}}/api/v1/ris/formulas"
+  params:
+    - name: year
+      value: "2026"
+      type: query
+      disabled: true
   auth: inherit
 
 settings:
@@ -17,11 +22,15 @@ settings:
   maxRedirects: 5
 
 examples:
-  - name: 200 Response
-    description: List all RIS formula versions
+  - name: Filter by year
+    description: A year filter returns a collection containing the matching edition
     request:
       url: "{{baseUrl}}/api/v1/ris/formulas"
       method: GET
+      params:
+        - name: year
+          value: "2026"
+          type: query
     response:
       status: 200
       statusText: OK
@@ -33,26 +42,37 @@ examples:
         data: |-
           [
             {
+              "year": 2026,
+              "is_current": true,
               "constants": {
                 "men": {
-                  "a": "",
-                  "b": "",
-                  "k": "",
-                  "q": "",
-                  "v": ""
+                  "a": 335.5625,
+                  "k": 556.1103380806655,
+                  "b": 0.10289374204365953,
+                  "v": 76.74125992622565,
+                  "q": 0.4973075488457353
                 },
                 "women": {
-                  "a": "",
-                  "b": "",
-                  "k": "",
-                  "q": "",
-                  "v": ""
+                  "a": 189.0625,
+                  "k": 281.8317115772956,
+                  "b": 0.28812554082125424,
+                  "v": 69.83492229989282,
+                  "q": 0.004337919108356886
                 }
-              },
-              "effective_from": "",
-              "effective_until": "",
-              "formula_id": "",
-              "is_current": false,
-              "year": 0
+              }
             }
           ]
+  - name: Unpublished year
+    request:
+      url: "{{baseUrl}}/api/v1/ris/formulas"
+      method: GET
+      params:
+        - name: year
+          value: "1900"
+          type: query
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: json
+        data: "[]"

@@ -37,6 +37,13 @@ containers:
           secretKeyRef:
             name: {{ $root.Values.backend.database.secretName }}
             key: {{ $root.Values.backend.database.urlKey }}
+      {{- if $root.Values.importer.privacy.secretName }}
+      - name: OSL_PRIVACY_KEY
+        valueFrom:
+          secretKeyRef:
+            name: {{ $root.Values.importer.privacy.secretName }}
+            key: {{ $root.Values.importer.privacy.key }}
+      {{- end }}
     resources:
       {{- toYaml $root.Values.importer.resources | nindent 6 }}
 {{- end }}

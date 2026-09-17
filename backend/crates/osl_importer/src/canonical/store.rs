@@ -55,6 +55,32 @@ pub fn is_competition_directory(path: &Path) -> bool {
         && (path.join(competition::FILE_NAME).is_file() || path.join(LEGACY_FILE_NAME).is_file())
 }
 
+pub fn collect_competitions(path: &Path, found: &mut Vec<PathBuf>) -> Result<()> {
+    let mut pending = vec![path.to_path_buf()];
+
+    while let Some(current) = pending.pop() {
+        if !current.is_dir() {
+            continue;
+        }
+
+        if is_competition_directory(&current) {
+            found.push(current);
+            continue;
+        }
+
+        let entries = std::fs::read_dir(&current)
+            .map_err(|e| ImporterError::ImportError(format!("{}: {e}", current.display())))?;
+
+        for entry in entries {
+            let entry = entry
+                .map_err(|e| ImporterError::ImportError(format!("{}: {e}", current.display())))?;
+            pending.push(entry.path());
+        }
+    }
+
+    Ok(())
+}
+
 /// The file was called competition.toml until the rename, and a directory still
 /// holding one would otherwise be skipped without a word.
 const LEGACY_FILE_NAME: &str = "meet.toml";

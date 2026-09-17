@@ -54,10 +54,11 @@ importer:
     repository: ghcr.io/openstreetlifting/importer
     tag: ""
     pullPolicy: IfNotPresent
-  # Every deploy makes the database match the canonical files, deletions
-  # included. Drop --yes to have a release only report what it would remove.
-  args: ["bulk-import", "--prune", "--yes"]
+  args: ["competitions", "./data/competitions", "--prune"]
   instagramArgs: ["instagram"]
+  privacy:
+    secretName: osl-privacy
+    key: key
   backoffLimit: 1
   ttlSecondsAfterFinished: 86400
   resources:

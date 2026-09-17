@@ -13,7 +13,6 @@ const constants = {
 const edition: RisFormula = {
   year: 2026,
   is_current: true,
-  credit: '',
   constants: { men: constants, women: constants },
 };
 

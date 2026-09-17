@@ -1,0 +1,37 @@
+info:
+  name: list_competition_countries
+  type: http
+  seq: 2
+  tags:
+    - competitions
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/competitions/countries"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: 200 Response
+    description: Countries a competition was held in, alphabetical
+    request:
+      url: "{{baseUrl}}/api/v1/competitions/countries"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            ""
+          ]

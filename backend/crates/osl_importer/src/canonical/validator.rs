@@ -252,6 +252,17 @@ impl CanonicalValidator {
     fn check_athlete_names(canonical: &CanonicalFormat, report: &mut ValidationReport) {
         for category in &canonical.categories {
             for athlete in &category.athletes {
+                if osl_domain::redaction::RedactedAthlete::from_match_key(
+                    &crate::identity::match_key(&athlete.display_name()),
+                )
+                .is_some()
+                    && athlete.native_name.is_some()
+                {
+                    report.errors.push(format!(
+                        "{} cannot carry a NativeName",
+                        athlete.display_name()
+                    ));
+                }
                 let problems = check_name(&athlete.first_name, &athlete.last_name)
                     .into_iter()
                     .chain(

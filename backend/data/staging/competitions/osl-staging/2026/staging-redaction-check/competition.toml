@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = ["Synthetic test data"]
+
+[competition]
+name = "Staging Redaction Check"
+start_date = "2026-01-01"
+end_date = "2026-01-01"
+city = "Nowhere"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "OSL Staging"
+abbreviation = "OSLS"
+country = "FR"

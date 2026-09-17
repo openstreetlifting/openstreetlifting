@@ -42,6 +42,7 @@ jobs:
     env:
       SQLX_OFFLINE: true
       DATABASE_URL: postgres://openstreetlifting:openstreetlifting@localhost:5432/openstreetlifting
+      OSL_PRIVACY_KEY: ${{ secrets.OSL_PRIVACY_KEY }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions-rust-lang/setup-rust-toolchain@v2
@@ -54,7 +55,7 @@ jobs:
       # small change look like a rewrite.
       - name: Check canonical files are formatted
         working-directory: backend
-        run: cargo run -p osl_importer --bin import -- fmt --check
+        run: cargo run -p osl_importer --bin import -- fmt --check ./data/competitions ./data/staging/competitions
       - name: Run migrations
         working-directory: backend
         run: sqlx migrate run --source crates/osl_db/migrations
@@ -63,14 +64,30 @@ jobs:
       # The import validates every file on its way in.
       - name: Import canonical files
         working-directory: backend
-        run: cargo run -p osl_importer --bin import -- bulk-import
+        run: |
+          args=()
+          if [[ "${{ github.event.pull_request.head.repo.fork }}" == "true" && -z "$OSL_PRIVACY_KEY" ]]; then
+            args+=(--dry-run --skip-privacy-check)
+          fi
+          cargo run -p osl_importer --bin import -- competitions \
+            ./data/competitions \
+            ./data/staging/competitions "${args[@]}"
+      # Fork pull requests cannot check suppressed names without the secret.
+      - name: Check nobody on the privacy list is named
+        if: github.event.pull_request.head.repo.fork == false
+        working-directory: backend
+        run: cargo run -p osl_importer --bin import -- privacy --directory ./data/competitions
       # A competition arriving with a second athlete of the same name is what
       # takes a name in instagram.csv from naming one person to naming two.
       # Checking against the imported tree puts that failure on the pull
       # request that causes it rather than on the deploy.
       - name: Validate athlete social handles
         working-directory: backend
-        run: cargo run -p osl_importer --bin import -- instagram --validate-only
+        run: |
+          if [[ "${{ github.event.pull_request.head.repo.fork }}" == "true" && -z "$OSL_PRIVACY_KEY" ]]; then
+            unset DATABASE_URL
+          fi
+          cargo run -p osl_importer --bin import -- instagram --dry-run
 
   lint:
     name: Clippy
