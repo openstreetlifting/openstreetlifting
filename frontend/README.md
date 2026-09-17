@@ -1,38 +1,49 @@
-# sv
+# Frontend
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+The OpenStreetlifting website uses SvelteKit, TypeScript, and Tailwind CSS. It reads competition results and rankings from the backend API.
 
-## Creating a project
+## Run locally
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```sh
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Use Node.js 24 and pnpm 12, matching CI. Start the [backend](../backend/README.md), then run from `frontend`:
 
 ```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-## Building
-
-To create a production version of your app:
+Open <http://localhost:5173>. The server connects to `http://localhost:8080` by default. To use another API:
 
 ```sh
-npm run build
+BACKEND_URL=http://localhost:8081 pnpm dev
 ```
 
-You can preview the production build with `npm run preview`.
+## Configuration
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+| Variable                                             | Purpose                                                                                |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `BACKEND_URL`                                        | API base URL used by the SvelteKit server                                              |
+| `PUBLIC_SITE_URL`                                    | Site URL for canonical links and metadata; defaults to `https://openstreetlifting.org` |
+| `PUBLIC_ENVIRONMENT`                                 | Environment name; values other than `production` disable indexing when set             |
+| `PUBLIC_APP_VERSION`, `PUBLIC_GIT_SHA`               | Version and revision shown on the site                                                 |
+| `PUBLIC_UMAMI_SCRIPT_URL`, `PUBLIC_UMAMI_WEBSITE_ID` | Analytics settings; both are needed to enable tracking                                 |
+
+## Checks
+
+```sh
+pnpm check
+pnpm lint
+pnpm test
+```
+
+Browser tests use Playwright's Chromium. Install it with `pnpm exec playwright install chromium` if it is missing.
+
+When changing an API contract, update the frontend types and callers alongside the [backend schema](../backend/openapi.json).
+
+## Build
+
+```sh
+pnpm build
+pnpm preview
+```
+
+The project uses the Node adapter. To run the built server directly, use `node build/index.js`; deployment configuration supplies its host, port, and API URL.

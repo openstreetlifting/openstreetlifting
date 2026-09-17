@@ -1,5 +1,5 @@
 event = "MPDS"
-sources = ["Invented for staging. No such competition took place."]
+sources = ["Synthetic test data"]
 
 [competition]
 name = "Staging Redaction Check"

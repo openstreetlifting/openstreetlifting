@@ -9,64 +9,59 @@ OpenStreetlifting is an **open**, **collaborative** project building a **permane
 [![Release](https://img.shields.io/github/v/release/openstreetlifting/openstreetlifting)](https://openstreetlifting.org)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/openstreetlifting/openstreetlifting)
 
-This Readme only cover developer documentation, if you want to know about the why and the how, please consider the [book](https://docs.openstreetlifting.org)
+The [project book](https://docs.openstreetlifting.org) explains the archive, its data format, and its policies. This README covers development and contributions.
 
-## Get data
+## Access the data
 
-There are multiple way to get data from the OpenStreetlifting project
-
-1. Consult the [website](https://openstreetlifting.org) where you can download csv for individual competitions
-2. Download the full collection (COMING SOON)
-3. Use the API [swagger](https://api.openstreetlifting.org/swagger-ui/)
+- Browse the [website](https://openstreetlifting.org) and download individual competition results as CSV.
+- Read the [source files](backend/data/competitions), including each competition's references and revision history.
+- Query the [API](https://api.openstreetlifting.org/swagger-ui/).
 
 ## Run locally
 
-The easiest way to run locally is through the `launch_local.sh` script, which require docker for postgres, rust and pnpm.
-To run the database migration, you will need to install [sqlx-cli](https://crates.io/crates/sqlx-cli).
-
-First time launch, boot up the database, run the migration and import some datas.
+Install Docker, Rust, Node.js 24, pnpm 12, and [sqlx-cli](https://crates.io/crates/sqlx-cli). From the repository root, prepare the database and frontend:
 
 ```sh
 cp backend/.env.example backend/.env
 docker compose up -d --wait postgres
 cd backend
 sqlx migrate run --source crates/osl_db/migrations
-cargo run -p osl_importer --bin import -- bulk-import
-cd ../frontend && pnpm install
+cd ../frontend
+pnpm install --frozen-lockfile
+cd ..
 ```
 
-Then, once the environment is ready, you can simply use the script.
+Import the competition files from `backend`. If the privacy list contains records, set `OSL_PRIVACY_KEY` to its existing key; see [athlete data](backend/data/athletes/README.md).
 
 ```sh
+cd backend
+cargo run -p osl_importer --bin import -- competitions
+cd ..
 ./launch_local.sh
 ```
 
-API on <http://localhost:8080>, Swagger at `/swagger-ui/`, frontend on <http://localhost:5173>.
+The frontend runs at <http://localhost:5173>, the API at <http://localhost:8080>, and Swagger UI at <http://localhost:8080/swagger-ui/>.
 
-## Contributing
+See the [backend](backend/README.md), [frontend](frontend/README.md), and [importer](backend/crates/osl_importer/README.md) READMEs for configuration and checks.
 
-Contributions are welcome, whether you are fixing a bug, improving the codebase, or adding missing competition data.
-For code contributions, fork the repository, create a branch from main, and open a pull request.
+## Contribute
 
-For data contributions, the entry point is the [canonical format](https://docs.openstreetlifting.org). If you have results from a competition that is not yet in the archive, add a `competition.toml` and an `entries.csv` under backend/data/competitions/{federation}/{year}/{competition-slug}/ following the existing structure and open a pull request.
+To contribute code, fork the repository, create a branch from `main`, and open a pull request. [GitHub issues](https://github.com/openstreetlifting/openstreetlifting/issues) track code and data work.
 
-Please note that I'm using Github issues to track identified work, whereas it is code or data. This can be a good starting point if you want to help me!
+To add competition results, follow the [data contribution guide](https://docs.openstreetlifting.org/CONTRIBUTING_DATA.html). Each competition has a directory under `backend/data/competitions/<federation>/<year>/<competition-slug>/`, with a `competition.toml` and an `entries.csv`. Include the sources so others can check the results.
 
-## Data Correction
+## Corrections and name removal
 
-All competition data in this archive is versioned and traceable. If you spot an error, a wrong lift result, an incorrect athlete name, a missing competition, you can report or fix it directly (see the Contributing section above).
+Report incorrect results, athlete names, or missing competitions in an issue or pull request. Include the competition slug, the error, and a source where available. You can also email [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org).
 
-To report an error, open an issue and include the competition slug, the athlete name, and a description of what is wrong. A source reference (official result sheet, video, federation website) is appreciated. You can also contact me at [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org) I will do my best to correct the issue quickly
-
-If you are an athlete and would rather not be listed at all, your name can be removed while your results stay in the archive. That request goes to [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org), never to a public issue. The [Personal Data chapter](https://docs.openstreetlifting.org/PERSONAL_DATA.html) explains what it does and what it cannot undo.
+Athletes can request removal of their name by emailing [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org). Their results remain in the archive. Please keep these requests out of public issues. The [Personal Data chapter](https://docs.openstreetlifting.org/PERSONAL_DATA.html) explains the process and its limits.
 
 ## Licensing
 
-Code is AGPLv3, see [LICENSE](./LICENSE). Data, everything under `backend/data/`, is dedicated to the public domain under CC0 1.0, see [LICENSE-DATA](./LICENSE-DATA).
-Credit is appreciated but not required.
+The code is licensed under [AGPLv3](LICENSE). Data under `backend/data/` is dedicated to the public domain under [CC0 1.0](LICENSE-DATA). Credit is appreciated but not required.
 
-The [Licensing chapter](https://docs.openstreetlifting.org/LICENSING.html) of the book covers which licence applies to each path, third-party material, and what contributing data commits you to.
+The [Licensing chapter](https://docs.openstreetlifting.org/LICENSING.html) covers third-party material and the terms for contributing data.
 
-## versions
+## Releases
 
-You can look at the [changelog](./CHANGELOG.md) to list all the versions of the website, and the api.
+See the [changelog](CHANGELOG.md) for website and API releases.

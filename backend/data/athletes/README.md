@@ -1,20 +1,17 @@
 # Athlete data
 
-## instagram.csv
+These files link athletes to Instagram accounts and record requests for name removal. Run the examples from `backend`. For a source checkout, replace `osl-import` with `cargo run -p osl_importer --bin import --`.
+
+## Instagram accounts
+
+`instagram.csv` maps athlete names to handles. Sort it by name and omit the leading `@` from handles. Add an account only when it clearly belongs to the athlete.
 
 ```csv
 Name,Sex,Country,Disambiguation,Instagram
 Adrien Pelfresne,,,,dirdros
 ```
 
-Sorted by name, no leading `@`. Names match the same way the importer matches
-athletes, so accents and capitalisation don't matter.
-
-`Sex`, `Country` and `Disambiguation` are left blank, because a name is enough
-to find nearly everyone. They are there for the names that are not: an athlete
-is identified by their name together with those three, so two people who share
-a name are two athletes a name on its own cannot tell apart. Fill in as few of
-them as it takes to leave one, spelled the way `entries.csv` spells them:
+Name matching ignores accents and capitalization. Leave the optional identity fields empty unless the name matches more than one athlete. Add only the fields needed to distinguish them, using the values in `entries.csv`:
 
 ```csv
 Name,Sex,Country,Disambiguation,Instagram
@@ -22,84 +19,62 @@ Tony Nguyen,,FR,,tony_fr
 Tony Nguyen,,US,,tony_us
 ```
 
-An import that cannot narrow a name down to one athlete names the candidates
-and stops without writing anything, so the file is never half applied.
+Validate, then synchronize:
 
 ```sh
+osl-import instagram --dry-run
 osl-import instagram
-osl-import instagram --validate-only
 ```
 
-`--validate-only` checks the file against the database when `DATABASE_URL` is
-set, which is how CI catches a name that has stopped naming one person. Without
-it, only the file itself is checked.
+With `DATABASE_URL` set, the dry run also checks that each row matches one athlete. Without it, only the file is checked. An ambiguous match stops synchronization before any writes. Removing a row removes the stored handle on the next synchronization.
 
-The file is the truth, so deleting a line takes the handle off the site.
+## Suppression records
 
-Only add a handle when the account is obviously the athlete's.
-
-## privacy.csv
-
-Suppression records for athletes whose names have been removed. Their results
-remain under a numbered replacement name.
+`privacy.csv` records name-removal requests. Results remain under numbered replacement names.
 
 ```csv
 Hash,Sex,Country,Disambiguation,RedactedId,KeyCheck
 ```
 
-The redaction command writes this file. `Hash` is an HMAC-SHA256 fingerprint of
-the normalised name, using the secret `OSL_PRIVACY_KEY`. `KeyCheck` verifies that
-a later command has the same key. Neither field contains the name or the key.
-Sex, country and disambiguation distinguish athletes who share a name.
+The redaction command maintains this file. `Hash` is an HMAC-SHA256 fingerprint of the normalized name, keyed by `OSL_PRIVACY_KEY`. `KeyCheck` verifies that later commands use the same key. Neither field contains the name or the key. Sex, country, and disambiguation distinguish athletes with the same name.
 
-Generate the key once with `openssl rand -hex 32`. Keep it outside Git and back
-it up securely. Use the same value locally, in the GitHub Actions secret
-`OSL_PRIVACY_KEY`, and in the Kubernetes Secret `osl-privacy`, field `key`.
-If you previously configured `OSL_PRIVACY_SALT`, rename the setting and keep
-its value. Existing fingerprints cannot be matched using a new key.
+`RedactedId` comes from the dataset, with no reserved environment ranges. Repeated requests reuse the number, including when a later competition restores the original name. Keep suppression records and their IDs while the corresponding results remain published.
 
-`RedactedId` is allocated from the dataset without environment-specific ranges.
-Repeating a request, including after a new competition restores the name,
-reuses the original number. No suppression records should be deleted or IDs
-reassigned while the corresponding results remain published.
+### Key setup
+
+Generate the key once with `openssl rand -hex 32`. Keep it outside Git and back it up securely. Use the same value locally, in the GitHub Actions secret `OSL_PRIVACY_KEY`, and in the Kubernetes Secret `osl-privacy`, field `key`.
+
+When migrating from `OSL_PRIVACY_SALT`, rename the setting and retain its value. A new key cannot match existing fingerprints. A nonempty list requires the correct key; older experimental lists without `KeyCheck` are rejected.
+
+### Name removal
 
 ```sh
 osl-import redact --name "Some Athlete" --dry-run
 osl-import redact --name "Some Athlete"
 ```
 
-The command finds one identity, rewrites its competition entries, clears its
-native name and removes its Instagram entries. Narrow an ambiguous name with
-`--sex`, `--country` or `--disambiguation`. Review and commit the resulting files,
-then deploy and run the full import with `--prune --yes` to remove the old
-profile from the database.
+The command replaces one athlete's name across competition entries, clears their native name, removes their Instagram entries, and records the suppression. Use `--sex`, `--country`, or `--disambiguation` to resolve an ambiguous match.
 
-Files are prepared before any replacement. The suppression record is saved
-first, then each result or social file is replaced atomically. This is not a
-transaction across all files: if interrupted, run the same command again.
-The saved record prevents import of any remaining original-name entries.
-Run one redaction command at a time against a checkout.
+Review and commit the changed files. Deploy them and import the complete dataset with `competitions --prune` to remove the old database profile. See the [backend cache notes](../../README.md#caching) for when changes reach cached responses.
+
+Run one redaction at a time per checkout. The command prepares all files, saves the suppression record, then replaces each result or social file atomically. An interruption can leave only some files replaced. Run the same command again to finish; the saved record blocks imports of remaining original-name entries.
+
+### Verification
 
 ```sh
 osl-import privacy
 ```
 
-This checks competition files against the suppression list. Imports perform
-the same check and reject competitions that would restore a removed name;
-they do not automatically rewrite those files. A nonempty list requires the
-correct key. Old experimental CSVs without `KeyCheck` are rejected rather than
-accepted with an unverifiable key.
+Imports perform the same suppression check. They reject competitions that restore a removed name; they do not rewrite those files automatically. Run redaction again to apply the existing replacement identity.
 
-Fork CI can validate file structure without access to the secret:
+Fork CI can check public files without the secret:
 
 ```sh
-osl-import bulk-import --validate-only --skip-privacy-check
+osl-import competitions --dry-run --skip-privacy-check
 ```
 
-This bypass cannot write to a database and does not approve publication.
-Trusted CI and deployment must run the checks with the key. Bulk imports
-commit each competition separately and skip pruning if any competition fails.
+This bypass cannot write to the database or approve publication. Trusted CI and deployment must verify suppression records with the key. Imports validate all files before writing, then commit each competition separately. Any import failure prevents pruning.
 
-Requests arrive by email and stay there. Never open an issue or pull request
-naming the person who asked. Rewriting these files does not remove names from
-previous Git commits, third-party copies or caches.
+### Requests
+
+Keep requests in email. Public issues and pull request descriptions must not name the requester. Rewriting these files does not remove names from earlier Git commits, third-party copies, or caches. The [Personal Data chapter](https://docs.openstreetlifting.org/PERSONAL_DATA.html) explains the procedure and its limits.

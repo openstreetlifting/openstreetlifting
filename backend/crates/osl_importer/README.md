@@ -1,53 +1,84 @@
 # Importer
 
-Data importer service for OpenStreetlifting that supports multiple data sources.
+The importer validates competition files, loads them into PostgreSQL, and manages athlete name removal.
 
-## Supported Sources
+## Run
 
-### LiftControl
+From `backend`, run commands through Cargo:
 
-Imports competition data from LiftControl API.
-
-**Usage:**
-
-```rust
-use importer::{CompetitionImporter, ImportContext, LiftControlImporter};
-
-let importer = LiftControlImporter::new();
-let context = ImportContext { pool };
-
-importer.import("event-slug", &context).await?;
+```sh
+cargo run -p osl_importer --bin import -- --help
+cargo run -p osl_importer --bin import -- competitions --dry-run
 ```
 
-## CLI Usage
+The help text and examples below use `osl-import` for the executable. In a source checkout, replace it with `cargo run -p osl_importer --bin import --`.
 
-### Docker Compose
+| Command | Purpose |
+| --- | --- |
+| `competitions [PATH…]` | Import competition directories or trees |
+| `instagram [FILE]` | Synchronize Instagram handles |
+| `redact --name NAME` | Replace an athlete's name and remove their handle |
+| `privacy` | Check competition files for suppressed names |
+| `fmt [PATH…]` | Format competition files |
+| `recompute-ris` | Recalculate stored RIS scores |
 
-```bash
-docker compose run --rm importer liftcontrol <event-slug>
+Use `<command> --help` for options and defaults. Global options, including `--database-url`, `--privacy-file`, and `--verbose`, work before or after the command.
+
+## Competition imports
+
+```sh
+osl-import competitions data/competitions --dry-run
+osl-import competitions data/competitions
 ```
 
-Example:
+Paths can name individual competitions or directory trees. Overlapping paths are deduplicated. The importer validates every competition before writing to the database; missing paths, empty trees, and invalid files stop the import.
 
-```bash
-docker compose run --rm importer liftcontrol annecy-4-lift-2025-dimanche-matin-39
+Each competition is then imported in its own transaction. A database failure can leave earlier competitions imported. Fix the error and run the command again.
+
+To remove database competitions absent from the supplied files, include the complete dataset and pass `--prune`:
+
+```sh
+osl-import competitions data/competitions --prune
 ```
 
-### Environment Variables
+Pruning also removes orphaned athletes and federations. It runs only after all imports succeed. Supplying a single competition with `--prune` would remove the others.
 
-- `DATABASE_URL`: PostgreSQL connection string (required)
-- `RUST_LOG`: Override log level (optional, defaults to info)
+## Dry runs
 
-### Running Examples
+`--dry-run` prevents writes, with checks appropriate to each command:
 
-```bash
-export DATABASE_URL="postgresql://user:password@localhost/openstreetlifting"
-cargo run --example import_liftcontrol -- event-slug-here
+| Command | Checks |
+| --- | --- |
+| `competitions` | File format, data validity, and suppression records; no database connection |
+| `instagram` | CSV format; also checks athlete matches when `DATABASE_URL` is set |
+| `redact` | Identity match and planned file changes |
+| `fmt` | Files that need formatting |
+| `recompute-ris` | Number of eligible stored scores; requires a database connection |
+
+`competitions --dry-run --prune` validates the files but does not calculate database deletions. `fmt --check` also leaves files unchanged and exits with an error when formatting is needed, making it suitable for CI.
+
+## Configuration
+
+The CLI loads `.env` from the working directory or its parents.
+
+- `DATABASE_URL` supplies the PostgreSQL connection. Imports and RIS recomputation require it.
+- `OSL_PRIVACY_KEY` verifies suppression records. A nonempty privacy list requires its existing key.
+- `RUST_LOG` overrides the default log filter. `--verbose` enables debug logging when no filter is set.
+
+For fork CI without the privacy key:
+
+```sh
+osl-import competitions --dry-run --skip-privacy-check
 ```
 
-## Features
+This checks public files without verifying suppressed names. It cannot write to the database. Trusted CI and deployment must check the files with the key.
 
-- Upsert operations (insert or update)
-- Transaction support for data integrity
-- Automatic athlete, category, and movement management
-- Support for equipment settings and attempt tracking
+## Athlete data
+
+See [athlete data](../../data/athletes/README.md) for Instagram matching, key setup, and the name-removal procedure. Use the [staging fixtures](../../data/staging/README.md) to test redaction on a disposable copy.
+
+## Existing callers
+
+`canonical PATH` and `bulk-import --directory PATH` remain available for older callers. Their `--validate-only` flag, and the same flag on `instagram`, remain aliases for `--dry-run`.
+
+Legacy `bulk-import --prune` previews deletions after importing; adding `--yes` applies them. The new `competitions --prune` applies deletions directly. Deployment workflows update the command alongside the importer image so an older image never receives the new command.

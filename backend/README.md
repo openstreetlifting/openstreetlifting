@@ -1,110 +1,90 @@
-# OpenStreetlifting Backend
+# Backend
 
-OpenStreetlifting is a open collection of services powering the backend of the [openstreetlifting](https://openstreetlifting.org) website.
+The Rust workspace serves the read-only API and imports competition files into PostgreSQL.
 
-## Workspace Structure
+| Crate | Purpose |
+| --- | --- |
+| `osl_api` | Axum API, OpenAPI schema, and response caches |
+| `osl_db` | Database queries, migrations, and services |
+| `osl_domain` | Shared types, identity rules, and scoring formulas |
+| `osl_importer` | File validation, imports, formatting, and name removal |
 
-- `storage` - Database models, migrations, and repository layer
-- `web` - Actix Web REST API server
-- `importer` - CLI tool for importing competition data from external sources
+## Run locally
 
-## Setup
-
-There are multiple way of making openstreetlifting_backend run, you can go
-
-- localhost : create your own postgresql instance and run rust command through local rustup install
-- docker : a [compose](./docker-compose.yaml) file is available to launch all the necessary services
-- hybrid : you can only start the postgres service, and use local rust for ease of development : `docker-compose up -d postgres`
-
-## Development Commands
+Install Rust and Docker. From `backend`:
 
 ```sh
-# Run web API (http://localhost:8080)
-cargo run --bin web
-
-# Run importer CLI
-cargo run --bin import -- --database-url "postgresql://..." liftcontrol <event-slug>
-
-# Linting, Formatting
-cargo clippy
-cargo fmt
-
-# SQLx compile-time verification
-cargo sqlx prepare --workspace
+cp .env.example .env
+docker compose -f ../docker-compose.yaml up -d --wait postgres
+cargo run -p osl_api
 ```
+
+The API loads `.env` and runs migrations on startup. With the example settings, it listens at <http://localhost:8080>; Swagger UI is at `/swagger-ui/`.
+
+After the database is ready, import competition data in another terminal from `backend`:
+
+```sh
+cargo run -p osl_importer --bin import -- competitions
+```
+
+A nonempty privacy list requires its existing `OSL_PRIVACY_KEY`. See the [importer guide](crates/osl_importer/README.md) and [athlete data](data/athletes/README.md).
 
 ## Configuration
 
-> [!tip]
-> The default inside .env.example are localhost ready, meaning you can just copy and launch. for docker specific setup, some overrides or provided inside the [compose](./docker-compose.yaml) file.
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | Required PostgreSQL connection URL |
+| `HOST`, `PORT` | API bind address; `.env.example` uses `127.0.0.1:8080` |
+| `RUST_LOG` | Log filter |
+| `CACHE_ENABLED` | Enable API dataset caches; defaults to `false` |
+| `OSL_PRIVACY_KEY` | Importer key for the suppression list |
 
-| Variable       | Description                  | Default     |
-| -------------- | ---------------------------- | ----------- |
-| `DATABASE_URL` | PostgreSQL connection string | Required    |
-| `HOST`         | Server bind address          | `127.0.0.1` |
-| `PORT`         | Server port                  | `8080`      |
-| `RUST_LOG`     | Logging level                | `info`      |
-| `CACHE_ENABLED` | Enable API dataset caches (`true` or `false`) | `false` |
+### Caching
 
-### Dataset caching
+Helm deployments enable caching. Each API process caches the serialized RIS distribution for one hour, including its athlete and competition details. Formula endpoints are not cached.
 
-`CACHE_ENABLED` is the only environment switch. It defaults to `false` so local
-page reloads always read current data. Helm deployments explicitly enable it with
-`backend.config.cacheEnabled: true`.
+The first request loads the dataset. Requests after expiry wait for a fresh load. Failed or cancelled loads do not populate the cache, and a failed refresh does not serve expired data.
 
-Freshness policies live in `crates/osl_api/src/cache/policy.rs`. RIS distribution
-is cached for one hour, including both categories and athlete/competition details.
-The cache stores the serialized JSON, avoiding repeated queries and serialization.
-Formula endpoints are inexpensive code-defined constants and are not cached.
+Imports do not invalidate caches. Changes, including name removal, can take up to an hour to appear after a page reload. For an immediate refresh, restart every API replica through the deployment workflow. Open browser pages keep their loaded data until reloaded.
 
-Each API process owns one bounded snapshot per dataset. The first request loads
-it; fresh requests reuse it; the first request after expiry refreshes it. Concurrent
-requests wait for that refresh and reuse its successful result. Expiry starts when
-the load succeeds. Errors and cancelled loads do not populate the cache, and
-expired data is not served on failure. A waiting request can retry after a failed
-refresh; there is no background refresh or error cache.
+Use `CACHE_ENABLED=true cargo run -p osl_api` to test caching locally. A restart clears the process cache and applies configuration changes. Cache hits and refresh durations are logged at debug level under `osl_api::cache`; failures are logged at warn level.
 
-Imports do not actively invalidate snapshots. Updates and deletions can take up
-to an hour to appear on the next page load. Existing browser pages retain their
-loaded data until reloaded. Replicas have independent snapshots and expiry times.
-Restarting an API process clears its cache; for an immediate production refresh,
-all replicas must be restarted through the normal deployment workflow.
+Cache policies live in `crates/osl_api/src/cache/policy.rs`. To cache another fixed dataset, add its policy and typed slot to `AppCaches`, then wrap its loader with `get_or_try_init`. Use `Bytes` or `Arc<T>` to avoid large clones. These slots are for shared datasets with bounded memory use.
 
-To test caching locally, run `CACHE_ENABLED=true cargo run -p osl_api`. Restart
-the process to force a fresh snapshot, or return to `CACHE_ENABLED=false` for
-uncached development. Changing the setting requires a restart.
+## Checks
 
-To cache another dataset, add its policy and typed slot to `AppCaches`, then wrap
-its loader with `get_or_try_init`. Prefer `Bytes` or `Arc<T>` values to avoid large
-clones. This cache is for fixed shared datasets, not unbounded per-user/query keys.
-No additional environment variables or external cache services are needed.
-
-Cache hits and successful refresh durations are logged at debug level under
-`osl_api::cache`; refresh failures are logged at warn level.
-
-## Writing data
-
-The API is read-only and needs no authentication. Competition data comes from
-the files in `data/competitions/{federation}/{year}/{slug}/`, loaded with the `import`
-binary. Each competition is a `competition.toml` describing the competition and an
-`entries.csv` holding one row per athlete. Correcting results means editing a
-file and importing it again.
-
-## API Documentation
-
-Swagger UI available at `http://localhost:8080/swagger-ui/` when running localhost, or docker.
-
-## Database Migrations
-
-Migrations are in `crates/storage/migrations/` and run automatically on web server startup. For manual control:
+From `backend`:
 
 ```sh
-# Create new migration
-sqlx migrate add <name>
-
-# Run migrations
-sqlx migrate run --database-url "postgresql://..."
-
-# Revert last migration
-sqlx migrate revert --database-url "postgresql://..."
+cargo fmt --all --check
+SQLX_OFFLINE=true cargo clippy --workspace --all-targets --all-features -- -D warnings
 ```
+
+Database tests need a running PostgreSQL server and a role that can create test databases. Export `DATABASE_URL` from your local configuration before running:
+
+```sh
+SQLX_OFFLINE=true cargo test --workspace --locked
+```
+
+`SQLX_OFFLINE=true` uses the checked-in query metadata. After changing SQL queries, refresh it against a migrated development database with `cargo sqlx prepare --workspace`.
+
+## Migrations and API schema
+
+Migrations live in `crates/osl_db/migrations`. With `sqlx-cli` installed:
+
+```sh
+sqlx migrate add --source crates/osl_db/migrations <name>
+sqlx migrate run --source crates/osl_db/migrations
+```
+
+After changing API routes or response types, regenerate the checked-in schema:
+
+```sh
+cargo run -p osl_api -- --dump-openapi > openapi.json
+```
+
+## Data changes
+
+The API serves data without authentication and exposes no write endpoints. Edit competition files under `data/competitions`, validate them, then import them. Each competition has a `competition.toml` and, once results exist, an `entries.csv`.
+
+See the [data contribution guide](docs/src/CONTRIBUTING_DATA.md) for the format and review process.
