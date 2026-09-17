@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.32.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.31.0...v0.32.0) (2026-09-17)
+
+
+### Features
+
+* **charts:** add an optional basic auth login to the ingress ([#615](https://github.com/openstreetlifting/openstreetlifting/issues/615)) ([87242b1](https://github.com/openstreetlifting/openstreetlifting/commit/87242b11af990910020bff5264119024d5d7d486))
+* **frontend:** add country pages ([#618](https://github.com/openstreetlifting/openstreetlifting/issues/618)) ([a79ad4c](https://github.com/openstreetlifting/openstreetlifting/commit/a79ad4cef981e25fbf9d9ef72d4c0eaa9ed7520a))
+* **frontend:** add federation pages ([#617](https://github.com/openstreetlifting/openstreetlifting/issues/617)) ([0de9a0d](https://github.com/openstreetlifting/openstreetlifting/commit/0de9a0d4d63c1bf2d32a6fbf7c71d31120fb1dab))
+* **frontend:** name federation, year and country in page titles ([#619](https://github.com/openstreetlifting/openstreetlifting/issues/619)) ([57e5b3a](https://github.com/openstreetlifting/openstreetlifting/commit/57e5b3a0a321a724f82a96f09b50accab3b605dd))
+* **frontend:** split the sitemap by section and add llms.txt ([#620](https://github.com/openstreetlifting/openstreetlifting/issues/620)) ([7ca15fe](https://github.com/openstreetlifting/openstreetlifting/commit/7ca15feca9a6b0514f2cb0d5f2f3db2840575acd))
+
 ## [0.31.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.30.0...v0.31.0) (2026-09-17)
 
 
