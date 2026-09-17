@@ -29,13 +29,20 @@
   jsonLd={[
     breadcrumbLd([
       { name: 'Rankings', path: '/' },
+      { name: 'Competitions', path: '/competitions' },
       { name: 'Federations', path: '/federations' },
     ]),
   ]}
 />
 
 <div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
-  <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: 'Federations' }]} />
+  <Breadcrumb
+    items={[
+      { label: 'Rankings', href: rankingsHref() },
+      { label: 'Competitions', href: '/competitions' },
+      { label: 'Federations' },
+    ]}
+  />
 
   <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">Federations</h1>
 

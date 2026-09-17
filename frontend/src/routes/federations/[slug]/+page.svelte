@@ -63,7 +63,7 @@
     federationLd(federation, description),
     breadcrumbLd([
       { name: 'Rankings', path: '/' },
-      { name: 'Federations', path: '/federations' },
+      { name: 'Competitions', path: '/competitions' },
       { name: federation.name, path },
     ]),
   ]}
@@ -73,7 +73,7 @@
   <Breadcrumb
     items={[
       { label: 'Rankings', href: rankingsHref() },
-      { label: 'Federations', href: '/federations' },
+      { label: 'Competitions', href: '/competitions' },
       { label: federation.name },
     ]}
   />
