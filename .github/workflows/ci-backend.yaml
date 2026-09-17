@@ -67,11 +67,11 @@ jobs:
         run: |
           args=()
           if [[ "${{ github.event.pull_request.head.repo.fork }}" == "true" && -z "$OSL_PRIVACY_KEY" ]]; then
-            args+=(--validate-only --skip-privacy-check)
+            args+=(--dry-run --skip-privacy-check)
           fi
-          cargo run -p osl_importer --bin import -- bulk-import \
-            --directory ./data/competitions \
-            --directory ./data/staging/competitions "${args[@]}"
+          cargo run -p osl_importer --bin import -- competitions \
+            ./data/competitions \
+            ./data/staging/competitions "${args[@]}"
       # Fork pull requests cannot check suppressed names without the secret.
       - name: Check nobody on the privacy list is named
         if: github.event.pull_request.head.repo.fork == false
@@ -87,7 +87,7 @@ jobs:
           if [[ "${{ github.event.pull_request.head.repo.fork }}" == "true" && -z "$OSL_PRIVACY_KEY" ]]; then
             unset DATABASE_URL
           fi
-          cargo run -p osl_importer --bin import -- instagram --validate-only
+          cargo run -p osl_importer --bin import -- instagram --dry-run
 
   lint:
     name: Clippy

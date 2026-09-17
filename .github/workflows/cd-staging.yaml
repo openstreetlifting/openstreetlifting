@@ -145,6 +145,7 @@ jobs:
           fi
           if [[ "${{ needs.build-importer.result }}" == "success" ]]; then
             yq -i ".importer.image.tag = \"$SHA_TAG\"" "$VALUES"
+            yq -i '.importer.args = ["competitions", "./data/competitions", "--prune"]' "$VALUES"
           fi
           if [[ "${{ needs.build-frontend.result }}" == "success" ]]; then
             yq -i ".frontend.image.tag = \"$SHA_TAG\"" "$VALUES"

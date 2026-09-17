@@ -83,6 +83,7 @@ jobs:
           for component in frontend backend importer; do
             yq -i ".$component.image.tag = \"$SEMVER\"" "$VALUES"
           done
+          yq -i '.importer.args = (load("helm/openstreetlifting/values-staging.yaml").importer.args // ["bulk-import", "--prune", "--yes"])' "$VALUES"
           yq -i \
             "(.spec.sources[] | select(.ref != \"values\") | .targetRevision) = \"$GITHUB_REF_NAME\"" \
             apps/openstreetlifting.yaml

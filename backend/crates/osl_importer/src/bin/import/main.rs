@@ -1,5 +1,5 @@
 use anyhow::{Context, Result, bail};
-use clap::{Parser, Subcommand};
+use clap::Parser;
 use osl_importer::canonical::{
     competition, entries, format as canonical_format, store, transformer::CanonicalTransformer,
     validator::CanonicalValidator,
@@ -13,108 +13,8 @@ use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-#[derive(Parser)]
-#[command(name = "osl-import")]
-#[command(about = "OpenStreetlifting Competition Data Importer", long_about = None)]
-#[command(version)]
-struct Cli {
-    #[command(subcommand)]
-    command: Commands,
-
-    /// Optional because `fmt` never touches the database.
-    #[arg(long, env = "DATABASE_URL")]
-    database_url: Option<String>,
-
-    #[arg(long, default_value = privacy::DEFAULT_PATH)]
-    privacy_file: PathBuf,
-
-    #[arg(short, long)]
-    verbose: bool,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    Canonical {
-        directory: PathBuf,
-
-        #[arg(long)]
-        validate_only: bool,
-
-        /// Validate public files without checking suppressed names; cannot write to the database.
-        #[arg(long, requires = "validate_only")]
-        skip_privacy_check: bool,
-    },
-    BulkImport {
-        /// Repeat to import more than one tree under a single prune.
-        #[arg(long = "directory", default_value = "./data/competitions")]
-        directories: Vec<PathBuf>,
-
-        #[arg(long)]
-        validate_only: bool,
-
-        #[arg(long, requires = "validate_only")]
-        skip_privacy_check: bool,
-
-        /// Delete the competitions no file in the tree claims, and the athletes
-        /// they leave without a result. Reports what it would delete unless
-        /// `--yes` is passed, and needs the whole imports tree to be right.
-        #[arg(long)]
-        prune: bool,
-
-        /// Carry out the prune instead of only reporting it.
-        #[arg(long)]
-        yes: bool,
-    },
-    /// Attach Instagram handles to athletes from a Name,Instagram file.
-    Instagram {
-        #[arg(default_value = "./data/athletes/instagram.csv")]
-        file: PathBuf,
-
-        #[arg(long)]
-        validate_only: bool,
-    },
-    /// Take an athlete's name off the archive, keeping their results.
-    Redact {
-        #[arg(long)]
-        name: String,
-
-        #[arg(long)]
-        sex: Option<String>,
-
-        #[arg(long)]
-        country: Option<String>,
-
-        #[arg(long)]
-        disambiguation: Option<i16>,
-
-        #[arg(long, default_value = "./data/competitions")]
-        directory: PathBuf,
-
-        #[arg(long, default_value = "./data/athletes/instagram.csv")]
-        instagram_file: PathBuf,
-
-        /// Report what would change without writing anything.
-        #[arg(long)]
-        dry_run: bool,
-    },
-    /// Check the privacy list against the canonical files.
-    Privacy {
-        #[arg(long, default_value = "./data/competitions")]
-        directory: PathBuf,
-    },
-    /// Recompute every stored RIS score against the current formula.
-    RecomputeRis,
-    /// Rewrite canonical files in their canonical shape.
-    Fmt {
-        /// Competition directories, or a tree to search for them.
-        #[arg(default_value = "./data/competitions")]
-        paths: Vec<PathBuf>,
-
-        /// Report files that would change instead of rewriting them.
-        #[arg(long)]
-        check: bool,
-    },
-}
+mod cli;
+use cli::{Cli, Commands};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -129,36 +29,55 @@ async fn main() -> Result<()> {
                 format!("import={},osl_importer={}", log_level, log_level).into()
             }),
         )
-        .with(tracing_subscriber::fmt::layer())
+        .with(tracing_subscriber::fmt::layer().with_writer(std::io::stderr))
         .init();
 
     match cli.command {
-        Commands::Canonical {
-            directory,
-            validate_only,
+        Commands::Competitions {
+            paths,
+            dry_run,
+            prune,
             skip_privacy_check,
         } => {
-            let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
+            let database_url = optional_database_url(cli.database_url.as_deref(), dry_run)?;
             let privacy = import_privacy(&cli.privacy_file, skip_privacy_check)?;
-            handle_canonical_import(directory, validate_only, database_url, privacy.as_ref())
+            handle_bulk_import(&paths, dry_run, prune, true, database_url, privacy.as_ref())
                 .await?;
+        }
+        Commands::Canonical {
+            directory,
+            dry_run,
+            skip_privacy_check,
+        } => {
+            let database_url = optional_database_url(cli.database_url.as_deref(), dry_run)?;
+            let privacy = import_privacy(&cli.privacy_file, skip_privacy_check)?;
+            anyhow::ensure!(
+                store::is_competition_directory(&directory),
+                "{} is not a competition directory",
+                directory.display()
+            );
+            handle_bulk_import(
+                &[directory],
+                dry_run,
+                false,
+                false,
+                database_url,
+                privacy.as_ref(),
+            )
+            .await?;
         }
         Commands::BulkImport {
             directories,
-            validate_only,
+            dry_run,
             prune,
             yes,
             skip_privacy_check,
         } => {
-            if prune && validate_only {
-                bail!("--prune writes to the database, so it cannot run with --validate-only");
-            }
-
-            let database_url = require_database_url(cli.database_url.as_deref(), validate_only)?;
+            let database_url = optional_database_url(cli.database_url.as_deref(), dry_run)?;
             let privacy = import_privacy(&cli.privacy_file, skip_privacy_check)?;
             handle_bulk_import(
                 &directories,
-                validate_only,
+                dry_run,
                 prune,
                 yes,
                 database_url,
@@ -180,8 +99,8 @@ async fn main() -> Result<()> {
                 &directory,
                 &instagram_file,
                 &name,
-                sex,
-                country,
+                sex.map(|sex| sex.to_string()),
+                country.map(|country| country.to_string()),
                 disambiguation,
                 dry_run,
             )?;
@@ -189,45 +108,38 @@ async fn main() -> Result<()> {
         Commands::Privacy { directory } => {
             handle_privacy(&cli.privacy_file, &directory)?;
         }
-        Commands::Instagram {
-            file,
-            validate_only,
+        Commands::Instagram { file, dry_run } => {
+            let database_url = optional_database_url(cli.database_url.as_deref(), dry_run)?;
+            handle_instagram(file, dry_run, database_url).await?;
+        }
+        Commands::RecomputeRis { dry_run } => {
+            let database_url = cli
+                .database_url
+                .as_deref()
+                .context("DATABASE_URL is required to read stored RIS scores")?;
+            handle_recompute_ris(database_url, dry_run).await?;
+        }
+        Commands::Fmt {
+            paths,
+            check,
+            dry_run,
         } => {
-            let database_url = optional_database_url(cli.database_url.as_deref(), validate_only)?;
-            handle_instagram(file, validate_only, database_url).await?;
-        }
-        Commands::RecomputeRis => {
-            let database_url = require_database_url(cli.database_url.as_deref(), false)?;
-            handle_recompute_ris(database_url).await?;
-        }
-        Commands::Fmt { paths, check } => {
-            handle_fmt(&paths, check).await?;
+            handle_fmt(&paths, check, dry_run).await?;
         }
     }
 
     Ok(())
 }
 
-fn require_database_url(database_url: Option<&str>, validate_only: bool) -> Result<&str> {
-    Ok(optional_database_url(database_url, validate_only)?.unwrap_or_default())
-}
-
-/// A `--validate-only` run does not need a database, but it checks more when
-/// it has one: whether a name still names exactly one athlete can only be
-/// answered against the athletes.
-fn optional_database_url(database_url: Option<&str>, validate_only: bool) -> Result<Option<&str>> {
+fn optional_database_url(database_url: Option<&str>, dry_run: bool) -> Result<Option<&str>> {
     match database_url {
         Some(url) => Ok(Some(url)),
-        None if validate_only => Ok(None),
-        None => bail!("DATABASE_URL is required to import. Pass --validate-only to skip it"),
+        None if dry_run => Ok(None),
+        None => bail!("DATABASE_URL is required to import. Pass --dry-run to skip it"),
     }
 }
 
-async fn handle_instagram(
-    file: PathBuf,
-    validate_only: bool,
-    database_url: Option<&str>,
-) -> Result<()> {
+async fn handle_instagram(file: PathBuf, dry_run: bool, database_url: Option<&str>) -> Result<()> {
     let Some(database_url) = database_url else {
         let count = osl_importer::social::validate_file(&file)?;
         tracing::warn!(
@@ -246,7 +158,7 @@ async fn handle_instagram(
         .await
         .context("connecting to the database")?;
 
-    if validate_only {
+    if dry_run {
         let report = osl_importer::social::check_instagram_handles(&file, &pool).await?;
         tracing::info!("{} handle(s) name one athlete", report.matched);
         return Ok(());
@@ -319,16 +231,14 @@ fn handle_redact(
 fn handle_privacy(privacy_file: &Path, directory: &Path) -> Result<()> {
     let list = PrivacyList::load(privacy_file)?;
 
+    let directories = competition_directories(&[directory.to_path_buf()])?;
+
     if list.is_empty() {
         tracing::info!("{} lists nobody", list.path().display());
         return Ok(());
     }
 
     list.require_key()?;
-
-    let mut directories = Vec::new();
-    store::collect_competitions(directory, &mut directories)?;
-    directories.sort();
 
     let mut failures = 0;
 
@@ -357,7 +267,7 @@ fn handle_privacy(privacy_file: &Path, directory: &Path) -> Result<()> {
     Ok(())
 }
 
-async fn handle_recompute_ris(database_url: &str) -> Result<()> {
+async fn handle_recompute_ris(database_url: &str, dry_run: bool) -> Result<()> {
     tracing::info!("Connecting to database...");
     let pool = PgPoolOptions::new()
         .max_connections(5)
@@ -365,23 +275,21 @@ async fn handle_recompute_ris(database_url: &str) -> Result<()> {
         .await
         .context("connecting to the database")?;
 
+    if dry_run {
+        let count = osl_db::services::ris_computation::scorable_participants(&pool, None)
+            .await?
+            .len();
+        tracing::info!("Would recompute RIS for {count} participant(s)");
+        return Ok(());
+    }
     let count = osl_db::services::ris_computation::recompute_all_ris(&pool).await?;
     tracing::info!("Recomputed RIS for {} participant(s)", count);
 
     Ok(())
 }
 
-async fn handle_fmt(paths: &[PathBuf], check: bool) -> Result<()> {
-    let mut directories = Vec::new();
-    for path in paths {
-        store::collect_competitions(path, &mut directories)?;
-    }
-    directories.sort();
-
-    if directories.is_empty() {
-        tracing::warn!("No competition directories found");
-        return Ok(());
-    }
+async fn handle_fmt(paths: &[PathBuf], check: bool, dry_run: bool) -> Result<()> {
+    let directories = competition_directories(paths)?;
 
     let mut changed = Vec::new();
     for directory in &directories {
@@ -390,7 +298,7 @@ async fn handle_fmt(paths: &[PathBuf], check: bool) -> Result<()> {
         }
 
         changed.push(directory.clone());
-        if !check {
+        if !check && !dry_run {
             let mut canonical = store::read(directory)?;
             canonical_format::normalize(&mut canonical);
             store::write(directory, &canonical)?;
@@ -408,12 +316,16 @@ async fn handle_fmt(paths: &[PathBuf], check: bool) -> Result<()> {
 
     if check {
         bail!(
-            "{} competition(s) are not formatted. Run `import fmt` to fix",
+            "{} competition(s) are not formatted. Run `osl-import fmt` to fix",
             changed.len()
         );
     }
 
-    tracing::info!("Formatted {} competition(s)", changed.len());
+    if dry_run {
+        tracing::info!("Would format {} competition(s)", changed.len());
+    } else {
+        tracing::info!("Formatted {} competition(s)", changed.len());
+    }
     Ok(())
 }
 
@@ -434,55 +346,27 @@ fn is_formatted(directory: &Path) -> Result<bool> {
     }
 }
 
-async fn handle_canonical_import(
-    directory: PathBuf,
-    validate_only: bool,
-    database_url: &str,
-    privacy: Option<&PrivacyList>,
-) -> Result<()> {
-    tracing::info!("Loading competition from: {}", directory.display());
-
-    let canonical = store::read(&directory)?;
-
-    tracing::info!("Loaded competition: {}", canonical.competition.name);
-
-    tracing::info!("Validating canonical format...");
-    let validation_report = CanonicalValidator::validate(&canonical)?;
-    validation_report.log_warnings();
-    if let Some(privacy) = privacy {
-        privacy::check_competition(&canonical, privacy)?;
+fn competition_directories(paths: &[PathBuf]) -> Result<Vec<PathBuf>> {
+    let mut directories = Vec::new();
+    for path in paths {
+        anyhow::ensure!(path.is_dir(), "{} is not a directory", path.display());
+        let count = directories.len();
+        store::collect_competitions(path, &mut directories)?;
+        anyhow::ensure!(
+            directories.len() > count,
+            "No competitions found in {}",
+            path.display()
+        );
     }
-    tracing::info!("\u{2713} Validation successful!");
-
-    if validate_only {
-        return Ok(());
-    }
-
-    tracing::info!("Connecting to database...");
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(database_url)
-        .await
-        .context("connecting to the database")?;
-
-    tracing::info!(
-        "Importing {} categories to database...",
-        canonical.categories.len()
-    );
-    let transformer = CanonicalTransformer::new(&pool);
-    transformer.import_to_database(canonical).await?;
-
-    tracing::info!("\u{2713} Import completed successfully!");
-
-    Ok(())
+    let mut directories = directories
+        .into_iter()
+        .map(std::fs::canonicalize)
+        .collect::<std::io::Result<Vec<_>>>()?;
+    directories.sort();
+    directories.dedup();
+    Ok(directories)
 }
 
-/// The competitions this tree claims, which is also what a prune keeps.
-///
-/// An import owns its whole competition and removes the rows its files do not
-/// list, so two directories claiming one slug would each delete the other's
-/// results. Sessions of the same competition belong in one directory, and that has to
-/// hold before anything is written.
 fn claimed_competition_slugs(directories: &[PathBuf]) -> Result<Vec<String>> {
     let mut by_slug: BTreeMap<String, Vec<&PathBuf>> = BTreeMap::new();
 
@@ -519,87 +403,60 @@ fn claimed_competition_slugs(directories: &[PathBuf]) -> Result<Vec<String>> {
 
 async fn handle_bulk_import(
     directories: &[PathBuf],
-    validate_only: bool,
+    dry_run: bool,
     prune: bool,
     yes: bool,
-    database_url: &str,
+    database_url: Option<&str>,
     privacy: Option<&PrivacyList>,
 ) -> Result<()> {
-    let mut competitions = Vec::new();
-
-    for directory in directories {
-        tracing::info!(
-            "Scanning directory for competitions: {}",
-            directory.display()
-        );
-        store::collect_competitions(directory, &mut competitions)?;
+    let competitions = competition_directories(directories)?;
+    let claimed_slugs = claimed_competition_slugs(&competitions)?;
+    let mut prepared = Vec::new();
+    let mut failures = 0;
+    for directory in &competitions {
+        match read_competition(directory, privacy) {
+            Ok(canonical) => prepared.push(canonical),
+            Err(error) => {
+                failures += 1;
+                tracing::error!("{}: {error}", directory.display());
+            }
+        }
     }
-
-    if competitions.is_empty() {
-        tracing::warn!("No competitions found");
+    anyhow::ensure!(
+        failures == 0,
+        "{failures} competition(s) failed validation; nothing was imported"
+    );
+    if dry_run {
+        tracing::info!(
+            "Validated {} competition(s); no database changes",
+            prepared.len()
+        );
+        if prune {
+            tracing::info!("Pruning would run after import; no deletion preview was calculated");
+        }
         return Ok(());
     }
 
-    competitions.sort();
-    tracing::info!("Found {} competition(s)", competitions.len());
-
-    let claimed_slugs = claimed_competition_slugs(&competitions)?;
-
-    let pool = if !validate_only {
-        tracing::info!("Connecting to database...");
-        Some(
-            PgPoolOptions::new()
-                .max_connections(5)
-                .connect(database_url)
-                .await
-                .context("connecting to the database")?,
-        )
-    } else {
-        None
-    };
-
-    let mut success_count = 0;
-    let mut error_count = 0;
-
-    for (idx, competition) in competitions.iter().enumerate() {
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect(database_url.context("DATABASE_URL is required to import")?)
+        .await
+        .context("connecting to the database")?;
+    let transformer = CanonicalTransformer::new(&pool);
+    let total = prepared.len();
+    for (index, canonical) in prepared.into_iter().enumerate() {
         tracing::info!(
-            "[{}/{}] Processing: {}",
-            idx + 1,
-            competitions.len(),
-            competition.display()
+            "[{}/{}] Importing {}",
+            index + 1,
+            total,
+            canonical.competition.name
         );
-
-        match process_competition(competition, validate_only, pool.as_ref(), privacy).await {
-            Ok(_) => {
-                success_count += 1;
-                tracing::info!("  imported");
-            }
-            Err(e) => {
-                error_count += 1;
-                tracing::error!("  {}", e);
-            }
-        }
+        transformer.import_to_database(canonical).await?;
     }
-
-    tracing::info!(
-        "Summary: {} succeeded, {} failed",
-        success_count,
-        error_count
-    );
-
-    if error_count > 0 {
-        if prune {
-            tracing::warn!(
-                "Skipping the prune: a competition that failed to import claims nothing"
-            );
-        }
-        bail!("{} competition(s) failed to import", error_count);
+    if prune {
+        handle_prune(&pool, &claimed_slugs, yes).await?;
     }
-
-    if prune && let Some(pool) = pool.as_ref() {
-        handle_prune(pool, &claimed_slugs, yes).await?;
-    }
-
+    tracing::info!("Imported {total} competition(s)");
     Ok(())
 }
 
@@ -658,31 +515,15 @@ async fn handle_prune(pool: &sqlx::PgPool, claimed_slugs: &[String], yes: bool) 
     Ok(())
 }
 
-async fn process_competition(
+fn read_competition(
     directory: &Path,
-    validate_only: bool,
-    pool: Option<&sqlx::PgPool>,
     privacy: Option<&PrivacyList>,
-) -> Result<()> {
+) -> Result<osl_importer::canonical::models::CanonicalFormat> {
     let canonical = store::read(directory)?;
     store::check_location(directory, &canonical)?;
-
     if let Some(privacy) = privacy {
         privacy::check_competition(&canonical, privacy)?;
     }
-
-    let validation_report = CanonicalValidator::validate(&canonical)?;
-
-    if !validation_report.warnings.is_empty() {
-        for warning in &validation_report.warnings {
-            tracing::warn!("  {}", warning);
-        }
-    }
-
-    if !validate_only && let Some(pool) = pool {
-        let transformer = CanonicalTransformer::new(pool);
-        transformer.import_to_database(canonical).await?;
-    }
-
-    Ok(())
+    CanonicalValidator::validate(&canonical)?.log_warnings();
+    Ok(canonical)
 }

@@ -54,9 +54,8 @@ importer:
     repository: ghcr.io/openstreetlifting/importer
     tag: ""
     pullPolicy: IfNotPresent
-  # Every deploy makes the database match the canonical files, deletions
-  # included. Drop --yes to have a release only report what it would remove.
-  # Staging adds --directory ./data/staging/competitions to seed its fixtures.
+  # Keep these arguments compatible with images deployed before the CLI rename.
+  # Deployment workflows switch the command together with the importer image.
   args: ["bulk-import", "--prune", "--yes"]
   instagramArgs: ["instagram"]
   privacy:

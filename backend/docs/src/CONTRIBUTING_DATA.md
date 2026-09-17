@@ -46,7 +46,7 @@ If you have downloaded the repository and have Rust and Cargo installed, open a
 terminal in the `backend` folder and run:
 
 ```sh
-SQLX_OFFLINE=true cargo run -p osl_importer --bin import -- bulk-import --validate-only
+SQLX_OFFLINE=true cargo run -p osl_importer --bin import -- competitions --dry-run
 ```
 
 This checks the files without changing the archive. The summary should show zero
