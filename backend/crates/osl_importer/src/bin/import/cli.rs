@@ -25,40 +25,48 @@ pub struct Cli {
     pub database_url: Option<String>,
 
     #[arg(long, global = true, default_value = privacy::DEFAULT_PATH,
-        help = "Suppression records used to prevent republishing removed names")]
+        help = "CSV file of name-removal records")]
     pub privacy_file: PathBuf,
 
-    #[arg(short, long, global = true, help = "Enable debug logging")]
+    #[arg(
+        short,
+        long,
+        global = true,
+        help = "Enable debug logging (overridden by RUST_LOG)"
+    )]
     pub verbose: bool,
 }
 
 #[derive(Subcommand)]
 pub enum Commands {
     #[command(
-        about = "Import competition directories or trees",
-        after_help = "Examples:\n  osl-import competitions ./data/competitions --dry-run\n  osl-import competitions ./data/competitions --prune\n\nPruning requires the complete dataset. Dry runs validate files without writing to the database."
+        about = "Import competition files into PostgreSQL",
+        after_help = "Examples:\n  osl-import competitions ./data/competitions --dry-run\n  osl-import competitions ./data/competitions --prune\n\nUse --prune only with the complete dataset: it deletes competitions absent from the supplied files.\nA dry run validates files without previewing deletions."
     )]
     Competitions {
         #[arg(
             default_value = "./data/competitions",
-            help = "Competition directories or trees"
+            help = "Competition directories to search recursively"
         )]
         paths: Vec<PathBuf>,
-        #[arg(long, help = "Validate files without saving changes")]
+        #[arg(long, help = "Validate files without connecting to the database")]
         dry_run: bool,
         #[arg(
             long,
-            help = "Remove competitions outside these paths and orphaned athletes and federations"
+            help = "Delete competitions absent from the input and orphaned athletes and federations"
         )]
         prune: bool,
         #[arg(
             long,
             requires = "dry_run",
-            help = "Skip secret-dependent suppression checks"
+            help = "Skip checks for removed names (requires --dry-run)"
         )]
         skip_privacy_check: bool,
     },
-    #[command(about = "Synchronize Instagram handles from a CSV file")]
+    #[command(
+        about = "Synchronize Instagram handles from a CSV file",
+        after_help = "Dry runs also check that each row matches exactly one athlete when a database URL is set."
+    )]
     Instagram {
         #[arg(
             default_value = "./data/athletes/instagram.csv",
@@ -66,74 +74,80 @@ pub enum Commands {
         )]
         file: PathBuf,
 
-        #[arg(long, help = "Check handles without saving changes")]
+        #[arg(long, help = "Check the CSV without changing the database")]
         dry_run: bool,
     },
     #[command(
-        about = "Replace an athlete's name and remove their Instagram handle",
+        about = "Replace an athlete's name in files and remove their Instagram handle",
         after_help = "Examples:\n  osl-import redact --name \"Some Athlete\" --dry-run\n  osl-import redact --name \"Some Athlete\" --country FR"
     )]
     Redact {
         #[arg(long, value_parser = nonempty_name, help = "Athlete name as recorded in the results")]
         name: String,
 
-        #[arg(long, value_name = "M|F|MX", help = "Narrow the request by sex")]
+        #[arg(long, value_name = "M|F|MX", help = "Match the athlete by sex")]
         sex: Option<Gender>,
 
         #[arg(
             long,
             value_name = "CODE",
-            help = "Narrow the request by two-letter country code"
+            help = "Match the athlete by two-letter country code"
         )]
         country: Option<CountryCode>,
 
         #[arg(long, value_parser = clap::value_parser!(i16).range(1..),
-            help = "Distinguish athletes who share a name, sex and country")]
+            help = "Disambiguation number from entries.csv")]
         disambiguation: Option<i16>,
 
         #[arg(
             long,
             default_value = "./data/competitions",
-            help = "Competition directory or tree"
+            help = "Competition directory to search recursively"
         )]
         directory: PathBuf,
 
         #[arg(
             long,
             default_value = "./data/athletes/instagram.csv",
-            help = "Instagram CSV file"
+            help = "Instagram CSV file to remove the athlete's handle from"
         )]
         instagram_file: PathBuf,
 
         #[arg(long, help = "Preview the redaction without changing files")]
         dry_run: bool,
     },
-    #[command(about = "Check that competition files contain no suppressed names")]
+    #[command(about = "Check competition files for names listed for removal")]
     Privacy {
         #[arg(
             long,
             default_value = "./data/competitions",
-            help = "Competition directory or tree"
+            help = "Competition directory to search recursively"
         )]
         directory: PathBuf,
     },
     #[command(about = "Recalculate stored RIS scores with the current formula")]
     RecomputeRis {
-        #[arg(long, help = "Count eligible scores without updating them")]
+        #[arg(long, help = "Count eligible results without updating scores")]
         dry_run: bool,
     },
     #[command(about = "Format competition files")]
     Fmt {
         #[arg(
             default_value = "./data/competitions",
-            help = "Competition directories or trees"
+            help = "Competition directories to search recursively"
         )]
         paths: Vec<PathBuf>,
 
-        #[arg(long, help = "Exit with an error if any file needs formatting")]
+        #[arg(
+            long,
+            help = "Check formatting without changing files; exit nonzero if changes are needed"
+        )]
         check: bool,
 
-        #[arg(long, help = "List files needing formatting without changing them")]
+        #[arg(
+            long,
+            help = "List competition directories needing formatting without changing files"
+        )]
         dry_run: bool,
     },
 }

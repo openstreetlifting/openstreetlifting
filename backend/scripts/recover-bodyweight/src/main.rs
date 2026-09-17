@@ -28,15 +28,25 @@ const HEAVIEST_PLAUSIBLE: Decimal = Decimal::from_parts(200, 0, 0, false, 0);
 const IMPLAUSIBLE_REFUSAL_RATE: f64 = 0.2;
 
 #[derive(Parser)]
-#[command(about = "Recover bodyweight from a published RIS score")]
+#[command(
+    about = "Fill missing bodyweights in competition files using published RIS scores",
+    after_help = "Example (from backend):\n  cargo run -p recover-bodyweight -- --edition 2024 --check data/competitions/finalrep\n\nOmit --check to save recovered bodyweights to the competition files."
+)]
 struct Cli {
-    #[arg(required = true)]
+    #[arg(
+        required = true,
+        help = "Competition directories to search recursively"
+    )]
     paths: Vec<PathBuf>,
 
-    #[arg(long, value_name = "YEAR")]
+    #[arg(
+        long,
+        value_name = "YEAR",
+        help = "RIS formula edition used for the published scores (2024, 2025, or 2026)"
+    )]
     edition: i32,
 
-    #[arg(long)]
+    #[arg(long, help = "Preview recovered bodyweights without changing files")]
     check: bool,
 }
 
