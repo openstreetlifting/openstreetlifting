@@ -27,7 +27,7 @@ importers:
         specifier: ^3.1.0
         version: 3.1.0
       katex:
-        specifier: ^0.18.7
+        specifier: ^0.18.5
         version: 0.18.7
       layerchart:
         specifier: ^2.4.0
@@ -79,16 +79,16 @@ importers:
         specifier: ^0.16.8
         version: 0.16.8
       '@types/node':
-        specifier: ^24.13.6
+        specifier: ^24.12.4
         version: 24.13.6
       '@vitest/browser-playwright':
-        specifier: ^5.0.1
+        specifier: ^5.0.0
         version: 5.0.1(playwright@1.63.0)(vite@8.3.0(@types/node@24.13.6)(jiti@2.7.0))(vitest@5.0.1)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^10.11.0
+        specifier: ^10.4.0
         version: 10.11.0(jiti@2.7.0)
       eslint-config-prettier:
         specifier: ^10.1.8
@@ -100,10 +100,10 @@ importers:
         specifier: ^17.6.0
         version: 17.12.0
       playwright:
-        specifier: ^1.63.0
+        specifier: ^1.60.0
         version: 1.63.0
       prettier:
-        specifier: ^3.9.8
+        specifier: ^3.8.3
         version: 3.9.8
       prettier-plugin-svelte:
         specifier: ^4.0.0
@@ -112,13 +112,13 @@ importers:
         specifier: ^0.8.0
         version: 0.8.1(prettier-plugin-svelte@4.1.1(prettier@3.9.8)(svelte@5.57.1(@typescript-eslint/types@8.69.0)))(prettier@3.9.8)
       svelte:
-        specifier: ^5.57.1
+        specifier: ^5.55.9
         version: 5.57.1(@typescript-eslint/types@8.69.0)
       svelte-check:
         specifier: ^4.4.8
         version: 4.7.6(picomatch@4.0.7)(svelte@5.57.1(@typescript-eslint/types@8.69.0))(typescript@6.0.3)
       tailwind-merge:
-        specifier: ^3.7.0
+        specifier: ^3.6.0
         version: 3.7.0
       tailwind-variants:
         specifier: ^3.2.2
@@ -130,13 +130,13 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       typescript-eslint:
-        specifier: ^8.70.0
+        specifier: ^8.59.4
         version: 8.70.0(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3)
       vite:
-        specifier: ^8.3.0
+        specifier: ^8.0.14
         version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
       vitest:
-        specifier: ^5.0.1
+        specifier: ^5.0.0
         version: 5.0.1(@types/node@24.13.6)(@vitest/browser-playwright@5.0.1)(@vitest/ui@5.0.1)(vite@8.3.0(@types/node@24.13.6)(jiti@2.7.0))
       vitest-browser-svelte:
         specifier: ^3.0.0
