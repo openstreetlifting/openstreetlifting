@@ -2,7 +2,8 @@ event = "MPDS"
 sources = [
     "FinalRep app, /events-api/v1/events/{id}/statistics",
     "https://final-rep.com/event-calendar/",
-    "Bodyweight recovered by reversing the 2026 RIS formula on the published score",
+    "https://streetliftingaustralia.com.au/previous-valid-results",
+    "https://img1.wsimg.com/blobby/go/66e68ad1-c2d3-473a-9260-17e2d76d39f0/downloads/910cb34e-fa8f-483f-949c-730cddafd8c1/Event%204%20.pdf",
 ]
 
 [competition]
