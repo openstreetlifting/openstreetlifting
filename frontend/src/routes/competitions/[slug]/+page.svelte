@@ -95,6 +95,12 @@
 
   const risAvailable = $derived(hasRis(data.competition.movements.length));
 
+  const classed = $derived(
+    data.competition.categories.some(
+      (category: CategoryDetail) => category.category.weight_class !== ''
+    )
+  );
+
   const table = new RankingsTable({
     basePath: `/competitions/${data.competition.slug}`,
     initialUrl: page.url,
@@ -216,7 +222,9 @@
         return (
           (!table.genderFilter || athlete.gender === table.genderFilter) &&
           (!table.countryFilter || athlete.country === table.countryFilter) &&
-          (!table.categoryFilter || category.category.weight_class === table.categoryFilter) &&
+          (!classed ||
+            !table.categoryFilter ||
+            category.category.weight_class === table.categoryFilter) &&
           (!search || formatAthleteName(athlete).toLowerCase().includes(search))
         );
       })
@@ -387,16 +395,18 @@
           <option value={gender.value}>{gender.label}</option>
         {/each}
       </select>
-      <select
-        bind:value={table.categoryFilter}
-        onchange={() => table.handleFilterChange()}
-        class="w-full {FIELD} px-3 py-2 sm:w-auto"
-      >
-        <option value={null}>All Classes</option>
-        {#each data.classes as classOption (classOption)}
-          <option value={classOption}>{classOption}</option>
-        {/each}
-      </select>
+      {#if classed}
+        <select
+          bind:value={table.categoryFilter}
+          onchange={() => table.handleFilterChange()}
+          class="w-full {FIELD} px-3 py-2 sm:w-auto"
+        >
+          <option value={null}>All Classes</option>
+          {#each data.classes as classOption (classOption)}
+            <option value={classOption}>{classOption}</option>
+          {/each}
+        </select>
+      {/if}
 
       <div class="flex w-full items-center gap-2 sm:w-auto">
         <label for="sort-by" class="text-sm text-muted">Sort by</label>
@@ -471,7 +481,9 @@
           </th>
         {/each}
         <th class="{TABLE_HEAD_CELL} text-secondary">Sex</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary">Class</th>
+        {#if classed}
+          <th class="{TABLE_HEAD_CELL} text-secondary">Class</th>
+        {/if}
       {/snippet}
 
       {#snippet body()}
@@ -557,7 +569,9 @@
               </td>
             {/each}
             <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
+            {#if classed}
+              <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
+            {/if}
           </tr>
         {/each}
 
@@ -627,7 +641,9 @@
                 </td>
               {/each}
               <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
-              <td class="{TABLE_CELL} {CELL.data}">{category.category.weight_class}</td>
+              {#if classed}
+                <td class="{TABLE_CELL} {CELL.data}">{category.category.weight_class}</td>
+              {/if}
             </tr>
           {/each}
         {/if}

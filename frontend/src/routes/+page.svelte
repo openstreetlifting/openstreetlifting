@@ -30,7 +30,7 @@
     formatWeight,
     formatAthleteName,
   } from '$lib/utils';
-  import { CELL, FIGURE, SORTED_COLUMN, TEXT_CELL } from '$lib/constants/table';
+  import { CELL, FIGURE, NO_VALUE, SORTED_COLUMN, TEXT_CELL } from '$lib/constants/table';
   import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import { rememberRankings } from '$lib/state/rankings-return.svelte';
@@ -286,7 +286,7 @@
               {formatDate(entry.competition.date)}
             </td>
             <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
+            <td class="{TABLE_CELL} {CELL.data}">{entry.category || NO_VALUE}</td>
           </tr>
         {/each}
       {/snippet}

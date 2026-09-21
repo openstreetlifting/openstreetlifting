@@ -37,7 +37,7 @@ pub struct CompetitionDetail {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Contest {
-    pub weight_class_id: Uuid,
+    pub weight_class_id: Option<Uuid>,
     pub division_id: Option<Uuid>,
     pub division: Option<String>,
     pub gender: Gender,

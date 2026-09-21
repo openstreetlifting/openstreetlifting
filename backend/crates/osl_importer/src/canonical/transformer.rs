@@ -20,7 +20,7 @@ struct ImportedFacts {
 
 #[derive(Clone, Copy)]
 struct ContestKey {
-    weight_class_id: Uuid,
+    weight_class_id: Option<Uuid>,
     division_id: Option<Uuid>,
 }
 
@@ -324,23 +324,20 @@ impl<'a> CanonicalTransformer<'a> {
     }
 
     /// Finds the weight class the category's bounds describe, creating it if
-    /// the competition runs one outside the standard ladder.
+    /// the competition runs one outside the standard ladder. A competition that
+    /// runs no weight classes resolves to none.
     async fn resolve_weight_class(
         &self,
         category: &CategoryData,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
-    ) -> Result<Uuid> {
+    ) -> Result<Option<Uuid>> {
         let (min, max) = match category.weight_class_slug.as_ref() {
             Some(slug) => slug.bounds(),
             None => (category.weight_class_min, category.weight_class_max),
         };
 
         if min.is_none() && max.is_none() {
-            return Err(ImporterError::TransformationError(format!(
-                "Category '{}' has no weight class. Set weight_class_slug, or \
-                 weight_class_min and weight_class_max",
-                category.label()
-            )));
+            return Ok(None);
         }
 
         // The no-op SET is what makes RETURNING fire on an existing row.
@@ -359,7 +356,7 @@ impl<'a> CanonicalTransformer<'a> {
         .fetch_one(&mut **tx)
         .await?;
 
-        Ok(weight_class_id)
+        Ok(Some(weight_class_id))
     }
 
     async fn upsert_division(
