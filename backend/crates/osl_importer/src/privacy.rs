@@ -4,7 +4,7 @@ use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result, anyhow, bail};
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use osl_domain::redaction::RedactedAthlete;
 use osl_domain::{CountryCode, Gender};
 use sha2::Sha256;
