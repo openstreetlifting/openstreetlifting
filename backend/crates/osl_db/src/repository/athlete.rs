@@ -174,29 +174,38 @@ impl<'a> AthleteRepository<'a> {
         let rows = sqlx::query!(
             r#"
             WITH entered AS (
-                SELECT DISTINCT competition_id, weight_class_id, division_id
-                FROM competition_participants
-                WHERE athlete_id = $1
+                SELECT DISTINCT cp.competition_id, cp.weight_class_id, cp.division_id,
+                       COALESCE(wc.gender, a.gender) AS contest_gender
+                FROM competition_participants cp
+                INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
+                LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+                WHERE cp.athlete_id = $1
             ),
             placed AS (
                 SELECT
                     cp.participant_id,
                     ROW_NUMBER() OVER (
-                        PARTITION BY cp.competition_id, cp.weight_class_id, cp.division_id
+                        PARTITION BY cp.competition_id, cp.weight_class_id, cp.division_id,
+                                     e.contest_gender
                         ORDER BY
                             CASE WHEN COALESCE(SUM(l.max_weight), 0) = 0 THEN 1 ELSE 0 END,
+                            CASE WHEN cp.weight_class_id IS NULL THEN cp.ris_score END
+                                DESC NULLS LAST,
                             COALESCE(SUM(l.max_weight), 0) DESC,
                             cp.bodyweight ASC NULLS LAST
                     )::int as place
                 FROM competition_participants cp
+                INNER JOIN athletes pa ON pa.athlete_id = cp.athlete_id
+                LEFT JOIN weight_classes pwc ON pwc.weight_class_id = cp.weight_class_id
                 JOIN entered e
                     ON e.competition_id = cp.competition_id
-                   AND e.weight_class_id = cp.weight_class_id
+                   AND e.weight_class_id IS NOT DISTINCT FROM cp.weight_class_id
                    AND e.division_id IS NOT DISTINCT FROM cp.division_id
+                   AND e.contest_gender = COALESCE(pwc.gender, pa.gender)
                 LEFT JOIN lifts l ON l.participant_id = cp.participant_id
                 WHERE cp.status = 'competed'
                 GROUP BY cp.participant_id, cp.competition_id, cp.weight_class_id,
-                         cp.division_id, cp.bodyweight
+                         cp.division_id, e.contest_gender, cp.bodyweight, cp.ris_score
             )
             SELECT
                 c.competition_id,
@@ -204,7 +213,7 @@ impl<'a> AthleteRepository<'a> {
                 c.slug as competition_slug,
                 c.start_date as competition_date,
                 d.name as "division?",
-                wc.gender as "category_gender: Gender",
+                COALESCE(wc.gender, a.gender) as "category_gender!: Gender",
                 wc.min_kg as weight_class_min,
                 wc.max_kg as weight_class_max,
                 placed.place as "rank?",
@@ -242,15 +251,16 @@ impl<'a> AthleteRepository<'a> {
                 ) as "lifts!: sqlx::types::Json<Vec<AthleteLiftRow>>"
             FROM competition_participants cp
             JOIN competitions c ON cp.competition_id = c.competition_id
-            JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+            INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
+            LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
             LEFT JOIN divisions d ON d.division_id = cp.division_id
             LEFT JOIN lifts l ON l.participant_id = cp.participant_id
             LEFT JOIN movements m ON m.name = l.movement_name
             LEFT JOIN placed ON placed.participant_id = cp.participant_id
             WHERE cp.athlete_id = $1
             GROUP BY c.competition_id, c.name, c.slug, c.start_date, c.event_code, d.name,
-                     wc.gender, wc.min_kg, wc.max_kg, placed.place, cp.ris_score,
-                     cp.ris_source, cp.status
+                     COALESCE(wc.gender, a.gender), wc.min_kg, wc.max_kg, placed.place,
+                     cp.ris_score, cp.ris_source, cp.status
             ORDER BY c.start_date DESC NULLS LAST
             "#,
             athlete.athlete_id

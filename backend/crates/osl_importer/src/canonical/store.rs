@@ -227,7 +227,7 @@ fn read_entries(path: &Path, movements: &[Movement]) -> Result<Vec<CategoryData>
     Ok(categories)
 }
 
-type Entry = (Option<String>, Gender, WeightClass, AthleteData);
+type Entry = (Option<String>, Gender, Option<WeightClass>, AthleteData);
 
 fn read_entry(
     columns: &Columns,
@@ -237,11 +237,18 @@ fn read_entry(
     let division = optional(columns, record, entries::DIVISION);
     let gender = Gender::from_str(columns.get(record, entries::SEX))?;
 
-    let weight_class = columns.get(record, entries::WEIGHT_CLASS);
-    if weight_class.is_empty() {
-        return Err(format!("{} is empty", entries::WEIGHT_CLASS));
-    }
-    let weight_class = parse_weight_class(weight_class)?;
+    let weight_class = if columns.has(entries::WEIGHT_CLASS) {
+        let cell = columns.get(record, entries::WEIGHT_CLASS);
+        if cell.is_empty() {
+            return Err(format!(
+                "{} is empty. Leave the column out entirely for a meet with no weight classes",
+                entries::WEIGHT_CLASS
+            ));
+        }
+        Some(parse_weight_class(cell)?)
+    } else {
+        None
+    };
 
     // A mononym goes in LastName, so that is the required half of a name.
     let first_name = optional(columns, record, entries::FIRST_NAME).unwrap_or_default();
@@ -361,6 +368,10 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
             .categories
             .iter()
             .any(|category| category.division.is_some()),
+        classed: canonical
+            .categories
+            .iter()
+            .any(|category| category.bounds() != (None, None)),
         native_names: canonical
             .categories
             .iter()
@@ -392,9 +403,12 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                 .into_iter()
                 .collect();
 
+            row.push(category.gender.as_str().to_string());
+            if layout.classed {
+                row.push(weight_class.clone());
+            }
+
             row.extend([
-                category.gender.as_str().to_string(),
-                weight_class.clone(),
                 athlete.first_name.clone(),
                 athlete.last_name.clone(),
                 athlete
@@ -503,8 +517,8 @@ fn parse_weight_class(cell: &str) -> std::result::Result<WeightClass, String> {
 
     if bound <= Decimal::ZERO {
         return Err(format!(
-            "weight class '{cell}' has a bound of zero or less. Every class is bounded, \
-             so an unclassified group is filed per athlete against the standard ladder"
+            "weight class '{cell}' has a bound of zero or less. Leave the column out \
+             entirely for a meet with no weight classes"
         ));
     }
 
@@ -513,7 +527,11 @@ fn parse_weight_class(cell: &str) -> std::result::Result<WeightClass, String> {
 
 type Bounds = (Option<WeightClassSlug>, Option<Decimal>, Option<Decimal>);
 
-fn weight_class_bounds(gender: Gender, bound: WeightClass) -> Bounds {
+fn weight_class_bounds(gender: Gender, bound: Option<WeightClass>) -> Bounds {
+    let Some(bound) = bound else {
+        return (None, None, None);
+    };
+
     let candidate = match bound {
         WeightClass::UpTo(max) => format!("{}-{}", gender.as_str(), max.normalize()),
         WeightClass::Above(min) => format!("{}+{}", gender.as_str(), min.normalize()),
@@ -564,5 +582,69 @@ mod tests {
     fn anything_that_is_not_a_number_is_refused() {
         assert!(parse_weight_class("D/C").is_err());
         assert!(parse_weight_class("").is_err());
+    }
+
+    fn entry(
+        layout: entries::Layout,
+        cells: &[(&str, &str)],
+    ) -> std::result::Result<Entry, String> {
+        let headers = entries::headers(layout);
+        let columns = Columns::read(&csv::StringRecord::from(headers.clone()))?;
+
+        let row: Vec<String> = headers
+            .iter()
+            .map(|header| {
+                cells
+                    .iter()
+                    .find(|(column, _)| column == header)
+                    .map(|(_, value)| (*value).to_string())
+                    .unwrap_or_default()
+            })
+            .collect();
+
+        read_entry(&columns, &csv::StringRecord::from(row), &[Movement::PullUp])
+    }
+
+    const NAMED: [(&str, &str); 3] = [
+        (entries::SEX, "M"),
+        (entries::LAST_NAME, "Memmer"),
+        (entries::COUNTRY, "DE"),
+    ];
+
+    #[test]
+    fn a_file_without_the_class_column_reads_no_class() {
+        let mut cells = NAMED.to_vec();
+        cells.push((entries::RIS, "84.66"));
+
+        let (_, _, weight_class, _) = entry(entries::Layout::default(), &cells).unwrap();
+
+        assert_eq!(weight_class, None);
+    }
+
+    #[test]
+    fn an_empty_class_cell_is_refused_when_the_column_is_there() {
+        let layout = entries::Layout {
+            classed: true,
+            ..entries::Layout::default()
+        };
+
+        let error = entry(layout, &NAMED).unwrap_err();
+
+        assert!(error.contains("Leave the column out"), "{error}");
+    }
+
+    #[test]
+    fn a_classless_category_renders_without_the_column() {
+        assert_eq!(
+            weight_class_cell(&CategoryData {
+                division: None,
+                gender: Gender::M,
+                weight_class_slug: None,
+                weight_class_min: None,
+                weight_class_max: None,
+                athletes: Vec::new(),
+            }),
+            ""
+        );
     }
 }

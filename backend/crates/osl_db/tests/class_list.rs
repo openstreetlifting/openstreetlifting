@@ -150,6 +150,38 @@ async fn one_class_run_by_two_divisions_is_listed_once(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "./migrations")]
+async fn a_competition_without_weight_classes_lists_none(pool: PgPool) {
+    let competition = competition(&pool).await;
+
+    let athlete_id: Uuid = sqlx::query_scalar(
+        "INSERT INTO athletes (first_name, last_name, gender, country, slug, match_key)
+         VALUES ('Test', 'Memmer', 'M', 'DE', 'memmer', 'memmer')
+         RETURNING athlete_id",
+    )
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+
+    sqlx::query(
+        "INSERT INTO competition_participants (competition_id, weight_class_id, athlete_id)
+         VALUES ($1, NULL, $2)",
+    )
+    .bind(competition.competition_id)
+    .bind(athlete_id)
+    .execute(&pool)
+    .await
+    .unwrap();
+
+    assert!(
+        RankingRepository::new(&pool)
+            .list_distinct_classes(None, Some(competition.competition_id))
+            .await
+            .unwrap()
+            .is_empty()
+    );
+}
+
+#[sqlx::test(migrations = "./migrations")]
 async fn a_competition_narrows_the_list_to_what_it_contested(pool: PgPool) {
     let competition = competition(&pool).await;
     enter(&pool, &competition, "M", Some(73), Some(80), None).await;

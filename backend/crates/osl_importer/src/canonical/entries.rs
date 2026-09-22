@@ -22,16 +22,16 @@ pub const NATIVE_NAME: &str = "NativeName";
 
 /// Left out entirely when nothing fills them, rather than sat empty on every
 /// row. Reading tolerates either shape.
-pub const OPTIONAL_COLUMNS: [&str; 4] = [
+pub const OPTIONAL_COLUMNS: [&str; 5] = [
     DIVISION,
+    WEIGHT_CLASS,
     NATIVE_NAME,
     BODYWEIGHT_SOURCE,
     REPORTED_RIS_EDITION,
 ];
 
-pub const IDENTITY_COLUMNS: [&str; 10] = [
+pub const IDENTITY_COLUMNS: [&str; 9] = [
     SEX,
-    WEIGHT_CLASS,
     FIRST_NAME,
     LAST_NAME,
     DISAMBIGUATION,
@@ -55,6 +55,7 @@ pub fn best_column(movement: Movement) -> String {
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Layout {
     pub divisioned: bool,
+    pub classed: bool,
     pub native_names: bool,
     pub bodyweight_sources: bool,
     pub reported_ris_editions: bool,
@@ -67,7 +68,12 @@ pub fn headers(layout: Layout) -> Vec<String> {
         .into_iter()
         .collect();
 
-    headers.extend(IDENTITY_COLUMNS.iter().map(|c| (*c).to_string()));
+    for column in IDENTITY_COLUMNS {
+        headers.push(column.to_string());
+        if column == SEX && layout.classed {
+            headers.push(WEIGHT_CLASS.to_string());
+        }
+    }
 
     if layout.native_names {
         headers.push(NATIVE_NAME.to_string());
@@ -175,6 +181,7 @@ impl Columns {
 
         let expected = headers(Layout {
             divisioned: true,
+            classed: true,
             native_names: true,
             bodyweight_sources: true,
             reported_ris_editions: true,
@@ -203,6 +210,10 @@ impl Columns {
         }
 
         Ok(Self { index })
+    }
+
+    pub fn has(&self, column: &str) -> bool {
+        self.index.contains_key(column)
     }
 
     pub fn get<'a>(&self, record: &'a csv::StringRecord, column: &str) -> &'a str {
@@ -276,7 +287,7 @@ mod tests {
     #[test]
     fn headers_cover_every_movement() {
         let headers = headers(Layout::default());
-        assert_eq!(headers.len(), 10 + 4 * 4);
+        assert_eq!(headers.len(), 9 + 4 * 4);
         assert!(headers.contains(&"MuscleUp1Kg".to_string()));
         assert!(headers.contains(&"BestSquatKg".to_string()));
     }
@@ -288,8 +299,24 @@ mod tests {
             native_names: false,
             ..Layout::default()
         });
-        assert_eq!(headers.len(), 11 + 4 * 4);
+        assert_eq!(headers.len(), 10 + 4 * 4);
         assert_eq!(headers[0], DIVISION);
+    }
+
+    #[test]
+    fn a_classed_meet_names_the_class_after_the_sex() {
+        let headers = headers(Layout {
+            classed: true,
+            ..Layout::default()
+        });
+        assert_eq!(headers.len(), 10 + 4 * 4);
+        assert_eq!(headers[0], SEX);
+        assert_eq!(headers[1], WEIGHT_CLASS);
+    }
+
+    #[test]
+    fn a_meet_without_weight_classes_omits_the_column() {
+        assert!(!headers(Layout::default()).contains(&WEIGHT_CLASS.to_string()));
     }
 
     #[test]

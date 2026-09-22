@@ -70,7 +70,7 @@ impl<'a> RankingRepository<'a> {
                 INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
                 INNER JOIN competitions c ON cp.competition_id = c.competition_id
                 INNER JOIN lifts l ON cp.participant_id = l.participant_id
-                INNER JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+                LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
                 LEFT JOIN divisions d ON d.division_id = cp.division_id
                 INNER JOIN federations f ON c.federation_id = f.federation_id
                 LEFT JOIN athlete_socials ats
@@ -278,7 +278,7 @@ impl<'a> RankingRepository<'a> {
                 SELECT DISTINCT ON (metric)
                     metric, weight_class_id
                 FROM metric_candidates
-                WHERE athlete_id =
+                WHERE (metric = 'ris' OR weight_class_id IS NOT NULL) AND athlete_id =
             "#,
         );
         query.push_bind(athlete_id);

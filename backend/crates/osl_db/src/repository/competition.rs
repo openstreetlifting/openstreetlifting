@@ -258,20 +258,26 @@ impl<'a> CompetitionRepository<'a> {
                     cp.participant_id,
                     cp.weight_class_id,
                     cp.division_id,
+                    COALESCE(wc.gender, a.gender) as contest_gender,
                     cp.bodyweight,
+                    cp.ris_score,
                     COALESCE(SUM(l.max_weight), 0) as total
                 FROM competition_participants cp
+                INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
+                LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
                 LEFT JOIN lifts l ON l.participant_id = cp.participant_id
                 WHERE cp.competition_id = $1
                   AND cp.status = 'competed'
-                GROUP BY cp.participant_id, cp.weight_class_id, cp.division_id, cp.bodyweight
+                GROUP BY cp.participant_id, cp.weight_class_id, cp.division_id,
+                         COALESCE(wc.gender, a.gender), cp.bodyweight, cp.ris_score
             )
             SELECT
                 participant_id,
                 ROW_NUMBER() OVER (
-                    PARTITION BY weight_class_id, division_id
+                    PARTITION BY weight_class_id, division_id, contest_gender
                     ORDER BY
                         CASE WHEN total = 0 THEN 1 ELSE 0 END,
+                        CASE WHEN weight_class_id IS NULL THEN ris_score END DESC NULLS LAST,
                         total DESC,
                         bodyweight ASC NULLS LAST
                 )::int as "rank!"
@@ -319,10 +325,12 @@ impl<'a> CompetitionRepository<'a> {
         .await?;
 
         let contests = sqlx::query!(
-            r#"SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS "division?", wc.gender as "gender: Gender",
+            r#"SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS "division?",
+                    COALESCE(wc.gender, a.gender) as "gender!: Gender",
                     wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
              FROM competition_participants cp
-             JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+             INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
+             LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
              LEFT JOIN divisions d ON d.division_id = cp.division_id
              WHERE cp.competition_id = $1"#,
             competition.competition_id
@@ -346,16 +354,20 @@ impl<'a> CompetitionRepository<'a> {
 
         for category in categories {
             let participants = sqlx::query!(
-                r#"SELECT participant_id, competition_id, athlete_id, bodyweight,
-                        status as "status: AthleteStatus", created_at, status_reason,
-                        ris_score, ris_source as "ris_source: RisSource"
-                 FROM competition_participants
-                 WHERE competition_id = $1
-                   AND weight_class_id = $2
-                   AND division_id IS NOT DISTINCT FROM $3"#,
+                r#"SELECT cp.participant_id, cp.competition_id, cp.athlete_id, cp.bodyweight,
+                        cp.status as "status: AthleteStatus", cp.created_at, cp.status_reason,
+                        cp.ris_score, cp.ris_source as "ris_source: RisSource"
+                 FROM competition_participants cp
+                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
+                 LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+                 WHERE cp.competition_id = $1
+                   AND cp.weight_class_id IS NOT DISTINCT FROM $2
+                   AND cp.division_id IS NOT DISTINCT FROM $3
+                   AND COALESCE(wc.gender, a.gender) = $4"#,
                 competition.competition_id,
                 category.weight_class_id,
-                category.division_id
+                category.division_id,
+                category.gender.as_str()
             )
             .fetch_all(self.pool)
             .await?;

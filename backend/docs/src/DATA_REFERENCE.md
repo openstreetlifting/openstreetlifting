@@ -101,7 +101,7 @@ cells empty for movements outside the event.
 | Column           | What to enter                                                                    |
 | ---------------- | -------------------------------------------------------------------------------- |
 | `Sex`            | `M` for men, `F` for women or `MX` for a mixed category.                         |
-| `WeightClassKg`  | The weight class, such as `80` or `101+`.                                        |
+| `WeightClassKg`  | The weight class, such as `80` or `101+`. Leave it out for a meet with none.      |
 | `FirstName`      | The athlete's first name. Leave empty for a single name.                         |
 | `LastName`       | The surname, or the full name for an athlete known by a single name. Required.   |
 | `Disambiguation` | Leave empty unless different athletes share a name; see [Names](#names).         |
@@ -143,6 +143,10 @@ The standard classes are:
 
 Other positive limits are accepted. Record the class used by the competition,
 using the same notation.
+
+Some competitions rank on RIS alone and run no weight classes. Leave the column
+out for those rather than working a class back from bodyweight. If you use the
+column, fill it for every athlete.
 
 ### Attempts
 
