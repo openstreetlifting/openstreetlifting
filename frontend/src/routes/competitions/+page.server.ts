@@ -1,3 +1,4 @@
+import { TABLE_PAGE_SIZE } from '$lib/constants/pagination';
 import { competitionsService } from '$lib/server/api';
 import type { PageServerLoad } from './$types';
 import type { CompetitionStatus } from '$lib/types/competition';
@@ -35,6 +36,7 @@ export const load: PageServerLoad = async ({ url }) => {
         q,
         direction: status === UPCOMING_STATUS ? 'asc' : 'desc',
         page,
+        page_size: TABLE_PAGE_SIZE,
       }),
       competitionsService.getFacets(),
       competitionsService
@@ -53,7 +55,7 @@ export const load: PageServerLoad = async ({ url }) => {
     console.error('Failed to load competitions', { status, page, error });
     return {
       competitions: [],
-      pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
+      pagination: { page: 1, page_size: TABLE_PAGE_SIZE, total_items: 0, total_pages: 0 },
       facets: { federations: [], years: [], countries: [] },
       counts: {} as Partial<Record<CompetitionStatus, number>>,
       status,

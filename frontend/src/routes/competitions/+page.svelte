@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Breadcrumb, Pagination, FilterBar } from '$lib/components/ui';
+  import { Card, Breadcrumb, FilterBar } from '$lib/components/ui';
   import CompetitionsTable from '$lib/components/competitions-table.svelte';
   import { resolve } from '$app/paths';
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
@@ -187,23 +187,11 @@
       </div>
     </Card>
   {:else}
-    <CompetitionsTable {competitions} upcoming={showsUpcoming} />
-
-    <div class="mt-4 flex flex-wrap items-center justify-between gap-3 sm:mt-8">
-      <span class="text-xs text-muted">
-        {pagination.total_items} Streetlifting competitions
-        {#if pagination.total_pages > 1}
-          &middot; page {pagination.page} of {pagination.total_pages}
-        {/if}
-      </span>
-      {#if pagination.total_pages > 1}
-        <Pagination
-          page={pagination.page}
-          totalPages={pagination.total_pages}
-          disabled={busy}
-          pageHref={(target) => listingHref({ page: target })}
-        />
-      {/if}
-    </div>
+    <CompetitionsTable
+      {competitions}
+      upcoming={showsUpcoming}
+      {busy}
+      pagination={{ ...pagination, pageHref: (target) => listingHref({ page: target }) }}
+    />
   {/if}
 </div>

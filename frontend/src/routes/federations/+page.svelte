@@ -46,7 +46,7 @@
 
   <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">Federations</h1>
 
-  <Table>
+  <Table rows={federations} itemName="federation" pageParam="page">
     {#snippet head()}
       <th class="{TABLE_HEAD_CELL} text-secondary">Federation</th>
       <th class="{TABLE_HEAD_CELL} text-secondary">Country</th>
@@ -56,8 +56,8 @@
       <th class="{TABLE_HEAD_CELL} text-secondary">Active</th>
     {/snippet}
 
-    {#snippet body()}
-      {#each federations as federation (federation.slug)}
+    {#snippet body(rows)}
+      {#each rows as federation (federation.slug)}
         <tr class="transition-colors">
           <td class="{TABLE_CELL} {CELL.identity}">
             <a

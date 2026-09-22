@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { TablePagination } from '$lib/types/pagination';
   import type { RankingEntry } from '$lib/types/ranking';
   import {
     Flag,
@@ -23,12 +24,14 @@
     entries: RankingEntry[];
     showFederation?: boolean;
     busy?: boolean;
+    pagination: TablePagination;
   }
 
-  let { entries, showFederation = true, busy = false }: Props = $props();
+  let { entries, showFederation = true, busy = false, pagination }: Props = $props();
+  const classed = $derived(entries.some((entry) => Boolean(entry.category)));
 </script>
 
-<Table {busy}>
+<Table rows={entries} itemName="athlete" pageParam="page" {pagination} {busy}>
   {#snippet head()}
     <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
       >Rank</th
@@ -47,11 +50,11 @@
     {/if}
     <th class="{TABLE_HEAD_CELL} text-secondary">Date</th>
     <th class="{TABLE_HEAD_CELL} text-secondary">Sex</th>
-    <th class="{TABLE_HEAD_CELL} text-secondary">Class</th>
+    {#if classed}<th class="{TABLE_HEAD_CELL} text-secondary">Class</th>{/if}
   {/snippet}
 
-  {#snippet body()}
-    {#each entries as entry (entry.rank + entry.athlete.athlete_id)}
+  {#snippet body(rows)}
+    {#each rows as entry (entry.rank + entry.athlete.athlete_id)}
       <tr class="transition-colors">
         <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
           {entry.rank}
@@ -99,7 +102,7 @@
           {formatDate(entry.competition.date)}
         </td>
         <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
-        <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
+        {#if classed}<td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>{/if}
       </tr>
     {/each}
   {/snippet}

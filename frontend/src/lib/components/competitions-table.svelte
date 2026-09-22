@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { TablePagination } from '$lib/types/pagination';
   import type { Competition } from '$lib/types/competition';
   import { Table, TABLE_CELL, TABLE_HEAD_CELL } from '$lib/components/ui';
   import { resolve } from '$app/paths';
@@ -10,9 +11,16 @@
     upcoming?: boolean;
     showFederation?: boolean;
     busy?: boolean;
+    pagination?: TablePagination;
   }
 
-  let { competitions, upcoming = false, showFederation = true, busy = false }: Props = $props();
+  let {
+    competitions,
+    upcoming = false,
+    showFederation = true,
+    busy = false,
+    pagination,
+  }: Props = $props();
 
   function competitionDates(start: string | null, end: string | null): string {
     const from = formatDate(start);
@@ -20,7 +28,13 @@
   }
 </script>
 
-<Table {busy}>
+<Table
+  rows={competitions}
+  itemName="competition"
+  {pagination}
+  {busy}
+  pageParam={upcoming ? 'upcoming_page' : 'competitions_page'}
+>
   {#snippet head()}
     <th class="{TABLE_HEAD_CELL} text-secondary">Competition</th>
     <th class="{TABLE_HEAD_CELL} text-secondary">{upcoming ? 'When' : 'Lifters'}</th>
@@ -31,8 +45,8 @@
     {/if}
   {/snippet}
 
-  {#snippet body()}
-    {#each competitions as competition (competition.slug)}
+  {#snippet body(rows)}
+    {#each rows as competition (competition.slug)}
       <tr class="transition-colors">
         <td class="{TABLE_CELL} {CELL.identity}">
           <a

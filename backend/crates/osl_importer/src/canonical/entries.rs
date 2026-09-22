@@ -20,8 +20,6 @@ pub const STATUS: &str = "Status";
 pub const STATUS_REASON: &str = "StatusReason";
 pub const NATIVE_NAME: &str = "NativeName";
 
-/// Left out entirely when nothing fills them, rather than sat empty on every
-/// row. Reading tolerates either shape.
 pub const OPTIONAL_COLUMNS: [&str; 5] = [
     DIVISION,
     WEIGHT_CLASS,

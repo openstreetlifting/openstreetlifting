@@ -1,3 +1,4 @@
+import { MAIN_RANKING_PAGE_SIZE } from '$lib/constants/pagination';
 import { rankingsService } from '$lib/server/api';
 import { asRankedGender, asRankingMetric } from '$lib/types/enums';
 import type { PageServerLoad } from './$types';
@@ -28,6 +29,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
     const initialData = await rankingsService.getGlobalRankings({
       page,
+      page_size: MAIN_RANKING_PAGE_SIZE,
       movement,
       direction,
       gender,
@@ -57,7 +59,7 @@ export const load: PageServerLoad = async ({ url }) => {
       initialRankings: [],
       pagination: {
         page: 1,
-        page_size: 50,
+        page_size: MAIN_RANKING_PAGE_SIZE,
         total_items: 0,
         total_pages: 0,
       },
