@@ -36,8 +36,8 @@
     <h1 class="{TEXT.title} text-ink">The Relative Index for Streetlifting</h1>
     <p class="mt-3 text-base leading-7 text-secondary">
       The Relative Index for Streetlifting (RIS) compares competition totals across bodyweights
-      within the same gender category. It uses the combined total of muscle-up, pull-up, dips and
-      squat.
+      within the same gender category. It uses the combined total of Muscle-up, Pull-up, Dips and
+      Squat.
     </p>
     <p class="mt-3 text-base leading-7 text-secondary">
       RIS was developed by

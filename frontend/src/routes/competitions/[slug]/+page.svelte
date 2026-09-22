@@ -3,7 +3,6 @@
   import {
     RankingsEmpty,
     Breadcrumb,
-    Pagination,
     Flag,
     FilterBar,
     Table,
@@ -30,7 +29,6 @@
     countryName,
     slugify,
     federationPath,
-    countryPath,
     formatWeight,
     formatAthleteName,
   } from '$lib/utils';
@@ -53,7 +51,7 @@
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import type { RankingEntry } from '$lib/types/ranking';
   import type { Attempt, Participant, CategoryDetail } from '$lib/types/competition';
-  import type { AthleteStatus } from '$lib/types/enums';
+  import { GENDERS, type AthleteStatus } from '$lib/types/enums';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '$lib/constants/athlete-status';
   import { FIELD, TEXT } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
@@ -84,8 +82,6 @@
       : null
   );
 
-  // Most federations are known by an acronym alone, so there is nothing to put
-  // in brackets after it.
   const federationLabel = $derived(
     competition.federation.abbreviation &&
       competition.federation.abbreviation !== competition.federation.name
@@ -96,9 +92,7 @@
   const risAvailable = $derived(hasRis(data.competition.movements.length));
 
   const classed = $derived(
-    data.competition.categories.some(
-      (category: CategoryDetail) => category.category.weight_class !== ''
-    )
+    competition.categories.some(({ category }) => category.weight_class !== '')
   );
 
   const table = new RankingsTable({
@@ -195,10 +189,38 @@
     event ? LIFTS.filter((lift) => event.includes(lift.code)) : [...LIFTS]
   );
 
-  const eventLegend = $derived(
-    competition.movements
-      .map((movement) => `${movement.code ?? '?'} ${movement.movement_name}`)
-      .join(' · ')
+  const formatLabel = $derived(
+    competition.movements.map((movement) => movement.movement_name).join(', ')
+  );
+
+  const competitionDate = new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+
+  const location = $derived(formatLocation(competition.city, competition.region));
+
+  // Use the complete results, not the filtered ranking facets. A class can
+  // appear in several divisions but only needs to be listed once per sex.
+  const representedClasses = $derived(
+    GENDERS.map((gender) => {
+      const categories = competition.categories
+        .filter(({ category }) => category.gender === gender)
+        .map(({ category }) => category)
+        .sort(
+          (a, b) =>
+            Number(a.weight_class_max ?? Infinity) - Number(b.weight_class_max ?? Infinity) ||
+            Number(a.weight_class_min ?? 0) - Number(b.weight_class_min ?? 0)
+        );
+
+      return {
+        gender,
+        label: { M: 'Men', F: 'Women', MX: 'Mixed' }[gender],
+        classes: [...new Set(categories.map((category) => category.weight_class))],
+      };
+    }).filter(({ classes }) => classes.length > 0)
   );
 
   // The rankings query joins through lifts and keeps only competed lifters, so
@@ -236,11 +258,15 @@
       )
   );
 
-  // The pagination count comes from the ranked query, so it has to be told
-  // about the lifters the table shows underneath it.
   const fieldSize = $derived(pagination.total_items + notPlaced.length);
 
-  const onLastPage = $derived(pagination.page >= pagination.total_pages);
+  const fieldPages = $derived(Math.max(1, Math.ceil(fieldSize / pagination.page_size)));
+  const unplacedOnPage = $derived(
+    notPlaced.slice(
+      Math.max(0, (pagination.page - 1) * pagination.page_size - pagination.total_items),
+      Math.max(0, pagination.page * pagination.page_size - pagination.total_items)
+    )
+  );
 
   const seo = $derived(listingSeo(page.url));
 
@@ -299,56 +325,86 @@
     ]}
   />
 
-  <div class="mb-6 sm:mb-10">
-    <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-ink">
+  <header
+    class="mb-6 grid grid-cols-1 gap-y-4 border-b border-stroke pb-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-6"
+  >
+    <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
       {#if competition.country}
-        <Flag countryCode={competition.country} link class="shrink-0 [--flag-height:0.8em]" />
+        <Flag
+          countryCode={competition.country}
+          link
+          class="mt-[0.2em] shrink-0 [--flag-height:0.8em]"
+        />
       {/if}
-      <span class="truncate">{competition.name}</span>
+      <span class="min-w-0 break-words">{competition.name}</span>
     </h1>
 
-    <p class="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-secondary sm:text-sm">
+    <dl
+      class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:col-span-2 sm:grid-cols-[7rem_minmax(0,1fr)]"
+    >
       {#if competition.start_date}
-        <span class="whitespace-nowrap">
-          {formatDate(competition.start_date)}
+        <dt class="text-muted">Date</dt>
+        <dd class="text-ink">
+          <time datetime={competition.start_date}>
+            {competitionDate.format(new Date(competition.start_date))}
+          </time>
           {#if competition.end_date && competition.end_date !== competition.start_date}
-            - {formatDate(competition.end_date)}
+            <span class="text-muted">–</span>
+            <time datetime={competition.end_date}>
+              {competitionDate.format(new Date(competition.end_date))}
+            </time>
           {/if}
-        </span>
+        </dd>
       {/if}
-      {#if formatLocation(competition.city, competition.region)}
-        <span aria-hidden="true">&middot;</span>
-        <span>{formatLocation(competition.city, competition.region)}</span>
+      {#if location}
+        <dt class="text-muted">Location</dt>
+        <dd class="text-ink">{location}</dd>
       {/if}
-      {#if competition.country}
-        <span aria-hidden="true">&middot;</span>
-        <a href={resolve(countryPath(competition.country))} class="underline hover:text-ink"
-          >{countryName(competition.country)}</a
+      <dt class="text-muted">Federation</dt>
+      <dd class="min-w-0 text-ink">
+        <a
+          href={resolve(federationHref)}
+          title={competition.federation.name}
+          class="break-words underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
+          >{federationLabel}</a
         >
+      </dd>
+      {#if formatLabel}
+        <dt class="text-muted">Format</dt>
+        <dd class="text-ink">{formatLabel}</dd>
       {/if}
-      <span aria-hidden="true">&middot;</span>
-      <a
-        href={resolve(federationHref)}
-        title={competition.federation.name}
-        class="underline hover:text-ink">{federationLabel}</a
-      >
-      {#if published}
-        <span aria-hidden="true">&middot;</span>
-        <span class="whitespace-nowrap">{lifterCount} lifters</span>
+      {#if published && !classed}
+        <dt class="text-muted">Weight classes</dt>
+        <dd class="text-ink">No weight classes</dd>
       {/if}
-    </p>
+    </dl>
 
-    {#if event}
-      <p class="mt-2 flex items-center gap-2 text-xs text-muted sm:text-sm">
-        Format
-        <span
-          class="inline-flex items-center rounded border border-stroke px-1.5 py-0.5 font-mono text-[0.7rem] tracking-wider text-secondary sm:text-xs"
-          title={eventLegend}
-          aria-label="Format: {eventLegend}"
+    {#if published && classed}
+      <section aria-labelledby="weight-classes-heading" class="sm:col-span-2">
+        <h2 id="weight-classes-heading" class="mb-2 text-xs font-medium text-secondary">
+          Weight classes
+        </h2>
+        <dl
+          class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
         >
-          {event}
-        </span>
-      </p>
+          {#each representedClasses as group (group.gender)}
+            <dt class="text-muted">{group.label}</dt>
+            <dd>
+              <ul
+                class="flex flex-wrap gap-x-2 gap-y-1 text-ink"
+                aria-label="{group.label}'s weight classes"
+              >
+                {#each group.classes as weightClass, i (weightClass)}
+                  <li class="inline-flex items-baseline gap-2 whitespace-nowrap tabular-nums">
+                    {#if i > 0}<span aria-hidden="true" class="text-muted">·</span>{/if}
+                    {weightClass || 'No weight classes'}
+                  </li>
+                {/each}
+              </ul>
+            </dd>
+          {/each}
+        </dl>
+      </section>
     {/if}
 
     {#if editPath}
@@ -356,13 +412,13 @@
         href={`https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/data/competitions/${editPath}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="mt-3 inline-flex items-center gap-1.5 rounded-md border border-stroke px-2 py-1 text-xs text-secondary transition-colors hover:border-stroke-strong hover:bg-surface-hover hover:text-ink focus:ring-2 focus:ring-focus focus:outline-none sm:px-2.5 sm:py-1.5 sm:text-sm"
+        class="inline-flex min-h-11 items-center gap-2 justify-self-start rounded-md border border-stroke px-3 py-2 text-sm font-medium text-secondary transition-colors hover:border-stroke-strong hover:bg-surface-hover hover:text-ink focus:ring-2 focus:ring-focus focus:outline-none sm:col-start-2 sm:row-start-1 sm:self-start sm:justify-self-end"
       >
-        <GitHubIcon class="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-        Edit on GitHub
+        <GitHubIcon class="h-4 w-4" />
+        Edit competition on GitHub
       </a>
     {/if}
-  </div>
+  </header>
 
   {#if published}
     <FilterBar
@@ -432,32 +488,24 @@
         to rank until the platform closes, and the results will land on this page once they are in.
       </p>
     </div>
-  {:else if rankings.length === 0 && !busy}
+  {:else if rankings.length === 0 && unplacedOnPage.length === 0 && !busy}
     <RankingsEmpty
       canReset={table.narrowed || pagination.page > 1}
       resetHref={resolve(`/competitions/${competition.slug}`)}
     />
   {:else}
-    {#snippet paginationBar()}
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <span class="text-xs text-muted">
-          Page {pagination.page} of {pagination.total_pages} &middot; {fieldSize} athletes
-        </span>
-        <Pagination
-          page={pagination.page}
-          totalPages={pagination.total_pages}
-          disabled={busy}
-          pageHref={(target) => table.pageHref(target)}
-          replaceState
-        />
-      </div>
-    {/snippet}
-
-    <div class="hidden sm:mb-3 sm:block">
-      {@render paginationBar()}
-    </div>
-
-    <Table {busy}>
+    <Table
+      rows={rankings}
+      itemName="athlete"
+      {busy}
+      pagination={{
+        ...pagination,
+        total_items: fieldSize,
+        total_pages: fieldPages,
+        pageHref: (target) => table.pageHref(target),
+        replaceState: true,
+      }}
+    >
       {#snippet head()}
         <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
           >Rank</th
@@ -486,8 +534,8 @@
         {/if}
       {/snippet}
 
-      {#snippet body()}
-        {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
+      {#snippet body(rows)}
+        {#each rows as entry (entry.rank + entry.athlete.athlete_id)}
           {@const participant = participants.get(entry.athlete.athlete_id)}
           <tr
             class="transition-colors"
@@ -575,83 +623,77 @@
           </tr>
         {/each}
 
-        {#if onLastPage}
-          {#each notPlaced as { category, participant } (participant.athlete.athlete_id)}
-            <tr class="transition-colors">
-              <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.absent}"
-                >{NO_VALUE}</td
-              >
-              <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
-                <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
-                  <span class="flex min-w-0 items-center gap-2.5">
-                    <Flag
-                      link
-                      countryCode={participant.athlete.country}
-                      class="shrink-0 [--flag-height:1.25em]"
-                    />
-                    <a
-                      href={resolve(`/athletes/${participant.athlete.slug}`)}
-                      class="truncate underline hover:text-secondary"
-                    >
-                      {formatAthleteName(participant.athlete)}
-                    </a>
-                  </span>
-                  <span
-                    class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                    title={athleteStatusTitle(participant.status, participant.status_reason)}
+        {#each unplacedOnPage as { category, participant } (participant.athlete.athlete_id)}
+          <tr class="transition-colors">
+            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.absent}"
+              >{NO_VALUE}</td
+            >
+            <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+              <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <Flag
+                    link
+                    countryCode={participant.athlete.country}
+                    class="shrink-0 [--flag-height:1.25em]"
+                  />
+                  <a
+                    href={resolve(`/athletes/${participant.athlete.slug}`)}
+                    class="truncate underline hover:text-secondary"
                   >
-                    {ATHLETE_STATUS_LABEL[participant.status]}
+                    {formatAthleteName(participant.athlete)}
+                  </a>
+                </span>
+                <span
+                  class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
+                  title={athleteStatusTitle(participant.status, participant.status_reason)}
+                >
+                  {ATHLETE_STATUS_LABEL[participant.status]}
+                </span>
+              </span>
+            </td>
+            <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
+            {#if risAvailable}
+              <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
+            {/if}
+            {#each contested as lift (lift.key)}
+              {@const cell = participantCell(participant, lift.code, lift.movement)}
+              <td class="{TABLE_CELL} whitespace-nowrap">
+                <span class={ATTEMPT_ROW}>
+                  {#if cell.kind === 'attempts'}
+                    {#each [1, 2, 3] as slot (slot)}
+                      {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
+                      <span
+                        class="text-right {attempt && !attempt.is_successful
+                          ? CELL.discounted
+                          : CELL.data}"
+                      >
+                        {attempt ? attempt.weight : ''}
+                      </span>
+                    {/each}
+                  {:else}
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  {/if}
+                  <span class="text-right {CELL.counted}">
+                    {#if cell.kind === 'absent'}
+                      <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
+                    {:else if cell.kind === 'bombed'}
+                      <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
+                    {:else}
+                      {cell.best}
+                    {/if}
                   </span>
                 </span>
               </td>
-              <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
-              {#if risAvailable}
-                <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
-              {/if}
-              {#each contested as lift (lift.key)}
-                {@const cell = participantCell(participant, lift.code, lift.movement)}
-                <td class="{TABLE_CELL} whitespace-nowrap">
-                  <span class={ATTEMPT_ROW}>
-                    {#if cell.kind === 'attempts'}
-                      {#each [1, 2, 3] as slot (slot)}
-                        {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
-                        <span
-                          class="text-right {attempt && !attempt.is_successful
-                            ? CELL.discounted
-                            : CELL.data}"
-                        >
-                          {attempt ? attempt.weight : ''}
-                        </span>
-                      {/each}
-                    {:else}
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    {/if}
-                    <span class="text-right {CELL.counted}">
-                      {#if cell.kind === 'absent'}
-                        <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
-                      {:else if cell.kind === 'bombed'}
-                        <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
-                      {:else}
-                        {cell.best}
-                      {/if}
-                    </span>
-                  </span>
-                </td>
-              {/each}
-              <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
-              {#if classed}
-                <td class="{TABLE_CELL} {CELL.data}">{category.category.weight_class}</td>
-              {/if}
-            </tr>
-          {/each}
-        {/if}
+            {/each}
+            <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
+            {#if classed}
+              <td class="{TABLE_CELL} {CELL.data}">{category.category.weight_class}</td>
+            {/if}
+          </tr>
+        {/each}
       {/snippet}
     </Table>
-
-    <div class="mt-3">
-      {@render paginationBar()}
-    </div>
   {/if}
 </div>

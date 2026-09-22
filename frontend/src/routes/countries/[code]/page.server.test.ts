@@ -62,6 +62,7 @@ it('loads the meets held in a country and its athletes ranked by RIS', async () 
   });
   expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith({
     page: 3,
+    page_size: 50,
     movement: 'ris',
     country: 'FR',
   });

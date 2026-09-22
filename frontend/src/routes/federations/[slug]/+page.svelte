@@ -1,15 +1,14 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Breadcrumb, Flag, Pagination } from '$lib/components/ui';
+  import { Breadcrumb, Flag } from '$lib/components/ui';
   import CompetitionsTable from '$lib/components/competitions-table.svelte';
   import RankingList from '$lib/components/ranking-list.svelte';
   import Seo from '$lib/components/seo.svelte';
-  import { resolve } from '$app/paths';
   import { page as currentPage, navigating } from '$app/state';
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import { slowNavigation } from '$lib/state/slow-navigation.svelte';
   import { breadcrumbLd, federationLd, listingSeo } from '$lib/seo';
-  import { countryName, countryPath, federationPath } from '$lib/utils';
+  import { federationPath } from '$lib/utils';
   import { TEXT } from '$lib/constants/typography';
 
   let { data }: { data: PageData } = $props();
@@ -28,7 +27,7 @@
       ? null
       : federation.firstYear === federation.lastYear
         ? String(federation.firstYear)
-        : `${federation.firstYear} - ${federation.lastYear}`
+        : `${federation.firstYear} – ${federation.lastYear}`
   );
 
   const title = $derived(
@@ -50,8 +49,6 @@
       firstPage ? '' : ` Page ${pagination.page} of ${pagination.total_pages}.`,
     ].join('')
   );
-
-  const pageHref = (target: number) => resolve(target > 1 ? `${path}?page=${target}` : path);
 </script>
 
 <Seo
@@ -78,43 +75,38 @@
     ]}
   />
 
-  <div class="mb-6 sm:mb-10">
-    <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-ink">
+  <header class="mb-6 border-b border-stroke pb-5">
+    <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
       {#if federation.country}
-        <Flag countryCode={federation.country} link class="shrink-0 [--flag-height:0.8em]" />
+        <Flag
+          countryCode={federation.country}
+          link
+          class="mt-[0.2em] shrink-0 [--flag-height:0.8em]"
+        />
       {/if}
-      <span class="truncate">{federation.name}</span>
+      <span class="min-w-0 break-words">{federation.name}</span>
     </h1>
+    {#if years || federation.countries > 1 || (federation.abbreviation && federation.abbreviation !== federation.name)}
+      <dl
+        class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
+      >
+        {#if federation.abbreviation && federation.abbreviation !== federation.name}
+          <dt class="text-muted">Abbreviation</dt>
+          <dd class="text-ink">{federation.abbreviation}</dd>
+        {/if}
+        {#if years}
+          <dt class="text-muted">Years</dt>
+          <dd class="text-ink">{years}</dd>
+        {/if}
+        {#if federation.countries > 1}
+          <dt class="text-muted">Host countries</dt>
+          <dd class="text-ink">{federation.countries}</dd>
+        {/if}
+      </dl>
+    {/if}
+  </header>
 
-    <p class="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-secondary sm:text-sm">
-      {#if federation.abbreviation && federation.abbreviation !== federation.name}
-        <span>{federation.abbreviation}</span>
-        <span aria-hidden="true">&middot;</span>
-      {/if}
-      {#if federation.country}
-        <a href={resolve(countryPath(federation.country))} class="underline hover:text-ink"
-          >{countryName(federation.country)}</a
-        >
-        <span aria-hidden="true">&middot;</span>
-      {/if}
-      <span class="whitespace-nowrap">
-        {federation.competitions}
-        {federation.competitions === 1 ? 'competition' : 'competitions'}
-      </span>
-      {#if federation.countries > 1}
-        <span aria-hidden="true">&middot;</span>
-        <span class="whitespace-nowrap">{federation.countries} countries</span>
-      {/if}
-      {#if years}
-        <span aria-hidden="true">&middot;</span>
-        <span class="whitespace-nowrap">{years}</span>
-      {/if}
-      <span aria-hidden="true">&middot;</span>
-      <span class="whitespace-nowrap">{pagination.total_items} ranked athletes</span>
-    </p>
-  </div>
-
-  {#if firstPage && data.results.length > 0}
+  {#if data.results.length > 0}
     <section class="mb-8 sm:mb-12">
       <h2 class="mb-3 {TEXT.heading} text-ink">Competitions</h2>
       <CompetitionsTable competitions={data.results} showFederation={false} />
@@ -124,25 +116,11 @@
   {#if data.rankings.length > 0}
     <section>
       <h2 class="mb-3 {TEXT.heading} text-ink">Athletes</h2>
-      <RankingList entries={data.rankings} showFederation={false} {busy} />
-
-      {#if pagination.total_pages > 1}
-        <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
-          <span class="text-xs text-muted">
-            Page {pagination.page} of {pagination.total_pages} &middot; {pagination.total_items} athletes
-          </span>
-          <Pagination
-            page={pagination.page}
-            totalPages={pagination.total_pages}
-            disabled={busy}
-            {pageHref}
-          />
-        </div>
-      {/if}
+      <RankingList entries={data.rankings} {pagination} showFederation={false} {busy} />
     </section>
   {/if}
 
-  {#if firstPage && data.upcoming.length > 0}
+  {#if data.upcoming.length > 0}
     <section class="mt-8 sm:mt-12">
       <h2 class="mb-3 {TEXT.heading} text-ink">Upcoming</h2>
       <CompetitionsTable competitions={data.upcoming} upcoming showFederation={false} />

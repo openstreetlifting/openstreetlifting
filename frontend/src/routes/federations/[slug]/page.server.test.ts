@@ -43,6 +43,7 @@ it('loads a federation by the slug of its name, newest result first', async () =
   });
   expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith({
     page: 2,
+    page_size: 50,
     movement: 'ris',
     federation: 'FinalRep',
   });

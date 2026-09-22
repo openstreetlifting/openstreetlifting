@@ -1,3 +1,4 @@
+import { TABLE_PAGE_SIZE } from '$lib/constants/pagination';
 import { competitionsService, rankingsService } from '$lib/server/api';
 import { defaultRankingSort } from '$lib/constants/ranking';
 import { formatAthleteName } from '$lib/utils/format';
@@ -5,11 +6,9 @@ import type { PageServerLoad } from './$types';
 import { error, redirect } from '@sveltejs/kit';
 import { asRankedGender, asRankingMetric } from '$lib/types/enums';
 
-// A fresh object per call: one shared literal would be handed to every request
-// this server process serves.
 const noRankings = () => ({
   data: [],
-  pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
+  pagination: { page: 1, page_size: TABLE_PAGE_SIZE, total_items: 0, total_pages: 0 },
 });
 
 export const load: PageServerLoad = async ({ params, url }) => {
@@ -52,6 +51,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
       const match = await rankingsService
         .getGlobalRankings({
           page: 1,
+          page_size: TABLE_PAGE_SIZE,
           movement,
           direction,
           gender,
@@ -79,6 +79,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
     rankingsService
       .getGlobalRankings({
         page,
+        page_size: TABLE_PAGE_SIZE,
         movement,
         direction,
         gender,

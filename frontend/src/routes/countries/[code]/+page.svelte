@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Breadcrumb, Flag, Pagination } from '$lib/components/ui';
+  import { Breadcrumb, Flag } from '$lib/components/ui';
   import CompetitionsTable from '$lib/components/competitions-table.svelte';
   import RankingList from '$lib/components/ranking-list.svelte';
   import Seo from '$lib/components/seo.svelte';
@@ -41,8 +41,6 @@
       firstPage ? '' : ` Page ${pagination.page} of ${pagination.total_pages}.`,
     ].join('')
   );
-
-  const pageHref = (target: number) => resolve(target > 1 ? `${path}?page=${target}` : path);
 </script>
 
 <Seo
@@ -61,29 +59,34 @@
 <div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
   <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: name }]} />
 
-  <div class="mb-6 sm:mb-10">
-    <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-ink">
-      <Flag countryCode={data.code} class="shrink-0 [--flag-height:0.8em]" />
-      <span class="truncate">{name}</span>
+  <header class="mb-6 border-b border-stroke pb-5">
+    <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
+      <Flag countryCode={data.code} class="mt-[0.2em] shrink-0 [--flag-height:0.8em]" />
+      <span class="min-w-0 break-words">{name}</span>
     </h1>
+    {#if data.federations.length > 0}
+      <dl
+        class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
+      >
+        <dt class="text-muted">{data.federations.length === 1 ? 'Federation' : 'Federations'}</dt>
+        <dd>
+          <ul class="flex flex-wrap gap-x-4 gap-y-1.5">
+            {#each data.federations as federation (federation)}
+              <li class="min-w-0">
+                <a
+                  href={resolve(federationPath(federation))}
+                  class="break-words text-ink underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
+                  >{federation}</a
+                >
+              </li>
+            {/each}
+          </ul>
+        </dd>
+      </dl>
+    {/if}
+  </header>
 
-    <p class="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-secondary sm:text-sm">
-      <span class="whitespace-nowrap">{pagination.total_items} ranked athletes</span>
-      <span aria-hidden="true">&middot;</span>
-      <span class="whitespace-nowrap">
-        {data.results.length}
-        {data.results.length === 1 ? 'competition' : 'competitions'}
-      </span>
-      {#each data.federations as federation (federation)}
-        <span aria-hidden="true">&middot;</span>
-        <a href={resolve(federationPath(federation))} class="underline hover:text-ink">
-          {federation}
-        </a>
-      {/each}
-    </p>
-  </div>
-
-  {#if firstPage && data.results.length > 0}
+  {#if data.results.length > 0}
     <section class="mb-8 sm:mb-12">
       <h2 class="mb-3 {TEXT.heading} text-ink">Competitions</h2>
       <CompetitionsTable competitions={data.results} />
@@ -93,25 +96,11 @@
   {#if data.rankings.length > 0}
     <section>
       <h2 class="mb-3 {TEXT.heading} text-ink">Athletes</h2>
-      <RankingList entries={data.rankings} {busy} />
-
-      {#if pagination.total_pages > 1}
-        <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
-          <span class="text-xs text-muted">
-            Page {pagination.page} of {pagination.total_pages} &middot; {pagination.total_items} athletes
-          </span>
-          <Pagination
-            page={pagination.page}
-            totalPages={pagination.total_pages}
-            disabled={busy}
-            {pageHref}
-          />
-        </div>
-      {/if}
+      <RankingList entries={data.rankings} {pagination} {busy} />
     </section>
   {/if}
 
-  {#if firstPage && data.upcoming.length > 0}
+  {#if data.upcoming.length > 0}
     <section class="mt-8 sm:mt-12">
       <h2 class="mb-3 {TEXT.heading} text-ink">Upcoming</h2>
       <CompetitionsTable competitions={data.upcoming} upcoming />

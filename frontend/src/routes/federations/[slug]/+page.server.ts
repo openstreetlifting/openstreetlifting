@@ -1,3 +1,4 @@
+import { TABLE_PAGE_SIZE } from '$lib/constants/pagination';
 import { error } from '@sveltejs/kit';
 import { rankingsService } from '$lib/server/api';
 import { isHeld, publishedCompetitions, summarizeFederations } from '$lib/server/federations';
@@ -29,6 +30,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   try {
     const rankings = await rankingsService.getGlobalRankings({
       page,
+      page_size: TABLE_PAGE_SIZE,
       movement: 'ris',
       federation: federation.name,
     });

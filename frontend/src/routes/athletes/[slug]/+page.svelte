@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { MAIN_RANKING_PAGE_SIZE } from '$lib/constants/pagination';
   import type { PageData } from './$types';
   import type { AthleteCompetitionSummary } from '$lib/types/athlete';
   import type { Attempt } from '$lib/types/competition';
@@ -98,16 +99,14 @@
     )
   );
 
-  const GENDER_LABEL: Partial<Record<Gender, string>> = { M: 'Men', F: 'Women' };
-  const genderLabel = $derived(GENDER_LABEL[athlete.gender] ?? athlete.gender);
+  const GENDER_LABEL: Record<Gender, string> = { M: 'Male', F: 'Female', MX: 'Mixed' };
+  const genderLabel = $derived(GENDER_LABEL[athlete.gender]);
   const latestCategory = $derived(
     athlete.strength_profile?.category ??
       athlete.competitions.find((competition) => competition.status === 'competed')?.category_name
   );
   const latestWeightClass = $derived(
-    latestCategory?.startsWith(`${genderLabel} `)
-      ? latestCategory.slice(genderLabel.length + 1)
-      : latestCategory
+    latestCategory?.match(/([+-]\d+(?:\.\d+)?)\s*(?:kg)?$/i)?.[1] ?? null
   );
 
   const CARD_LABEL =
@@ -151,11 +150,9 @@
         }
   );
 
-  const RANKING_PAGE_SIZE = 50;
-
   function boardQuery(place: number, filters: Record<string, string> = {}): string {
     const params = new SvelteURLSearchParams(filters);
-    const target = Math.ceil(place / RANKING_PAGE_SIZE);
+    const target = Math.ceil(place / MAIN_RANKING_PAGE_SIZE);
     if (target > 1) params.set('page', String(target));
     params.set('athlete', athlete.slug);
     return params.toString();
@@ -213,11 +210,17 @@
     ]}
   />
 
-  <div class="mb-6 sm:mb-10">
+  <header class="mb-6 sm:mb-8">
     <div class="flex items-center gap-3">
-      <h1 class="{TEXT.title} flex min-w-0 items-center gap-3 text-ink">
-        <Flag countryCode={athlete.country} link class="shrink-0 [--flag-height:0.8em]" />
-        <span class="truncate">{athleteName}</span>
+      <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
+        {#if athlete.country}
+          <Flag
+            countryCode={athlete.country}
+            link
+            class="mt-[0.2em] shrink-0 [--flag-height:0.8em]"
+          />
+        {/if}
+        <span class="min-w-0 break-words">{athleteName}</span>
       </h1>
 
       {#if athlete.instagram_handle}
@@ -235,22 +238,20 @@
     </div>
 
     {#if athlete.native_name}
-      <p class="mt-1 text-base text-secondary sm:text-xl">{athlete.native_name}</p>
+      <p class="mt-1 break-words text-base text-secondary">{athlete.native_name}</p>
     {/if}
 
-    <p class="mt-2 {TEXT.heading} text-secondary">
-      {#if athlete.country}
-        <a href={resolve(countryPath(athlete.country))} class="underline hover:text-ink"
-          >{countryName(athlete.country)}</a
-        >
-        <span class="mx-1" aria-hidden="true">&middot;</span>
-      {/if}
-      {genderLabel}
+    <dl
+      class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
+    >
+      <dt class="text-muted">Sex</dt>
+      <dd class="text-ink">{genderLabel}</dd>
       {#if latestWeightClass}
-        {latestWeightClass.replace(/(\d)\s*(?:kg)?$/i, '$1 kg')}
+        <dt class="text-muted">Weight class</dt>
+        <dd class="text-ink">{latestWeightClass} kg</dd>
       {/if}
-    </p>
-  </div>
+    </dl>
+  </header>
 
   {#snippet standingContent(
     country: string | null,
@@ -400,7 +401,7 @@
   <div class="mt-8 sm:mt-10">
     <h2 class="mb-3 {TEXT.heading} text-ink">Competition history</h2>
     {#if athlete.competitions.length > 0}
-      <Table>
+      <Table rows={athlete.competitions} itemName="competition" pageParam="history_page">
         {#snippet head()}
           <th
             class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
@@ -427,8 +428,8 @@
           {/if}
         {/snippet}
 
-        {#snippet body()}
-          {#each athlete.competitions as competition (`${competition.competition_id}:${competition.category_name}:${competition.division ?? ''}`)}
+        {#snippet body(rows)}
+          {#each rows as competition (`${competition.competition_id}:${competition.category_name}:${competition.division ?? ''}`)}
             <tr class="transition-colors {competition.status !== 'competed' ? 'opacity-50' : ''}">
               <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
                 {#if competition.status !== 'competed'}

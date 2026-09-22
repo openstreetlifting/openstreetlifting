@@ -1,3 +1,4 @@
+import { TABLE_PAGE_SIZE } from '$lib/constants/pagination';
 import { error, redirect } from '@sveltejs/kit';
 import { rankingsService } from '$lib/server/api';
 import { countryCodes, federationsBasedIn } from '$lib/server/countries';
@@ -20,7 +21,12 @@ export const load: PageServerLoad = async ({ params, url }) => {
     loaded = await Promise.all([
       publishedCompetitions(),
       rankingsService.getRankingCountries(),
-      rankingsService.getGlobalRankings({ page, movement: 'ris', country: code }),
+      rankingsService.getGlobalRankings({
+        page,
+        page_size: TABLE_PAGE_SIZE,
+        movement: 'ris',
+        country: code,
+      }),
     ]);
   } catch (err) {
     console.error('Failed to load country', { code, error: err });

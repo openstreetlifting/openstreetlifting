@@ -1,4 +1,5 @@
 import { beforeEach, expect, it, vi } from 'vitest';
+import { MOVEMENTS } from '$lib/types/enums';
 import { page as appPage } from '$app/state';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
@@ -28,7 +29,7 @@ function standing(value: string, weightClass?: string): MetricStanding {
   return {
     value,
     class: weightClass,
-    global: { place: 51, field: 120 },
+    global: { place: 101, field: 120 },
     country: { code: 'FR', place: 3, field: 12 },
   };
 }
@@ -65,7 +66,7 @@ function query(link: Element): URLSearchParams {
 it('defaults both cards to RIS with separate global and country pages', async () => {
   render(AthletePage, { data: { athlete: athlete() } });
   await expect.element(page.getByRole('combobox', { name: 'Metric' })).toHaveValue('ris');
-  const global = page.getByRole('link', { name: /Global.*#51/ });
+  const global = page.getByRole('link', { name: /Global.*#101/ });
   const country = page.getByRole('link', { name: /France.*#3/ });
   await expect.element(global).toBeVisible();
   await expect.element(country).toBeVisible();
@@ -89,7 +90,7 @@ it('switches both cards and their leaderboard filters for every kilogram metric'
     ['squat', 'Squat'],
   ]) {
     await page.getByRole('combobox', { name: 'Metric' }).selectOptions(metric);
-    const global = page.getByRole('link', { name: /Global.*#51/ });
+    const global = page.getByRole('link', { name: /Global.*#101/ });
     const country = page.getByRole('link', { name: /France.*#3/ });
     await expect.element(global).not.toMatchTextContent(label);
     await expect.element(global).toMatchTextContent('in category -80');
@@ -111,7 +112,7 @@ it('switches both cards and their leaderboard filters for every kilogram metric'
     if (metric === 'muscleup') await expect.element(global).not.toMatchTextContent('0 kg');
   }
   await page.getByRole('combobox', { name: 'Metric' }).selectOptions('ris');
-  expect(query(page.getByRole('link', { name: /Global.*#51/ }).element()).has('category')).toBe(
+  expect(query(page.getByRole('link', { name: /Global.*#101/ }).element()).has('category')).toBe(
     false
   );
 });
@@ -129,7 +130,7 @@ it('shows unranked cards without links when the selected metric is missing', asy
   expect(countryCards).toHaveLength(0);
   await expect.element(page.getByText('Not ranked', { exact: true }).first()).toBeVisible();
   await page.getByRole('combobox', { name: 'Metric' }).selectOptions('pullup');
-  await expect.element(page.getByRole('link', { name: /Global.*#51/ })).toBeVisible();
+  await expect.element(page.getByRole('link', { name: /Global.*#101/ })).toBeVisible();
 });
 
 it('omits the ranking controls when the athlete has no ranked performances', async () => {
@@ -189,4 +190,50 @@ it('renders multiple divisions from the same meet and distinguishes absent, bomb
   await expect.element(page.getByTitle('No successful muscle up')).toBeVisible();
   expect(page.getByRole('columnheader', { name: 'Dips' }).elements()).toHaveLength(0);
   expect(page.getByRole('columnheader', { name: 'Squat' }).elements()).toHaveLength(0);
+});
+
+it('labels athlete metadata and keeps the native name and accessible social link', async () => {
+  const lifter = athlete();
+  lifter.native_name = 'Алекс Мартин';
+  lifter.instagram_handle = 'alex.martin';
+  lifter.strength_profile = {
+    category: 'Elite Men -80kg',
+    lifts: MOVEMENTS.map((movement_name) => ({
+      movement_name,
+      value: '50',
+      percentile: 50,
+      field: 20,
+    })),
+  };
+  render(AthletePage, { data: { athlete: lifter } });
+  await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
+  const header = page
+    .getByRole('heading', { name: /Alex Martin/, level: 1 })
+    .element()
+    .closest('header')!;
+  expect(header.textContent).toContain('Алекс Мартин');
+  expect(header.querySelector('dl')?.textContent).toMatch(/Sex\s*Male\s*Weight class\s*-80 kg/);
+  const social = page.getByRole('link', { name: 'Alex Martin on Instagram' });
+  await expect.element(social).toHaveAttribute('href', 'https://www.instagram.com/alex.martin');
+});
+
+it('does not mistake a classless category name for a weight class', async () => {
+  const lifter = athlete();
+  lifter.strength_profile = {
+    category: 'Elite Men',
+    lifts: MOVEMENTS.map((movement_name) => ({
+      movement_name,
+      value: '50',
+      percentile: 50,
+      field: 20,
+    })),
+  };
+  render(AthletePage, { data: { athlete: lifter } });
+  await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
+  const header = page
+    .getByRole('heading', { name: /Alex Martin/, level: 1 })
+    .element()
+    .closest('header')!;
+  expect(header.textContent).not.toContain('Weight class');
+  expect(header.textContent).toContain('Male');
 });

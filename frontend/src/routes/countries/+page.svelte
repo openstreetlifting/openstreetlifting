@@ -32,7 +32,7 @@
 
   <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">Countries</h1>
 
-  <Table>
+  <Table rows={countries} itemName="country" pageParam="page">
     {#snippet head()}
       <th class="{TABLE_HEAD_CELL} text-secondary">Country</th>
       <th class="{TABLE_HEAD_CELL} text-secondary">Athletes</th>
@@ -41,8 +41,8 @@
       <th class="{TABLE_HEAD_CELL} text-secondary">Federations</th>
     {/snippet}
 
-    {#snippet body()}
-      {#each countries as country (country.code)}
+    {#snippet body(rows)}
+      {#each rows as country (country.code)}
         <tr class="transition-colors">
           <td class="{TABLE_CELL} {CELL.identity}">
             <a

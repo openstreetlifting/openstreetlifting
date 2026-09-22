@@ -323,18 +323,12 @@ impl<'a> CanonicalTransformer<'a> {
         Ok(())
     }
 
-    /// Finds the weight class the category's bounds describe, creating it if
-    /// the competition runs one outside the standard ladder. A competition that
-    /// runs no weight classes resolves to none.
     async fn resolve_weight_class(
         &self,
         category: &CategoryData,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<Option<Uuid>> {
-        let (min, max) = match category.weight_class_slug.as_ref() {
-            Some(slug) => slug.bounds(),
-            None => (category.weight_class_min, category.weight_class_max),
-        };
+        let (min, max) = category.bounds();
 
         if min.is_none() && max.is_none() {
             return Ok(None);

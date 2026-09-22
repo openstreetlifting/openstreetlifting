@@ -2,7 +2,6 @@
   import type { PageData } from './$types';
   import {
     Card,
-    Pagination,
     Flag,
     FilterBar,
     Table,
@@ -179,26 +178,16 @@
   {:else if rankings.length === 0 && !busy}
     <RankingsEmpty canReset={table.narrowed || pagination.page > 1} resetHref={resolve('/')} />
   {:else}
-    {#snippet paginationBar()}
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <span class="text-xs text-muted">
-          Page {pagination.page} of {pagination.total_pages} &middot; {pagination.total_items} athletes
-        </span>
-        <Pagination
-          page={pagination.page}
-          totalPages={pagination.total_pages}
-          disabled={busy}
-          pageHref={(target) => table.pageHref(target)}
-          replaceState
-        />
-      </div>
-    {/snippet}
-
-    <div class="hidden sm:mb-3 sm:block">
-      {@render paginationBar()}
-    </div>
-
-    <Table {busy}>
+    <Table
+      rows={rankings}
+      itemName="athlete"
+      {busy}
+      pagination={{
+        ...pagination,
+        pageHref: (target) => table.pageHref(target),
+        replaceState: true,
+      }}
+    >
       {#snippet head()}
         <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
           >Rank</th
@@ -220,8 +209,8 @@
         <th class="{TABLE_HEAD_CELL} text-secondary">Class</th>
       {/snippet}
 
-      {#snippet body()}
-        {#each rankings as entry (entry.rank + entry.athlete.athlete_id)}
+      {#snippet body(rows)}
+        {#each rows as entry (entry.rank + entry.athlete.athlete_id)}
           <tr
             class="transition-colors"
             data-focused={entry.athlete.slug === focused ? '' : undefined}
@@ -291,9 +280,5 @@
         {/each}
       {/snippet}
     </Table>
-
-    <div class="mt-3">
-      {@render paginationBar()}
-    </div>
   {/if}
 </div>
