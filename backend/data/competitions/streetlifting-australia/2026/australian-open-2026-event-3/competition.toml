@@ -2,13 +2,17 @@ event = "MPDS"
 sources = [
     "FinalRep app, /events-api/v1/events/{id}/statistics",
     "https://final-rep.com/event-calendar/",
-    "Bodyweight recovered by reversing the 2026 RIS formula on the published score",
+    "https://streetliftingaustralia.com.au/previous-valid-results",
+    "https://img1.wsimg.com/blobby/go/66e68ad1-c2d3-473a-9260-17e2d76d39f0/downloads/16028de2-e07e-4f59-b3dc-64d234b401eb/2026%20Australian%20open%20event%203%20Adventure%20ready%20c.pdf",
+    "City from the venue, Adventure Ready Coaching in Broadmeadow, Newcastle",
 ]
 
 [competition]
 name = "Australian Open Event 3"
 start_date = "2026-05-16"
 end_date = "2026-05-16"
+city = "Newcastle"
+region = "New South Wales"
 country = "AU"
 status = "completed"
 

@@ -2,11 +2,12 @@ event = "MPDS"
 sources = [
     "FinalRep app, /events-api/v1/events/{id}/statistics",
     "https://final-rep.com/event-calendar/",
-    "Bodyweight recovered by reversing the 2026 RIS formula on the published score",
+    "https://streetliftingaustralia.com.au/previous-valid-results",
+    "https://img1.wsimg.com/blobby/go/66e68ad1-c2d3-473a-9260-17e2d76d39f0/downloads/b0b2b168-7138-42d0-84ec-6ab4ecd0946e/March%202026%20Australian%20Open%20Event%202%20Final%20Rep.pdf",
 ]
 
 [competition]
-name = "Australian Open"
+name = "Australian Open Event 2"
 start_date = "2026-03-21"
 end_date = "2026-03-22"
 city = "Melbourne"
