@@ -7,7 +7,7 @@ sources = [
 ]
 
 [competition]
-name = "Australian Open"
+name = "Australian Open Event 2"
 start_date = "2026-03-21"
 end_date = "2026-03-22"
 city = "Melbourne"
