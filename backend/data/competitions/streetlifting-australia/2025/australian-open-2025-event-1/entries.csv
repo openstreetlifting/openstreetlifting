@@ -1,14 +1,14 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,73,Gauthier,Aureille,,AU,72.9,,competed,,,,,11.25,,,,51.25,,,,105,,,,175
 M,73,Brodii,Baron-Heeris,,AU,72.6,,competed,,,,,2.5,,,,60,,,,70,,,,135
-M,73,Dan,Pettersson,,AU,71.6,,competed,,,,,0,,,,50,,,,65,,,,120
 M,73,Gwendal,Daniel,,AU,71.9,,competed,,,,,10,,,,51.25,,,,65,,,,100
+M,73,Dan,Pettersson,,AU,71.6,,competed,,,,,0,,,,50,,,,65,,,,120
 M,80,Troy,Abbott,,AU,76.7,,competed,,,,,0,,,,55,,,,75,,,,175
 M,80,Rodolfo,Raba Larraguibel,,CL,77.3,,competed,,,,,20,,,,62.5,,,,85,,,,135
 M,87,Adriano,Di Marco,,IT,83.9,,competed,,,,,10,,,,60,,,,85,,,,165
-M,87,Chris,Nixon,,AU,82.9,,competed,,,,,7.5,,,,40,,,,70,,,,130
 M,87,Daniel,Kwon,,AU,86.5,,competed,,,,,2.5,,,,50,,,,65,,,,120
-M,94,Jacob,Moffit,,AU,93.5,,competed,,,,,2.5,,,,65,,,,82.5,,,,200
-M,94,Louis,Beaudlet,,AU,87.7,,competed,,,,,16.25,,,,55,,,,85,,,,182.5
+M,87,Chris,Nixon,,AU,82.9,,competed,,,,,7.5,,,,40,,,,70,,,,130
 M,94,Waylan,Batt,,AU,88.4,,competed,,,,,5,,,,55,,,,70,,,,160
+M,94,Louis,Beaudlet,,AU,87.7,,competed,,,,,16.25,,,,55,,,,85,,,,182.5
+M,94,Jacob,Moffit,,AU,93.5,,competed,,,,,2.5,,,,65,,,,82.5,,,,200
 F,70,Angela,Abbott,,AU,65.9,,competed,,,,,5,,,,20,,,,22.5,,,,90
