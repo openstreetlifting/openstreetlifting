@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,George,Clark,,GB,64.2,73.95,competed,,recovered,2026,7.5,10,13.75x,10,50,57.5,62.5x,57.5,80,86.25,88.75,88.75,140,145,150,150
 M,66,Altay,Doğahan,,GB,,0,no_show,,,,,,,,,,,,,,,,,,,
 M,66,Abu,Sulayman,,GB,63.6,80.89,competed,,recovered,2026,15,16.25x,20,20,45,52.5,57.5x,52.5,80,90x,90x,80,165,175,180,180

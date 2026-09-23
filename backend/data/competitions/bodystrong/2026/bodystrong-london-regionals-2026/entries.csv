@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Ash,Steele,,GB,65.15,42.35,competed,,recovered,2026,0,2.5,5x,2.5,30,40x,42.5x,30,40,55,67.5x,55,90,110x,120x,90
 M,73,,Jp,,GB,72.2,68.15,competed,,recovered,2026,10,15,17.5x,15,55,60,62.5x,60,100,110,115,115,115x,115,122.5,122.5
 M,73,Junior,Mikajo,,GB,71.75,68.53,competed,,recovered,2026,15,17.5,20x,17.5,55,60,62.5x,60,80,87.5x,87.5x,80,140,150,155,155

@@ -267,8 +267,8 @@ fn read_entry(
     let bodyweight = entries::parse_decimal(columns.get(record, entries::BODYWEIGHT))
         .map_err(|e| format!("{}: {e}", entries::BODYWEIGHT))?;
 
-    let ris = entries::parse_decimal(columns.get(record, entries::RIS))
-        .map_err(|e| format!("{}: {e}", entries::RIS))?;
+    let reported_ris = entries::parse_decimal(columns.get(record, entries::REPORTED_RIS))
+        .map_err(|e| format!("{}: {e}", entries::REPORTED_RIS))?;
     let bodyweight_source = optional(columns, record, entries::BODYWEIGHT_SOURCE)
         .map(|source| source.parse())
         .transpose()?;
@@ -295,7 +295,7 @@ fn read_entry(
         country,
         bodyweight,
         bodyweight_source,
-        ris,
+        reported_ris,
         reported_ris_edition,
         reported_total: entries::parse_decimal(columns.get(record, entries::REPORTED_TOTAL))
             .map_err(|e| format!("{}: {e}", entries::REPORTED_TOTAL))?,
@@ -424,7 +424,7 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                     .unwrap_or_default(),
                 athlete.country.as_str().to_string(),
                 entries::render_decimal(athlete.bodyweight),
-                entries::render_decimal(athlete.ris),
+                entries::render_decimal(athlete.reported_ris),
                 athlete.status.as_str().to_string(),
                 athlete.status_reason.clone().unwrap_or_default(),
             ]);
@@ -625,7 +625,7 @@ mod tests {
     #[test]
     fn a_file_without_the_class_column_reads_no_class() {
         let mut cells = NAMED.to_vec();
-        cells.push((entries::RIS, "84.66"));
+        cells.push((entries::REPORTED_RIS, "84.66"));
 
         let (_, _, weight_class, _) = entry(entries::Layout::default(), &cells).unwrap();
 

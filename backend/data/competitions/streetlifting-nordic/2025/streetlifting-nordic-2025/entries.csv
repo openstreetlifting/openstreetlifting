@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Elian,Alkinani,,SE,,,competed,,,,,20,,,,67.5,,,,120,,,,182.5
 M,66,Jin Samuel,Nilsen,,NO,,,competed,,,,,15,,,,50,,,,85,,,,132.5
 M,73,Teodor,Dahlgren,,SE,,,competed,,,,,22.5,,,,80,,,,112.5,,,,192.5

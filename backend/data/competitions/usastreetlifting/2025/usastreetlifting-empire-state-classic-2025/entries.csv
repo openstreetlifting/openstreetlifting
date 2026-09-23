@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Shaheed,Bryant,,US,60.3,,competed,,,,,,60,70,76.25x,70,92.5,105,107.5,107.5,,,,
 M,66,Haroon,Khan,,US,63.05,,competed,,,,,,25,32.5,40x,32.5,35,45x,45,45,,,,
 M,66,Leon,Lin,,US,61.4,,competed,,,,,,46.25,56.25,62.5x,56.25,46.25,56.25x,56.25,56.25,,,,

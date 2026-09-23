@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Alex,Berinskyy,,DE,59.6,,disqualified,,15,20x,22.5x,15,50x,55,60,60,105,112.5x,112.5x,105,,,,
 M,66,Anton,Dengler,,DE,65.85,,competed,,17.5,21.25,23.75x,21.25,57.5,62.5,65x,62.5,105x,107.5,115x,107.5,150,160,167.5,167.5
 M,66,Van,Doan,,DE,53.4,,competed,,7.5,11.25,12.5x,11.25,45,50,52.5x,50,55,61.25,62.5,62.5,120,130,135,135

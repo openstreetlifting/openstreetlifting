@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,NativeName,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,NativeName,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Stoyan,Banov,,BG,65.4,89.48,competed,,,recovered,2026,35,40,43.75,43.75,75,80,85x,80,135,140,142.5x,140,105x,110,112.5,112.5
 M,66,Djordje,Krstic,,BA,65.3,71.44,competed,,,recovered,2026,2.5,5x,5,5,45,52.5,55,55,90,95,100,100,140x,140,155x,140
 M,66,Nikola,Popovic,,RS,,52.05,disqualified,Bombed the muscle-up,,,,7.5x,10x,10x,,50,60,65x,60,70,80,90,90,70,80x,85x,70

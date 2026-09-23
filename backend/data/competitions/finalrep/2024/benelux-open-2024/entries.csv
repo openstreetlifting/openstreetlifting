@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Ibrahim,Chaibi,,BE,62.5,75.9,competed,,recovered,2024,12.5,15,17.5,17.5,35,40,42.5,42.5,72.5,80,81.25,81.25,140,147.5,155,155
 M,66,Killian,Flecheux,,BE,65.8,75.27,competed,,recovered,2024,7.5,11.25,13.75,13.75,47.5,55,58.75x,55,80x,87.5,91.25,91.25,137.5,147.5,155x,147.5
 M,66,Arthur,Jongen,,BE,65.9,87.69,competed,,recovered,2024,20,25,28.75,28.75,62.5,70,72.5,72.5,90,100,103.75x,100,147.5,157.5,162.5x,157.5

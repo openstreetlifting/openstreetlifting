@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,NativeName,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,NativeName,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Fixture,Alpha,,FR,64.2,,competed,,,25,30,32.5,32.5,50,55,57.5,57.5,65,70,72.5,72.5,100,105,110,110
 M,66,Fixture,Delta,,FR,65,,competed,,,30,35,37.5,37.5,55,60,62.5,62.5,70,75,77.5,77.5,110,115,120,120
 M,73,Fixture,Bravo,,RS,72.4,,competed,,Фикстур Браво,30,35,40,40,60,65,70,70,75,80,85,85,115,120,125,125

@@ -73,7 +73,7 @@ pub struct AthleteData {
     pub country: CountryCode,
     pub bodyweight: Option<Decimal>,
     pub bodyweight_source: Option<BodyweightSource>,
-    pub ris: Option<Decimal>,
+    pub reported_ris: Option<Decimal>,
     pub reported_ris_edition: Option<Edition>,
     pub reported_total: Option<Decimal>,
     pub status: AthleteStatus,
@@ -120,11 +120,12 @@ impl AthleteData {
         Ok(total)
     }
 
+    /// Reject inconsistent evidence and explain when a published score cannot be checked.
     pub fn validate_score_source(
         &self,
         gender: Gender,
         movements: &[Movement],
-    ) -> Result<(), String> {
+    ) -> Result<Option<String>, String> {
         if let Some(total) = self.reported_total {
             if total <= Decimal::ZERO {
                 return Err("ReportedTotalKg must be positive".into());
@@ -144,24 +145,44 @@ impl AthleteData {
         if self.bodyweight_source.is_some() && self.bodyweight.is_none() {
             return Err("BodyweightSource requires BodyweightKg".into());
         }
-        if self.reported_ris_edition.is_some() && self.ris.is_none() {
-            return Err("ReportedRisEdition requires the original Ris".into());
+        if self.reported_ris_edition.is_some() && self.reported_ris.is_none() {
+            return Err("ReportedRisEdition requires ReportedRis".into());
         }
         if self.bodyweight_source != Some(BodyweightSource::Recovered) {
-            if self.bodyweight.is_some() && self.ris.is_some() {
-                return Err("both bodyweight and ris require BodyweightSource=recovered and ReportedRisEdition".into());
+            let (Some(bodyweight), Some(reported_ris)) = (self.bodyweight, self.reported_ris)
+            else {
+                return Ok(None);
+            };
+            let Some(edition) = self.reported_ris_edition else {
+                return Ok(Some(
+                    "ReportedRis is unverified: its formula edition is unknown; supply ReportedRisEdition when established by the source".into(),
+                ));
+            };
+            let gender = self.gender.unwrap_or(gender);
+            let total = match self.complete_total() {
+                Ok(total) if movements == Movement::ALL && gender != Gender::Mx => total,
+                _ => return Ok(Some(
+                    "ReportedRis is unverified: comparison requires a complete, competed four-movement result and an M or F scoring formula".into(),
+                )),
+            };
+            let computed = osl_domain::ris::compute(bodyweight, total, gender, edition);
+            if computed != reported_ris {
+                return Err(format!(
+                    "ReportedRis {reported_ris} contradicts BodyweightKg and the complete total: edition {} gives {computed}",
+                    edition.year()
+                ));
             }
-            return Ok(());
+            return Ok(None);
         }
         let bodyweight = self.bodyweight.ok_or("recovered bodyweight is missing")?;
         let ris = self
-            .ris
-            .ok_or("recovered bodyweight requires the original Ris")?;
+            .reported_ris
+            .ok_or("recovered bodyweight requires ReportedRis")?;
         let edition = self
             .reported_ris_edition
             .ok_or("recovered bodyweight requires ReportedRisEdition")?;
         if bodyweight <= Decimal::ZERO || ris <= Decimal::ZERO {
-            return Err("recovered bodyweight and original Ris must be positive".into());
+            return Err("recovered bodyweight and ReportedRis must be positive".into());
         }
         if self.status != AthleteStatus::Competed || movements != Movement::ALL {
             return Err(
@@ -177,7 +198,7 @@ impl AthleteData {
                 edition.year()
             ));
         }
-        Ok(())
+        Ok(None)
     }
 }
 

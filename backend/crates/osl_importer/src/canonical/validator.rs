@@ -158,12 +158,14 @@ impl CanonicalValidator {
             for athlete in &category.athletes {
                 let label = athlete.display_name();
 
-                if let Err(reason) =
-                    athlete.validate_score_source(category.gender, &canonical.movements)
-                {
-                    report.errors.push(format!("Athlete '{label}': {reason}"));
+                match athlete.validate_score_source(category.gender, &canonical.movements) {
+                    Err(reason) => report.errors.push(format!("Athlete '{label}': {reason}")),
+                    Ok(Some(reason)) => {
+                        report.warnings.push(format!("Athlete '{label}': {reason}"))
+                    }
+                    Ok(None) => {}
                 }
-                if athlete.bodyweight.is_none() && athlete.ris.is_none() {
+                if athlete.bodyweight.is_none() && athlete.reported_ris.is_none() {
                     report.warnings.push(format!(
                         "Competition '{}': athlete '{label}' has neither a bodyweight nor a published RIS score",
                         canonical.competition.slug
@@ -176,10 +178,10 @@ impl CanonicalValidator {
                     ));
                 }
 
-                if athlete.ris.is_some_and(|r| r < Decimal::ZERO) {
+                if athlete.reported_ris.is_some_and(|r| r < Decimal::ZERO) {
                     report
                         .errors
-                        .push(format!("Athlete '{label}' has a negative ris"));
+                        .push(format!("Athlete '{label}' has a negative ReportedRis"));
                 }
 
                 if athlete.lifts.is_empty() && athlete.reported_total.is_none() {
@@ -387,7 +389,7 @@ mod tests {
             bodyweight_source: None,
             reported_ris_edition: None,
             reported_total: None,
-            ris: None,
+            reported_ris: None,
             status: AthleteStatus::Competed,
             status_reason: None,
             lifts: vec![LiftData {
@@ -481,10 +483,16 @@ mod tests {
     }
 
     #[test]
-    fn both_bodyweight_and_ris_is_rejected() {
+    fn published_bodyweight_and_ris_without_an_edition_warns() {
         let mut canonical = completed();
-        canonical.categories[0].athletes[0].ris = Some(Decimal::from(90));
-        assert!(CanonicalValidator::validate(&canonical).is_err());
+        canonical.categories[0].athletes[0].reported_ris = Some(Decimal::from(90));
+        let report = CanonicalValidator::validate(&canonical).unwrap();
+        assert!(
+            report
+                .warnings
+                .iter()
+                .any(|warning| warning.contains("formula edition is unknown"))
+        );
     }
 
     #[test]

@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Charly,Defois,,FR,65.1,94.3,competed,,recovered,2026,18.75,23.75,26.25,26.25,57.5,62.5,66.25,66.25,100,106.25,110,110,175,185,192.5,192.5
 M,66,Youssef,El Kasmi,,MA,65.6,90.74,competed,,recovered,2026,20,25,27.5x,25,60,67.5,70x,67.5,110,117.5,120x,117.5,165,172.5,177.5x,172.5
 M,66,Corentin,Goulmy,,FR,,22.77,disqualified,Bombed the dips and squat,,,23.75,28.75,30,30,65,70x,70x,65,91.25x,95x,95x,,192.5x,192.5x,192.5x,

@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Florian,Aguilar,,FR,65.4,,competed,,10,15,20,20,50,60,65x,60,80,95,105,105,140,150,160,160
 M,66,Enzo,Ammar,,FR,65.8,,competed,,5,10,15,15,40,50,55x,50,105,115,120,120,175,190,200x,190
 M,66,Jonathan,Auberval,,FR,64.4,,competed,,20,22.5,25,25,50,57.5,62.5,62.5,80,87.5,90,90,140,145,150x,145

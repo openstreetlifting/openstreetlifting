@@ -13,7 +13,7 @@ pub const LAST_NAME: &str = "LastName";
 pub const DISAMBIGUATION: &str = "Disambiguation";
 pub const COUNTRY: &str = "Country";
 pub const BODYWEIGHT: &str = "BodyweightKg";
-pub const RIS: &str = "Ris";
+pub const REPORTED_RIS: &str = "ReportedRis";
 pub const BODYWEIGHT_SOURCE: &str = "BodyweightSource";
 pub const REPORTED_RIS_EDITION: &str = "ReportedRisEdition";
 pub const REPORTED_TOTAL: &str = "ReportedTotalKg";
@@ -42,7 +42,7 @@ pub const IDENTITY_COLUMNS: [&str; 9] = [
     DISAMBIGUATION,
     COUNTRY,
     BODYWEIGHT,
-    RIS,
+    REPORTED_RIS,
     STATUS,
     STATUS_REASON,
 ];
@@ -179,6 +179,13 @@ pub struct Columns {
 impl Columns {
     pub fn read(header: &csv::StringRecord) -> Result<Self, String> {
         let mut index = HashMap::new();
+
+        if header.iter().any(|name| name.trim() == "Ris") {
+            return Err(
+                "Ris is no longer supported; rename it to ReportedRis and keep only that column"
+                    .into(),
+            );
+        }
 
         for (position, name) in header.iter().enumerate() {
             let name = name.trim().to_string();
@@ -338,13 +345,27 @@ mod tests {
     }
 
     #[test]
+    fn the_old_ris_header_is_rejected_even_alongside_reported_ris() {
+        for alongside in [false, true] {
+            let mut fields = headers(Layout::default());
+            if !alongside {
+                fields.retain(|field| field != REPORTED_RIS);
+            }
+            fields.push("Ris".into());
+            let error = Columns::read(&csv::StringRecord::from(fields)).unwrap_err();
+            assert!(error.contains("Ris is no longer supported"), "{error}");
+            assert!(error.contains("ReportedRis"), "{error}");
+        }
+    }
+
+    #[test]
     fn missing_required_columns_are_rejected() {
         for column in [
             SEX,
             LAST_NAME,
             COUNTRY,
             BODYWEIGHT,
-            RIS,
+            REPORTED_RIS,
             STATUS,
             "BestSquatKg",
         ] {

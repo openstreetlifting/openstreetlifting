@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Daniel,Corbalan Cruz,,BR,61.85,100.66,competed,,recovered,2026,25,30,32.5x,30,70,75,77.5,77.5,100,107.5,108.75x,107.5,180,190,200x,190
 M,66,Samuel,Jonatas,,BR,65.45,76.06,competed,,recovered,2026,0,5,10,10,52.5,57.5,65,65,55,67.5,80,80,150,165,167.5x,165
 M,66,Guilherme,Lui,,BR,60.65,67.42,competed,,recovered,2026,15,17.5,20,20,60,62.5,66.25x,62.5,65,70,71.25x,70,110,115,117.5x,115

@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Michael,Cachia,,GB,65.7,86.41,competed,,recovered,2024,30x,30x,30,30,70,76.25x,76.25x,70,100,110x,110,110,132.5,142.5,150x,142.5
 M,66,Julien,Capdeville,,FR,65.1,102.33,competed,,recovered,2024,20,25,28.75x,25,67.5,72.5,75,75,130,134,140.25x,134,180,182.5x,182.5x,180
 M,66,Parth,Chamaria,,IN,64.6,91.16,competed,,recovered,2024,25,31.25,35x,31.25,65,75x,75x,65,95,102.5x,103.75x,95,165,175,185x,175

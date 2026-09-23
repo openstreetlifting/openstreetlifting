@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Jarno,Cammaerts,,BE,64.8,82.84,competed,,recovered,2024,5,8.75,12.5,12.5,52.5,57.5,65,65,92.5,100,106.25,106.25,132.5,140,150,150
 M,66,Mohamed,El Boujdaini,,NL,65,84.16,competed,,recovered,2024,20,25,30,30,55,60,62.5,62.5,102.5x,110x,115,115,125,132.5,142.5x,132.5
 M,66,Andreas,Gregoriades,,CY,65.4,66.46,competed,,recovered,2024,12.5,15x,15x,12.5,60x,60,62.5,62.5,77.5x,77.5,80,80,115,122.5x,122.5x,115

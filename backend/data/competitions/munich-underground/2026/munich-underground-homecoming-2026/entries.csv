@@ -1,4 +1,4 @@
-Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,NativeName,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,NativeName,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,Tim,Ahrens,,DE,,62.42,competed,,,5,10,12.5x,10,40,45,48.75,48.75,70,75,80,80,172.5,182.5,187.5,187.5
 M,Aaron,Biebel,,DE,,71.38,competed,,,0x,0,5x,0,45,55x,55,55,90,100,110,110,185,200,215,215
 M,Philippe,Blatter,,DE,,53.96,competed,,,0,2.5,5x,2.5,37.5,45,50,50,67.5,75,82.5x,75,135,145,152.5x,145

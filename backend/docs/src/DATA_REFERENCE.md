@@ -94,7 +94,7 @@ fractions, such as `72.5`.
 Use this standard base header when starting a file:
 
 ```csv
-Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 ```
 
 Add `WeightClassKg` after `Sex` for competitions with weight classes, and
@@ -123,7 +123,7 @@ the event. Unknown or misspelled headers are rejected.
 | `Disambiguation` | Leave empty unless different athletes share a name; see [Names](#names).         |
 | `Country`        | The athlete's ISO 3166-1 alpha-2 country code. Required.                           |
 | `BodyweightKg`   | The athlete's bodyweight, if known.                                              |
-| `Ris`            | The published RIS score when bodyweight is unavailable.                          |
+| `ReportedRis`    | The source's published RIS score, whether or not bodyweight is known.            |
 | `Status`         | `competed`, `disqualified` or `no_show`. Empty means `competed`.                 |
 | `StatusReason`   | A short explanation for `disqualified` or `no_show`. Leave empty for `competed`. |
 
@@ -196,15 +196,28 @@ category placings, and calculates RIS when bodyweight is available.
 Use individual lift results when available. When adding a breakdown later,
 clear `ReportedTotalKg`; the importer then calculates the total from those lifts.
 
-### Bodyweight and Ris
+### Bodyweight and reported RIS
 
-Enter `BodyweightKg` when the source provides it. Otherwise, enter the published
-`Ris` score. Fill only one of these columns, or leave both empty if neither is
-known.
+Enter each value the source provides: `BodyweightKg`, `ReportedRis`, or both.
+Leave unknown values empty. Use `ReportedRisEdition` for the source's formula
+year when established; the competition year alone does not establish it.
 
-I handle recovering missing bodyweights from RIS scores when possible. You only
-need to provide the published data. Existing rows may contain both values after
-recovery; keep them when making other corrections.
+For a complete, competed All4 result with bodyweight and a known M or F formula,
+the validator checks the published score against its stated edition, rounded to
+two decimal places. A disagreement blocks import. When the edition or required
+results are unknown, both values are preserved and a warning explains why the
+score could not be checked. Calculated ranking scores are stored separately;
+they never replace `ReportedRis` in the CSV.
+
+Missing bodyweights can still be recovered from a published score and a complete
+total. The recovery tool writes the estimate to `BodyweightKg`, marks it
+`BodyweightSource=recovered`, and preserves `ReportedRis` and
+`ReportedRisEdition`. All four fields are required for a recovered bodyweight;
+the estimate must reproduce the original score. A reported weigh-in uses
+`BodyweightSource=reported`, which is the default when bodyweight is supplied.
+
+The former `Ris` header is rejected. Rename it to `ReportedRis`, preserving its
+values. Existing archive files already use the new name.
 
 ## Validation
 

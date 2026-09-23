@@ -44,7 +44,7 @@ When results arrive, add `entries.csv` in that directory and change the status t
 Write one row per athlete per category in `entries.csv`. The base header is one line:
 
 ```csv
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 ```
 
 Add `Division` first only when needed; add `NativeName` only when an athlete has a non-Latin name. Preserve any supported provenance columns already in the file. Let `fmt` set canonical column order.
@@ -57,12 +57,12 @@ Add `Division` first only when needed; add `NativeName` only when an athlete has
 | `Disambiguation` | Only for distinct people sharing identity fields; positive integer |
 | `Country` | Required two-letter code; apply the exception below when absent |
 | `BodyweightKg` | Positive measured bodyweight supplied by the source |
-| `Ris` | Source-reported score when bodyweight is absent |
+| `ReportedRis` | Source-reported score, whether or not bodyweight is known |
 | `ReportedTotalKg` | Optional positive All4 total when no individual lift results are available; leave all lift columns empty |
 | `Status` | `competed`, `disqualified`, or `no_show`; empty means competed |
 | `StatusReason` | Source-supported reason for disqualification |
 
-During extraction, use either reported bodyweight or reported RIS, not both. Leave both empty if neither is supplied. Bodyweight recovery is a separate workflow; preserve existing recovery evidence rather than recomputing or replacing it.
+Record both bodyweight and `ReportedRis` when the source supplies both. Leave unknown values empty. Set `ReportedRisEdition` only when the source formula is established. The validator compares scores at two decimal places when the edition, complete All4 total, and M or F formula are known; resolve contradictions against the source before import. Unverifiable scores remain published evidence with a validation warning. Bodyweight recovery is a separate workflow; preserve existing recovery evidence rather than recomputing or replacing it. Use `ReportedRis`; the former `Ris` header is rejected.
 
 ### Country
 
@@ -109,7 +109,7 @@ For a competed `MPDS` result with only a published total, add `ReportedTotalKg` 
 
 ### Bodyweight recovery
 
-When the user requests bodyweight recovery, use the published total or complete lift breakdown with the recovery tool in `backend/scripts/recover-bodyweight`. Establish the RIS edition from the source or by checking known bodyweight–total–score combinations. Preserve `Ris`, `ReportedRisEdition`, and `BodyweightSource=recovered`. Describe recovered weights as estimates because published scores are rounded. Keep `competition.toml` sources limited to source references.
+When the user requests bodyweight recovery, use the published total or complete lift breakdown with the recovery tool in `backend/scripts/recover-bodyweight`. Establish the RIS edition from the source or by checking known bodyweight–total–score combinations. Write the recovered estimate to `BodyweightKg` and preserve `ReportedRis`, `ReportedRisEdition`, and `BodyweightSource=recovered`. Describe recovered weights as estimates because published scores are rounded. Keep `competition.toml` sources limited to source references.
 
 ## Validation
 

@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Giovanni,Candita,,IT,65.8,77.49,competed,,recovered,2026,0,5,7.5,7.5,45,50,52.5x,50,90,100,110x,100,160,170,175x,170
 M,66,Mattia,Cecchin,,IT,65.5,94.42,competed,,recovered,2026,25,30,33.75x,30,75,80,82.5,82.5,102.5,110x,110,110,175,185x,185x,175
 M,66,Giuseppe,Cicero,,SM,60.7,95.41,competed,,recovered,2026,20,25x,25,25,60,65,67.5x,65,92.5x,96.25,100x,96.25,185,192.5,200x,192.5

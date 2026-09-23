@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Walter,Garcia,,CR,65.2,90.01,competed,,recovered,2026,22.5,27.5x,27.5,27.5,72.5,77.5,82.5x,77.5,100,107.5,112.5x,107.5,145,155,165,165
 M,66,Adrian,Gonzalez,,CR,63.3,70.21,competed,,recovered,2026,12.5,15,17.5x,15,50,55,60x,55,92.5,97.5x,97.5x,92.5,115,125,130x,125
 M,66,Erickson,Rodríguez,,CR,65,60.96,competed,,recovered,2026,15,20x,20x,15,55,60x,60x,55,55,60,65,65,115,120,125x,120

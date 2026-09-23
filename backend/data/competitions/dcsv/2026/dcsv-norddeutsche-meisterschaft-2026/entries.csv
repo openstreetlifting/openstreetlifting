@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Abdelrahman,Shams,,DE,,85.81,competed,,15,20,22.5x,20,63.75,68.75,70x,68.75,110,117.5,125x,117.5,150,155,165x,155
 M,73,Mehmet,Alp Puslu,,DE,,52.68,competed,,0,0x,0x,0,52.5,56.25x,56.25x,52.5,82.5x,82.5,83.75,83.75,105x,105,107.5x,105
 M,73,,Florian,,DE,,74.06,competed,,12.5,15,17.5,17.5,65,70,75,75,70,80,85,85,150,160,165,165

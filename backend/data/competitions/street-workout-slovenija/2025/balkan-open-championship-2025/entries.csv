@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Marko,Stepic,,RS,65.5,97.09,competed,,recovered,2024,40,42.5,45x,42.5,80,82.5,85,85,110,120x,120x,110,150,157.5,162.5x,157.5
 M,73,Horea,Giloan,,RO,71.1,74.04,competed,,recovered,2024,10x,10,25x,10,50,60,65,65,80,90,110x,90,140,160,180x,160
 M,80,Nik,Bavec,,SI,78.75,96.22,competed,,recovered,2024,22.5,27.5,31.25,31.25,65,75,81.25,81.25,115,125,130,130,200,210,217.5,217.5

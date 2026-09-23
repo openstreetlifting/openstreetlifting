@@ -33,7 +33,7 @@ fn entry(first: &str, last: &str, native: Option<&str>) -> AthleteData {
         country: CountryCode::parse("FR").unwrap(),
         bodyweight: Some(decimal("78.5")),
         bodyweight_source: None,
-        ris: None,
+        reported_ris: None,
         reported_ris_edition: None,
         reported_total: None,
         status: AthleteStatus::Competed,

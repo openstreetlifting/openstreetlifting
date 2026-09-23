@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Kane,Marshall,,AU,57.5,,competed,,0x,0x,0,0,30,40,50,50,40,70,75,75,90,110x,110,110
 M,66,Daniel,McConville,,AU,64.6,,competed,,0x,0,2.5x,0,20,40,42.5x,40,20,50,62.5,62.5,60x,60x,60,60
 M,66,Manuel,Rodel,,AU,65.7,,competed,,17.5,20,22.5x,20,57.5,62.5,67.5x,62.5,85,95,100x,95,140,150,160x,150

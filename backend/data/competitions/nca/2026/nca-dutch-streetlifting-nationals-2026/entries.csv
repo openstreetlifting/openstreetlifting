@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Patrick,Ceder,,NL,65.2,69.15,competed,,recovered,2026,7.5,12.5x,12.5x,7.5,50,56.25x,60,60,50,62.5,77.5,77.5,120,135x,145,145
 M,66,Kevin,De Korver,,NL,63.8,83.73,competed,,recovered,2026,12.5x,12.5,17.5,17.5,65,70,75x,70,95x,100,102.5x,100,150x,155,157.5,157.5
 M,66,Victor,Gonzalez,,VE,63.5,71.25,competed,,recovered,2026,5,10x,10,10,47.5x,47.5,55,55,75x,75x,75,75,140,147.5,152.5,152.5

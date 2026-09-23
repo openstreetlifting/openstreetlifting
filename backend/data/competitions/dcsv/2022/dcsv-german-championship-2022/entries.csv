@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Özdemir,Bolat,,DE,65.1,,competed,,15,17.5,20,20,60,65,67.5x,65,70,75,80,80,90,95,102.5,102.5
 M,66,Anton,Dengler,,DE,65.3,,competed,,15,17.5,20,20,52.5,57.5,61.25,61.25,87.5,95,97.5x,95,142.5,150,162.5x,150
 M,66,Alexander,Krasnov,,DE,64.2,,competed,,10,12.5x,12.5,12.5,45,47.5x,47.5,47.5,70,72.5,76.25,76.25,112.5,117.5,120,120

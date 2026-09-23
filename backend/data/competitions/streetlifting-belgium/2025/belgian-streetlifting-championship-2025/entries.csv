@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Walid,Boulaghzalate,,IT,65.2,108.61,competed,,recovered,2024,22.5,26.25,28.75,28.75,70,73.75,76.25,76.25,112.5,121.25,130,130,185,195,205,205
 M,66,Deldinne,Clément,,BE,64.2,75.4,competed,,recovered,2024,11.25,15,17.5,17.5,45x,50,53.75x,50,72.5,80,83.75,83.75,135,142.5,150,150
 M,66,Hamza,El Oueriaghli,,BE,65.7,78.44,competed,,recovered,2024,10,12.5x,12.5,12.5,50,55,57.5,57.5,87.5,95x,100x,87.5,155,162.5,167.5x,162.5

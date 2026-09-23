@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Matias,Abarca,,CL,65.6,100.23,competed,,recovered,2026,20,25x,25x,20,62.5,67.5,72.5,72.5,120,127.5x,130,130,180,190,200,200
 M,66,Benjamín,Aburto Lantadilla,,CL,,38.54,disqualified,Bombed the dips,,,2.5x,2.5,7.5,7.5,50,55x,55x,50,75x,75x,75x,,90,97.5,102.5,102.5
 M,66,Nicolás,Becerra,,CL,65.9,76.51,competed,,recovered,2026,20,22.5x,23.75,23.75,60,62.5,63.75x,62.5,70,71.25x,71.25x,70,160,165,167.5,167.5

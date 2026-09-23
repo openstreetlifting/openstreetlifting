@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,73,Sebastjan,Emersic,,SI,,,competed,,6.25,10,13.75x,10,47.5,52.5,55,55,87.5,95,100,100,152.5,162.5,170x,162.5
 M,73,Žiga,Hribernik,,SI,,,competed,,23.75x,28.75x,28.75,28.75,65,72.5,80,80,55,70,85x,70,35,37.5x,37.5x,35
 M,80,Nik,Bavec,,SI,,,competed,,23.75,30,32.5x,30,67.5,75,82.5,82.5,117.5,130,132.5x,130,205,215,220,220

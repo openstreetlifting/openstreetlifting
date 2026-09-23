@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Thomas,Barbillon,,FR,60.3,,competed,,20,25,30x,25,65,67.5,70,70,80x,80,85,85,130,135,140x,135
 M,66,Anderson,Kouadio,,FR,65.15,,competed,,20,25,27.5x,25,62.5,67.5,72.5,72.5,100,106.25,112.5x,106.25,155x,155,165,165
 M,66,Carl,Robineau,,FR,65.3,,competed,,15,18.75,20,20,50,55x,55x,50,80,90,96.25x,90,120,130,140,140

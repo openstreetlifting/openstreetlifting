@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,,Cino,,GB,,23.65,disqualified,Bombed the dips and squat,,,15,20,25x,20,62.5,70,75,75,92.5x,105x,110x,,150x,150x,150x,
 M,66,George,Clark,,GB,64,70.59,competed,,recovered,2024,3.75,7.5,10x,7.5,52.5,57.5,58.75,58.75,75,80,85,85,115,122.5,130,130
 M,66,Divyesh,Patel,,IN,66,74.76,competed,,recovered,2024,10x,11.25,13.75,13.75,50,55,57.5,57.5,82.5,90x,95,95,132.5,140,150x,140

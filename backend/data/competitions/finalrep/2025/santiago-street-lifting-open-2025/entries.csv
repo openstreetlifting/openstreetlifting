@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Matias,Abarca,,CL,63.95,94.5,competed,,recovered,2024,12.5,16.25,18.75,18.75,57.5,62.5,67.5,67.5,110x,117.5,125,125,142.5,155,165,165
 M,66,Leonardo,Arce,,CL,63.15,70.15,competed,,recovered,2024,10,13.75,15,15,55x,55,60,60,55,65,71.25,71.25,115,122.5,130,130
 M,66,Aidan,Castro Reyes,,CL,63.8,91.86,competed,,recovered,2024,17.5,20,22.5,22.5,55,60,62.5,62.5,80x,90,95,95,160,170,185,185

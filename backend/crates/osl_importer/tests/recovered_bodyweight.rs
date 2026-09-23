@@ -18,7 +18,7 @@ fn recovered() -> CanonicalFormat {
     );
     athlete.bodyweight = Some(common::decimal("91.7"));
     athlete.bodyweight_source = Some(BodyweightSource::Recovered);
-    athlete.ris = Some(common::decimal("113.43"));
+    athlete.reported_ris = Some(common::decimal("113.43"));
     athlete.reported_ris_edition = Some(Edition::V2024);
     common::competition(
         "recovered-worlds",
@@ -39,7 +39,7 @@ fn source_evidence_is_required_and_checked() {
             .contains("ReportedRisEdition")
     );
     let mut missing_score = valid.clone();
-    missing_score.categories[0].athletes[0].ris = None;
+    missing_score.categories[0].athletes[0].reported_ris = None;
     assert!(CanonicalValidator::validate(&missing_score).is_err());
     let mut altered_weight = valid.clone();
     altered_weight.categories[0].athletes[0].bodyweight = Some(Decimal::from(90));
@@ -51,7 +51,58 @@ fn source_evidence_is_required_and_checked() {
     );
     let mut reported_weight = valid;
     reported_weight.categories[0].athletes[0].bodyweight_source = Some(BodyweightSource::Reported);
-    assert!(CanonicalValidator::validate(&reported_weight).is_err());
+    CanonicalValidator::validate(&reported_weight).unwrap();
+}
+
+#[test]
+fn published_bodyweight_and_ris_are_checked_against_the_source_edition() {
+    for source in [None, Some(BodyweightSource::Reported)] {
+        let mut canonical = recovered();
+        canonical.categories[0].athletes[0].bodyweight_source = source;
+        let report = CanonicalValidator::validate(&canonical).unwrap();
+        assert!(report.warnings.is_empty());
+
+        // A source may publish only a total, with no lift breakdown.
+        let athlete = &mut canonical.categories[0].athletes[0];
+        athlete.reported_total = Some(athlete.complete_total().unwrap());
+        athlete.lifts.clear();
+        CanonicalValidator::validate(&canonical).unwrap();
+
+        canonical.categories[0].athletes[0].reported_ris = Some(common::decimal("113.44"));
+        let error = CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string();
+        assert!(error.contains("contradicts BodyweightKg"), "{error}");
+        assert!(error.contains("2024 gives 113.43"), "{error}");
+    }
+}
+
+#[test]
+fn published_scores_with_insufficient_evidence_are_preserved_with_a_warning() {
+    let mut canonical = recovered();
+    canonical.categories[0].athletes[0].bodyweight_source = None;
+    canonical.categories[0].athletes[0].reported_ris_edition = None;
+    let report = CanonicalValidator::validate(&canonical).unwrap();
+    assert!(
+        report
+            .warnings
+            .iter()
+            .any(|warning| warning.contains("formula edition is unknown"))
+    );
+    assert_eq!(
+        canonical.categories[0].athletes[0].reported_ris,
+        Some(common::decimal("113.43"))
+    );
+
+    canonical.categories[0].athletes[0].reported_ris_edition = Some(Edition::V2024);
+    canonical.categories[0].athletes[0].lifts.pop();
+    let report = CanonicalValidator::validate(&canonical).unwrap();
+    assert!(
+        report
+            .warnings
+            .iter()
+            .any(|warning| warning.contains("complete, competed four-movement result"))
+    );
 }
 
 #[test]
@@ -90,7 +141,7 @@ fn csv_round_trip_keeps_recovery_evidence_and_rejects_a_contradictory_best() {
     store::write(&directory, &recovered()).unwrap();
     let read = store::read(&directory).unwrap();
     let athlete = &read.categories[0].athletes[0];
-    assert_eq!(athlete.ris, Some(common::decimal("113.43")));
+    assert_eq!(athlete.reported_ris, Some(common::decimal("113.43")));
     assert_eq!(athlete.reported_ris_edition, Some(Edition::V2024));
     assert_eq!(
         athlete.bodyweight_source(),
@@ -102,6 +153,8 @@ fn csv_round_trip_keeps_recovery_evidence_and_rejects_a_contradictory_best() {
     let csv = std::fs::read_to_string(&path).unwrap();
     let mut reader = csv::Reader::from_reader(csv.as_bytes());
     let headers = reader.headers().unwrap().clone();
+    assert!(headers.iter().any(|name| name == "ReportedRis"));
+    assert!(!headers.iter().any(|name| name == "Ris"));
     let best = headers
         .iter()
         .position(|name| name == "BestSquatKg")
@@ -184,6 +237,45 @@ async fn recovered_2024_score_is_ranked_using_2026_and_source_survives_recompute
     assert_eq!(total, 1);
     assert_eq!(ranking[0].ris_score, Some(expected));
     assert_eq!(ranking[0].ris_source, Some(RisSource::Computed));
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn published_bodyweight_keeps_source_score_and_edition_through_recompute(pool: PgPool) {
+    let importer = CanonicalTransformer::new(&pool);
+    for edition in [Some(Edition::V2024), None] {
+        let mut canonical = recovered();
+        let athlete = &mut canonical.categories[0].athletes[0];
+        athlete.bodyweight_source = None;
+        athlete.reported_ris_edition = edition;
+        CanonicalValidator::validate(&canonical).unwrap();
+        importer
+            .import_to_database(canonical.clone())
+            .await
+            .unwrap();
+        importer.import_to_database(canonical).await.unwrap();
+        assert_eq!(recompute_all_ris(&pool).await.unwrap(), 1);
+
+        let expected = osl_domain::ris::compute(
+            common::decimal("91.7"),
+            common::decimal("586.5"),
+            Gender::M,
+            Edition::CURRENT,
+        );
+        let row: (Decimal, String, i32, Decimal, Option<i32>, String) = sqlx::query_as(
+            "SELECT ris_score, ris_source, ris_edition, reported_ris_score, reported_ris_edition, bodyweight_source FROM competition_participants"
+        ).fetch_one(&pool).await.unwrap();
+        assert_eq!(
+            row,
+            (
+                expected,
+                "computed".into(),
+                Edition::CURRENT.year(),
+                common::decimal("113.43"),
+                edition.map(Edition::year),
+                "reported".into()
+            )
+        );
+    }
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Alex,Abbate,,US,59.4,,competed,,,,,,35,41.25,46.25,46.25,56.25,68.75,70,70,,,,
 M,66,Shaheed,Bryant,,US,57.4,,competed,,,,,,57.5,68.75x,70,70,87.5,102.5,108.75x,102.5,,,,
 M,73,Nicholas,DeFrancesco,,US,71.8,,competed,,,,,,70,75,77.5,77.5,110,120,127.5x,120,,,,

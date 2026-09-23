@@ -20,7 +20,7 @@ impl Fixture {
         ));
         std::fs::create_dir(&directory).unwrap();
         std::fs::write(directory.join("competition.toml"), "event = \"MPDS\"\nsources = []\n[competition]\nname = \"Recovery test\"\nstart_date = \"2023-09-30\"\nend_date = \"2023-09-30\"\ncountry = \"FR\"\nstatus = \"completed\"\n[federation]\nname = \"Test federation\"\n").unwrap();
-        let header = "Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg\n";
+        let header = "Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg\n";
         std::fs::write(directory.join("entries.csv"), format!("{header}{rows}")).unwrap();
         Self(directory)
     }
@@ -64,7 +64,7 @@ fn one_candidate_recovers_and_keeps_original_score_while_check_is_read_only() {
     let canonical = store::read(&fixture.0).unwrap();
     let athlete = &canonical.categories[0].athletes[0];
     assert_eq!(athlete.bodyweight.unwrap().to_string(), "91.7");
-    assert_eq!(athlete.ris.unwrap().to_string(), "113.43");
+    assert_eq!(athlete.reported_ris.unwrap().to_string(), "113.43");
     assert_eq!(athlete.bodyweight_source, Some(BodyweightSource::Recovered));
     assert_eq!(athlete.reported_ris_edition, Some(Edition::V2024));
     assert!(
@@ -72,6 +72,10 @@ fn one_candidate_recovers_and_keeps_original_score_while_check_is_read_only() {
         "recovery provenance belongs in CSV fields"
     );
     let recovered_csv = std::fs::read(fixture.0.join("entries.csv")).unwrap();
+    let text = std::str::from_utf8(&recovered_csv).unwrap();
+    let headers: Vec<_> = text.lines().next().unwrap().split(',').collect();
+    assert!(headers.contains(&"ReportedRis"));
+    assert!(!headers.contains(&"Ris"));
     assert!(fixture.run(false).contains("ineligible: 1"));
     assert_eq!(
         std::fs::read(fixture.0.join("entries.csv")).unwrap(),
@@ -94,7 +98,7 @@ fn a_published_total_supports_recovery_without_inventing_lifts() {
     assert_eq!(athlete.bodyweight.unwrap().to_string(), "91.7");
     assert_eq!(athlete.bodyweight_source, Some(BodyweightSource::Recovered));
     assert_eq!(athlete.reported_ris_edition, Some(Edition::V2024));
-    assert_eq!(athlete.ris.unwrap().to_string(), "113.43");
+    assert_eq!(athlete.reported_ris.unwrap().to_string(), "113.43");
     assert!(athlete.lifts.is_empty());
     assert!(recovered.sources.is_empty());
 }

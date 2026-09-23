@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Nana,Boison,,DE,65.2,102.5,competed,,recovered,2024,25,30.25,32.5x,30.25,67.5,75,80,80,100,107.5,112.5x,107.5,190,197.5,205x,197.5
 M,66,Richard,Bulang,,DE,64.6,52.27,competed,,recovered,2024,7.5x,7.5x,7.5,7.5,30,40,47.5,47.5,45,55,65x,55,75x,80,100,100
 M,66,Malo,Cabillic,,FR,65,74.88,competed,,recovered,2024,10x,10x,10,10,55,60,62.5x,60,67.5,75,80,80,145,152.5x,152.5,152.5

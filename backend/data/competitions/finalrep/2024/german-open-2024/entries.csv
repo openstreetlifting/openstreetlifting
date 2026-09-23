@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Nana,Boison,,DE,64.3,102.79,competed,,recovered,2024,20,25,28.75x,25,70,75,78.75,78.75,100x,100,107.5,107.5,182.5,190,200,200
 M,66,Veit,Heller,,DE,65.9,66,competed,,recovered,2024,0x,0,5x,0,45,50x,50x,45,70x,75,80x,75,145x,150,160x,150
 M,66,Felix,Jung,,DE,65.2,59.24,competed,,recovered,2024,0x,0,1.25x,0,37.5,42.5,45,45,57.5,62.5,67.5,67.5,120,127.5x,127.5,127.5

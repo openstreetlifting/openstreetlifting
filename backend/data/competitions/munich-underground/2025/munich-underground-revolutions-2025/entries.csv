@@ -1,4 +1,4 @@
-Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,Tim,Ahrens,,DE,,59.1,competed,,0,2.5,5,5,40x,46.25,50x,46.25,60,67.5,71.25,71.25,160,172.5,177.5,177.5
 M,Felipe,Berio,,UY,,44.24,competed,,0x,2.5,5,5,37.5,40x,40x,37.5,55,61.25,66.25,66.25,85,92.5,100x,92.5
 M,Sven,Buchler,,DE,,39.99,disqualified,Bombed the muscle-up,0x,0x,0x,,30,40x,40,40,30,40,50x,40,80,100,110,110

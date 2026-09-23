@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Michał,Fila,,PL,64.7,95.98,competed,,recovered,2026,25,30,32.5x,30,90,95,100x,95,115,121.25x,121.25x,115,160,170x,170x,160
 M,66,Lovro,Topic,,HR,63.2,93.83,competed,,recovered,2026,15,20,22.5,22.5,67.5,72.5,76.25,76.25,102.5,110,115,115,160,170,177.5x,170
 M,73,Filip,Baćić,,HR,68.25,64.76,competed,,recovered,2026,12.5x,13.75,16.25,16.25,57.5,65x,67.5,67.5,57.5,67.5,73.75,73.75,115,122.5x,125,125

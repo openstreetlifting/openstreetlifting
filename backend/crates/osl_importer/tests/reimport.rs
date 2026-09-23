@@ -28,7 +28,7 @@ fn fixture(class: Class, ris: Option<&str>) -> CanonicalFormat {
 
     if let Some(ris) = ris {
         lifter.bodyweight = None;
-        lifter.ris = Some(decimal(ris));
+        lifter.reported_ris = Some(decimal(ris));
     }
 
     let lifter = attempts(lifter, Movement::MuscleUp, &[("50", true)]);

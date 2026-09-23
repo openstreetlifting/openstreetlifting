@@ -405,8 +405,10 @@ impl<'a> CanonicalTransformer<'a> {
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
         let athlete_id = self.upsert_athlete(athlete, category, tx).await?;
-        // With a bodyweight, Ris is evidence for recovery, not the ranking score.
-        let ranking_ris = athlete.ris.filter(|_| athlete.bodyweight.is_none());
+        // Preserve the published score; bodyweight allows a separate ranking score.
+        let ranking_ris = athlete
+            .reported_ris
+            .filter(|_| athlete.bodyweight.is_none());
         let bodyweight_source = athlete.bodyweight_source().map(BodyweightSource::as_str);
         let reported_ris_edition = athlete.reported_ris_edition.map(|edition| edition.year());
 
@@ -439,7 +441,7 @@ impl<'a> CanonicalTransformer<'a> {
             athlete.status_reason,
             ranking_ris,
             bodyweight_source,
-            athlete.ris,
+            athlete.reported_ris,
             reported_ris_edition,
             athlete.reported_total
         )

@@ -96,7 +96,7 @@ pub fn athlete(first: &str, last: &str) -> AthleteData {
         bodyweight_source: None,
         reported_ris_edition: None,
         reported_total: None,
-        ris: None,
+        reported_ris: None,
         status: AthleteStatus::Competed,
         status_reason: None,
         lifts: Vec::new(),
@@ -115,7 +115,7 @@ pub fn weighing(mut athlete: AthleteData, bodyweight: &str) -> AthleteData {
 
 pub fn scored(mut athlete: AthleteData, ris: &str) -> AthleteData {
     athlete.bodyweight = None;
-    athlete.ris = Some(decimal(ris));
+    athlete.reported_ris = Some(decimal(ris));
     athlete
 }
 

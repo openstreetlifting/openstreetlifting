@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Amr,Ahmed,,EG,61,47.38,competed,,recovered,2026,12.5,15x,15,15,37.5x,41.25,42.5,42.5,57.5x,61.25x,61.25,61.25,60x,60,70,70
 M,66,Ibrahim,Amr,,EG,,0,no_show,,,,,,,,,,,,,,,,,,,
 M,66,Youssef,Ashraf,,EG,47.99,54.01,competed,,recovered,2026,12.5,15x,15x,12.5,42.5,46.25,50,50,65,70,72.5x,70,60,70x,70x,60

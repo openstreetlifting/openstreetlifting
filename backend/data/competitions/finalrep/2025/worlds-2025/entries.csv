@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Nana,Boison,,DE,65.5,106.93,competed,,recovered,2024,27.5x,27.5,32.5x,27.5,72.5,82.5,83.75x,82.5,105,115,120,120,190,205,207.5x,205
 M,66,Walid,Boulaghzalate,,IT,65,110.46,competed,,recovered,2024,26.25,30x,31.25,31.25,72.5,76.25x,76.25,76.25,121.25,131.25,140x,131.25,192.5x,202.5,207.5,207.5
 M,66,Julien,Capdeville,,FR,65.3,108.64,competed,,recovered,2024,23.75,27.5,30,30,70,75x,76.25x,70,133.75,138,143.25,143.25,197.5x,197.5,207.5x,197.5

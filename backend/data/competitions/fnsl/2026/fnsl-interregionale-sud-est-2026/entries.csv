@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Curtis,Bunel,,FR,66.1,,competed,,2.5x,2.5,5x,2.5,40x,40,42.5,42.5,65,72.5,75,75,115x,115,120x,115
 M,66,Quentin,Caretti,,FR,65.25,,competed,,11.25,16.25,20x,16.25,55,61.25,65,65,90,100,105x,100,150,160x,160x,150
 M,66,Hilario,Fernandes,,FR,65.2,,competed,,27.5,31.25,35,35,70,76.25,80x,76.25,85,93.75,100,100,177.5,185,190,190

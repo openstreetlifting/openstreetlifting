@@ -1,4 +1,4 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,D,Black,,IT,65.21,70.93,competed,,recovered,2026,15,17.5,20,20,52.5,57.5,60,60,82.5,90,95x,90,120,127.5,130x,127.5
 M,66,Alessio,Castaldi,,IT,,63.82,competed,,,,17.5,20,22.5x,20,50,52.5x,52.5x,50,67.5,73.75x,73.75x,67.5,120,127.5,135,135
 M,66,Dario,Chiappini,,IT,,0,no_show,,,,,,,,,,,,,,,,,,,
