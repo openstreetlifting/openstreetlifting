@@ -21,8 +21,8 @@ pub const STATUS: &str = "Status";
 pub const STATUS_REASON: &str = "StatusReason";
 pub const NATIVE_NAME: &str = "NativeName";
 
-// Optional on input. The formatter still writes every IDENTITY_COLUMNS field
-// so contributors can copy a consistent base header between competitions.
+// These columns may be omitted on input. Formatting always includes
+// IDENTITY_COLUMNS so contributors can copy a consistent base header.
 pub const OPTIONAL_COLUMNS: [&str; 9] = [
     FIRST_NAME,
     DISAMBIGUATION,
