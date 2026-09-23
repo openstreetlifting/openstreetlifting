@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.33.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.32.1...v0.33.0) (2026-09-23)
+
+
+### Features
+
+* **data:** add Streetlifting Nordic 2024, 2025 and 2026 ([#632](https://github.com/openstreetlifting/openstreetlifting/issues/632)) ([ba5e634](https://github.com/openstreetlifting/openstreetlifting/commit/ba5e6348c982c416e3414c8911831e537e7d942b))
+* **data:** import and correct Streetlifting Australia results ([#629](https://github.com/openstreetlifting/openstreetlifting/issues/629)) ([4b5be3b](https://github.com/openstreetlifting/openstreetlifting/commit/4b5be3b4ea43be3fc4f8fc9c14ba5081a7839b37))
+* **data:** support competitions without weight classes ([#628](https://github.com/openstreetlifting/openstreetlifting/issues/628)) ([d7f3923](https://github.com/openstreetlifting/openstreetlifting/commit/d7f39231c9315a98dbe12ffef0c9961c0250bf06))
+* **frontend:** say where a competition's RIS came from ([#635](https://github.com/openstreetlifting/openstreetlifting/issues/635)) ([233d530](https://github.com/openstreetlifting/openstreetlifting/commit/233d5300abfb10c0d98e4a54aeae01c0e2c85d8f))
+
+
+### Bug Fixes
+
+* **frontend:** rank on total when a competition has no RIS ([#634](https://github.com/openstreetlifting/openstreetlifting/issues/634)) ([f8979af](https://github.com/openstreetlifting/openstreetlifting/commit/f8979af148efd5857a04f8c49861f4cea12f01e4))
+
+
+### Refactoring
+
+* **frontend:** unify table pagination and metadata ([#631](https://github.com/openstreetlifting/openstreetlifting/issues/631)) ([e083575](https://github.com/openstreetlifting/openstreetlifting/commit/e08357572986ccc67b5f40df12be4a98f842d426))
+
 ## [0.32.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.32.0...v0.32.1) (2026-09-17)
 
 
