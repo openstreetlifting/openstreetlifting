@@ -130,8 +130,8 @@ pub enum Commands {
         #[arg(long, help = "Count eligible results without updating scores")]
         dry_run: bool,
     },
-    #[command(about = "Format competition files")]
-    Fmt {
+    #[command(about = "Fill missing totals, validate and format competition files")]
+    Prepare {
         #[arg(
             default_value = "./data/competitions",
             help = "Competition directories to search recursively"
@@ -140,13 +140,13 @@ pub enum Commands {
 
         #[arg(
             long,
-            help = "Check formatting without changing files; exit nonzero if changes are needed"
+            help = "Check preparation without changing files; exit nonzero if changes are needed"
         )]
         check: bool,
 
         #[arg(
             long,
-            help = "List competition directories needing formatting without changing files"
+            help = "List competition directories needing preparation without changing files"
         )]
         dry_run: bool,
     },

@@ -188,10 +188,9 @@ impl<'a> AthleteRepository<'a> {
                         PARTITION BY cp.competition_id, cp.weight_class_id, cp.division_id,
                                      e.contest_gender
                         ORDER BY
-                            CASE WHEN COALESCE(cp.reported_total, SUM(l.max_weight), 0) = 0 THEN 1 ELSE 0 END,
                             CASE WHEN cp.weight_class_id IS NULL THEN cp.ris_score END
                                 DESC NULLS LAST,
-                            COALESCE(cp.reported_total, SUM(l.max_weight), 0) DESC,
+                            cp.total DESC NULLS LAST,
                             cp.bodyweight ASC NULLS LAST
                     )::int as place
                 FROM competition_participants cp
@@ -202,10 +201,9 @@ impl<'a> AthleteRepository<'a> {
                    AND e.weight_class_id IS NOT DISTINCT FROM cp.weight_class_id
                    AND e.division_id IS NOT DISTINCT FROM cp.division_id
                    AND e.contest_gender = COALESCE(pwc.gender, pa.gender)
-                LEFT JOIN lifts l ON l.participant_id = cp.participant_id
                 WHERE cp.status = 'competed'
-                GROUP BY cp.participant_id, cp.competition_id, cp.weight_class_id,
-                         cp.division_id, e.contest_gender, cp.bodyweight, cp.ris_score
+                  AND (cp.total IS NOT NULL
+                       OR (cp.weight_class_id IS NULL AND cp.ris_score IS NOT NULL))
             )
             SELECT
                 c.competition_id,
@@ -217,10 +215,7 @@ impl<'a> AthleteRepository<'a> {
                 wc.min_kg as weight_class_min,
                 wc.max_kg as weight_class_max,
                 placed.place as "rank?",
-                CASE WHEN cp.reported_total IS NOT NULL THEN cp.reported_total
-                     WHEN COUNT(l.lift_id) = 0 THEN NULL
-                     ELSE COALESCE(cp.reported_total, SUM(l.max_weight), 0)
-                END as "total: Decimal",
+                cp.total as "total: Decimal",
                 cp.ris_score,
                 cp.ris_source as "ris_source: RisSource",
                 cp.status as "status: AthleteStatus",
@@ -261,7 +256,7 @@ impl<'a> AthleteRepository<'a> {
             WHERE cp.athlete_id = $1
             GROUP BY c.competition_id, c.name, c.slug, c.start_date, c.event_code, d.name,
                      COALESCE(wc.gender, a.gender), wc.min_kg, wc.max_kg, placed.place,
-                     cp.ris_score, cp.ris_source, cp.status, cp.reported_total
+                     cp.ris_score, cp.ris_source, cp.status, cp.total
             ORDER BY c.start_date DESC NULLS LAST
             "#,
             athlete.athlete_id

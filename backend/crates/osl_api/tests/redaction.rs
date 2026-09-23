@@ -35,7 +35,7 @@ fn entry(first: &str, last: &str, native: Option<&str>) -> AthleteData {
         bodyweight_source: None,
         reported_ris: None,
         reported_ris_edition: None,
-        reported_total: None,
+        total: None,
         status: AthleteStatus::Competed,
         status_reason: None,
         lifts: Movement::ALL
@@ -84,7 +84,8 @@ fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
     }
 }
 
-async fn import(pool: &PgPool, canonical: CanonicalFormat) {
+async fn import(pool: &PgPool, mut canonical: CanonicalFormat) {
+    osl_importer::canonical::format::prepare(&mut canonical).unwrap();
     CanonicalTransformer::new(pool)
         .import_to_database(canonical)
         .await

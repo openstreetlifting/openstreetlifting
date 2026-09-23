@@ -24,17 +24,16 @@ where
             cp.participant_id,
             cp.bodyweight as "bodyweight!",
             a.gender as "gender: Gender",
-            COALESCE(cp.reported_total, SUM(l.max_weight), 0) as "total!"
+            cp.total as "total!"
         FROM competition_participants cp
         INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
         INNER JOIN competitions c ON c.competition_id = cp.competition_id
-        LEFT JOIN lifts l ON l.participant_id = cp.participant_id
         WHERE c.event_code = $1
           AND cp.status = 'competed'
           AND cp.ris_source IS DISTINCT FROM 'reported'
           AND cp.bodyweight IS NOT NULL
+          AND cp.total IS NOT NULL
           AND ($2::uuid IS NULL OR cp.competition_id = $2)
-        GROUP BY cp.participant_id, cp.bodyweight, a.gender
         "#,
         osl_domain::FULL_EVENT,
         competition_id
@@ -79,6 +78,20 @@ where
 /// Publishing a new RIS edition means re-scoring the archive, so one ranking
 /// never mixes two scales.
 pub async fn recompute_all_ris(pool: &PgPool) -> Result<u64> {
+    sqlx::query!(
+        r#"
+        UPDATE competition_participants cp
+        SET ris_score = NULL, ris_source = NULL, ris_edition = NULL
+        FROM competitions c
+        WHERE c.competition_id = cp.competition_id
+          AND cp.ris_source = 'computed'
+          AND (cp.total IS NULL OR cp.bodyweight IS NULL OR cp.status <> 'competed'
+               OR c.event_code IS DISTINCT FROM $1)
+        "#,
+        osl_domain::FULL_EVENT,
+    )
+    .execute(pool)
+    .await?;
     let participants = scorable_participants(pool, None).await?;
     let mut count = 0u64;
 

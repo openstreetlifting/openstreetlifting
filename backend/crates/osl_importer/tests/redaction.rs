@@ -54,7 +54,13 @@ impl Workspace {
             .join(&canonical.competition.slug);
 
         std::fs::create_dir_all(&directory).unwrap();
-        store::write(&directory, canonical).unwrap();
+        let mut canonical = canonical.clone();
+        for category in &mut canonical.categories {
+            for athlete in &mut category.athletes {
+                athlete.total = athlete.total_from_lifts(&canonical.movements);
+            }
+        }
+        store::write(&directory, &canonical).unwrap();
         directory
     }
 

@@ -19,16 +19,16 @@ Create or extend one canonical directory per competition. Each pass must produce
 
 5. **Merge the new material.** Add rows and fill previously empty cells. Preserve existing data outside the source's scope. If a source establishes an error in an existing value, explain the correction and its evidence. Append source references to `competition.toml` without dropping earlier ones.
 
-6. **Format and validate.** From `backend`, substitute the competition's actual path:
+6. **Prepare and validate.** From `backend`, substitute the competition's actual path:
 
    ```sh
-   cargo run -p osl_importer --bin import -- fmt data/competitions/<federation>/<year>/<slug>
+   cargo run -p osl_importer --bin import -- prepare data/competitions/<federation>/<year>/<slug>
    cargo run -p osl_importer --bin import -- competitions data/competitions/<federation>/<year>/<slug> --dry-run
    ```
 
    Fix errors and repeat. Warnings about missing evidence can remain; report them instead of inventing values. A nonempty suppression list requires its existing `OSL_PRIVACY_KEY`. If it is unavailable, use `--dry-run --skip-privacy-check` for structural validation and report that suppression checks remain outstanding. Never generate a replacement key for an existing list or bypass a reported suppression match.
 
-7. **Reconcile the results.** For each source row with a four-lift total, compare that total with the sum of the formatted `Best*` values, or verify `ReportedTotalKg` against the source when no breakdown exists. Account for every row in the supplied source: imported, already present, or unresolved. Report mismatches without adjusting weights to force agreement. Check the diff for changes outside the intended competition and source categories.
+7. **Reconcile the results.** For each source row with a total, verify `TotalKg` against it. Keep any available lift breakdown; a complete breakdown must agree with the total. Account for every row in the supplied source: imported, already present, or unresolved. Report mismatches without adjusting weights to force agreement. Check the diff for changes outside the intended competition and source categories.
 
 8. **Report the diff.** Show the changed files and summarize added categories or athletes, validation and total checks, country defaults, regrouped weight classes, and unresolved evidence. Leave the files ready for review. Database imports and commits are outside this extraction workflow unless the user explicitly requests them.
 

@@ -77,12 +77,12 @@ async fn main() -> Result<()> {
                 .context("DATABASE_URL is required to read stored RIS scores")?;
             handle_recompute_ris(database_url, dry_run).await?;
         }
-        Commands::Fmt {
+        Commands::Prepare {
             paths,
             check,
             dry_run,
         } => {
-            handle_fmt(&paths, check, dry_run).await?;
+            handle_prepare(&paths, check, dry_run).await?;
         }
     }
 
@@ -252,68 +252,55 @@ async fn handle_recompute_ris(database_url: &str, dry_run: bool) -> Result<()> {
     Ok(())
 }
 
-async fn handle_fmt(paths: &[PathBuf], check: bool, dry_run: bool) -> Result<()> {
+async fn handle_prepare(paths: &[PathBuf], check: bool, dry_run: bool) -> Result<()> {
     let directories = competition_directories(paths)?;
 
+    // Validate every directory before writing any changes.
     let mut changed = Vec::new();
     for directory in &directories {
-        if is_formatted(directory)? {
-            continue;
-        }
-
-        changed.push(directory.clone());
-        if !check && !dry_run {
-            let mut canonical = store::read(directory)?;
-            canonical_format::normalize(&mut canonical);
-            store::write(directory, &canonical)?;
+        let mut canonical = store::read(directory)?;
+        canonical_format::prepare(&mut canonical)
+            .with_context(|| format!("Preparing {}", directory.display()))?;
+        let (competition_text, entries_text) = store::render(&canonical)?;
+        let metadata_matches =
+            std::fs::read_to_string(directory.join(competition::FILE_NAME))? == competition_text;
+        let entries_path = directory.join(entries::FILE_NAME);
+        let entries_match = match entries_text {
+            Some(text) => std::fs::read_to_string(&entries_path)? == text,
+            None => !entries_path.exists(),
+        };
+        if !metadata_matches || !entries_match {
+            changed.push((directory, canonical));
         }
     }
-
     if changed.is_empty() {
         tracing::info!(
             competitions = directories.len(),
-            "Competition files already formatted"
+            "Competition files already prepared"
         );
         return Ok(());
     }
-
-    for directory in &changed {
-        tracing::info!(directory = %directory.display(), "Formatting target");
+    for (directory, _) in &changed {
+        tracing::info!(directory = %directory.display(), "Preparation target");
     }
-
     if check {
         bail!(
-            "{} competition(s) are not formatted. Run `osl-import fmt` to fix",
+            "{} competition(s) need preparation. Run `osl-import prepare` to fix",
             changed.len()
         );
     }
-
     if dry_run {
         tracing::info!(
             competitions = changed.len(),
-            "Formatting preview; no files changed"
+            "Preparation preview; no files changed"
         );
     } else {
-        tracing::info!(competitions = changed.len(), "Competition files formatted");
+        for (directory, canonical) in &changed {
+            store::write(directory, canonical)?;
+        }
+        tracing::info!(competitions = changed.len(), "Competition files prepared");
     }
     Ok(())
-}
-
-fn is_formatted(directory: &Path) -> Result<bool> {
-    let mut canonical = store::read(directory)?;
-    canonical_format::normalize(&mut canonical);
-    let (competition_text, entries_text) = store::render(&canonical)?;
-
-    if std::fs::read_to_string(directory.join(competition::FILE_NAME))? != competition_text {
-        return Ok(false);
-    }
-
-    let entries_path = directory.join(entries::FILE_NAME);
-
-    match entries_text {
-        Some(entries_text) => Ok(std::fs::read_to_string(&entries_path)? == entries_text),
-        None => Ok(!entries_path.exists()),
-    }
 }
 
 fn competition_directories(paths: &[PathBuf]) -> Result<Vec<PathBuf>> {

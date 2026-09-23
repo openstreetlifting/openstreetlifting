@@ -16,14 +16,14 @@ pub const BODYWEIGHT: &str = "BodyweightKg";
 pub const REPORTED_RIS: &str = "ReportedRis";
 pub const BODYWEIGHT_SOURCE: &str = "BodyweightSource";
 pub const REPORTED_RIS_EDITION: &str = "ReportedRisEdition";
-pub const REPORTED_TOTAL: &str = "ReportedTotalKg";
+pub const TOTAL: &str = "TotalKg";
 pub const STATUS: &str = "Status";
 pub const STATUS_REASON: &str = "StatusReason";
 pub const NATIVE_NAME: &str = "NativeName";
 
 // These columns may be omitted on input. Formatting always includes
 // IDENTITY_COLUMNS so contributors can copy a consistent base header.
-pub const OPTIONAL_COLUMNS: [&str; 9] = [
+pub const OPTIONAL_COLUMNS: [&str; 8] = [
     FIRST_NAME,
     DISAMBIGUATION,
     STATUS_REASON,
@@ -32,10 +32,9 @@ pub const OPTIONAL_COLUMNS: [&str; 9] = [
     NATIVE_NAME,
     BODYWEIGHT_SOURCE,
     REPORTED_RIS_EDITION,
-    REPORTED_TOTAL,
 ];
 
-pub const IDENTITY_COLUMNS: [&str; 9] = [
+pub const IDENTITY_COLUMNS: [&str; 10] = [
     SEX,
     FIRST_NAME,
     LAST_NAME,
@@ -43,6 +42,7 @@ pub const IDENTITY_COLUMNS: [&str; 9] = [
     COUNTRY,
     BODYWEIGHT,
     REPORTED_RIS,
+    TOTAL,
     STATUS,
     STATUS_REASON,
 ];
@@ -64,7 +64,6 @@ pub struct Layout {
     pub native_names: bool,
     pub bodyweight_sources: bool,
     pub reported_ris_editions: bool,
-    pub reported_totals: bool,
 }
 
 pub fn headers(layout: Layout) -> Vec<String> {
@@ -89,9 +88,6 @@ pub fn headers(layout: Layout) -> Vec<String> {
     }
     if layout.reported_ris_editions {
         headers.push(REPORTED_RIS_EDITION.to_string());
-    }
-    if layout.reported_totals {
-        headers.push(REPORTED_TOTAL.to_string());
     }
 
     for movement in Movement::ALL {
@@ -201,7 +197,6 @@ impl Columns {
             native_names: true,
             bodyweight_sources: true,
             reported_ris_editions: true,
-            reported_totals: true,
         });
 
         let missing: Vec<&String> = expected
@@ -304,7 +299,7 @@ mod tests {
     #[test]
     fn headers_cover_every_movement() {
         let headers = headers(Layout::default());
-        assert_eq!(headers.len(), 9 + 4 * 4);
+        assert_eq!(headers.len(), 10 + 4 * 4);
         assert!(headers.contains(&"MuscleUp1Kg".to_string()));
         assert!(headers.contains(&"BestSquatKg".to_string()));
     }
@@ -316,7 +311,7 @@ mod tests {
             native_names: false,
             ..Layout::default()
         });
-        assert_eq!(headers.len(), 10 + 4 * 4);
+        assert_eq!(headers.len(), 11 + 4 * 4);
         assert_eq!(headers[0], DIVISION);
     }
 
@@ -326,7 +321,7 @@ mod tests {
             classed: true,
             ..Layout::default()
         });
-        assert_eq!(headers.len(), 10 + 4 * 4);
+        assert_eq!(headers.len(), 11 + 4 * 4);
         assert_eq!(headers[0], SEX);
         assert_eq!(headers[1], WEIGHT_CLASS);
     }
@@ -359,6 +354,18 @@ mod tests {
     }
 
     #[test]
+    fn legacy_total_headers_are_rejected_with_or_without_the_new_column() {
+        for alongside in [false, true] {
+            let mut fields = headers(Layout::default());
+            if !alongside {
+                fields.retain(|field| field != TOTAL);
+            }
+            fields.push("ReportedTotalKg".into());
+            assert!(Columns::read(&csv::StringRecord::from(fields)).is_err());
+        }
+    }
+
+    #[test]
     fn missing_required_columns_are_rejected() {
         for column in [
             SEX,
@@ -366,6 +373,7 @@ mod tests {
             COUNTRY,
             BODYWEIGHT,
             REPORTED_RIS,
+            TOTAL,
             STATUS,
             "BestSquatKg",
         ] {

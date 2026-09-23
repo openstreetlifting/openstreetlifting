@@ -63,7 +63,7 @@ impl<'a> RankingRepository<'a> {
                     MAX(CASE WHEN l.movement_name = 'Pull-up' THEN l.max_weight END) as pullup,
                     MAX(CASE WHEN l.movement_name = 'Dips' THEN l.max_weight END) as dips,
                     MAX(CASE WHEN l.movement_name = 'Squat' THEN l.max_weight END) as squat,
-                    COALESCE(cp.reported_total, SUM(l.max_weight)) as total,
+                    cp.total,
                     cp.ris_score,
                     cp.ris_source
                 FROM competition_participants cp
@@ -77,7 +77,7 @@ impl<'a> RankingRepository<'a> {
                     ON ats.athlete_id = a.athlete_id
                    AND ats.social_id = (SELECT social_id FROM socials WHERE name = 'instagram')
                 WHERE cp.status = 'competed'
-                  AND (l.lift_id IS NOT NULL OR cp.reported_total IS NOT NULL)
+                  AND (l.lift_id IS NOT NULL OR cp.total IS NOT NULL OR cp.ris_score IS NOT NULL)
             "#,
         );
 

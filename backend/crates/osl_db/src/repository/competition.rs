@@ -261,24 +261,22 @@ impl<'a> CompetitionRepository<'a> {
                     COALESCE(wc.gender, a.gender) as contest_gender,
                     cp.bodyweight,
                     cp.ris_score,
-                    COALESCE(cp.reported_total, SUM(l.max_weight), 0) as total
+                    cp.total
                 FROM competition_participants cp
                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
                 LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
-                LEFT JOIN lifts l ON l.participant_id = cp.participant_id
                 WHERE cp.competition_id = $1
                   AND cp.status = 'competed'
-                GROUP BY cp.participant_id, cp.weight_class_id, cp.division_id,
-                         COALESCE(wc.gender, a.gender), cp.bodyweight, cp.ris_score
+                  AND (cp.total IS NOT NULL
+                       OR (cp.weight_class_id IS NULL AND cp.ris_score IS NOT NULL))
             )
             SELECT
                 participant_id,
                 ROW_NUMBER() OVER (
                     PARTITION BY weight_class_id, division_id, contest_gender
                     ORDER BY
-                        CASE WHEN total = 0 THEN 1 ELSE 0 END,
                         CASE WHEN weight_class_id IS NULL THEN ris_score END DESC NULLS LAST,
-                        total DESC,
+                        total DESC NULLS LAST,
                         bodyweight ASC NULLS LAST
                 )::int as "rank!"
             FROM participant_totals
@@ -354,7 +352,7 @@ impl<'a> CompetitionRepository<'a> {
 
         for category in categories {
             let participants = sqlx::query!(
-                r#"SELECT cp.participant_id, cp.competition_id, cp.athlete_id, cp.bodyweight, cp.reported_total,
+                r#"SELECT cp.participant_id, cp.competition_id, cp.athlete_id, cp.bodyweight, cp.total,
                         cp.status as "status: AthleteStatus", cp.created_at, cp.status_reason,
                         cp.ris_score, cp.ris_source as "ris_source: RisSource"
                  FROM competition_participants cp
@@ -400,7 +398,6 @@ impl<'a> CompetitionRepository<'a> {
                 .await?;
 
                 let mut lift_details = Vec::with_capacity(lifts.len());
-                let mut total = Decimal::ZERO;
 
                 for lift in lifts {
                     let attempts = sqlx::query!(
@@ -412,8 +409,6 @@ impl<'a> CompetitionRepository<'a> {
                     )
                     .fetch_all(self.pool)
                     .await?;
-
-                    total += lift.max_weight.unwrap_or(Decimal::ZERO);
 
                     lift_details.push(LiftDetail {
                         movement_name: lift.movement_name,
@@ -431,10 +426,6 @@ impl<'a> CompetitionRepository<'a> {
 
                 let rank = ranking_map.get(&participant.participant_id).copied();
 
-                // A disqualified lifter's result does not stand, so the lifts that
-                // did count towards nothing must not read as a total.
-                let result_stands = participant.status.competed();
-
                 participant_details.push(ParticipantDetail {
                     athlete,
                     bodyweight: participant.bodyweight,
@@ -443,13 +434,7 @@ impl<'a> CompetitionRepository<'a> {
                     ris_source: participant.ris_source,
                     status: participant.status,
                     status_reason: participant.status_reason,
-                    total: result_stands
-                        .then(|| {
-                            participant
-                                .reported_total
-                                .or_else(|| (!lift_details.is_empty()).then_some(total))
-                        })
-                        .flatten(),
+                    total: participant.total,
                     lifts: lift_details,
                 });
             }

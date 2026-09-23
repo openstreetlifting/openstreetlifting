@@ -31,8 +31,8 @@ pub struct RankingRow {
     pub pullup: Option<Decimal>,
     pub dips: Option<Decimal>,
     pub squat: Option<Decimal>,
-    /// The sum of recorded lifts or a reported total without a breakdown;
-    /// only comparable with another total from the same event.
+    /// The stored event total, supplied by the source or prepared from complete lifts.
+    /// Compare totals only within the same event.
     pub total: Option<Decimal>,
     pub event_code: Option<String>,
     pub ris_score: Option<Decimal>,

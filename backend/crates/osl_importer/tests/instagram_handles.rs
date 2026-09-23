@@ -349,6 +349,7 @@ async fn reimport_clears_identity_details_previously_attached_to_a_replacement(p
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn direct_import_cannot_attach_a_native_name_to_a_replacement(pool: PgPool) {
     let mut replacement = athlete("", "Redacted Athlete #1");
+    replacement.total = replacement.total_from_lifts(&[Movement::MuscleUp]);
     replacement.native_name = Some("Фикстур Альфа".into());
     let error = osl_importer::canonical::transformer::CanonicalTransformer::new(&pool)
         .import_to_database(file("redacted", vec![replacement]))

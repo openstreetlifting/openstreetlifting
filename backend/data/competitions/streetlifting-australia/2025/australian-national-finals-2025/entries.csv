@@ -1,28 +1,28 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-M,70,Thomas,Kearns,,AU,68,,competed,,,,,12.5,,,,55,,,,110,,,,165
-M,70,Christian,Merrett,,AU,62.5,,competed,,,,,12.5,,,,55,,,,105,,,,160
-M,70,Nick,Raymond,,AU,63.5,,competed,,,,,20,,,,80,,,,112.5,,,,180
-M,70,Manpreet,Singh,,IN,65.5,,competed,,,,,25,,,,75,,,,97.5,,,,160
-M,70,Jacob,Yates,,AU,67.3,,competed,,,,,10,,,,47.5,,,,50,,,,152.5
-M,80,Daniel,Abdoo,,AU,76.6,,competed,,,,,20,,,,70,,,,90,,,,205
-M,80,Shawn,Asturias,,AU,74.8,,competed,,,,,12.5,,,,55,,,,95,,,,150
-M,80,Jaime,Chigwidden,,AU,77.2,,competed,,,,,20,,,,0,,,,95,,,,160
-M,80,Hayden,Crossley,,AU,79,,competed,,,,,10,,,,60,,,,90,,,,185
-M,80,Fortious,King,,AU,79,,competed,,,,,7.5,,,,65,,,,80,,,,182.5
-M,80,Diego Alexander,Leon Delgado,,CO,77.9,,competed,,,,,31.25,,,,87.5,,,,145,,,,205
-M,80,Igor,Pachi,,AU,76.6,,competed,,,,,17.5,,,,60,,,,90,,,,150
-M,80,Brock,Swan,,AU,79,,competed,,,,,22.5,,,,72.5,,,,115,,,,120
-M,80,Paul,Tuckett,,AU,75.7,,competed,,,,,6.25,,,,57.5,,,,95,,,,150
-M,80,Paul,Yen,,AU,76.5,,competed,,,,,37.5,,,,95,,,,140,,,,215
-M,90,Chris,Cooper,,AU,82.4,,competed,,,,,20,,,,70,,,,92.5,,,,165
-M,90,Ludovic,Million,,AU,86.8,,competed,,,,,17.5,,,,63.75,,,,132.5,,,,215
-M,90,Hamish,Wylie,,AU,87.6,,competed,,,,,17.5,,,,71.25,,,,135,,,,195
-M,90+,David,Fordyce,,AU,90.4,,competed,,,,,0,,,,46.25,,,,95,,,,175
-M,90+,Brandon,Saldaneri,,AU,90.1,,competed,,,,,20,,,,81.25,,,,120,,,,190
-F,60,Jemma,Aitken,,AU,58.9,,competed,,,,,5,,,,35,,,,56.25,,,,120
-F,60,Chantal,Bronkhorst,,AU,50.7,,competed,,,,,20,,,,30,,,,40,,,,80
-F,60,Mariah,Stock Tambunan,,AT,53.2,,competed,,,,,1.25,,,,32.5,,,,32.5,,,,95
-F,60+,Jelica-Jane,Connolly,,AU,64.4,,competed,,,,,0,,,,25,,,,45,,,,95
-F,60+,Daniele,Mendoza,,AU,68.5,,competed,,,,,12.5,,,,40,,,,65,,,,140
-F,60+,Karla,Ramsden,,AU,66.4,,competed,,,,,21.25,,,,51,,,,71.25,,,,130
-F,60+,Sarah,Tai,,AU,73.8,,competed,,,,,0,,,,22.5,,,,41.25,,,,122.5
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,70,Thomas,Kearns,,AU,68,,342.5,competed,,,,,12.5,,,,55,,,,110,,,,165
+M,70,Christian,Merrett,,AU,62.5,,332.5,competed,,,,,12.5,,,,55,,,,105,,,,160
+M,70,Nick,Raymond,,AU,63.5,,392.5,competed,,,,,20,,,,80,,,,112.5,,,,180
+M,70,Manpreet,Singh,,IN,65.5,,357.5,competed,,,,,25,,,,75,,,,97.5,,,,160
+M,70,Jacob,Yates,,AU,67.3,,260,competed,,,,,10,,,,47.5,,,,50,,,,152.5
+M,80,Daniel,Abdoo,,AU,76.6,,385,competed,,,,,20,,,,70,,,,90,,,,205
+M,80,Shawn,Asturias,,AU,74.8,,312.5,competed,,,,,12.5,,,,55,,,,95,,,,150
+M,80,Jaime,Chigwidden,,AU,77.2,,275,competed,,,,,20,,,,0,,,,95,,,,160
+M,80,Hayden,Crossley,,AU,79,,345,competed,,,,,10,,,,60,,,,90,,,,185
+M,80,Fortious,King,,AU,79,,335,competed,,,,,7.5,,,,65,,,,80,,,,182.5
+M,80,Diego Alexander,Leon Delgado,,CO,77.9,,468.75,competed,,,,,31.25,,,,87.5,,,,145,,,,205
+M,80,Igor,Pachi,,AU,76.6,,317.5,competed,,,,,17.5,,,,60,,,,90,,,,150
+M,80,Brock,Swan,,AU,79,,330,competed,,,,,22.5,,,,72.5,,,,115,,,,120
+M,80,Paul,Tuckett,,AU,75.7,,308.75,competed,,,,,6.25,,,,57.5,,,,95,,,,150
+M,80,Paul,Yen,,AU,76.5,,487.5,competed,,,,,37.5,,,,95,,,,140,,,,215
+M,90,Chris,Cooper,,AU,82.4,,347.5,competed,,,,,20,,,,70,,,,92.5,,,,165
+M,90,Ludovic,Million,,AU,86.8,,428.75,competed,,,,,17.5,,,,63.75,,,,132.5,,,,215
+M,90,Hamish,Wylie,,AU,87.6,,418.75,competed,,,,,17.5,,,,71.25,,,,135,,,,195
+M,90+,David,Fordyce,,AU,90.4,,316.25,competed,,,,,0,,,,46.25,,,,95,,,,175
+M,90+,Brandon,Saldaneri,,AU,90.1,,411.25,competed,,,,,20,,,,81.25,,,,120,,,,190
+F,60,Jemma,Aitken,,AU,58.9,,216.25,competed,,,,,5,,,,35,,,,56.25,,,,120
+F,60,Chantal,Bronkhorst,,AU,50.7,,170,competed,,,,,20,,,,30,,,,40,,,,80
+F,60,Mariah,Stock Tambunan,,AT,53.2,,161.25,competed,,,,,1.25,,,,32.5,,,,32.5,,,,95
+F,60+,Jelica-Jane,Connolly,,AU,64.4,,165,competed,,,,,0,,,,25,,,,45,,,,95
+F,60+,Daniele,Mendoza,,AU,68.5,,257.5,competed,,,,,12.5,,,,40,,,,65,,,,140
+F,60+,Karla,Ramsden,,AU,66.4,,273.5,competed,,,,,21.25,,,,51,,,,71.25,,,,130
+F,60+,Sarah,Tai,,AU,73.8,,186.25,competed,,,,,0,,,,22.5,,,,41.25,,,,122.5

@@ -165,6 +165,20 @@ impl CanonicalValidator {
                     }
                     Ok(None) => {}
                 }
+                if athlete.status == AthleteStatus::Competed
+                    && athlete.total.is_none()
+                    && canonical.movements.iter().any(|movement| {
+                        !athlete
+                            .lifts
+                            .iter()
+                            .any(|lift| lift.movement == *movement && lift.best().is_some())
+                    })
+                {
+                    report.warnings.push(format!(
+                        "Competition '{}': athlete '{label}' has an incomplete event breakdown and no TotalKg; no total or calculated RIS is available",
+                        canonical.competition.slug
+                    ));
+                }
                 if athlete.bodyweight.is_none() && athlete.reported_ris.is_none() {
                     report.warnings.push(format!(
                         "Competition '{}': athlete '{label}' has neither a bodyweight nor a published RIS score",
@@ -184,7 +198,7 @@ impl CanonicalValidator {
                         .push(format!("Athlete '{label}' has a negative ReportedRis"));
                 }
 
-                if athlete.lifts.is_empty() && athlete.reported_total.is_none() {
+                if athlete.lifts.is_empty() && athlete.total.is_none() {
                     report.warnings.push(format!(
                         "Competition '{}': athlete '{label}' has no lifts",
                         canonical.competition.slug
@@ -388,7 +402,7 @@ mod tests {
             bodyweight: Some(Decimal::from(80)),
             bodyweight_source: None,
             reported_ris_edition: None,
-            reported_total: None,
+            total: Some(Decimal::from(100)),
             reported_ris: None,
             status: AthleteStatus::Competed,
             status_reason: None,
@@ -617,6 +631,7 @@ mod tests {
     fn a_bombed_movement_is_accepted_once_disqualified() {
         let mut canonical = completed();
         canonical.categories[0].athletes[0].status = AthleteStatus::Disqualified;
+        canonical.categories[0].athletes[0].total = None;
         canonical.categories[0].athletes[0].lifts[0].attempts = Some(vec![AttemptData {
             attempt_number: 1,
             weight: Decimal::from(100),

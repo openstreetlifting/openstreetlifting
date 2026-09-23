@@ -44,10 +44,10 @@ When results arrive, add `entries.csv` in that directory and change the status t
 Write one row per athlete per category in `entries.csv`. The base header is one line:
 
 ```csv
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 ```
 
-Add `Division` first only when needed; add `NativeName` only when an athlete has a non-Latin name. Preserve any supported provenance columns already in the file. Let `fmt` set canonical column order.
+Add `Division` first only when needed; add `NativeName` only when an athlete has a non-Latin name. Preserve any supported provenance columns already in the file. Let `prepare` set canonical column order.
 
 | Field | Rule |
 | --- | --- |
@@ -58,7 +58,7 @@ Add `Division` first only when needed; add `NativeName` only when an athlete has
 | `Country` | Required two-letter code; apply the exception below when absent |
 | `BodyweightKg` | Positive measured bodyweight supplied by the source |
 | `ReportedRis` | Source-reported score, whether or not bodyweight is known |
-| `ReportedTotalKg` | Optional positive All4 total when no individual lift results are available; leave all lift columns empty |
+| `TotalKg` | Overall total from the source; `prepare` fills it only from a complete event breakdown |
 | `Status` | `competed`, `disqualified`, or `no_show`; empty means competed |
 | `StatusReason` | Source-supported reason for disqualification |
 
@@ -101,11 +101,11 @@ A zero used as a nonstarter placeholder is not an attempt. A row showing a zero 
 
 When every attempt in a contested movement failed, preserve those attempts and mark the athlete `disqualified`. Leave its best empty. An athlete who attempted lifts is not a no-show. Report conflicting status evidence; the validator rejects a bombed athlete left as competed.
 
-`fmt` derives each `Best*` value from supplied attempts. Fill a best manually only when the source gives a best without an attempt breakdown; keep those attempt cells empty. For movements outside `event`, leave all four cells empty.
+`prepare` derives each `Best*` value from supplied attempts. Fill a best manually only when the source gives a best without an attempt breakdown; keep those attempt cells empty. For movements outside `event`, leave all four cells empty.
 
 ### Published totals
 
-For a competed `MPDS` result with only a published total, add `ReportedTotalKg` and keep every attempt and best empty. Use individual lift results when available; clear the reported total when adding a breakdown. The importer rejects rows that combine both forms. It computes ranks and placings from the total, and RIS from bodyweight when available. Leave RIS empty when the source score is unreliable and bodyweight is unknown.
+For a competed result, record the published `TotalKg` alongside any known attempts or bests. `prepare` fills a missing total only when every event movement has a successful best; it rejects contradictions without replacing the supplied total. Leave unknown totals empty when the breakdown is incomplete. Import requires a stored total for complete breakdowns. Rankings and pages use the stored total; All4 results with bodyweight can also receive calculated RIS. Preserve a published `ReportedRis` even when it cannot be verified.
 
 ### Bodyweight recovery
 

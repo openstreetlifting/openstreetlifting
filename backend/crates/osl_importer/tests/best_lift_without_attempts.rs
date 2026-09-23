@@ -78,8 +78,7 @@ async fn a_stated_best_lift_still_counts_toward_the_total(pool: PgPool) {
     .await;
 
     let total: Option<Decimal> = sqlx::query_scalar(
-        "SELECT SUM(l.max_weight) FROM lifts l
-         JOIN competition_participants cp USING (participant_id)
+        "SELECT cp.total FROM competition_participants cp
          JOIN athletes a USING (athlete_id)
          WHERE a.last_name = 'Card'",
     )

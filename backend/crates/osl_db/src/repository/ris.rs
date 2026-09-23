@@ -32,14 +32,14 @@ impl<'a> RisRepository<'a> {
                 c.start_date as competition_date,
                 a.gender,
                 cp.bodyweight as "bodyweight!",
-                COALESCE(cp.reported_total, SUM(l.max_weight), 0) as "total!"
+                cp.total as "total!"
             FROM competition_participants cp
             INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
             INNER JOIN competitions c ON cp.competition_id = c.competition_id
-            LEFT JOIN lifts l ON l.participant_id = cp.participant_id
             WHERE cp.ris_source = 'computed'
               AND cp.bodyweight IS NOT NULL
-            GROUP BY cp.participant_id, a.athlete_id, c.competition_id
+              AND cp.total IS NOT NULL
+              AND c.event_code = 'MPDS'
             ORDER BY cp.bodyweight, cp.participant_id
             "#
         )

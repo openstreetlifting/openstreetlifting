@@ -95,7 +95,7 @@ pub fn athlete(first: &str, last: &str) -> AthleteData {
         bodyweight: Some(Decimal::from(80)),
         bodyweight_source: None,
         reported_ris_edition: None,
-        reported_total: None,
+        total: None,
         reported_ris: None,
         status: AthleteStatus::Competed,
         status_reason: None,
@@ -180,13 +180,19 @@ pub fn lifting(athlete: AthleteData, weights: [&str; 4]) -> AthleteData {
 }
 
 pub async fn import(pool: &PgPool, canonical: CanonicalFormat) {
-    CanonicalTransformer::new(pool)
-        .import_to_database(canonical)
+    try_import(pool, canonical)
         .await
         .expect("import should succeed");
 }
 
-pub async fn try_import(pool: &PgPool, canonical: CanonicalFormat) -> osl_importer::Result<()> {
+pub async fn try_import(pool: &PgPool, mut canonical: CanonicalFormat) -> osl_importer::Result<()> {
+    for category in &mut canonical.categories {
+        for athlete in &mut category.athletes {
+            if athlete.total.is_none() {
+                athlete.total = athlete.total_from_lifts(&canonical.movements);
+            }
+        }
+    }
     CanonicalTransformer::new(pool)
         .import_to_database(canonical)
         .await

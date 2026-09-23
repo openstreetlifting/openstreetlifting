@@ -94,21 +94,23 @@ fractions, such as `72.5`.
 Use this standard base header when starting a file:
 
 ```csv
-Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 ```
 
 Add `WeightClassKg` after `Sex` for competitions with weight classes, and
 `Division` first when separate divisions are needed. `NativeName`,
-`BodyweightSource`, `ReportedRisEdition` and `ReportedTotalKg` are optional
+`BodyweightSource` and `ReportedRisEdition` are optional
 additional columns.
 
 The parser also accepts files without `FirstName`, `Disambiguation` or
-`StatusReason`: an omitted column means an empty value for every entry. `fmt`
+`StatusReason`: an omitted column means an empty value for every entry. `prepare`
 always restores these three columns in the standard base header, so formatted
 files provide a consistent starting point for contributors. It preserves any
-values already supplied.
+values already supplied. It fills an empty `TotalKg` only when every event
+movement has a successful best lift.
 
-All other base headers are required, even when their cells may be empty. Keep
+All other base headers, including `TotalKg`, are required even when their cells
+may be empty. Keep
 the columns for all four movements, leaving cells empty for movements outside
 the event. Unknown or misspelled headers are rejected.
 
@@ -124,6 +126,7 @@ the event. Unknown or misspelled headers are rejected.
 | `Country`        | The athlete's ISO 3166-1 alpha-2 country code. Required.                           |
 | `BodyweightKg`   | The athlete's bodyweight, if known.                                              |
 | `ReportedRis`    | The source's published RIS score, whether or not bodyweight is known.            |
+| `TotalKg` | Overall total from the source, or filled by `prepare` from a complete breakdown. |
 | `Status`         | `competed`, `disqualified` or `no_show`. Empty means `competed`.                 |
 | `StatusReason`   | A short explanation for `disqualified` or `no_show`. Leave empty for `competed`. |
 
@@ -186,15 +189,28 @@ attempts. If only the best lift is known, fill that column alone.
 Mark an athlete who missed every attempt at a movement as `disqualified`, with a
 reason such as `Bombed the squat`. A `no_show` must have no attempts or best lifts.
 
-### Published totals without lift results
+### Totals and preparation
 
-If an All4 (`MPDS`) source gives only an overall total, enter it in the optional
-`ReportedTotalKg` column. Use a positive weight and status `competed`. Leave all
-attempt and best-lift cells empty. The importer uses this total for rankings and
-category placings, and calculates RIS when bodyweight is available.
+Use `TotalKg` for the overall result. Keep the total and any available lift
+results together. The former `ReportedTotalKg` header is rejected.
 
-Use individual lift results when available. When adding a breakdown later,
-clear `ReportedTotalKg`; the importer then calculates the total from those lifts.
+Run `osl-import prepare <directory>` before importing. It fills a missing total
+from successful best lifts only when every movement in the event is present,
+validates the result, and formats the files. Existing totals must equal the sum
+of a complete breakdown, or be at least the known subtotal when the breakdown
+is incomplete. Negative totals and totals on disqualified or no-show rows are
+rejected. A successful zero-weight lift counts as a recorded result.
+
+When both the total and part of the breakdown are unknown, leave them empty.
+The validator warns that the result has no total or calculated RIS. Missing
+lifts are never treated as zero. Preserve a published total when available;
+it supports total rankings and, for All4 with bodyweight, RIS calculation even
+without a full breakdown.
+
+`prepare` validates every selected competition before writing any files.
+`prepare --check` leaves files unchanged and fails if preparation is needed.
+Import requires a stored total whenever the breakdown is complete; it never
+fills one. Rankings, pages and RIS calculations use that stored value.
 
 ### Bodyweight and reported RIS
 

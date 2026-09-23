@@ -16,6 +16,7 @@ fn recovered() -> CanonicalFormat {
         common::athlete("Xavier", "Macias"),
         ["50", "110", "175", "251.5"],
     );
+    athlete.total = Some(common::decimal("586.5"));
     athlete.bodyweight = Some(common::decimal("91.7"));
     athlete.bodyweight_source = Some(BodyweightSource::Recovered);
     athlete.reported_ris = Some(common::decimal("113.43"));
@@ -64,7 +65,7 @@ fn published_bodyweight_and_ris_are_checked_against_the_source_edition() {
 
         // A source may publish only a total, with no lift breakdown.
         let athlete = &mut canonical.categories[0].athletes[0];
-        athlete.reported_total = Some(athlete.complete_total().unwrap());
+        athlete.total = Some(athlete.complete_total().unwrap());
         athlete.lifts.clear();
         CanonicalValidator::validate(&canonical).unwrap();
 
@@ -96,6 +97,7 @@ fn published_scores_with_insufficient_evidence_are_preserved_with_a_warning() {
 
     canonical.categories[0].athletes[0].reported_ris_edition = Some(Edition::V2024);
     canonical.categories[0].athletes[0].lifts.pop();
+    canonical.categories[0].athletes[0].total = None;
     let report = CanonicalValidator::validate(&canonical).unwrap();
     assert!(
         report
@@ -110,7 +112,15 @@ fn total_requires_each_movement_and_consistent_attempts_but_accepts_zero() {
     let mut athlete = recovered().categories.remove(0).athletes.remove(0);
     assert_eq!(athlete.complete_total().unwrap(), common::decimal("586.5"));
     let squat = athlete.lifts.pop().unwrap();
-    assert!(athlete.complete_total().unwrap_err().contains("Squat"));
+    assert_eq!(athlete.complete_total().unwrap(), common::decimal("586.5"));
+    athlete.total = None;
+    assert!(
+        athlete
+            .complete_total()
+            .unwrap_err()
+            .contains("TotalKg is missing")
+    );
+    athlete.total = Some(common::decimal("586.5"));
     athlete.lifts.push(squat);
     athlete.lifts[0].attempts.as_mut().unwrap()[0].is_successful = false;
     assert!(
@@ -129,6 +139,13 @@ fn total_requires_each_movement_and_consistent_attempts_but_accepts_zero() {
     );
     athlete.lifts[0].best_lift = None;
     athlete.lifts[0].attempts.as_mut().unwrap()[0].weight = Decimal::ZERO;
+    assert!(
+        athlete
+            .complete_total()
+            .unwrap_err()
+            .contains("contradicts")
+    );
+    athlete.total = Some(common::decimal("536.5"));
     assert_eq!(athlete.complete_total().unwrap(), common::decimal("536.5"));
     athlete.lifts.push(athlete.lifts[0].clone());
     assert!(athlete.complete_total().unwrap_err().contains("duplicate"));

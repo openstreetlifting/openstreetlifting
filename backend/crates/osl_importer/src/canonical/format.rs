@@ -3,6 +3,20 @@ use rust_decimal::Decimal;
 
 use super::models::{CanonicalFormat, CategoryData};
 
+/// Fill missing totals, validate the result, then put files in canonical order.
+pub fn prepare(canonical: &mut CanonicalFormat) -> crate::Result<()> {
+    for category in &mut canonical.categories {
+        for athlete in &mut category.athletes {
+            if athlete.total.is_none() {
+                athlete.total = athlete.total_from_lifts(&canonical.movements);
+            }
+        }
+    }
+    super::validator::CanonicalValidator::validate(canonical)?.log_warnings();
+    normalize(canonical);
+    Ok(())
+}
+
 pub fn normalize(canonical: &mut CanonicalFormat) {
     canonical.movements.sort_by_key(|m| m.display_order());
     canonical.movements.dedup();

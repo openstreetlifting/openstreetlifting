@@ -19,7 +19,7 @@ The examples below use `osl-import`, the name shown in the CLI help. In a source
 | `instagram [FILE]` | Synchronize Instagram handles |
 | `redact --name NAME` | Replace an athlete's name and remove their handle |
 | `privacy` | Check competition files for suppressed names |
-| `fmt [PATH…]` | Format competition files |
+| `prepare [PATH…]` | Fill missing totals, validate and format competition files |
 | `recompute-ris` | Recalculate stored RIS scores |
 
 Use `osl-import <command> --help` for options and defaults. Global options, including `--database-url`, `--privacy-file`, and `--verbose`, work before or after the command.
@@ -27,6 +27,7 @@ Use `osl-import <command> --help` for options and defaults. Global options, incl
 ## Competition imports
 
 ```sh
+osl-import prepare data/competitions
 osl-import competitions data/competitions --dry-run
 osl-import competitions data/competitions
 ```
@@ -50,10 +51,10 @@ osl-import competitions data/competitions --prune
 | `competitions` | File format, data validity, and suppression records; no database connection |
 | `instagram` | CSV format; also checks athlete matches when `DATABASE_URL` is set |
 | `redact` | Identity match and planned file changes |
-| `fmt` | Files that need formatting |
+| `prepare` | Files that need preparation |
 | `recompute-ris` | Number of eligible stored scores; requires a database connection |
 
-`competitions --dry-run --prune` validates files without calculating database deletions. For formatting checks in CI, use `fmt --check`: it leaves files unchanged and returns a nonzero exit status if any file needs formatting.
+`competitions --dry-run --prune` validates files without calculating database deletions. For preparation checks in CI, use `prepare --check`: it leaves files unchanged and returns a nonzero exit status if any file needs preparation.
 
 ## Configuration
 
@@ -76,6 +77,8 @@ This checks public files but skips the check for removed names. The flag require
 See the [athlete data guide](../../data/athletes/README.md) for Instagram matching, key setup, and name removal. Use the [staging fixtures](../../data/staging/README.md) to test name removal on a temporary copy.
 
 ## Migrate from older commands
+
+Replace `fmt PATH` with `prepare PATH`; preparation also fills missing totals from complete lift results and rejects inconsistent data.
 
 Replace `canonical PATH` and `bulk-import --directory PATH` with `competitions PATH`. Pass multiple paths as positional arguments. Use `--dry-run` in place of `--validate-only`.
 

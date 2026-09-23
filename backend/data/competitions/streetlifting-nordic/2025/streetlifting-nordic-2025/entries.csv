@@ -1,34 +1,34 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-M,66,Elian,Alkinani,,SE,,,competed,,,,,20,,,,67.5,,,,120,,,,182.5
-M,66,Jin Samuel,Nilsen,,NO,,,competed,,,,,15,,,,50,,,,85,,,,132.5
-M,73,Teodor,Dahlgren,,SE,,,competed,,,,,22.5,,,,80,,,,112.5,,,,192.5
-M,73,Juho,Heinonen,,FI,,,competed,,,,,15,,,,65,,,,85,,,,145
-M,73,Simon,Käreswed,,SE,,,competed,,,,,15,,,,55,,,,85,,,,172.5
-M,80,Johan,Kang,,SE,,,competed,,,,,15,,,,65,,,,125,,,,205
-M,80,Peter,Tolstrup,,NO,,,competed,,,,,35,,,,87.5,,,,150,,,,195
-M,80,Harry,Twister,,SE,,,competed,,,,,25,,,,60,,,,107.5,,,,175
-M,87,Axl,Kleven,,NO,,,competed,,,,,30,,,,90,,,,115,,,,160
-M,87,Sven,Thorkildsen,,NO,,,competed,,,,,25,,,,80,,,,135,,,,205
-M,87,Zack,Viberg,,SE,,,competed,,,,,27.5,,,,95,,,,130,,,,185
-M,94,Miles Clarke,Bolin,,SE,,,competed,,,,,5,,,,60,,,,110,,,,182.5
-M,94,Alexander,Hernelind,,SE,,,disqualified,Bombed the muscle-up,,,,,,,,55,,,,125,,,,167.5
-M,94,Perttu,Riipinen,,FI,,,competed,,,,,5,,,,67.5,,,,120,,,,247.5
-M,101,Lars,Lucas,,SE,,,competed,,,,,2.5,,,,70,,,,105,,,,230
-M,101,Olof,Lundén,,SE,,,competed,,,,,15,,,,70,,,,105,,,,192.5
-M,101,Aaro,Silvo,,FI,,,competed,,,,,28,,,,98,,,,120,,,,190
-M,101+,Aun,Evensen,,NO,,,competed,,,,,1,,,,60,,,,125,,,,210
-M,101+,Daniel,Eyaife,,SE,,,competed,,,,,1,,,,87.5,,,,152.5,,,,295
-M,101+,Ola,Rønning,,NO,,,competed,,,,,2.5,,,,55,,,,80,,,,190
-F,52,Caroline,Lagerborg,,SE,,,competed,,,,,3,,,,21,,,,26,,,,97.5
-F,52,Linnea,Stenson,,SE,,,competed,,,,,10,,,,27,,,,35,,,,65
-F,52,Kari Marie,Ulvestad,,NO,,,competed,,,,,,,,,30,,,,35,,,,92.5
-F,57,Sanna,Andersson,,SE,,,competed,,,,,3.5,,,,21.5,,,,40,,,,125
-F,57,Anni,Koskenniemi,,FI,,,competed,,,,,2.5,,,,30,,,,36.25,,,,90
-F,63,Lina,Hedman,,SE,,,competed,,,,,4,,,,25,,,,52.5,,,,155
-F,63,Taru,Riipinen,,FI,,,competed,,,,,16.25,,,,43.75,,,,60,,,,140
-F,63,Ina,Vestin,,SE,,,competed,,,,,10,,,,36.25,,,,52.5,,,,95
-F,70,Frida,Frisk,,SE,,,competed,,,,,,,,,37,,,,62.5,,,,130
-F,70,Märta,Paulsson,,SE,,,competed,,,,,13.75,,,,36.25,,,,62.5,,,,140
-F,70,Johanna,Saunamäki,,FI,,,competed,,,,,1.25,,,,32.5,,,,45,,,,135
-F,70+,Ida,Lundén,,SE,,,competed,,,,,,,,,25,,,,50,,,,135
-F,70+,Ellen B.,Åkesson,,SE,,,competed,,,,,6,,,,35,,,,47.5,,,,145
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Elian,Alkinani,,SE,,,390,competed,,,,,20,,,,67.5,,,,120,,,,182.5
+M,66,Jin Samuel,Nilsen,,NO,,,282.5,competed,,,,,15,,,,50,,,,85,,,,132.5
+M,73,Teodor,Dahlgren,,SE,,,407.5,competed,,,,,22.5,,,,80,,,,112.5,,,,192.5
+M,73,Juho,Heinonen,,FI,,,310,competed,,,,,15,,,,65,,,,85,,,,145
+M,73,Simon,Käreswed,,SE,,,327.5,competed,,,,,15,,,,55,,,,85,,,,172.5
+M,80,Johan,Kang,,SE,,,410,competed,,,,,15,,,,65,,,,125,,,,205
+M,80,Peter,Tolstrup,,NO,,,467.5,competed,,,,,35,,,,87.5,,,,150,,,,195
+M,80,Harry,Twister,,SE,,,367.5,competed,,,,,25,,,,60,,,,107.5,,,,175
+M,87,Axl,Kleven,,NO,,,395,competed,,,,,30,,,,90,,,,115,,,,160
+M,87,Sven,Thorkildsen,,NO,,,445,competed,,,,,25,,,,80,,,,135,,,,205
+M,87,Zack,Viberg,,SE,,,437.5,competed,,,,,27.5,,,,95,,,,130,,,,185
+M,94,Miles Clarke,Bolin,,SE,,,357.5,competed,,,,,5,,,,60,,,,110,,,,182.5
+M,94,Alexander,Hernelind,,SE,,,,disqualified,Bombed the muscle-up,,,,,,,,55,,,,125,,,,167.5
+M,94,Perttu,Riipinen,,FI,,,440,competed,,,,,5,,,,67.5,,,,120,,,,247.5
+M,101,Lars,Lucas,,SE,,,407.5,competed,,,,,2.5,,,,70,,,,105,,,,230
+M,101,Olof,Lundén,,SE,,,382.5,competed,,,,,15,,,,70,,,,105,,,,192.5
+M,101,Aaro,Silvo,,FI,,,436,competed,,,,,28,,,,98,,,,120,,,,190
+M,101+,Aun,Evensen,,NO,,,396,competed,,,,,1,,,,60,,,,125,,,,210
+M,101+,Daniel,Eyaife,,SE,,,536,competed,,,,,1,,,,87.5,,,,152.5,,,,295
+M,101+,Ola,Rønning,,NO,,,327.5,competed,,,,,2.5,,,,55,,,,80,,,,190
+F,52,Caroline,Lagerborg,,SE,,,147.5,competed,,,,,3,,,,21,,,,26,,,,97.5
+F,52,Linnea,Stenson,,SE,,,137,competed,,,,,10,,,,27,,,,35,,,,65
+F,52,Kari Marie,Ulvestad,,NO,,,,competed,,,,,,,,,30,,,,35,,,,92.5
+F,57,Sanna,Andersson,,SE,,,190,competed,,,,,3.5,,,,21.5,,,,40,,,,125
+F,57,Anni,Koskenniemi,,FI,,,158.75,competed,,,,,2.5,,,,30,,,,36.25,,,,90
+F,63,Lina,Hedman,,SE,,,236.5,competed,,,,,4,,,,25,,,,52.5,,,,155
+F,63,Taru,Riipinen,,FI,,,260,competed,,,,,16.25,,,,43.75,,,,60,,,,140
+F,63,Ina,Vestin,,SE,,,193.75,competed,,,,,10,,,,36.25,,,,52.5,,,,95
+F,70,Frida,Frisk,,SE,,,,competed,,,,,,,,,37,,,,62.5,,,,130
+F,70,Märta,Paulsson,,SE,,,252.5,competed,,,,,13.75,,,,36.25,,,,62.5,,,,140
+F,70,Johanna,Saunamäki,,FI,,,213.75,competed,,,,,1.25,,,,32.5,,,,45,,,,135
+F,70+,Ida,Lundén,,SE,,,,competed,,,,,,,,,25,,,,50,,,,135
+F,70+,Ellen B.,Åkesson,,SE,,,233.5,competed,,,,,6,,,,35,,,,47.5,,,,145

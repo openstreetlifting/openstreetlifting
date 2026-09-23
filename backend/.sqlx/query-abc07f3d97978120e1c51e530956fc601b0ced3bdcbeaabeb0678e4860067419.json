@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                cp.participant_id,\n                CONCAT_WS(' ', a.first_name, a.last_name) as \"athlete_name!\",\n                a.slug as athlete_slug,\n                c.name as competition_name,\n                c.slug as competition_slug,\n                c.start_date as competition_date,\n                a.gender,\n                cp.bodyweight as \"bodyweight!\",\n                COALESCE(cp.reported_total, SUM(l.max_weight), 0) as \"total!\"\n            FROM competition_participants cp\n            INNER JOIN athletes a ON cp.athlete_id = a.athlete_id\n            INNER JOIN competitions c ON cp.competition_id = c.competition_id\n            LEFT JOIN lifts l ON l.participant_id = cp.participant_id\n            WHERE cp.ris_source = 'computed'\n              AND cp.bodyweight IS NOT NULL\n            GROUP BY cp.participant_id, a.athlete_id, c.competition_id\n            ORDER BY cp.bodyweight, cp.participant_id\n            ",
+  "query": "\n            SELECT\n                cp.participant_id,\n                CONCAT_WS(' ', a.first_name, a.last_name) as \"athlete_name!\",\n                a.slug as athlete_slug,\n                c.name as competition_name,\n                c.slug as competition_slug,\n                c.start_date as competition_date,\n                a.gender,\n                cp.bodyweight as \"bodyweight!\",\n                cp.total as \"total!\"\n            FROM competition_participants cp\n            INNER JOIN athletes a ON cp.athlete_id = a.athlete_id\n            INNER JOIN competitions c ON cp.competition_id = c.competition_id\n            WHERE cp.ris_source = 'computed'\n              AND cp.bodyweight IS NOT NULL\n              AND cp.total IS NOT NULL\n              AND c.event_code = 'MPDS'\n            ORDER BY cp.bodyweight, cp.participant_id\n            ",
   "describe": {
     "columns": [
       {
@@ -90,7 +90,12 @@
         "ordinal": 8,
         "name": "total!",
         "type_info": "Numeric",
-        "origin": "Expression"
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "total"
+          }
+        }
       }
     ],
     "parameters": {
@@ -105,8 +110,8 @@
       false,
       false,
       true,
-      null
+      true
     ]
   },
-  "hash": "11be5e577dad7b109e441bea8afee4289ee6fb912adfe34486ba8da412a01558"
+  "hash": "abc07f3d97978120e1c51e530956fc601b0ced3bdcbeaabeb0678e4860067419"
 }

@@ -25,6 +25,7 @@ fn canonical(class: Class) -> CanonicalFormat {
 fn fixture(class: Class, ris: Option<&str>) -> CanonicalFormat {
     let mut lifter = common::athlete("John", "Doe");
     lifter.bodyweight = Some(decimal("72.5"));
+    lifter.total = Some(decimal("310"));
 
     if let Some(ris) = ris {
         lifter.bodyweight = None;

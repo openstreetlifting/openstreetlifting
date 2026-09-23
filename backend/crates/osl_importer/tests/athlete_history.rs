@@ -87,9 +87,24 @@ async fn bombed_and_uncontested_movements_do_not_create_records(pool: PgPool) {
         Movement::PullUp,
         &[("60", true)],
     );
-    let mut partial = competition("partial", vec![men_80(vec![lifter])]);
+    let mut partial = competition(
+        "partial",
+        vec![men_80(vec![disqualified(lifter, Some("Bombed muscle-up"))])],
+    );
     partial.movements = vec![Movement::MuscleUp, Movement::PullUp];
     import(&pool, partial).await;
+    import(
+        &pool,
+        competition(
+            "incomplete",
+            vec![men_80(vec![common::best(
+                athlete("Partial", "Lifter"),
+                Movement::PullUp,
+                "60",
+            )])],
+        ),
+    )
+    .await;
     let detail = AthleteRepository::new(&pool)
         .find_by_slug_detailed("partial-lifter")
         .await

@@ -297,8 +297,8 @@ fn read_entry(
         bodyweight_source,
         reported_ris,
         reported_ris_edition,
-        reported_total: entries::parse_decimal(columns.get(record, entries::REPORTED_TOTAL))
-            .map_err(|e| format!("{}: {e}", entries::REPORTED_TOTAL))?,
+        total: entries::parse_decimal(columns.get(record, entries::TOTAL))
+            .map_err(|e| format!("{}: {e}", entries::TOTAL))?,
         status,
         status_reason: optional(columns, record, entries::STATUS_REASON),
         lifts: read_lifts(columns, record, movements)?,
@@ -389,11 +389,6 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
             .iter()
             .flat_map(|c| &c.athletes)
             .any(|athlete| athlete.reported_ris_edition.is_some()),
-        reported_totals: canonical
-            .categories
-            .iter()
-            .flat_map(|c| &c.athletes)
-            .any(|athlete| athlete.reported_total.is_some()),
     };
 
     writer
@@ -425,6 +420,7 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                 athlete.country.as_str().to_string(),
                 entries::render_decimal(athlete.bodyweight),
                 entries::render_decimal(athlete.reported_ris),
+                entries::render_decimal(athlete.total),
                 athlete.status.as_str().to_string(),
                 athlete.status_reason.clone().unwrap_or_default(),
             ]);
@@ -447,10 +443,6 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                         .map(|edition| edition.year().to_string())
                         .unwrap_or_default(),
                 );
-            }
-
-            if layout.reported_totals {
-                row.push(entries::render_decimal(athlete.reported_total));
             }
 
             for movement in Movement::ALL {

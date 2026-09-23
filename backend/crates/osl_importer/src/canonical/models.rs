@@ -75,7 +75,7 @@ pub struct AthleteData {
     pub bodyweight_source: Option<BodyweightSource>,
     pub reported_ris: Option<Decimal>,
     pub reported_ris_edition: Option<Edition>,
-    pub reported_total: Option<Decimal>,
+    pub total: Option<Decimal>,
     pub status: AthleteStatus,
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftData>,
@@ -91,31 +91,74 @@ impl AthleteData {
             .or(self.bodyweight.map(|_| BodyweightSource::Reported))
     }
 
+    /// Sum the event's successful bests only when every movement is present.
+    pub fn total_from_lifts(&self, movements: &[Movement]) -> Option<Decimal> {
+        if self.status != AthleteStatus::Competed || movements.is_empty() {
+            return None;
+        }
+        movements.iter().try_fold(Decimal::ZERO, |total, movement| {
+            self.lifts
+                .iter()
+                .find(|lift| lift.movement == *movement)
+                .and_then(LiftData::best)
+                .map(|best| total + best)
+        })
+    }
+
+    pub fn validate_total(&self, movements: &[Movement]) -> Result<(), String> {
+        let mut seen = std::collections::HashSet::new();
+        let mut known = Decimal::ZERO;
+        for lift in &self.lifts {
+            if !movements.contains(&lift.movement) {
+                return Err(format!("{} is not in the event", lift.movement));
+            }
+            if !seen.insert(lift.movement) {
+                return Err(format!("duplicate {} result", lift.movement));
+            }
+            if self.status == AthleteStatus::Competed {
+                known += lift.validated_best()?;
+            }
+        }
+        let complete = self.total_from_lifts(movements);
+        match self.total {
+            Some(total) => {
+                if total < Decimal::ZERO {
+                    return Err("TotalKg cannot be negative".into());
+                }
+                if self.status != AthleteStatus::Competed || self.status_reason.is_some() {
+                    return Err("TotalKg requires a competed result without a status reason".into());
+                }
+                if movements.is_empty() {
+                    return Err("TotalKg requires an event".into());
+                }
+                if total < known || complete.is_some_and(|sum| sum != total) {
+                    return Err(format!(
+                        "TotalKg {total} contradicts the {}lift sum {known}",
+                        if complete.is_some() {
+                            "complete "
+                        } else {
+                            "known "
+                        }
+                    ));
+                }
+            }
+            None if complete.is_some() => {
+                return Err(
+                    "TotalKg is missing for a complete breakdown; run `osl-import prepare`".into(),
+                );
+            }
+            None => {}
+        }
+        Ok(())
+    }
+
     pub fn complete_total(&self) -> Result<Decimal, String> {
-        if self.status != AthleteStatus::Competed || self.status_reason.is_some() {
-            return Err(
-                "four-lift recovery requires a competed performance without a status reason".into(),
-            );
-        }
-        if let Some(total) = self.reported_total {
-            if total <= Decimal::ZERO || !self.lifts.is_empty() {
-                return Err("reported total must be positive with no lift breakdown".into());
-            }
-            return Ok(total);
-        }
-        let mut total = Decimal::ZERO;
-        for movement in Movement::ALL {
-            let mut lifts = self.lifts.iter().filter(|lift| lift.movement == movement);
-            let lift = lifts
-                .next()
-                .ok_or_else(|| format!("missing {movement} result"))?;
-            if lifts.next().is_some() {
-                return Err(format!("duplicate {movement} result"));
-            }
-            total += lift.validated_best()?;
-        }
+        self.validate_total(&Movement::ALL)?;
+        let total = self
+            .total
+            .ok_or("TotalKg is missing; run `osl-import prepare` when all lifts are available")?;
         if total <= Decimal::ZERO {
-            return Err("four-lift total must be positive".into());
+            return Err("RIS requires a positive TotalKg".into());
         }
         Ok(total)
     }
@@ -126,22 +169,7 @@ impl AthleteData {
         gender: Gender,
         movements: &[Movement],
     ) -> Result<Option<String>, String> {
-        if let Some(total) = self.reported_total {
-            if total <= Decimal::ZERO {
-                return Err("ReportedTotalKg must be positive".into());
-            }
-            if self.status != AthleteStatus::Competed || self.status_reason.is_some() {
-                return Err(
-                    "ReportedTotalKg requires a competed result without a status reason".into(),
-                );
-            }
-            if movements != Movement::ALL {
-                return Err("ReportedTotalKg requires a four-movement event".into());
-            }
-            if !self.lifts.is_empty() {
-                return Err("ReportedTotalKg requires empty lift columns; use the lift breakdown when available".into());
-            }
-        }
+        self.validate_total(movements)?;
         if self.bodyweight_source.is_some() && self.bodyweight.is_none() {
             return Err("BodyweightSource requires BodyweightKg".into());
         }
