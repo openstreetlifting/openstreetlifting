@@ -15,8 +15,8 @@ Name matching ignores accents and capitalization. Leave `Sex`, `Country`, and `D
 
 ```csv
 Name,Sex,Country,Disambiguation,Instagram
-Tony Nguyen,,FR,,tony_fr
-Tony Nguyen,,US,,tony_us
+Alex Example,M,,1,alex_example_one
+Alex Example,M,,2,alex_example_two
 ```
 
 Validate, then synchronize:
@@ -83,25 +83,27 @@ Keep requests in email. Public issues and pull request descriptions must not nam
 
 ## Country-independent identity migration
 
-Identity now uses normalized name, sex, and disambiguation. The database migration
-preserves existing athlete IDs, URLs, results, and social links. Entry countries
-remain as recorded; a matching host country alone does not justify clearing them.
+Identity uses normalized name, sex, and disambiguation. Changing a country
+preserves the athlete's ID and URL. A matching host country alone does not justify
+correcting or clearing an entry's country.
 
-Seven name groups had separate profiles under different countries. Their entries
-and database rows receive the same numbers to preserve those profiles pending
-source review. These numbers do not establish that they are different people.
+The maintainer confirmed that each of these seven pairs of profiles represents
+one person. Their entries use the countries below, without disambiguation numbers.
 
-| Name | Disambiguation 1 | Disambiguation 2 |
-| --- | --- | --- |
-| Harry Twister | BA | SE |
-| Denilson Monteiro | DE | FR |
-| Giuseppe Cicero | IT | SM |
-| Lorenzo Giorgetti | IT | SM |
-| Jacopo Bartoli | IT | SM |
-| Ilaria Valentini | IT | SM |
-| Tony Nguyen | FR | US |
+| Name | Country |
+| --- | --- |
+| Harry Twister | BA |
+| Denilson Monteiro | FR |
+| Giuseppe Cicero | IT |
+| Lorenzo Giorgetti | IT |
+| Jacopo Bartoli | IT |
+| Ilaria Valentini | IT |
+| Tony Nguyen | US |
 
-Review each group against its sources before correcting countries or merging
-profiles. If the database contains other country-based identity collisions, the
-migration fails instead of merging them. Resolve those collisions explicitly
-before retrying.
+The migrations merge these profiles, retaining the ID and URL of the profile
+with the corrected country when available. Old URLs resolve through its slug
+history. Results, records, and social links move to the retained profile.
+Conflicting social accounts or duplicate results stop the migration for review.
+
+Other country-based identity collisions also stop the migration. Resolve them
+explicitly before retrying; matching names alone do not establish identity.

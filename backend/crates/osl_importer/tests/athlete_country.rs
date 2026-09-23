@@ -264,3 +264,145 @@ async fn identity_migration_preserves_existing_profiles_and_participants(pool: P
         .unwrap();
     assert_eq!(imported, before[0].0);
 }
+
+const MERGE_CONFIRMED: &str =
+    include_str!("../../osl_db/migrations/20260923220000_merge_confirmed_athletes.sql");
+
+async fn tony_pair(pool: &PgPool) -> (Uuid, Uuid) {
+    for (country, number) in [("FR", 1), ("US", 2)] {
+        let mut canonical = meet(&format!("tony-{country}"), Some(country));
+        let athlete = &mut canonical.categories[0].athletes[0];
+        athlete.first_name = "Tony".into();
+        athlete.last_name = "Nguyen".into();
+        athlete.disambiguation = Some(number);
+        CanonicalTransformer::new(pool)
+            .import_to_database(canonical)
+            .await
+            .unwrap();
+    }
+    let ids: Vec<Uuid> = sqlx::query_scalar("SELECT athlete_id FROM athletes ORDER BY country")
+        .fetch_all(pool)
+        .await
+        .unwrap();
+    (ids[0], ids[1])
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn confirmed_merge_preserves_results_records_socials_and_old_urls(pool: PgPool) {
+    let (removed, retained) = tony_pair(&pool).await;
+    let old_slug: String = sqlx::query_scalar("SELECT slug FROM athletes WHERE athlete_id = $1")
+        .bind(removed)
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    sqlx::query("UPDATE athletes SET slug_history = '[\"tony-old-url\"]', profile_picture_url = 'https://example.com/tony.jpg' WHERE athlete_id = $1")
+        .bind(removed).execute(&pool).await.unwrap();
+    sqlx::query("INSERT INTO athlete_socials (athlete_id, social_id, handle) SELECT $1, social_id, 'tony' FROM socials WHERE name = 'instagram'")
+        .bind(removed).execute(&pool).await.unwrap();
+    sqlx::query("INSERT INTO records (record_type, athlete_id, competition_id, weight_class_id, movement_name, date_set, weight, gender) SELECT 'world', athlete_id, competition_id, weight_class_id, 'Squat', '2026-01-01', 130, 'M' FROM competition_participants WHERE athlete_id = $1")
+        .bind(removed).execute(&pool).await.unwrap();
+    let snapshot_queries = [
+        "SELECT jsonb_agg(to_jsonb(t) - 'athlete_id' - 'country' ORDER BY participant_id)::text FROM competition_participants t",
+        "SELECT jsonb_agg(to_jsonb(t) ORDER BY lift_id)::text FROM lifts t",
+        "SELECT jsonb_agg(to_jsonb(t) ORDER BY attempt_id)::text FROM attempts t",
+        "SELECT jsonb_agg(to_jsonb(t) - 'athlete_id' ORDER BY record_id)::text FROM records t",
+        "SELECT jsonb_agg(to_jsonb(t) - 'athlete_id' ORDER BY athlete_social_id)::text FROM athlete_socials t",
+    ];
+    let mut snapshots = Vec::new();
+    for query in snapshot_queries {
+        let snapshot: Option<String> = sqlx::query_scalar(query).fetch_one(&pool).await.unwrap();
+        snapshots.push((query, snapshot));
+    }
+    sqlx::raw_sql(MERGE_CONFIRMED).execute(&pool).await.unwrap();
+    assert_eq!(identity(&pool).await.0, retained);
+    assert_eq!(identity(&pool).await.2.as_deref(), Some("US"));
+    let count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM athletes")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(count, 1);
+    let number: Option<i16> = sqlx::query_scalar("SELECT disambiguation FROM athletes")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(number, None);
+    for (query, before) in snapshots {
+        let after: Option<String> = sqlx::query_scalar(query).fetch_one(&pool).await.unwrap();
+        assert_eq!(after, before);
+    }
+    for query in [
+        "SELECT DISTINCT athlete_id FROM competition_participants",
+        "SELECT DISTINCT athlete_id FROM records",
+        "SELECT DISTINCT athlete_id FROM athlete_socials",
+    ] {
+        let ids: Vec<Uuid> = sqlx::query_scalar(query).fetch_all(&pool).await.unwrap();
+        assert_eq!(ids, vec![retained]);
+    }
+    for slug in [&old_slug, "tony-old-url"] {
+        let profile = AthleteRepository::new(&pool)
+            .find_by_slug_detailed(slug)
+            .await
+            .unwrap();
+        assert_eq!(profile.athlete.athlete_id, retained);
+        assert_eq!(profile.total_competitions, 2);
+        assert_eq!(
+            profile.athlete.profile_picture_url.as_deref(),
+            Some("https://example.com/tony.jpg")
+        );
+    }
+    let countries: Vec<String> =
+        sqlx::query_scalar("SELECT DISTINCT country FROM competition_participants")
+            .fetch_all(&pool)
+            .await
+            .unwrap();
+    assert_eq!(countries, vec!["US"]);
+    // Corrected files must reuse the merged identity on every subsequent import.
+    let mut corrected = meet("tony-FR", Some("US"));
+    corrected.categories[0].athletes[0].first_name = "Tony".into();
+    corrected.categories[0].athletes[0].last_name = "Nguyen".into();
+    CanonicalTransformer::new(&pool)
+        .import_to_database(corrected)
+        .await
+        .unwrap();
+    assert_eq!(identity(&pool).await.0, retained);
+    sqlx::raw_sql(MERGE_CONFIRMED).execute(&pool).await.unwrap();
+    assert_eq!(identity(&pool).await.0, retained);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn confirmed_merge_rejects_conflicting_social_accounts(pool: PgPool) {
+    tony_pair(&pool).await;
+    sqlx::query("INSERT INTO athlete_socials (athlete_id, social_id, handle) SELECT a.athlete_id, s.social_id, 'tony_' || a.country FROM athletes a CROSS JOIN socials s WHERE s.name = 'instagram'")
+        .execute(&pool).await.unwrap();
+    let error = sqlx::raw_sql(MERGE_CONFIRMED)
+        .execute(&pool)
+        .await
+        .unwrap_err();
+    assert!(error.to_string().contains("Conflicting social accounts"));
+    let count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM athletes")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(count, 2);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn confirmed_merge_rejects_duplicate_results_atomically(pool: PgPool) {
+    let (removed, retained) = tony_pair(&pool).await;
+    sqlx::query("UPDATE competition_participants SET competition_id = (SELECT competition_id FROM competition_participants WHERE athlete_id = $1) WHERE athlete_id = $2")
+        .bind(retained).bind(removed).execute(&pool).await.unwrap();
+    let before: String = sqlx::query_scalar(
+        "SELECT jsonb_agg(to_jsonb(t) ORDER BY athlete_id)::text FROM athletes t",
+    )
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+    assert!(sqlx::raw_sql(MERGE_CONFIRMED).execute(&pool).await.is_err());
+    let after: String = sqlx::query_scalar(
+        "SELECT jsonb_agg(to_jsonb(t) ORDER BY athlete_id)::text FROM athletes t",
+    )
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+    assert_eq!(after, before);
+}

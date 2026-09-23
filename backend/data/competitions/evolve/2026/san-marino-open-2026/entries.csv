@@ -1,7 +1,7 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Giovanni,Candita,,IT,65.8,77.49,327.5,competed,,recovered,2026,0,5,7.5,7.5,45,50,52.5x,50,90,100,110x,100,160,170,175x,170
 M,66,Mattia,Cecchin,,IT,65.5,94.42,397.5,competed,,recovered,2026,25,30,33.75x,30,75,80,82.5,82.5,102.5,110x,110,110,175,185x,185x,175
-M,66,Giuseppe,Cicero,2,SM,60.7,95.41,378.75,competed,,recovered,2026,20,25x,25,25,60,65,67.5x,65,92.5x,96.25,100x,96.25,185,192.5,200x,192.5
+M,66,Giuseppe,Cicero,,IT,60.7,95.41,378.75,competed,,recovered,2026,20,25x,25,25,60,65,67.5x,65,92.5x,96.25,100x,96.25,185,192.5,200x,192.5
 M,66,Gianmarco,Pironi,,IT,65.35,101.14,425,competed,,recovered,2026,15,20,22.5x,20,60,65,67.5,67.5,110,117.5,120,120,202.5,212.5,217.5,217.5
 M,66,Pasquale,Valeo,,IT,65.85,95.77,405,competed,,recovered,2026,13.75,17.5x,17.5,17.5,66.25,70,72.5x,70,115x,115,118.75x,115,195,202.5,205x,202.5
 M,73,Alessio,Ceragioli,,IT,72.2,101.96,467.5,competed,,recovered,2026,25,30,32.5x,30,75,80,82.5,82.5,105,112.5,117.5x,112.5,220,230,242.5,242.5
@@ -16,7 +16,7 @@ M,73,Pablo,Reveriego Sansón,,ES,72.65,99.77,460,competed,,recovered,2026,25,27.
 M,73,Giulio,Torelli,,IT,73.05,97.68,452.5,competed,,recovered,2026,25,31.25,32.5x,31.25,80,85,87.5,87.5,120,130,133.75,133.75,185,200,212.5x,200
 M,73,Jesus,Toscano,,ES,,0,,disqualified,Bombed the dips and muscle-up and pull-up and squat,,,35x,35x,35x,,75x,,,,70x,,,,120x,,,
 M,80,Simone,Facchinetti,,IT,76.3,101.43,487.5,competed,,recovered,2026,20,25,27.5x,25,70,75,80,80,145,155,163.75x,155,215,227.5,232.5x,227.5
-M,80,Lorenzo,Giorgetti,2,SM,79.35,73.94,366.25,competed,,recovered,2026,10x,10,15x,10,50,56.25,60x,56.25,80,85,90,90,190,200,210,210
+M,80,Lorenzo,Giorgetti,,IT,79.35,73.94,366.25,competed,,recovered,2026,10x,10,15x,10,50,56.25,60x,56.25,80,85,90,90,190,200,210,210
 M,80,Mattia,Martinelli,,IT,79.2,99.06,490,competed,,recovered,2026,30,36.25,40x,36.25,77.5,87.5,91.25,91.25,120,130,140x,130,220,232.5,237.5x,232.5
 M,80,Matteo,Pozzi,,IT,75.06,73.29,347.5,competed,,recovered,2026,12.5,17.5,21.25x,17.5,65,70x,72.5,72.5,85,92.5,100x,92.5,165x,165,180x,165
 M,80,Alberto,Salinas Valcárcel,,ES,78.7,88.6,436.25,competed,,recovered,2026,22.5,26.25,28.75x,26.25,70x,70,75x,70,112.5,122.5,130,130,210,225x,235x,210
@@ -41,7 +41,7 @@ M,94,Giacomo,Romani,,SM,,0,,no_show,,,,,,,,,,,,,,,,,,,
 M,101,Andrea,Alviano,,IT,95.11,68.43,370,competed,,recovered,2026,7.5,10x,10x,7.5,62.5,70,76.25x,70,105,112.5,117.5x,112.5,160,170,180,180
 M,101,Matteo,Angelone,,IT,,0,,no_show,,,,,,,,,,,,,,,,,,,
 M,101,Guido,Barbarotto,,IT,95.11,95.71,517.5,competed,,recovered,2026,7.5,11.25,12.5x,11.25,67.5,71.25,72.5x,71.25,145,152.5,157.5,157.5,260,270,277.5,277.5
-M,101,Jacopo,Bartoli,2,SM,,0,,no_show,,,,,,,,,,,,,,,,,,,
+M,101,Jacopo,Bartoli,,IT,,0,,no_show,,,,,,,,,,,,,,,,,,,
 M,101,Lorenzo,Bruschi,,IT,97.78,82.69,450,competed,,recovered,2026,5x,5x,5,5,77.5,83.75,90,90,130,140,150x,140,205,215,215x,215
 M,101,Juan,Gasón,,ES,98.09,75.75,412.5,competed,,recovered,2026,5,10,12.5,12.5,57.5,65x,65x,57.5,102.5,107.5x,107.5x,102.5,230,240,240x,240
 M,101,Miguel,Tirado,,ES,95.76,96.93,525,competed,,recovered,2026,40,42.5,45,45,100,110,112.5,112.5,125,135,142.5,142.5,205,215,225,225
@@ -65,5 +65,5 @@ F,63,Giulia,Scipione,,IT,60.81,85.38,236.25,competed,,recovered,2026,5x,5,8.75x,
 F,70,Elisa,Bisetti,,IT,,84.64,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,27.5,32.5,35x,32.5,45,50,55,55,140,150,155x,150
 F,70,Giorgia,Galasi,,IT,63.5,101.11,282.5,competed,,recovered,2026,10,15,16.25,16.25,40,45,48.75,48.75,65,70,71.25x,70,135,142.5,147.5,147.5
 F,70,Venus,Pellizzaro,,IT,69.04,88.42,248.75,competed,,recovered,2026,0,1.25x,1.25,1.25,25,30,32.5,32.5,55,60x,60x,55,150,160,165x,160
-F,70,Ilaria,Valentini,2,SM,65.16,66.89,187.5,competed,,recovered,2026,0,2.5,5,5,25,30,35,35,32.5,37.5,41.25x,37.5,110,120x,127.5x,110
+F,70,Ilaria,Valentini,,IT,65.16,66.89,187.5,competed,,recovered,2026,0,2.5,5,5,25,30,35,35,32.5,37.5,41.25x,37.5,110,120x,127.5x,110
 F,70+,Michela,Bruschi,,IT,75.93,92.72,261.25,competed,,recovered,2026,2.5,5,10,10,30,35,40x,35,60,65,71.25,71.25,130,137.5,145,145
