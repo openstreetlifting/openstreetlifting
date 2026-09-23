@@ -39,6 +39,9 @@
     SORTED_COLUMN,
     NO_VALUE,
     NO_RESULT,
+    REPORTED_MARK,
+    REPORTED_GLYPH,
+    REPORTED_TITLE,
   } from '$lib/constants/table';
   import { GitHubIcon } from '$lib/components/icons';
   import {
@@ -91,7 +94,7 @@
   // The column follows the format the meet contested, the sort follows the data
   // we hold, so an All4 meet with no published bodyweight keeps an empty column.
   const risColumn = $derived(data.ris !== 'not-contested');
-  const risSortable = $derived(data.ris === 'available');
+  const risSortable = $derived(data.ris === 'recomputed' || data.ris === 'reported');
 
   const classed = $derived(
     competition.categories.some(({ category }) => category.weight_class !== '')
@@ -375,10 +378,20 @@
         <dt class="text-muted">Format</dt>
         <dd class="text-ink">{formatLabel}</dd>
       {/if}
-      {#if published && data.ris === 'not-published'}
+      {#if published && risColumn}
         <dt class="text-muted">RIS</dt>
         <dd class="text-ink">
-          Not published, and no bodyweight to compute one, so the table ranks on total.
+          {#if data.ris === 'recomputed'}
+            Recomputed
+          {:else if data.ris === 'reported'}
+            Reported by the federation<span
+              class={REPORTED_MARK}
+              title={REPORTED_TITLE}
+              aria-label={REPORTED_TITLE}>{REPORTED_GLYPH}</span
+            >
+          {:else}
+            Not published, and no bodyweight to compute one, so the table ranks on total.
+          {/if}
         </dd>
       {/if}
       {#if published && !classed}

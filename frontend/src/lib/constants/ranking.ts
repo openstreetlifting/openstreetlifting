@@ -25,35 +25,43 @@ export const RANKING_GENDERS = [
 const ALL4_MOVEMENTS = 4;
 
 /**
- * Why a competition has no RIS, which decides how the table should read.
+ * Where a competition's RIS came from, or why it has none.
  *
- * `not-contested` is a property of the meet: RIS is fitted to a four lift total,
- * so a shorter event never had one and the column does not apply.
- * `not-published` is a gap in the record: the meet ran all four, but its source
- * gave no bodyweight and none could be recovered, so the column applies and
- * stays visible while the score itself is missing.
+ * `recomputed` and `reported` both follow the bodyweight: a score is recomputed
+ * wherever the archive holds one, and the federation's published score is kept
+ * where it does not, which the table marks row by row. A meet can carry both,
+ * and is reported only when no score in it could be recomputed.
+ * `not-contested` is a property of the meet, since RIS is fitted to a four lift
+ * total and a shorter event never had one.
+ * `not-published` is a gap in the record: all four were contested, but the
+ * source gave neither bodyweight nor score.
  */
-export type RisAvailability = 'available' | 'not-contested' | 'not-published';
+export type RisProvenance = 'recomputed' | 'reported' | 'not-contested' | 'not-published';
 
 type RisShape = {
   movements: unknown[];
-  categories: { participants: { ris_score?: string | null }[] }[];
+  categories: { participants: { ris_score?: string | null; ris_source?: string | null }[] }[];
 };
 
-export function risAvailability(competition: RisShape): RisAvailability {
+export function risProvenance(competition: RisShape): RisProvenance {
   if (competition.movements.length !== ALL4_MOVEMENTS) {
     return 'not-contested';
   }
-  const scored = competition.categories.some((category) =>
-    category.participants.some((participant) => participant.ris_score != null)
+  const scored = competition.categories.flatMap((category) =>
+    category.participants.filter((participant) => participant.ris_score != null)
   );
-  return scored ? 'available' : 'not-published';
+  if (scored.length === 0) {
+    return 'not-published';
+  }
+  return scored.some((participant) => participant.ris_source !== 'reported')
+    ? 'recomputed'
+    : 'reported';
 }
 
 /**
  * Sorting by a score no one has drops every row, so the table falls back to the
  * total the meet was actually decided on.
  */
-export function defaultRankingSort(availability: RisAvailability): RankingMetric {
-  return availability === 'available' ? 'ris' : 'total';
+export function defaultRankingSort(provenance: RisProvenance): RankingMetric {
+  return provenance === 'recomputed' || provenance === 'reported' ? 'ris' : 'total';
 }
