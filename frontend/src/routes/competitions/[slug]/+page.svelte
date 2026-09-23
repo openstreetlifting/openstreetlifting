@@ -98,9 +98,9 @@
   );
 
   const table = new RankingsTable({
-    basePath: `/competitions/${data.competition.slug}`,
+    basePath: () => `/competitions/${data.competition.slug}`,
     initialUrl: page.url,
-    defaultSort: defaultRankingSort(data.ris),
+    defaultSort: () => defaultRankingSort(data.ris),
   });
 
   afterNavigate(() => {
