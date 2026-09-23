@@ -11,6 +11,7 @@ export { default as InfoTip } from './info-tip.svelte';
 export { default as RisScore } from './ris-score.svelte';
 export { default as RisHeader } from './ris-header.svelte';
 export { default as RankingsEmpty } from './rankings-empty.svelte';
+export { default as SearchEmpty } from './search-empty.svelte';
 export {
   default as Table,
   TABLE_CELL,

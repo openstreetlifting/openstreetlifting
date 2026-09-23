@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Breadcrumb, FilterBar } from '$lib/components/ui';
+  import { Card, Breadcrumb, FilterBar, SearchEmpty } from '$lib/components/ui';
   import CompetitionsTable from '$lib/components/competitions-table.svelte';
   import { resolve } from '$app/paths';
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
@@ -44,6 +44,7 @@
   });
 
   const narrowed = $derived(Boolean(search.value || federation || country || year));
+  const canReset = $derived(narrowed || pagination.page > 1);
 
   const activeFilters = $derived([federation, country, year].filter(Boolean).length);
 
@@ -161,30 +162,18 @@
         <p class="text-danger">{data.error}</p>
       </div>
     </Card>
-  {:else if competitions.length === 0}
-    <Card class="max-w-summary p-8">
-      <div class="text-center">
-        <p class="text-secondary">
-          {#if narrowed}
-            No competitions match your filters
-          {:else if showsUpcoming}
-            No competitions are planned yet
-          {:else}
-            No competitions found
-          {/if}
-        </p>
-        <div class="mt-4 flex flex-wrap justify-center gap-4 text-xs">
-          {#if narrowed}
-            <button
-              onclick={clearFilters}
-              class="text-muted underline hover:text-secondary focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none"
-            >
-              Clear filters
-            </button>
-          {/if}
-        </div>
-      </div>
-    </Card>
+  {:else if competitions.length === 0 && !busy}
+    <SearchEmpty
+      title={canReset ? 'Oops, no competitions found.' : 'No competitions to show yet.'}
+      description={canReset
+        ? 'Lighten the filters or try another name.'
+        : showsUpcoming
+          ? 'No competitions are planned yet.'
+          : 'No competition results in this view yet.'}
+      resetHref={canReset
+        ? resolve(showsUpcoming ? '/competitions?status=upcoming' : '/competitions')
+        : undefined}
+    />
   {:else}
     <CompetitionsTable
       {competitions}
