@@ -378,7 +378,7 @@
         <dt class="text-muted">Format</dt>
         <dd class="text-ink">{formatLabel}</dd>
       {/if}
-      {#if published && risColumn}
+      {#if published}
         <dt class="text-muted">RIS</dt>
         <dd class="text-ink">
           {#if data.ris === 'recomputed'}
@@ -389,8 +389,10 @@
               title={REPORTED_TITLE}
               aria-label={REPORTED_TITLE}>{REPORTED_GLYPH}</span
             >
-          {:else}
+          {:else if data.ris === 'not-published'}
             Not published, and no bodyweight to compute one, so the table ranks on total.
+          {:else}
+            None
           {/if}
         </dd>
       {/if}
