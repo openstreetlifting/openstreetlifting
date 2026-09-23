@@ -95,6 +95,7 @@ pub fn athlete(first: &str, last: &str) -> AthleteData {
         bodyweight: Some(Decimal::from(80)),
         bodyweight_source: None,
         reported_ris_edition: None,
+        reported_total: None,
         ris: None,
         status: AthleteStatus::Competed,
         status_reason: None,

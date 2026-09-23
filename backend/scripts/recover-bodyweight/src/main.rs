@@ -147,7 +147,6 @@ fn main() -> Result<()> {
         written += 1;
 
         if !cli.check {
-            note_provenance(&mut canonical, edition);
             store::write(&directory, &canonical)?;
         }
     }
@@ -304,17 +303,6 @@ fn validate_bodyweight(
     }
 
     Ok(bodyweight)
-}
-
-fn note_provenance(canonical: &mut CanonicalFormat, edition: Edition) {
-    let note = format!(
-        "Bodyweight recovered by reversing the {} RIS formula on the published score",
-        edition.year()
-    );
-
-    if !canonical.sources.contains(&note) {
-        canonical.sources.push(note);
-    }
 }
 
 fn competition_directories(paths: &[PathBuf]) -> Result<Vec<PathBuf>> {

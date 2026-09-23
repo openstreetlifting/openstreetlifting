@@ -24,7 +24,7 @@ where
             cp.participant_id,
             cp.bodyweight as "bodyweight!",
             a.gender as "gender: Gender",
-            COALESCE(SUM(l.max_weight), 0) as "total!"
+            COALESCE(cp.reported_total, SUM(l.max_weight), 0) as "total!"
         FROM competition_participants cp
         INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
         INNER JOIN competitions c ON c.competition_id = cp.competition_id

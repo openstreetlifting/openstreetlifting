@@ -1,5 +1,18 @@
 # Source-specific checks
 
+## Instagram carousels
+
+If a text fetch fails or returns only the cover, try Playwright with an installed headless browser. Public carousels may render without login. The HTML `og:image` preview can show the cover regardless of `img_index`.
+
+1. Open `?img_index=1`, wait for images, and dismiss the cookie dialog with `Decline optional cookies` and any dismissible signup overlay. If a login wall or challenge blocks access, request the images or another official source.
+2. Capture each slide, advancing with `page.getByRole('button', { name: 'Next', exact: true })`. Verify the visible heading and `img_index` after each transition, including when navigating directly to an index.
+3. Save a screenshot and download the visible image's `currentSrc` through the browser context's request client when accessible. Instagram preloads adjacent slides: select the image inside the carousel viewport. Wait for `complete` and a nonzero `naturalWidth`, then inspect the downloaded image.
+4. Keep captures and a slide-to-file manifest outside the canonical directory. Read the caption and every requested slide. Deduplicate athletes repeated in summary and category tables.
+
+Use the stable Instagram post URL in `competition.toml` sources; CDN image URLs expire. The publication date is not the competition date. Report source discrepancies such as RIS cells repeating totals or a bodyweight exceeding the displayed class.
+
+For totals without lift results, follow [Published totals](format.md#published-totals). Empty rows need status evidence before assigning disqualification or no-show. Record a value as a total only when the source or user identifies it as one.
+
 ## FinalRep screenshots
 
 FinalRep screenshots often cover one weight class per image. Read sex and weight class from the header, such as `Female -52kg` or `Male -94kg`.

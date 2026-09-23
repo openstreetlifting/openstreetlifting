@@ -75,6 +75,7 @@ pub struct AthleteData {
     pub bodyweight_source: Option<BodyweightSource>,
     pub ris: Option<Decimal>,
     pub reported_ris_edition: Option<Edition>,
+    pub reported_total: Option<Decimal>,
     pub status: AthleteStatus,
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftData>,
@@ -95,6 +96,12 @@ impl AthleteData {
             return Err(
                 "four-lift recovery requires a competed performance without a status reason".into(),
             );
+        }
+        if let Some(total) = self.reported_total {
+            if total <= Decimal::ZERO || !self.lifts.is_empty() {
+                return Err("reported total must be positive with no lift breakdown".into());
+            }
+            return Ok(total);
         }
         let mut total = Decimal::ZERO;
         for movement in Movement::ALL {
@@ -118,6 +125,22 @@ impl AthleteData {
         gender: Gender,
         movements: &[Movement],
     ) -> Result<(), String> {
+        if let Some(total) = self.reported_total {
+            if total <= Decimal::ZERO {
+                return Err("ReportedTotalKg must be positive".into());
+            }
+            if self.status != AthleteStatus::Competed || self.status_reason.is_some() {
+                return Err(
+                    "ReportedTotalKg requires a competed result without a status reason".into(),
+                );
+            }
+            if movements != Movement::ALL {
+                return Err("ReportedTotalKg requires a four-movement event".into());
+            }
+            if !self.lifts.is_empty() {
+                return Err("ReportedTotalKg requires empty lift columns; use the lift breakdown when available".into());
+            }
+        }
         if self.bodyweight_source.is_some() && self.bodyweight.is_none() {
             return Err("BodyweightSource requires BodyweightKg".into());
         }

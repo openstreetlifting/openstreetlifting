@@ -182,7 +182,7 @@ impl CanonicalValidator {
                         .push(format!("Athlete '{label}' has a negative ris"));
                 }
 
-                if athlete.lifts.is_empty() {
+                if athlete.lifts.is_empty() && athlete.reported_total.is_none() {
                     report.warnings.push(format!(
                         "Competition '{}': athlete '{label}' has no lifts",
                         canonical.competition.slug
@@ -386,6 +386,7 @@ mod tests {
             bodyweight: Some(Decimal::from(80)),
             bodyweight_source: None,
             reported_ris_edition: None,
+            reported_total: None,
             ris: None,
             status: AthleteStatus::Competed,
             status_reason: None,
