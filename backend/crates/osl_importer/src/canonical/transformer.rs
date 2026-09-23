@@ -414,8 +414,8 @@ impl<'a> CanonicalTransformer<'a> {
             r#"
             INSERT INTO competition_participants
                 (competition_id, weight_class_id, division_id, athlete_id, bodyweight, status, status_reason, ris_score, ris_source,
-                 bodyweight_source, reported_ris_score, reported_ris_edition)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11)
+                 bodyweight_source, reported_ris_score, reported_ris_edition, reported_total)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11, $12)
             ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id)
             DO UPDATE SET
                 bodyweight = EXCLUDED.bodyweight,
@@ -426,7 +426,8 @@ impl<'a> CanonicalTransformer<'a> {
                 ris_edition = NULL,
                 bodyweight_source = EXCLUDED.bodyweight_source,
                 reported_ris_score = EXCLUDED.reported_ris_score,
-                reported_ris_edition = EXCLUDED.reported_ris_edition
+                reported_ris_edition = EXCLUDED.reported_ris_edition,
+                reported_total = EXCLUDED.reported_total
             RETURNING participant_id as "participant_id: Uuid"
             "#,
             competition_id,
@@ -439,7 +440,8 @@ impl<'a> CanonicalTransformer<'a> {
             ranking_ris,
             bodyweight_source,
             athlete.ris,
-            reported_ris_edition
+            reported_ris_edition,
+            athlete.reported_total
         )
         .fetch_one(&mut **tx)
         .await?;

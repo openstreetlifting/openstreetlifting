@@ -26,13 +26,13 @@ pub struct RankingRow {
     pub start_date: Option<NaiveDate>,
     pub federation_name: String,
     pub federation_abbreviation: Option<String>,
-    /// Absent when the competition did not contest the movement, rather than zero.
+    /// Absent when the movement result is unknown or was not contested.
     pub muscleup: Option<Decimal>,
     pub pullup: Option<Decimal>,
     pub dips: Option<Decimal>,
     pub squat: Option<Decimal>,
-    /// The sum of what this athlete contested, so it only compares with
-    /// another total from the same event.
+    /// The sum of recorded lifts or a reported total without a breakdown;
+    /// only comparable with another total from the same event.
     pub total: Option<Decimal>,
     pub event_code: Option<String>,
     pub ris_score: Option<Decimal>,

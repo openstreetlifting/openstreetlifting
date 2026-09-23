@@ -67,12 +67,36 @@ fn one_candidate_recovers_and_keeps_original_score_while_check_is_read_only() {
     assert_eq!(athlete.ris.unwrap().to_string(), "113.43");
     assert_eq!(athlete.bodyweight_source, Some(BodyweightSource::Recovered));
     assert_eq!(athlete.reported_ris_edition, Some(Edition::V2024));
+    assert!(
+        canonical.sources.is_empty(),
+        "recovery provenance belongs in CSV fields"
+    );
     let recovered_csv = std::fs::read(fixture.0.join("entries.csv")).unwrap();
     assert!(fixture.run(false).contains("ineligible: 1"));
     assert_eq!(
         std::fs::read(fixture.0.join("entries.csv")).unwrap(),
         recovered_csv
     );
+}
+
+#[test]
+fn a_published_total_supports_recovery_without_inventing_lifts() {
+    let fixture = Fixture::new(VALID);
+    let mut canonical = store::read(&fixture.0).unwrap();
+    let athlete = &mut canonical.categories[0].athletes[0];
+    athlete.reported_total = Some(athlete.complete_total().unwrap());
+    athlete.lifts.clear();
+    store::write(&fixture.0, &canonical).unwrap();
+    assert!(fixture.run(false).contains("Recovered bodyweights: 1"));
+    let recovered = store::read(&fixture.0).unwrap();
+    osl_importer::canonical::validator::CanonicalValidator::validate(&recovered).unwrap();
+    let athlete = &recovered.categories[0].athletes[0];
+    assert_eq!(athlete.bodyweight.unwrap().to_string(), "91.7");
+    assert_eq!(athlete.bodyweight_source, Some(BodyweightSource::Recovered));
+    assert_eq!(athlete.reported_ris_edition, Some(Edition::V2024));
+    assert_eq!(athlete.ris.unwrap().to_string(), "113.43");
+    assert!(athlete.lifts.is_empty());
+    assert!(recovered.sources.is_empty());
 }
 
 #[test]

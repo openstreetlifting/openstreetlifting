@@ -58,6 +58,7 @@ Add `Division` first only when needed; add `NativeName` only when an athlete has
 | `Country` | Required two-letter code; apply the exception below when absent |
 | `BodyweightKg` | Positive measured bodyweight supplied by the source |
 | `Ris` | Source-reported score when bodyweight is absent |
+| `ReportedTotalKg` | Optional positive All4 total when no individual lift results are available; leave all lift columns empty |
 | `Status` | `competed`, `disqualified`, or `no_show`; empty means competed |
 | `StatusReason` | Source-supported reason for disqualification |
 
@@ -102,7 +103,13 @@ When every attempt in a contested movement failed, preserve those attempts and m
 
 `fmt` derives each `Best*` value from supplied attempts. Fill a best manually only when the source gives a best without an attempt breakdown; keep those attempt cells empty. For movements outside `event`, leave all four cells empty.
 
-Totals, ranks, and placings are computed on import and have no CSV columns. RIS is computed on import when bodyweight is available; a source-reported score belongs in `Ris` only under the rule above.
+### Published totals
+
+For a competed `MPDS` result with only a published total, add `ReportedTotalKg` and keep every attempt and best empty. Use individual lift results when available; clear the reported total when adding a breakdown. The importer rejects rows that combine both forms. It computes ranks and placings from the total, and RIS from bodyweight when available. Leave RIS empty when the source score is unreliable and bodyweight is unknown.
+
+### Bodyweight recovery
+
+When the user requests bodyweight recovery, use the published total or complete lift breakdown with the recovery tool in `backend/scripts/recover-bodyweight`. Establish the RIS edition from the source or by checking known bodyweight–total–score combinations. Preserve `Ris`, `ReportedRisEdition`, and `BodyweightSource=recovered`. Describe recovered weights as estimates because published scores are rounded. Keep `competition.toml` sources limited to source references.
 
 ## Validation
 

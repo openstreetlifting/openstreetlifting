@@ -261,7 +261,7 @@ impl<'a> CompetitionRepository<'a> {
                     COALESCE(wc.gender, a.gender) as contest_gender,
                     cp.bodyweight,
                     cp.ris_score,
-                    COALESCE(SUM(l.max_weight), 0) as total
+                    COALESCE(cp.reported_total, SUM(l.max_weight), 0) as total
                 FROM competition_participants cp
                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
                 LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
@@ -354,7 +354,7 @@ impl<'a> CompetitionRepository<'a> {
 
         for category in categories {
             let participants = sqlx::query!(
-                r#"SELECT cp.participant_id, cp.competition_id, cp.athlete_id, cp.bodyweight,
+                r#"SELECT cp.participant_id, cp.competition_id, cp.athlete_id, cp.bodyweight, cp.reported_total,
                         cp.status as "status: AthleteStatus", cp.created_at, cp.status_reason,
                         cp.ris_score, cp.ris_source as "ris_source: RisSource"
                  FROM competition_participants cp
@@ -443,7 +443,13 @@ impl<'a> CompetitionRepository<'a> {
                     ris_source: participant.ris_source,
                     status: participant.status,
                     status_reason: participant.status_reason,
-                    total: (result_stands && !lift_details.is_empty()).then_some(total),
+                    total: result_stands
+                        .then(|| {
+                            participant
+                                .reported_total
+                                .or_else(|| (!lift_details.is_empty()).then_some(total))
+                        })
+                        .flatten(),
                     lifts: lift_details,
                 });
             }

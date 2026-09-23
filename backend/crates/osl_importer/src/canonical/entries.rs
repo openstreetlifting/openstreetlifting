@@ -16,16 +16,18 @@ pub const BODYWEIGHT: &str = "BodyweightKg";
 pub const RIS: &str = "Ris";
 pub const BODYWEIGHT_SOURCE: &str = "BodyweightSource";
 pub const REPORTED_RIS_EDITION: &str = "ReportedRisEdition";
+pub const REPORTED_TOTAL: &str = "ReportedTotalKg";
 pub const STATUS: &str = "Status";
 pub const STATUS_REASON: &str = "StatusReason";
 pub const NATIVE_NAME: &str = "NativeName";
 
-pub const OPTIONAL_COLUMNS: [&str; 5] = [
+pub const OPTIONAL_COLUMNS: [&str; 6] = [
     DIVISION,
     WEIGHT_CLASS,
     NATIVE_NAME,
     BODYWEIGHT_SOURCE,
     REPORTED_RIS_EDITION,
+    REPORTED_TOTAL,
 ];
 
 pub const IDENTITY_COLUMNS: [&str; 9] = [
@@ -57,6 +59,7 @@ pub struct Layout {
     pub native_names: bool,
     pub bodyweight_sources: bool,
     pub reported_ris_editions: bool,
+    pub reported_totals: bool,
 }
 
 pub fn headers(layout: Layout) -> Vec<String> {
@@ -81,6 +84,9 @@ pub fn headers(layout: Layout) -> Vec<String> {
     }
     if layout.reported_ris_editions {
         headers.push(REPORTED_RIS_EDITION.to_string());
+    }
+    if layout.reported_totals {
+        headers.push(REPORTED_TOTAL.to_string());
     }
 
     for movement in Movement::ALL {
@@ -183,6 +189,7 @@ impl Columns {
             native_names: true,
             bodyweight_sources: true,
             reported_ris_editions: true,
+            reported_totals: true,
         });
 
         let missing: Vec<&String> = expected

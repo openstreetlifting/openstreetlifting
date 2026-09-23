@@ -55,7 +55,7 @@ pub struct CategoryParticipants {
 pub struct ParticipantDetail {
     pub athlete: AthleteRow,
     pub bodyweight: Option<Decimal>,
-    /// Placing within the contest, computed from the lifts.
+    /// Placing within the contest, computed from lift results or a reported total.
     pub rank: Option<i32>,
     pub ris_score: Option<Decimal>,
     pub ris_source: Option<RisSource>,

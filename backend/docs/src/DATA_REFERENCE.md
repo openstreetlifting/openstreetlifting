@@ -92,8 +92,8 @@ exactly as shown below. Use kilograms for weights and a decimal point for
 fractions, such as `72.5`.
 
 All columns are required in the header except `Division`, `NativeName`,
-`BodyweightSource` and `ReportedRisEdition`. A required column may still contain
-empty cells, as described below. Keep the columns for all four movements, leaving
+`BodyweightSource`, `ReportedRisEdition` and `ReportedTotalKg`. Required columns
+may contain empty cells, as described below. Keep the columns for all four movements, leaving
 cells empty for movements outside the event.
 
 ### Athlete and result columns
@@ -169,6 +169,16 @@ attempts. If only the best lift is known, fill that column alone.
 
 Mark an athlete who missed every attempt at a movement as `disqualified`, with a
 reason such as `Bombed the squat`. A `no_show` must have no attempts or best lifts.
+
+### Published totals without lift results
+
+If an All4 (`MPDS`) source gives only an overall total, enter it in the optional
+`ReportedTotalKg` column. Use a positive weight and status `competed`. Leave all
+attempt and best-lift cells empty. The importer uses this total for rankings and
+category placings, and calculates RIS when bodyweight is available.
+
+Use individual lift results when available. When adding a breakdown later,
+clear `ReportedTotalKg`; the importer then calculates the total from those lifts.
 
 ### Bodyweight and Ris
 

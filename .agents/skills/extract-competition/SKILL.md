@@ -11,7 +11,7 @@ Create or extend one canonical directory per competition. Each pass must produce
 
 1. **Locate the competition.** Search `backend/data/competitions` for an existing directory and read its files. Keep its slug. For a new competition, use `<federation>/<start-year>/<competition-slug>/`; the federation is slugified, and the competition slug must distinguish it across federations and years. The directory name supplies the slug, so keep it out of `competition.toml`.
 
-2. **Read the applicable rules.** Read [format.md](format.md) before writing competition metadata or results. For results, also read [athletes.md](athletes.md) before assigning identities. For FinalRep screenshots or third-party aggregators, read [sources.md](sources.md). For an announcement without results, follow the announcement section in `format.md`.
+2. **Read the applicable rules.** Read [format.md](format.md) before writing competition metadata or results. For results, also read [athletes.md](athletes.md) before assigning identities. For Instagram carousels, FinalRep screenshots, or third-party aggregators, read [sources.md](sources.md). For an announcement without results, follow the announcement section in `format.md`.
 
 3. **Extract the evidence.** Record only values supported by the source, subject to the country and unclassified-group defaults in `format.md`. Leave unknown optional values empty. Keep failed attempts. Resolve unclear digits, colours, names, and conflicting sources before writing the affected values. Ask the user when the available evidence cannot settle them; continue with independent rows.
 
@@ -28,7 +28,7 @@ Create or extend one canonical directory per competition. Each pass must produce
 
    Fix errors and repeat. Warnings about missing evidence can remain; report them instead of inventing values. A nonempty suppression list requires its existing `OSL_PRIVACY_KEY`. If it is unavailable, use `--dry-run --skip-privacy-check` for structural validation and report that suppression checks remain outstanding. Never generate a replacement key for an existing list or bypass a reported suppression match.
 
-7. **Reconcile the results.** For each source row with a four-lift total, compare that total with the sum of the formatted `Best*` values. Account for every row in the supplied source: imported, already present, or unresolved. Report mismatches without adjusting weights to force agreement. Check the diff for changes outside the intended competition and source categories.
+7. **Reconcile the results.** For each source row with a four-lift total, compare that total with the sum of the formatted `Best*` values, or verify `ReportedTotalKg` against the source when no breakdown exists. Account for every row in the supplied source: imported, already present, or unresolved. Report mismatches without adjusting weights to force agreement. Check the diff for changes outside the intended competition and source categories.
 
 8. **Report the diff.** Show the changed files and summarize added categories or athletes, validation and total checks, country defaults, regrouped weight classes, and unresolved evidence. Leave the files ready for review. Database imports and commits are outside this extraction workflow unless the user explicitly requests them.
 

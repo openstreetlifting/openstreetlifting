@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "https://www.instagram.com/p/DFV5zq1IaHr/",
+    "https://www.instagram.com/p/DBeI7mTIzrQ/",
+]
+
+[competition]
+name = "Régionale Pays de la Loire"
+start_date = "2025-01-26"
+end_date = "2025-01-26"
+city = "Angers"
+region = "Pays de la Loire"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
