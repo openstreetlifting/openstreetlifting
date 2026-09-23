@@ -1,0 +1,17 @@
+sources = [
+    "https://pfxpo.se/tavlingar/",
+    "https://pfxpo.se/om-massan/",
+]
+
+[competition]
+name = "Streetlifting Nordic"
+start_date = "2026-11-14"
+end_date = "2026-11-15"
+city = "Nacka"
+region = "Stockholm County"
+country = "SE"
+status = "upcoming"
+
+[federation]
+name = "Streetlifting Nordic"
+country = "SE"

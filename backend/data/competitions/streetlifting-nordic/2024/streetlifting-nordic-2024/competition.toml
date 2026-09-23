@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "https://sthlmsthenics.se/results/",
+    "https://calibase.org/competitions/streetlifting-nordic-8pis6kf8/",
+]
+
+[competition]
+name = "Streetlifting Nordic"
+start_date = "2024-11-30"
+end_date = "2024-11-30"
+city = "Nacka"
+region = "Stockholm County"
+country = "SE"
+status = "completed"
+
+[federation]
+name = "Streetlifting Nordic"
+country = "SE"
