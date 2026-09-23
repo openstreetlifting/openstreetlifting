@@ -84,3 +84,16 @@ it('keeps RIS as the default once an athlete carries a recomputed score', async 
     expect.objectContaining({ movement: 'ris' })
   );
 });
+
+it('reports a failed ranking request instead of showing only unranked participants', async () => {
+  vi.mocked(rankingsService.getGlobalRankings).mockRejectedValue(new Error('API unavailable'));
+  const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+  try {
+    await expect(load(request(''))).rejects.toMatchObject({
+      status: 502,
+      body: { message: 'Competition results are temporarily unavailable' },
+    });
+  } finally {
+    log.mockRestore();
+  }
+});

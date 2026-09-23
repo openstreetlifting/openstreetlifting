@@ -54,7 +54,8 @@
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import type { RankingEntry } from '$lib/types/ranking';
   import type { Attempt, Participant, CategoryDetail } from '$lib/types/competition';
-  import { GENDERS, type AthleteStatus } from '$lib/types/enums';
+  import { GENDERS, asRankingMetric, type AthleteStatus } from '$lib/types/enums';
+  import { hasRankingResult } from '$lib/utils/competition-results';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '$lib/constants/athlete-status';
   import { FIELD, TEXT } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
@@ -150,7 +151,7 @@
   );
 
   type LiftCell =
-    /** The competition never contested the movement. */
+    /** The movement was not contested or its result is unknown. */
     | { kind: 'absent' }
     /** Contested, and every attempt failed. */
     | { kind: 'bombed' }
@@ -167,6 +168,7 @@
     if (!event?.includes(code)) return { kind: 'absent' };
 
     const lift = participant?.lifts.find((candidate) => candidate.movement_name === movement);
+    if (!lift && best === null) return { kind: 'absent' };
 
     if (lift?.attempts.length) {
       const attempts = [...lift.attempts].sort((a, b) => a.attempt_number - b.attempt_number);
@@ -229,17 +231,17 @@
     }).filter(({ classes }) => classes.length > 0)
   );
 
-  // The rankings query joins through lifts and keeps only competed lifters, so
-  // it can never return these. The competition's own results list them, and a
-  // competition page is a record of who turned up, not a leaderboard.
-  // Disqualified before no_show: one turned up and lifted, the other never did.
-  const NOT_PLACED_ORDER: AthleteStatus[] = ['disqualified', 'no_show'];
+  // Missing scores have no rank, but their entries still belong in the results.
+  const NOT_PLACED_ORDER: AthleteStatus[] = ['competed', 'disqualified', 'no_show'];
+  const selectedMetric = $derived(
+    asRankingMetric(table.movementFilter) ?? defaultRankingSort(data.ris)
+  );
 
   const notPlaced = $derived(
     competition.categories
       .flatMap((category: CategoryDetail) =>
         category.participants
-          .filter((participant) => participant.status !== 'competed')
+          .filter((participant) => !hasRankingResult(participant, selectedMetric))
           .map((participant) => ({ category, participant }))
       )
       // The ranked half is filtered by the server, so these have to answer the
@@ -671,17 +673,27 @@
                     {formatAthleteName(participant.athlete)}
                   </a>
                 </span>
-                <span
-                  class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                  title={athleteStatusTitle(participant.status, participant.status_reason)}
-                >
-                  {ATHLETE_STATUS_LABEL[participant.status]}
-                </span>
+                {#if participant.status !== 'competed'}
+                  <span
+                    class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
+                    title={athleteStatusTitle(participant.status, participant.status_reason)}
+                  >
+                    {ATHLETE_STATUS_LABEL[participant.status]}
+                  </span>
+                {/if}
               </span>
             </td>
-            <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
+            <td class="{TABLE_CELL} {CELL.counted}">
+              {participant.status === 'competed' ? formatWeight(participant.total) : NO_RESULT}
+            </td>
             {#if risColumn}
-              <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
+              <td class="{TABLE_CELL} {CELL.counted}">
+                {#if participant.status === 'competed'}
+                  <RisScore value={participant.ris_score} source={participant.ris_source} />
+                {:else}
+                  {NO_RESULT}
+                {/if}
+              </td>
             {/if}
             {#each contested as lift (lift.key)}
               {@const cell = participantCell(participant, lift.code, lift.movement)}

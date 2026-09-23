@@ -89,7 +89,10 @@ export const load: PageServerLoad = async ({ params, url }) => {
         q,
         competition_id: competition.competition_id,
       })
-      .catch(() => noRankings()),
+      .catch((err) => {
+        console.error('Failed to load competition rankings', { slug: params.slug, error: err });
+        error(502, 'Competition results are temporarily unavailable');
+      }),
   ]);
 
   return {
