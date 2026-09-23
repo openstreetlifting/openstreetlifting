@@ -1,6 +1,6 @@
 import { TABLE_PAGE_SIZE } from '$lib/constants/pagination';
 import { competitionsService, rankingsService } from '$lib/server/api';
-import { defaultRankingSort, risAvailability } from '$lib/constants/ranking';
+import { defaultRankingSort, risProvenance } from '$lib/constants/ranking';
 import { formatAthleteName } from '$lib/utils/format';
 import type { PageServerLoad } from './$types';
 import { error, redirect } from '@sveltejs/kit';
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
     throw error(404, 'Competition not found');
   }
 
-  const ris = risAvailability(competition);
+  const ris = risProvenance(competition);
 
   if (competition.categories.length === 0) {
     const empty = noRankings();
