@@ -54,15 +54,9 @@
 
   const focused = $derived(page.url.searchParams.get('athlete'));
 
-  // The controls follow the URL in the same pass that brings the new rows in.
-  // Catching them up afterwards instead repaints the board a second time, a
-  // frame behind the rows the visitor is already reading.
-  $effect(() => {
-    table.syncFromUrl(page.url);
+  afterNavigate(({ type }) => {
+    table.syncFromUrl(page.url, type);
     rememberRankings(page.url.search);
-  });
-
-  afterNavigate(() => {
     if (!focused) return;
     requestAnimationFrame(() => {
       document.querySelector('[data-focused]')?.scrollIntoView({ block: 'center' });

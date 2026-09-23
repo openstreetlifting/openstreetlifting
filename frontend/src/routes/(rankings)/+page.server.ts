@@ -10,13 +10,6 @@ const description =
 export const load: PageServerLoad = async ({ url }) => {
   const gender = asRankedGender(url.searchParams.get('gender'));
 
-  const [classes, years, countries, federations] = await Promise.all([
-    rankingsService.getRankingClasses(gender).catch(() => []),
-    rankingsService.getRankingYears().catch(() => []),
-    rankingsService.getRankingCountries().catch(() => []),
-    rankingsService.getRankingFederations().catch(() => []),
-  ]);
-
   try {
     const movement = asRankingMetric(url.searchParams.get('movement')) ?? 'ris';
     const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
@@ -45,10 +38,6 @@ export const load: PageServerLoad = async ({ url }) => {
       description,
       initialRankings: initialData.data,
       pagination: initialData.pagination,
-      classes,
-      years,
-      countries,
-      federations,
     };
   } catch (error) {
     console.error('Failed to load rankings', error);
@@ -63,10 +52,6 @@ export const load: PageServerLoad = async ({ url }) => {
         total_items: 0,
         total_pages: 0,
       },
-      classes,
-      years,
-      countries,
-      federations,
     };
   }
 };

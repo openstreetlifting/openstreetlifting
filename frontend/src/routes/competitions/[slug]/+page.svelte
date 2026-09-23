@@ -106,8 +106,8 @@
     defaultSort: () => defaultRankingSort(data.ris),
   });
 
-  afterNavigate(() => {
-    table.syncFromUrl(page.url);
+  afterNavigate(({ type }) => {
+    table.syncFromUrl(page.url, type);
     if (table.focusedAthlete) {
       requestAnimationFrame(() => {
         document.querySelector('[data-focused]')?.scrollIntoView({ block: 'center' });

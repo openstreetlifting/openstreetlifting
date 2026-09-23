@@ -41,4 +41,8 @@ it('requests 100 athletes on the main ranking table while retaining filters', as
     })
   );
   expect(result).toMatchObject({ pagination: { page_size: 100, total_pages: 3 } });
+  expect(rankingsService.getRankingClasses).not.toHaveBeenCalled();
+  expect(rankingsService.getRankingYears).not.toHaveBeenCalled();
+  expect(rankingsService.getRankingCountries).not.toHaveBeenCalled();
+  expect(rankingsService.getRankingFederations).not.toHaveBeenCalled();
 });

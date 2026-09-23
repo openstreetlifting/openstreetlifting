@@ -1,6 +1,8 @@
 <script lang="ts">
   import { SearchIcon } from '$lib/components/icons';
   import { FIELD } from '$lib/constants/typography';
+  import { onDestroy } from 'svelte';
+  import { beforeNavigate } from '$app/navigation';
 
   interface Props {
     value: string;
@@ -12,14 +14,22 @@
   let { value = $bindable(), placeholder = 'Search', delay = 300, onSearch }: Props = $props();
 
   let timer: ReturnType<typeof setTimeout> | undefined;
+  let composing = false;
+
+  function cancel() {
+    clearTimeout(timer);
+  }
+
+  beforeNavigate(cancel);
+  onDestroy(cancel);
 
   function schedule() {
-    clearTimeout(timer);
-    timer = setTimeout(onSearch, delay);
+    cancel();
+    if (!composing) timer = setTimeout(onSearch, delay);
   }
 
   function flush() {
-    clearTimeout(timer);
+    cancel();
     onSearch();
   }
 
@@ -38,7 +48,15 @@
     bind:value
     {placeholder}
     oninput={schedule}
-    onkeydown={(event) => event.key === 'Enter' && flush()}
+    onkeydown={(event) => event.key === 'Enter' && !event.isComposing && flush()}
+    oncompositionstart={() => {
+      composing = true;
+      cancel();
+    }}
+    oncompositionend={() => {
+      composing = false;
+      schedule();
+    }}
     class="w-full {FIELD} py-2 pr-8 pl-9 placeholder:text-muted"
   />
   {#if value}

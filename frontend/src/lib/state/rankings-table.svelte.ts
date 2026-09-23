@@ -1,6 +1,7 @@
 import { resolve } from '$app/paths';
-import { goto } from '$app/navigation';
+import type { AfterNavigate } from '@sveltejs/kit';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
+import { ListingSearch } from './listing-search.svelte';
 
 interface RankingsTableConfig {
   /**
@@ -25,16 +26,24 @@ function reader<T>(value: T | (() => T)): () => T {
  * page and a per-competition leaderboard read from the same `/api/v1/rankings` shape,
  * so they share this instead of each carrying its own near-identical copy.
  *
- * The URL is the only source of truth: every change navigates, and the page's
- * `load` refetches. Nothing here holds rows or pagination, so a server-rendered
- * page is already correct before hydration.
+ * The URL describes the applied results; the search input keeps its own draft
+ * while requests are in flight. Rows and pagination come from the page's load.
  */
 export class RankingsTable {
   genderFilter = $state<string | null>(null);
   categoryFilter = $state<string | null>(null);
   countryFilter = $state<string | null>(null);
   federationFilter = $state<string | null>(null);
-  searchFilter = $state('');
+  readonly search: ListingSearch;
+
+  get searchFilter() {
+    return this.search.value;
+  }
+
+  set searchFilter(value: string) {
+    this.search.value = value;
+  }
+
   yearFilter = $state<number | null>(null);
   movementFilter = $state('ris');
   sortDirection = $state<'asc' | 'desc'>('desc');
@@ -61,6 +70,7 @@ export class RankingsTable {
     this.readBasePath = reader(config.basePath);
     this.readDefaultSort = reader(config.defaultSort ?? 'ris');
     this.includeYear = config.includeYear ?? false;
+    this.search = new ListingSearch(config.initialUrl);
 
     this.syncFromUrl(config.initialUrl);
   }
@@ -70,13 +80,13 @@ export class RankingsTable {
    * link that drops the query string (the header logo, back to the unfiltered
    * board) has to reach the selects as well as the rows.
    */
-  syncFromUrl(url: URL) {
+  syncFromUrl(url: URL, type?: AfterNavigate['type']) {
     const params = url.searchParams;
     this.genderFilter = params.get('gender') || null;
     this.categoryFilter = params.get('category') || null;
     this.countryFilter = params.get('country') || null;
     this.federationFilter = params.get('federation') || null;
-    this.searchFilter = params.get('q') ?? '';
+    this.search.sync(url, type);
     this.yearFilter = this.includeYear ? Number(params.get('year')) || null : null;
     this.movementFilter = params.get('movement') || this.defaultSort;
     this.sortDirection = params.get('direction') === 'asc' ? 'asc' : 'desc';
@@ -103,7 +113,7 @@ export class RankingsTable {
   }
 
   /** Defaults stay out of the query string so a shared link carries only what was chosen. */
-  pageHref(targetPage: number) {
+  pageHref(targetPage: number, query = this.search.applied) {
     const params = new SvelteURLSearchParams();
     if (this.movementFilter !== this.defaultSort) params.set('movement', this.movementFilter);
     if (this.sortDirection !== 'desc') params.set('direction', this.sortDirection);
@@ -112,7 +122,7 @@ export class RankingsTable {
     if (this.includeYear && this.yearFilter) params.set('year', String(this.yearFilter));
     if (this.countryFilter) params.set('country', this.countryFilter);
     if (this.federationFilter) params.set('federation', this.federationFilter);
-    if (this.searchQuery) params.set('q', this.searchQuery);
+    if (query.trim()) params.set('q', query.trim());
     if (targetPage > 1) params.set('page', String(targetPage));
 
     const queryString = params.toString();
@@ -122,7 +132,7 @@ export class RankingsTable {
   }
 
   private navigate(targetPage: number) {
-    return goto(this.pageHref(targetPage), { replaceState: true, keepFocus: true, noScroll: true });
+    return this.search.navigate(this.pageHref(targetPage, this.searchQuery));
   }
 
   async handleFilterChange() {

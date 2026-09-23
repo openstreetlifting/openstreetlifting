@@ -15,6 +15,7 @@ vi.mock('$app/state', async () => {
 vi.mock('$app/navigation', async () => {
   const { page } = await import('$app/state');
   return {
+    beforeNavigate: vi.fn(),
     goto: vi.fn(async (url: string) => {
       page.url.href = new URL(url, page.url).href;
     }),

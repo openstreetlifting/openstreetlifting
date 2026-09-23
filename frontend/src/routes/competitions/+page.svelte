@@ -5,7 +5,9 @@
   import { resolve } from '$app/paths';
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import { slowNavigation } from '$lib/state/slow-navigation.svelte';
-  import { goto, afterNavigate } from '$app/navigation';
+  import { afterNavigate } from '$app/navigation';
+  import { ListingSearch } from '$lib/state/listing-search.svelte';
+  import { untrack } from 'svelte';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
   import { countryName } from '$lib/utils';
@@ -27,51 +29,48 @@
 
   const showsUpcoming = $derived(data.status === 'upcoming');
 
-  let search = $state(data.q ?? '');
-  let federation = $state(data.federation ?? null);
-  let country = $state(data.country ?? null);
-  let year = $state(data.year ?? null);
+  const search = new ListingSearch(currentPage.url);
+  let federation = $state(untrack(() => data.federation ?? null));
+  let country = $state(untrack(() => data.country ?? null));
+  let year = $state(untrack(() => data.year ?? null));
 
   // The page outlives a navigation, so a link that drops the query string has to
   // reach the controls as well as the rows.
-  afterNavigate(() => {
-    search = data.q ?? '';
+  afterNavigate(({ type }) => {
+    search.sync(currentPage.url, type);
     federation = data.federation ?? null;
     country = data.country ?? null;
     year = data.year ?? null;
   });
 
-  const narrowed = $derived(Boolean(search || federation || country || year));
+  const narrowed = $derived(Boolean(search.value || federation || country || year));
 
   const activeFilters = $derived([federation, country, year].filter(Boolean).length);
 
   // Paging and filtering live in the URL so a page of results can be linked to,
   // and so a filter narrows the whole archive rather than the current page.
   // Defaults stay out of the query string, matching the rankings tables.
-  function listingHref(next: { status?: string; page?: number } = {}) {
+  function listingHref(next: { status?: string; page?: number } = {}, query = search.applied) {
     const target = next.status ?? data.status;
     const params = new SvelteURLSearchParams();
 
     if (target === 'upcoming') params.set('status', 'upcoming');
-    if (search) params.set('q', search);
+    if (query.trim()) params.set('q', query.trim());
     if (federation) params.set('federation', federation);
     if (country) params.set('country', country);
     if (year) params.set('year', String(year));
     if (next.page && next.page > 1) params.set('page', String(next.page));
 
-    const query = params.toString();
-    return resolve(query ? `/competitions?${query}` : '/competitions');
+    const queryString = params.toString();
+    return resolve(queryString ? `/competitions?${queryString}` : '/competitions');
   }
 
-  function apply(next: { status?: string; page?: number } = {}) {
-    return goto(listingHref(next), {
-      keepFocus: true,
-      noScroll: true,
-    });
+  function apply(next: { status?: string; page?: number } = {}, replaceState = false) {
+    return search.navigate(listingHref(next, search.value), replaceState);
   }
 
   function clearFilters() {
-    search = '';
+    search.value = '';
     federation = null;
     country = null;
     year = null;
@@ -127,9 +126,9 @@
   </nav>
 
   <FilterBar
-    bind:search
+    bind:search={search.value}
     placeholder="Search a competition"
-    onSearch={() => apply()}
+    onSearch={() => apply({}, true)}
     activeCount={activeFilters}
     onClear={clearFilters}
     clearable={narrowed}
