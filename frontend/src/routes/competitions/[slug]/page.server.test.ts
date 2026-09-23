@@ -55,3 +55,32 @@ it('respects an explicit page without repeating the athlete lookup', async () =>
     expect.objectContaining({ page: 2, q: null })
   );
 });
+
+it('ranks an All4 meet on total when its source published no bodyweight', async () => {
+  vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
+    data: [],
+    pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
+  });
+  const result = await load(request(''));
+  expect(result).toMatchObject({ ris: 'not-published' });
+  expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
+    expect.objectContaining({ movement: 'total' })
+  );
+});
+
+it('keeps RIS as the default once an athlete carries a score', async () => {
+  vi.mocked(competitionsService.getById).mockResolvedValue({
+    competition_id: 'meet-id',
+    movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
+    categories: [{ participants: [{ athlete, ris_score: '312.45' }] }],
+  } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
+  vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
+    data: [],
+    pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
+  });
+  const result = await load(request(''));
+  expect(result).toMatchObject({ ris: 'available' });
+  expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
+    expect.objectContaining({ movement: 'ris' })
+  );
+});

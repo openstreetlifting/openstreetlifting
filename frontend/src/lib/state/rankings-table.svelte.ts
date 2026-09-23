@@ -3,13 +3,21 @@ import { goto } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 interface RankingsTableConfig {
-  /** Route to push filter changes onto, e.g. `/` or `/competitions/some-slug`. */
-  basePath: string;
+  /**
+   * Route to push filter changes onto, e.g. `/` or `/competitions/some-slug`.
+   * Pass a getter when it is read off page data: the class outlives a navigation
+   * between two competitions, and a captured value would keep linking to the first.
+   */
+  basePath: string | (() => string);
   /** Whether this table supports filtering by competition year. */
   includeYear?: boolean;
   initialUrl: URL;
   /** Column sorted before anyone picks one. Not every competition has a RIS to sort on. */
-  defaultSort?: string;
+  defaultSort?: string | (() => string);
+}
+
+function reader<T>(value: T | (() => T)): () => T {
+  return typeof value === 'function' ? (value as () => T) : () => value;
 }
 
 /**
@@ -38,13 +46,21 @@ export class RankingsTable {
   focusedAthlete = $state<string | null>(null);
 
   readonly includeYear: boolean;
-  readonly defaultSort: string;
-  private basePath: string;
+  private readonly readBasePath: () => string;
+  private readonly readDefaultSort: () => string;
+
+  get defaultSort(): string {
+    return this.readDefaultSort();
+  }
+
+  private get basePath(): string {
+    return this.readBasePath();
+  }
 
   constructor(config: RankingsTableConfig) {
-    this.basePath = config.basePath;
+    this.readBasePath = reader(config.basePath);
+    this.readDefaultSort = reader(config.defaultSort ?? 'ris');
     this.includeYear = config.includeYear ?? false;
-    this.defaultSort = config.defaultSort ?? 'ris';
 
     this.syncFromUrl(config.initialUrl);
   }

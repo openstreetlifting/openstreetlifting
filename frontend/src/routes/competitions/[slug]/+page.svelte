@@ -46,7 +46,6 @@
     RANKING_SORTS_NO_RIS,
     RANKING_GENDERS,
     defaultRankingSort,
-    hasRis,
   } from '$lib/constants/ranking';
   import { RankingsTable } from '$lib/state/rankings-table.svelte';
   import type { RankingEntry } from '$lib/types/ranking';
@@ -89,16 +88,19 @@
       : competition.federation.name
   );
 
-  const risAvailable = $derived(hasRis(data.competition.movements.length));
+  // The column follows the format the meet contested, the sort follows the data
+  // we hold, so an All4 meet with no published bodyweight keeps an empty column.
+  const risColumn = $derived(data.ris !== 'not-contested');
+  const risSortable = $derived(data.ris === 'available');
 
   const classed = $derived(
     competition.categories.some(({ category }) => category.weight_class !== '')
   );
 
   const table = new RankingsTable({
-    basePath: `/competitions/${data.competition.slug}`,
+    basePath: () => `/competitions/${data.competition.slug}`,
     initialUrl: page.url,
-    defaultSort: defaultRankingSort(data.competition.movements.length),
+    defaultSort: () => defaultRankingSort(data.ris),
   });
 
   afterNavigate(() => {
@@ -115,7 +117,7 @@
   const loading = slowNavigation(() => navigating.to?.url.pathname === page.url.pathname);
   const busy = $derived(loading.current);
 
-  const sorts = $derived(risAvailable ? RANKING_SORTS : RANKING_SORTS_NO_RIS);
+  const sorts = $derived(risSortable ? RANKING_SORTS : RANKING_SORTS_NO_RIS);
   const genders = RANKING_GENDERS;
 
   const sorted = (column: string) => (table.movementFilter === column ? SORTED_COLUMN : '');
@@ -373,6 +375,12 @@
         <dt class="text-muted">Format</dt>
         <dd class="text-ink">{formatLabel}</dd>
       {/if}
+      {#if published && data.ris === 'not-published'}
+        <dt class="text-muted">RIS</dt>
+        <dd class="text-ink">
+          Not published, and no bodyweight to compute one, so the table ranks on total.
+        </dd>
+      {/if}
       {#if published && !classed}
         <dt class="text-muted">Weight classes</dt>
         <dd class="text-ink">No weight classes</dd>
@@ -512,7 +520,7 @@
         >
         <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">Athlete</th>
         <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}">Total</th>
-        {#if risAvailable}
+        {#if risColumn}
           <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
             <RisHeader />
           </th>
@@ -570,7 +578,7 @@
               </span>
             </td>
             <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
-            {#if risAvailable}
+            {#if risColumn}
               <td class="{TABLE_CELL} {CELL.counted}">
                 <RisScore value={entry.ris} source={entry.ris_source} />
               </td>
@@ -652,7 +660,7 @@
               </span>
             </td>
             <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
-            {#if risAvailable}
+            {#if risColumn}
               <td class="{TABLE_CELL} {CELL.nothing}">{NO_RESULT}</td>
             {/if}
             {#each contested as lift (lift.key)}

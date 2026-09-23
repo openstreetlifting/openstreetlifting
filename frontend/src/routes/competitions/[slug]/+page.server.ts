@@ -1,6 +1,6 @@
 import { TABLE_PAGE_SIZE } from '$lib/constants/pagination';
 import { competitionsService, rankingsService } from '$lib/server/api';
-import { defaultRankingSort } from '$lib/constants/ranking';
+import { defaultRankingSort, risAvailability } from '$lib/constants/ranking';
 import { formatAthleteName } from '$lib/utils/format';
 import type { PageServerLoad } from './$types';
 import { error, redirect } from '@sveltejs/kit';
@@ -20,10 +20,13 @@ export const load: PageServerLoad = async ({ params, url }) => {
     throw error(404, 'Competition not found');
   }
 
+  const ris = risAvailability(competition);
+
   if (competition.categories.length === 0) {
     const empty = noRankings();
     return {
       competition,
+      ris,
       classes: [],
       countries: [],
       initialRankings: empty.data,
@@ -31,9 +34,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
     };
   }
 
-  const movement =
-    asRankingMetric(url.searchParams.get('movement')) ??
-    defaultRankingSort(competition.movements.length);
+  const movement = asRankingMetric(url.searchParams.get('movement')) ?? defaultRankingSort(ris);
   const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
   const gender = asRankedGender(url.searchParams.get('gender'));
   const category = url.searchParams.get('category') || null;
@@ -93,6 +94,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 
   return {
     competition,
+    ris,
     classes,
     countries,
     initialRankings: rankings.data,
