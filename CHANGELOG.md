@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.34.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.33.1...v0.34.0) (2026-09-23)
+
+
+### Features
+
+* **data:** import FNSL Grand Ouest 2023 results ([#638](https://github.com/openstreetlifting/openstreetlifting/issues/638)) ([adf9022](https://github.com/openstreetlifting/openstreetlifting/commit/adf902281e43764ad608e22e282383e21bba3398))
+
+
+### Bug Fixes
+
+* **frontend:** preserve search input during navigation ([9cdd9e7](https://github.com/openstreetlifting/openstreetlifting/commit/9cdd9e72fd0b68cd709bb916f2e8ffe4120ad587))
+* **frontend:** reuse search empty state for competitions ([9ca6960](https://github.com/openstreetlifting/openstreetlifting/commit/9ca6960dc9f7130078fca9fa201a200037b693bd))
+* **frontend:** simplify competition RIS labels ([41f68c1](https://github.com/openstreetlifting/openstreetlifting/commit/41f68c139c84d6ba006ccfcbc74c1c542eb290ac))
+
 ## [0.33.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.33.0...v0.33.1) (2026-09-23)
 
 
