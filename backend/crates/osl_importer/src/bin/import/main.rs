@@ -7,7 +7,7 @@ use osl_importer::canonical::{
 use osl_importer::identity::AthleteQuery;
 use osl_importer::privacy::{self, PrivacyList};
 use osl_importer::redact;
-use osl_importer::sync::CompetitionSync;
+use osl_importer::sync::SyncPlan;
 use sqlx::postgres::PgPoolOptions;
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
@@ -256,7 +256,7 @@ async fn handle_prepare(paths: &[PathBuf], check: bool, dry_run: bool) -> Result
     let directories = competition_directories(paths)?;
 
     // Validate every directory before writing any changes.
-    let mut changed = Vec::new();
+    let mut prepared = Vec::new();
     for directory in &directories {
         let mut canonical = store::read(directory)?;
         canonical_format::prepare(&mut canonical)
@@ -269,10 +269,13 @@ async fn handle_prepare(paths: &[PathBuf], check: bool, dry_run: bool) -> Result
             Some(text) => std::fs::read_to_string(&entries_path)? == text,
             None => !entries_path.exists(),
         };
-        if !metadata_matches || !entries_match {
-            changed.push((directory, canonical));
-        }
+        prepared.push((directory, canonical, !metadata_matches || !entries_match));
     }
+    CanonicalValidator::validate_countries(prepared.iter().map(|(_, canonical, _)| canonical))?;
+    let changed: Vec<_> = prepared
+        .into_iter()
+        .filter_map(|(directory, canonical, changed)| changed.then_some((directory, canonical)))
+        .collect();
     if changed.is_empty() {
         tracing::info!(
             competitions = directories.len(),
@@ -366,7 +369,7 @@ async fn handle_competitions(
     privacy: Option<&PrivacyList>,
 ) -> Result<()> {
     let competitions = competition_directories(directories)?;
-    let claimed_slugs = claimed_competition_slugs(&competitions)?;
+    claimed_competition_slugs(&competitions)?;
     let mut prepared = Vec::new();
     let mut failures = 0;
     for directory in &competitions {
@@ -386,6 +389,7 @@ async fn handle_competitions(
         failures == 0,
         "{failures} competition(s) failed validation; nothing was imported"
     );
+    CanonicalValidator::validate_countries(&prepared)?;
     if dry_run {
         tracing::info!(
             competitions = prepared.len(),
@@ -404,30 +408,18 @@ async fn handle_competitions(
         .context("connecting to the database")?;
     let transformer = CanonicalTransformer::new(&pool);
     let total = prepared.len();
-    for (index, canonical) in prepared.into_iter().enumerate() {
-        tracing::info!(
-            current = index + 1,
-            total,
-            competition = %canonical.competition.slug,
-            "Importing competition"
-        );
-        transformer.import_to_database(canonical).await?;
-    }
+    let plan = transformer.import_batch(prepared, prune).await?;
     if prune {
-        handle_prune(&pool, &claimed_slugs).await?;
+        report_prune(&plan);
     }
     tracing::info!(competitions = total, "Competition import completed");
     Ok(())
 }
 
-async fn handle_prune(pool: &sqlx::PgPool, claimed_slugs: &[String]) -> Result<()> {
-    let sync = CompetitionSync::new(pool);
-
-    let plan = sync.apply(claimed_slugs).await?;
-
+fn report_prune(plan: &SyncPlan) {
     if plan.is_empty() {
         tracing::info!("Nothing to prune");
-        return Ok(());
+        return;
     }
 
     if !plan.competitions.is_empty() {
@@ -454,8 +446,6 @@ async fn handle_prune(pool: &sqlx::PgPool, claimed_slugs: &[String]) -> Result<(
         federations = plan.federations.len(),
         "Pruning completed"
     );
-
-    Ok(())
 }
 
 fn read_competition(

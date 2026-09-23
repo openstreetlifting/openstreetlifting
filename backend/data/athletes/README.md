@@ -36,7 +36,7 @@ With `DATABASE_URL` set, the dry run also checks that each row matches exactly o
 Hash,Sex,Country,Disambiguation,RedactedId,KeyCheck
 ```
 
-The `redact` command maintains this file. `Hash` is an HMAC-SHA256 fingerprint of the normalized name, keyed by `OSL_PRIVACY_KEY`. `KeyCheck` verifies that later commands use the same key. Neither field stores the original name or key. `Sex`, `Country`, and `Disambiguation` distinguish athletes with the same name.
+The `redact` command maintains this file. `Hash` is an HMAC-SHA256 fingerprint of the normalized name, keyed by `OSL_PRIVACY_KEY`. `KeyCheck` verifies that later commands use the same key. Neither field stores the original name or key. Suppression follows the name, `Sex`, and `Disambiguation`, even if country is corrected or missing. `Country` records the selection made by `redact`; it does not limit suppression.
 
 The command assigns each athlete the next available `RedactedId` in the privacy list. No ID ranges are reserved for particular environments. Repeated requests reuse that number, including when a later competition restores the original name. Keep each suppression record and its ID while the corresponding results remain published.
 
@@ -75,8 +75,33 @@ A fork's CI can check public files without the privacy key:
 osl-import competitions --dry-run --skip-privacy-check
 ```
 
-This command skips the check for removed names and cannot write to the database. Trusted CI and deployments must verify suppression records with the key before publication. Imports validate all files before writing, then save each competition in a separate transaction. If any import fails, pruning does not run.
+This command skips the check for removed names and cannot write to the database. Trusted CI and deployments must verify suppression records with the key before publication. Imports validate all files before writing, then save the batch and prune in one transaction. Any failure rolls back both.
 
 ### Requests
 
 Keep requests in email. Public issues and pull request descriptions must not name the requester. Rewriting these files does not remove names from earlier Git commits, third-party copies, or caches. The [Personal Data chapter](https://docs.openstreetlifting.org/PERSONAL_DATA.html) explains the procedure and its limits.
+
+## Country-independent identity migration
+
+Identity now uses normalized name, sex, and disambiguation. The database migration
+preserves existing athlete IDs, URLs, results, and social links. Entry countries
+remain as recorded; a matching host country alone does not justify clearing them.
+
+Seven name groups had separate profiles under different countries. Their entries
+and database rows receive the same numbers to preserve those profiles pending
+source review. These numbers do not establish that they are different people.
+
+| Name | Disambiguation 1 | Disambiguation 2 |
+| --- | --- | --- |
+| Harry Twister | BA | SE |
+| Denilson Monteiro | DE | FR |
+| Giuseppe Cicero | IT | SM |
+| Lorenzo Giorgetti | IT | SM |
+| Jacopo Bartoli | IT | SM |
+| Ilaria Valentini | IT | SM |
+| Tony Nguyen | FR | US |
+
+Review each group against its sources before correcting countries or merging
+profiles. If the database contains other country-based identity collisions, the
+migration fails instead of merging them. Resolve those collisions explicitly
+before retrying.

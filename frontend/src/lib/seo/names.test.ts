@@ -59,3 +59,9 @@ it('states the RIS standing in the country and worldwide', () => {
   expect(risStanding({ pullup: standing.ris })).toBe('');
   expect(risStanding(null)).toBe('');
 });
+
+it('describes the global standing without inventing a country', () => {
+  expect(
+    risStanding({ ris: { value: '114.46', global: { place: 4, field: 1859 }, country: null } })
+  ).toBe('Ranked #4 of 1,859 worldwide by RIS.');
+});

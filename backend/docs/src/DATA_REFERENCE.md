@@ -123,7 +123,7 @@ the event. Unknown or misspelled headers are rejected.
 | `FirstName`      | The athlete's first name. Leave empty for a single name.                         |
 | `LastName`       | The surname, or the full name for an athlete known by a single name. Required.   |
 | `Disambiguation` | Leave empty unless different athletes share a name; see [Names](#names).         |
-| `Country`        | The athlete's ISO 3166-1 alpha-2 country code. Required.                           |
+| `Country`        | The athlete's ISO 3166-1 alpha-2 country code, if the source gives it.                           |
 | `BodyweightKg`   | The athlete's bodyweight, if known.                                              |
 | `ReportedRis`    | The source's published RIS score, whether or not bodyweight is known.            |
 | `TotalKg` | Overall total from the source, or filled by `prepare` from a complete breakdown. |
@@ -139,9 +139,27 @@ checks names but does not fix them for you.
 Use a Latin spelling in `FirstName` and `LastName`. The optional `NativeName`
 column preserves a name written in another script.
 
-When different athletes share a name, use `Disambiguation` numbers starting at
-`1` to tell them apart. Keep each person's number consistent across competitions;
-check existing entries before assigning one.
+Identity uses the normalized name, sex, and `Disambiguation`. Correcting or
+clearing `Country` preserves the athlete's profile and URL.
+
+When different athletes share a name and sex, use `Disambiguation` numbers
+starting at `1`, even if their countries differ. Keep each person's number
+consistent across competitions; check existing entries before assigning one.
+
+### Country
+
+Keep the `Country` header. Leave its cell empty when the source omits the
+athlete's country; the host country is not evidence of nationality.
+
+The profile uses the known country from that athlete's entries. Empty cells
+leave that evidence intact. If all entries have empty cells, the profile shows
+“Country not recorded” and retains global rankings, records, and competition
+history. National rankings require a known country.
+
+Conflicting known countries stop preparation and import. Correct the affected
+entries together and import them in one batch. Use `Disambiguation` only when
+the entries belong to different people. A genuine change of sporting nationality
+needs a separate reporting policy; do not split one person to bypass this check.
 
 ### Division
 

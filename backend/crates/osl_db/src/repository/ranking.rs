@@ -425,11 +425,12 @@ impl<'a> RankingRepository<'a> {
             SELECT DISTINCT a.country
             FROM athletes a
             INNER JOIN competition_participants cp ON cp.athlete_id = a.athlete_id
+            WHERE a.country IS NOT NULL
             "#,
         );
 
         if let Some(competition_id) = competition_id {
-            query.push(" WHERE cp.competition_id = ");
+            query.push(" AND cp.competition_id = ");
             query.push_bind(competition_id);
         }
 

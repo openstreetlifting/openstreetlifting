@@ -1,5 +1,5 @@
 //! A handle is written against a name, but an athlete is a name together with
-//! gender, country and disambiguation. These pin down what happens when the
+//! gender and disambiguation. These pin down what happens when the
 //! two stop lining up: the row is narrowed by the columns that address an
 //! athlete, and until it names exactly one, nothing at all is written.
 
@@ -101,7 +101,7 @@ async fn a_name_two_athletes_carry_is_refused_until_a_column_settles_it(pool: Pg
             "competition-one",
             vec![
                 athlete("Tony", "Nguyen"),
-                from(athlete("Tony", "Nguyen"), "US"),
+                numbered(from(athlete("Tony", "Nguyen"), "US"), 2),
             ],
         ),
     )
@@ -142,7 +142,7 @@ async fn each_of_two_namesakes_can_hold_their_own_handle(pool: PgPool) {
             "competition-one",
             vec![
                 athlete("Tony", "Nguyen"),
-                from(athlete("Tony", "Nguyen"), "US"),
+                numbered(from(athlete("Tony", "Nguyen"), "US"), 2),
             ],
         ),
     )
@@ -226,7 +226,7 @@ async fn one_bad_row_holds_back_the_whole_file(pool: PgPool) {
             vec![
                 athlete("Léa", "Mérandon"),
                 athlete("Tony", "Nguyen"),
-                from(athlete("Tony", "Nguyen"), "US"),
+                numbered(from(athlete("Tony", "Nguyen"), "US"), 2),
             ],
         ),
     )

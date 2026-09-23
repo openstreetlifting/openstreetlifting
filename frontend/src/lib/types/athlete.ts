@@ -7,7 +7,7 @@ export interface AthleteSummary {
   last_name: string;
   slug: string;
   gender: Gender;
-  country: string;
+  country: string | null;
   profile_picture_url: string | null;
   created_at: string;
 }
@@ -25,7 +25,7 @@ export interface MetricStanding {
   value: string;
   class?: string;
   global: StandingPlace;
-  country: CountryStanding;
+  country: CountryStanding | null;
 }
 
 export interface AthleteStanding {
@@ -44,7 +44,7 @@ export interface AthleteDetail {
   native_name?: string | null;
   slug: string;
   gender: Gender;
-  country: string;
+  country: string | null;
   profile_picture_url: string | null;
   instagram_handle: string | null;
   created_at: string;

@@ -55,7 +55,7 @@ Add `Division` first only when needed; add `NativeName` only when an athlete has
 | `WeightClassKg` | Required positive bound: `80` for −80, `101+` for +101 |
 | `FirstName`, `LastName` | Apply `athletes.md`; last name required, first name optional |
 | `Disambiguation` | Only for distinct people sharing identity fields; positive integer |
-| `Country` | Required two-letter code; apply the exception below when absent |
+| `Country` | Source-listed two-letter code; leave empty when unknown |
 | `BodyweightKg` | Positive measured bodyweight supplied by the source |
 | `ReportedRis` | Source-reported score, whether or not bodyweight is known |
 | `TotalKg` | Overall total from the source; `prepare` fills it only from a complete event breakdown |
@@ -66,9 +66,9 @@ Record both bodyweight and `ReportedRis` when the source supplies both. Leave un
 
 ### Country
 
-Use the athlete's source-listed country. When the source omits it, use the host country and report every defaulted row in the summary or PR description. This is the permitted country fallback, not evidence of nationality. Missing bodyweights, attempts, and RIS do not receive defaults.
+Use the athlete's source-listed country. Keep the `Country` header and leave the cell empty when the source omits it. The host country is not evidence of nationality.
 
-Country participates in identity: correcting it can create a different athlete. Report conflicts for a known person before applying this fallback across many rows.
+Country is independent of identity. Check existing entries for the same athlete: conflicting known countries block import. Resolve the source conflict and update the affected entries together.
 
 ### Divisions and weight classes
 

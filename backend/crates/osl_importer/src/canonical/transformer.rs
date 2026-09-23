@@ -30,33 +30,66 @@ impl<'a> CanonicalTransformer<'a> {
     }
 
     pub async fn import_to_database(&self, canonical: CanonicalFormat) -> Result<()> {
-        for category in &canonical.categories {
-            for athlete in &category.athletes {
-                athlete
-                    .validate_score_source(category.gender, &canonical.movements)
-                    .map_err(|reason| {
-                        ImporterError::ValidationError(format!(
-                            "{}: {reason}",
-                            athlete.display_name()
-                        ))
-                    })?;
+        self.import_batch(vec![canonical], false).await.map(|_| ())
+    }
+
+    pub async fn import_batch(
+        &self,
+        competitions: Vec<CanonicalFormat>,
+        prune: bool,
+    ) -> Result<crate::sync::SyncPlan> {
+        super::validator::CanonicalValidator::validate_countries(&competitions)?;
+        for canonical in &competitions {
+            for category in &canonical.categories {
+                for athlete in &category.athletes {
+                    athlete
+                        .validate_score_source(category.gender, &canonical.movements)
+                        .map_err(|reason| {
+                            ImporterError::ValidationError(format!(
+                                "{}: {reason}",
+                                athlete.display_name()
+                            ))
+                        })?;
+                }
             }
         }
         let mut tx = self.pool.begin().await?;
-
-        let (competition_id, federation_id) = self
-            .upsert_competition(&canonical.competition, &mut tx)
+        // Serialize imports so concurrent batches cannot validate conflicting countries.
+        sqlx::query("SELECT pg_advisory_xact_lock(426, 1)")
+            .execute(&mut *tx)
             .await?;
+        for canonical in &competitions {
+            self.import_competition(canonical, &mut tx).await?;
+        }
+        let plan = if prune {
+            let slugs: Vec<_> = competitions
+                .iter()
+                .map(|canonical| canonical.competition.slug.clone())
+                .collect();
+            crate::sync::CompetitionSync::purge(&slugs, &mut tx).await?
+        } else {
+            osl_db::services::athlete_country::refresh(&mut tx).await?;
+            crate::sync::SyncPlan::default()
+        };
+        tx.commit().await?;
+        Ok(plan)
+    }
 
-        self.upsert_competition_movements(competition_id, &canonical.movements, &mut tx)
+    async fn import_competition(
+        &self,
+        canonical: &CanonicalFormat,
+        tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
+    ) -> Result<()> {
+        let (competition_id, federation_id) =
+            self.upsert_competition(&canonical.competition, tx).await?;
+
+        self.upsert_competition_movements(competition_id, &canonical.movements, tx)
             .await?;
 
         let mut imported = ImportedFacts::default();
 
         for category in &canonical.categories {
-            let contest = self
-                .resolve_contest(category, federation_id, &mut tx)
-                .await?;
+            let contest = self.resolve_contest(category, federation_id, tx).await?;
 
             for athlete in &category.athletes {
                 self.import_athlete_performance(
@@ -65,22 +98,21 @@ impl<'a> CanonicalTransformer<'a> {
                     competition_id,
                     contest,
                     &mut imported,
-                    &mut tx,
+                    tx,
                 )
                 .await?;
             }
         }
 
-        self.prune_absent_facts(competition_id, &canonical, &imported, &mut tx)
+        self.prune_absent_facts(competition_id, canonical, &imported, tx)
             .await?;
 
         // After the prune, so the event reflects the movements that survived.
-        let event_code = self.refresh_event_code(competition_id, &mut tx).await?;
+        let event_code = self.refresh_event_code(competition_id, tx).await?;
 
         if osl_domain::is_full_event(event_code.as_deref()) {
             debug!(%competition_id, "Computing RIS scores for eligible participants");
-            self.compute_ris_for_competition(competition_id, &mut tx)
-                .await?;
+            self.compute_ris_for_competition(competition_id, tx).await?;
         } else {
             debug!(
                 %competition_id,
@@ -89,7 +121,6 @@ impl<'a> CanonicalTransformer<'a> {
             );
         }
 
-        tx.commit().await?;
         Ok(())
     }
 
@@ -416,8 +447,8 @@ impl<'a> CanonicalTransformer<'a> {
             r#"
             INSERT INTO competition_participants
                 (competition_id, weight_class_id, division_id, athlete_id, bodyweight, status, status_reason, ris_score, ris_source,
-                 bodyweight_source, reported_ris_score, reported_ris_edition, total)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11, $12)
+                 bodyweight_source, reported_ris_score, reported_ris_edition, total, country)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11, $12, $13)
             ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id)
             DO UPDATE SET
                 bodyweight = EXCLUDED.bodyweight,
@@ -429,7 +460,8 @@ impl<'a> CanonicalTransformer<'a> {
                 bodyweight_source = EXCLUDED.bodyweight_source,
                 reported_ris_score = EXCLUDED.reported_ris_score,
                 reported_ris_edition = EXCLUDED.reported_ris_edition,
-                total = EXCLUDED.total
+                total = EXCLUDED.total,
+                country = EXCLUDED.country
             RETURNING participant_id as "participant_id: Uuid"
             "#,
             competition_id,
@@ -443,7 +475,8 @@ impl<'a> CanonicalTransformer<'a> {
             bodyweight_source,
             athlete.reported_ris,
             reported_ris_edition,
-            athlete.total
+            athlete.total,
+            athlete.country.map(|country| country.as_str().to_owned())
         )
         .fetch_one(&mut **tx)
         .await?;
@@ -491,12 +524,10 @@ impl<'a> CanonicalTransformer<'a> {
             SELECT athlete_id as "athlete_id: Uuid" FROM athletes
             WHERE match_key = $1
               AND gender = $2
-              AND country = $3
-              AND disambiguation IS NOT DISTINCT FROM $4
+              AND disambiguation IS NOT DISTINCT FROM $3
             "#,
             match_key,
             gender,
-            athlete.country.as_str(),
             athlete.disambiguation
         )
         .fetch_optional(&mut **tx)
@@ -548,7 +579,7 @@ impl<'a> CanonicalTransformer<'a> {
             db_first_name,
             db_last_name,
             gender,
-            athlete.country.as_str(),
+            athlete.country.map(|country| country.as_str().to_owned()),
             slug,
             match_key,
             athlete.disambiguation,

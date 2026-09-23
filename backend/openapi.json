@@ -810,7 +810,6 @@
           "first_name",
           "last_name",
           "slug",
-          "country",
           "gender"
         ],
         "properties": {
@@ -826,7 +825,10 @@
             "format": "double"
           },
           "country": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "first_name": {
             "type": "string"
@@ -881,7 +883,6 @@
           "last_name",
           "slug",
           "gender",
-          "country",
           "created_at"
         ],
         "properties": {
@@ -899,7 +900,10 @@
             }
           },
           "country": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "created_at": {
             "type": "string",
@@ -1509,8 +1513,7 @@
         "type": "object",
         "required": [
           "value",
-          "global",
-          "country"
+          "global"
         ],
         "properties": {
           "class": {
@@ -1520,7 +1523,14 @@
             ]
           },
           "country": {
-            "$ref": "#/components/schemas/CountryStanding"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CountryStanding"
+              }
+            ]
           },
           "global": {
             "$ref": "#/components/schemas/StandingPlace"
@@ -1580,7 +1590,6 @@
                 "last_name",
                 "slug",
                 "gender",
-                "country",
                 "created_at"
               ],
               "properties": {
@@ -1598,7 +1607,10 @@
                   }
                 },
                 "country": {
-                  "type": "string"
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 },
                 "created_at": {
                   "type": "string",

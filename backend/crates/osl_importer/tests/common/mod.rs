@@ -91,7 +91,7 @@ pub fn athlete(first: &str, last: &str) -> AthleteData {
         native_name: None,
         disambiguation: None,
         gender: Some(Gender::M),
-        country: CountryCode::parse("FR").unwrap(),
+        country: Some(CountryCode::parse("FR").unwrap()),
         bodyweight: Some(Decimal::from(80)),
         bodyweight_source: None,
         reported_ris_edition: None,
@@ -104,7 +104,7 @@ pub fn athlete(first: &str, last: &str) -> AthleteData {
 }
 
 pub fn from(mut athlete: AthleteData, country: &str) -> AthleteData {
-    athlete.country = CountryCode::parse(country).expect("test country should parse");
+    athlete.country = Some(CountryCode::parse(country).expect("test country should parse"));
     athlete
 }
 

@@ -54,7 +54,7 @@ export interface AthleteInfo {
   first_name: string;
   last_name: string;
   gender: Gender;
-  country: string;
+  country: string | null;
   slug: string;
   bodyweight?: number | null;
   instagram_handle?: string | null;

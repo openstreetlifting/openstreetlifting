@@ -56,7 +56,7 @@ impl<'a> CompetitionSync<'a> {
 
     /// Claiming nothing would mean deleting every competition, which is what a
     /// mistyped directory looks like, so it is refused rather than obeyed.
-    async fn purge(
+    pub(crate) async fn purge(
         claimed_slugs: &[String],
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<SyncPlan> {
@@ -68,6 +68,9 @@ impl<'a> CompetitionSync<'a> {
             ));
         }
 
+        sqlx::query("SELECT pg_advisory_xact_lock(426, 1)")
+            .execute(&mut **tx)
+            .await?;
         let competitions = sqlx::query!(
             r#"
             DELETE FROM competitions
@@ -79,6 +82,7 @@ impl<'a> CompetitionSync<'a> {
         .fetch_all(&mut **tx)
         .await?;
 
+        osl_db::services::athlete_country::refresh(tx).await?;
         let athletes = sqlx::query!(
             r#"
             DELETE FROM athletes

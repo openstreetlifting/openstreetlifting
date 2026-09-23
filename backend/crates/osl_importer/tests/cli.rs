@@ -389,3 +389,26 @@ fn preparation_conflicts_block_every_file_in_the_batch() {
         );
     }
 }
+
+#[test]
+fn country_conflicts_stop_preparation_before_writing_any_file() {
+    let workspace = Workspace::new();
+    let first = workspace.write(&fixture("first", "Alpha"));
+    let mut conflicting = fixture("second", "Alpha");
+    conflicting.categories[0].athletes[0].country =
+        Some(osl_domain::CountryCode::parse("IT").unwrap());
+    workspace.write(&conflicting);
+    let path = first.join("competition.toml");
+    let before = format!("\n{}", std::fs::read_to_string(&path).unwrap());
+    std::fs::write(&path, &before).unwrap();
+    for args in [
+        vec!["prepare", "."],
+        vec!["prepare", ".", "--check"],
+        vec!["competitions", ".", "--dry-run"],
+    ] {
+        let output = workspace.run(&args, None);
+        assert!(!output.status.success());
+        assert!(String::from_utf8_lossy(&output.stderr).contains("conflicting countries"));
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), before);
+    }
+}

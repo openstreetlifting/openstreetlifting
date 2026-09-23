@@ -10,7 +10,38 @@ use tracing::warn;
 pub struct CanonicalValidator;
 
 impl CanonicalValidator {
+    pub fn validate_countries<'a>(
+        competitions: impl IntoIterator<Item = &'a CanonicalFormat>,
+    ) -> Result<()> {
+        let mut known = HashMap::new();
+        for canonical in competitions {
+            for category in &canonical.categories {
+                for athlete in &category.athletes {
+                    let Some(country) = athlete.country else {
+                        continue;
+                    };
+                    let key = (
+                        NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name)
+                            .match_name(),
+                        athlete.gender.unwrap_or(category.gender),
+                        athlete.disambiguation,
+                    );
+                    if let Some(previous) = known.insert(key, country)
+                        && previous != country
+                    {
+                        return Err(ImporterError::ValidationError(format!(
+                            "Athlete '{}': conflicting countries {previous} and {country}; correct the source data or use Disambiguation for different people",
+                            athlete.display_name()
+                        )));
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
+
     pub fn validate(canonical: &CanonicalFormat) -> Result<ValidationReport> {
+        Self::validate_countries(std::slice::from_ref(canonical))?;
         let mut report = ValidationReport::default();
 
         if canonical.competition.name.is_empty() {
@@ -398,7 +429,7 @@ mod tests {
             native_name: None,
             disambiguation: None,
             gender: Some(Gender::M),
-            country: CountryCode::parse("FR").unwrap(),
+            country: Some(CountryCode::parse("FR").unwrap()),
             bodyweight: Some(Decimal::from(80)),
             bodyweight_source: None,
             reported_ris_edition: None,

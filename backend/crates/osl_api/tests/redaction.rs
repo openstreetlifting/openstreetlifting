@@ -30,7 +30,7 @@ fn entry(first: &str, last: &str, native: Option<&str>) -> AthleteData {
         native_name: native.map(str::to_string),
         disambiguation: None,
         gender: None,
-        country: CountryCode::parse("FR").unwrap(),
+        country: Some(CountryCode::parse("FR").unwrap()),
         bodyweight: Some(decimal("78.5")),
         bodyweight_source: None,
         reported_ris: None,
@@ -205,4 +205,28 @@ async fn no_endpoint_gives_the_name_back(pool: PgPool) {
             "{uri} still names the athlete: {text}"
         );
     }
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn unknown_country_keeps_results_and_global_standings(pool: PgPool) {
+    let mut athlete = entry("Alina", "Riyaz", None);
+    athlete.country = None;
+    import(&pool, meet("meet", vec![athlete])).await;
+    let (status, body) = get(
+        &pool,
+        "/api/v1/athletes/alina-riyaz?include=competitions,records,standing",
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body["country"], Value::Null);
+    assert_eq!(body["competitions"].as_array().unwrap().len(), 1);
+    assert_eq!(body["personal_records"].as_array().unwrap().len(), 4);
+    for metric in body["standing"].as_object().unwrap().values() {
+        assert_eq!(metric["global"]["place"], 1);
+        assert_eq!(metric["country"], Value::Null);
+    }
+    let (status, rankings) = get(&pool, "/api/v1/rankings").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(rankings["data"].as_array().unwrap().len(), 1);
+    assert_eq!(rankings["data"][0]["athlete"]["country"], Value::Null);
 }

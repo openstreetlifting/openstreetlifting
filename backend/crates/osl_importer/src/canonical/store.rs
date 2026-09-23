@@ -254,7 +254,9 @@ fn read_entry(
     let first_name = optional(columns, record, entries::FIRST_NAME).unwrap_or_default();
     let last_name = required(columns, record, entries::LAST_NAME)?;
     let native_name = optional(columns, record, entries::NATIVE_NAME);
-    let country = CountryCode::parse(columns.get(record, entries::COUNTRY))?;
+    let country = optional(columns, record, entries::COUNTRY)
+        .map(|raw| CountryCode::parse(&raw))
+        .transpose()?;
 
     let disambiguation = match optional(columns, record, entries::DISAMBIGUATION) {
         Some(raw) => Some(
@@ -417,7 +419,10 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                     .disambiguation
                     .map(|d| d.to_string())
                     .unwrap_or_default(),
-                athlete.country.as_str().to_string(),
+                athlete
+                    .country
+                    .map(|country| country.as_str().to_owned())
+                    .unwrap_or_default(),
                 entries::render_decimal(athlete.bodyweight),
                 entries::render_decimal(athlete.reported_ris),
                 entries::render_decimal(athlete.total),

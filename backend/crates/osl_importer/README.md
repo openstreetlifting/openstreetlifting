@@ -34,9 +34,9 @@ osl-import competitions data/competitions
 
 Paths can point to individual competition directories or directory trees. The importer processes overlapping paths once and validates all competition files before writing to the database. Missing paths, empty trees, and invalid files stop the import.
 
-The importer then saves each competition in a separate transaction. If a database write fails, earlier imports remain. Fix the error and rerun the command.
+The importer saves the whole batch in one transaction, including pruning. Conflicting countries for one athlete or a failed write roll back the batch. Correct country evidence across the affected competitions and import them together.
 
-With `--prune`, the importer deletes database competitions absent from the supplied files, athletes with no competition entries, and federations with no competitions. Pruning runs only after every import succeeds. Supply the complete dataset: passing a single competition would delete all others from the database.
+With `--prune`, the importer deletes database competitions absent from the supplied files, athletes with no competition entries, and federations with no competitions. Pruning runs after the imports, within the same transaction. Supply the complete dataset: passing a single competition would delete all others from the database.
 
 ```sh
 osl-import competitions data/competitions --prune

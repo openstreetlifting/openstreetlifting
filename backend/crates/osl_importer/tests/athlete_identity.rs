@@ -180,9 +180,9 @@ async fn the_database_refuses_a_duplicate_identity(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn athletes_from_different_countries_stay_apart(pool: PgPool) {
+async fn disambiguation_keeps_namesakes_from_different_countries_apart(pool: PgPool) {
     let spanish = from(athlete("Jose", "Garcia", None), "ES");
-    let mexican = from(athlete("Jose", "Garcia", None), "MX");
+    let mexican = from(athlete("Jose", "Garcia", Some(2)), "MX");
 
     import(&pool, file("competition-one", vec![spanish, mexican])).await;
 

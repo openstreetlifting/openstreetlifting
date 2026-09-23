@@ -91,7 +91,7 @@ pub struct AthleteInfo {
     pub first_name: String,
     pub last_name: String,
     pub gender: Gender,
-    pub country: String,
+    pub country: Option<String>,
     pub slug: String,
 }
 

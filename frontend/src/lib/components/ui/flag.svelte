@@ -3,7 +3,7 @@
   import { countryName, countryPath } from '$lib/utils';
 
   interface Props {
-    countryCode: string;
+    countryCode: string | null;
     background?: boolean;
     link?: boolean;
     class?: string;
@@ -14,7 +14,7 @@
   const label = $derived(countryCode && countryCode.length === 2 ? countryName(countryCode) : null);
 
   const fileName = $derived(
-    [...countryCode.toUpperCase()]
+    [...(countryCode?.toUpperCase() ?? '')]
       .map((char) => (char.codePointAt(0)! + 127397).toString(16))
       .join('-')
   );
@@ -42,7 +42,7 @@
     </svg>
   {:else if link}
     <a
-      href={resolve(countryPath(countryCode))}
+      href={resolve(countryPath(countryCode!))}
       class="inline-flex shrink-0 rounded-[3px] transition-opacity hover:opacity-75 focus:ring-2 focus:ring-focus focus:outline-none"
     >
       {@render flag()}

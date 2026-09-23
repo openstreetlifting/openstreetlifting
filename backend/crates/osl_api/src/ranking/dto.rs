@@ -133,7 +133,7 @@ pub struct AthleteInfo {
     pub first_name: String,
     pub last_name: String,
     pub slug: String,
-    pub country: String,
+    pub country: Option<String>,
     pub gender: Gender,
     pub bodyweight: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]

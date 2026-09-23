@@ -107,7 +107,11 @@ impl PrivacyList {
                 );
             }
 
-            if !identities.insert((entry.hash.clone(), entry.query.clone())) {
+            if !identities.insert((
+                entry.hash.clone(),
+                entry.query.gender.clone(),
+                entry.query.disambiguation,
+            )) {
                 bail!("{}: line {line}: identity is listed twice", path.display());
             }
             by_hash
@@ -185,13 +189,7 @@ impl PrivacyList {
             .map(|key| hash_with(key, &match_key(full_name)))
     }
 
-    pub fn lookup(
-        &self,
-        full_name: &str,
-        gender: &str,
-        country: &str,
-        disambiguation: Option<i16>,
-    ) -> Lookup {
+    pub fn lookup(&self, full_name: &str, gender: &str, disambiguation: Option<i16>) -> Lookup {
         let Some(hash) = self.hash(full_name) else {
             return Lookup::MissingKey;
         };
@@ -202,7 +200,11 @@ impl PrivacyList {
             .flatten()
             .map(|index| &self.entries[*index])
             .find(|entry| {
-                entry.query.matches_parts(gender, country, disambiguation)
+                entry
+                    .query
+                    .gender
+                    .as_deref()
+                    .is_none_or(|value| value == gender)
                     && entry.query.disambiguation == disambiguation
             })
             .map_or(Lookup::NotListed, |entry| Lookup::Listed(entry.redacted))
@@ -215,7 +217,8 @@ impl PrivacyList {
             .context(format!("{KEY_ENV} is required to record a redaction"))?;
         if self.entries.iter().any(|existing| {
             existing.hash == entry.hash
-                && existing.query == entry.query
+                && existing.query.gender == entry.query.gender
+                && existing.query.disambiguation == entry.query.disambiguation
                 && existing.redacted == entry.redacted
         }) {
             return Ok(());
@@ -225,7 +228,9 @@ impl PrivacyList {
                 .entries
                 .iter()
                 .any(|existing| existing.redacted == entry.redacted
-                    || (existing.hash == entry.hash && existing.query == entry.query)),
+                    || (existing.hash == entry.hash
+                        && existing.query.gender == entry.query.gender
+                        && existing.query.disambiguation == entry.query.disambiguation)),
             "Conflicting suppression record; reload the privacy list"
         );
         let mut entries: Vec<_> = self.entries.iter().chain(std::iter::once(&entry)).collect();
@@ -345,7 +350,6 @@ pub fn check_competition(canonical: &CanonicalFormat, list: &PrivacyList) -> Res
             if let Lookup::Listed(redacted) = list.lookup(
                 &athlete.display_name(),
                 gender.as_str(),
-                athlete.country.as_str(),
                 athlete.disambiguation,
             ) {
                 found.push(redacted);

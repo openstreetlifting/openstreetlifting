@@ -80,7 +80,7 @@ async fn the_country_place_only_counts_that_country(pool: PgPool) {
     let italian = metric(&standings, RankingMovement::Ris);
 
     assert_eq!(italian.global_place, 2, "second best RIS score overall");
-    assert_eq!(italian.country, "IT");
+    assert_eq!(italian.country.as_deref(), Some("IT"));
     assert_eq!(
         (italian.country_place, italian.country_field),
         (1, 1),

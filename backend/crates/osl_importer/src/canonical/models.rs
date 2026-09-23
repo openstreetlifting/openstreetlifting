@@ -70,7 +70,7 @@ pub struct AthleteData {
     pub native_name: Option<String>,
     pub disambiguation: Option<i16>,
     pub gender: Option<Gender>,
-    pub country: CountryCode,
+    pub country: Option<CountryCode>,
     pub bodyweight: Option<Decimal>,
     pub bodyweight_source: Option<BodyweightSource>,
     pub reported_ris: Option<Decimal>,

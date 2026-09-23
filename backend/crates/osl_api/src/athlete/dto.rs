@@ -22,7 +22,7 @@ pub struct AthleteResponse {
     pub native_name: Option<String>,
     pub slug: String,
     pub gender: Gender,
-    pub country: String,
+    pub country: Option<String>,
     pub profile_picture_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instagram_handle: Option<String>,
@@ -97,7 +97,7 @@ pub struct MetricStanding {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
     pub global: StandingPlace,
-    pub country: CountryStanding,
+    pub country: Option<CountryStanding>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -135,11 +135,11 @@ impl MetricStanding {
                 place: row.global_place,
                 field: row.global_field,
             },
-            country: CountryStanding {
-                code: row.country,
+            country: row.country.map(|code| CountryStanding {
+                code,
                 place: row.country_place,
                 field: row.country_field,
-            },
+            }),
         }
     }
 }

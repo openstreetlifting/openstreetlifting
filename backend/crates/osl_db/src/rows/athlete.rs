@@ -10,7 +10,7 @@ pub struct AthleteRow {
     pub native_name: Option<String>,
     pub gender: Gender,
     pub created_at: chrono::NaiveDateTime,
-    pub country: String,
+    pub country: Option<String>,
     pub profile_picture_url: Option<String>,
     pub slug: String,
     #[sqlx(default)]

@@ -13,7 +13,7 @@ pub struct RankingRow {
     pub first_name: String,
     pub last_name: String,
     pub slug: String,
-    pub country: String,
+    pub country: Option<String>,
     pub gender: Gender,
     pub instagram_handle: Option<String>,
     pub bodyweight: Option<Decimal>,
@@ -47,7 +47,7 @@ pub struct AthleteMetricStandingRow {
     pub weight_class_max: Option<Decimal>,
     pub global_place: i64,
     pub global_field: i64,
-    pub country: String,
+    pub country: Option<String>,
     pub country_place: i64,
     pub country_field: i64,
 }
