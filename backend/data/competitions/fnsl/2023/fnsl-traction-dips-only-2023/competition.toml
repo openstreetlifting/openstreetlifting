@@ -1,8 +1,5 @@
 event = "PD"
-sources = [
-    "FNSL Grand Ouest 2023 result boards supplied from osl_raw_data/fnsl/grand-ouest/2023/pull-up-dips-only",
-    "Contributor confirmation: 7–8 October 2023, Fitness Park Nantes Beaulieu",
-]
+sources = ["osl_raw_data/fnsl/grand-ouest/2023/pull-up-dips-only"]
 
 [competition]
 name = "Traction Only / Dips Only"

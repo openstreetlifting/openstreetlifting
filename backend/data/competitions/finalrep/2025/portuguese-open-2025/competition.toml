@@ -1,8 +1,5 @@
 event = "MPDS"
-sources = [
-    "FinalRep app, /events-api/v1/events/{id}/statistics",
-    "Bodyweight recovered by reversing the 2024 RIS formula on the published score",
-]
+sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
 
 [competition]
 name = "Portuguese Open"

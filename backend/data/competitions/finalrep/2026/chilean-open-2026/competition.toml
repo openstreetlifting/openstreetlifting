@@ -1,8 +1,7 @@
 event = "MPDS"
 sources = [
-    "FinalRep app, event result screens, one per weight class",
+    "FinalRep app, event result screens",
     "https://final-rep.com/chilean-open-26-recap/",
-    "Bodyweight recovered by reversing the 2026 RIS formula on the published score",
 ]
 
 [competition]

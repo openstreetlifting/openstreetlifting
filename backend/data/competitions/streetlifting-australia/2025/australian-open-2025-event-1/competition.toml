@@ -2,7 +2,6 @@ event = "MPDS"
 sources = [
     "https://streetliftingaustralia.com.au/previous-valid-results",
     "https://img1.wsimg.com/blobby/go/66e68ad1-c2d3-473a-9260-17e2d76d39f0/downloads/38ccf20c-19b0-4f67-be3f-77add7dfb70d/2025%20Open%20Perth%20.pdf",
-    "Day not published: the report gives November 2025, and 23 November assumes the same weekend as the 2026 Perth event on 22 November",
 ]
 
 [competition]

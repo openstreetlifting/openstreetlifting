@@ -1,5 +1,5 @@
 event = "MPDS"
-sources = ["FNSL results spreadsheet, FNSL Grand-Ouest 2026.xlsx"]
+sources = ["FNSL Grand-Ouest 2026.xlsx"]
 
 [competition]
 name = "Interrégionale Grand Ouest"

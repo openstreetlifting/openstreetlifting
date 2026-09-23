@@ -1,5 +1,5 @@
 event = "MPDS"
-sources = ["FNSL weigh-in sheet, (Sud-Ouest) Inter-Régionale - Ath_Pesée.pdf"]
+sources = ["(Sud-Ouest) Inter-Régionale - Ath_Pesée.pdf"]
 
 [competition]
 name = "Interrégionale Sud-Ouest"
