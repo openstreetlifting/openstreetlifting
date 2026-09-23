@@ -8,6 +8,7 @@
     Table,
     RisHeader,
     RisScore,
+    InfoTip,
     TABLE_CELL,
     TABLE_HEAD_CELL,
     FROZEN_CELL,
@@ -384,13 +385,17 @@
           {#if data.ris === 'recomputed'}
             Recomputed
           {:else if data.ris === 'reported'}
-            Reported by the federation<span
-              class={REPORTED_MARK}
-              title={REPORTED_TITLE}
-              aria-label={REPORTED_TITLE}>{REPORTED_GLYPH}</span
+            Reported<span class={REPORTED_MARK} title={REPORTED_TITLE} aria-label={REPORTED_TITLE}
+              >{REPORTED_GLYPH}</span
             >
           {:else if data.ris === 'not-published'}
-            Not published, and no bodyweight to compute one, so the table ranks on total.
+            Unavailable
+            <InfoTip label="Why RIS is unavailable">
+              <p>
+                The results include neither RIS scores nor the bodyweights needed to calculate them.
+                The table ranks by total by default.
+              </p>
+            </InfoTip>
           {:else}
             None
           {/if}

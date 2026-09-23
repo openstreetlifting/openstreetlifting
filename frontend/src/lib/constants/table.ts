@@ -32,7 +32,8 @@ export const STATUS_FLAG = 'text-warning';
 export const REPORTED_MARK = `${STATUS_FLAG} ml-px align-super text-[0.75em] leading-none font-semibold`;
 /** R for reported. A letter rather than a footnote glyph, which reads as a cross. */
 export const REPORTED_GLYPH = 'R';
-export const REPORTED_TITLE = 'RIS reported by federation, missing bodyweight we need to recompute';
+export const REPORTED_TITLE =
+  'The federation published this RIS score. We cannot recalculate it without bodyweight.';
 
 export const TEXT_CELL = {
   competition: 'block max-w-[9rem] truncate sm:max-w-[16rem]',
