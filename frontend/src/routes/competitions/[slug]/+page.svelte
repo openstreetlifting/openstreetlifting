@@ -375,6 +375,12 @@
         <dt class="text-muted">Format</dt>
         <dd class="text-ink">{formatLabel}</dd>
       {/if}
+      {#if published && data.ris === 'not-published'}
+        <dt class="text-muted">RIS</dt>
+        <dd class="text-ink">
+          Not published, and no bodyweight to compute one, so the table ranks on total.
+        </dd>
+      {/if}
       {#if published && !classed}
         <dt class="text-muted">Weight classes</dt>
         <dd class="text-ink">No weight classes</dd>
@@ -480,13 +486,6 @@
         </select>
       </div>
     </FilterBar>
-  {/if}
-
-  {#if published && data.ris === 'not-published'}
-    <p class="border-l-2 border-stroke-strong py-1 pl-5 text-sm leading-relaxed text-secondary">
-      No RIS for this competition. Its source published no bodyweight, so the score cannot be
-      computed and the table is ranked on total instead.
-    </p>
   {/if}
 
   {#if !published}
