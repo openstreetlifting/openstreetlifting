@@ -14,7 +14,7 @@
 
 <nav aria-label="Breadcrumb" class="mb-3 sm:mb-5">
   <ol class="flex flex-wrap items-center gap-1.5 text-xs text-muted sm:gap-2 sm:text-sm">
-    {#each items as item, index (item.label)}
+    {#each items as item, index (index)}
       {#if index > 0}
         <li>
           <svg
