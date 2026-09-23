@@ -21,7 +21,12 @@ pub const STATUS: &str = "Status";
 pub const STATUS_REASON: &str = "StatusReason";
 pub const NATIVE_NAME: &str = "NativeName";
 
-pub const OPTIONAL_COLUMNS: [&str; 6] = [
+// Optional on input. The formatter still writes every IDENTITY_COLUMNS field
+// so contributors can copy a consistent base header between competitions.
+pub const OPTIONAL_COLUMNS: [&str; 9] = [
+    FIRST_NAME,
+    DISAMBIGUATION,
+    STATUS_REASON,
     DIVISION,
     WEIGHT_CLASS,
     NATIVE_NAME,
@@ -333,11 +338,36 @@ mod tests {
     }
 
     #[test]
-    fn a_missing_column_is_rejected() {
-        let mut fields = headers(Layout::default());
-        fields.retain(|c| c != "BestSquatKg");
-        let error = Columns::read(&csv::StringRecord::from(fields)).unwrap_err();
-        assert!(error.contains("BestSquatKg"), "{error}");
+    fn missing_required_columns_are_rejected() {
+        for column in [
+            SEX,
+            LAST_NAME,
+            COUNTRY,
+            BODYWEIGHT,
+            RIS,
+            STATUS,
+            "BestSquatKg",
+        ] {
+            let mut fields = headers(Layout::default());
+            fields.retain(|c| c != column);
+            let error = Columns::read(&csv::StringRecord::from(fields)).unwrap_err();
+            assert!(error.contains(column), "{error}");
+        }
+    }
+
+    #[test]
+    fn misspelled_optional_columns_are_rejected() {
+        for (column, typo) in [
+            (FIRST_NAME, "Firstname"),
+            (DISAMBIGUATION, "Disambiguaton"),
+            (STATUS_REASON, "StatusReasn"),
+        ] {
+            let mut fields = headers(Layout::default());
+            *fields.iter_mut().find(|field| *field == column).unwrap() = typo.to_string();
+            let error = Columns::read(&csv::StringRecord::from(fields)).unwrap_err();
+            assert!(error.contains("unknown column"), "{error}");
+            assert!(error.contains(typo), "{error}");
+        }
     }
 
     #[test]

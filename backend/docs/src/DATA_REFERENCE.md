@@ -91,10 +91,26 @@ Each row records one athlete's results in one contest. Keep the column names
 exactly as shown below. Use kilograms for weights and a decimal point for
 fractions, such as `72.5`.
 
-All columns are required in the header except `Division`, `NativeName`,
-`BodyweightSource`, `ReportedRisEdition` and `ReportedTotalKg`. Required columns
-may contain empty cells, as described below. Keep the columns for all four movements, leaving
-cells empty for movements outside the event.
+Use this standard base header when starting a file:
+
+```csv
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+```
+
+Add `WeightClassKg` after `Sex` for competitions with weight classes, and
+`Division` first when separate divisions are needed. `NativeName`,
+`BodyweightSource`, `ReportedRisEdition` and `ReportedTotalKg` are optional
+additional columns.
+
+The parser also accepts files without `FirstName`, `Disambiguation` or
+`StatusReason`: an omitted column means an empty value for every entry. `fmt`
+always restores these three columns in the standard base header, so formatted
+files provide a consistent starting point for contributors. It preserves any
+values already supplied.
+
+All other base headers are required, even when their cells may be empty. Keep
+the columns for all four movements, leaving cells empty for movements outside
+the event. Unknown or misspelled headers are rejected.
 
 ### Athlete and result columns
 

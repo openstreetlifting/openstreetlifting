@@ -134,6 +134,55 @@ fn formatting_preview_and_check_leave_files_unchanged() {
 }
 
 #[test]
+fn optional_entry_headers_are_restored_without_changing_results() {
+    let workspace = Workspace::new();
+    let mut canonical = fixture("meet", "Alpha");
+    canonical.categories[0].athletes[0].first_name.clear();
+    let directory = workspace.write(&canonical);
+    let entries_path = directory.join("entries.csv");
+    let original = std::fs::read_to_string(&entries_path).unwrap();
+
+    for omitted in [
+        vec!["FirstName"],
+        vec!["Disambiguation"],
+        vec!["StatusReason"],
+        vec!["FirstName", "Disambiguation", "StatusReason"],
+    ] {
+        let mut reader = csv::Reader::from_reader(original.as_bytes());
+        let headers = reader.headers().unwrap().clone();
+        let keep: Vec<usize> = headers
+            .iter()
+            .enumerate()
+            .filter_map(|(index, column)| (!omitted.contains(&column)).then_some(index))
+            .collect();
+        let mut writer = csv::Writer::from_writer(Vec::new());
+        writer
+            .write_record(keep.iter().map(|&index| &headers[index]))
+            .unwrap();
+        for record in reader.records() {
+            let record = record.unwrap();
+            writer
+                .write_record(keep.iter().map(|&index| &record[index]))
+                .unwrap();
+        }
+        let reduced = writer.into_inner().unwrap();
+        std::fs::write(&entries_path, &reduced).unwrap();
+
+        success(workspace.run(&["competitions", ".", "--dry-run"], None));
+        assert_eq!(std::fs::read(&entries_path).unwrap(), reduced);
+        assert!(
+            !workspace
+                .run(&["fmt", ".", "--check"], None)
+                .status
+                .success()
+        );
+        success(workspace.run(&["fmt", "."], None));
+        assert_eq!(std::fs::read_to_string(&entries_path).unwrap(), original);
+        success(workspace.run(&["fmt", ".", "--check"], None));
+    }
+}
+
+#[test]
 fn help_hides_credentials_and_redaction_validates_identity_options() {
     let workspace = Workspace::new();
     let output = Command::new(env!("CARGO_BIN_EXE_import"))
