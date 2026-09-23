@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "FNSL Grand Ouest 2023 result boards supplied from osl_raw_data/fnsl/grand-ouest/2023/inter-régional-grand-ouest",
+    "Contributor confirmation: Saturday 13 May 2023; location unknown",
+]
+
+[competition]
+name = "Interrégionale Grand Ouest"
+start_date = "2023-05-13"
+end_date = "2023-05-13"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
