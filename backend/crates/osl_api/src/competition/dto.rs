@@ -21,8 +21,10 @@ pub struct CompetitionResponse {
     pub created_at: chrono::NaiveDateTime,
     pub slug: String,
     pub status: CompetitionStatus,
+    pub scoring: Option<osl_domain::Scoring>,
     pub federation_id: Uuid,
     pub city: Option<String>,
+    pub venue: Option<String>,
     pub region: Option<String>,
     pub country: Option<String>,
     pub start_date: Option<NaiveDate>,
@@ -73,6 +75,7 @@ pub struct CategoryInfo {
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct ParticipantDetail {
+    pub participant_id: Uuid,
     pub athlete: AthleteInfo,
     pub bodyweight: Option<rust_decimal::Decimal>,
     pub rank: Option<i32>,
@@ -91,7 +94,7 @@ pub struct AthleteInfo {
     pub first_name: String,
     pub last_name: String,
     pub gender: Gender,
-    pub country: String,
+    pub country: Option<String>,
     pub slug: String,
 }
 
@@ -119,8 +122,10 @@ impl From<CompetitionRow> for CompetitionResponse {
             created_at: comp.created_at,
             slug: comp.slug,
             status: comp.status,
+            scoring: comp.scoring,
             federation_id: comp.federation_id,
             city: comp.city,
+            venue: comp.venue,
             region: comp.region,
             country: comp.country,
             start_date: comp.start_date,
@@ -222,6 +227,7 @@ impl From<DbLiftDetail> for LiftDetail {
 impl From<DbParticipantDetail> for ParticipantDetail {
     fn from(participant: DbParticipantDetail) -> Self {
         Self {
+            participant_id: participant.participant_id,
             athlete: participant.athlete.into(),
             bodyweight: participant.bodyweight,
             rank: participant.rank,

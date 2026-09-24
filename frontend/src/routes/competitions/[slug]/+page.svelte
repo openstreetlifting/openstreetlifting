@@ -105,7 +105,7 @@
   const table = new RankingsTable({
     basePath: () => `/competitions/${data.competition.slug}`,
     initialUrl: page.url,
-    defaultSort: () => defaultRankingSort(data.ris),
+    defaultSort: () => data.competition.scoring ?? defaultRankingSort(data.ris),
   });
 
   afterNavigate(({ type }) => {
@@ -123,7 +123,11 @@
   const busy = $derived(loading.current);
 
   const sorts = $derived(risSortable ? RANKING_SORTS : RANKING_SORTS_NO_RIS);
-  const genders = RANKING_GENDERS;
+  const genders = $derived(
+    competition.categories.some(({ category }) => category.gender === 'MX')
+      ? [...RANKING_GENDERS, { value: 'MX', label: 'Mixed' }]
+      : RANKING_GENDERS
+  );
 
   const sorted = (column: string) => (table.movementFilter === column ? SORTED_COLUMN : '');
 
@@ -141,12 +145,12 @@
   ] as const;
 
   // The rankings response carries a best per movement; the attempts behind it
-  // arrive with the competition itself, keyed by athlete.
+  // arrive with the competition itself, keyed by entry.
   const participants = $derived(
     new Map(
       competition.categories
         .flatMap((category) => category.participants)
-        .map((participant) => [participant.athlete.athlete_id, participant])
+        .map((participant) => [participant.participant_id, participant])
     )
   );
 
@@ -180,7 +184,7 @@
 
   function rankedCell(entry: RankingEntry, key: string, code: string, movement: string): LiftCell {
     const best = entry[key as 'muscleup' | 'pullup' | 'dips' | 'squat'];
-    return liftCell(participants.get(entry.athlete.athlete_id), best, code, movement);
+    return liftCell(participants.get(entry.participant_id), best, code, movement);
   }
 
   function participantCell(participant: Participant, code: string, movement: string): LiftCell {
@@ -364,6 +368,10 @@
           {/if}
         </dd>
       {/if}
+      {#if competition.venue}
+        <dt class="text-muted">Venue</dt>
+        <dd class="text-ink">{competition.venue}</dd>
+      {/if}
       {#if location}
         <dt class="text-muted">Location</dt>
         <dd class="text-ink">{location}</dd>
@@ -381,6 +389,10 @@
         <dt class="text-muted">Format</dt>
         <dd class="text-ink">{formatLabel}</dd>
       {/if}
+      {#if competition.scoring}
+        <dt class="text-muted">Scoring</dt>
+        <dd class="text-ink">{competition.scoring === 'ris' ? 'RIS' : 'Total'}</dd>
+      {/if}
       {#if published}
         <dt class="text-muted">RIS</dt>
         <dd class="text-ink">
@@ -393,10 +405,7 @@
           {:else if data.ris === 'not-published'}
             Unavailable
             <InfoTip label="Why RIS is unavailable">
-              <p>
-                The results include neither RIS scores nor the bodyweights needed to calculate them.
-                The table ranks by total by default.
-              </p>
+              <p>RIS scores are unavailable because the required bodyweight or total is missing.</p>
             </InfoTip>
           {:else}
             None
@@ -565,8 +574,8 @@
       {/snippet}
 
       {#snippet body(rows)}
-        {#each rows as entry (entry.rank + entry.athlete.athlete_id)}
-          {@const participant = participants.get(entry.athlete.athlete_id)}
+        {#each rows as entry (entry.participant_id)}
+          {@const participant = participants.get(entry.participant_id)}
           <tr
             class="transition-colors"
             data-focused={entry.athlete.slug === table.focusedAthlete ? '' : undefined}

@@ -7,7 +7,6 @@ sources = [
 [competition]
 name = "Norddeutsche Meisterschaft"
 start_date = "2026-06-13"
-end_date = "2026-06-13"
 city = "Rostock"
 region = "Mecklenburg-Vorpommern"
 country = "DE"

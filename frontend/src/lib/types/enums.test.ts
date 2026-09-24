@@ -10,6 +10,7 @@ import {
   RANKED_GENDERS,
   RANKING_METRICS,
   RIS_SOURCES,
+  SCORING_METHODS,
   SORT_DIRECTIONS,
 } from './enums';
 
@@ -35,6 +36,7 @@ const restated = new Map<string, readonly string[]>([
   ['RankingMetric', RANKING_METRICS],
   ['RankedGender', RANKED_GENDERS],
   ['RisSource', RIS_SOURCES],
+  ['Scoring', SCORING_METHODS],
 ]);
 
 describe('the vocabularies the API publishes', () => {

@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Classic Nationals"
 start_date = "2025-11-23"
-end_date = "2025-11-23"
 region = "Pennsylvania"
 country = "US"
 status = "completed"

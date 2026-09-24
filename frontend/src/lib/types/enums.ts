@@ -8,10 +8,12 @@ export const GENDERS = ['M', 'F', 'MX'] as const;
 export type Gender = (typeof GENDERS)[number];
 
 /**
- * The genders a ranking can be drawn for. Weight classes are only drawn for men
- * and women, so the API refuses `MX` on that parameter.
+ * Global rankings use athlete sex. Competition rankings also accept mixed contests.
  */
-export const RANKED_GENDERS = ['M', 'F'] as const;
+export const RANKED_GENDERS = ['M', 'F', 'MX'] as const;
+
+export const SCORING_METHODS = ['total', 'ris'] as const;
+export type Scoring = (typeof SCORING_METHODS)[number];
 export type RankedGender = (typeof RANKED_GENDERS)[number];
 
 /** Where a competition is in its life. */
@@ -29,8 +31,7 @@ export const ATHLETE_STATUSES = ['competed', 'disqualified', 'no_show'] as const
 export type AthleteStatus = (typeof ATHLETE_STATUSES)[number];
 
 /**
- * Where a score came from. `reported` was stated by the source without a
- * bodyweight, so it cannot be restated on the formula everything else uses.
+ * `reported` preserves a source score when bodyweight or total is missing.
  */
 export const RIS_SOURCES = ['computed', 'reported'] as const;
 export type RisSource = (typeof RIS_SOURCES)[number];

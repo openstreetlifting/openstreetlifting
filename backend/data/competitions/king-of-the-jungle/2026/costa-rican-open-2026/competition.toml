@@ -7,7 +7,6 @@ sources = [
 [competition]
 name = "Costa Rican Open"
 start_date = "2026-07-19"
-end_date = "2026-07-19"
 city = "Cartago"
 region = "Cartago"
 country = "CR"

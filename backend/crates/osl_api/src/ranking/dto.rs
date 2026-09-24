@@ -71,6 +71,9 @@ pub struct GlobalRankingFilter {
 impl GlobalRankingFilter {
     pub fn validate(&self) -> Result<(), String> {
         self.pagination.validate()?;
+        if self.gender == Some(RankedGender::Mx) && self.competition_id.is_none() {
+            return Err("MX requires competition_id; global rankings use athlete sex".into());
+        }
 
         if let Some(ref category) = self.category {
             WeightClass::from_str(category)?;
@@ -110,6 +113,7 @@ impl GlobalRankingFilter {
 
 #[derive(Debug, Serialize, ToSchema)]
 pub struct GlobalRankingEntry {
+    pub participant_id: Uuid,
     pub rank: i64,
     pub athlete: AthleteInfo,
     pub category: String,
@@ -133,7 +137,7 @@ pub struct AthleteInfo {
     pub first_name: String,
     pub last_name: String,
     pub slug: String,
-    pub country: String,
+    pub country: Option<String>,
     pub gender: Gender,
     pub bodyweight: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -157,6 +161,7 @@ pub struct FederationInfo {
 impl From<RankingRow> for GlobalRankingEntry {
     fn from(row: RankingRow) -> Self {
         Self {
+            participant_id: row.participant_id,
             rank: row.rank,
             athlete: AthleteInfo {
                 athlete_id: row.athlete_id,

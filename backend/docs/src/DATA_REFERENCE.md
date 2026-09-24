@@ -48,17 +48,20 @@ name = "FinalRep"
 | ------------------------- | ---------------------------------------------------------------- |
 | `competition.name`        | The competition's name.                                          |
 | `competition.start_date`  | The first day, as `YYYY-MM-DD`.                                  |
-| `competition.end_date`    | The last day. For a one-day event, repeat the start date.        |
+| `competition.end_date`    | The last day; defaults to `start_date` when omitted.        |
+| `competition.venue`       | The venue name, if known; omit it when unknown.                  |
 | `competition.city`        | The city, if known.                                              |
 | `competition.region`      | The region or state, if known.                                   |
 | `competition.country`     | An ISO 3166-1 alpha-2 country code, such as `FR` or `DE`.         |
+| `competition.scoring`     | `total` or `ris`; required for mixed contests.                   |
 | `competition.status`      | See [Status](#status) below.                                     |
 | `federation.name`         | The federation's name, written consistently across competitions. |
 | `federation.abbreviation` | Its abbreviation, if used.                                       |
 | `federation.country`      | Its ISO 3166-1 alpha-2 country code, if applicable.              |
 
-The names, dates and competition country are required. Optional fields can be
-left out.
+The names, start date and competition country are required. Omit `end_date` for
+a one-day competition. `prepare` removes an end date equal to the start date;
+it preserves a later end date. Optional fields can be left out.
 
 ### Event
 
@@ -81,9 +84,10 @@ whenever you add results.
 
 ### Sources
 
-Put source links or short descriptions in the `sources` list, above
-`[competition]`. Include every source used to compile the results. This field is
-optional in the format, but sources help others check and correct the archive.
+Include at least one source link, archived file path, or description in `sources`,
+above `[competition]`, for both announcements and results. Identify the original
+publication or document so someone else can check it. Empty lists and blank
+references are rejected. Include every source used to compile the results.
 
 ## entries.csv
 
@@ -91,25 +95,76 @@ Each row records one athlete's results in one contest. Keep the column names
 exactly as shown below. Use kilograms for weights and a decimal point for
 fractions, such as `72.5`.
 
-All columns are required in the header except `Division`, `NativeName`,
-`BodyweightSource`, `ReportedRisEdition` and `ReportedTotalKg`. Required columns
-may contain empty cells, as described below. Keep the columns for all four movements, leaving
-cells empty for movements outside the event.
+Use this standard base header when starting a file:
+
+```csv
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+```
+
+Add `WeightClassKg` after `Sex` for competitions with weight classes, and
+`Division` first when separate divisions are needed. `NativeName`,
+`CategorySex`, `BodyweightSource` and `ReportedRisEdition` are optional
+additional columns.
+
+The parser also accepts files without `FirstName`, `Disambiguation` or
+`StatusReason`: an omitted column means an empty value for every entry. `prepare`
+always restores these three columns in the standard base header, so formatted
+files provide a consistent starting point for contributors. It preserves any
+values already supplied. It fills an empty `TotalKg` only when every event
+movement has a successful best lift.
+
+All other base headers, including `TotalKg`, are required even when their cells
+may be empty. Keep
+the columns for all four movements, leaving cells empty for movements outside
+the event. Unknown or misspelled headers are rejected.
 
 ### Athlete and result columns
 
 | Column           | What to enter                                                                    |
 | ---------------- | -------------------------------------------------------------------------------- |
-| `Sex`            | `M` for men, `F` for women or `MX` for a mixed category.                         |
+| `Sex`            | The athlete's sex: `M` or `F`. `MX` is not an athlete sex.                         |
 | `WeightClassKg`  | The weight class, such as `80` or `101+`. Leave it out for a meet with none.      |
 | `FirstName`      | The athlete's first name. Leave empty for a single name.                         |
 | `LastName`       | The surname, or the full name for an athlete known by a single name. Required.   |
 | `Disambiguation` | Leave empty unless different athletes share a name; see [Names](#names).         |
-| `Country`        | The athlete's ISO 3166-1 alpha-2 country code. Required.                           |
+| `Country`        | The athlete's ISO 3166-1 alpha-2 country code, if the source gives it.                           |
 | `BodyweightKg`   | The athlete's bodyweight, if known.                                              |
-| `Ris`            | The published RIS score when bodyweight is unavailable.                          |
+| `ReportedRis`    | The source's published RIS score, whether or not bodyweight is known.            |
+| `TotalKg` | Overall total from the source, or filled by `prepare` from a complete breakdown. |
 | `Status`         | `competed`, `disqualified` or `no_show`. Empty means `competed`.                 |
 | `StatusReason`   | A short explanation for `disqualified` or `no_show`. Leave empty for `competed`. |
+
+### Athlete sex and mixed contests
+
+`Sex` identifies the athlete and selects their RIS formula. Add the optional
+`CategorySex` column only when needed: `MX` places that row in a mixed contest.
+An empty cell or omitted column uses the athlete's `Sex`. An explicit `M` or `F`
+must match `Sex`. Moving between mixed and single-sex contests keeps the same
+athlete profile.
+
+For mixed contests, set the ranking metric under `[competition]`:
+
+```toml
+scoring = "ris"
+```
+
+- `total`: rank by `TotalKg`.
+- `ris`: rank by RIS, using each athlete's own formula. Requires `event = "MPDS"`.
+
+This setting applies to every contest in the competition. Without it, existing
+single-sex contests rank by total when they have weight classes, or by RIS when
+they have none. Other scoring methods are rejected. If divisions use different
+scoring rules, resolve that format before importing it.
+
+A missing ranking metric leaves the result unplaced. RIS ties use total, then
+lighter known bodyweight; total ties use lighter known bodyweight. These are OSL
+placings from the stored results, not a transcription of federation placings.
+Computed RIS uses OSL's current edition; published scores remain marked as
+reported when the inputs needed to recompute them are missing.
+
+A competition can contain mixed and single-sex contests together. Keep each
+athlete's `Sex` on every row, and set `CategorySex=MX` only on mixed entries.
+`prepare` retains that column whenever a mixed contest needs it.
 
 ### Names
 
@@ -120,9 +175,27 @@ checks names but does not fix them for you.
 Use a Latin spelling in `FirstName` and `LastName`. The optional `NativeName`
 column preserves a name written in another script.
 
-When different athletes share a name, use `Disambiguation` numbers starting at
-`1` to tell them apart. Keep each person's number consistent across competitions;
-check existing entries before assigning one.
+Identity uses the normalized name, sex, and `Disambiguation`. Correcting or
+clearing `Country` preserves the athlete's profile and URL.
+
+When different athletes share a name and sex, use `Disambiguation` numbers
+starting at `1`, even if their countries differ. Keep each person's number
+consistent across competitions; check existing entries before assigning one.
+
+### Country
+
+Keep the `Country` header. Leave its cell empty when the source omits the
+athlete's country; the host country is not evidence of nationality.
+
+The profile uses the known country from that athlete's entries. Empty cells
+leave that evidence intact. If all entries have empty cells, the profile shows
+“Country not recorded” and retains global rankings, records, and competition
+history. National rankings require a known country.
+
+Conflicting known countries stop preparation and import. Correct the affected
+entries together and import them in one batch. Use `Disambiguation` only when
+the entries belong to different people. A genuine change of sporting nationality
+needs a separate reporting policy; do not split one person to bypass this check.
 
 ### Division
 
@@ -168,27 +241,58 @@ may leave the best-lift cell empty; if you fill it, it must agree with the
 attempts. If only the best lift is known, fill that column alone.
 
 Mark an athlete who missed every attempt at a movement as `disqualified`, with a
-reason such as `Bombed the squat`. A `no_show` must have no attempts or best lifts.
+reason such as `Bombed the squat`. A `no_show` must have no attempts, best lifts, total, or positive RIS. A published
+zero RIS may be kept as source evidence. Disqualified rows may keep their lifts
+and published RIS, but receive no total, calculated RIS, or ranking. Their lift
+values must still be consistent.
 
-### Published totals without lift results
+### Totals and preparation
 
-If an All4 (`MPDS`) source gives only an overall total, enter it in the optional
-`ReportedTotalKg` column. Use a positive weight and status `competed`. Leave all
-attempt and best-lift cells empty. The importer uses this total for rankings and
-category placings, and calculates RIS when bodyweight is available.
+Use `TotalKg` for the overall result. Keep the total and any available lift
+results together. The former `ReportedTotalKg` header is rejected.
 
-Use individual lift results when available. When adding a breakdown later,
-clear `ReportedTotalKg`; the importer then calculates the total from those lifts.
+Run `osl-import prepare <directory>` before importing. It fills a missing total
+from successful best lifts only when every movement in the event is present,
+validates the result, and formats the files. Existing totals must equal the sum
+of a complete breakdown, or be at least the known subtotal when the breakdown
+is incomplete. Negative totals and totals on disqualified or no-show rows are
+rejected. A successful zero-weight lift counts as a recorded result.
 
-### Bodyweight and Ris
+When both the total and part of the breakdown are unknown, leave them empty.
+The validator warns that the result has no total or calculated RIS. Missing
+lifts are never treated as zero. Preserve a published total when available;
+it supports total rankings and, for All4 with bodyweight, RIS calculation even
+without a full breakdown.
 
-Enter `BodyweightKg` when the source provides it. Otherwise, enter the published
-`Ris` score. Fill only one of these columns, or leave both empty if neither is
-known.
+`prepare` validates every selected competition before writing any files.
+`prepare --check` leaves files unchanged and fails if preparation is needed.
+Import requires a stored total whenever the breakdown is complete; it never
+fills one. Rankings, pages and RIS calculations use that stored value.
 
-I handle recovering missing bodyweights from RIS scores when possible. You only
-need to provide the published data. Existing rows may contain both values after
-recovery; keep them when making other corrections.
+### Bodyweight and reported RIS
+
+Enter each value the source provides: `BodyweightKg`, `ReportedRis`, or both.
+Leave unknown values empty. Use `ReportedRisEdition` for the source's formula
+year when established; the competition year alone does not establish it.
+
+For a complete, competed All4 result with bodyweight and a known M or F formula,
+the validator checks the published score against its stated edition, rounded to
+two decimal places. A disagreement blocks import. When the edition or required
+results are unknown, both values are preserved and a warning explains why the
+score could not be checked. Calculated ranking scores are stored separately;
+they never replace `ReportedRis` in the CSV. A published RIS can still be used
+when bodyweight is known but the total is missing. Scores published for shorter
+events remain source evidence; OSL does not recompute them with the All4 formula.
+
+Missing bodyweights can still be recovered from a published score and a complete
+total. The recovery tool writes the estimate to `BodyweightKg`, marks it
+`BodyweightSource=recovered`, and preserves `ReportedRis` and
+`ReportedRisEdition`. All four fields are required for a recovered bodyweight;
+the estimate must reproduce the original score. A reported weigh-in uses
+`BodyweightSource=reported`, which is the default when bodyweight is supplied.
+
+The former `Ris` header is rejected. Rename it to `ReportedRis`, preserving its
+values. Existing archive files already use the new name.
 
 ## Validation
 

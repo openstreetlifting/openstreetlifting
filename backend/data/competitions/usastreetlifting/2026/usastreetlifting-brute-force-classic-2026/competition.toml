@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Brute Force Classic"
 start_date = "2026-07-18"
-end_date = "2026-07-18"
 region = "Texas"
 country = "US"
 status = "completed"

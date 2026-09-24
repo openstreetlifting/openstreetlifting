@@ -8,12 +8,13 @@ use crate::params::RankingMovement;
 
 #[derive(Debug, FromRow)]
 pub struct RankingRow {
+    pub participant_id: Uuid,
     pub rank: i64,
     pub athlete_id: Uuid,
     pub first_name: String,
     pub last_name: String,
     pub slug: String,
-    pub country: String,
+    pub country: Option<String>,
     pub gender: Gender,
     pub instagram_handle: Option<String>,
     pub bodyweight: Option<Decimal>,
@@ -31,8 +32,8 @@ pub struct RankingRow {
     pub pullup: Option<Decimal>,
     pub dips: Option<Decimal>,
     pub squat: Option<Decimal>,
-    /// The sum of recorded lifts or a reported total without a breakdown;
-    /// only comparable with another total from the same event.
+    /// The stored event total, supplied by the source or prepared from complete lifts.
+    /// Compare totals only within the same event.
     pub total: Option<Decimal>,
     pub event_code: Option<String>,
     pub ris_score: Option<Decimal>,
@@ -47,7 +48,7 @@ pub struct AthleteMetricStandingRow {
     pub weight_class_max: Option<Decimal>,
     pub global_place: i64,
     pub global_field: i64,
-    pub country: String,
+    pub country: Option<String>,
     pub country_place: i64,
     pub country_field: i64,
 }

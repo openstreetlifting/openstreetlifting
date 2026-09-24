@@ -10,8 +10,50 @@ use tracing::warn;
 pub struct CanonicalValidator;
 
 impl CanonicalValidator {
+    pub fn validate_countries<'a>(
+        competitions: impl IntoIterator<Item = &'a CanonicalFormat>,
+    ) -> Result<()> {
+        let mut known = HashMap::new();
+        for canonical in competitions {
+            for category in &canonical.categories {
+                for athlete in &category.athletes {
+                    let Some(country) = athlete.country else {
+                        continue;
+                    };
+                    let key = (
+                        NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name)
+                            .match_name(),
+                        athlete.gender.unwrap_or(category.gender),
+                        athlete.disambiguation,
+                    );
+                    if let Some(previous) = known.insert(key, country)
+                        && previous != country
+                    {
+                        return Err(ImporterError::ValidationError(format!(
+                            "Athlete '{}': conflicting countries {previous} and {country}; correct the source data or use Disambiguation for different people",
+                            athlete.display_name()
+                        )));
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
+
     pub fn validate(canonical: &CanonicalFormat) -> Result<ValidationReport> {
+        Self::validate_countries(std::slice::from_ref(canonical))?;
         let mut report = ValidationReport::default();
+
+        if canonical.sources.is_empty()
+            || canonical
+                .sources
+                .iter()
+                .any(|source| source.trim().is_empty())
+        {
+            report
+                .errors
+                .push("sources must contain at least one reference and no empty references".into());
+        }
 
         if canonical.competition.name.is_empty() {
             report
@@ -42,6 +84,16 @@ impl CanonicalValidator {
             ));
         }
 
+        if canonical
+            .competition
+            .venue
+            .as_ref()
+            .is_some_and(|venue| venue.trim().is_empty())
+        {
+            report
+                .errors
+                .push("Omit venue when it is unknown; an empty venue is invalid".into());
+        }
         if canonical.competition.city.is_none() {
             report.warnings.push(format!(
                 "Competition '{}': city is not specified",
@@ -154,16 +206,65 @@ impl CanonicalValidator {
     }
 
     fn check_athletes(canonical: &CanonicalFormat, report: &mut ValidationReport) {
+        if canonical
+            .categories
+            .iter()
+            .any(|category| category.gender == osl_domain::Gender::Mx)
+            && canonical.competition.scoring.is_none()
+        {
+            report
+                .errors
+                .push("Mixed contests require competition.scoring = \"total\" or \"ris\"".into());
+        }
+        if canonical.competition.scoring == Some(osl_domain::Scoring::Ris)
+            && canonical.movements != osl_domain::Movement::ALL
+        {
+            report
+                .errors
+                .push("RIS scoring requires the four-movement MPDS event".into());
+        }
         for category in &canonical.categories {
             for athlete in &category.athletes {
                 let label = athlete.display_name();
-
-                if let Err(reason) =
-                    athlete.validate_score_source(category.gender, &canonical.movements)
-                {
-                    report.errors.push(format!("Athlete '{label}': {reason}"));
+                if !matches!(
+                    athlete.gender,
+                    Some(osl_domain::Gender::M | osl_domain::Gender::F)
+                ) {
+                    report.errors.push(format!(
+                        "Athlete '{label}': Sex must be M or F; mixed belongs in CategorySex"
+                    ));
+                    continue;
                 }
-                if athlete.bodyweight.is_none() && athlete.ris.is_none() {
+                if category.gender != osl_domain::Gender::Mx
+                    && athlete.gender != Some(category.gender)
+                {
+                    report.errors.push(format!(
+                        "Athlete '{label}': CategorySex must match Sex or be MX"
+                    ));
+                }
+
+                match athlete.validate_score_source(category.gender, &canonical.movements) {
+                    Err(reason) => report.errors.push(format!("Athlete '{label}': {reason}")),
+                    Ok(Some(reason)) => {
+                        report.warnings.push(format!("Athlete '{label}': {reason}"))
+                    }
+                    Ok(None) => {}
+                }
+                if athlete.status == AthleteStatus::Competed
+                    && athlete.total.is_none()
+                    && canonical.movements.iter().any(|movement| {
+                        !athlete
+                            .lifts
+                            .iter()
+                            .any(|lift| lift.movement == *movement && lift.best().is_some())
+                    })
+                {
+                    report.warnings.push(format!(
+                        "Competition '{}': athlete '{label}' has an incomplete event breakdown and no TotalKg; no total or calculated RIS is available",
+                        canonical.competition.slug
+                    ));
+                }
+                if athlete.bodyweight.is_none() && athlete.reported_ris.is_none() {
                     report.warnings.push(format!(
                         "Competition '{}': athlete '{label}' has neither a bodyweight nor a published RIS score",
                         canonical.competition.slug
@@ -176,19 +277,28 @@ impl CanonicalValidator {
                     ));
                 }
 
-                if athlete.ris.is_some_and(|r| r < Decimal::ZERO) {
+                if athlete.reported_ris.is_some_and(|r| r < Decimal::ZERO) {
                     report
                         .errors
-                        .push(format!("Athlete '{label}' has a negative ris"));
+                        .push(format!("Athlete '{label}' has a negative ReportedRis"));
                 }
 
-                if athlete.lifts.is_empty() && athlete.reported_total.is_none() {
+                if athlete.lifts.is_empty() && athlete.total.is_none() {
                     report.warnings.push(format!(
                         "Competition '{}': athlete '{label}' has no lifts",
                         canonical.competition.slug
                     ));
                 }
 
+                if athlete.status == AthleteStatus::NoShow
+                    && athlete
+                        .reported_ris
+                        .is_some_and(|score| score > Decimal::ZERO)
+                {
+                    report.errors.push(format!(
+                        "Athlete '{label}': a no_show cannot have a positive ReportedRis"
+                    ));
+                }
                 if athlete.status == AthleteStatus::NoShow && !athlete.lifts.is_empty() {
                     report.errors.push(format!(
                         "Athlete '{label}' is a no_show but has lifts. Someone who took an \
@@ -289,7 +399,8 @@ impl CanonicalValidator {
     /// disambiguation number. Within a single category they can only be a
     /// duplicated row.
     fn check_athlete_identities(canonical: &CanonicalFormat, report: &mut ValidationReport) {
-        let mut seen: HashMap<(String, Option<i16>), Vec<String>> = HashMap::new();
+        let mut seen: HashMap<(String, Option<osl_domain::Gender>, Option<i16>), Vec<String>> =
+            HashMap::new();
 
         for category in &canonical.categories {
             let mut seen_in_category = HashSet::new();
@@ -298,7 +409,11 @@ impl CanonicalValidator {
                 let identity = NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name)
                     .match_name();
 
-                if !seen_in_category.insert((identity.clone(), athlete.disambiguation)) {
+                if !seen_in_category.insert((
+                    identity.clone(),
+                    athlete.gender,
+                    athlete.disambiguation,
+                )) {
                     report.errors.push(format!(
                         "Category '{}' lists '{}' twice. Remove the duplicate, or set \
                          disambiguation if these are two different people",
@@ -307,13 +422,13 @@ impl CanonicalValidator {
                     ));
                 }
 
-                seen.entry((identity, athlete.disambiguation))
+                seen.entry((identity, athlete.gender, athlete.disambiguation))
                     .or_default()
                     .push(category.label());
             }
         }
 
-        for ((identity, disambiguation), categories) in seen {
+        for ((identity, _, disambiguation), categories) in seen {
             if categories.len() > 1 && disambiguation.is_none() {
                 report.warnings.push(format!(
                     "Competition '{}': '{}' appears in {} categories ({}). Set \
@@ -354,7 +469,7 @@ mod tests {
 
     fn announced() -> CanonicalFormat {
         CanonicalFormat {
-            sources: Vec::new(),
+            sources: vec!["Synthetic test results".into()],
             competition: CompetitionData {
                 name: "Test Open".to_string(),
                 slug: "test-open".to_string(),
@@ -366,9 +481,11 @@ mod tests {
                 start_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
                 end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
                 city: Some("Paris".to_string()),
+                venue: None,
                 region: None,
                 country: CountryCode::parse("FR").unwrap(),
                 status: Some(CompetitionStatus::Upcoming),
+                scoring: None,
             },
             movements: Vec::new(),
             categories: Vec::new(),
@@ -382,12 +499,12 @@ mod tests {
             native_name: None,
             disambiguation: None,
             gender: Some(Gender::M),
-            country: CountryCode::parse("FR").unwrap(),
+            country: Some(CountryCode::parse("FR").unwrap()),
             bodyweight: Some(Decimal::from(80)),
             bodyweight_source: None,
             reported_ris_edition: None,
-            reported_total: None,
-            ris: None,
+            total: Some(Decimal::from(100)),
+            reported_ris: None,
             status: AthleteStatus::Competed,
             status_reason: None,
             lifts: vec![LiftData {
@@ -481,10 +598,17 @@ mod tests {
     }
 
     #[test]
-    fn both_bodyweight_and_ris_is_rejected() {
+    fn published_bodyweight_and_ris_without_an_edition_warns() {
         let mut canonical = completed();
-        canonical.categories[0].athletes[0].ris = Some(Decimal::from(90));
-        assert!(CanonicalValidator::validate(&canonical).is_err());
+        canonical.movements = Movement::ALL.to_vec();
+        canonical.categories[0].athletes[0].reported_ris = Some(Decimal::from(90));
+        let report = CanonicalValidator::validate(&canonical).unwrap();
+        assert!(
+            report
+                .warnings
+                .iter()
+                .any(|warning| warning.contains("formula edition is unknown"))
+        );
     }
 
     #[test]
@@ -609,6 +733,7 @@ mod tests {
     fn a_bombed_movement_is_accepted_once_disqualified() {
         let mut canonical = completed();
         canonical.categories[0].athletes[0].status = AthleteStatus::Disqualified;
+        canonical.categories[0].athletes[0].total = None;
         canonical.categories[0].athletes[0].lifts[0].attempts = Some(vec![AttemptData {
             attempt_number: 1,
             weight: Decimal::from(100),

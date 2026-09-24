@@ -19,7 +19,7 @@ The examples below use `osl-import`, the name shown in the CLI help. In a source
 | `instagram [FILE]` | Synchronize Instagram handles |
 | `redact --name NAME` | Replace an athlete's name and remove their handle |
 | `privacy` | Check competition files for suppressed names |
-| `fmt [PATH…]` | Format competition files |
+| `prepare [PATH…]` | Fill missing totals, validate and format competition files |
 | `recompute-ris` | Recalculate stored RIS scores |
 
 Use `osl-import <command> --help` for options and defaults. Global options, including `--database-url`, `--privacy-file`, and `--verbose`, work before or after the command.
@@ -27,15 +27,21 @@ Use `osl-import <command> --help` for options and defaults. Global options, incl
 ## Competition imports
 
 ```sh
+osl-import prepare data/competitions
 osl-import competitions data/competitions --dry-run
 osl-import competitions data/competitions
 ```
 
 Paths can point to individual competition directories or directory trees. The importer processes overlapping paths once and validates all competition files before writing to the database. Missing paths, empty trees, and invalid files stop the import.
 
-The importer then saves each competition in a separate transaction. If a database write fails, earlier imports remain. Fix the error and rerun the command.
+Every competition needs at least one source reference. For one-day events,
+`end_date` may be omitted; `venue` is optional. Mixed contests require athlete
+`Sex`, `CategorySex=MX`, and an explicit `competition.scoring`. See the
+[data reference](../../docs/src/DATA_REFERENCE.md) for accepted values.
 
-With `--prune`, the importer deletes database competitions absent from the supplied files, athletes with no competition entries, and federations with no competitions. Pruning runs only after every import succeeds. Supply the complete dataset: passing a single competition would delete all others from the database.
+The importer saves the whole batch in one transaction, including pruning. Conflicting countries for one athlete or a failed write roll back the batch. Correct country evidence across the affected competitions and import them together.
+
+With `--prune`, the importer deletes database competitions absent from the supplied files, athletes with no competition entries, and federations with no competitions. Pruning runs after the imports, within the same transaction. Supply the complete dataset: passing a single competition would delete all others from the database.
 
 ```sh
 osl-import competitions data/competitions --prune
@@ -50,10 +56,10 @@ osl-import competitions data/competitions --prune
 | `competitions` | File format, data validity, and suppression records; no database connection |
 | `instagram` | CSV format; also checks athlete matches when `DATABASE_URL` is set |
 | `redact` | Identity match and planned file changes |
-| `fmt` | Files that need formatting |
+| `prepare` | Files that need preparation |
 | `recompute-ris` | Number of eligible stored scores; requires a database connection |
 
-`competitions --dry-run --prune` validates files without calculating database deletions. For formatting checks in CI, use `fmt --check`: it leaves files unchanged and returns a nonzero exit status if any file needs formatting.
+`competitions --dry-run --prune` validates files without calculating database deletions. For preparation checks in CI, use `prepare --check`: it leaves files unchanged and returns a nonzero exit status if any file needs preparation.
 
 ## Configuration
 
@@ -76,6 +82,8 @@ This checks public files but skips the check for removed names. The flag require
 See the [athlete data guide](../../data/athletes/README.md) for Instagram matching, key setup, and name removal. Use the [staging fixtures](../../data/staging/README.md) to test name removal on a temporary copy.
 
 ## Migrate from older commands
+
+Replace `fmt PATH` with `prepare PATH`; preparation also fills missing totals from complete lift results and rejects inconsistent data.
 
 Replace `canonical PATH` and `bulk-import --directory PATH` with `competitions PATH`. Pass multiple paths as positional arguments. Use `--dry-run` in place of `--validate-only`.
 

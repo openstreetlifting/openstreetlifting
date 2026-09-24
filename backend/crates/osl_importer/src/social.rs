@@ -163,7 +163,7 @@ async fn resolve(
             .push(AthleteIdentity {
                 athlete_id: athlete.athlete_id,
                 gender: athlete.gender,
-                country: athlete.country,
+                country: athlete.country.unwrap_or_default(),
                 disambiguation: athlete.disambiguation,
             });
     }

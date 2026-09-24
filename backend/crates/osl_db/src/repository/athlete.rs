@@ -109,8 +109,9 @@ impl<'a> AthleteRepository<'a> {
         let rows = sqlx::query!(
             r#"
             WITH latest_category AS (
-                SELECT wc.weight_class_id, wc.gender, wc.min_kg, wc.max_kg
+                SELECT wc.weight_class_id, a.gender, wc.min_kg, wc.max_kg
                 FROM competition_participants cp
+                JOIN athletes a ON a.athlete_id = cp.athlete_id
                 JOIN competitions c ON c.competition_id = cp.competition_id
                 JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
                 WHERE cp.athlete_id = $1 AND cp.status = 'competed'
@@ -173,54 +174,17 @@ impl<'a> AthleteRepository<'a> {
     pub async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
         let rows = sqlx::query!(
             r#"
-            WITH entered AS (
-                SELECT DISTINCT cp.competition_id, cp.weight_class_id, cp.division_id,
-                       COALESCE(wc.gender, a.gender) AS contest_gender
-                FROM competition_participants cp
-                INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
-                LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
-                WHERE cp.athlete_id = $1
-            ),
-            placed AS (
-                SELECT
-                    cp.participant_id,
-                    ROW_NUMBER() OVER (
-                        PARTITION BY cp.competition_id, cp.weight_class_id, cp.division_id,
-                                     e.contest_gender
-                        ORDER BY
-                            CASE WHEN COALESCE(cp.reported_total, SUM(l.max_weight), 0) = 0 THEN 1 ELSE 0 END,
-                            CASE WHEN cp.weight_class_id IS NULL THEN cp.ris_score END
-                                DESC NULLS LAST,
-                            COALESCE(cp.reported_total, SUM(l.max_weight), 0) DESC,
-                            cp.bodyweight ASC NULLS LAST
-                    )::int as place
-                FROM competition_participants cp
-                INNER JOIN athletes pa ON pa.athlete_id = cp.athlete_id
-                LEFT JOIN weight_classes pwc ON pwc.weight_class_id = cp.weight_class_id
-                JOIN entered e
-                    ON e.competition_id = cp.competition_id
-                   AND e.weight_class_id IS NOT DISTINCT FROM cp.weight_class_id
-                   AND e.division_id IS NOT DISTINCT FROM cp.division_id
-                   AND e.contest_gender = COALESCE(pwc.gender, pa.gender)
-                LEFT JOIN lifts l ON l.participant_id = cp.participant_id
-                WHERE cp.status = 'competed'
-                GROUP BY cp.participant_id, cp.competition_id, cp.weight_class_id,
-                         cp.division_id, e.contest_gender, cp.bodyweight, cp.ris_score
-            )
             SELECT
                 c.competition_id,
                 c.name as competition_name,
                 c.slug as competition_slug,
                 c.start_date as competition_date,
                 d.name as "division?",
-                COALESCE(wc.gender, a.gender) as "category_gender!: Gender",
+                COALESCE(cp.category_gender, wc.gender, a.gender) as "category_gender!: Gender",
                 wc.min_kg as weight_class_min,
                 wc.max_kg as weight_class_max,
-                placed.place as "rank?",
-                CASE WHEN cp.reported_total IS NOT NULL THEN cp.reported_total
-                     WHEN COUNT(l.lift_id) = 0 THEN NULL
-                     ELSE COALESCE(cp.reported_total, SUM(l.max_weight), 0)
-                END as "total: Decimal",
+                placed.rank as "rank?",
+                cp.total as "total: Decimal",
                 cp.ris_score,
                 cp.ris_source as "ris_source: RisSource",
                 cp.status as "status: AthleteStatus",
@@ -257,11 +221,11 @@ impl<'a> AthleteRepository<'a> {
             LEFT JOIN divisions d ON d.division_id = cp.division_id
             LEFT JOIN lifts l ON l.participant_id = cp.participant_id
             LEFT JOIN movements m ON m.name = l.movement_name
-            LEFT JOIN placed ON placed.participant_id = cp.participant_id
+            LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id
             WHERE cp.athlete_id = $1
             GROUP BY c.competition_id, c.name, c.slug, c.start_date, c.event_code, d.name,
-                     COALESCE(wc.gender, a.gender), wc.min_kg, wc.max_kg, placed.place,
-                     cp.ris_score, cp.ris_source, cp.status, cp.reported_total
+                     COALESCE(cp.category_gender, wc.gender, a.gender), wc.min_kg, wc.max_kg, placed.rank,
+                     cp.ris_score, cp.ris_source, cp.status, cp.total
             ORDER BY c.start_date DESC NULLS LAST
             "#,
             athlete.athlete_id

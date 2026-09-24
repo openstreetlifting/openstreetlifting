@@ -1,5 +1,5 @@
-//! An athlete is the folded name together with gender, country and
-//! disambiguation, so a name on its own is a coarser key than an athlete.
+//! Athlete identity uses the folded name, sex and disambiguation.
+//! Country is an optional search filter, not part of identity.
 
 use osl_domain::normalized_name::NormalizedAthleteName;
 
@@ -45,7 +45,11 @@ impl AthleteQuery {
 
         self.matches_parts(
             gender.as_str(),
-            athlete.country.as_str(),
+            athlete
+                .country
+                .as_ref()
+                .map(|country| country.as_str())
+                .unwrap_or(""),
             athlete.disambiguation,
         )
     }

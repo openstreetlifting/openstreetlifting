@@ -7,7 +7,6 @@ sources = [
 [competition]
 name = "Egypt Rage War"
 start_date = "2026-04-03"
-end_date = "2026-04-03"
 country = "EG"
 status = "completed"
 

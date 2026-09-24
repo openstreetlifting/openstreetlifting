@@ -238,3 +238,22 @@ it('does not mistake a classless category name for a weight class', async () => 
   expect(header.textContent).not.toContain('Weight class');
   expect(header.textContent).toContain('Male');
 });
+
+it('keeps global rankings and history when country is not recorded', async () => {
+  const lifter = athlete();
+  lifter.country = null;
+  for (const metric of Object.values(lifter.standing!)) metric.country = null;
+  render(AthletePage, { data: { athlete: lifter } });
+  await expect.element(page.getByText('Country not recorded', { exact: true })).toBeVisible();
+  await expect
+    .element(page.getByText('Country needed for national ranking', { exact: true }))
+    .toBeVisible();
+  await expect.element(page.getByRole('link', { name: /Global.*#101/ })).toBeVisible();
+  await expect.element(page.getByRole('heading', { name: 'Competition history' })).toBeVisible();
+  expect(page.getByRole('link', { name: /France/ }).elements()).toHaveLength(0);
+  await page.getByRole('combobox', { name: 'Metric' }).selectOptions('total');
+  await expect.element(page.getByRole('link', { name: /Global.*#101/ })).toBeVisible();
+  await expect
+    .element(page.getByText('Country needed for national ranking', { exact: true }))
+    .toBeVisible();
+});

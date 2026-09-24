@@ -3,7 +3,7 @@
 //! The site and CSV downloads share these files. Redaction requires an
 //! unambiguous athlete match.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
 use anyhow::{Result, bail};
@@ -65,39 +65,53 @@ pub fn plan(
     directories.sort();
 
     let mut identities: BTreeSet<FileIdentity> = BTreeSet::new();
-    let mut competitions = Vec::new();
-    let mut entries = 0;
-
+    let mut by_identity: BTreeMap<(String, Option<i16>), BTreeSet<String>> = BTreeMap::new();
+    let mut candidates = query.clone();
+    candidates.country = None;
     for directory in &directories {
         let canonical = store::read(directory)?;
-        let mut hits = 0;
-
         for category in &canonical.categories {
             for athlete in &category.athletes {
-                if !query.matches_entry(athlete, category) {
-                    continue;
+                if candidates.matches_entry(athlete, category) {
+                    let countries = by_identity
+                        .entry((
+                            athlete.gender.unwrap_or(category.gender).to_string(),
+                            athlete.disambiguation,
+                        ))
+                        .or_default();
+                    if let Some(country) = athlete.country {
+                        countries.insert(country.to_string());
+                    }
                 }
-
-                identities.insert(FileIdentity {
-                    gender: athlete
-                        .gender
-                        .unwrap_or(category.gender)
-                        .as_str()
-                        .to_string(),
-                    country: athlete.country.as_str().to_string(),
-                    disambiguation: athlete.disambiguation,
-                });
-                hits += 1;
             }
         }
-
-        if hits > 0 {
-            competitions.push(directory.clone());
-            entries += hits;
+    }
+    for ((gender, disambiguation), countries) in by_identity {
+        if query
+            .country
+            .as_ref()
+            .is_some_and(|country| !countries.contains(country))
+        {
+            continue;
         }
+        anyhow::ensure!(
+            countries.len() <= 1,
+            "Conflicting countries for '{label}'; resolve its identity before redaction"
+        );
+        identities.insert(FileIdentity {
+            gender,
+            disambiguation,
+            country: countries.into_iter().next().unwrap_or_default(),
+        });
     }
 
     for entry in list.matching(query) {
+        if identities.iter().any(|identity| {
+            Some(&identity.gender) == entry.query.gender.as_ref()
+                && identity.disambiguation == entry.query.disambiguation
+        }) {
+            continue;
+        }
         identities.insert(FileIdentity {
             gender: entry.query.gender.clone().unwrap_or_default(),
             country: entry.query.country.clone().unwrap_or_default(),
@@ -123,15 +137,34 @@ pub fn plan(
         }
     };
 
-    let redacted = match list.lookup(
-        label,
-        &identity.gender,
-        &identity.country,
-        identity.disambiguation,
-    ) {
+    let redacted = match list.lookup(label, &identity.gender, identity.disambiguation) {
         crate::privacy::Lookup::Listed(redacted) => redacted,
         _ => RedactedAthlete::new(list.next_id()?).expect("next_id starts at 1"),
     };
+    let selected = selected_query(query, &identity);
+    let mut competitions = Vec::new();
+    let mut entries = 0;
+    for directory in directories {
+        let canonical = store::read(&directory)?;
+        let hits = canonical
+            .categories
+            .iter()
+            .flat_map(|category| {
+                category
+                    .athletes
+                    .iter()
+                    .map(move |athlete| (category, athlete))
+            })
+            .filter(|(category, athlete)| {
+                selected.matches_entry(athlete, category)
+                    && athlete.disambiguation == identity.disambiguation
+            })
+            .count();
+        if hits > 0 {
+            competitions.push(directory);
+            entries += hits;
+        }
+    }
     let handles = handle_changes(instagram, query, &identity)?.map_or(0, |(count, _)| count);
 
     Ok(RedactionPlan {
@@ -151,10 +184,11 @@ pub fn apply(
     query: &AthleteQuery,
     plan: &RedactionPlan,
 ) -> Result<()> {
+    let selected = selected_query(query, &plan.identity);
     let mut replacements = Vec::new();
     for directory in &plan.competitions {
         let mut canonical = store::read(directory)?;
-        redact_in_place(&mut canonical, query, plan.redacted);
+        redact_in_place(&mut canonical, &selected, plan.redacted);
         canonical_format::normalize(&mut canonical);
         CanonicalValidator::validate(&canonical)?;
         let (_, rendered) = store::render(&canonical)?;
@@ -175,7 +209,7 @@ pub fn apply(
         query: AthleteQuery {
             match_key: String::new(),
             gender: Some(plan.identity.gender.clone()),
-            country: Some(plan.identity.country.clone()),
+            country: (!plan.identity.country.is_empty()).then(|| plan.identity.country.clone()),
             disambiguation: plan.identity.disambiguation,
         },
         redacted: plan.redacted,
@@ -184,6 +218,15 @@ pub fn apply(
         replacement.commit()?;
     }
     Ok(())
+}
+
+fn selected_query(query: &AthleteQuery, identity: &FileIdentity) -> AthleteQuery {
+    AthleteQuery::new(
+        &query.match_key,
+        Some(identity.gender.clone()),
+        None,
+        identity.disambiguation,
+    )
 }
 
 fn redact_in_place(
@@ -195,10 +238,15 @@ fn redact_in_place(
         let gender = category.gender;
 
         for athlete in &mut category.athletes {
-            let matches = match_key(&athlete.display_name()) == query.match_key
+            let matches = athlete.disambiguation == query.disambiguation
+                && match_key(&athlete.display_name()) == query.match_key
                 && query.matches_parts(
                     athlete.gender.unwrap_or(gender).as_str(),
-                    athlete.country.as_str(),
+                    athlete
+                        .country
+                        .as_ref()
+                        .map(|country| country.as_str())
+                        .unwrap_or(""),
                     athlete.disambiguation,
                 );
 

@@ -22,9 +22,11 @@ pub struct CompetitionData {
     pub start_date: NaiveDate,
     pub end_date: NaiveDate,
     pub city: Option<String>,
+    pub venue: Option<String>,
     pub region: Option<String>,
     pub country: CountryCode,
     pub status: Option<CompetitionStatus>,
+    pub scoring: Option<osl_domain::Scoring>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -70,12 +72,12 @@ pub struct AthleteData {
     pub native_name: Option<String>,
     pub disambiguation: Option<i16>,
     pub gender: Option<Gender>,
-    pub country: CountryCode,
+    pub country: Option<CountryCode>,
     pub bodyweight: Option<Decimal>,
     pub bodyweight_source: Option<BodyweightSource>,
-    pub ris: Option<Decimal>,
+    pub reported_ris: Option<Decimal>,
     pub reported_ris_edition: Option<Edition>,
-    pub reported_total: Option<Decimal>,
+    pub total: Option<Decimal>,
     pub status: AthleteStatus,
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftData>,
@@ -91,77 +93,129 @@ impl AthleteData {
             .or(self.bodyweight.map(|_| BodyweightSource::Reported))
     }
 
+    /// Sum the event's successful bests only when every movement is present.
+    pub fn total_from_lifts(&self, movements: &[Movement]) -> Option<Decimal> {
+        if self.status != AthleteStatus::Competed || movements.is_empty() {
+            return None;
+        }
+        movements.iter().try_fold(Decimal::ZERO, |total, movement| {
+            self.lifts
+                .iter()
+                .find(|lift| lift.movement == *movement)
+                .and_then(LiftData::best)
+                .map(|best| total + best)
+        })
+    }
+
+    pub fn validate_total(&self, movements: &[Movement]) -> Result<(), String> {
+        let mut seen = std::collections::HashSet::new();
+        let mut known = Decimal::ZERO;
+        for lift in &self.lifts {
+            if !movements.contains(&lift.movement) {
+                return Err(format!("{} is not in the event", lift.movement));
+            }
+            if !seen.insert(lift.movement) {
+                return Err(format!("duplicate {} result", lift.movement));
+            }
+            lift.validate_evidence()?;
+            if self.status == AthleteStatus::Competed {
+                known += lift
+                    .best()
+                    .ok_or_else(|| format!("no successful {} result", lift.movement))?;
+            }
+        }
+        let complete = self.total_from_lifts(movements);
+        match self.total {
+            Some(total) => {
+                if total < Decimal::ZERO {
+                    return Err("TotalKg cannot be negative".into());
+                }
+                if self.status != AthleteStatus::Competed || self.status_reason.is_some() {
+                    return Err("TotalKg requires a competed result without a status reason".into());
+                }
+                if movements.is_empty() {
+                    return Err("TotalKg requires an event".into());
+                }
+                if total < known || complete.is_some_and(|sum| sum != total) {
+                    return Err(format!(
+                        "TotalKg {total} contradicts the {}lift sum {known}",
+                        if complete.is_some() {
+                            "complete "
+                        } else {
+                            "known "
+                        }
+                    ));
+                }
+            }
+            None if complete.is_some() => {
+                return Err(
+                    "TotalKg is missing for a complete breakdown; run `osl-import prepare`".into(),
+                );
+            }
+            None => {}
+        }
+        Ok(())
+    }
+
     pub fn complete_total(&self) -> Result<Decimal, String> {
-        if self.status != AthleteStatus::Competed || self.status_reason.is_some() {
-            return Err(
-                "four-lift recovery requires a competed performance without a status reason".into(),
-            );
-        }
-        if let Some(total) = self.reported_total {
-            if total <= Decimal::ZERO || !self.lifts.is_empty() {
-                return Err("reported total must be positive with no lift breakdown".into());
-            }
-            return Ok(total);
-        }
-        let mut total = Decimal::ZERO;
-        for movement in Movement::ALL {
-            let mut lifts = self.lifts.iter().filter(|lift| lift.movement == movement);
-            let lift = lifts
-                .next()
-                .ok_or_else(|| format!("missing {movement} result"))?;
-            if lifts.next().is_some() {
-                return Err(format!("duplicate {movement} result"));
-            }
-            total += lift.validated_best()?;
-        }
+        self.validate_total(&Movement::ALL)?;
+        let total = self
+            .total
+            .ok_or("TotalKg is missing; run `osl-import prepare` when all lifts are available")?;
         if total <= Decimal::ZERO {
-            return Err("four-lift total must be positive".into());
+            return Err("RIS requires a positive TotalKg".into());
         }
         Ok(total)
     }
 
+    /// Reject inconsistent evidence and explain when a published score cannot be checked.
     pub fn validate_score_source(
         &self,
         gender: Gender,
         movements: &[Movement],
-    ) -> Result<(), String> {
-        if let Some(total) = self.reported_total {
-            if total <= Decimal::ZERO {
-                return Err("ReportedTotalKg must be positive".into());
-            }
-            if self.status != AthleteStatus::Competed || self.status_reason.is_some() {
-                return Err(
-                    "ReportedTotalKg requires a competed result without a status reason".into(),
-                );
-            }
-            if movements != Movement::ALL {
-                return Err("ReportedTotalKg requires a four-movement event".into());
-            }
-            if !self.lifts.is_empty() {
-                return Err("ReportedTotalKg requires empty lift columns; use the lift breakdown when available".into());
-            }
-        }
+    ) -> Result<Option<String>, String> {
+        self.validate_total(movements)?;
         if self.bodyweight_source.is_some() && self.bodyweight.is_none() {
             return Err("BodyweightSource requires BodyweightKg".into());
         }
-        if self.reported_ris_edition.is_some() && self.ris.is_none() {
-            return Err("ReportedRisEdition requires the original Ris".into());
+        if self.reported_ris_edition.is_some() && self.reported_ris.is_none() {
+            return Err("ReportedRisEdition requires ReportedRis".into());
         }
         if self.bodyweight_source != Some(BodyweightSource::Recovered) {
-            if self.bodyweight.is_some() && self.ris.is_some() {
-                return Err("both bodyweight and ris require BodyweightSource=recovered and ReportedRisEdition".into());
+            let (Some(bodyweight), Some(reported_ris)) = (self.bodyweight, self.reported_ris)
+            else {
+                return Ok(None);
+            };
+            let Some(edition) = self.reported_ris_edition else {
+                return Ok(Some(
+                    "ReportedRis is unverified: its formula edition is unknown; supply ReportedRisEdition when established by the source".into(),
+                ));
+            };
+            let gender = self.gender.unwrap_or(gender);
+            let total = match self.complete_total() {
+                Ok(total) if movements == Movement::ALL && gender != Gender::Mx => total,
+                _ => return Ok(Some(
+                    "ReportedRis is unverified: comparison requires a complete, competed four-movement result and an M or F scoring formula".into(),
+                )),
+            };
+            let computed = osl_domain::ris::compute(bodyweight, total, gender, edition);
+            if computed != reported_ris {
+                return Err(format!(
+                    "ReportedRis {reported_ris} contradicts BodyweightKg and the complete total: edition {} gives {computed}",
+                    edition.year()
+                ));
             }
-            return Ok(());
+            return Ok(None);
         }
         let bodyweight = self.bodyweight.ok_or("recovered bodyweight is missing")?;
         let ris = self
-            .ris
-            .ok_or("recovered bodyweight requires the original Ris")?;
+            .reported_ris
+            .ok_or("recovered bodyweight requires ReportedRis")?;
         let edition = self
             .reported_ris_edition
             .ok_or("recovered bodyweight requires ReportedRisEdition")?;
         if bodyweight <= Decimal::ZERO || ris <= Decimal::ZERO {
-            return Err("recovered bodyweight and original Ris must be positive".into());
+            return Err("recovered bodyweight and ReportedRis must be positive".into());
         }
         if self.status != AthleteStatus::Competed || movements != Movement::ALL {
             return Err(
@@ -177,7 +231,7 @@ impl AthleteData {
                 edition.year()
             ));
         }
-        Ok(())
+        Ok(None)
     }
 }
 
@@ -211,7 +265,7 @@ impl std::str::FromStr for BodyweightSource {
 }
 
 impl LiftData {
-    pub fn validated_best(&self) -> Result<Decimal, String> {
+    pub fn validate_evidence(&self) -> Result<(), String> {
         if self.best_lift.is_some_and(|weight| weight < Decimal::ZERO)
             || self
                 .attempts
@@ -221,19 +275,35 @@ impl LiftData {
         {
             return Err(format!("negative {} lift", self.movement));
         }
-        let best = self
-            .best()
-            .ok_or_else(|| format!("no successful {} result", self.movement))?;
-        if let Some(stated) = self.best_lift
-            && self.attempts.is_some()
-            && stated != best
-        {
-            return Err(format!(
-                "best {} contradicts successful attempts: expected {best}, got {}",
-                self.movement, stated
-            ));
+        if let Some(attempts) = &self.attempts {
+            let mut numbers = std::collections::HashSet::new();
+            if attempts.is_empty()
+                || attempts.iter().any(|attempt| {
+                    !(1..=super::entries::ATTEMPTS_PER_MOVEMENT).contains(&attempt.attempt_number)
+                        || !numbers.insert(attempt.attempt_number)
+                })
+            {
+                return Err(format!(
+                    "{} attempts must have distinct numbers from 1 to 3",
+                    self.movement
+                ));
+            }
+            if let Some(stated) = self.best_lift
+                && self.best() != Some(stated)
+            {
+                return Err(format!(
+                    "best {} contradicts successful attempts",
+                    self.movement
+                ));
+            }
         }
-        Ok(best)
+        Ok(())
+    }
+
+    pub fn validated_best(&self) -> Result<Decimal, String> {
+        self.validate_evidence()?;
+        self.best()
+            .ok_or_else(|| format!("no successful {} result", self.movement))
     }
 
     /// What the competition page shows for the movement, and what the importer

@@ -26,7 +26,7 @@ FinalRep screenshots often cover one weight class per image. Read sex and weight
 
 Inspect small tables at sufficient resolution. Overlapping enlarged views help distinguish quarter-kilogram increments such as `26.25` and `26.75`.
 
-These screenshots typically show attempts, totals, and RIS without bodyweight. Record the supplied RIS and leave bodyweight empty when absent. Ask for the full spelling of truncated names. Treat a grey globe or missing flag using the country default in `format.md`.
+These screenshots typically show attempts, totals, and RIS without bodyweight. Record the supplied RIS and leave bodyweight empty when absent. Ask for the full spelling of truncated names. Leave `Country` empty for a grey globe or missing flag, as described in `format.md`.
 
 Placings can disagree with total order. Reconcile the successful bests with the printed total; the importer computes placing. A `0 kg` squat, especially a row of zeros across all movements with no bodyweight or real attempts, can represent a nonstarter. Use the no-show rules in `format.md` and resolve ambiguous markings before writing attempts.
 

@@ -1,4 +1,5 @@
 event = "MPDS"
+sources = ["FNSL Élite 2026 results images used for the original import (https://github.com/openstreetlifting/openstreetlifting/pull/233)"]
 
 [competition]
 name = "Élite"

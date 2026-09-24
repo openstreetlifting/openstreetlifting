@@ -22,7 +22,9 @@ export interface Competition {
   created_at: string;
   slug: string;
   status: CompetitionStatus;
+  scoring?: import('./enums').Scoring | null;
   city: string | null;
+  venue?: string | null;
   region: string | null;
   country: string | null;
   start_date: string | null;
@@ -54,7 +56,7 @@ export interface AthleteInfo {
   first_name: string;
   last_name: string;
   gender: Gender;
-  country: string;
+  country: string | null;
   slug: string;
   bodyweight?: number | null;
   instagram_handle?: string | null;
@@ -73,6 +75,7 @@ export interface Lift {
 }
 
 export interface Participant {
+  participant_id: string;
   athlete: AthleteInfo;
   bodyweight: string | null;
   rank: number | null;
@@ -103,7 +106,9 @@ export interface CompetitionDetail {
   name: string;
   slug: string;
   status: CompetitionStatus;
+  scoring?: import('./enums').Scoring | null;
   city: string | null;
+  venue?: string | null;
   region: string | null;
   country: string | null;
   start_date: string | null;

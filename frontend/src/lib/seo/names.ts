@@ -40,7 +40,11 @@ export function risStanding(standing: AthleteStanding | null | undefined): strin
   if (!ris) return '';
 
   const places = [
-    `#${ris.country.place} of ${ris.country.field.toLocaleString('en')} in ${countryName(ris.country.code)}`,
+    ...(ris.country
+      ? [
+          `#${ris.country.place} of ${ris.country.field.toLocaleString('en')} in ${countryName(ris.country.code)}`,
+        ]
+      : []),
     `#${ris.global.place} of ${ris.global.field.toLocaleString('en')} worldwide`,
   ];
   return `Ranked ${places.join(' and ')} by RIS.`;

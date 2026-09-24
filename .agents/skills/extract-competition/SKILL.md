@@ -13,24 +13,24 @@ Create or extend one canonical directory per competition. Each pass must produce
 
 2. **Read the applicable rules.** Read [format.md](format.md) before writing competition metadata or results. For results, also read [athletes.md](athletes.md) before assigning identities. For Instagram carousels, FinalRep screenshots, or third-party aggregators, read [sources.md](sources.md). For an announcement without results, follow the announcement section in `format.md`.
 
-3. **Extract the evidence.** Record only values supported by the source, subject to the country and unclassified-group defaults in `format.md`. Leave unknown optional values empty. Keep failed attempts. Resolve unclear digits, colours, names, and conflicting sources before writing the affected values. Ask the user when the available evidence cannot settle them; continue with independent rows.
+3. **Extract the evidence.** Record only values supported by the source. Establish whether contests use weight classes and whether they mix sexes before assigning categories; follow `format.md` for these branches. Leave unknown optional values empty. Keep failed attempts. Resolve unclear digits, colours, names, and conflicting sources before writing the affected values. Ask the user when the available evidence cannot settle them; continue with independent rows.
 
 4. **Resolve athlete identities.** Look up every athlete introduced by this source using the procedure in `athletes.md`. Complete this before writing their name. Report unresolved matches and existing duplicate identities. The API is a projection of imported files, not evidence for missing results.
 
 5. **Merge the new material.** Add rows and fill previously empty cells. Preserve existing data outside the source's scope. If a source establishes an error in an existing value, explain the correction and its evidence. Append source references to `competition.toml` without dropping earlier ones.
 
-6. **Format and validate.** From `backend`, substitute the competition's actual path:
+6. **Prepare and validate.** From `backend`, substitute the competition's actual path:
 
    ```sh
-   cargo run -p osl_importer --bin import -- fmt data/competitions/<federation>/<year>/<slug>
+   cargo run -p osl_importer --bin import -- prepare data/competitions/<federation>/<year>/<slug>
    cargo run -p osl_importer --bin import -- competitions data/competitions/<federation>/<year>/<slug> --dry-run
    ```
 
    Fix errors and repeat. Warnings about missing evidence can remain; report them instead of inventing values. A nonempty suppression list requires its existing `OSL_PRIVACY_KEY`. If it is unavailable, use `--dry-run --skip-privacy-check` for structural validation and report that suppression checks remain outstanding. Never generate a replacement key for an existing list or bypass a reported suppression match.
 
-7. **Reconcile the results.** For each source row with a four-lift total, compare that total with the sum of the formatted `Best*` values, or verify `ReportedTotalKg` against the source when no breakdown exists. Account for every row in the supplied source: imported, already present, or unresolved. Report mismatches without adjusting weights to force agreement. Check the diff for changes outside the intended competition and source categories.
+7. **Reconcile the results.** For each source row with a total, verify `TotalKg` against it. Keep any available lift breakdown; a complete breakdown must agree with the total. Account for every row in the supplied source: imported, already present, or unresolved. Report mismatches without adjusting weights to force agreement. Check the diff for changes outside the intended competition and source categories.
 
-8. **Report the diff.** Show the changed files and summarize added categories or athletes, validation and total checks, country defaults, regrouped weight classes, and unresolved evidence. Leave the files ready for review. Database imports and commits are outside this extraction workflow unless the user explicitly requests them.
+8. **Report the diff.** Show the changed files and summarize added categories or athletes, validation and total checks, missing countries, mixed-contest scoring, and unresolved evidence. Leave the files ready for review. Database imports and commits are outside this extraction workflow unless the user explicitly requests them.
 
 ## Completion
 

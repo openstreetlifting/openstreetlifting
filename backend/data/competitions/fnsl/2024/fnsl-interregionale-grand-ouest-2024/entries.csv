@@ -1,40 +1,40 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-M,66,Malo,Cabillic,,FR,,,competed,,,,,12.5,,,,57.5,,,,70,,,,145
-M,66,Hugo,Connan,,FR,,,competed,,,,,17.5,,,,70,,,,85,,,,155
-M,66,Brieuc,Durand,,FR,,,competed,,,,,20,,,,57.5,,,,92.5,,,,120
-M,66,Quentin,Duval,,FR,,,competed,,,,,15,,,,57.5,,,,85,,,,155
-M,66,Mathieu,Lages,,FR,,,competed,,,,,22.5,,,,70,,,,90,,,,162.5
-M,66,Tristan,Latteux,,FR,,,competed,,,,,16.25,,,,48.75,,,,80,,,,140
-M,66,Sylvain,Raynard,,FR,,,competed,,,,,10,,,,47.5,,,,80,,,,140
-M,66,Colas,Tabot,,FR,,,competed,,,,,7.5,,,,53.75,,,,70,,,,145
-M,73,Loan,Bernard-Bodier,,FR,,,competed,,,,,25,,,,75,,,,90,,,,170
-M,73,Jean Jacques,Bouché,,FR,,,competed,,,,,25,,,,75,,,,90,,,,137.5
-M,73,Ahmad,Chehade,,FR,,,competed,,,,,2.5,,,,70,,,,70,,,,190
-M,73,Thibault,Degenne,,FR,,,competed,,,,,8.75,,,,48.75,,,,82.5,,,,185
-M,73,Sufyaan,Kumallee,,FR,,,competed,,,,,23.75,,,,75,,,,96.25,,,,172.5
-M,73,Baptiste,Leban,,FR,,,competed,,,,,15,,,,50,,,,90,,,,167.5
-M,73,Cédric,Percheminier,,FR,,,competed,,,,,16.25,,,,53.75,,,,112.5,,,,200
-M,73,Matis,Soubielle,,FR,,,competed,,,,,7.5,,,,48.75,,,,80,,,,150
-M,80,Romain,Avril,,FR,,,competed,,,,,16.25,,,,51.25,,,,100,,,,132.5
-M,80,Romain,Chistrel,,FR,,,competed,,,,,15,,,,63.75,,,,135,,,,217.5
-M,80,Joackim,Cremades,,FR,,,competed,,,,,15,,,,62.5,,,,92.5,,,,165
-M,80,Jules,Demares,,FR,,,competed,,,,,2.5,,,,45,,,,85,,,,182.5
-M,80,Paolo,Denis,,FR,,,competed,,,,,15,,,,57.5,,,,102.5,,,,182.5
-M,80,Tom,Guyton,,FR,,,competed,,,,,20,,,,70,,,,110,,,,195
-M,80,Johan,Le Moing,,FR,,,competed,,,,,10,,,,60,,,,110,,,,160
-M,80,Alexandre,Perrillat,,FR,,,competed,,,,,10,,,,60,,,,95,,,,195
-M,87,Louis,Baron,,FR,,,competed,,,,,6.25,,,,51.25,,,,86.25,,,,170
-M,87,Enzo,Chartier,,FR,,,competed,,,,,21.25,,,,70,,,,130,,,,220
-M,87,Grégory,Coste,,FR,,,competed,,,,,7.5,,,,57.5,,,,95,,,,205
-M,87,Léo,Gemon,,FR,,,competed,,,,,17.5,,,,60,,,,87.5,,,,200
-M,87,Charles,Lepetit,,FR,,,competed,,,,,1.25,,,,35,,,,86.25,,,,172.5
-M,87,Quentin,Loiseau,,FR,,,competed,,,,,7.5,,,,55,,,,72.5,,,,200
-M,87,Hugo,Poulet,,FR,,,competed,,,,,8.75,,,,46.25,,,,106.25,,,,182.5
-M,87,Joris,Ribeiro,,FR,,,competed,,,,,17.5,,,,67.5,,,,95,,,,200
-M,94,Tristant,Boussand,,FR,,,disqualified,Contributor confirms disqualification; source has no Dips or Squat result,,,,10,,,,62.5,,,,,,,,
-M,94,Allan,Cherbourg,,FR,,,competed,,,,,7.5,,,,57.5,,,,102.5,,,,152.5
-M,94,Ismaël,Samba,,FR,,,competed,,,,,10,,,,55,,,,87.5,,,,160
-M,94,Léo-Paul,Templier,,FR,,,competed,,,,,8.75,,,,70,,,,90,,,,145
-F,57,Salomé,Leray,,FR,,,competed,,,,,2,,,,15,,,,21.25,,,,77.5
-F,57,Lauriane,Mahait,,FR,,,disqualified,Contributor confirms disqualification: no valid MuscleUp result,,,,,,,,16,,,,27.5,,,,100
-F,63,Louanne,Wadoux,,FR,,,competed,,,,,3.75,,,,22.5,,,,35,,,,80
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Malo,Cabillic,,FR,,,285,competed,,,,,12.5,,,,57.5,,,,70,,,,145
+M,66,Hugo,Connan,,FR,,,327.5,competed,,,,,17.5,,,,70,,,,85,,,,155
+M,66,Brieuc,Durand,,FR,,,290,competed,,,,,20,,,,57.5,,,,92.5,,,,120
+M,66,Quentin,Duval,,FR,,,312.5,competed,,,,,15,,,,57.5,,,,85,,,,155
+M,66,Mathieu,Lages,,FR,,,345,competed,,,,,22.5,,,,70,,,,90,,,,162.5
+M,66,Tristan,Latteux,,FR,,,285,competed,,,,,16.25,,,,48.75,,,,80,,,,140
+M,66,Sylvain,Raynard,,FR,,,277.5,competed,,,,,10,,,,47.5,,,,80,,,,140
+M,66,Colas,Tabot,,FR,,,276.25,competed,,,,,7.5,,,,53.75,,,,70,,,,145
+M,73,Loan,Bernard-Bodier,,FR,,,360,competed,,,,,25,,,,75,,,,90,,,,170
+M,73,Jean Jacques,Bouché,,FR,,,327.5,competed,,,,,25,,,,75,,,,90,,,,137.5
+M,73,Ahmad,Chehade,,FR,,,332.5,competed,,,,,2.5,,,,70,,,,70,,,,190
+M,73,Thibault,Degenne,,FR,,,325,competed,,,,,8.75,,,,48.75,,,,82.5,,,,185
+M,73,Sufyaan,Kumallee,,FR,,,367.5,competed,,,,,23.75,,,,75,,,,96.25,,,,172.5
+M,73,Baptiste,Leban,,FR,,,322.5,competed,,,,,15,,,,50,,,,90,,,,167.5
+M,73,Cédric,Percheminier,,FR,,,382.5,competed,,,,,16.25,,,,53.75,,,,112.5,,,,200
+M,73,Matis,Soubielle,,FR,,,286.25,competed,,,,,7.5,,,,48.75,,,,80,,,,150
+M,80,Romain,Avril,,FR,,,300,competed,,,,,16.25,,,,51.25,,,,100,,,,132.5
+M,80,Romain,Chistrel,,FR,,,431.25,competed,,,,,15,,,,63.75,,,,135,,,,217.5
+M,80,Joackim,Cremades,,FR,,,335,competed,,,,,15,,,,62.5,,,,92.5,,,,165
+M,80,Jules,Demares,,FR,,,315,competed,,,,,2.5,,,,45,,,,85,,,,182.5
+M,80,Paolo,Denis,,FR,,,357.5,competed,,,,,15,,,,57.5,,,,102.5,,,,182.5
+M,80,Tom,Guyton,,FR,,,395,competed,,,,,20,,,,70,,,,110,,,,195
+M,80,Johan,Le Moing,,FR,,,340,competed,,,,,10,,,,60,,,,110,,,,160
+M,80,Alexandre,Perrillat,,FR,,,360,competed,,,,,10,,,,60,,,,95,,,,195
+M,87,Louis,Baron,,FR,,,313.75,competed,,,,,6.25,,,,51.25,,,,86.25,,,,170
+M,87,Enzo,Chartier,,FR,,,441.25,competed,,,,,21.25,,,,70,,,,130,,,,220
+M,87,Grégory,Coste,,FR,,,365,competed,,,,,7.5,,,,57.5,,,,95,,,,205
+M,87,Léo,Gemon,,FR,,,365,competed,,,,,17.5,,,,60,,,,87.5,,,,200
+M,87,Charles,Lepetit,,FR,,,295,competed,,,,,1.25,,,,35,,,,86.25,,,,172.5
+M,87,Quentin,Loiseau,,FR,,,335,competed,,,,,7.5,,,,55,,,,72.5,,,,200
+M,87,Hugo,Poulet,,FR,,,343.75,competed,,,,,8.75,,,,46.25,,,,106.25,,,,182.5
+M,87,Joris,Ribeiro,,FR,,,380,competed,,,,,17.5,,,,67.5,,,,95,,,,200
+M,94,Tristant,Boussand,,FR,,,,disqualified,Contributor confirms disqualification; source has no Dips or Squat result,,,,10,,,,62.5,,,,,,,,
+M,94,Allan,Cherbourg,,FR,,,320,competed,,,,,7.5,,,,57.5,,,,102.5,,,,152.5
+M,94,Ismaël,Samba,,FR,,,312.5,competed,,,,,10,,,,55,,,,87.5,,,,160
+M,94,Léo-Paul,Templier,,FR,,,313.75,competed,,,,,8.75,,,,70,,,,90,,,,145
+F,57,Salomé,Leray,,FR,,,115.75,competed,,,,,2,,,,15,,,,21.25,,,,77.5
+F,57,Lauriane,Mahait,,FR,,,,disqualified,Contributor confirms disqualification: no valid MuscleUp result,,,,,,,,16,,,,27.5,,,,100
+F,63,Louanne,Wadoux,,FR,,,141.25,competed,,,,,3.75,,,,22.5,,,,35,,,,80

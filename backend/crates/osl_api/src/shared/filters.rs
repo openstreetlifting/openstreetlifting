@@ -2,14 +2,13 @@ use osl_domain::Gender;
 use serde::{Deserialize, Deserializer, Serialize};
 use utoipa::ToSchema;
 
-/// The genders a ranking can be drawn for. Weight classes are only drawn for
-/// men and women, so a mixed board would compare an athlete against an empty
-/// field.
+/// Athlete sex for global rankings, or contest sex within a competition.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum RankedGender {
     M,
     F,
+    Mx,
 }
 
 impl From<RankedGender> for Gender {
@@ -17,6 +16,7 @@ impl From<RankedGender> for Gender {
         match gender {
             RankedGender::M => Self::M,
             RankedGender::F => Self::F,
+            RankedGender::Mx => Self::Mx,
         }
     }
 }
@@ -26,7 +26,7 @@ impl<'de> Deserialize<'de> for RankedGender {
         match crate::shared::dto::from_str::<D, Gender>(deserializer)? {
             Gender::M => Ok(Self::M),
             Gender::F => Ok(Self::F),
-            Gender::Mx => Err(serde::de::Error::custom("gender must be 'M' or 'F'")),
+            Gender::Mx => Ok(Self::Mx),
         }
     }
 }

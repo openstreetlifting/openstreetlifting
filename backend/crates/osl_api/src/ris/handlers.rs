@@ -67,6 +67,11 @@ pub async fn get_current_formula() -> Json<RisFormulaResponse> {
 pub async fn calculate_ris(
     JsonBody(payload): JsonBody<ComputeRisRequest>,
 ) -> WebResult<Json<ComputeRisResponse>> {
+    if payload.gender == osl_domain::Gender::Mx {
+        return Err(WebError::BadRequest(
+            "RIS requires athlete sex (M or F), not a mixed category".into(),
+        ));
+    }
     let edition = match payload.formula_year {
         Some(year) => Edition::from_year(year).ok_or(WebError::NotFound)?,
         None => Edition::CURRENT,
@@ -79,6 +84,23 @@ pub async fn calculate_ris(
         ris_score,
         formula_year: edition.year(),
     }))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn a_mixed_category_cannot_select_a_ris_formula() {
+        let result = calculate_ris(JsonBody(ComputeRisRequest {
+            bodyweight: 80.into(),
+            total: 300.into(),
+            gender: osl_domain::Gender::Mx,
+            formula_year: None,
+        }))
+        .await;
+        assert!(matches!(result, Err(WebError::BadRequest(_))));
+    }
 }
 
 #[utoipa::path(

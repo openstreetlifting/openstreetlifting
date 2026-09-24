@@ -29,13 +29,13 @@ fn entry(first: &str, last: &str, native: Option<&str>) -> AthleteData {
         last_name: last.to_string(),
         native_name: native.map(str::to_string),
         disambiguation: None,
-        gender: None,
-        country: CountryCode::parse("FR").unwrap(),
+        gender: Some(Gender::M),
+        country: Some(CountryCode::parse("FR").unwrap()),
         bodyweight: Some(decimal("78.5")),
         bodyweight_source: None,
-        ris: None,
+        reported_ris: None,
         reported_ris_edition: None,
-        reported_total: None,
+        total: None,
         status: AthleteStatus::Competed,
         status_reason: None,
         lifts: Movement::ALL
@@ -56,7 +56,7 @@ fn entry(first: &str, last: &str, native: Option<&str>) -> AthleteData {
 
 fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
     CanonicalFormat {
-        sources: Vec::new(),
+        sources: vec!["Synthetic test results".into()],
         competition: CompetitionData {
             name: slug.to_string(),
             slug: slug.to_string(),
@@ -68,9 +68,11 @@ fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
             start_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
             end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
             city: Some("Paris".to_string()),
+            venue: None,
             region: None,
             country: CountryCode::parse("FR").unwrap(),
             status: Some(CompetitionStatus::Completed),
+            scoring: None,
         },
         movements: Movement::ALL.to_vec(),
         categories: vec![CategoryData {
@@ -84,7 +86,8 @@ fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
     }
 }
 
-async fn import(pool: &PgPool, canonical: CanonicalFormat) {
+async fn import(pool: &PgPool, mut canonical: CanonicalFormat) {
+    osl_importer::canonical::format::prepare(&mut canonical).unwrap();
     CanonicalTransformer::new(pool)
         .import_to_database(canonical)
         .await
@@ -204,4 +207,28 @@ async fn no_endpoint_gives_the_name_back(pool: PgPool) {
             "{uri} still names the athlete: {text}"
         );
     }
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn unknown_country_keeps_results_and_global_standings(pool: PgPool) {
+    let mut athlete = entry("Alina", "Riyaz", None);
+    athlete.country = None;
+    import(&pool, meet("meet", vec![athlete])).await;
+    let (status, body) = get(
+        &pool,
+        "/api/v1/athletes/alina-riyaz?include=competitions,records,standing",
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body["country"], Value::Null);
+    assert_eq!(body["competitions"].as_array().unwrap().len(), 1);
+    assert_eq!(body["personal_records"].as_array().unwrap().len(), 4);
+    for metric in body["standing"].as_object().unwrap().values() {
+        assert_eq!(metric["global"]["place"], 1);
+        assert_eq!(metric["country"], Value::Null);
+    }
+    let (status, rankings) = get(&pool, "/api/v1/rankings").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(rankings["data"].as_array().unwrap().len(), 1);
+    assert_eq!(rankings["data"][0]["athlete"]["country"], Value::Null);
 }

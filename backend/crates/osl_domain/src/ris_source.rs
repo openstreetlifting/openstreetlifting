@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 /// Where a RIS score came from. `computed` was worked out from the athlete's
-/// bodyweight and total. `reported` was stated by the source, which gave no
-/// bodyweight, so it cannot be restated on the formula everything else uses.
+/// bodyweight and total. `reported` preserves the published score when either
+/// input is missing.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]

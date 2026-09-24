@@ -8,6 +8,7 @@ export interface RankingFederationInfo {
 }
 
 export interface RankingEntry {
+  participant_id: string;
   rank: number;
   athlete: AthleteInfo;
   category: string;

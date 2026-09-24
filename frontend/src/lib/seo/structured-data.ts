@@ -72,7 +72,8 @@ const EVENT_STATUS: Record<string, string> = {
 };
 
 export function competitionLd(competition: CompetitionDetail, description: string): JsonLd {
-  const place = [competition.city, competition.region].filter(Boolean).join(', ');
+  const place =
+    competition.venue || [competition.city, competition.region].filter(Boolean).join(', ');
 
   return {
     '@context': 'https://schema.org',

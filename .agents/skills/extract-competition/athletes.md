@@ -45,6 +45,6 @@ Use an established Latin transliteration in `FirstName` and `LastName`. Store th
 
 ## Disambiguation
 
-An identity includes the folded name, sex, country, and disambiguation number. Use `Disambiguation` only for confirmed different people who otherwise share those fields. Leave the first person's value empty and number the others from `2`.
+Identity uses the folded name, sex, and disambiguation number. Check existing entries and preserve assigned numbers. For confirmed different people with the same name and sex, number them from `1`, regardless of country. A mixed-category entry keeps the athlete's sex and identity; `CategorySex` does not create another person.
 
 Two spellings of one person's name do not justify disambiguation. If the evidence does not establish whether the rows represent different people, ask.

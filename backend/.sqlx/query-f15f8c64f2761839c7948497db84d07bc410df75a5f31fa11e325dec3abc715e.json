@@ -1,0 +1,186 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                c.competition_id,\n                c.name as competition_name,\n                c.slug as competition_slug,\n                c.start_date as competition_date,\n                d.name as \"division?\",\n                COALESCE(cp.category_gender, wc.gender, a.gender) as \"category_gender!: Gender\",\n                wc.min_kg as weight_class_min,\n                wc.max_kg as weight_class_max,\n                placed.rank as \"rank?\",\n                cp.total as \"total: Decimal\",\n                cp.ris_score,\n                cp.ris_source as \"ris_source: RisSource\",\n                cp.status as \"status: AthleteStatus\",\n                c.event_code,\n                COALESCE(\n                    jsonb_agg(\n                        jsonb_build_object(\n                            'movement_name', l.movement_name,\n                            'best_weight', l.max_weight::text,\n                            'attempts', COALESCE(\n                                (\n                                    SELECT jsonb_agg(\n                                               jsonb_build_object(\n                                                   'attempt_number', a.attempt_number,\n                                                   'weight', a.weight::text,\n                                                   'is_successful', a.is_successful\n                                               )\n                                               ORDER BY a.attempt_number\n                                           )\n                                    FROM attempts a\n                                    WHERE a.lift_id = l.lift_id\n                                ),\n                                '[]'::jsonb\n                            )\n                        )\n                        ORDER BY m.display_order\n                    ) FILTER (WHERE l.lift_id IS NOT NULL),\n                    '[]'::jsonb\n                ) as \"lifts!: sqlx::types::Json<Vec<AthleteLiftRow>>\"\n            FROM competition_participants cp\n            JOIN competitions c ON cp.competition_id = c.competition_id\n            INNER JOIN athletes a ON a.athlete_id = cp.athlete_id\n            LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n            LEFT JOIN divisions d ON d.division_id = cp.division_id\n            LEFT JOIN lifts l ON l.participant_id = cp.participant_id\n            LEFT JOIN movements m ON m.name = l.movement_name\n            LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id\n            WHERE cp.athlete_id = $1\n            GROUP BY c.competition_id, c.name, c.slug, c.start_date, c.event_code, d.name,\n                     COALESCE(cp.category_gender, wc.gender, a.gender), wc.min_kg, wc.max_kg, placed.rank,\n                     cp.ris_score, cp.ris_source, cp.status, cp.total\n            ORDER BY c.start_date DESC NULLS LAST\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "competition_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "competition_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "competition_name",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "competition_slug",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "slug"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "competition_date",
+        "type_info": "Date",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "start_date"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "division?",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "divisions",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "category_gender!: Gender",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "weight_class_min",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "weight_classes",
+            "name": "min_kg"
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "weight_class_max",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "weight_classes",
+            "name": "max_kg"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "rank?",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "participant_standings",
+            "name": "rank"
+          }
+        }
+      },
+      {
+        "ordinal": 9,
+        "name": "total: Decimal",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "total"
+          }
+        }
+      },
+      {
+        "ordinal": 10,
+        "name": "ris_score",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "ris_score"
+          }
+        }
+      },
+      {
+        "ordinal": 11,
+        "name": "ris_source: RisSource",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "ris_source"
+          }
+        }
+      },
+      {
+        "ordinal": 12,
+        "name": "status: AthleteStatus",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "ordinal": 13,
+        "name": "event_code",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "event_code"
+          }
+        }
+      },
+      {
+        "ordinal": 14,
+        "name": "lifts!: sqlx::types::Json<Vec<AthleteLiftRow>>",
+        "type_info": "Jsonb",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      null,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      null
+    ]
+  },
+  "hash": "f15f8c64f2761839c7948497db84d07bc410df75a5f31fa11e325dec3abc715e"
+}

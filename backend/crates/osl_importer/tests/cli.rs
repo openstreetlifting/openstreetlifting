@@ -22,7 +22,9 @@ impl Workspace {
             .join("test-federation/2026")
             .join(&canonical.competition.slug);
         std::fs::create_dir_all(&directory).unwrap();
-        store::write(&directory, canonical).unwrap();
+        let mut canonical = canonical.clone();
+        osl_importer::canonical::format::prepare(&mut canonical).unwrap();
+        store::write(&directory, &canonical).unwrap();
         directory
     }
 
@@ -99,9 +101,49 @@ fn dry_run_validates_files_without_a_database() {
 }
 
 #[test]
+fn missing_or_blank_sources_block_preparation_and_import() {
+    let workspace = Workspace::new();
+    for canonical in [
+        fixture("results", "Alpha"),
+        common::announcement("announced"),
+    ] {
+        let directory = workspace.write(&canonical);
+        let metadata = directory.join("competition.toml");
+        let original = std::fs::read_to_string(&metadata).unwrap();
+        for replacement in [
+            "",
+            "sources = []",
+            "sources = [\" \" ]",
+            "sources = [\"Results sheet\", \"\"]",
+        ] {
+            let invalid = original
+                .lines()
+                .map(|line| {
+                    if line.starts_with("sources =") {
+                        replacement
+                    } else {
+                        line
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join("\n");
+            std::fs::write(&metadata, &invalid).unwrap();
+            for command in ["prepare", "competitions"] {
+                let output =
+                    workspace.run(&[command, directory.to_str().unwrap(), "--dry-run"], None);
+                assert!(!output.status.success());
+                assert!(String::from_utf8_lossy(&output.stderr).contains("sources"));
+                assert_eq!(std::fs::read_to_string(&metadata).unwrap(), invalid);
+            }
+        }
+    }
+}
+
+#[test]
 fn removed_commands_and_flags_are_rejected() {
     let workspace = Workspace::new();
     for args in [
+        vec!["fmt", "."],
         vec!["canonical", ".", "--dry-run"],
         vec!["bulk-import", "--directory", "."],
         vec!["competitions", "--validate-only"],
@@ -120,17 +162,66 @@ fn formatting_preview_and_check_leave_files_unchanged() {
     let path = directory.join("competition.toml");
     let contents = format!("\n{}", std::fs::read_to_string(&path).unwrap());
     std::fs::write(&path, &contents).unwrap();
-    success(workspace.run(&["fmt", ".", "--dry-run"], None));
+    success(workspace.run(&["prepare", ".", "--dry-run"], None));
     assert_eq!(std::fs::read_to_string(&path).unwrap(), contents);
     assert!(
         !workspace
-            .run(&["fmt", ".", "--check"], None)
+            .run(&["prepare", ".", "--check"], None)
             .status
             .success()
     );
     assert_eq!(std::fs::read_to_string(&path).unwrap(), contents);
-    success(workspace.run(&["fmt", "."], None));
-    success(workspace.run(&["fmt", ".", "--check"], None));
+    success(workspace.run(&["prepare", "."], None));
+    success(workspace.run(&["prepare", ".", "--check"], None));
+}
+
+#[test]
+fn optional_entry_headers_are_restored_without_changing_results() {
+    let workspace = Workspace::new();
+    let mut canonical = fixture("meet", "Alpha");
+    canonical.categories[0].athletes[0].first_name.clear();
+    let directory = workspace.write(&canonical);
+    let entries_path = directory.join("entries.csv");
+    let original = std::fs::read_to_string(&entries_path).unwrap();
+
+    for omitted in [
+        vec!["FirstName"],
+        vec!["Disambiguation"],
+        vec!["StatusReason"],
+        vec!["FirstName", "Disambiguation", "StatusReason"],
+    ] {
+        let mut reader = csv::Reader::from_reader(original.as_bytes());
+        let headers = reader.headers().unwrap().clone();
+        let keep: Vec<usize> = headers
+            .iter()
+            .enumerate()
+            .filter_map(|(index, column)| (!omitted.contains(&column)).then_some(index))
+            .collect();
+        let mut writer = csv::Writer::from_writer(Vec::new());
+        writer
+            .write_record(keep.iter().map(|&index| &headers[index]))
+            .unwrap();
+        for record in reader.records() {
+            let record = record.unwrap();
+            writer
+                .write_record(keep.iter().map(|&index| &record[index]))
+                .unwrap();
+        }
+        let reduced = writer.into_inner().unwrap();
+        std::fs::write(&entries_path, &reduced).unwrap();
+
+        success(workspace.run(&["competitions", ".", "--dry-run"], None));
+        assert_eq!(std::fs::read(&entries_path).unwrap(), reduced);
+        assert!(
+            !workspace
+                .run(&["prepare", ".", "--check"], None)
+                .status
+                .success()
+        );
+        success(workspace.run(&["prepare", "."], None));
+        assert_eq!(std::fs::read_to_string(&entries_path).unwrap(), original);
+        success(workspace.run(&["prepare", ".", "--check"], None));
+    }
 }
 
 #[test]
@@ -273,4 +364,90 @@ async fn instagram_and_recompute_previews_leave_stored_data_unchanged(pool: PgPo
         .await
         .unwrap();
     assert_eq!(handles, vec!["fixture_alpha"]);
+}
+
+#[test]
+fn preparation_stores_missing_totals_and_checks_are_read_only() {
+    let workspace = Workspace::new();
+    let directory = workspace.write(&fixture("meet", "Alpha"));
+    let mut canonical = store::read(&directory).unwrap();
+    canonical.categories[0].athletes[0].total = None;
+    store::write(&directory, &canonical).unwrap();
+    let path = directory.join("entries.csv");
+    let original = std::fs::read(&path).unwrap();
+    assert!(
+        !workspace
+            .run(&["prepare", ".", "--check"], None)
+            .status
+            .success()
+    );
+    success(workspace.run(&["prepare", ".", "--dry-run"], None));
+    assert!(
+        !workspace
+            .run(&["competitions", ".", "--dry-run"], None)
+            .status
+            .success()
+    );
+    assert_eq!(std::fs::read(&path).unwrap(), original);
+    success(workspace.run(&["prepare", "."], None));
+    assert_eq!(
+        store::read(&directory).unwrap().categories[0].athletes[0].total,
+        Some(common::decimal("300"))
+    );
+    success(workspace.run(&["prepare", ".", "--check"], None));
+    success(workspace.run(&["competitions", ".", "--dry-run"], None));
+}
+
+#[test]
+fn preparation_conflicts_block_every_file_in_the_batch() {
+    let workspace = Workspace::new();
+    let first = workspace.write(&fixture("a-valid", "Alpha"));
+    let second = workspace.write(&fixture("z-conflict", "Bravo"));
+    for (directory, total) in [(&first, None), (&second, Some(common::decimal("301")))] {
+        let mut canonical = store::read(directory).unwrap();
+        canonical.categories[0].athletes[0].total = total;
+        store::write(directory, &canonical).unwrap();
+    }
+    let first_before = std::fs::read(first.join("entries.csv")).unwrap();
+    let second_before = std::fs::read(second.join("entries.csv")).unwrap();
+    for args in [
+        vec!["prepare", "."],
+        vec!["prepare", ".", "--check"],
+        vec!["prepare", ".", "--dry-run"],
+    ] {
+        let output = workspace.run(&args, None);
+        assert!(!output.status.success());
+        assert!(String::from_utf8_lossy(&output.stderr).contains("contradicts"));
+        assert_eq!(
+            std::fs::read(first.join("entries.csv")).unwrap(),
+            first_before
+        );
+        assert_eq!(
+            std::fs::read(second.join("entries.csv")).unwrap(),
+            second_before
+        );
+    }
+}
+
+#[test]
+fn country_conflicts_stop_preparation_before_writing_any_file() {
+    let workspace = Workspace::new();
+    let first = workspace.write(&fixture("first", "Alpha"));
+    let mut conflicting = fixture("second", "Alpha");
+    conflicting.categories[0].athletes[0].country =
+        Some(osl_domain::CountryCode::parse("IT").unwrap());
+    workspace.write(&conflicting);
+    let path = first.join("competition.toml");
+    let before = format!("\n{}", std::fs::read_to_string(&path).unwrap());
+    std::fs::write(&path, &before).unwrap();
+    for args in [
+        vec!["prepare", "."],
+        vec!["prepare", ".", "--check"],
+        vec!["competitions", ".", "--dry-run"],
+    ] {
+        let output = workspace.run(&args, None);
+        assert!(!output.status.success());
+        assert!(String::from_utf8_lossy(&output.stderr).contains("conflicting countries"));
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), before);
+    }
 }

@@ -236,6 +236,16 @@ fn read_entry(
 ) -> std::result::Result<Entry, String> {
     let division = optional(columns, record, entries::DIVISION);
     let gender = Gender::from_str(columns.get(record, entries::SEX))?;
+    if gender == Gender::Mx {
+        return Err("Sex must be M or F; use CategorySex=MX for a mixed contest".into());
+    }
+    let category_gender = optional(columns, record, entries::CATEGORY_SEX)
+        .map(|value| Gender::from_str(&value))
+        .transpose()?
+        .unwrap_or(gender);
+    if category_gender != Gender::Mx && category_gender != gender {
+        return Err("CategorySex must match Sex or be MX".into());
+    }
 
     let weight_class = if columns.has(entries::WEIGHT_CLASS) {
         let cell = columns.get(record, entries::WEIGHT_CLASS);
@@ -254,7 +264,9 @@ fn read_entry(
     let first_name = optional(columns, record, entries::FIRST_NAME).unwrap_or_default();
     let last_name = required(columns, record, entries::LAST_NAME)?;
     let native_name = optional(columns, record, entries::NATIVE_NAME);
-    let country = CountryCode::parse(columns.get(record, entries::COUNTRY))?;
+    let country = optional(columns, record, entries::COUNTRY)
+        .map(|raw| CountryCode::parse(&raw))
+        .transpose()?;
 
     let disambiguation = match optional(columns, record, entries::DISAMBIGUATION) {
         Some(raw) => Some(
@@ -267,8 +279,8 @@ fn read_entry(
     let bodyweight = entries::parse_decimal(columns.get(record, entries::BODYWEIGHT))
         .map_err(|e| format!("{}: {e}", entries::BODYWEIGHT))?;
 
-    let ris = entries::parse_decimal(columns.get(record, entries::RIS))
-        .map_err(|e| format!("{}: {e}", entries::RIS))?;
+    let reported_ris = entries::parse_decimal(columns.get(record, entries::REPORTED_RIS))
+        .map_err(|e| format!("{}: {e}", entries::REPORTED_RIS))?;
     let bodyweight_source = optional(columns, record, entries::BODYWEIGHT_SOURCE)
         .map(|source| source.parse())
         .transpose()?;
@@ -295,16 +307,16 @@ fn read_entry(
         country,
         bodyweight,
         bodyweight_source,
-        ris,
+        reported_ris,
         reported_ris_edition,
-        reported_total: entries::parse_decimal(columns.get(record, entries::REPORTED_TOTAL))
-            .map_err(|e| format!("{}: {e}", entries::REPORTED_TOTAL))?,
+        total: entries::parse_decimal(columns.get(record, entries::TOTAL))
+            .map_err(|e| format!("{}: {e}", entries::TOTAL))?,
         status,
         status_reason: optional(columns, record, entries::STATUS_REASON),
         lifts: read_lifts(columns, record, movements)?,
     };
 
-    Ok((division, gender, weight_class, athlete))
+    Ok((division, category_gender, weight_class, athlete))
 }
 
 fn read_lifts(
@@ -366,6 +378,10 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
     let mut writer = csv::Writer::from_writer(Vec::new());
 
     let layout = entries::Layout {
+        mixed: canonical
+            .categories
+            .iter()
+            .any(|category| category.gender == Gender::Mx),
         divisioned: canonical
             .categories
             .iter()
@@ -389,11 +405,6 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
             .iter()
             .flat_map(|c| &c.athletes)
             .any(|athlete| athlete.reported_ris_edition.is_some()),
-        reported_totals: canonical
-            .categories
-            .iter()
-            .flat_map(|c| &c.athletes)
-            .any(|athlete| athlete.reported_total.is_some()),
     };
 
     writer
@@ -410,7 +421,20 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                 .into_iter()
                 .collect();
 
-            row.push(category.gender.as_str().to_string());
+            row.push(
+                athlete
+                    .gender
+                    .ok_or_else(|| ImporterError::ValidationError("Sex is required".into()))?
+                    .as_str()
+                    .to_string(),
+            );
+            if layout.mixed {
+                row.push(if category.gender == Gender::Mx {
+                    "MX".into()
+                } else {
+                    String::new()
+                });
+            }
             if layout.classed {
                 row.push(weight_class.clone());
             }
@@ -422,9 +446,13 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                     .disambiguation
                     .map(|d| d.to_string())
                     .unwrap_or_default(),
-                athlete.country.as_str().to_string(),
+                athlete
+                    .country
+                    .map(|country| country.as_str().to_owned())
+                    .unwrap_or_default(),
                 entries::render_decimal(athlete.bodyweight),
-                entries::render_decimal(athlete.ris),
+                entries::render_decimal(athlete.reported_ris),
+                entries::render_decimal(athlete.total),
                 athlete.status.as_str().to_string(),
                 athlete.status_reason.clone().unwrap_or_default(),
             ]);
@@ -447,10 +475,6 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                         .map(|edition| edition.year().to_string())
                         .unwrap_or_default(),
                 );
-            }
-
-            if layout.reported_totals {
-                row.push(entries::render_decimal(athlete.reported_total));
             }
 
             for movement in Movement::ALL {
@@ -625,7 +649,7 @@ mod tests {
     #[test]
     fn a_file_without_the_class_column_reads_no_class() {
         let mut cells = NAMED.to_vec();
-        cells.push((entries::RIS, "84.66"));
+        cells.push((entries::REPORTED_RIS, "84.66"));
 
         let (_, _, weight_class, _) = entry(entries::Layout::default(), &cells).unwrap();
 
@@ -635,6 +659,7 @@ mod tests {
     #[test]
     fn an_empty_class_cell_is_refused_when_the_column_is_there() {
         let layout = entries::Layout {
+            mixed: false,
             classed: true,
             ..entries::Layout::default()
         };

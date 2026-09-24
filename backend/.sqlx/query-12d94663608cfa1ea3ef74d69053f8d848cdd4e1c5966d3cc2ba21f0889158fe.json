@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT\n            cp.participant_id,\n            cp.bodyweight as \"bodyweight!\",\n            a.gender as \"gender: Gender\",\n            COALESCE(cp.reported_total, SUM(l.max_weight), 0) as \"total!\"\n        FROM competition_participants cp\n        INNER JOIN athletes a ON cp.athlete_id = a.athlete_id\n        INNER JOIN competitions c ON c.competition_id = cp.competition_id\n        LEFT JOIN lifts l ON l.participant_id = cp.participant_id\n        WHERE c.event_code = $1\n          AND cp.status = 'competed'\n          AND cp.ris_source IS DISTINCT FROM 'reported'\n          AND cp.bodyweight IS NOT NULL\n          AND ($2::uuid IS NULL OR cp.competition_id = $2)\n        GROUP BY cp.participant_id, cp.bodyweight, a.gender\n        ",
+  "query": "\n        SELECT\n            cp.participant_id,\n            cp.bodyweight as \"bodyweight!\",\n            a.gender as \"gender: Gender\",\n            cp.total as \"total!\"\n        FROM competition_participants cp\n        INNER JOIN athletes a ON cp.athlete_id = a.athlete_id\n        INNER JOIN competitions c ON c.competition_id = cp.competition_id\n        WHERE c.event_code = $1\n          AND cp.status = 'competed'\n          AND cp.ris_source IS DISTINCT FROM 'reported'\n          AND cp.bodyweight IS NOT NULL\n          AND cp.total IS NOT NULL\n          AND ($2::uuid IS NULL OR cp.competition_id = $2)\n        ",
   "describe": {
     "columns": [
       {
@@ -40,7 +40,12 @@
         "ordinal": 3,
         "name": "total!",
         "type_info": "Numeric",
-        "origin": "Expression"
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "total"
+          }
+        }
       }
     ],
     "parameters": {
@@ -53,8 +58,8 @@
       false,
       true,
       false,
-      null
+      true
     ]
   },
-  "hash": "5893923d9310c6d66e13b4af0cfa177c74e2fde389f33fe98309d21736ffe0f8"
+  "hash": "12d94663608cfa1ea3ef74d69053f8d848cdd4e1c5966d3cc2ba21f0889158fe"
 }

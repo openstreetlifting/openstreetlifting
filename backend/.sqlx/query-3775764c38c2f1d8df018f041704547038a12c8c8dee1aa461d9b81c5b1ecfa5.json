@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE competition_participants cp\n        SET ris_score = NULL, ris_source = NULL, ris_edition = NULL\n        FROM competitions c\n        WHERE c.competition_id = cp.competition_id\n          AND cp.ris_source = 'computed'\n          AND (cp.total IS NULL OR cp.bodyweight IS NULL OR cp.status <> 'competed'\n               OR c.event_code IS DISTINCT FROM $1)\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "3775764c38c2f1d8df018f041704547038a12c8c8dee1aa461d9b81c5b1ecfa5"
+}

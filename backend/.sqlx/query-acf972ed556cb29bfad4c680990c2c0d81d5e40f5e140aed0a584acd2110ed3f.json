@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT athlete_id as \"athlete_id: Uuid\" FROM athletes\n            WHERE match_key = $1\n              AND gender = $2\n              AND country = $3\n              AND disambiguation IS NOT DISTINCT FROM $4\n            ",
+  "query": "\n            SELECT athlete_id as \"athlete_id: Uuid\" FROM athletes\n            WHERE match_key = $1\n              AND gender = $2\n              AND disambiguation IS NOT DISTINCT FROM $3\n            ",
   "describe": {
     "columns": [
       {
@@ -19,7 +19,6 @@
       "Left": [
         "Text",
         "Text",
-        "Text",
         "Int2"
       ]
     },
@@ -27,5 +26,5 @@
       false
     ]
   },
-  "hash": "acd2c0e6fd51fa9e9a62d98c058dd21b3c21fa5a66c88c6eeea397af1d152886"
+  "hash": "acf972ed556cb29bfad4c680990c2c0d81d5e40f5e140aed0a584acd2110ed3f"
 }

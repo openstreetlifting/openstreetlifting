@@ -28,8 +28,8 @@ const ALL4_MOVEMENTS = 4;
  * Where a competition's RIS came from, or why it has none.
  *
  * `recomputed` and `reported` both follow the bodyweight: a score is recomputed
- * wherever the archive holds one, and the federation's published score is kept
- * where it does not, which the table marks row by row. A meet can carry both,
+ * wherever bodyweight and total are available, and the federation's published score is kept
+ * where either is missing, which the table marks row by row. A meet can carry both,
  * and is reported only when no score in it could be recomputed.
  * `not-contested` is a property of the meet, since RIS is fitted to a four lift
  * total and a shorter event never had one.

@@ -46,10 +46,13 @@ If you have downloaded the repository and have Rust and Cargo installed, open a
 terminal in the `backend` folder and run:
 
 ```sh
+SQLX_OFFLINE=true cargo run -p osl_importer --bin import -- prepare data/competitions/<federation>/<year>/<slug>
 SQLX_OFFLINE=true cargo run -p osl_importer --bin import -- competitions --dry-run
 ```
 
-This checks the files without changing the archive. The summary should show zero
+Replace the preparation path with your competition. Preparation fills totals from
+complete lift results and formats its files; the dry run checks the archive without
+writing to the database. The summary should show zero
 failures. Review any warnings and compare your entries with the source as well.
 If you cannot run this check, mention it in your pull request so we can help.
 
@@ -76,10 +79,12 @@ pull request as described above.
 Before submitting files, check that:
 
 - You are adding a new competition or updating the existing entry.
-- The results match your sources, and you have included the links.
+- The results match your sources, and `competition.toml` includes their references.
 - You have pointed out missing details, athletes who share a name, or unusual
   weight classes.
 - Separate divisions remain separate if a weight class was contested more than once.
+- Mixed contests use `CategorySex=MX`, each athlete has `Sex=M` or `Sex=F`, and
+  `competition.scoring` matches the source's ranking method.
 - You have explained any validation errors or warnings you need help with.
 
 ## Getting help

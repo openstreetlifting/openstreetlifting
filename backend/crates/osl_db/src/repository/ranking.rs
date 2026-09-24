@@ -63,7 +63,7 @@ impl<'a> RankingRepository<'a> {
                     MAX(CASE WHEN l.movement_name = 'Pull-up' THEN l.max_weight END) as pullup,
                     MAX(CASE WHEN l.movement_name = 'Dips' THEN l.max_weight END) as dips,
                     MAX(CASE WHEN l.movement_name = 'Squat' THEN l.max_weight END) as squat,
-                    COALESCE(cp.reported_total, SUM(l.max_weight)) as total,
+                    cp.total,
                     cp.ris_score,
                     cp.ris_source
                 FROM competition_participants cp
@@ -77,13 +77,17 @@ impl<'a> RankingRepository<'a> {
                     ON ats.athlete_id = a.athlete_id
                    AND ats.social_id = (SELECT social_id FROM socials WHERE name = 'instagram')
                 WHERE cp.status = 'competed'
-                  AND (l.lift_id IS NOT NULL OR cp.reported_total IS NOT NULL)
+                  AND (l.lift_id IS NOT NULL OR cp.total IS NOT NULL OR cp.ris_score IS NOT NULL)
             "#,
         );
 
         if let Some(filter) = filter {
             if let Some(gender) = filter.gender {
-                query.push(" AND a.gender = ");
+                query.push(if filter.competition_id.is_some() {
+                    " AND COALESCE(cp.category_gender, wc.gender, a.gender) = "
+                } else {
+                    " AND a.gender = "
+                });
                 query.push_bind(gender.as_str());
             }
 
@@ -348,13 +352,18 @@ impl<'a> RankingRepository<'a> {
                 SELECT DISTINCT wc.min_kg, wc.max_kg
                 FROM competition_participants cp
                 INNER JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+                INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
             "#,
         );
 
         let mut has_where = false;
 
         if let Some(gender) = gender {
-            query.push(" WHERE wc.gender = ");
+            query.push(if competition_id.is_some() {
+                " WHERE COALESCE(cp.category_gender, wc.gender, a.gender) = "
+            } else {
+                " WHERE a.gender = "
+            });
             query.push_bind(gender.as_str());
             has_where = true;
         }
@@ -425,11 +434,12 @@ impl<'a> RankingRepository<'a> {
             SELECT DISTINCT a.country
             FROM athletes a
             INNER JOIN competition_participants cp ON cp.athlete_id = a.athlete_id
+            WHERE a.country IS NOT NULL
             "#,
         );
 
         if let Some(competition_id) = competition_id {
-            query.push(" WHERE cp.competition_id = ");
+            query.push(" AND cp.competition_id = ");
             query.push_bind(competition_id);
         }
 

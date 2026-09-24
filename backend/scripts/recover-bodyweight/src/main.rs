@@ -217,7 +217,7 @@ fn recover(canonical: &mut CanonicalFormat, edition: Edition) -> Outcome {
                 *outcome.ineligible.entry(reason).or_default() += 1;
                 continue;
             }
-            let Some(ris) = athlete.ris else {
+            let Some(ris) = athlete.reported_ris else {
                 *outcome.ineligible.entry("no published RIS").or_default() += 1;
                 continue;
             };

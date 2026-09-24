@@ -8,6 +8,9 @@ pub enum StorageError {
     #[error("Migration error: {0}")]
     Migration(#[from] sqlx::migrate::MigrateError),
 
+    #[error("Conflicting athlete countries: {0}")]
+    ConflictingCountries(String),
+
     #[error("Not found")]
     NotFound,
 }

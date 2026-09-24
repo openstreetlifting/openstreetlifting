@@ -51,11 +51,10 @@ jobs:
       - uses: taiki-e/install-action@v2
         with:
           tool: sqlx-cli
-      # Canonical files are reviewed as diffs, so an unformatted one makes a
-      # small change look like a rewrite.
-      - name: Check canonical files are formatted
+      # Require valid totals and consistent file formatting before import.
+      - name: Check canonical files are prepared
         working-directory: backend
-        run: cargo run -p osl_importer --bin import -- fmt --check ./data/competitions ./data/staging/competitions
+        run: cargo run -p osl_importer --bin import -- prepare --check ./data/competitions ./data/staging/competitions
       - name: Run migrations
         working-directory: backend
         run: sqlx migrate run --source crates/osl_db/migrations

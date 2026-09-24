@@ -139,7 +139,7 @@
   }
 
   const selectedStanding = $derived(athlete.standing?.[selectedMetric] ?? null);
-  const selectedCountry = $derived(selectedStanding?.country.code ?? athlete.country);
+  const selectedCountry = $derived(selectedStanding?.country?.code ?? athlete.country);
   const selectedBoardFilters = $derived.by((): Record<string, string> =>
     selectedMetric === 'ris'
       ? {}
@@ -237,6 +237,10 @@
       {/if}
     </div>
 
+    {#if !athlete.country}
+      <p class="mt-1 text-sm text-secondary">Country not recorded</p>
+    {/if}
+
     {#if athlete.native_name}
       <p class="mt-1 break-words text-base text-secondary">{athlete.native_name}</p>
     {/if}
@@ -257,12 +261,13 @@
     country: string | null,
     scope: string,
     place: number | undefined,
-    field: number | undefined
+    field: number | undefined,
+    missingLabel = 'Not ranked'
   )}
     <div class="ranking-art" class:ranking-flag={country !== null} aria-hidden="true">
       {#if country}
         <Flag countryCode={country} background />
-      {:else}
+      {:else if scope === 'Global'}
         <GlobeIcon class="h-40 w-40 shrink-0 text-secondary" />
       {/if}
     </div>
@@ -280,7 +285,7 @@
           <span class={CARD_FIGURE}>#{place}</span>
           <span class="{CARD_CAPTION} {FIGURE}">/ {field}</span>
         {:else}
-          <span class="text-sm font-medium text-secondary">Not ranked</span>
+          <span class="text-sm font-medium text-secondary">{missingLabel}</span>
         {/if}
       </div>
       {#if selectedStanding?.class}
@@ -294,18 +299,19 @@
     scope: string,
     place: number | undefined,
     field: number | undefined,
-    query: string | undefined
+    query: string | undefined,
+    missingLabel = 'Not ranked'
   )}
     {#if query}
       <a
         href={resolve(`/?${query}`)}
         class="group relative isolate block overflow-hidden rounded-xl {CARD_SURFACE} p-3 transition-colors hover:border-stroke-strong hover:bg-surface-hover focus:ring-2 focus:ring-focus focus:outline-none"
       >
-        {@render standingContent(country, scope, place, field)}
+        {@render standingContent(country, scope, place, field, missingLabel)}
       </a>
     {:else}
       <div class="relative isolate overflow-hidden rounded-xl {CARD_SURFACE} p-3">
-        {@render standingContent(country, scope, place, field)}
+        {@render standingContent(country, scope, place, field, missingLabel)}
       </div>
     {/if}
   {/snippet}
@@ -339,15 +345,16 @@
         )}
         {@render standing(
           selectedCountry,
-          countryName(selectedCountry),
-          selectedStanding?.country.place,
-          selectedStanding?.country.field,
-          selectedStanding
+          selectedCountry ? countryName(selectedCountry) : 'National',
+          selectedStanding?.country?.place,
+          selectedStanding?.country?.field,
+          selectedStanding?.country && selectedCountry
             ? boardQuery(selectedStanding.country.place, {
                 ...selectedBoardFilters,
                 country: selectedCountry,
               })
-            : undefined
+            : undefined,
+          selectedCountry ? 'Not ranked' : 'Country needed for national ranking'
         )}
       </div>
     </div>

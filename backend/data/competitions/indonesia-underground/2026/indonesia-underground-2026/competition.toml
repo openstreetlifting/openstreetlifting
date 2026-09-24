@@ -4,7 +4,6 @@ sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
 [competition]
 name = "Indonesia Underground"
 start_date = "2026-01-24"
-end_date = "2026-01-24"
 country = "ID"
 status = "completed"
 

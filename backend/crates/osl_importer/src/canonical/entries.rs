@@ -7,37 +7,44 @@ pub const FILE_NAME: &str = "entries.csv";
 
 pub const DIVISION: &str = "Division";
 pub const SEX: &str = "Sex";
+pub const CATEGORY_SEX: &str = "CategorySex";
 pub const WEIGHT_CLASS: &str = "WeightClassKg";
 pub const FIRST_NAME: &str = "FirstName";
 pub const LAST_NAME: &str = "LastName";
 pub const DISAMBIGUATION: &str = "Disambiguation";
 pub const COUNTRY: &str = "Country";
 pub const BODYWEIGHT: &str = "BodyweightKg";
-pub const RIS: &str = "Ris";
+pub const REPORTED_RIS: &str = "ReportedRis";
 pub const BODYWEIGHT_SOURCE: &str = "BodyweightSource";
 pub const REPORTED_RIS_EDITION: &str = "ReportedRisEdition";
-pub const REPORTED_TOTAL: &str = "ReportedTotalKg";
+pub const TOTAL: &str = "TotalKg";
 pub const STATUS: &str = "Status";
 pub const STATUS_REASON: &str = "StatusReason";
 pub const NATIVE_NAME: &str = "NativeName";
 
-pub const OPTIONAL_COLUMNS: [&str; 6] = [
+// These columns may be omitted on input. Formatting always includes
+// IDENTITY_COLUMNS so contributors can copy a consistent base header.
+pub const OPTIONAL_COLUMNS: [&str; 9] = [
+    CATEGORY_SEX,
+    FIRST_NAME,
+    DISAMBIGUATION,
+    STATUS_REASON,
     DIVISION,
     WEIGHT_CLASS,
     NATIVE_NAME,
     BODYWEIGHT_SOURCE,
     REPORTED_RIS_EDITION,
-    REPORTED_TOTAL,
 ];
 
-pub const IDENTITY_COLUMNS: [&str; 9] = [
+pub const IDENTITY_COLUMNS: [&str; 10] = [
     SEX,
     FIRST_NAME,
     LAST_NAME,
     DISAMBIGUATION,
     COUNTRY,
     BODYWEIGHT,
-    RIS,
+    REPORTED_RIS,
+    TOTAL,
     STATUS,
     STATUS_REASON,
 ];
@@ -54,12 +61,12 @@ pub fn best_column(movement: Movement) -> String {
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Layout {
+    pub mixed: bool,
     pub divisioned: bool,
     pub classed: bool,
     pub native_names: bool,
     pub bodyweight_sources: bool,
     pub reported_ris_editions: bool,
-    pub reported_totals: bool,
 }
 
 pub fn headers(layout: Layout) -> Vec<String> {
@@ -71,6 +78,9 @@ pub fn headers(layout: Layout) -> Vec<String> {
 
     for column in IDENTITY_COLUMNS {
         headers.push(column.to_string());
+        if column == SEX && layout.mixed {
+            headers.push(CATEGORY_SEX.to_string());
+        }
         if column == SEX && layout.classed {
             headers.push(WEIGHT_CLASS.to_string());
         }
@@ -84,9 +94,6 @@ pub fn headers(layout: Layout) -> Vec<String> {
     }
     if layout.reported_ris_editions {
         headers.push(REPORTED_RIS_EDITION.to_string());
-    }
-    if layout.reported_totals {
-        headers.push(REPORTED_TOTAL.to_string());
     }
 
     for movement in Movement::ALL {
@@ -175,6 +182,13 @@ impl Columns {
     pub fn read(header: &csv::StringRecord) -> Result<Self, String> {
         let mut index = HashMap::new();
 
+        if header.iter().any(|name| name.trim() == "Ris") {
+            return Err(
+                "Ris is no longer supported; rename it to ReportedRis and keep only that column"
+                    .into(),
+            );
+        }
+
         for (position, name) in header.iter().enumerate() {
             let name = name.trim().to_string();
 
@@ -184,12 +198,12 @@ impl Columns {
         }
 
         let expected = headers(Layout {
+            mixed: true,
             divisioned: true,
             classed: true,
             native_names: true,
             bodyweight_sources: true,
             reported_ris_editions: true,
-            reported_totals: true,
         });
 
         let missing: Vec<&String> = expected
@@ -292,7 +306,7 @@ mod tests {
     #[test]
     fn headers_cover_every_movement() {
         let headers = headers(Layout::default());
-        assert_eq!(headers.len(), 9 + 4 * 4);
+        assert_eq!(headers.len(), 10 + 4 * 4);
         assert!(headers.contains(&"MuscleUp1Kg".to_string()));
         assert!(headers.contains(&"BestSquatKg".to_string()));
     }
@@ -304,7 +318,7 @@ mod tests {
             native_names: false,
             ..Layout::default()
         });
-        assert_eq!(headers.len(), 10 + 4 * 4);
+        assert_eq!(headers.len(), 11 + 4 * 4);
         assert_eq!(headers[0], DIVISION);
     }
 
@@ -314,7 +328,7 @@ mod tests {
             classed: true,
             ..Layout::default()
         });
-        assert_eq!(headers.len(), 10 + 4 * 4);
+        assert_eq!(headers.len(), 11 + 4 * 4);
         assert_eq!(headers[0], SEX);
         assert_eq!(headers[1], WEIGHT_CLASS);
     }
@@ -333,11 +347,63 @@ mod tests {
     }
 
     #[test]
-    fn a_missing_column_is_rejected() {
-        let mut fields = headers(Layout::default());
-        fields.retain(|c| c != "BestSquatKg");
-        let error = Columns::read(&csv::StringRecord::from(fields)).unwrap_err();
-        assert!(error.contains("BestSquatKg"), "{error}");
+    fn the_old_ris_header_is_rejected_even_alongside_reported_ris() {
+        for alongside in [false, true] {
+            let mut fields = headers(Layout::default());
+            if !alongside {
+                fields.retain(|field| field != REPORTED_RIS);
+            }
+            fields.push("Ris".into());
+            let error = Columns::read(&csv::StringRecord::from(fields)).unwrap_err();
+            assert!(error.contains("Ris is no longer supported"), "{error}");
+            assert!(error.contains("ReportedRis"), "{error}");
+        }
+    }
+
+    #[test]
+    fn legacy_total_headers_are_rejected_with_or_without_the_new_column() {
+        for alongside in [false, true] {
+            let mut fields = headers(Layout::default());
+            if !alongside {
+                fields.retain(|field| field != TOTAL);
+            }
+            fields.push("ReportedTotalKg".into());
+            assert!(Columns::read(&csv::StringRecord::from(fields)).is_err());
+        }
+    }
+
+    #[test]
+    fn missing_required_columns_are_rejected() {
+        for column in [
+            SEX,
+            LAST_NAME,
+            COUNTRY,
+            BODYWEIGHT,
+            REPORTED_RIS,
+            TOTAL,
+            STATUS,
+            "BestSquatKg",
+        ] {
+            let mut fields = headers(Layout::default());
+            fields.retain(|c| c != column);
+            let error = Columns::read(&csv::StringRecord::from(fields)).unwrap_err();
+            assert!(error.contains(column), "{error}");
+        }
+    }
+
+    #[test]
+    fn misspelled_optional_columns_are_rejected() {
+        for (column, typo) in [
+            (FIRST_NAME, "Firstname"),
+            (DISAMBIGUATION, "Disambiguaton"),
+            (STATUS_REASON, "StatusReasn"),
+        ] {
+            let mut fields = headers(Layout::default());
+            *fields.iter_mut().find(|field| *field == column).unwrap() = typo.to_string();
+            let error = Columns::read(&csv::StringRecord::from(fields)).unwrap_err();
+            assert!(error.contains("unknown column"), "{error}");
+            assert!(error.contains(typo), "{error}");
+        }
     }
 
     #[test]

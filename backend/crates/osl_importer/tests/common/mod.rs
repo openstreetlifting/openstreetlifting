@@ -19,7 +19,7 @@ pub fn decimal(raw: &str) -> Decimal {
 
 pub fn competition(slug: &str, categories: Vec<CategoryData>) -> CanonicalFormat {
     CanonicalFormat {
-        sources: Vec::new(),
+        sources: vec!["Synthetic test results".into()],
         competition: CompetitionData {
             name: slug.to_string(),
             slug: slug.to_string(),
@@ -31,9 +31,11 @@ pub fn competition(slug: &str, categories: Vec<CategoryData>) -> CanonicalFormat
             start_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
             end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
             city: Some("Paris".to_string()),
+            venue: None,
             region: None,
             country: CountryCode::parse("FR").unwrap(),
             status: Some(CompetitionStatus::Completed),
+            scoring: None,
         },
         movements: Movement::ALL.to_vec(),
         categories,
@@ -91,12 +93,12 @@ pub fn athlete(first: &str, last: &str) -> AthleteData {
         native_name: None,
         disambiguation: None,
         gender: Some(Gender::M),
-        country: CountryCode::parse("FR").unwrap(),
+        country: Some(CountryCode::parse("FR").unwrap()),
         bodyweight: Some(Decimal::from(80)),
         bodyweight_source: None,
         reported_ris_edition: None,
-        reported_total: None,
-        ris: None,
+        total: None,
+        reported_ris: None,
         status: AthleteStatus::Competed,
         status_reason: None,
         lifts: Vec::new(),
@@ -104,7 +106,7 @@ pub fn athlete(first: &str, last: &str) -> AthleteData {
 }
 
 pub fn from(mut athlete: AthleteData, country: &str) -> AthleteData {
-    athlete.country = CountryCode::parse(country).expect("test country should parse");
+    athlete.country = Some(CountryCode::parse(country).expect("test country should parse"));
     athlete
 }
 
@@ -115,7 +117,7 @@ pub fn weighing(mut athlete: AthleteData, bodyweight: &str) -> AthleteData {
 
 pub fn scored(mut athlete: AthleteData, ris: &str) -> AthleteData {
     athlete.bodyweight = None;
-    athlete.ris = Some(decimal(ris));
+    athlete.reported_ris = Some(decimal(ris));
     athlete
 }
 
@@ -180,13 +182,19 @@ pub fn lifting(athlete: AthleteData, weights: [&str; 4]) -> AthleteData {
 }
 
 pub async fn import(pool: &PgPool, canonical: CanonicalFormat) {
-    CanonicalTransformer::new(pool)
-        .import_to_database(canonical)
+    try_import(pool, canonical)
         .await
         .expect("import should succeed");
 }
 
-pub async fn try_import(pool: &PgPool, canonical: CanonicalFormat) -> osl_importer::Result<()> {
+pub async fn try_import(pool: &PgPool, mut canonical: CanonicalFormat) -> osl_importer::Result<()> {
+    for category in &mut canonical.categories {
+        for athlete in &mut category.athletes {
+            if athlete.total.is_none() {
+                athlete.total = athlete.total_from_lifts(&canonical.movements);
+            }
+        }
+    }
     CanonicalTransformer::new(pool)
         .import_to_database(canonical)
         .await

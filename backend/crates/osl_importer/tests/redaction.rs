@@ -54,7 +54,13 @@ impl Workspace {
             .join(&canonical.competition.slug);
 
         std::fs::create_dir_all(&directory).unwrap();
-        store::write(&directory, canonical).unwrap();
+        let mut canonical = canonical.clone();
+        for category in &mut canonical.categories {
+            for athlete in &mut category.athletes {
+                athlete.total = athlete.total_from_lifts(&canonical.movements);
+            }
+        }
+        store::write(&directory, &canonical).unwrap();
         directory
     }
 
@@ -208,11 +214,11 @@ fn narrowing_picks_the_one_that_was_meant() {
 
     let french = athletes
         .iter()
-        .find(|a| a.country == CountryCode::parse("FR").unwrap())
+        .find(|a| a.country == Some(CountryCode::parse("FR").unwrap()))
         .unwrap();
     let american = athletes
         .iter()
-        .find(|a| a.country == CountryCode::parse("US").unwrap())
+        .find(|a| a.country == Some(CountryCode::parse("US").unwrap()))
         .unwrap();
 
     assert_eq!(french.display_name(), "Tony Nguyen");
@@ -374,17 +380,14 @@ fn the_list_recognises_the_name_it_cannot_show() {
     let list = workspace.list();
 
     assert!(matches!(
-        list.lookup("Alina Riyaz", "M", "FR", None),
+        list.lookup("Alina Riyaz", "M", None),
         Lookup::Listed(_)
     ));
     assert!(matches!(
-        list.lookup("ALINA RIYAZ", "M", "FR", None),
+        list.lookup("ALINA RIYAZ", "M", None),
         Lookup::Listed(_)
     ));
-    assert_eq!(
-        list.lookup("Lea Merandon", "M", "FR", None),
-        Lookup::NotListed
-    );
+    assert_eq!(list.lookup("Lea Merandon", "M", None), Lookup::NotListed);
 }
 
 #[test]
@@ -400,10 +403,7 @@ fn without_the_key_the_list_says_so_rather_than_passing() {
 
     assert!(!list.has_key());
     assert_eq!(list.len(), 1);
-    assert_eq!(
-        list.lookup("Alina Riyaz", "M", "FR", None),
-        Lookup::MissingKey
-    );
+    assert_eq!(list.lookup("Alina Riyaz", "M", None), Lookup::MissingKey);
 }
 
 #[test]
@@ -726,4 +726,29 @@ fn cli_requires_verified_key_and_only_allows_bypass_for_validation() {
     let refused = run(None, &["competitions", directory, "--skip-privacy-check"]);
     assert!(!refused.status.success());
     assert!(String::from_utf8_lossy(&refused.stderr).contains("--dry-run"));
+}
+
+#[test]
+fn country_selection_redacts_unknown_entries_and_suppression_survives_corrections() {
+    let workspace = Workspace::new();
+    workspace.write_competition(&competition(
+        "known",
+        vec![men_80(vec![lifter("Alina", "Riyaz")])],
+    ));
+    let mut unknown = lifter("Alina", "Riyaz");
+    unknown.country = None;
+    let path = workspace.write_competition(&competition("unknown", vec![men_80(vec![unknown])]));
+    let plan = redact(&workspace, "Alina Riyaz", Some("FR"));
+    assert_eq!(plan.entries, 2);
+    assert_eq!(only_athlete(&path).last_name, "Redacted Athlete #1");
+    for country in [None, Some(CountryCode::parse("IT").unwrap())] {
+        let mut entry = lifter("Alina", "Riyaz");
+        entry.country = country;
+        let restored = competition("restored", vec![men_80(vec![entry])]);
+        assert!(privacy::check_competition(&restored, &workspace.list()).is_err());
+        workspace.write_competition(&restored);
+        let retry = redact(&workspace, "Alina Riyaz", None);
+        assert_eq!(retry.redacted, plan.redacted);
+        assert_eq!(retry.entries, 1);
+    }
 }

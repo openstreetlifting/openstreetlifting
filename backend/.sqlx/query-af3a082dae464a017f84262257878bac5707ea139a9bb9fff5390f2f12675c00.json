@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT f.name as \"federation!\", c.start_date as \"start_date!\", c.end_date as \"end_date!\"\n        FROM competitions c JOIN federations f USING (federation_id)\n        WHERE c.slug = 'test-open'\n        ",
+  "query": "\n        SELECT f.name as \"federation!\", c.start_date as \"start_date!\", c.end_date as \"end_date!\", c.venue\n        FROM competitions c JOIN federations f USING (federation_id)\n        WHERE c.slug = 'test-open'\n        ",
   "describe": {
     "columns": [
       {
@@ -35,6 +35,17 @@
             "name": "end_date"
           }
         }
+      },
+      {
+        "ordinal": 3,
+        "name": "venue",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "venue"
+          }
+        }
       }
     ],
     "parameters": {
@@ -43,8 +54,9 @@
     "nullable": [
       false,
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "67b46bf1ffee2eae209f7ff4830f11e5cfdf4dabc0b37e7c877beb7318b912b1"
+  "hash": "af3a082dae464a017f84262257878bac5707ea139a9bb9fff5390f2f12675c00"
 }

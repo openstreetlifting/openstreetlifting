@@ -7,7 +7,6 @@ sources = [
 [competition]
 name = "Régionale Pays de la Loire"
 start_date = "2025-01-26"
-end_date = "2025-01-26"
 city = "Angers"
 region = "Pays de la Loire"
 country = "FR"

@@ -1,8 +1,8 @@
 //! Two results that look alike in a total and are nothing alike.
 //!
 //! A muscle-up with no added weight is a successful lift worth 0. A movement
-//! where every attempt failed is not a lift at all. Both contribute nothing to
-//! the total, so only the stored value tells them apart: 0 against NULL.
+//! where every attempt failed is not a successful lift. A successful zero counts
+//! toward a complete total; a disqualified result has no total.
 
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
@@ -60,27 +60,30 @@ fn bodyweight_lifter() -> AthleteData {
 
 /// Made two movements, missed every attempt in the other two.
 fn bomber() -> AthleteData {
-    athlete(
-        "Tom",
-        "Bombed",
-        vec![
-            (
-                Movement::MuscleUp,
-                vec![("20", true), ("25", true), ("30", false)],
-            ),
-            (
-                Movement::PullUp,
-                vec![("85", false), ("90", false), ("90", true)],
-            ),
-            (
-                Movement::Dips,
-                vec![("160", false), ("170", false), ("170", false)],
-            ),
-            (
-                Movement::Squat,
-                vec![("260", false), ("260", false), ("260", false)],
-            ),
-        ],
+    common::disqualified(
+        athlete(
+            "Tom",
+            "Bombed",
+            vec![
+                (
+                    Movement::MuscleUp,
+                    vec![("20", true), ("25", true), ("30", false)],
+                ),
+                (
+                    Movement::PullUp,
+                    vec![("85", false), ("90", false), ("90", true)],
+                ),
+                (
+                    Movement::Dips,
+                    vec![("160", false), ("170", false), ("170", false)],
+                ),
+                (
+                    Movement::Squat,
+                    vec![("260", false), ("260", false), ("260", false)],
+                ),
+            ],
+        ),
+        Some("Bombed dips and squat"),
     )
 }
 
@@ -130,12 +133,11 @@ async fn every_attempt_is_kept_including_the_failures(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_bombed_movement_costs_only_itself(pool: PgPool) {
+async fn a_bombed_result_has_no_total(pool: PgPool) {
     import(&pool, competition("test-competition", vec![bomber()])).await;
 
     let total: Option<Decimal> = sqlx::query_scalar(
-        "SELECT SUM(l.max_weight) FROM lifts l
-         JOIN competition_participants cp USING (participant_id)
+        "SELECT cp.total FROM competition_participants cp
          JOIN athletes a USING (athlete_id)
          WHERE a.last_name = 'Bombed'",
     )
@@ -143,9 +145,7 @@ async fn a_bombed_movement_costs_only_itself(pool: PgPool) {
     .await
     .unwrap();
 
-    // 25 from the muscle-up plus 90 from the pull-up. The two bombs add nothing
-    // and take nothing away.
-    assert_eq!(total, Some(Decimal::from(115)));
+    assert_eq!(total, None);
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
@@ -176,8 +176,8 @@ async fn a_bodyweight_lifter_still_appears_on_that_movement(pool: PgPool) {
         .unwrap();
 
     let names: Vec<&str> = rows.iter().map(|r| r.last_name.as_str()).collect();
-    assert_eq!(names, vec!["Bombed", "Bodyweight"], "25 kg beats 0 kg");
-    assert_eq!(total, 2);
+    assert_eq!(names, vec!["Bodyweight"]);
+    assert_eq!(total, 1);
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

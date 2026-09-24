@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE athletes a SET country = evidence.country\n         FROM (SELECT athlete_id, MIN(country) AS country\n               FROM competition_participants GROUP BY athlete_id) evidence\n         WHERE evidence.athlete_id = a.athlete_id AND a.country IS DISTINCT FROM evidence.country",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "912f27cf44e2b96e6a114abe836878a4929813863f68c0e47a083b1944aee390"
+}

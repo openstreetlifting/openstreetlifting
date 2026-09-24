@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Mile High Classic"
 start_date = "2025-09-21"
-end_date = "2025-09-21"
 region = "Colorado"
 country = "US"
 status = "completed"

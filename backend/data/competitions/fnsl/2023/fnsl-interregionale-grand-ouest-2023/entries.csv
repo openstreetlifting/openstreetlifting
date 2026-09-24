@@ -1,36 +1,36 @@
-Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Ris,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-M,66,Malo,Cabillic,,FR,,,disqualified,Source reports a zero total and no valid Squat result,,,,5,,,,45,,,,55,,,,
-M,66,Bastien,Cauët,,FR,,,competed,,,,,20,,,,60,,,,87.5,,,,140
-M,66,Corentin,Gouimy,,FR,,,competed,,,,,20,,,,60,,,,77.5,,,,159
-M,66,Camille,Leneguer,,FR,,,competed,,,,,10,,,,50,,,,67.5,,,,100
-M,66,Mattéo,Payet,,FR,,,competed,,,,,22.5,,,,65,,,,72.5,,,,142.5
-M,66,Guillaume,Zephirin,,FR,,,competed,,,,,16,,,,65,,,,102.5,,,,135
-M,73,Jules,Demares,,FR,,,competed,,,,,2.5,,,,46,,,,85,,,,167.5
-M,73,Enzo,Housset,,FR,,,disqualified,Source reports a zero total and no valid MuscleUp result,,,,,,,,52.5,,,,80,,,,140
-M,73,Sufyaan,Kumallee,,FR,,,competed,,,,,10,,,,60,,,,80,,,,160
-M,73,David,Molina,,FR,,,competed,,,,,17.5,,,,51.25,,,,90,,,,157.5
-M,73,Joël,Prevost,,FR,,,disqualified,"Source reports a zero total and no valid MuscleUp, Dips, Squat result",,,,,,,,75,,,,,,,,
-M,80,Gregory,Coste,,FR,,,competed,,,,,12.5,,,,57,,,,91.25,,,,190
-M,80,Corentin,Dagome,,FR,,,competed,,,,,18.25,,,,77.5,,,,102.5,,,,155
-M,80,Henri,Gouandjia,,FR,,,competed,,,,,15,,,,77.5,,,,125,,,,170
-M,80,Benoit,Jude,,FR,,,competed,,,,,15,,,,65,,,,101.5,,,,170
-M,80,Marin,Leluc,,FR,,,competed,,,,,10,,,,50,,,,80,,,,125
-M,80,Cédric,Percheminier,,FR,,,competed,,,,,10,,,,50,,,,100,,,,190
-M,80,Vincent,Perrard,,FR,,,competed,,,,,5,,,,52.5,,,,80,,,,150
-M,80,Antony,Roy,,FR,,,disqualified,Source reports a zero total and no valid Squat result,,,,15,,,,57.5,,,,65,,,,
-M,87,Emmanuel,Diba,,FR,,,competed,,,,,10,,,,70,,,,102.5,,,,180
-M,87,Alexis,Gaborit,,FR,,,competed,,,,,20,,,,83.75,,,,116.25,,,,195.5
-M,87,Simon,Henriot,,FR,,,competed,,,,,10,,,,55,,,,90,,,,185
-M,87,Clément,Naulleau,,FR,,,competed,,,,,12.5,,,,50,,,,70,,,,150
-M,87,Hugo,Poulet,,FR,,,competed,,,,,10,,,,50,,,,100,,,,190
-M,87,Joris,Ribeiro,,FR,,,competed,,,,,17.5,,,,52.5,,,,87.5,,,,157.5
-M,94,Axel,Carré,,FR,,,competed,,,,,12.5,,,,60,,,,90,,,,125
-M,94,Chris,Kenig,,FR,,,competed,,,,,10,,,,57.5,,,,91.25,,,,160
-M,94,Lucien,Memery,,FR,,,competed,,,,,12.5,,,,67.5,,,,110,,,,210
-M,94,Athal,Seddougui,,FR,,,competed,,,,,2.5,,,,52.5,,,,100,,,,162.5
-M,104+,Maxime,Humily,,FR,,,competed,,,,,10,,,,63.75,,,,80,,,,245
-F,57,Ludivine,Compain,,FR,,,competed,,,,,4.5,,,,25.5,,,,40,,,,116.5
-F,57,Avril,Haye-Elleboode,,FR,,,competed,,,,,7.5,,,,27.5,,,,30,,,,102.5
-F,63,Charlène,Charmeton,,FR,,,competed,,,,,0.25,,,,16.75,,,,22.5,,,,87.5
-F,63,Christelle,Kakenga,,FR,,,competed,,,,,1.5,,,,31.25,,,,42.5,,,,127.5
-F,63,Elise,Lamandé,,FR,,,competed,,,,,7.5,,,,25,,,,42.5,,,,105
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Malo,Cabillic,,FR,,,,disqualified,Source reports a zero total and no valid Squat result,,,,5,,,,45,,,,55,,,,
+M,66,Bastien,Cauët,,FR,,,307.5,competed,,,,,20,,,,60,,,,87.5,,,,140
+M,66,Corentin,Gouimy,,FR,,,316.5,competed,,,,,20,,,,60,,,,77.5,,,,159
+M,66,Camille,Leneguer,,FR,,,227.5,competed,,,,,10,,,,50,,,,67.5,,,,100
+M,66,Mattéo,Payet,,FR,,,302.5,competed,,,,,22.5,,,,65,,,,72.5,,,,142.5
+M,66,Guillaume,Zephirin,,FR,,,318.5,competed,,,,,16,,,,65,,,,102.5,,,,135
+M,73,Jules,Demares,,FR,,,301,competed,,,,,2.5,,,,46,,,,85,,,,167.5
+M,73,Enzo,Housset,,FR,,,,disqualified,Source reports a zero total and no valid MuscleUp result,,,,,,,,52.5,,,,80,,,,140
+M,73,Sufyaan,Kumallee,,FR,,,310,competed,,,,,10,,,,60,,,,80,,,,160
+M,73,David,Molina,,FR,,,316.25,competed,,,,,17.5,,,,51.25,,,,90,,,,157.5
+M,73,Joël,Prevost,,FR,,,,disqualified,"Source reports a zero total and no valid MuscleUp, Dips, Squat result",,,,,,,,75,,,,,,,,
+M,80,Gregory,Coste,,FR,,,350.75,competed,,,,,12.5,,,,57,,,,91.25,,,,190
+M,80,Corentin,Dagome,,FR,,,353.25,competed,,,,,18.25,,,,77.5,,,,102.5,,,,155
+M,80,Henri,Gouandjia,,FR,,,387.5,competed,,,,,15,,,,77.5,,,,125,,,,170
+M,80,Benoit,Jude,,FR,,,351.5,competed,,,,,15,,,,65,,,,101.5,,,,170
+M,80,Marin,Leluc,,FR,,,265,competed,,,,,10,,,,50,,,,80,,,,125
+M,80,Cédric,Percheminier,,FR,,,350,competed,,,,,10,,,,50,,,,100,,,,190
+M,80,Vincent,Perrard,,FR,,,287.5,competed,,,,,5,,,,52.5,,,,80,,,,150
+M,80,Antony,Roy,,FR,,,,disqualified,Source reports a zero total and no valid Squat result,,,,15,,,,57.5,,,,65,,,,
+M,87,Emmanuel,Diba,,FR,,,362.5,competed,,,,,10,,,,70,,,,102.5,,,,180
+M,87,Alexis,Gaborit,,FR,,,415.5,competed,,,,,20,,,,83.75,,,,116.25,,,,195.5
+M,87,Simon,Henriot,,FR,,,340,competed,,,,,10,,,,55,,,,90,,,,185
+M,87,Clément,Naulleau,,FR,,,282.5,competed,,,,,12.5,,,,50,,,,70,,,,150
+M,87,Hugo,Poulet,,FR,,,350,competed,,,,,10,,,,50,,,,100,,,,190
+M,87,Joris,Ribeiro,,FR,,,315,competed,,,,,17.5,,,,52.5,,,,87.5,,,,157.5
+M,94,Axel,Carré,,FR,,,287.5,competed,,,,,12.5,,,,60,,,,90,,,,125
+M,94,Chris,Kenig,,FR,,,318.75,competed,,,,,10,,,,57.5,,,,91.25,,,,160
+M,94,Lucien,Memery,,FR,,,400,competed,,,,,12.5,,,,67.5,,,,110,,,,210
+M,94,Athal,Seddougui,,FR,,,317.5,competed,,,,,2.5,,,,52.5,,,,100,,,,162.5
+M,104+,Maxime,Humily,,FR,,,398.75,competed,,,,,10,,,,63.75,,,,80,,,,245
+F,57,Ludivine,Compain,,FR,,,186.5,competed,,,,,4.5,,,,25.5,,,,40,,,,116.5
+F,57,Avril,Haye-Elleboode,,FR,,,167.5,competed,,,,,7.5,,,,27.5,,,,30,,,,102.5
+F,63,Charlène,Charmeton,,FR,,,127,competed,,,,,0.25,,,,16.75,,,,22.5,,,,87.5
+F,63,Christelle,Kakenga,,FR,,,202.75,competed,,,,,1.5,,,,31.25,,,,42.5,,,,127.5
+F,63,Elise,Lamandé,,FR,,,180,competed,,,,,7.5,,,,25,,,,42.5,,,,105

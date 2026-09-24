@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Dallas Classic"
 start_date = "2026-04-12"
-end_date = "2026-04-12"
 region = "Texas"
 country = "US"
 status = "completed"

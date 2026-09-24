@@ -24,10 +24,14 @@ pub struct CompetitionFile {
 pub struct CompetitionSection {
     pub name: String,
     pub start_date: NaiveDate,
-    pub end_date: NaiveDate,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<NaiveDate>,
 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
+
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub venue: Option<String>,
 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
@@ -36,6 +40,9 @@ pub struct CompetitionSection {
 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<CompetitionStatus>,
+
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scoring: Option<osl_domain::Scoring>,
 }
 
 impl CompetitionSection {
@@ -45,11 +52,13 @@ impl CompetitionSection {
             slug,
             federation,
             start_date: self.start_date,
-            end_date: self.end_date,
+            end_date: self.end_date.unwrap_or(self.start_date),
             city: self.city,
+            venue: self.venue,
             region: self.region,
             country: self.country,
             status: self.status,
+            scoring: self.scoring,
         }
     }
 
@@ -57,11 +66,14 @@ impl CompetitionSection {
         Self {
             name: competition.name.clone(),
             start_date: competition.start_date,
-            end_date: competition.end_date,
+            end_date: (competition.end_date != competition.start_date)
+                .then_some(competition.end_date),
             city: competition.city.clone(),
+            venue: competition.venue.clone(),
             region: competition.region.clone(),
             country: competition.country,
             status: competition.status,
+            scoring: competition.scoring,
         }
     }
 }
@@ -90,6 +102,27 @@ country = "FR"
     fn a_well_formed_file_parses() {
         let parsed: CompetitionFile = toml::from_str(COMPETITION).unwrap();
         assert_eq!(parsed.competition.city.as_deref(), Some("Sevran"));
+    }
+
+    #[test]
+    fn a_one_day_event_defaults_its_end_date_and_keeps_its_venue() {
+        let text = COMPETITION.replace("end_date = \"2026-05-17\"", "venue = \"Main Hall\"");
+        let file: CompetitionFile = toml::from_str(&text).unwrap();
+        let data = file.competition.into_data("elite".into(), file.federation);
+        assert_eq!(data.end_date, data.start_date);
+        assert_eq!(data.venue.as_deref(), Some("Main Hall"));
+        let output = toml::to_string(&CompetitionSection::from_data(&data)).unwrap();
+        assert!(!output.contains("end_date"));
+        assert!(output.contains("venue = \"Main Hall\""));
+    }
+
+    #[test]
+    fn a_multi_day_event_keeps_its_explicit_end_date() {
+        let file: CompetitionFile = toml::from_str(COMPETITION).unwrap();
+        let data = file.competition.into_data("elite".into(), file.federation);
+        assert_eq!(data.end_date, NaiveDate::from_ymd_opt(2026, 5, 17).unwrap());
+        let output = toml::to_string(&CompetitionSection::from_data(&data)).unwrap();
+        assert!(output.contains("end_date = \"2026-05-17\""));
     }
 
     #[test]

@@ -25,10 +25,11 @@ fn canonical(class: Class) -> CanonicalFormat {
 fn fixture(class: Class, ris: Option<&str>) -> CanonicalFormat {
     let mut lifter = common::athlete("John", "Doe");
     lifter.bodyweight = Some(decimal("72.5"));
+    lifter.total = Some(decimal("310"));
 
     if let Some(ris) = ris {
         lifter.bodyweight = None;
-        lifter.ris = Some(decimal(ris));
+        lifter.reported_ris = Some(decimal(ris));
     }
 
     let lifter = attempts(lifter, Movement::MuscleUp, &[("50", true)]);
@@ -249,13 +250,14 @@ async fn reimport_lands_a_corrected_federation_and_dates(pool: PgPool) {
 
     let mut corrected = canonical(Class::Slug(WeightClassSlug::M73));
     corrected.competition.federation.name = "Corrected Federation".to_string();
+    corrected.competition.venue = Some("Main Hall".into());
     corrected.competition.start_date = NaiveDate::from_ymd_opt(2026, 3, 7).unwrap();
     corrected.competition.end_date = NaiveDate::from_ymd_opt(2026, 3, 8).unwrap();
     transformer.import_to_database(corrected).await.unwrap();
 
     let row = sqlx::query!(
         r#"
-        SELECT f.name as "federation!", c.start_date as "start_date!", c.end_date as "end_date!"
+        SELECT f.name as "federation!", c.start_date as "start_date!", c.end_date as "end_date!", c.venue
         FROM competitions c JOIN federations f USING (federation_id)
         WHERE c.slug = 'test-open'
         "#
@@ -265,6 +267,7 @@ async fn reimport_lands_a_corrected_federation_and_dates(pool: PgPool) {
     .unwrap();
 
     assert_eq!(row.federation, "Corrected Federation");
+    assert_eq!(row.venue.as_deref(), Some("Main Hall"));
     assert_eq!(row.start_date, NaiveDate::from_ymd_opt(2026, 3, 7).unwrap());
     assert_eq!(row.end_date, NaiveDate::from_ymd_opt(2026, 3, 8).unwrap());
 }

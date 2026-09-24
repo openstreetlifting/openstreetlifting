@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT competition_id, name, created_at, slug,\n                   status as \"status: CompetitionStatus\", federation_id,\n                   city, region, country, start_date, end_date\n            FROM competitions\n            WHERE competition_id = $1\n            ",
+  "query": "\n            SELECT competition_id, name, created_at, slug,\n                   status as \"status: CompetitionStatus\", scoring as \"scoring: osl_domain::Scoring\", federation_id,\n                   city, venue, region, country, start_date, end_date\n            FROM competitions\n            WHERE slug = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -60,6 +60,17 @@
       },
       {
         "ordinal": 5,
+        "name": "scoring: osl_domain::Scoring",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "scoring"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
         "name": "federation_id",
         "type_info": "Uuid",
         "origin": {
@@ -70,7 +81,7 @@
         }
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "city",
         "type_info": "Varchar",
         "origin": {
@@ -81,7 +92,18 @@
         }
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
+        "name": "venue",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "venue"
+          }
+        }
+      },
+      {
+        "ordinal": 9,
         "name": "region",
         "type_info": "Varchar",
         "origin": {
@@ -92,7 +114,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 10,
         "name": "country",
         "type_info": "Varchar",
         "origin": {
@@ -103,7 +125,7 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 11,
         "name": "start_date",
         "type_info": "Date",
         "origin": {
@@ -114,7 +136,7 @@
         }
       },
       {
-        "ordinal": 10,
+        "ordinal": 12,
         "name": "end_date",
         "type_info": "Date",
         "origin": {
@@ -127,7 +149,7 @@
     ],
     "parameters": {
       "Left": [
-        "Uuid"
+        "Text"
       ]
     },
     "nullable": [
@@ -136,7 +158,9 @@
       false,
       false,
       false,
+      true,
       false,
+      true,
       true,
       true,
       true,
@@ -144,5 +168,5 @@
       false
     ]
   },
-  "hash": "b2d94d3870e7f7fbfee3baa3298cc7507c630f65b8d619e0ab8a816797a174e8"
+  "hash": "3ec2d657d1da108cdd671033a8d44b2f609c23fcd787b43d34915581d2159604"
 }

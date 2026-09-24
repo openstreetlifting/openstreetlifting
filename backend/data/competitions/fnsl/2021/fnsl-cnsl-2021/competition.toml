@@ -1,9 +1,9 @@
 event = "MPDS"
+sources = ["FNSL CNSL 2021 official results spreadsheet supplied by the federation (https://github.com/openstreetlifting/openstreetlifting/pull/518)"]
 
 [competition]
 name = "CNSL"
 start_date = "2021-12-04"
-end_date = "2021-12-04"
 city = "La Courneuve"
 region = "Île-de-France"
 country = "FR"

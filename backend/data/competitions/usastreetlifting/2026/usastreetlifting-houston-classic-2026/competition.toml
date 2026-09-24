@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Houston Classic"
 start_date = "2026-06-20"
-end_date = "2026-06-20"
 region = "Texas"
 country = "US"
 status = "completed"

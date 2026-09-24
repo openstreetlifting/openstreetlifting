@@ -53,6 +53,7 @@ pub struct CategoryParticipants {
 
 #[derive(Debug)]
 pub struct ParticipantDetail {
+    pub participant_id: Uuid,
     pub athlete: AthleteRow,
     pub bodyweight: Option<Decimal>,
     /// Placing within the contest, computed from lift results or a reported total.
