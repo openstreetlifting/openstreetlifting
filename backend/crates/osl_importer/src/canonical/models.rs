@@ -26,6 +26,7 @@ pub struct CompetitionData {
     pub region: Option<String>,
     pub country: CountryCode,
     pub status: Option<CompetitionStatus>,
+    pub scoring: Option<osl_domain::Scoring>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -122,7 +123,6 @@ impl AthleteData {
                     .best()
                     .ok_or_else(|| format!("no successful {} result", lift.movement))?;
             }
-
         }
         let complete = self.total_from_lifts(movements);
         match self.total {

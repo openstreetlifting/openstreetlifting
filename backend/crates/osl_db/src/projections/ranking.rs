@@ -8,6 +8,7 @@ use crate::params::RankingMovement;
 
 #[derive(Debug, FromRow)]
 pub struct RankingRow {
+    pub participant_id: Uuid,
     pub rank: i64,
     pub athlete_id: Uuid,
     pub first_name: String,

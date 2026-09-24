@@ -3,6 +3,7 @@ import type { Participant } from '$lib/types/competition';
 import { hasRankingResult } from './competition-results';
 
 const result = (overrides: Partial<Participant> = {}): Participant => ({
+  participant_id: 'entry-1',
   athlete: {
     athlete_id: '1',
     first_name: 'Alex',

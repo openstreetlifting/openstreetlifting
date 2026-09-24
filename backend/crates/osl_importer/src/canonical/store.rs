@@ -236,6 +236,16 @@ fn read_entry(
 ) -> std::result::Result<Entry, String> {
     let division = optional(columns, record, entries::DIVISION);
     let gender = Gender::from_str(columns.get(record, entries::SEX))?;
+    if gender == Gender::Mx {
+        return Err("Sex must be M or F; use CategorySex=MX for a mixed contest".into());
+    }
+    let category_gender = optional(columns, record, entries::CATEGORY_SEX)
+        .map(|value| Gender::from_str(&value))
+        .transpose()?
+        .unwrap_or(gender);
+    if category_gender != Gender::Mx && category_gender != gender {
+        return Err("CategorySex must match Sex or be MX".into());
+    }
 
     let weight_class = if columns.has(entries::WEIGHT_CLASS) {
         let cell = columns.get(record, entries::WEIGHT_CLASS);
@@ -306,7 +316,7 @@ fn read_entry(
         lifts: read_lifts(columns, record, movements)?,
     };
 
-    Ok((division, gender, weight_class, athlete))
+    Ok((division, category_gender, weight_class, athlete))
 }
 
 fn read_lifts(
@@ -368,6 +378,10 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
     let mut writer = csv::Writer::from_writer(Vec::new());
 
     let layout = entries::Layout {
+        mixed: canonical
+            .categories
+            .iter()
+            .any(|category| category.gender == Gender::Mx),
         divisioned: canonical
             .categories
             .iter()
@@ -407,7 +421,20 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                 .into_iter()
                 .collect();
 
-            row.push(category.gender.as_str().to_string());
+            row.push(
+                athlete
+                    .gender
+                    .ok_or_else(|| ImporterError::ValidationError("Sex is required".into()))?
+                    .as_str()
+                    .to_string(),
+            );
+            if layout.mixed {
+                row.push(if category.gender == Gender::Mx {
+                    "MX".into()
+                } else {
+                    String::new()
+                });
+            }
             if layout.classed {
                 row.push(weight_class.clone());
             }
@@ -632,6 +659,7 @@ mod tests {
     #[test]
     fn an_empty_class_cell_is_refused_when_the_column_is_there() {
         let layout = entries::Layout {
+            mixed: false,
             classed: true,
             ..entries::Layout::default()
         };

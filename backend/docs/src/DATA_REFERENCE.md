@@ -53,6 +53,7 @@ name = "FinalRep"
 | `competition.city`        | The city, if known.                                              |
 | `competition.region`      | The region or state, if known.                                   |
 | `competition.country`     | An ISO 3166-1 alpha-2 country code, such as `FR` or `DE`.         |
+| `competition.scoring`     | `total` or `ris`; required for mixed contests.                   |
 | `competition.status`      | See [Status](#status) below.                                     |
 | `federation.name`         | The federation's name, written consistently across competitions. |
 | `federation.abbreviation` | Its abbreviation, if used.                                       |
@@ -102,7 +103,7 @@ Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,S
 
 Add `WeightClassKg` after `Sex` for competitions with weight classes, and
 `Division` first when separate divisions are needed. `NativeName`,
-`BodyweightSource` and `ReportedRisEdition` are optional
+`CategorySex`, `BodyweightSource` and `ReportedRisEdition` are optional
 additional columns.
 
 The parser also accepts files without `FirstName`, `Disambiguation` or
@@ -121,7 +122,7 @@ the event. Unknown or misspelled headers are rejected.
 
 | Column           | What to enter                                                                    |
 | ---------------- | -------------------------------------------------------------------------------- |
-| `Sex`            | `M` for men, `F` for women or `MX` for a mixed category.                         |
+| `Sex`            | The athlete's sex: `M` or `F`. `MX` is not an athlete sex.                         |
 | `WeightClassKg`  | The weight class, such as `80` or `101+`. Leave it out for a meet with none.      |
 | `FirstName`      | The athlete's first name. Leave empty for a single name.                         |
 | `LastName`       | The surname, or the full name for an athlete known by a single name. Required.   |
@@ -132,6 +133,38 @@ the event. Unknown or misspelled headers are rejected.
 | `TotalKg` | Overall total from the source, or filled by `prepare` from a complete breakdown. |
 | `Status`         | `competed`, `disqualified` or `no_show`. Empty means `competed`.                 |
 | `StatusReason`   | A short explanation for `disqualified` or `no_show`. Leave empty for `competed`. |
+
+### Athlete sex and mixed contests
+
+`Sex` identifies the athlete and selects their RIS formula. Add the optional
+`CategorySex` column only when needed: `MX` places that row in a mixed contest.
+An empty cell or omitted column uses the athlete's `Sex`. An explicit `M` or `F`
+must match `Sex`. Moving between mixed and single-sex contests keeps the same
+athlete profile.
+
+For mixed contests, set the ranking metric under `[competition]`:
+
+```toml
+scoring = "ris"
+```
+
+- `total`: rank by `TotalKg`.
+- `ris`: rank by RIS, using each athlete's own formula. Requires `event = "MPDS"`.
+
+This setting applies to every contest in the competition. Without it, existing
+single-sex contests rank by total when they have weight classes, or by RIS when
+they have none. Other scoring methods are rejected. If divisions use different
+scoring rules, resolve that format before importing it.
+
+A missing ranking metric leaves the result unplaced. RIS ties use total, then
+lighter known bodyweight; total ties use lighter known bodyweight. These are OSL
+placings from the stored results, not a transcription of federation placings.
+Computed RIS uses OSL's current edition; published scores remain marked as
+reported when the inputs needed to recompute them are missing.
+
+A competition can contain mixed and single-sex contests together. Keep each
+athlete's `Sex` on every row, and set `CategorySex=MX` only on mixed entries.
+`prepare` retains that column whenever a mixed contest needs it.
 
 ### Names
 

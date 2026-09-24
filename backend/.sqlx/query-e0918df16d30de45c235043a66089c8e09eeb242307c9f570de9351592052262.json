@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT cp.participant_id, cp.competition_id, cp.athlete_id, cp.bodyweight, cp.total,\n                        cp.status as \"status: AthleteStatus\", cp.created_at, cp.status_reason,\n                        cp.ris_score, cp.ris_source as \"ris_source: RisSource\"\n                 FROM competition_participants cp\n                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id\n                 LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n                 WHERE cp.competition_id = $1\n                   AND cp.weight_class_id IS NOT DISTINCT FROM $2\n                   AND cp.division_id IS NOT DISTINCT FROM $3\n                   AND COALESCE(wc.gender, a.gender) = $4",
+  "query": "SELECT cp.participant_id, cp.competition_id, cp.athlete_id, cp.bodyweight, cp.total,\n                        cp.status as \"status: AthleteStatus\", cp.created_at, cp.status_reason,\n                        cp.ris_score, cp.ris_source as \"ris_source: RisSource\"\n                 FROM competition_participants cp\n                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id\n                 LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n                 WHERE cp.competition_id = $1\n                   AND cp.weight_class_id IS NOT DISTINCT FROM $2\n                   AND cp.division_id IS NOT DISTINCT FROM $3\n                   AND COALESCE(cp.category_gender, wc.gender, a.gender) = $4",
   "describe": {
     "columns": [
       {
@@ -135,5 +135,5 @@
       true
     ]
   },
-  "hash": "9fee732686ee6e3c836752f5f39bec8725f6f3877318c53d1a86fa5267d5cddb"
+  "hash": "e0918df16d30de45c235043a66089c8e09eeb242307c9f570de9351592052262"
 }

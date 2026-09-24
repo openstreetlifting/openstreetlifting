@@ -83,7 +83,11 @@ impl<'a> RankingRepository<'a> {
 
         if let Some(filter) = filter {
             if let Some(gender) = filter.gender {
-                query.push(" AND a.gender = ");
+                query.push(if filter.competition_id.is_some() {
+                    " AND COALESCE(cp.category_gender, wc.gender, a.gender) = "
+                } else {
+                    " AND a.gender = "
+                });
                 query.push_bind(gender.as_str());
             }
 
@@ -348,13 +352,18 @@ impl<'a> RankingRepository<'a> {
                 SELECT DISTINCT wc.min_kg, wc.max_kg
                 FROM competition_participants cp
                 INNER JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+                INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
             "#,
         );
 
         let mut has_where = false;
 
         if let Some(gender) = gender {
-            query.push(" WHERE wc.gender = ");
+            query.push(if competition_id.is_some() {
+                " WHERE COALESCE(cp.category_gender, wc.gender, a.gender) = "
+            } else {
+                " WHERE a.gender = "
+            });
             query.push_bind(gender.as_str());
             has_where = true;
         }

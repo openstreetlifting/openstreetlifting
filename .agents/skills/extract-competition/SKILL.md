@@ -13,7 +13,7 @@ Create or extend one canonical directory per competition. Each pass must produce
 
 2. **Read the applicable rules.** Read [format.md](format.md) before writing competition metadata or results. For results, also read [athletes.md](athletes.md) before assigning identities. For Instagram carousels, FinalRep screenshots, or third-party aggregators, read [sources.md](sources.md). For an announcement without results, follow the announcement section in `format.md`.
 
-3. **Extract the evidence.** Record only values supported by the source, subject to the unclassified-group rules in `format.md`. Leave unknown optional values empty. Keep failed attempts. Resolve unclear digits, colours, names, and conflicting sources before writing the affected values. Ask the user when the available evidence cannot settle them; continue with independent rows.
+3. **Extract the evidence.** Record only values supported by the source. Establish whether contests use weight classes and whether they mix sexes before assigning categories; follow `format.md` for these branches. Leave unknown optional values empty. Keep failed attempts. Resolve unclear digits, colours, names, and conflicting sources before writing the affected values. Ask the user when the available evidence cannot settle them; continue with independent rows.
 
 4. **Resolve athlete identities.** Look up every athlete introduced by this source using the procedure in `athletes.md`. Complete this before writing their name. Report unresolved matches and existing duplicate identities. The API is a projection of imported files, not evidence for missing results.
 
@@ -30,7 +30,7 @@ Create or extend one canonical directory per competition. Each pass must produce
 
 7. **Reconcile the results.** For each source row with a total, verify `TotalKg` against it. Keep any available lift breakdown; a complete breakdown must agree with the total. Account for every row in the supplied source: imported, already present, or unresolved. Report mismatches without adjusting weights to force agreement. Check the diff for changes outside the intended competition and source categories.
 
-8. **Report the diff.** Show the changed files and summarize added categories or athletes, validation and total checks, missing countries, regrouped weight classes, and unresolved evidence. Leave the files ready for review. Database imports and commits are outside this extraction workflow unless the user explicitly requests them.
+8. **Report the diff.** Show the changed files and summarize added categories or athletes, validation and total checks, missing countries, mixed-contest scoring, and unresolved evidence. Leave the files ready for review. Database imports and commits are outside this extraction workflow unless the user explicitly requests them.
 
 ## Completion
 

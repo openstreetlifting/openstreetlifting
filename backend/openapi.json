@@ -1233,6 +1233,16 @@
               "null"
             ]
           },
+          "scoring": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Scoring"
+              }
+            ]
+          },
           "slug": {
             "type": "string"
           },
@@ -1245,6 +1255,12 @@
           },
           "status": {
             "$ref": "#/components/schemas/CompetitionStatus"
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -1391,6 +1407,7 @@
       "GlobalRankingEntry": {
         "type": "object",
         "required": [
+          "participant_id",
           "rank",
           "athlete",
           "category",
@@ -1435,6 +1452,10 @@
               "null"
             ],
             "format": "double"
+          },
+          "participant_id": {
+            "type": "string",
+            "format": "uuid"
           },
           "pullup": {
             "type": [
@@ -1791,6 +1812,16 @@
                     "null"
                   ]
                 },
+                "scoring": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Scoring"
+                    }
+                  ]
+                },
                 "slug": {
                   "type": "string"
                 },
@@ -1803,6 +1834,12 @@
                 },
                 "status": {
                   "$ref": "#/components/schemas/CompetitionStatus"
+                },
+                "venue": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 }
               }
             }
@@ -1824,6 +1861,7 @@
             "items": {
               "type": "object",
               "required": [
+                "participant_id",
                 "rank",
                 "athlete",
                 "category",
@@ -1868,6 +1906,10 @@
                     "null"
                   ],
                   "format": "double"
+                },
+                "participant_id": {
+                  "type": "string",
+                  "format": "uuid"
                 },
                 "pullup": {
                   "type": [
@@ -1967,6 +2009,7 @@
       "ParticipantDetail": {
         "type": "object",
         "required": [
+          "participant_id",
           "athlete",
           "status",
           "lifts"
@@ -1986,6 +2029,10 @@
             "items": {
               "$ref": "#/components/schemas/LiftDetail"
             }
+          },
+          "participant_id": {
+            "type": "string",
+            "format": "uuid"
           },
           "rank": {
             "type": [
@@ -2060,10 +2107,11 @@
       },
       "RankedGender": {
         "type": "string",
-        "description": "The genders a ranking can be drawn for. Weight classes are only drawn for\nmen and women, so a mixed board would compare an athlete against an empty\nfield.",
+        "description": "Athlete sex for global rankings, or contest sex within a competition.",
         "enum": [
           "M",
-          "F"
+          "F",
+          "MX"
         ]
       },
       "RankingMetric": {
@@ -2179,10 +2227,18 @@
       },
       "RisSource": {
         "type": "string",
-        "description": "Where a RIS score came from. `computed` was worked out from the athlete's\nbodyweight and total. `reported` was stated by the source, which gave no\nbodyweight, so it cannot be restated on the formula everything else uses.",
+        "description": "Where a RIS score came from. `computed` was worked out from the athlete's\nbodyweight and total. `reported` preserves the published score when either\ninput is missing.",
         "enum": [
           "computed",
           "reported"
+        ]
+      },
+      "Scoring": {
+        "type": "string",
+        "description": "The metric used to place athletes within a contest.",
+        "enum": [
+          "total",
+          "ris"
         ]
       },
       "StandingPlace": {

@@ -97,3 +97,25 @@ it('reports a failed ranking request instead of showing only unranked participan
     log.mockRestore();
   }
 });
+
+it('uses the declared scoring rule for mixed contests and keeps the mixed filter', async () => {
+  vi.mocked(competitionsService.getById).mockResolvedValue({
+    competition_id: 'meet-id',
+    scoring: 'total',
+    movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
+    categories: [
+      {
+        category: { gender: 'MX' },
+        participants: [{ athlete, ris_score: '80', ris_source: 'computed' }],
+      },
+    ],
+  } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
+  vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
+    data: [],
+    pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
+  });
+  await load(request('gender=MX'));
+  expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
+    expect.objectContaining({ movement: 'total', gender: 'MX' })
+  );
+});

@@ -88,15 +88,16 @@ impl Edition {
         Self::ALL.into_iter().find(|it| it.year() == year)
     }
 
-    /// Mx takes the men's curve, the only other fit that exists.
+    /// Select the formula for an athlete; mixed is a contest category.
     pub fn constants(self, gender: Gender) -> Constants {
         match (self, gender) {
             (Self::V2024, Gender::F) => WOMEN_2024,
-            (Self::V2024, _) => MEN_2024,
+            (Self::V2024, Gender::M) => MEN_2024,
             (Self::V2025, Gender::F) => WOMEN_2025,
-            (Self::V2025, _) => MEN_2025,
+            (Self::V2025, Gender::M) => MEN_2025,
             (Self::V2026, Gender::F) => WOMEN_2026,
-            (Self::V2026, _) => MEN_2026,
+            (Self::V2026, Gender::M) => MEN_2026,
+            (_, Gender::Mx) => panic!("RIS requires athlete sex (M or F), not a mixed category"),
         }
     }
 }

@@ -29,7 +29,7 @@ fn entry(first: &str, last: &str, native: Option<&str>) -> AthleteData {
         last_name: last.to_string(),
         native_name: native.map(str::to_string),
         disambiguation: None,
-        gender: None,
+        gender: Some(Gender::M),
         country: Some(CountryCode::parse("FR").unwrap()),
         bodyweight: Some(decimal("78.5")),
         bodyweight_source: None,
@@ -72,6 +72,7 @@ fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
             region: None,
             country: CountryCode::parse("FR").unwrap(),
             status: Some(CompetitionStatus::Completed),
+            scoring: None,
         },
         movements: Movement::ALL.to_vec(),
         categories: vec![CategoryData {

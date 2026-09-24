@@ -8,10 +8,12 @@ export const GENDERS = ['M', 'F', 'MX'] as const;
 export type Gender = (typeof GENDERS)[number];
 
 /**
- * The genders a ranking can be drawn for. Weight classes are only drawn for men
- * and women, so the API refuses `MX` on that parameter.
+ * Global rankings use athlete sex. Competition rankings also accept mixed contests.
  */
-export const RANKED_GENDERS = ['M', 'F'] as const;
+export const RANKED_GENDERS = ['M', 'F', 'MX'] as const;
+
+export const SCORING_METHODS = ['total', 'ris'] as const;
+export type Scoring = (typeof SCORING_METHODS)[number];
 export type RankedGender = (typeof RANKED_GENDERS)[number];
 
 /** Where a competition is in its life. */

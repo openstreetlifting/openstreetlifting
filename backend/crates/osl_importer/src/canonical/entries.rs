@@ -7,6 +7,7 @@ pub const FILE_NAME: &str = "entries.csv";
 
 pub const DIVISION: &str = "Division";
 pub const SEX: &str = "Sex";
+pub const CATEGORY_SEX: &str = "CategorySex";
 pub const WEIGHT_CLASS: &str = "WeightClassKg";
 pub const FIRST_NAME: &str = "FirstName";
 pub const LAST_NAME: &str = "LastName";
@@ -23,7 +24,8 @@ pub const NATIVE_NAME: &str = "NativeName";
 
 // These columns may be omitted on input. Formatting always includes
 // IDENTITY_COLUMNS so contributors can copy a consistent base header.
-pub const OPTIONAL_COLUMNS: [&str; 8] = [
+pub const OPTIONAL_COLUMNS: [&str; 9] = [
+    CATEGORY_SEX,
     FIRST_NAME,
     DISAMBIGUATION,
     STATUS_REASON,
@@ -59,6 +61,7 @@ pub fn best_column(movement: Movement) -> String {
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Layout {
+    pub mixed: bool,
     pub divisioned: bool,
     pub classed: bool,
     pub native_names: bool,
@@ -75,6 +78,9 @@ pub fn headers(layout: Layout) -> Vec<String> {
 
     for column in IDENTITY_COLUMNS {
         headers.push(column.to_string());
+        if column == SEX && layout.mixed {
+            headers.push(CATEGORY_SEX.to_string());
+        }
         if column == SEX && layout.classed {
             headers.push(WEIGHT_CLASS.to_string());
         }
@@ -192,6 +198,7 @@ impl Columns {
         }
 
         let expected = headers(Layout {
+            mixed: true,
             divisioned: true,
             classed: true,
             native_names: true,

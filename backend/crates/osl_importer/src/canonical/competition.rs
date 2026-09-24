@@ -41,6 +41,8 @@ pub struct CompetitionSection {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<CompetitionStatus>,
 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scoring: Option<osl_domain::Scoring>,
 }
 
 impl CompetitionSection {
@@ -56,6 +58,7 @@ impl CompetitionSection {
             region: self.region,
             country: self.country,
             status: self.status,
+            scoring: self.scoring,
         }
     }
 
@@ -70,6 +73,7 @@ impl CompetitionSection {
             region: competition.region.clone(),
             country: competition.country,
             status: competition.status,
+            scoring: competition.scoring,
         }
     }
 }

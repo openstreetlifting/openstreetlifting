@@ -4,7 +4,7 @@ The parser and validator define the accepted schema. For fields beyond this guid
 
 ## Competition metadata
 
-Use `competition.toml` for metadata and source references:
+Use `competition.toml` for metadata. Include at least one source URL, archived file path, or document description identifying the original evidence:
 
 ```toml
 event = "MPDS"
@@ -25,11 +25,11 @@ abbreviation = "FNSL"
 country = "FR"
 ```
 
-Competition name, start and end dates, country, and federation name are required. Omit unknown optional fields. Dates are quoted strings; country codes use ISO 3166-1 alpha-2, and regions use ISO 3166-2 subdivision names. Keep the start year consistent with the directory. Unknown keys, including a version key, are rejected.
+Competition name, start date, country, federation name, and a nonempty `sources` list are required. Omit `end_date` for a one-day event; it defaults to `start_date`. Set `venue` to the source-listed venue name when available. Omit unknown optional fields. Dates are quoted strings; country codes use ISO 3166-1 alpha-2, and regions use ISO 3166-2 subdivision names. Keep the start year consistent with the directory. Unknown keys, including a version key, are rejected.
 
 The competition name identifies the meet without repeating its federation or year: `Dutch Streetlifting Nationals`, not `DSN Dutch Streetlifting Nationals 2026`. Keep edition numbers that are part of the identity, such as `Australian Open Event 3`. Remove years even from titles such as `EUROS 24`. The directory slug retains the identifying federation and year.
 
-`event` lists contested movements in `MPDS` order: muscle-up, pull-up, dips, squat. Examples: `MPDS`, `DS`, `M`. Each letter appears at most once. Other movements require a schema change; report that limit before attempting an import. Only four-movement events have overall totals and RIS; partial events are ranked per movement.
+`event` lists contested movements in `MPDS` order: muscle-up, pull-up, dips, squat. Examples: `MPDS`, `DS`, `M`. Each letter appears at most once. Other movements require a schema change; report that limit before attempting an import. Any supported event may have a total across its declared movements. Only the four-movement `MPDS` event supports RIS.
 
 Competition status is `draft`, `upcoming`, `live`, `completed`, or `cancelled`.
 
@@ -51,8 +51,9 @@ Add `Division` first only when needed; add `NativeName` only when an athlete has
 
 | Field | Rule |
 | --- | --- |
-| `Sex` | Required: `M`, `F`, or `MX` |
-| `WeightClassKg` | Required positive bound: `80` for −80, `101+` for +101 |
+| `Sex` | Required athlete sex: `M` or `F` |
+| `CategorySex` | Optional; `MX` for a mixed contest, empty to follow `Sex` |
+| `WeightClassKg` | Omit for a meet without classes; otherwise fill every row with a positive bound, such as `80` or `101+` |
 | `FirstName`, `LastName` | Apply `athletes.md`; last name required, first name optional |
 | `Disambiguation` | Only for distinct people sharing identity fields; positive integer |
 | `Country` | Source-listed two-letter code; leave empty when unknown |
@@ -78,12 +79,22 @@ Placings are computed within each division. An athlete can enter multiple divisi
 
 Read the weight-class bound from the source's category, even when an athlete weighs less than its limit. Keep federation-specific classes. Write `80` or `101+`, never `-80` or `+101`; leading signs can be interpreted as spreadsheet formulas.
 
-If the source gives no class or uses a placeholder such as `D/C`, assign each athlete to the standard class containing their reported bodyweight:
+When the competition has no weight classes, omit `WeightClassKg`. Preserve its
+shared standings. A placeholder such as `D/C` does not establish a weight class;
+resolve its meaning against the source before assigning a category.
 
-- Women: `52`, `57`, `63`, `70`, `70+`.
-- Men: `66`, `73`, `80`, `87`, `94`, `101`, `101+`.
+### Mixed contests
 
-Apply this only to unclassified groups. Ask when bodyweight or an applicable ladder is missing. Report that regrouping changes the source's shared standings into separate category placings.
+Read athlete sex and contest membership separately. Keep `Sex=M` or `Sex=F` on
+every entry; use `CategorySex=MX` for mixed entries. An omitted or empty
+`CategorySex` follows `Sex`. Confirm missing athlete sex from a source rather
+than inferring it from a name or mixed-category label.
+
+For mixed contests, record `scoring = "total"` or `scoring = "ris"` under
+`[competition]`. This rule applies to all contests in the competition. Establish
+it from the source; if contests use different methods or an unsupported formula,
+report the unsupported format before importing. The [data reference](../../../backend/docs/src/DATA_REFERENCE.md#athlete-sex-and-mixed-contests)
+defines OSL's placing and tie rules.
 
 ## Attempts and status
 
@@ -97,9 +108,9 @@ Apply this only to unclassified groups. Ask when bodyweight or an applicable lad
 
 Crossed-out or red attempts remain in the file with an `x` suffix. Weights are nonnegative. For muscle-ups, pull-ups, and dips, zero can be a real attempt; read the success or failure marking rather than treating it as missing.
 
-A zero used as a nonstarter placeholder is not an attempt. A row showing a zero squat, no bodyweight, and no actual lifts—often zeros across every movement—belongs to `no_show`, with empty attempt cells. Compare it with recorded failed attempts and ask if the distinction remains unclear. A no-show cannot carry a lift.
+A zero used as a nonstarter placeholder is not an attempt. A row showing a zero squat, no bodyweight, and no actual lifts—often zeros across every movement—belongs to `no_show`, with empty attempt cells. Compare it with recorded failed attempts and ask if the distinction remains unclear. A no-show cannot carry a lift, total, or positive RIS. A published zero RIS may stay as source evidence.
 
-When every attempt in a contested movement failed, preserve those attempts and mark the athlete `disqualified`. Leave its best empty. An athlete who attempted lifts is not a no-show. Report conflicting status evidence; the validator rejects a bombed athlete left as competed.
+When every attempt in a contested movement failed, preserve those attempts and mark the athlete `disqualified`. Leave that movement's best and the overall total empty. Preserve any published RIS as source evidence; the result is unranked. An athlete who attempted lifts is not a no-show. Report conflicting status evidence; the validator rejects a bombed athlete left as competed.
 
 `prepare` derives each `Best*` value from supplied attempts. Fill a best manually only when the source gives a best without an attempt breakdown; keep those attempt cells empty. For movements outside `event`, leave all four cells empty.
 

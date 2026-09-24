@@ -12,6 +12,7 @@ pub mod parse;
 pub mod redaction;
 pub mod ris;
 pub mod ris_source;
+pub mod scoring;
 pub mod slug;
 #[cfg(feature = "sqlx")]
 mod sql;
@@ -30,5 +31,6 @@ pub use normalized_name::{NormalizedAthleteName, display_name};
 pub use parse::ParseError;
 pub use ris::{Constants, Edition};
 pub use ris_source::RisSource;
+pub use scoring::Scoring;
 pub use slug::slugify;
 pub use weight_class::{WeightClass, WeightClassSlug};

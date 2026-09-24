@@ -34,7 +34,10 @@ export const load: PageServerLoad = async ({ params, url }) => {
     };
   }
 
-  const movement = asRankingMetric(url.searchParams.get('movement')) ?? defaultRankingSort(ris);
+  const movement =
+    asRankingMetric(url.searchParams.get('movement')) ??
+    competition.scoring ??
+    defaultRankingSort(ris);
   const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
   const gender = asRankedGender(url.searchParams.get('gender'));
   const category = url.searchParams.get('category') || null;

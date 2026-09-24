@@ -34,6 +34,11 @@ osl-import competitions data/competitions
 
 Paths can point to individual competition directories or directory trees. The importer processes overlapping paths once and validates all competition files before writing to the database. Missing paths, empty trees, and invalid files stop the import.
 
+Every competition needs at least one source reference. For one-day events,
+`end_date` may be omitted; `venue` is optional. Mixed contests require athlete
+`Sex`, `CategorySex=MX`, and an explicit `competition.scoring`. See the
+[data reference](../../docs/src/DATA_REFERENCE.md) for accepted values.
+
 The importer saves the whole batch in one transaction, including pruning. Conflicting countries for one athlete or a failed write roll back the batch. Correct country evidence across the affected competitions and import them together.
 
 With `--prune`, the importer deletes database competitions absent from the supplied files, athletes with no competition entries, and federations with no competitions. Pruning runs after the imports, within the same transaction. Supply the complete dataset: passing a single competition would delete all others from the database.

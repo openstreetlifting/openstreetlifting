@@ -246,8 +246,8 @@ impl<'a> CanonicalTransformer<'a> {
 
         let competition_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, city, region, country, venue)
-            VALUES ($1, $2, COALESCE($3, 'completed'), $4, $5, $6, $7, $8, $9, $10)
+            INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, city, region, country, scoring, venue)
+            VALUES ($1, $2, COALESCE($3, 'completed'), $4, $5, $6, $7, $8, $9, $10, $11)
             ON CONFLICT (slug)
             DO UPDATE SET
                 name = EXCLUDED.name,
@@ -258,6 +258,7 @@ impl<'a> CanonicalTransformer<'a> {
                 city = EXCLUDED.city,
                 region = EXCLUDED.region,
                 country = EXCLUDED.country,
+                scoring = EXCLUDED.scoring,
                 venue = EXCLUDED.venue
             RETURNING competition_id as "competition_id: Uuid"
             "#,
@@ -273,6 +274,7 @@ impl<'a> CanonicalTransformer<'a> {
             competition.city,
             competition.region,
             competition.country.as_str(),
+            competition.scoring.map(|scoring| scoring.as_str()),
             competition.venue
         )
         .fetch_one(&mut **tx)
@@ -450,9 +452,9 @@ impl<'a> CanonicalTransformer<'a> {
             r#"
             INSERT INTO competition_participants
                 (competition_id, weight_class_id, division_id, athlete_id, bodyweight, status, status_reason, ris_score, ris_source,
-                 bodyweight_source, reported_ris_score, reported_ris_edition, total, country)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11, $12, $13)
-            ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id)
+                 bodyweight_source, reported_ris_score, reported_ris_edition, total, country, category_gender)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11, $12, $13, $14)
+            ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id, category_gender)
             DO UPDATE SET
                 bodyweight = EXCLUDED.bodyweight,
                 status = EXCLUDED.status,
@@ -479,7 +481,8 @@ impl<'a> CanonicalTransformer<'a> {
             athlete.reported_ris,
             reported_ris_edition,
             athlete.total,
-            athlete.country.map(|country| country.as_str().to_owned())
+            athlete.country.map(|country| country.as_str().to_owned()),
+            (category.gender == osl_domain::Gender::Mx).then_some("MX")
         )
         .fetch_one(&mut **tx)
         .await?;

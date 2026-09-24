@@ -220,8 +220,12 @@ mod tests {
     }
 
     #[test]
-    fn ranking_gender_still_accepts_only_men_and_women() {
-        for (raw, expected) in [("%20m%20", RankedGender::M), ("f", RankedGender::F)] {
+    fn ranking_gender_parses_contest_sex_and_requires_a_competition_for_mixed() {
+        for (raw, expected) in [
+            ("%20m%20", RankedGender::M),
+            ("f", RankedGender::F),
+            ("mx", RankedGender::Mx),
+        ] {
             let query = Query::<GlobalRankingFilter>::try_from_uri(
                 &format!("/rankings?gender={raw}").parse().unwrap(),
             )
@@ -229,7 +233,14 @@ mod tests {
             assert_eq!(query.gender, Some(expected));
             assert_eq!(query.to_db_filter().gender, Some(Gender::from(expected)));
         }
-        for raw in ["mx", "nonsense", ""] {
+        let mut mixed =
+            Query::<GlobalRankingFilter>::try_from_uri(&"/rankings?gender=MX".parse().unwrap())
+                .unwrap()
+                .0;
+        assert!(mixed.validate().is_err());
+        mixed.competition_id = Some(uuid::Uuid::new_v4());
+        assert!(mixed.validate().is_ok());
+        for raw in ["nonsense", ""] {
             assert!(
                 Query::<GlobalRankingFilter>::try_from_uri(
                     &format!("/rankings?gender={raw}").parse().unwrap(),

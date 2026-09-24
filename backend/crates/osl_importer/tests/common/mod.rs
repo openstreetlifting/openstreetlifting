@@ -35,6 +35,7 @@ pub fn competition(slug: &str, categories: Vec<CategoryData>) -> CanonicalFormat
             region: None,
             country: CountryCode::parse("FR").unwrap(),
             status: Some(CompetitionStatus::Completed),
+            scoring: None,
         },
         movements: Movement::ALL.to_vec(),
         categories,

@@ -206,9 +206,42 @@ impl CanonicalValidator {
     }
 
     fn check_athletes(canonical: &CanonicalFormat, report: &mut ValidationReport) {
+        if canonical
+            .categories
+            .iter()
+            .any(|category| category.gender == osl_domain::Gender::Mx)
+            && canonical.competition.scoring.is_none()
+        {
+            report
+                .errors
+                .push("Mixed contests require competition.scoring = \"total\" or \"ris\"".into());
+        }
+        if canonical.competition.scoring == Some(osl_domain::Scoring::Ris)
+            && canonical.movements != osl_domain::Movement::ALL
+        {
+            report
+                .errors
+                .push("RIS scoring requires the four-movement MPDS event".into());
+        }
         for category in &canonical.categories {
             for athlete in &category.athletes {
                 let label = athlete.display_name();
+                if !matches!(
+                    athlete.gender,
+                    Some(osl_domain::Gender::M | osl_domain::Gender::F)
+                ) {
+                    report.errors.push(format!(
+                        "Athlete '{label}': Sex must be M or F; mixed belongs in CategorySex"
+                    ));
+                    continue;
+                }
+                if category.gender != osl_domain::Gender::Mx
+                    && athlete.gender != Some(category.gender)
+                {
+                    report.errors.push(format!(
+                        "Athlete '{label}': CategorySex must match Sex or be MX"
+                    ));
+                }
 
                 match athlete.validate_score_source(category.gender, &canonical.movements) {
                     Err(reason) => report.errors.push(format!("Athlete '{label}': {reason}")),
@@ -366,7 +399,8 @@ impl CanonicalValidator {
     /// disambiguation number. Within a single category they can only be a
     /// duplicated row.
     fn check_athlete_identities(canonical: &CanonicalFormat, report: &mut ValidationReport) {
-        let mut seen: HashMap<(String, Option<i16>), Vec<String>> = HashMap::new();
+        let mut seen: HashMap<(String, Option<osl_domain::Gender>, Option<i16>), Vec<String>> =
+            HashMap::new();
 
         for category in &canonical.categories {
             let mut seen_in_category = HashSet::new();
@@ -375,7 +409,11 @@ impl CanonicalValidator {
                 let identity = NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name)
                     .match_name();
 
-                if !seen_in_category.insert((identity.clone(), athlete.disambiguation)) {
+                if !seen_in_category.insert((
+                    identity.clone(),
+                    athlete.gender,
+                    athlete.disambiguation,
+                )) {
                     report.errors.push(format!(
                         "Category '{}' lists '{}' twice. Remove the duplicate, or set \
                          disambiguation if these are two different people",
@@ -384,13 +422,13 @@ impl CanonicalValidator {
                     ));
                 }
 
-                seen.entry((identity, athlete.disambiguation))
+                seen.entry((identity, athlete.gender, athlete.disambiguation))
                     .or_default()
                     .push(category.label());
             }
         }
 
-        for ((identity, disambiguation), categories) in seen {
+        for ((identity, _, disambiguation), categories) in seen {
             if categories.len() > 1 && disambiguation.is_none() {
                 report.warnings.push(format!(
                     "Competition '{}': '{}' appears in {} categories ({}). Set \
@@ -447,6 +485,7 @@ mod tests {
                 region: None,
                 country: CountryCode::parse("FR").unwrap(),
                 status: Some(CompetitionStatus::Upcoming),
+                scoring: None,
             },
             movements: Vec::new(),
             categories: Vec::new(),
@@ -561,6 +600,7 @@ mod tests {
     #[test]
     fn published_bodyweight_and_ris_without_an_edition_warns() {
         let mut canonical = completed();
+        canonical.movements = Movement::ALL.to_vec();
         canonical.categories[0].athletes[0].reported_ris = Some(Decimal::from(90));
         let report = CanonicalValidator::validate(&canonical).unwrap();
         assert!(

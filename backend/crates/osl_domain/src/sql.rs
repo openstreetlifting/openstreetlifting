@@ -38,4 +38,5 @@ text_enum!(
     crate::Gender,
     crate::Movement,
     crate::RisSource,
+    crate::Scoring,
 );
