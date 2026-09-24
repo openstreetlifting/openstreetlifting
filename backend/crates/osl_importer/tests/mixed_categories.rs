@@ -13,7 +13,7 @@ fn mixed(scoring: Option<Scoring>, classed: bool) -> CanonicalFormat {
     let mut man = common::athlete("Alex", "Example");
     man.total = Some(common::decimal("300"));
     let mut woman = common::athlete("Alex", "Example");
-    woman.gender = Some(Gender::F);
+    woman.gender = Gender::F;
     woman.bodyweight = Some(common::decimal("60"));
     woman.total = Some(common::decimal("200"));
     let mut category = common::men_80(vec![man, woman]);
@@ -33,16 +33,14 @@ fn mixed_contests_require_athlete_sex_and_an_explicit_scoring_rule() {
             .to_string()
             .contains("scoring")
     );
-    for sex in [None, Some(Gender::Mx)] {
-        let mut canonical = mixed(Some(Scoring::Ris), false);
-        canonical.categories[0].athletes[0].gender = sex;
-        assert!(
-            CanonicalValidator::validate(&canonical)
-                .unwrap_err()
-                .to_string()
-                .contains("Sex must be M or F")
-        );
-    }
+    let mut canonical = mixed(Some(Scoring::Ris), false);
+    canonical.categories[0].athletes[0].gender = Gender::Mx;
+    assert!(
+        CanonicalValidator::validate(&canonical)
+            .unwrap_err()
+            .to_string()
+            .contains("Sex must be M or F")
+    );
     let mut canonical = mixed(Some(Scoring::Ris), false);
     canonical.movements.pop();
     assert!(
@@ -67,8 +65,10 @@ fn mixed_csv_round_trips_without_changing_athlete_sex() {
     let read = store::read(&path).unwrap();
     assert_eq!(read.categories.len(), 1);
     assert_eq!(read.categories[0].gender, Gender::Mx);
-    assert_eq!(read.categories[0].athletes[1].gender, Some(Gender::F));
+    assert_eq!(read.categories[0].athletes[1].gender, Gender::F);
     assert_eq!(read.competition.scoring, Some(Scoring::Ris));
+    std::fs::write(path.join("entries.csv"), text.replace("\nM,MX,", "\n,MX,")).unwrap();
+    assert!(store::read(&path).is_err());
     std::fs::write(
         path.join("entries.csv"),
         text.replace("\nM,MX,", "\nMX,MX,"),
@@ -170,7 +170,7 @@ async fn one_identity_can_enter_mixed_and_single_sex_contests(pool: PgPool) {
     let mut canonical = mixed(Some(Scoring::Total), false);
     let mut men = canonical.categories[0].clone();
     men.gender = Gender::M;
-    men.athletes.retain(|a| a.gender == Some(Gender::M));
+    men.athletes.retain(|a| a.gender == Gender::M);
     canonical.categories.push(men);
     CanonicalTransformer::new(&pool)
         .import_to_database(canonical)

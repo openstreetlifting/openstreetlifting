@@ -180,7 +180,7 @@ async fn metric_places_only_compare_the_athletes_weight_class(pool: PgPool) {
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn metric_places_do_not_compare_men_and_women(pool: PgPool) {
     let mut woman = athlete("Strong", "Woman");
-    woman.gender = Some(Gender::F);
+    woman.gender = Gender::F;
 
     import(
         &pool,

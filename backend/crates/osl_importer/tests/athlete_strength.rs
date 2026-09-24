@@ -99,7 +99,7 @@ async fn uses_latest_competed_category_for_every_axis_and_excludes_other_sexes(p
     future.competition.end_date = future.competition.start_date;
     import(&pool, future).await;
     let mut woman = lifting(athlete("Test", "Woman"), ["50", "90", "110", "190"]);
-    woman.gender = Some(Gender::F);
+    woman.gender = Gender::F;
     import(
         &pool,
         competition(

@@ -71,7 +71,7 @@ pub struct AthleteData {
     pub last_name: String,
     pub native_name: Option<String>,
     pub disambiguation: Option<i16>,
-    pub gender: Option<Gender>,
+    pub gender: Gender,
     pub country: Option<CountryCode>,
     pub bodyweight: Option<Decimal>,
     pub bodyweight_source: Option<BodyweightSource>,
@@ -169,11 +169,7 @@ impl AthleteData {
     }
 
     /// Reject inconsistent evidence and explain when a published score cannot be checked.
-    pub fn validate_score_source(
-        &self,
-        gender: Gender,
-        movements: &[Movement],
-    ) -> Result<Option<String>, String> {
+    pub fn validate_score_source(&self, movements: &[Movement]) -> Result<Option<String>, String> {
         self.validate_total(movements)?;
         if self.bodyweight_source.is_some() && self.bodyweight.is_none() {
             return Err("BodyweightSource requires BodyweightKg".into());
@@ -191,7 +187,7 @@ impl AthleteData {
                     "ReportedRis is unverified: its formula edition is unknown; supply ReportedRisEdition when established by the source".into(),
                 ));
             };
-            let gender = self.gender.unwrap_or(gender);
+            let gender = self.gender;
             let total = match self.complete_total() {
                 Ok(total) if movements == Movement::ALL && gender != Gender::Mx => total,
                 _ => return Ok(Some(
@@ -223,8 +219,7 @@ impl AthleteData {
             );
         }
         let total = self.complete_total()?;
-        let computed =
-            osl_domain::ris::compute(bodyweight, total, self.gender.unwrap_or(gender), edition);
+        let computed = osl_domain::ris::compute(bodyweight, total, self.gender, edition);
         if computed != ris {
             return Err(format!(
                 "recovered bodyweight reproduces RIS {computed} under edition {}, but the source reports {ris}",

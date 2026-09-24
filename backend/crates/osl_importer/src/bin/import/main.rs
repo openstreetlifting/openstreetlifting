@@ -327,7 +327,7 @@ fn competition_directories(paths: &[PathBuf]) -> Result<Vec<PathBuf>> {
     Ok(directories)
 }
 
-fn claimed_competition_slugs(directories: &[PathBuf]) -> Result<Vec<String>> {
+fn validate_competition_slugs(directories: &[PathBuf]) -> Result<()> {
     let mut by_slug: BTreeMap<String, Vec<&PathBuf>> = BTreeMap::new();
 
     for directory in directories {
@@ -341,7 +341,7 @@ fn claimed_competition_slugs(directories: &[PathBuf]) -> Result<Vec<String>> {
         .collect();
 
     if clashes.is_empty() {
-        return Ok(by_slug.into_keys().collect());
+        return Ok(());
     }
 
     for (slug, directories) in &clashes {
@@ -369,7 +369,7 @@ async fn handle_competitions(
     privacy: Option<&PrivacyList>,
 ) -> Result<()> {
     let competitions = competition_directories(directories)?;
-    claimed_competition_slugs(&competitions)?;
+    validate_competition_slugs(&competitions)?;
     let mut prepared = Vec::new();
     let mut failures = 0;
     for directory in &competitions {

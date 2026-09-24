@@ -14,7 +14,7 @@ use crate::canonical::store;
 use crate::canonical::{
     entries, format as canonical_format, models::CanonicalFormat, validator::CanonicalValidator,
 };
-use crate::identity::{AthleteQuery, match_key};
+use crate::identity::AthleteQuery;
 use crate::privacy::{PrivacyEntry, PrivacyList};
 use crate::social;
 
@@ -72,12 +72,9 @@ pub fn plan(
         let canonical = store::read(directory)?;
         for category in &canonical.categories {
             for athlete in &category.athletes {
-                if candidates.matches_entry(athlete, category) {
+                if candidates.matches_entry(athlete) {
                     let countries = by_identity
-                        .entry((
-                            athlete.gender.unwrap_or(category.gender).to_string(),
-                            athlete.disambiguation,
-                        ))
+                        .entry((athlete.gender.to_string(), athlete.disambiguation))
                         .or_default();
                     if let Some(country) = athlete.country {
                         countries.insert(country.to_string());
@@ -149,15 +146,9 @@ pub fn plan(
         let hits = canonical
             .categories
             .iter()
-            .flat_map(|category| {
-                category
-                    .athletes
-                    .iter()
-                    .map(move |athlete| (category, athlete))
-            })
-            .filter(|(category, athlete)| {
-                selected.matches_entry(athlete, category)
-                    && athlete.disambiguation == identity.disambiguation
+            .flat_map(|category| &category.athletes)
+            .filter(|athlete| {
+                selected.matches_entry(athlete) && athlete.disambiguation == identity.disambiguation
             })
             .count();
         if hits > 0 {
@@ -235,20 +226,9 @@ fn redact_in_place(
     redacted: RedactedAthlete,
 ) {
     for category in &mut canonical.categories {
-        let gender = category.gender;
-
         for athlete in &mut category.athletes {
-            let matches = athlete.disambiguation == query.disambiguation
-                && match_key(&athlete.display_name()) == query.match_key
-                && query.matches_parts(
-                    athlete.gender.unwrap_or(gender).as_str(),
-                    athlete
-                        .country
-                        .as_ref()
-                        .map(|country| country.as_str())
-                        .unwrap_or(""),
-                    athlete.disambiguation,
-                );
+            let matches =
+                athlete.disambiguation == query.disambiguation && query.matches_entry(athlete);
 
             if !matches {
                 continue;

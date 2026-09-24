@@ -23,7 +23,7 @@ impl CanonicalValidator {
                     let key = (
                         NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name)
                             .match_name(),
-                        athlete.gender.unwrap_or(category.gender),
+                        athlete.gender,
                         athlete.disambiguation,
                     );
                     if let Some(previous) = known.insert(key, country)
@@ -228,22 +228,20 @@ impl CanonicalValidator {
                 let label = athlete.display_name();
                 if !matches!(
                     athlete.gender,
-                    Some(osl_domain::Gender::M | osl_domain::Gender::F)
+                    osl_domain::Gender::M | osl_domain::Gender::F
                 ) {
                     report.errors.push(format!(
                         "Athlete '{label}': Sex must be M or F; mixed belongs in CategorySex"
                     ));
                     continue;
                 }
-                if category.gender != osl_domain::Gender::Mx
-                    && athlete.gender != Some(category.gender)
-                {
+                if category.gender != osl_domain::Gender::Mx && athlete.gender != category.gender {
                     report.errors.push(format!(
                         "Athlete '{label}': CategorySex must match Sex or be MX"
                     ));
                 }
 
-                match athlete.validate_score_source(category.gender, &canonical.movements) {
+                match athlete.validate_score_source(&canonical.movements) {
                     Err(reason) => report.errors.push(format!("Athlete '{label}': {reason}")),
                     Ok(Some(reason)) => {
                         report.warnings.push(format!("Athlete '{label}': {reason}"))
@@ -313,10 +311,7 @@ impl CanonicalValidator {
                     let bombed: Vec<&str> = athlete
                         .lifts
                         .iter()
-                        .filter(|lift| match lift.attempts.as_ref() {
-                            Some(attempts) => !attempts.iter().any(|a| a.is_successful),
-                            None => lift.best_lift.is_none(),
-                        })
+                        .filter(|lift| lift.best().is_none())
                         .map(|lift| lift.movement.as_str())
                         .collect();
 
@@ -344,15 +339,6 @@ impl CanonicalValidator {
                         "Athlete '{label}' has disambiguation {disambiguation}. It numbers \
                          people sharing a name, so it starts at 1"
                     ));
-                }
-
-                for lift in &athlete.lifts {
-                    if lift.best_lift.is_some_and(|w| w < Decimal::ZERO) {
-                        report.errors.push(format!(
-                            "Athlete '{label}', movement '{}': negative best lift",
-                            lift.movement
-                        ));
-                    }
                 }
             }
         }
@@ -399,7 +385,7 @@ impl CanonicalValidator {
     /// disambiguation number. Within a single category they can only be a
     /// duplicated row.
     fn check_athlete_identities(canonical: &CanonicalFormat, report: &mut ValidationReport) {
-        let mut seen: HashMap<(String, Option<osl_domain::Gender>, Option<i16>), Vec<String>> =
+        let mut seen: HashMap<(String, osl_domain::Gender, Option<i16>), Vec<String>> =
             HashMap::new();
 
         for category in &canonical.categories {
@@ -498,7 +484,7 @@ mod tests {
             last_name: last.to_string(),
             native_name: None,
             disambiguation: None,
-            gender: Some(Gender::M),
+            gender: Gender::M,
             country: Some(CountryCode::parse("FR").unwrap()),
             bodyweight: Some(Decimal::from(80)),
             bodyweight_source: None,

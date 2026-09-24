@@ -345,11 +345,9 @@ pub fn check_competition(canonical: &CanonicalFormat, list: &PrivacyList) -> Res
 
     for category in &canonical.categories {
         for athlete in &category.athletes {
-            let gender = athlete.gender.unwrap_or(category.gender);
-
             if let Lookup::Listed(redacted) = list.lookup(
                 &athlete.display_name(),
-                gender.as_str(),
+                athlete.gender.as_str(),
                 athlete.disambiguation,
             ) {
                 found.push(redacted);
