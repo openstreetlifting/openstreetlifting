@@ -4,7 +4,6 @@ sources = ["FNSL CNSL 2023 official results spreadsheet supplied by the federati
 [competition]
 name = "CNSL"
 start_date = "2023-12-10"
-end_date = "2023-12-10"
 city = "La Courneuve"
 region = "Île-de-France"
 country = "FR"

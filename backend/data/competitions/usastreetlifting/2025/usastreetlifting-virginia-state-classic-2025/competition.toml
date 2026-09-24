@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Virginia State Classic"
 start_date = "2025-11-16"
-end_date = "2025-11-16"
 region = "Virginia"
 country = "US"
 status = "completed"

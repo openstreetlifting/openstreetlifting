@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Empire State Classic"
 start_date = "2026-04-19"
-end_date = "2026-04-19"
 region = "New York"
 country = "US"
 status = "completed"

@@ -7,7 +7,6 @@ sources = [
 [competition]
 name = "Brazil Open"
 start_date = "2026-03-07"
-end_date = "2026-03-07"
 country = "BR"
 status = "completed"
 

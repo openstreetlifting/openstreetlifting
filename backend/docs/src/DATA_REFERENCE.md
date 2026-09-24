@@ -48,7 +48,8 @@ name = "FinalRep"
 | ------------------------- | ---------------------------------------------------------------- |
 | `competition.name`        | The competition's name.                                          |
 | `competition.start_date`  | The first day, as `YYYY-MM-DD`.                                  |
-| `competition.end_date`    | The last day. For a one-day event, repeat the start date.        |
+| `competition.end_date`    | The last day; defaults to `start_date` when omitted.        |
+| `competition.venue`       | The venue name, if known; omit it when unknown.                  |
 | `competition.city`        | The city, if known.                                              |
 | `competition.region`      | The region or state, if known.                                   |
 | `competition.country`     | An ISO 3166-1 alpha-2 country code, such as `FR` or `DE`.         |
@@ -57,8 +58,9 @@ name = "FinalRep"
 | `federation.abbreviation` | Its abbreviation, if used.                                       |
 | `federation.country`      | Its ISO 3166-1 alpha-2 country code, if applicable.              |
 
-The names, dates and competition country are required. Optional fields can be
-left out.
+The names, start date and competition country are required. Omit `end_date` for
+a one-day competition. `prepare` removes an end date equal to the start date;
+it preserves a later end date. Optional fields can be left out.
 
 ### Event
 

@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "National Championships"
 start_date = "2025-04-27"
-end_date = "2025-04-27"
 region = "Maryland"
 country = "US"
 status = "completed"

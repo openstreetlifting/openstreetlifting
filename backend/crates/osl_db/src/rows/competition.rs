@@ -11,6 +11,7 @@ pub struct CompetitionRow {
     pub status: CompetitionStatus,
     pub federation_id: Uuid,
     pub city: Option<String>,
+    pub venue: Option<String>,
     pub region: Option<String>,
     pub country: Option<String>,
     pub start_date: Option<chrono::NaiveDate>,

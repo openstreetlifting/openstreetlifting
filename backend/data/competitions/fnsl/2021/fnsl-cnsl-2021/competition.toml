@@ -4,7 +4,6 @@ sources = ["FNSL CNSL 2021 official results spreadsheet supplied by the federati
 [competition]
 name = "CNSL"
 start_date = "2021-12-04"
-end_date = "2021-12-04"
 city = "La Courneuve"
 region = "Île-de-France"
 country = "FR"

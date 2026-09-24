@@ -22,6 +22,7 @@ pub struct CompetitionData {
     pub start_date: NaiveDate,
     pub end_date: NaiveDate,
     pub city: Option<String>,
+    pub venue: Option<String>,
     pub region: Option<String>,
     pub country: CountryCode,
     pub status: Option<CompetitionStatus>,

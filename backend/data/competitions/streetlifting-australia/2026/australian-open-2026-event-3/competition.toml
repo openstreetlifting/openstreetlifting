@@ -9,7 +9,6 @@ sources = [
 [competition]
 name = "Australian Open Event 3"
 start_date = "2026-05-16"
-end_date = "2026-05-16"
 city = "Newcastle"
 region = "New South Wales"
 country = "AU"

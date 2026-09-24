@@ -364,6 +364,10 @@
           {/if}
         </dd>
       {/if}
+      {#if competition.venue}
+        <dt class="text-muted">Venue</dt>
+        <dd class="text-ink">{competition.venue}</dd>
+      {/if}
       {#if location}
         <dt class="text-muted">Location</dt>
         <dd class="text-ink">{location}</dd>

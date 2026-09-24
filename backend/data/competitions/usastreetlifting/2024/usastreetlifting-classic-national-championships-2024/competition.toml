@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Classic National Championships"
 start_date = "2024-08-10"
-end_date = "2024-08-10"
 region = "Maryland"
 country = "US"
 status = "completed"

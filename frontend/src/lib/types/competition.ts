@@ -23,6 +23,7 @@ export interface Competition {
   slug: string;
   status: CompetitionStatus;
   city: string | null;
+  venue?: string | null;
   region: string | null;
   country: string | null;
   start_date: string | null;
@@ -104,6 +105,7 @@ export interface CompetitionDetail {
   slug: string;
   status: CompetitionStatus;
   city: string | null;
+  venue?: string | null;
   region: string | null;
   country: string | null;
   start_date: string | null;

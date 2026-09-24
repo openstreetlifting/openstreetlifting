@@ -34,7 +34,7 @@ impl<'a> CompetitionRepository<'a> {
         let mut query = QueryBuilder::new(
             r#"
             SELECT c.competition_id, c.name, c.created_at, c.slug, c.status,
-                   c.federation_id, c.city, c.region, c.country,
+                   c.federation_id, c.venue, c.city, c.region, c.country,
                    c.start_date, c.end_date,
                    COUNT(p.participant_id) AS lifter_count
             FROM competitions c
@@ -208,7 +208,7 @@ impl<'a> CompetitionRepository<'a> {
             r#"
             SELECT competition_id, name, created_at, slug,
                    status as "status: CompetitionStatus", federation_id,
-                   city, region, country, start_date, end_date
+                   city, venue, region, country, start_date, end_date
             FROM competitions
             WHERE competition_id = $1
             "#,
@@ -227,7 +227,7 @@ impl<'a> CompetitionRepository<'a> {
             r#"
             SELECT competition_id, name, created_at, slug,
                    status as "status: CompetitionStatus", federation_id,
-                   city, region, country, start_date, end_date
+                   city, venue, region, country, start_date, end_date
             FROM competitions
             WHERE slug = $1
             "#,

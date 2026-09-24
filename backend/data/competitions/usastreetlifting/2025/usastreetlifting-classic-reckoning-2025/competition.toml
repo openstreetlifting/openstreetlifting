@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Classic Reckoning"
 start_date = "2025-02-09"
-end_date = "2025-02-09"
 region = "Maryland"
 country = "US"
 status = "completed"

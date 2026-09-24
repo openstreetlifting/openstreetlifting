@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Sun City Showdown"
 start_date = "2025-08-23"
-end_date = "2025-08-23"
 region = "Texas"
 country = "US"
 status = "completed"

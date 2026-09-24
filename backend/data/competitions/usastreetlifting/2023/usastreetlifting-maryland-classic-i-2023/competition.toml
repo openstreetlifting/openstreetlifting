@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Maryland Classic I"
 start_date = "2023-12-09"
-end_date = "2023-12-09"
 region = "Maryland"
 country = "US"
 status = "completed"

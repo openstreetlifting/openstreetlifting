@@ -84,6 +84,16 @@ impl CanonicalValidator {
             ));
         }
 
+        if canonical
+            .competition
+            .venue
+            .as_ref()
+            .is_some_and(|venue| venue.trim().is_empty())
+        {
+            report
+                .errors
+                .push("Omit venue when it is unknown; an empty venue is invalid".into());
+        }
         if canonical.competition.city.is_none() {
             report.warnings.push(format!(
                 "Competition '{}': city is not specified",
@@ -424,6 +434,7 @@ mod tests {
                 start_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
                 end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
                 city: Some("Paris".to_string()),
+                venue: None,
                 region: None,
                 country: CountryCode::parse("FR").unwrap(),
                 status: Some(CompetitionStatus::Upcoming),

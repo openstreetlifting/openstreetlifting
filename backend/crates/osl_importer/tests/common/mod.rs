@@ -31,6 +31,7 @@ pub fn competition(slug: &str, categories: Vec<CategoryData>) -> CanonicalFormat
             start_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
             end_date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
             city: Some("Paris".to_string()),
+            venue: None,
             region: None,
             country: CountryCode::parse("FR").unwrap(),
             status: Some(CompetitionStatus::Completed),

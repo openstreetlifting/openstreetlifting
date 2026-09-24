@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "Lone Star Classic"
 start_date = "2025-07-19"
-end_date = "2025-07-19"
 region = "Texas"
 country = "US"
 status = "completed"

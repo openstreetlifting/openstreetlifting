@@ -7,7 +7,6 @@ sources = [
 [competition]
 name = "Old Dominion Classic"
 start_date = "2026-04-25"
-end_date = "2026-04-25"
 region = "Virginia"
 country = "US"
 status = "completed"

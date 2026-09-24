@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "San Antonio Classic"
 start_date = "2026-03-14"
-end_date = "2026-03-14"
 region = "Texas"
 country = "US"
 status = "completed"

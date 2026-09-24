@@ -4,7 +4,6 @@ sources = ["https://usastreetlifting.org/"]
 [competition]
 name = "RVA Classic"
 start_date = "2026-08-15"
-end_date = "2026-08-15"
 region = "Virginia"
 country = "US"
 status = "completed"

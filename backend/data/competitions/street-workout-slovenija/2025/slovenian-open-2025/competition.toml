@@ -4,7 +4,6 @@ sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
 [competition]
 name = "Slovenian Open Streetlifting"
 start_date = "2025-11-29"
-end_date = "2025-11-29"
 country = "SI"
 status = "completed"
 
