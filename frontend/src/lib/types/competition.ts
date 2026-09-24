@@ -36,6 +36,7 @@ export interface Competition {
 
 export interface CompetitionFilters {
   status?: CompetitionStatus;
+  event?: string;
   federation?: string;
   country?: string;
   year?: number;
@@ -46,6 +47,7 @@ export interface CompetitionFilters {
 }
 
 export interface CompetitionFacets {
+  formats: string[];
   federations: string[];
   years: number[];
   countries: string[];

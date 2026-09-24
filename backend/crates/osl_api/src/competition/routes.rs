@@ -2,7 +2,7 @@ use axum::{Router, routing::get};
 
 use super::handlers::{
     get_competition, list_competition_countries, list_competition_federations,
-    list_competition_years, list_competitions,
+    list_competition_formats, list_competition_years, list_competitions,
 };
 use crate::AppState;
 
@@ -15,5 +15,6 @@ pub fn router() -> Router<AppState> {
         )
         .route("/competitions/years", get(list_competition_years))
         .route("/competitions/countries", get(list_competition_countries))
+        .route("/competitions/formats", get(list_competition_formats))
         .route("/competitions/{slug}", get(get_competition))
 }

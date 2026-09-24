@@ -17,6 +17,10 @@ http:
       value: ""
       type: query
       disabled: true
+    - name: event
+      value: PD
+      type: query
+      disabled: true
     - name: federation
       value: ""
       type: query
@@ -113,7 +117,7 @@ examples:
             }
           }
   - name: 400 Response
-    description: Invalid pagination or include value
+    description: Invalid pagination, include value or event code
     request:
       url: "{{baseUrl}}/api/v1/competitions"
       method: GET

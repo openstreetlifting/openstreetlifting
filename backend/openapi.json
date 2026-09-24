@@ -130,6 +130,18 @@
             }
           },
           {
+            "name": "event",
+            "in": "query",
+            "description": "Exact format in canonical MPDS order, e.g. PD for pull-up and dips only.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
             "name": "federation",
             "in": "query",
             "required": false,
@@ -203,7 +215,7 @@
             }
           },
           "400": {
-            "description": "Invalid pagination or include value"
+            "description": "Invalid pagination, include value or event code"
           }
         }
       }
@@ -240,6 +252,29 @@
         "responses": {
           "200": {
             "description": "Federations that have run at least one competition, alphabetical",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/competitions/formats": {
+      "get": {
+        "tags": [
+          "competitions"
+        ],
+        "operationId": "list_competition_formats",
+        "responses": {
+          "200": {
+            "description": "Known formats across all competitions, alphabetical",
             "content": {
               "application/json": {
                 "schema": {

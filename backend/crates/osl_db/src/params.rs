@@ -126,6 +126,7 @@ pub struct RankingFilter {
 #[derive(Debug, Clone, Default)]
 pub struct CompetitionFilter {
     pub status: Option<CompetitionStatus>,
+    pub event: Option<String>,
     pub federation: Option<String>,
     pub country: Option<String>,
     pub year: Option<i32>,
