@@ -208,7 +208,10 @@ may leave the best-lift cell empty; if you fill it, it must agree with the
 attempts. If only the best lift is known, fill that column alone.
 
 Mark an athlete who missed every attempt at a movement as `disqualified`, with a
-reason such as `Bombed the squat`. A `no_show` must have no attempts or best lifts.
+reason such as `Bombed the squat`. A `no_show` must have no attempts, best lifts, total, or positive RIS. A published
+zero RIS may be kept as source evidence. Disqualified rows may keep their lifts
+and published RIS, but receive no total, calculated RIS, or ranking. Their lift
+values must still be consistent.
 
 ### Totals and preparation
 
@@ -244,7 +247,9 @@ the validator checks the published score against its stated edition, rounded to
 two decimal places. A disagreement blocks import. When the edition or required
 results are unknown, both values are preserved and a warning explains why the
 score could not be checked. Calculated ranking scores are stored separately;
-they never replace `ReportedRis` in the CSV.
+they never replace `ReportedRis` in the CSV. A published RIS can still be used
+when bodyweight is known but the total is missing. Scores published for shorter
+events remain source evidence; OSL does not recompute them with the All4 formula.
 
 Missing bodyweights can still be recovered from a published score and a complete
 total. The recovery tool writes the estimate to `BodyweightKg`, marks it

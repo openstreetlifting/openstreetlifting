@@ -439,9 +439,10 @@ impl<'a> CanonicalTransformer<'a> {
     ) -> Result<()> {
         let athlete_id = self.upsert_athlete(athlete, category, tx).await?;
         // Preserve the published score; bodyweight allows a separate ranking score.
-        let ranking_ris = athlete
-            .reported_ris
-            .filter(|_| athlete.bodyweight.is_none());
+        let ranking_ris = athlete.reported_ris.filter(|_| {
+            athlete.status == osl_domain::AthleteStatus::Competed
+                && (athlete.bodyweight.is_none() || athlete.total.is_none())
+        });
         let bodyweight_source = athlete.bodyweight_source().map(BodyweightSource::as_str);
         let reported_ris_edition = athlete.reported_ris_edition.map(|edition| edition.year());
 

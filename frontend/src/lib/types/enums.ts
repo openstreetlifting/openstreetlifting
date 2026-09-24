@@ -29,8 +29,7 @@ export const ATHLETE_STATUSES = ['competed', 'disqualified', 'no_show'] as const
 export type AthleteStatus = (typeof ATHLETE_STATUSES)[number];
 
 /**
- * Where a score came from. `reported` was stated by the source without a
- * bodyweight, so it cannot be restated on the formula everything else uses.
+ * `reported` preserves a source score when bodyweight or total is missing.
  */
 export const RIS_SOURCES = ['computed', 'reported'] as const;
 export type RisSource = (typeof RIS_SOURCES)[number];

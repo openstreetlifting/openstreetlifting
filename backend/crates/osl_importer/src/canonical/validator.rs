@@ -257,6 +257,15 @@ impl CanonicalValidator {
                     ));
                 }
 
+                if athlete.status == AthleteStatus::NoShow
+                    && athlete
+                        .reported_ris
+                        .is_some_and(|score| score > Decimal::ZERO)
+                {
+                    report.errors.push(format!(
+                        "Athlete '{label}': a no_show cannot have a positive ReportedRis"
+                    ));
+                }
                 if athlete.status == AthleteStatus::NoShow && !athlete.lifts.is_empty() {
                     report.errors.push(format!(
                         "Athlete '{label}' is a no_show but has lifts. Someone who took an \

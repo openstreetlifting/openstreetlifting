@@ -116,9 +116,13 @@ impl AthleteData {
             if !seen.insert(lift.movement) {
                 return Err(format!("duplicate {} result", lift.movement));
             }
+            lift.validate_evidence()?;
             if self.status == AthleteStatus::Competed {
-                known += lift.validated_best()?;
+                known += lift
+                    .best()
+                    .ok_or_else(|| format!("no successful {} result", lift.movement))?;
             }
+
         }
         let complete = self.total_from_lifts(movements);
         match self.total {
@@ -261,7 +265,7 @@ impl std::str::FromStr for BodyweightSource {
 }
 
 impl LiftData {
-    pub fn validated_best(&self) -> Result<Decimal, String> {
+    pub fn validate_evidence(&self) -> Result<(), String> {
         if self.best_lift.is_some_and(|weight| weight < Decimal::ZERO)
             || self
                 .attempts
@@ -271,19 +275,35 @@ impl LiftData {
         {
             return Err(format!("negative {} lift", self.movement));
         }
-        let best = self
-            .best()
-            .ok_or_else(|| format!("no successful {} result", self.movement))?;
-        if let Some(stated) = self.best_lift
-            && self.attempts.is_some()
-            && stated != best
-        {
-            return Err(format!(
-                "best {} contradicts successful attempts: expected {best}, got {}",
-                self.movement, stated
-            ));
+        if let Some(attempts) = &self.attempts {
+            let mut numbers = std::collections::HashSet::new();
+            if attempts.is_empty()
+                || attempts.iter().any(|attempt| {
+                    !(1..=super::entries::ATTEMPTS_PER_MOVEMENT).contains(&attempt.attempt_number)
+                        || !numbers.insert(attempt.attempt_number)
+                })
+            {
+                return Err(format!(
+                    "{} attempts must have distinct numbers from 1 to 3",
+                    self.movement
+                ));
+            }
+            if let Some(stated) = self.best_lift
+                && self.best() != Some(stated)
+            {
+                return Err(format!(
+                    "best {} contradicts successful attempts",
+                    self.movement
+                ));
+            }
         }
-        Ok(best)
+        Ok(())
+    }
+
+    pub fn validated_best(&self) -> Result<Decimal, String> {
+        self.validate_evidence()?;
+        self.best()
+            .ok_or_else(|| format!("no successful {} result", self.movement))
     }
 
     /// What the competition page shows for the movement, and what the importer

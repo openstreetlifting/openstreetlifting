@@ -7,9 +7,8 @@ use crate::error::Result;
 use crate::projections::ris::ScorableParticipant;
 
 /// The formula divides by a benchmark fitted to four-lift totals, so it means
-/// nothing on a shorter event. A reported score came from a source that never
-/// gave us the bodyweight behind it, so it cannot be reproduced and is never
-/// overwritten.
+/// nothing on a shorter event. Reported scores lack the bodyweight or total
+/// needed to reproduce them, so recomputation leaves them intact.
 pub async fn scorable_participants<'e, E>(
     executor: E,
     competition_id: Option<Uuid>,

@@ -49,8 +49,17 @@ it('treats zero as a recorded result and distinguishes it from an unknown or fai
   expect(hasRankingResult(athlete, 'dips')).toBe(false);
 });
 
-it('keeps disqualifications, no-shows and entries without lift results out of the ranked rows', () => {
+it('keeps disqualifications, no-shows and missing scores out of the ranked rows', () => {
   expect(hasRankingResult(result({ status: 'disqualified' }), 'total')).toBe(false);
   expect(hasRankingResult(result({ status: 'no_show', total: null }), 'total')).toBe(false);
-  expect(hasRankingResult(result({ total: null, ris_score: '0' }), 'ris')).toBe(false);
+  expect(hasRankingResult(result({ total: null, ris_score: null }), 'ris')).toBe(false);
+});
+
+it('keeps a published RIS without lifts or total in one ranked row', () => {
+  expect(
+    hasRankingResult(
+      result({ total: null, lifts: [], ris_score: '72.3', ris_source: 'reported' }),
+      'ris'
+    )
+  ).toBe(true);
 });

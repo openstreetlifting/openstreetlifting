@@ -33,7 +33,7 @@ export const REPORTED_MARK = `${STATUS_FLAG} ml-px align-super text-[0.75em] lea
 /** R for reported. A letter rather than a footnote glyph, which reads as a cross. */
 export const REPORTED_GLYPH = 'R';
 export const REPORTED_TITLE =
-  'The federation published this RIS score. We cannot recalculate it without bodyweight.';
+  'The federation published this RIS score. Bodyweight or total is missing, so we cannot recalculate it.';
 
 export const TEXT_CELL = {
   competition: 'block max-w-[9rem] truncate sm:max-w-[16rem]',
