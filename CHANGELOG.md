@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.35.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.34.0...v0.35.0) (2026-09-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **importer:** clarify entries and contest validation ([#644](https://github.com/openstreetlifting/openstreetlifting/issues/644))
+
+### Features
+
+* **data:** import FNSL Grand Ouest 2024 results ([#640](https://github.com/openstreetlifting/openstreetlifting/issues/640)) ([88483e7](https://github.com/openstreetlifting/openstreetlifting/commit/88483e71ac02049a847d4cc2c4bcbb7605fb6bc8))
+* **data:** support totals and import FNSL Pays de la Loire 2025 ([#642](https://github.com/openstreetlifting/openstreetlifting/issues/642)) ([6eee8c9](https://github.com/openstreetlifting/openstreetlifting/commit/6eee8c9d4c228ac2db8a7959c1cf7404162cfed2))
+* **importer:** clarify entries and contest validation ([#644](https://github.com/openstreetlifting/openstreetlifting/issues/644)) ([34e33ec](https://github.com/openstreetlifting/openstreetlifting/commit/34e33eca66560a2ec984c5669a38d301b3cceb5a))
+
+
+### Bug Fixes
+
+* **frontend:** keep unranked competition entries visible ([20bf412](https://github.com/openstreetlifting/openstreetlifting/commit/20bf41230c05aebf8c7c0032254c60ad823c3ad4))
+
 ## [0.34.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.33.1...v0.34.0) (2026-09-23)
 
 
