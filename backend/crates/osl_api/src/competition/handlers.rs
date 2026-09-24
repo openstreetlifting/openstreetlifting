@@ -22,6 +22,8 @@ pub struct CompetitionListQuery {
     pub include: Include,
     #[serde(default, deserialize_with = "crate::shared::dto::optional_from_str")]
     pub status: Option<CompetitionStatus>,
+    /// Exact format in canonical MPDS order, e.g. PD for pull-up and dips only.
+    pub event: Option<String>,
     pub federation: Option<String>,
     pub country: Option<String>,
     pub year: Option<i32>,
@@ -36,6 +38,7 @@ impl CompetitionListQuery {
     fn to_db_filter(&self) -> CompetitionFilter {
         CompetitionFilter {
             status: self.status,
+            event: self.event.clone(),
             federation: self.federation.clone(),
             country: self.country.clone(),
             year: self.year,
@@ -62,7 +65,7 @@ pub struct CompetitionQuery {
     params(CompetitionListQuery),
     responses(
         (status = 200, description = "A page of competitions", body = PaginatedResponse<CompetitionResponse>),
-        (status = 400, description = "Invalid pagination or include value")
+        (status = 400, description = "Invalid pagination, include value or event code")
     ),
     tag = "competitions"
 )]
@@ -71,6 +74,9 @@ pub async fn list_competitions(
     Query(query): Query<CompetitionListQuery>,
 ) -> WebResult<Json<PaginatedResponse<CompetitionResponse>>> {
     query.pagination.validate().map_err(WebError::BadRequest)?;
+    if let Some(event) = &query.event {
+        osl_domain::event::movements(event).map_err(WebError::BadRequest)?;
+    }
     query
         .include
         .validate(LIST_INCLUDES)
@@ -187,4 +193,19 @@ pub async fn list_competition_countries(
 ) -> WebResult<Json<Vec<String>>> {
     let repo = CompetitionRepository::new(state.db.pool());
     Ok(Json(repo.list_distinct_countries().await?))
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/competitions/formats",
+    responses(
+        (status = 200, description = "Known formats across all competitions, alphabetical", body = Vec<String>),
+    ),
+    tag = "competitions"
+)]
+pub async fn list_competition_formats(
+    State(state): State<AppState>,
+) -> WebResult<Json<Vec<String>>> {
+    let repo = CompetitionRepository::new(state.db.pool());
+    Ok(Json(repo.list_distinct_formats().await?))
 }

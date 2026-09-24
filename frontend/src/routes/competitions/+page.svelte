@@ -2,6 +2,7 @@
   import type { PageData } from './$types';
   import { Card, Breadcrumb, FilterBar, SearchEmpty } from '$lib/components/ui';
   import CompetitionsTable from '$lib/components/competitions-table.svelte';
+  import CompetitionFormatFilter from '$lib/components/competition-format-filter.svelte';
   import { resolve } from '$app/paths';
   import { rankingsHref } from '$lib/state/rankings-return.svelte';
   import { slowNavigation } from '$lib/state/slow-navigation.svelte';
@@ -33,6 +34,7 @@
   let federation = $state(untrack(() => data.federation ?? null));
   let country = $state(untrack(() => data.country ?? null));
   let year = $state(untrack(() => data.year ?? null));
+  let event = $state(untrack(() => data.event ?? ''));
 
   // The page outlives a navigation, so a link that drops the query string has to
   // reach the controls as well as the rows.
@@ -41,12 +43,13 @@
     federation = data.federation ?? null;
     country = data.country ?? null;
     year = data.year ?? null;
+    event = data.event ?? '';
   });
 
-  const narrowed = $derived(Boolean(search.value || federation || country || year));
+  const narrowed = $derived(Boolean(search.value || federation || country || year || event));
   const canReset = $derived(narrowed || pagination.page > 1);
 
-  const activeFilters = $derived([federation, country, year].filter(Boolean).length);
+  const activeFilters = $derived([federation, country, year, event].filter(Boolean).length);
 
   // Paging and filtering live in the URL so a page of results can be linked to,
   // and so a filter narrows the whole archive rather than the current page.
@@ -60,6 +63,7 @@
     if (federation) params.set('federation', federation);
     if (country) params.set('country', country);
     if (year) params.set('year', String(year));
+    if (event) params.set('event', event);
     if (next.page && next.page > 1) params.set('page', String(next.page));
 
     const queryString = params.toString();
@@ -75,6 +79,7 @@
     federation = null;
     country = null;
     year = null;
+    event = '';
     return apply();
   }
 
@@ -140,6 +145,15 @@
         <option value={option}>{option}</option>
       {/each}
     </select>
+
+    <CompetitionFormatFilter
+      formats={data.facets.formats}
+      value={event}
+      onChange={(value) => {
+        event = value;
+        apply();
+      }}
+    />
 
     <select bind:value={year} onchange={() => apply()} class={SELECT}>
       <option value={null}>All Years</option>

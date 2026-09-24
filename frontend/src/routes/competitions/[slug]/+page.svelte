@@ -202,7 +202,7 @@
   );
 
   const formatLabel = $derived(
-    competition.movements.map((movement) => movement.movement_name).join(', ')
+    competition.movements.map(({ movement_name }) => movement_name).join(' · ')
   );
 
   const competitionDate = new Intl.DateTimeFormat('en-GB', {
@@ -376,6 +376,10 @@
         <dt class="text-muted">Location</dt>
         <dd class="text-ink">{location}</dd>
       {/if}
+      <dt class="text-muted">Format</dt>
+      <dd class="text-ink">
+        {formatLabel || (competition.status === 'upcoming' ? 'Format not announced' : '—')}
+      </dd>
       <dt class="text-muted">Federation</dt>
       <dd class="min-w-0 text-ink">
         <a
@@ -385,10 +389,6 @@
           >{federationLabel}</a
         >
       </dd>
-      {#if formatLabel}
-        <dt class="text-muted">Format</dt>
-        <dd class="text-ink">{formatLabel}</dd>
-      {/if}
       {#if competition.scoring}
         <dt class="text-muted">Scoring</dt>
         <dd class="text-ink">{competition.scoring === 'ris' ? 'RIS' : 'Total'}</dd>

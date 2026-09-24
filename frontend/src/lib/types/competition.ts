@@ -31,11 +31,13 @@ export interface Competition {
   end_date: string | null;
   federation: Federation;
   movements: CompetitionMovement[];
+  event_code?: string | null;
   lifter_count?: number;
 }
 
 export interface CompetitionFilters {
   status?: CompetitionStatus;
+  event?: string;
   federation?: string;
   country?: string;
   year?: number;
@@ -46,6 +48,7 @@ export interface CompetitionFilters {
 }
 
 export interface CompetitionFacets {
+  formats: string[];
   federations: string[];
   years: number[];
   countries: string[];

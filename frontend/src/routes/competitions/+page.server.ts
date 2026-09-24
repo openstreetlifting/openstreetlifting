@@ -3,6 +3,7 @@ import { competitionsService } from '$lib/server/api';
 import type { PageServerLoad } from './$types';
 import type { CompetitionStatus } from '$lib/types/competition';
 import { COMPETITION_STATUS_FILTERS } from '$lib/constants/competition';
+import { normalizeEvent } from '$lib/utils/competition-format';
 
 const RESULTS_STATUS: CompetitionStatus = 'completed';
 const UPCOMING_STATUS: CompetitionStatus = 'upcoming';
@@ -21,6 +22,7 @@ export const load: PageServerLoad = async ({ url }) => {
   const federation = readText(url.searchParams.get('federation'));
   const country = readText(url.searchParams.get('country'));
   const q = readText(url.searchParams.get('q'));
+  const event = normalizeEvent(url.searchParams.get('event')) || undefined;
   const year = Number(url.searchParams.get('year')) || undefined;
   const page = Number(url.searchParams.get('page') ?? 1) || 1;
 
@@ -34,13 +36,14 @@ export const load: PageServerLoad = async ({ url }) => {
         country,
         year,
         q,
+        event,
         direction: status === UPCOMING_STATUS ? 'asc' : 'desc',
         page,
         page_size: TABLE_PAGE_SIZE,
       }),
       competitionsService.getFacets(),
       competitionsService
-        .getAll({ status: other, federation, country, year, q, page_size: 1 })
+        .getAll({ status: other, federation, country, year, q, event, page_size: 1 })
         .then((response) => response.pagination.total_items)
         .catch(() => null),
     ]);
@@ -50,19 +53,31 @@ export const load: PageServerLoad = async ({ url }) => {
       ...(otherCount === null ? {} : { [other]: otherCount }),
     } as Partial<Record<CompetitionStatus, number>>;
 
-    return { competitions, pagination, facets, counts, status, federation, country, year, q };
+    return {
+      competitions,
+      pagination,
+      facets,
+      counts,
+      status,
+      federation,
+      country,
+      year,
+      q,
+      event,
+    };
   } catch (error) {
     console.error('Failed to load competitions', { status, page, error });
     return {
       competitions: [],
       pagination: { page: 1, page_size: TABLE_PAGE_SIZE, total_items: 0, total_pages: 0 },
-      facets: { federations: [], years: [], countries: [] },
+      facets: { federations: [], years: [], countries: [], formats: [] },
       counts: {} as Partial<Record<CompetitionStatus, number>>,
       status,
       federation,
       country,
       year,
       q,
+      event,
       error: 'Failed to load competitions',
     };
   }

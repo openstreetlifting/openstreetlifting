@@ -37,6 +37,7 @@
 >
   {#snippet head()}
     <th class="{TABLE_HEAD_CELL} text-secondary">Competition</th>
+    <th class="{TABLE_HEAD_CELL} text-secondary">Format</th>
     <th class="{TABLE_HEAD_CELL} text-secondary">{upcoming ? 'When' : 'Lifters'}</th>
     <th class="{TABLE_HEAD_CELL} text-secondary">Date</th>
     <th class="{TABLE_HEAD_CELL} text-secondary">Location</th>
@@ -55,6 +56,12 @@
           >
             {competition.name}
           </a>
+        </td>
+        <td
+          class="{TABLE_CELL} {CELL.data} whitespace-nowrap"
+          title={competition.movements.map(({ movement_name }) => movement_name).join(' · ')}
+        >
+          {competition.event_code ?? '—'}
         </td>
         <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap {upcoming ? '' : FIGURE}">
           {upcoming ? formatCountdown(competition.start_date) : (competition.lifter_count ?? 0)}

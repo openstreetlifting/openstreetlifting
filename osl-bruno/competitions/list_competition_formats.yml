@@ -1,0 +1,38 @@
+info:
+  name: list_competition_formats
+  type: http
+  seq: 6
+  tags:
+    - competitions
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/competitions/formats"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: 200 Response
+    description: Known formats across all competitions, alphabetical
+    request:
+      url: "{{baseUrl}}/api/v1/competitions/formats"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            "MPDS",
+            "PD"
+          ]

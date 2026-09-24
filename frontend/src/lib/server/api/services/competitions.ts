@@ -24,12 +24,13 @@ export const competitionsService = {
   },
 
   async getFacets(): Promise<CompetitionFacets> {
-    const [federations, years, countries] = await Promise.all([
+    const [federations, years, countries, formats] = await Promise.all([
       apiClient.get<string[]>('/api/v1/competitions/federations'),
       apiClient.get<number[]>('/api/v1/competitions/years'),
       apiClient.get<string[]>('/api/v1/competitions/countries'),
+      apiClient.get<string[]>('/api/v1/competitions/formats'),
     ]);
 
-    return { federations, years, countries };
+    return { federations, years, countries, formats };
   },
 };

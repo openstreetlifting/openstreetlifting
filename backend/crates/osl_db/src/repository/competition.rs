@@ -75,6 +75,11 @@ impl<'a> CompetitionRepository<'a> {
     fn push_filters(query: &mut QueryBuilder<Postgres>, filter: &CompetitionFilter) {
         query.push(" WHERE TRUE ");
 
+        if let Some(event) = &filter.event {
+            query.push(" AND c.event_code = ");
+            query.push_bind(event.clone());
+        }
+
         if let Some(status) = filter.status {
             query.push(" AND c.status = ");
             query.push_bind(status.as_str());
@@ -200,6 +205,15 @@ impl<'a> CompetitionRepository<'a> {
         .await?;
 
         Ok(countries)
+    }
+
+    pub async fn list_distinct_formats(&self) -> Result<Vec<String>> {
+        Ok(sqlx::query_scalar(
+            "SELECT DISTINCT event_code FROM competitions
+             WHERE event_code IS NOT NULL ORDER BY event_code",
+        )
+        .fetch_all(self.pool)
+        .await?)
     }
 
     pub async fn find_by_id(&self, id: Uuid) -> Result<CompetitionRow> {

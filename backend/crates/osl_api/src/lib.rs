@@ -51,6 +51,7 @@ impl AppState {
         competition::handlers::list_competition_federations,
         competition::handlers::list_competition_years,
         competition::handlers::list_competition_countries,
+        competition::handlers::list_competition_formats,
         athlete::handlers::list_athletes,
         athlete::handlers::get_athlete,
         ranking::handler::get_global_ranking,
