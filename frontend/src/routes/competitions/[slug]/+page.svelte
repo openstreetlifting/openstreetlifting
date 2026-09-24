@@ -56,7 +56,6 @@
   import type { Attempt, Participant, CategoryDetail } from '$lib/types/competition';
   import { GENDERS, asRankingMetric, type AthleteStatus } from '$lib/types/enums';
   import { hasRankingResult } from '$lib/utils/competition-results';
-  import { competitionFormat, formatMovements } from '$lib/utils/competition-format';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '$lib/constants/athlete-status';
   import { FIELD, TEXT } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
@@ -203,7 +202,7 @@
   );
 
   const formatLabel = $derived(
-    formatMovements(competitionFormat(competition.movements)).join(' · ')
+    competition.movements.map(({ movement_name }) => movement_name).join(' · ')
   );
 
   const competitionDate = new Intl.DateTimeFormat('en-GB', {

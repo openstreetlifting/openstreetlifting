@@ -5,7 +5,6 @@
   import { resolve } from '$app/paths';
   import { federationPath, formatCountdown, formatDate, formatLocation } from '$lib/utils';
   import { CELL, FIGURE, TEXT_CELL } from '$lib/constants/table';
-  import { competitionFormat, formatMovements } from '$lib/utils/competition-format';
 
   interface Props {
     competitions: Competition[];
@@ -49,7 +48,6 @@
 
   {#snippet body(rows)}
     {#each rows as competition (competition.slug)}
-      {@const format = competitionFormat(competition.movements)}
       <tr class="transition-colors">
         <td class="{TABLE_CELL} {CELL.identity}">
           <a
@@ -61,9 +59,9 @@
         </td>
         <td
           class="{TABLE_CELL} {CELL.data} whitespace-nowrap"
-          title={formatMovements(format).join(' · ')}
+          title={competition.movements.map(({ movement_name }) => movement_name).join(' · ')}
         >
-          {format || '—'}
+          {competition.event_code ?? '—'}
         </td>
         <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap {upcoming ? '' : FIGURE}">
           {upcoming ? formatCountdown(competition.start_date) : (competition.lifter_count ?? 0)}

@@ -1,5 +1,3 @@
-import type { CompetitionMovement } from '$lib/types/competition';
-
 export const FORMAT_MOVEMENTS = [
   { code: 'M', label: 'Muscle-up' },
   { code: 'P', label: 'Pull-up' },
@@ -13,10 +11,6 @@ export function normalizeEvent(raw: string | null | undefined): string {
   return FORMAT_MOVEMENTS.filter(({ code }) => raw.includes(code))
     .map(({ code }) => code)
     .join('');
-}
-
-export function competitionFormat(movements: CompetitionMovement[]): string {
-  return normalizeEvent(movements.map(({ code }) => code).join(''));
 }
 
 export function formatMovements(event: string): string[] {

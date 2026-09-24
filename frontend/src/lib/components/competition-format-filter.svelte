@@ -1,6 +1,5 @@
 <script lang="ts">
   import { ChevronIcon } from '$lib/components/icons';
-  import { FIELD } from '$lib/constants/typography';
   import { FORMAT_MOVEMENTS, formatMovements, normalizeEvent } from '$lib/utils/competition-format';
 
   let {
@@ -35,26 +34,29 @@
 
 <svelte:window onpointerdown={dismiss} onkeydown={escape} />
 
-<details bind:this={dropdown} class="relative w-full sm:w-auto">
+<details bind:this={dropdown} class="group relative w-full open:z-30 sm:w-48">
   <summary
     aria-label="Competition format: {label}"
-    class="{FIELD} flex cursor-pointer list-none items-center gap-2 px-3 py-2 [&::-webkit-details-marker]:hidden"
+    class="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-stroke bg-surface px-3 py-2 text-xs text-secondary outline-none hover:border-stroke-strong hover:text-ink focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas group-open:border-stroke-strong group-open:text-ink [&::-webkit-details-marker]:hidden"
   >
-    <span class="truncate sm:max-w-64" title={label}>{label}</span>
-    <ChevronIcon class="ml-auto h-3.5 w-3.5 shrink-0" />
+    <span class="truncate" title={label}>{label}</span>
+    <ChevronIcon class="ml-auto h-3.5 w-3.5 shrink-0 group-open:rotate-180" />
   </summary>
   <div
-    class="absolute left-0 z-20 mt-2 w-full min-w-64 rounded-lg border border-stroke bg-surface p-3 shadow-lg"
+    class="absolute left-0 mt-1.5 w-full overflow-hidden rounded-lg border border-stroke-strong bg-surface shadow-lg shadow-overlay/20"
   >
-    <fieldset>
-      <legend class="mb-2 text-sm text-secondary">Match these movements exactly</legend>
+    <fieldset class="space-y-0.5 p-1">
+      <legend class="sr-only">Match these movements exactly</legend>
       {#each choices as movement (movement.code)}
+        {@const selected = value.includes(movement.code)}
         <label
-          class="flex cursor-pointer items-center gap-3 rounded px-2 py-2 text-sm text-ink hover:bg-surface-hover"
+          class="relative flex min-h-11 cursor-pointer items-center gap-2.5 rounded px-2.5 text-sm text-ink sm:min-h-9 {selected
+            ? 'bg-surface-selected'
+            : 'hover:bg-surface-hover'}"
         >
           <input
             type="checkbox"
-            checked={value.includes(movement.code)}
+            checked={selected}
             onchange={(event) =>
               onChange(
                 normalizeEvent(
@@ -63,18 +65,37 @@
                     : value.replace(movement.code, '')
                 )
               )}
-            class="h-4 w-4 accent-action"
+            class="size-4 shrink-0 cursor-pointer appearance-none rounded border border-stroke-strong outline-none checked:border-action checked:bg-action focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           />
-          {movement.label}
+          {#if selected}
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 16 16"
+              fill="none"
+              class="pointer-events-none absolute left-3 size-3 text-on-action"
+            >
+              <path
+                d="m3 8 3.25 3.25L13 4.5"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          {/if}
+          <span>{movement.label}</span>
         </label>
       {/each}
     </fieldset>
-    <button
-      type="button"
-      disabled={!value}
-      onclick={() => onChange('')}
-      class="mt-2 px-2 py-1 text-sm text-secondary underline hover:text-ink disabled:opacity-50"
-      >Clear movements</button
-    >
+    <div class="border-t border-stroke p-1">
+      <button
+        type="button"
+        aria-label="Clear movements"
+        disabled={!value}
+        onclick={() => onChange('')}
+        class="min-h-11 w-full rounded px-2.5 text-left text-xs text-secondary outline-none enabled:cursor-pointer enabled:hover:bg-surface-hover enabled:hover:text-ink enabled:active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-focus disabled:text-faint sm:min-h-8"
+        >Clear selection</button
+      >
+    </div>
   </div>
 </details>

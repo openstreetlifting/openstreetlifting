@@ -36,6 +36,7 @@ function data(event = ''): PageData {
       competition_id: String(i),
       slug: `meet-${i}`,
       name: `Meet ${i}`,
+      event_code: format || undefined,
       created_at: '',
       status: 'completed',
       country: 'FR',

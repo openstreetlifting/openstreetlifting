@@ -31,6 +31,7 @@ export interface Competition {
   end_date: string | null;
   federation: Federation;
   movements: CompetitionMovement[];
+  event_code?: string | null;
   lifter_count?: number;
 }
 
