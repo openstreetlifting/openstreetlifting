@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "https://www.instagram.com/p/DT5SguADIBz/",
+    "https://www.streetliftings.fr/wp-content/uploads/2025/09/Championnat-Normandie-Street-Lifting.jpg",
+]
+
+[competition]
+name = "Normandie"
+start_date = "2026-01-18"
+city = "Bretteville-sur-Odon"
+region = "Normandie"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+country = "FR"
