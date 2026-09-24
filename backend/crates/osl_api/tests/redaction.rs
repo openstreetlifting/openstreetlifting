@@ -29,7 +29,7 @@ fn entry(first: &str, last: &str, native: Option<&str>) -> AthleteData {
         last_name: last.to_string(),
         native_name: native.map(str::to_string),
         disambiguation: None,
-        gender: Some(Gender::M),
+        gender: Gender::M,
         country: Some(CountryCode::parse("FR").unwrap()),
         bodyweight: Some(decimal("78.5")),
         bodyweight_source: None,

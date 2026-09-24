@@ -203,7 +203,6 @@ fn recover(canonical: &mut CanonicalFormat, edition: Edition) -> Outcome {
     for category in &mut canonical.categories {
         let bounds = category.bounds();
         let label = category.label();
-        let category_gender = category.gender;
 
         for athlete in &mut category.athletes {
             let ineligible = if athlete.bodyweight.is_some() {
@@ -222,7 +221,7 @@ fn recover(canonical: &mut CanonicalFormat, edition: Edition) -> Outcome {
                 continue;
             };
 
-            let gender = athlete.gender.unwrap_or(category_gender);
+            let gender = athlete.gender;
             let bodyweight = athlete.complete_total().and_then(|total| {
                 if athlete
                     .reported_ris_edition

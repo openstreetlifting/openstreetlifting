@@ -1,23 +1,13 @@
 use osl_domain::Edition;
 use osl_importer::canonical::{models::BodyweightSource, store};
-use std::{
-    path::PathBuf,
-    process::Command,
-    time::{SystemTime, UNIX_EPOCH},
-};
+use std::{path::PathBuf, process::Command};
+use uuid::Uuid;
 
 struct Fixture(PathBuf);
 
 impl Fixture {
     fn new(rows: &str) -> Self {
-        let directory = std::env::temp_dir().join(format!(
-            "osl-recovery-cli-{}-{}",
-            std::process::id(),
-            SystemTime::now()
-                .duration_since(UNIX_EPOCH)
-                .unwrap()
-                .as_nanos()
-        ));
+        let directory = std::env::temp_dir().join(format!("osl-recovery-cli-{}", Uuid::new_v4()));
         std::fs::create_dir(&directory).unwrap();
         std::fs::write(directory.join("competition.toml"), "event = \"MPDS\"\nsources = [\"Synthetic test results\"]\n[competition]\nname = \"Recovery test\"\nstart_date = \"2023-09-30\"\nend_date = \"2023-09-30\"\ncountry = \"FR\"\nstatus = \"completed\"\n[federation]\nname = \"Test federation\"\n").unwrap();
         let header = "Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg\n";

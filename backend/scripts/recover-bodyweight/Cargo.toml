@@ -10,3 +10,6 @@ clap = { version = "4", features = ["derive"] }
 osl_domain = { path = "../../crates/osl_domain" }
 osl_importer = { path = "../../crates/osl_importer" }
 rust_decimal.workspace = true
+
+[dev-dependencies]
+uuid.workspace = true

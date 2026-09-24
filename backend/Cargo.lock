@@ -1558,6 +1558,7 @@ dependencies = [
  "osl_domain",
  "osl_importer",
  "rust_decimal",
+ "uuid",
 ]
 
 [[package]]

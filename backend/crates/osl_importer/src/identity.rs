@@ -3,7 +3,7 @@
 
 use osl_domain::normalized_name::NormalizedAthleteName;
 
-use crate::canonical::models::{AthleteData, CategoryData};
+use crate::canonical::models::AthleteData;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AthleteQuery {
@@ -36,15 +36,13 @@ impl AthleteQuery {
                 .is_none_or(|number| Some(number) == disambiguation)
     }
 
-    pub fn matches_entry(&self, athlete: &AthleteData, category: &CategoryData) -> bool {
+    pub fn matches_entry(&self, athlete: &AthleteData) -> bool {
         if match_key(&athlete.display_name()) != self.match_key {
             return false;
         }
 
-        let gender = athlete.gender.unwrap_or(category.gender);
-
         self.matches_parts(
-            gender.as_str(),
+            athlete.gender.as_str(),
             athlete
                 .country
                 .as_ref()

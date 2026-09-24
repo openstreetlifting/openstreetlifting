@@ -43,7 +43,7 @@ impl<'a> CanonicalTransformer<'a> {
             for category in &canonical.categories {
                 for athlete in &category.athletes {
                     athlete
-                        .validate_score_source(category.gender, &canonical.movements)
+                        .validate_score_source(&canonical.movements)
                         .map_err(|reason| {
                             ImporterError::ValidationError(format!(
                                 "{}: {reason}",
@@ -439,7 +439,7 @@ impl<'a> CanonicalTransformer<'a> {
         imported: &mut ImportedFacts,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
-        let athlete_id = self.upsert_athlete(athlete, category, tx).await?;
+        let athlete_id = self.upsert_athlete(athlete, tx).await?;
         // Preserve the published score; bodyweight allows a separate ranking score.
         let ranking_ris = athlete.reported_ris.filter(|_| {
             athlete.status == osl_domain::AthleteStatus::Competed
@@ -500,10 +500,9 @@ impl<'a> CanonicalTransformer<'a> {
     async fn upsert_athlete(
         &self,
         athlete: &AthleteData,
-        category: &CategoryData,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<Uuid> {
-        let gender = athlete.gender.unwrap_or(category.gender).as_str();
+        let gender = athlete.gender.as_str();
 
         let script = athlete
             .native_name
@@ -643,14 +642,7 @@ impl<'a> CanonicalTransformer<'a> {
         imported: &mut ImportedFacts,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
-        let max_weight = match &lift.attempts {
-            Some(attempts) => attempts
-                .iter()
-                .filter(|a| a.is_successful)
-                .map(|a| a.weight)
-                .max(),
-            None => lift.best_lift,
-        };
+        let max_weight = lift.best();
 
         let lift_id = sqlx::query_scalar!(
             r#"

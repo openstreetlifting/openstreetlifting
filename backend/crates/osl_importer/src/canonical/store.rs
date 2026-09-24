@@ -303,7 +303,7 @@ fn read_entry(
         last_name,
         native_name,
         disambiguation,
-        gender: Some(gender),
+        gender,
         country,
         bodyweight,
         bodyweight_source,
@@ -421,13 +421,7 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                 .into_iter()
                 .collect();
 
-            row.push(
-                athlete
-                    .gender
-                    .ok_or_else(|| ImporterError::ValidationError("Sex is required".into()))?
-                    .as_str()
-                    .to_string(),
-            );
+            row.push(athlete.gender.as_str().to_string());
             if layout.mixed {
                 row.push(if category.gender == Gender::Mx {
                     "MX".into()
