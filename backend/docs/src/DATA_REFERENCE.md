@@ -81,9 +81,10 @@ whenever you add results.
 
 ### Sources
 
-Put source links or short descriptions in the `sources` list, above
-`[competition]`. Include every source used to compile the results. This field is
-optional in the format, but sources help others check and correct the archive.
+Include at least one source link, archived file path, or description in `sources`,
+above `[competition]`, for both announcements and results. Identify the original
+publication or document so someone else can check it. Empty lists and blank
+references are rejected. Include every source used to compile the results.
 
 ## entries.csv
 

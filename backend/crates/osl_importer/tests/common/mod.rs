@@ -19,7 +19,7 @@ pub fn decimal(raw: &str) -> Decimal {
 
 pub fn competition(slug: &str, categories: Vec<CategoryData>) -> CanonicalFormat {
     CanonicalFormat {
-        sources: Vec::new(),
+        sources: vec!["Synthetic test results".into()],
         competition: CompetitionData {
             name: slug.to_string(),
             slug: slug.to_string(),

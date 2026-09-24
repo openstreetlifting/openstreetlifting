@@ -56,7 +56,7 @@ fn entry(first: &str, last: &str, native: Option<&str>) -> AthleteData {
 
 fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
     CanonicalFormat {
-        sources: Vec::new(),
+        sources: vec!["Synthetic test results".into()],
         competition: CompetitionData {
             name: slug.to_string(),
             slug: slug.to_string(),

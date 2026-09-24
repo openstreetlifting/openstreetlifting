@@ -1,4 +1,5 @@
 event = "MPDS"
+sources = ["FNSL CNSL 2024 official results spreadsheet supplied by the federation (https://github.com/openstreetlifting/openstreetlifting/pull/518)"]
 
 [competition]
 name = "CNSL"

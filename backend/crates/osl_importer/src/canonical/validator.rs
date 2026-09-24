@@ -44,6 +44,17 @@ impl CanonicalValidator {
         Self::validate_countries(std::slice::from_ref(canonical))?;
         let mut report = ValidationReport::default();
 
+        if canonical.sources.is_empty()
+            || canonical
+                .sources
+                .iter()
+                .any(|source| source.trim().is_empty())
+        {
+            report
+                .errors
+                .push("sources must contain at least one reference and no empty references".into());
+        }
+
         if canonical.competition.name.is_empty() {
             report
                 .errors
@@ -401,7 +412,7 @@ mod tests {
 
     fn announced() -> CanonicalFormat {
         CanonicalFormat {
-            sources: Vec::new(),
+            sources: vec!["Synthetic test results".into()],
             competition: CompetitionData {
                 name: "Test Open".to_string(),
                 slug: "test-open".to_string(),

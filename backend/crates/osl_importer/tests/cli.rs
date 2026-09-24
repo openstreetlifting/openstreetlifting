@@ -101,6 +101,45 @@ fn dry_run_validates_files_without_a_database() {
 }
 
 #[test]
+fn missing_or_blank_sources_block_preparation_and_import() {
+    let workspace = Workspace::new();
+    for canonical in [
+        fixture("results", "Alpha"),
+        common::announcement("announced"),
+    ] {
+        let directory = workspace.write(&canonical);
+        let metadata = directory.join("competition.toml");
+        let original = std::fs::read_to_string(&metadata).unwrap();
+        for replacement in [
+            "",
+            "sources = []",
+            "sources = [\" \" ]",
+            "sources = [\"Results sheet\", \"\"]",
+        ] {
+            let invalid = original
+                .lines()
+                .map(|line| {
+                    if line.starts_with("sources =") {
+                        replacement
+                    } else {
+                        line
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join("\n");
+            std::fs::write(&metadata, &invalid).unwrap();
+            for command in ["prepare", "competitions"] {
+                let output =
+                    workspace.run(&[command, directory.to_str().unwrap(), "--dry-run"], None);
+                assert!(!output.status.success());
+                assert!(String::from_utf8_lossy(&output.stderr).contains("sources"));
+                assert_eq!(std::fs::read_to_string(&metadata).unwrap(), invalid);
+            }
+        }
+    }
+}
+
+#[test]
 fn removed_commands_and_flags_are_rejected() {
     let workspace = Workspace::new();
     for args in [
