@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = ["https://www.instagram.com/p/DQ4_iIdDRfG/"]
+
+[competition]
+name = "Espoirs"
+start_date = "2025-11-08"
+end_date = "2025-11-09"
+city = "La Courneuve"
+venue = "On Air La Courneuve"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
