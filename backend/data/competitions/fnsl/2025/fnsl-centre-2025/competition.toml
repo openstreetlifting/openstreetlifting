@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "https://www.instagram.com/p/DHijxlLt1IZ/",
+    "https://calibase.org/competitions/fnsl-idf-centre-2025-g0627yn2/photos/765xm40i",
+]
+
+[competition]
+name = "Interrégionale Île-de-France / Centre"
+start_date = "2025-03-15"
+end_date = "2025-03-16"
+city = "La Courneuve"
+venue = "On Air Fitness"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+country = "FR"
