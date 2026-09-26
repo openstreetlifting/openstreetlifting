@@ -1,0 +1,16 @@
+event = "M"
+sources = ["https://www.instagram.com/p/DS43mM9DDPo/"]
+
+[competition]
+name = "Muscle Up Only"
+start_date = "2025-12-06"
+city = "Villepinte"
+venue = "Fitness Park Villepinte"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
