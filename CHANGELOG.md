@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.37.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.36.0...v0.37.0) (2026-09-27)
+
+
+### Features
+
+* **data:** import FNSL Centre 2025 ([#650](https://github.com/openstreetlifting/openstreetlifting/issues/650)) ([3ba22b4](https://github.com/openstreetlifting/openstreetlifting/commit/3ba22b47e2f10c10e532458ae0373228e3eb17cc))
+* **data:** import FNSL Espoirs 2025 results ([#652](https://github.com/openstreetlifting/openstreetlifting/issues/652)) ([d26f8dc](https://github.com/openstreetlifting/openstreetlifting/commit/d26f8dc9cbbef2fb6b0a794ab86b00feed85114c))
+* **data:** import FNSL Muscle Up Only 2025 results ([#651](https://github.com/openstreetlifting/openstreetlifting/issues/651)) ([6584f48](https://github.com/openstreetlifting/openstreetlifting/commit/6584f48b0a44364b8b593e5de574ac475b7f0e99))
+* **data:** import FNSL Normandie 2026 ([#648](https://github.com/openstreetlifting/openstreetlifting/issues/648)) ([613fba8](https://github.com/openstreetlifting/openstreetlifting/commit/613fba8c5fa7d10ce2d8086cb6928ab0692b7be1))
+
 ## [0.36.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.35.0...v0.36.0) (2026-09-24)
 
 
