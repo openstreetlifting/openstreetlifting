@@ -1,0 +1,16 @@
+event = "P"
+sources = ["https://www.instagram.com/p/DS436_JjIm4/"]
+
+[competition]
+name = "Pull Up Only"
+start_date = "2025-12-07"
+city = "Villepinte"
+venue = "Fitness Park Villepinte"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
