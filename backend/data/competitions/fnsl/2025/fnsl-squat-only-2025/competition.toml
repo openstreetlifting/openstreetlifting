@@ -1,0 +1,16 @@
+event = "S"
+sources = ["https://www.instagram.com/p/DS5IAdYDJz-/"]
+
+[competition]
+name = "Squat Only"
+start_date = "2025-12-14"
+city = "Villepinte"
+venue = "Fitness Park Villepinte"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
