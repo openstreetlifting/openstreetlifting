@@ -1,0 +1,51 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Miranto,Andrianarisoa,,FR,64.9,,307.5,competed,,,,,,15,,,,50,,,,87.5,,,,155
+M,66,Menouer,Debbouza,,FR,64.2,,297.5,competed,,,,,,15,,,,65,,,,82.5,,,,135
+M,66,Valentin,Holluigue,,FR,64.7,,300,competed,,,,,,17.5,,,,55,,,,75,,,,152.5
+M,66,Anderson,Kouadio,,FR,61,,298.75,competed,,,,,,13.75,,,,60,,,,77.5,,,,147.5
+M,66,Rémi,Ngouanesavanh,,FR,65.3,86.89,352.5,competed,,2024,,,,25,,,,70,,,,95,,,,162.5
+M,66,Silevan,Rames,,FR,64.9,,321.25,competed,,,,,,23.75,,,,62.5,,,,100,,,,135
+M,66,Matias,Rei,,FR,64.4,81.74,327.5,competed,,2024,,,,15,,,,65,,,,100,,,,147.5
+M,73,Nicolas,Brecqueville,,FR,72.2,94.64,421.25,competed,,2024,,,,21.25,,,,65,,,,115,,,,220
+M,73,Maxime,Gasperin,,FR,72.4,84.04,375,competed,,2024,,,,20,,,,70,,,,110,,,,175
+M,73,Nathan,Gombauld,,FR,72.4,,,disqualified,Bombed muscle-up,,,,,,,,,60,,,,90,,,,165
+M,73,Ronan,Pouillot,,FR,72,,332.5,competed,,,,,,17.5,,,,57.5,,,,92.5,,,,165
+M,73,Liam,Rossignot,,FR,71.5,88.96,392.5,competed,,2024,,,,27.5,,,,75,,,,105,,,,185
+M,80,Mikael,Gomes Correia,,FR,76,83.3,387.5,competed,,2024,,,,22.5,,,,80,,,,100,,,,185
+M,80,Douniel,Meniai,,FR,78.3,,,disqualified,Bombed squat,,,,,13.75,,,,65,,,,95,,,,
+M,80,Eliott,Patois,,FR,78.7,,307.5,competed,,,,,,7.5,,,,55,,,,80,,,,165
+M,80,Titouan,Poitier,,FR,78.8,,345,competed,,,,,,5,,,,70,,,,102.5,,,,167.5
+M,80,Axel,Romani,,FR,78.6,,310,competed,,,,,,11.25,,,,47.5,,,,91.25,,,,160
+M,80,Andy,Sawron,,FR,78.1,,322.5,competed,,,,,,10,,,,47.5,,,,95,,,,170
+M,80,Samy,Vilhes,,FR,79.2,83.33,400,competed,,2024,,,,12.5,,,,66.25,,,,116.25,,,,205
+M,87,Max,Amblard,,FR,86.2,90.16,455,competed,,2024,,,,20,,,,75,,,,105,,,,255
+M,87,Juste,Bakouma Molouto,,FR,85.5,,347.5,competed,,,,,,2.5,,,,60,,,,90,,,,195
+M,87,Simon,Benazouz,,FR,86.3,,387.5,competed,,,,,,15,,,,60,,,,95,,,,217.5
+M,87,Julien,Dubois,,FR,86.4,,355,competed,,,,,,22.5,,,,72.5,,,,105,,,,155
+M,87,Theo,Keil,,FR,84.6,,,disqualified,Bombed squat,,,,,17.5,,,,70,,,,85,,,,
+M,87,Timothee,Merandon,,FR,84.7,,382.5,competed,,,,,,20,,,,60,,,,112.5,,,,190
+M,87,Denilson,Monteiro,,FR,84.5,,370,competed,,,,,,15,,,,70,,,,100,,,,185
+M,94,Riwan,Bettahrat,,FR,88.3,,372.5,competed,,,,,,20,,,,70,,,,92.5,,,,190
+M,94,Christian Kevin,Bikai,,CM,89.2,,,disqualified,Bombed muscle-up,,,,,,,,,67.5,,,,132.5,,,,240
+M,94,Hakim,Chaalane,,FR,92.1,83.05,430,competed,,2024,,,,10,,,,60,,,,115,,,,245
+M,94,Amir,El Hassani,,FR,88,81.97,417.5,competed,,2024,,,,20,,,,82.5,,,,115,,,,200
+M,94,Leo,Fleury,,FR,93,,382.5,competed,,,,,,15,,,,70,,,,120,,,,177.5
+M,94,Matthias,Memheld,,FR,89.6,,306.25,competed,,,,,,8.75,,,,52.5,,,,72.5,,,,172.5
+M,94,Quentin,Renaud,,FR,89.3,,350,competed,,,,,,15,,,,65,,,,100,,,,170
+M,94+,Hugo,Desnoues,,FR,102.9,,366.25,competed,,,,,,10,,,,61.25,,,,90,,,,205
+M,94+,Jonathan,Florent,,FR,97,,363.75,competed,,,,,,16.25,,,,72.5,,,,100,,,,175
+M,94+,Yolan,Vilain,,FR,104.8,,320,competed,,,,,,2.5,,,,50,,,,82.5,,,,185
+F,52,Amandine,Ramos,,FR,51.9,,,disqualified,Bombed muscle-up,,,,,,,,,22.5,,,,30,,,,110
+F,57,Marion,Canipel,,FR,56.2,86.37,196.25,competed,,2024,,,,2.5,,,,33.75,,,,35,,,,125
+F,57,Lenola,Dorlan de Polignac,,FR,56.8,75.39,172.5,competed,,2024,,,,2.5,,,,23.75,,,,41.25,,,,105
+F,57,Estelle,Mousset,,FR,55.2,59.18,132.75,competed,,2024,,,,0.25,,,,20,,,,32.5,,,,80
+F,63,Noemie,Algret,,FR,59.5,,,disqualified,Bombed muscle-up,,,,,,,,,17.5,,,,21.25,,,,75
+F,63,Marie,Bellego,,FR,59.6,69.83,163.75,competed,,2024,,,,3.75,,,,25,,,,27.5,,,,107.5
+F,63,Sarah,Folliard,,FR,59,63.7,148.75,competed,,2024,,,,6.25,,,,20,,,,37.5,,,,85
+F,63,Aziliz,Gloze,,FR,59.4,63.09,147.75,competed,,2024,,,,0.25,,,,30,,,,37.5,,,,80
+F,63,Anais,Rakowski,,FR,60.9,61.46,145.25,competed,,2024,,,,0.25,,,,15,,,,25,,,,105
+F,63,Chloe,Rossignol,,FR,61.1,64.57,152.75,competed,,2024,,,,0.25,,,,15,,,,25,,,,112.5
+F,63,Jade,Silvestri,,FR,60.3,70.58,166.25,competed,,2024,,,,5,,,,23.75,,,,35,,,,102.5
+F,70,Mylene,Lemoigne,,FR,63.5,,,disqualified,Bombed muscle-up,,,,,,,,,30,,,,50,,,,100
+F,70,Adeline,Rochereux,,FR,67.6,,,disqualified,Bombed muscle-up,,,,,,,,,15,,,,20,,,,125
+F,70+,Alexandra,Gautheron,,FR,77.4,,,disqualified,Bombed muscle-up,,,,,,,,,15,,,,41.25,,,,110
