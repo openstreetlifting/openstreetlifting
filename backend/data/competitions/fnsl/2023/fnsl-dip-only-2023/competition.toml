@@ -1,0 +1,17 @@
+event = "D"
+sources = ["https://www.instagram.com/p/CzPee3Yo-oh/"]
+
+[competition]
+name = "Dips Only"
+start_date = "2023-11-04"
+end_date = "2023-11-05"
+city = "La Courneuve"
+venue = "On Air La Courneuve"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
