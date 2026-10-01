@@ -1,0 +1,17 @@
+event = "P"
+sources = ["https://www.instagram.com/p/Cy_AV09I80i/"]
+
+[competition]
+name = "Pull Only"
+start_date = "2023-10-28"
+end_date = "2023-10-29"
+city = "La Courneuve"
+venue = "On Air La Courneuve"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
