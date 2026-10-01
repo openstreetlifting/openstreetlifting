@@ -1,0 +1,53 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Mickael,Antonio,,FR,64.8,,333,competed,,,,,12.5,,,,62.5,,,,113,,,,145
+M,66,Charly,Defois,,FR,64.9,,326.25,competed,,,,,17.5,,,,58.75,,,,85,,,,165
+M,66,Hugo,Giordanengo,,FR,64.1,,305,competed,,,,,20,,,,60,,,,75,,,,150
+M,66,Corentin,Goulmy,,FR,65.5,,318.75,competed,,,,,20,,,,61.25,,,,75,,,,162.5
+M,66,Luck,Menn,,FR,65.7,,312.5,competed,,,,,10,,,,47.5,,,,95,,,,160
+M,66,Romain,Richert,,FR,64.8,,298.75,competed,,,,,13.75,,,,52.5,,,,87.5,,,,145
+M,66,Nicolas,Tambia,,FR,65.8,,358.5,competed,,,,,12.5,,,,60,,,,105,,,,181
+M,73,Evan,Devecchi,,FR,73,,346,competed,,,,,16,,,,70,,,,100,,,,160
+M,73,Junior,Gastrin,,FR,72.5,,381.25,competed,,,,,31.25,,,,77.5,,,,102.5,,,,170
+M,73,Winess,Lakhnati,,FR,72.7,,360,competed,,,,,5,,,,60,,,,110,,,,185
+M,73,Theo,Langard,,FR,72.2,,347.5,competed,,,,,20,,,,70,,,,90,,,,167.5
+M,73,Ali,Lessig,,FR,71.6,,366.25,competed,,,,,23.75,,,,75,,,,100,,,,167.5
+M,73,Arthur,Pignon,,FR,72.6,,338.5,competed,,,,,18.5,,,,60,,,,90,,,,170
+M,73,Tom,Renard,,FR,71.8,,346.25,competed,,,,,15,,,,56.25,,,,90,,,,185
+M,73,Mounir,Rhyat,,FR,72.2,,330,competed,,,,,10,,,,60,,,,100,,,,160
+M,80,Bakary,Ba,,FR,79,,403.75,competed,,,,,24,,,,74.75,,,,110,,,,195
+M,80,Adrien,Legendre,,FR,78.4,,359.5,competed,,,,,25,,,,72,,,,92.5,,,,170
+M,80,Esteban,Lopez,,FR,79.1,,,disqualified,Bombed muscle-up,,,,,,,,70,,,,120,,,,205
+M,80,Hugo,Quenet,,FR,78.7,,390,competed,,,,,15,,,,67.5,,,,100,,,,207.5
+M,80,Enzo,Rauscher,,FR,78.8,,352.5,competed,,,,,20,,,,60,,,,110,,,,162.5
+M,80,Clement,Ribert,,FR,79.2,,388,competed,,,,,12.5,,,,75,,,,106.5,,,,194
+M,80,Faris,Taieb,,FR,79,,362.5,competed,,,,,17.5,,,,60,,,,95,,,,190
+M,87,Fabio,Abguillerm,,FR,86.6,,403.75,competed,,,,,17.5,,,,76.25,,,,115,,,,195
+M,87,Emmanuel,Diba,,FR,86.8,,379.5,competed,,,,,15,,,,72,,,,107.5,,,,185
+M,87,Paul,Joignant,,FR,85.6,,395,competed,,,,,17.5,,,,67.5,,,,110,,,,200
+M,87,Loic,Magadur,,FR,83.6,,420,competed,,,,,2.5,,,,70,,,,142.5,,,,205
+M,87,Yaseen,Naciri,,FR,84.4,,397.5,competed,,,,,27.5,,,,75,,,,105,,,,190
+M,87,Hugo,Poulet,,FR,82.9,,357.5,competed,,,,,12.5,,,,50,,,,105,,,,190
+M,94,Gaëtan,Escrivan,,FR,89.2,,372,competed,,,,,15,,,,56,,,,111,,,,190
+M,94,Bakary,Fofana,,FR,91.8,,410.5,competed,,,,,23,,,,87.5,,,,120,,,,180
+M,94,Alexis,Gaborit,,FR,88.5,,400,competed,,,,,20,,,,80,,,,112.5,,,,187.5
+M,94,Alexis,Gitton,,FR,90.5,,379.25,competed,,,,,2.5,,,,61.25,,,,95,,,,220.5
+M,94,Lucien,Memery,,FR,90.2,,386.25,competed,,,,,10,,,,65,,,,106.25,,,,205
+M,94,Tiago,Pereira,,FR,92.1,,400.75,competed,,,,,32.5,,,,83.25,,,,107.5,,,,177.5
+M,94,Louis,Vaquier,,FR,88.3,,302.5,competed,,,,,2.5,,,,47.5,,,,87.5,,,,165
+M,104,Mehdi,Brahimi,,FR,97,,330,competed,,,,,1.25,,,,45,,,,96.25,,,,187.5
+M,104,Jonathan,Florent,,FR,101.4,,310,competed,,,,,5,,,,50,,,,95,,,,160
+M,104,Remi,Hennion,,FR,97.1,,332.5,competed,,,,,10,,,,62.5,,,,80,,,,180
+M,104,Damien,Nabot,,FR,98.5,,375,competed,,,,,5,,,,65,,,,115,,,,190
+F,57,Ambre,Degremons,,FR,55.1,,158,competed,,,,,3,,,,20,,,,32.5,,,,102.5
+F,57,Ambre,Desmons,,FR,57,,180,competed,,,,,12.5,,,,27.5,,,,40,,,,100
+F,57,Luna,Ferro,,FR,57,,,disqualified,Bombed squat,,,,12.5,,,,20,,,,52.5,,,,
+F,57,Marianne,Gros,,FR,55.5,,153.75,competed,,,,,0.25,,,,18.75,,,,36.25,,,,98.5
+F,57,Amandine,Moine,,FR,50.9,,117.5,competed,,,,,5,,,,17.5,,,,27.5,,,,67.5
+F,57,Sonia,Regis,,FR,55.9,,158.5,competed,,,,,5,,,,22.5,,,,36,,,,95
+F,57,Lise,Thiere,,FR,57,,191.25,competed,,,,,5,,,,27.5,,,,46.25,,,,112.5
+F,63,Laura,Cavallucci,,FR,61.5,,102.75,competed,,,,,0.25,,,,15,,,,17.5,,,,70
+F,63,Anne Sophie,Gherardi,,FR,59.1,,159.25,competed,,,,,1.25,,,,20.5,,,,35,,,,102.5
+F,63,Alix,Juda,,FR,60.5,,,disqualified,Bombed muscle-up,,,,,,,,15,,,,22.5,,,,105
+F,63,Elise,Lamande,,FR,59.3,,157.5,competed,,,,,5,,,,20,,,,37.5,,,,95
+F,70,Anaïs,Dethier,,FR,68.5,,174,competed,,,,,0.25,,,,27.5,,,,36.25,,,,110
+F,70,Caroline,Vernier,,FR,68.5,,260,competed,,,,,20,,,,40,,,,70,,,,130

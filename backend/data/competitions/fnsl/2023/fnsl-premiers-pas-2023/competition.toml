@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = ["https://www.instagram.com/p/Cq_NUKBrTuZ/"]
+
+[competition]
+name = "Premiers Pas"
+start_date = "2023-03-18"
+end_date = "2023-03-19"
+city = "La Courneuve"
+venue = "On Air La Courneuve"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
