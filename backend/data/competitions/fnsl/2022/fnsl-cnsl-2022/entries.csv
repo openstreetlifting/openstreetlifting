@@ -1,4 +1,5 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Youssef,Bouida,,TN,65.9,,398,competed,,,,,36.25,,,,88.75,,,,103,,,,170
 M,66,Walid,Boulaghzalate,,IT,63.6,,387.5,competed,,,,,25,,,,69,,,,113.5,,,,180
 M,66,Cyril,Brau,,FR,66,,370,competed,,,,,20,,,,60,,,,100,,,,190
 M,66,Julien,Capdeville,,FR,65.4,,398.5,competed,,,,,25,,,,65,,,,127.5,,,,181
@@ -6,7 +7,6 @@ M,66,Lionel,Da Silva,,PT,65.2,,,disqualified,Bombed the dips,,,,37.5,,,,87.5,,,,
 M,66,Justin,Hebert,,FR,63.9,,360.25,competed,,,,,24,,,,66.25,,,,90,,,,180
 M,66,Florian,Marrec,,FR,65.5,,378,competed,,,,,25,,,,78,,,,112.5,,,,162.5
 M,66,Etienne,Sahel,,FR,65.4,,346.5,competed,,,,,17.5,,,,64,,,,82.5,,,,182.5
-M,66,Youssef,Bouida,,TN,65.9,,398,competed,,,,,36.25,,,,88.75,,,,103,,,,170
 M,73,André,Alves Martins,,PT,72.1,,365,competed,,,,,10,,,,65,,,,105,,,,185
 M,73,Yohann,Capdeville,,FR,72.2,,390,competed,,,,,29,,,,80,,,,121,,,,160
 M,73,Thavisay,Chanthaboun,,FR,73,,407,competed,,,,,22,,,,73,,,,112,,,,200
