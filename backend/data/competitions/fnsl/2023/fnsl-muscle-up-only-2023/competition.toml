@@ -1,0 +1,17 @@
+event = "M"
+sources = ["https://www.instagram.com/p/CyiGjN7Lfs5/"]
+
+[competition]
+name = "Muscle Up Only"
+start_date = "2023-10-07"
+end_date = "2023-10-08"
+city = "La Courneuve"
+venue = "On Air La Courneuve"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
