@@ -1,0 +1,19 @@
+event = "D"
+sources = [
+    "https://www.instagram.com/p/CkDEQJkIlwR/",
+    "https://www.instagram.com/p/Ci-syFZrArK/",
+]
+
+[competition]
+name = "Dips Only"
+start_date = "2022-10-22"
+city = "La Courneuve"
+venue = "On Air La Courneuve"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
