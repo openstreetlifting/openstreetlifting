@@ -12,6 +12,14 @@
 
   "packageRules": [
     {
+      "description": "Keep frontend manifests and lockfiles aligned with pnpm 12 CI",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["frontend/**"],
+      "rangeStrategy": "bump",
+      "minimumReleaseAge": "1 day",
+      "constraints": { "pnpm": "^12.0.0" }
+    },
+    {
       "description": "Group and automerge frontend (npm/pnpm) patch + minor updates",
       "groupName": "frontend dependencies",
       "matchManagers": ["npm"],
