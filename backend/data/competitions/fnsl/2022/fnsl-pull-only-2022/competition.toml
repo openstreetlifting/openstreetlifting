@@ -1,0 +1,19 @@
+event = "P"
+sources = [
+    "https://www.instagram.com/p/CljGXNLI7xE/",
+    "https://www.instagram.com/p/Cktp6NvLkQe/",
+]
+
+[competition]
+name = "Pull Only"
+start_date = "2022-11-19"
+city = "La Courneuve"
+venue = "On Air La Courneuve"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
