@@ -1,4 +1,5 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Youssef,Bouida,,TN,65.9,108.84,445.25,competed,,recovered,2024,40,43x,43x,40,85,95,100.25,100.25,110,117.5,120,120,160,170,185,185
 M,66,Walid,Boulaghzalate,,IT,65.2,108.61,440,competed,,recovered,2024,22.5,26.25,28.75,28.75,70,73.75,76.25,76.25,112.5,121.25,130,130,185,195,205,205
 M,66,Deldinne,Clément,,BE,64.2,75.4,301.25,competed,,recovered,2024,11.25,15,17.5,17.5,45x,50,53.75x,50,72.5,80,83.75,83.75,135,142.5,150,150
 M,66,Hamza,El Oueriaghli,,BE,65.7,78.44,320,competed,,recovered,2024,10,12.5x,12.5,12.5,50,55,57.5,57.5,87.5,95x,100x,87.5,155,162.5,167.5x,162.5
@@ -6,7 +7,6 @@ M,66,Anas,Maani,,BE,62.4,85.31,332.5,competed,,recovered,2024,10,12.5,15,15,50,5
 M,66,Kristof,Rommens,,BE,,44.24,,disqualified,Bombed the muscle-up and the dips,,,10x,10x,10x,,55,62.5,70x,62.5,70x,80x,80x,,105,115,122.5x,115
 M,66,,ThiZho,,BE,65.8,96.69,395,competed,,recovered,2024,25x,27.5x,27.5,27.5,75x,75,80,80,110,117.5,125x,117.5,162.5,170,172.5x,170
 M,66,Tomy,Truong,,BE,60.4,83,315,competed,,recovered,2024,10x,11.25,13.75x,11.25,45,50,53.75,53.75,80x,90,95x,90,150x,160,165x,160
-M,66,Youssef,Bouida,,TN,65.9,108.84,445.25,competed,,recovered,2024,40,43x,43x,40,85,95,100.25,100.25,110,117.5,120,120,160,170,185,185
 M,73,Thibault,Degenne,,FR,72.8,91.15,408.75,competed,,recovered,2024,12.5,16.25,20x,16.25,50,55,57.5,57.5,95,105,110x,105,215,230,243.5x,230
 M,73,Camille,Delacre,,FR,71,87.82,385,competed,,recovered,2024,10,12.5,15x,12.5,60,65,67.5,67.5,100,110,115,115,190x,190,200x,190
 M,73,Tristan,Delaval,,BE,69.1,85.96,367.5,competed,,recovered,2024,10x,10,17.5,17.5,45,52.5,62.5,62.5,90,100,110x,100,177.5,187.5,195x,187.5
