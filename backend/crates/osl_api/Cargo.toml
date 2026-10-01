@@ -30,7 +30,7 @@ tower-http = { version = "0.7.0", features = [
 ] }
 utoipa = { workspace = true, features = ["axum_extras"] }
 utoipa-axum = "0.3.0"
-utoipa-swagger-ui = { version = "9.0.2", features = ["axum"] }
+utoipa-swagger-ui = { version = "10.0.0", features = ["axum"] }
 
 [dev-dependencies]
 osl_importer = { path = "../osl_importer" }
