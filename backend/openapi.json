@@ -121,10 +121,10 @@
             "schema": {
               "oneOf": [
                 {
-                  "type": "null"
+                  "$ref": "#/components/schemas/CompetitionStatus"
                 },
                 {
-                  "$ref": "#/components/schemas/CompetitionStatus"
+                  "type": "null"
                 }
               ]
             }
@@ -380,10 +380,10 @@
             "schema": {
               "oneOf": [
                 {
-                  "type": "null"
+                  "$ref": "#/components/schemas/RankedGender"
                 },
                 {
-                  "$ref": "#/components/schemas/RankedGender"
+                  "type": "null"
                 }
               ]
             }
@@ -515,10 +515,10 @@
             "schema": {
               "oneOf": [
                 {
-                  "type": "null"
+                  "$ref": "#/components/schemas/Gender"
                 },
                 {
-                  "$ref": "#/components/schemas/Gender"
+                  "type": "null"
                 }
               ]
             }
@@ -819,11 +819,11 @@
           "ris_source": {
             "oneOf": [
               {
-                "type": "null"
-              },
-              {
                 "$ref": "#/components/schemas/RisSource",
                 "description": "Reported scores cannot be re-scored without bodyweight; computed scores\nuse the current formula. Absent alongside a missing score."
+              },
+              {
+                "type": "null"
               }
             ]
           },
@@ -986,20 +986,20 @@
           "standing": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/AthleteStanding"
               },
               {
-                "$ref": "#/components/schemas/AthleteStanding"
+                "type": "null"
               }
             ]
           },
           "strength_profile": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/StrengthProfile"
               },
               {
-                "$ref": "#/components/schemas/StrengthProfile"
+                "type": "null"
               }
             ]
           },
@@ -1018,60 +1018,60 @@
           "dips": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/MetricStanding"
               },
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "type": "null"
               }
             ]
           },
           "muscleup": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/MetricStanding"
               },
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "type": "null"
               }
             ]
           },
           "pullup": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/MetricStanding"
               },
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "type": "null"
               }
             ]
           },
           "ris": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/MetricStanding"
               },
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "type": "null"
               }
             ]
           },
           "squat": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/MetricStanding"
               },
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "type": "null"
               }
             ]
           },
           "total": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/MetricStanding"
               },
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "type": "null"
               }
             ]
           }
@@ -1232,10 +1232,10 @@
           "federation": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/FederationInfo"
               },
               {
-                "$ref": "#/components/schemas/FederationInfo"
+                "type": "null"
               }
             ]
           },
@@ -1271,10 +1271,10 @@
           "scoring": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/Scoring"
               },
               {
-                "$ref": "#/components/schemas/Scoring"
+                "type": "null"
               }
             ]
           },
@@ -1513,10 +1513,10 @@
           "ris_source": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/RisSource"
               },
               {
-                "$ref": "#/components/schemas/RisSource"
+                "type": "null"
               }
             ]
           },
@@ -1581,10 +1581,10 @@
           "country": {
             "oneOf": [
               {
-                "type": "null"
+                "$ref": "#/components/schemas/CountryStanding"
               },
               {
-                "$ref": "#/components/schemas/CountryStanding"
+                "type": "null"
               }
             ]
           },
@@ -1714,20 +1714,20 @@
                 "standing": {
                   "oneOf": [
                     {
-                      "type": "null"
+                      "$ref": "#/components/schemas/AthleteStanding"
                     },
                     {
-                      "$ref": "#/components/schemas/AthleteStanding"
+                      "type": "null"
                     }
                   ]
                 },
                 "strength_profile": {
                   "oneOf": [
                     {
-                      "type": "null"
+                      "$ref": "#/components/schemas/StrengthProfile"
                     },
                     {
-                      "$ref": "#/components/schemas/StrengthProfile"
+                      "type": "null"
                     }
                   ]
                 },
@@ -1811,10 +1811,10 @@
                 "federation": {
                   "oneOf": [
                     {
-                      "type": "null"
+                      "$ref": "#/components/schemas/FederationInfo"
                     },
                     {
-                      "$ref": "#/components/schemas/FederationInfo"
+                      "type": "null"
                     }
                   ]
                 },
@@ -1850,10 +1850,10 @@
                 "scoring": {
                   "oneOf": [
                     {
-                      "type": "null"
+                      "$ref": "#/components/schemas/Scoring"
                     },
                     {
-                      "$ref": "#/components/schemas/Scoring"
+                      "type": "null"
                     }
                   ]
                 },
@@ -1967,10 +1967,10 @@
                 "ris_source": {
                   "oneOf": [
                     {
-                      "type": "null"
+                      "$ref": "#/components/schemas/RisSource"
                     },
                     {
-                      "$ref": "#/components/schemas/RisSource"
+                      "type": "null"
                     }
                   ]
                 },
@@ -2085,11 +2085,11 @@
           "ris_source": {
             "oneOf": [
               {
-                "type": "null"
-              },
-              {
                 "$ref": "#/components/schemas/RisSource",
                 "description": "Absent alongside a missing score."
+              },
+              {
+                "type": "null"
               }
             ]
           },
