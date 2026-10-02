@@ -1,0 +1,22 @@
+event = "PD"
+sources = [
+    "https://streetlifting.es/wp-content/uploads/2023/05/I-CAMPEONATO-DE-ESPANA-2021-BENICASSIM.pdf",
+    "https://streetlifting.es/primer-campeonato-de-espana-streetlifting/",
+    "https://streetlifting.es/resultados-classic-masculino-espana-streetlifting/",
+    "https://streetlifting.es/wp-content/uploads/2021/08/classic-streetlifting.png",
+]
+
+[competition]
+name = "I Campeonato de España Classic"
+start_date = "2021-07-17"
+end_date = "2021-07-18"
+city = "Benicàssim"
+venue = "Gorilla Box"
+region = "Comunitat Valenciana"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"

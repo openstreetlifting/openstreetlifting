@@ -1,0 +1,23 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Daniel,Alarcón López,,,63.7,,285.5,competed,,,,,17,,,,56,,,,72.5,,,,140
+M,66,Pablo,Martínez Visquert,,,64.7,,292.5,competed,,,,,10,,,,52.5,,,,75,,,,155
+M,66,Samuel,Sanchez Compañ,,,64.4,,295.5,competed,,,,,18,,,,70,,,,77.5,,,,130
+M,66,Toni,Sánchez Navas,,,64.4,,315,competed,,,,,22.5,,,,67.5,,,,90,,,,135
+M,73,Clemente,Alvarado,,,70.6,,200,competed,,,,,5,,,,40,,,,55,,,,100
+M,73,Jorge,Conde Calabrus,,,72.3,,292.5,competed,,,,,25,,,,62.5,,,,85,,,,120
+M,73,Jorge,Espejo Fuentes,,,72.1,,317.5,competed,,,,,22.5,,,,70,,,,100,,,,125
+M,73,Jordi,Martínez Fuertes,,,71.1,,346.5,competed,,,,,16.5,,,,70,,,,100,,,,160
+M,73,Paolo,Talaba,,,68.1,,350,competed,,,,,25,,,,80,,,,95,,,,150
+M,73,Enrique,Villegas Alonso,,,70.2,,320,competed,,,,,27.5,,,,72.5,,,,80,,,,140
+M,73,Sergio,Vázquez Bautista,,,69.3,,310,competed,,,,,25,,,,77.5,,,,92.5,,,,115
+M,80,Bruno,Cordoba,,,77.6,,386,competed,,,,,25,,,,75,,,,105,,,,181
+M,80,Carlos,García Picón,,,79.1,,428,competed,,,,,20,,,,75,,,,143,,,,190
+M,80,,Kalin,,,77.2,,370,competed,,,,,15,,,,75,,,,110,,,,170
+M,80,Mario,Pérez Iniesta,,,78.3,,336,competed,,,,,12,,,,67,,,,107,,,,150
+M,87,Jorge,Cardenal,,,80.1,,327.5,competed,,,,,17.5,,,,60,,,,100,,,,150
+M,87,Pedro,García Parra,,,84.7,,365,competed,,,,,20,,,,75,,,,120,,,,150
+M,87,Antonio,Merlos Fernández,,,80.1,,327.5,competed,,,,,10,,,,77.5,,,,120,,,,120
+M,94,Pedro,Soria Nieto,,,88.7,,358.5,competed,,,,,17.5,,,,71,,,,120,,,,150
+M,94,Juan,Tirado Catalán,,,88.4,,390,competed,,,,,20,,,,77.5,,,,82.5,,,,210
+M,105,Miguel,Tirado Martínez,,,95.3,,460,competed,,,,,35,,,,105,,,,130,,,,190
+F,52,Anaïs,Lozano Rojas,,,50.9,,191,competed,,,,,14,,,,29,,,,48,,,,100

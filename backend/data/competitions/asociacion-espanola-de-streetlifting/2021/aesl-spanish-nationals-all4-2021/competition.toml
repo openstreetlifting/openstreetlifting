@@ -1,0 +1,21 @@
+event = "MPDS"
+sources = [
+    "https://streetlifting.es/wp-content/uploads/2023/05/I-CAMPEONATO-DE-ESPANA-2021-BENICASSIM.pdf",
+    "https://streetlifting.es/primer-campeonato-de-espana-streetlifting/",
+    "https://streetlifting.es/resultados-all4-masculino-cto-espana-2021/",
+]
+
+[competition]
+name = "I Campeonato de España All4"
+start_date = "2021-07-17"
+end_date = "2021-07-18"
+city = "Benicàssim"
+venue = "Gorilla Box"
+region = "Comunitat Valenciana"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"
