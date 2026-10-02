@@ -1,23 +1,23 @@
-Division,Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-Groupe - 66 kg,M,66,Robin,Allamand,,,,79.03,317.5,competed,,12.5,17.5x,17.5,17.5,47.5,55x,56.25,56.25,85,90,93.75,93.75,140,150,160x,150
-Groupe - 66 kg,M,66,Evan,Anaya,,FR,,0,,no_show,,,,,,,,,,,,,,,,,
-Groupe - 66 kg,M,66,Mickael,D'Oliviera,,,,62.17,245,competed,,2.5,5,7.5,7.5,30,35,40,40,55,60,65,65,115,125,132.5,132.5
-Groupe - 66 kg,M,66,Nolan,Delage,,,,0,,no_show,,,,,,,,,,,,,,,,,
-Groupe - 66 kg,M,66,Ankidini,Moirabou,,FR,,0,,no_show,,,,,,,,,,,,,,,,,
-Groupe - 73 / - 87 / - 94,M,,Pierre,Appriou,,,,47.13,,disqualified,Bombed the dips,12.5,15,16.25x,15,55,62.5x,62.5x,55,95x,105x,110x,,162.5,172.5x,177.5x,162.5
-Groupe - 73 / - 87 / - 94,M,,Nicolas,Dufour,,,,68.3,302.5,competed,,10,12.5,15,15,45,52.5,57.5x,52.5,80,85x,85,85,145,150,155x,150
-Groupe - 73 / - 87 / - 94,M,,Yann,Durand,,FR,,96.47,500,competed,,20,25,30,30,65,75,80,80,125,140,145,145,220,237.5,245,245
-Groupe - 73 / - 87 / - 94,M,,Maxime,Junghen,,FR,,88.68,391.25,competed,,17.5,22.5,25x,22.5,65,72.5,76.25,76.25,100x,107.5,110x,107.5,160,180,185,185
-Groupe - 73 / - 87 / - 94,M,,Alexis,Regitz,,,,71.89,320,competed,,15,20,25x,20,60x,65,70,70,75,85,90x,85,135,145,150x,145
-Groupe - 73 / - 87 / - 94,M,,Warren,Solbes,,FR,,91.43,410.5,competed,,1.25,5,10,10,40,50,55,55,92.5,102.5,112.5x,102.5,230,243,250x,243
-Groupe - 73 / - 87 / - 94,M,,Julien,Tessier,,,,77.09,337.5,competed,,5,10,15,15,55,65,70,70,85,97.5,105x,97.5,140,147.5,155,155
-Groupe - 80 kg,M,80,Noé,Albares,,FR,,68.67,327.5,competed,,7.5,11.25x,12.5,12.5,55,62.5,67.5,67.5,70,80,87.5,87.5,140,150,160,160
-Groupe - 80 kg,M,80,Evan,Devecchi,,FR,,99.65,478.75,competed,,23.75,26.25x,26.25x,23.75,72.5,80,85,85,135,140,145x,140,220,230,240x,230
-Groupe - 80 kg,M,80,Tigran,Hakobian,,FR,,83.62,395,competed,,12.5,17.5,20,20,60,65,70,70,107.5,115,120,120,165,175,185,185
-Groupe - 80 kg,M,80,Denis,Loras,,FR,,74.89,357.5,competed,,12.5,17.5,20,20,60,65,70,70,80x,82.5,87.5x,82.5,170,180,185,185
-Groupe - 80 kg,M,80,Cedric,Souchaud,,,,54.34,252.5,competed,,10x,10,15x,10,45,52.5,60x,52.5,70,80,87.5x,80,100,105x,110,110
-Groupe - 80 kg,M,80,Dorian,Tolosa,,FR,,74.92,350,competed,,15,20,25x,20,70,75,80,80,80,90,100x,90,140,150,160,160
-Groupe Femmes,F,,Chloe,Lambert,,,,73.16,153.75,competed,,0x,0,1.25,1.25,18.75,22.5,25,25,32.5,37.5,42.5,42.5,80,85,90x,85
-Groupe Femmes,F,,Margaux,Lorenzon,,,,90.19,,disqualified,Bombed the muscle-up,0x,0x,0x,,15,20,25,25,25,30,40x,30,150,155,160,160
-Groupe Femmes,F,,Emma,Raulin,,FR,,72.79,,disqualified,Bombed the muscle-up,0x,0x,0x,,15,20,23.75,23.75,27.5,35,40x,35,115,120x,120x,115
-Groupe Femmes,F,,Rajaa,Yamoul,,IT,,82.05,182.5,competed,,6.25,8.75,10,10,17.5,21.25,23.75x,21.25,40,45,48.75,48.75,95,100,102.5,102.5
+Division,Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+Groupe - 66 kg,M,66,Robin,Allamand,,,64.6,79.03,317.5,competed,,recovered,2024,12.5,17.5x,17.5,17.5,47.5,55x,56.25,56.25,85,90,93.75,93.75,140,150,160x,150
+Groupe - 66 kg,M,66,Evan,Anaya,,FR,,0,,no_show,,,,,,,,,,,,,,,,,,,
+Groupe - 66 kg,M,66,Mickael,D'Oliviera,,,63.2,62.17,245,competed,,recovered,2024,2.5,5,7.5,7.5,30,35,40,40,55,60,65,65,115,125,132.5,132.5
+Groupe - 66 kg,M,66,Nolan,Delage,,,,0,,no_show,,,,,,,,,,,,,,,,,,,
+Groupe - 66 kg,M,66,Ankidini,Moirabou,,FR,,0,,no_show,,,,,,,,,,,,,,,,,,,
+Groupe - 73 / - 87 / - 94,M,,Pierre,Appriou,,,,47.13,,disqualified,Bombed the dips,,,12.5,15,16.25x,15,55,62.5x,62.5x,55,95x,105x,110x,,162.5,172.5x,177.5x,162.5
+Groupe - 73 / - 87 / - 94,M,,Nicolas,Dufour,,,71.8,68.3,302.5,competed,,recovered,2024,10,12.5,15,15,45,52.5,57.5x,52.5,80,85x,85,85,145,150,155x,150
+Groupe - 73 / - 87 / - 94,M,,Yann,Durand,,FR,92.4,96.47,500,competed,,recovered,2024,20,25,30,30,65,75,80,80,125,140,145,145,220,237.5,245,245
+Groupe - 73 / - 87 / - 94,M,,Maxime,Junghen,,FR,71.5,88.68,391.25,competed,,recovered,2024,17.5,22.5,25x,22.5,65,72.5,76.25,76.25,100x,107.5,110x,107.5,160,180,185,185
+Groupe - 73 / - 87 / - 94,M,,Alexis,Regitz,,,72.2,71.89,320,competed,,recovered,2024,15,20,25x,20,60x,65,70,70,75,85,90x,85,135,145,150x,145
+Groupe - 73 / - 87 / - 94,M,,Warren,Solbes,,FR,72.9,91.43,410.5,competed,,recovered,2024,1.25,5,10,10,40,50,55,55,92.5,102.5,112.5x,102.5,230,243,250x,243
+Groupe - 73 / - 87 / - 94,M,,Julien,Tessier,,,70.9,77.09,337.5,competed,,recovered,2024,5,10,15,15,55,65,70,70,85,97.5,105x,97.5,140,147.5,155,155
+Groupe - 80 kg,M,80,Noé,Albares,,FR,78.5,68.67,327.5,competed,,recovered,2024,7.5,11.25x,12.5,12.5,55,62.5,67.5,67.5,70,80,87.5,87.5,140,150,160,160
+Groupe - 80 kg,M,80,Evan,Devecchi,,FR,79.3,99.65,478.75,competed,,recovered,2024,23.75,26.25x,26.25x,23.75,72.5,80,85,85,135,140,145x,140,220,230,240x,230
+Groupe - 80 kg,M,80,Tigran,Hakobian,,FR,77.5,83.62,395,competed,,recovered,2024,12.5,17.5,20,20,60,65,70,70,107.5,115,120,120,165,175,185,185
+Groupe - 80 kg,M,80,Denis,Loras,,FR,78.6,74.89,357.5,competed,,recovered,2024,12.5,17.5,20,20,60,65,70,70,80x,82.5,87.5x,82.5,170,180,185,185
+Groupe - 80 kg,M,80,Cedric,Souchaud,,,75.9,54.34,252.5,competed,,recovered,2024,10x,10,15x,10,45,52.5,60x,52.5,70,80,87.5x,80,100,105x,110,110
+Groupe - 80 kg,M,80,Dorian,Tolosa,,FR,76.4,74.92,350,competed,,recovered,2024,15,20,25x,20,70,75,80,80,80,90,100x,90,140,150,160,160
+Groupe Femmes,F,,Chloe,Lambert,,,51.2,73.16,153.75,competed,,recovered,2024,0x,0,1.25,1.25,18.75,22.5,25,25,32.5,37.5,42.5,42.5,80,85,90x,85
+Groupe Femmes,F,,Margaux,Lorenzon,,,,90.19,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,15,20,25,25,25,30,40x,30,150,155,160,160
+Groupe Femmes,F,,Emma,Raulin,,FR,,72.79,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,15,20,23.75,23.75,27.5,35,40x,35,115,120x,120x,115
+Groupe Femmes,F,,Rajaa,Yamoul,,IT,54.6,82.05,182.5,competed,,recovered,2024,6.25,8.75,10,10,17.5,21.25,23.75x,21.25,40,45,48.75,48.75,95,100,102.5,102.5
