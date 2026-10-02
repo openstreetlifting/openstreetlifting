@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = ["https://app.final-rep.com/#/events/statistics/31sEs0MoH6aMNcWxCLe6IcTuxmw"]
+
+[competition]
+name = "Ace Cup Series Reims"
+start_date = "2026-01-24"
+end_date = "2026-01-25"
+city = "Reims"
+country = "FR"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "Ace Squad"
+country = "FR"
