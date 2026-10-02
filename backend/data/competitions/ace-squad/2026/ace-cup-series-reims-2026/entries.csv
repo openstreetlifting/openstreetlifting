@@ -1,16 +1,16 @@
-Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-M,Evan,Anaya,,FR,,77.29,325,competed,,13.75,15,20x,15,45,52.5,57.5,57.5,85,92.5,97.5x,92.5,145,152.5,160,160
-M,Amine,Atamna,,FR,,58.96,278.75,competed,,1.25,2.5x,2.5x,1.25,42.5,47.5,50x,47.5,75,80x,80x,75,145,155,165x,155
-M,Jules,Grès,,FR,,74.94,370,competed,,12.5x,15,17.5x,15,62.5x,65,70x,65,92.5,100,103.75x,100,170,180,190,190
-M,Deniz,Insel,,BE,,90.66,470,competed,,25,30,35,35,67.5,75,80,80,120,135,145x,135,200,215x,220,220
-M,Achille,Laisné,,,,44.56,,disqualified,Bombed the muscle-up,15x,15x,15x,,60x,60x,60,60,80x,80,90x,80,90x,90,100x,90
-M,Emile,Launette,,,,84.81,357.5,competed,,27.5x,27.5,31.25x,27.5,60,65,70,70,110x,120x,125,125,120x,120,135,135
-M,Noa,Martin,,FR,,73.88,330,competed,,8.75,12.5,16.25x,12.5,50,55,57.5,57.5,80,92.5,97.5,97.5,155x,162.5,170x,162.5
-M,Aurélien,Molle,,FR,,58.2,,disqualified,Bombed the muscle-up,1.25x,1.25x,1.25x,,42.5,46.25,48.75x,46.25,50,56.25,60,60,177.5,185,192.5,192.5
-M,Noa,Préser,,BE,,73.05,377.5,competed,,2.5,5,7.5,7.5,45,52.5,57.5x,52.5,100x,110,117.5,117.5,172.5,187.5,200,200
-M,Kristof,Rommens,,BE,,61.95,257.5,competed,,12.5x,12.5x,12.5,12.5,52.5,57.5,60,60,65,75,85x,75,100,110,120x,110
-M,Alexis,Serre,,FR,,90.33,375,competed,,32.5,36.25x,37.5,37.5,60,65,70x,65,95,107.5,117.5x,107.5,150,160,165,165
-F,Emilie,Lhoir,,FR,,65.18,172.5,competed,,0,2.5,5x,2.5,10,15,20,20,25,33.75,40,40,87.5,97.5,110,110
-F,Eliza,Puech,,FR,,88.83,250,competed,,6.25,10,12.5,12.5,25,30,32.5x,30,52.5,58.75,62.5,62.5,132.5,140,145,145
-F,Stella,Staiano,,BE,,54.61,148.75,competed,,0,5,7.5x,5,21.25,26.25,28.75,28.75,30,35x,40,40,75,85x,90x,75
-F,Lucie,Willemet,,BE,,51.58,142.5,competed,,0,1.25x,1.25x,0,6.25,10,12.5x,10,17.5,22.5,27.5,27.5,95,105,110x,105
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,Evan,Anaya,,FR,65.4,77.29,325,competed,,recovered,2026,13.75,15,20x,15,45,52.5,57.5,57.5,85,92.5,97.5x,92.5,145,152.5,160,160
+M,Amine,Atamna,,FR,74.8,58.96,278.75,competed,,recovered,2026,1.25,2.5x,2.5x,1.25,42.5,47.5,50x,47.5,75,80x,80x,75,145,155,165x,155
+M,Jules,Grès,,FR,79,74.94,370,competed,,recovered,2026,12.5x,15,17.5x,15,62.5x,65,70x,65,92.5,100,103.75x,100,170,180,190,190
+M,Deniz,Insel,,BE,85.3,90.66,470,competed,,recovered,2026,25,30,35,35,67.5,75,80,80,120,135,145x,135,200,215x,220,220
+M,Achille,Laisné,,,,44.56,,disqualified,Bombed the muscle-up,,,15x,15x,15x,,60x,60x,60,60,80x,80,90x,80,90x,90,100x,90
+M,Emile,Launette,,,65.6,84.81,357.5,competed,,recovered,2026,27.5x,27.5,31.25x,27.5,60,65,70,70,110x,120x,125,125,120x,120,135,135
+M,Noa,Martin,,FR,70.1,73.88,330,competed,,recovered,2026,8.75,12.5,16.25x,12.5,50,55,57.5,57.5,80,92.5,97.5,97.5,155x,162.5,170x,162.5
+M,Aurélien,Molle,,FR,,58.2,,disqualified,Bombed the muscle-up,,,1.25x,1.25x,1.25x,,42.5,46.25,48.75x,46.25,50,56.25,60,60,177.5,185,192.5,192.5
+M,Noa,Préser,,BE,84.8,73.05,377.5,competed,,recovered,2026,2.5,5,7.5,7.5,45,52.5,57.5x,52.5,100x,110,117.5,117.5,172.5,187.5,200,200
+M,Kristof,Rommens,,BE,64.5,61.95,257.5,competed,,recovered,2026,12.5x,12.5x,12.5,12.5,52.5,57.5,60,60,65,75,85x,75,100,110,120x,110
+M,Alexis,Serre,,FR,64.4,90.33,375,competed,,recovered,2026,32.5,36.25x,37.5,37.5,60,65,70x,65,95,107.5,117.5x,107.5,150,160,165,165
+F,Emilie,Lhoir,,FR,56.1,65.18,172.5,competed,,recovered,2026,0,2.5,5x,2.5,10,15,20,20,25,33.75,40,40,87.5,97.5,110,110
+F,Eliza,Puech,,FR,70,88.83,250,competed,,recovered,2026,6.25,10,12.5,12.5,25,30,32.5x,30,52.5,58.75,62.5,62.5,132.5,140,145,145
+F,Stella,Staiano,,BE,58.5,54.61,148.75,competed,,recovered,2026,0,5,7.5x,5,21.25,26.25,28.75,28.75,30,35x,40,40,75,85x,90x,75
+F,Lucie,Willemet,,BE,60.5,51.58,142.5,competed,,recovered,2026,0,1.25x,1.25x,0,6.25,10,12.5x,10,17.5,22.5,27.5,27.5,95,105,110x,105
