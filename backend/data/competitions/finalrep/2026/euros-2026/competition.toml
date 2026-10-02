@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "https://app.final-rep.com/#/events/statistics/3EwH9FG6Pf3MCsOZRyYodE7ep7z?ris=false",
+    "https://final-rep.com/euros26/",
+]
+
+[competition]
+name = "Euros"
+start_date = "2026-10-02"
+end_date = "2026-10-04"
+city = "Tremblay-en-France"
+venue = "Espace Jean Ferrat"
+region = "Île-de-France"
+country = "FR"
+status = "live"
+
+[federation]
+name = "FinalRep"
