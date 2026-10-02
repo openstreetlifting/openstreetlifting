@@ -247,18 +247,9 @@ fn read_entry(
         return Err("CategorySex must match Sex or be MX".into());
     }
 
-    let weight_class = if columns.has(entries::WEIGHT_CLASS) {
-        let cell = columns.get(record, entries::WEIGHT_CLASS);
-        if cell.is_empty() {
-            return Err(format!(
-                "{} is empty. Leave the column out entirely for a meet with no weight classes",
-                entries::WEIGHT_CLASS
-            ));
-        }
-        Some(parse_weight_class(cell)?)
-    } else {
-        None
-    };
+    let weight_class = optional(columns, record, entries::WEIGHT_CLASS)
+        .map(|cell| parse_weight_class(&cell))
+        .transpose()?;
 
     // A mononym goes in LastName, so that is the required half of a name.
     let first_name = optional(columns, record, entries::FIRST_NAME).unwrap_or_default();
@@ -651,16 +642,16 @@ mod tests {
     }
 
     #[test]
-    fn an_empty_class_cell_is_refused_when_the_column_is_there() {
+    fn an_empty_class_cell_reads_as_an_unclassed_contest() {
         let layout = entries::Layout {
             mixed: false,
             classed: true,
             ..entries::Layout::default()
         };
 
-        let error = entry(layout, &NAMED).unwrap_err();
+        let (_, _, weight_class, _) = entry(layout, &NAMED).unwrap();
 
-        assert!(error.contains("Leave the column out"), "{error}");
+        assert_eq!(weight_class, None);
     }
 
     #[test]

@@ -1,5 +1,7 @@
 event = "MPDS"
 sources = [
+    "https://api.final-rep.com/events-api/v1/events/3774ig4R1vT9KdRonI29JIF0jv1/statistics",
+    "https://final-rep.com/ris-update-2026/",
     "FinalRep app, /events-api/v1/events/{id}/statistics",
     "https://final-rep.com/event-calendar/",
 ]
@@ -10,6 +12,7 @@ start_date = "2026-04-19"
 city = "Warszawa"
 country = "PL"
 status = "completed"
+scoring = "ris"
 
 [federation]
 name = "FinalRep"

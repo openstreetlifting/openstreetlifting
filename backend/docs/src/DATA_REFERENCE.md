@@ -218,8 +218,9 @@ Other positive limits are accepted. Record the class used by the competition,
 using the same notation.
 
 Some competitions rank on RIS alone and run no weight classes. Leave the column
-out for those rather than working a class back from bodyweight. If you use the
-column, fill it for every athlete.
+out for those rather than working a class back from bodyweight. When a meet
+combines weight-classed and unclassed contests, keep the column and leave it empty
+for athletes in the unclassed contests.
 
 ### Attempts
 

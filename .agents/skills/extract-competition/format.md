@@ -53,7 +53,7 @@ Add `Division` first only when needed; add `NativeName` only when an athlete has
 | --- | --- |
 | `Sex` | Required athlete sex: `M` or `F` |
 | `CategorySex` | Optional; `MX` for a mixed contest, empty to follow `Sex` |
-| `WeightClassKg` | Omit for a meet without classes; otherwise fill every row with a positive bound, such as `80` or `101+` |
+| `WeightClassKg` | Omit for a meet without classes; otherwise use a positive bound such as `80` or `101+`, leaving unclassed contest rows empty |
 | `FirstName`, `LastName` | Apply `athletes.md`; last name required, first name optional |
 | `Disambiguation` | Only for distinct people sharing identity fields; positive integer |
 | `Country` | Source-listed two-letter code; leave empty when unknown |
@@ -79,9 +79,11 @@ Placings are computed within each division. An athlete can enter multiple divisi
 
 Read the weight-class bound from the source's category, even when an athlete weighs less than its limit. Keep federation-specific classes. Write `80` or `101+`, never `-80` or `+101`; leading signs can be interpreted as spreadsheet formulas.
 
-When the competition has no weight classes, omit `WeightClassKg`. Preserve its
-shared standings. A placeholder such as `D/C` does not establish a weight class;
-resolve its meaning against the source before assigning a category.
+When the competition has no weight classes, omit `WeightClassKg`. When only some
+contests use classes, keep the column and leave unclassed contest rows empty.
+Preserve the source's contest membership and shared standings. A placeholder such
+as `D/C` does not establish a weight class; resolve its meaning against the source
+before assigning a category.
 
 ### Mixed contests
 
