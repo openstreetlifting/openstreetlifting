@@ -80,7 +80,10 @@ whenever you add results.
 ### Status
 
 - `upcoming`: a planned competition without results. Add only `competition.toml`.
-- `completed`: a competition with results. Include `entries.csv` and set `event`.
+- `live`: a competition in progress with partial results. Include `entries.csv`
+  and `event`, and add only published results. Change to `completed` when final
+  results are available. The API uses `live`; the website displays “In Progress”.
+- `completed`: a competition with final results. Include `entries.csv` and set `event`.
 
 ### Sources
 

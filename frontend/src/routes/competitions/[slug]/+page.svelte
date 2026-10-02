@@ -376,6 +376,10 @@
         <dt class="text-muted">Location</dt>
         <dd class="text-ink">{location}</dd>
       {/if}
+      {#if competition.status === 'live'}
+        <dt class="text-muted">Status</dt>
+        <dd class="text-success">In Progress — results are partial.</dd>
+      {/if}
       <dt class="text-muted">Format</dt>
       <dd class="text-ink">
         {formatLabel || (competition.status === 'upcoming' ? 'Format not announced' : '—')}

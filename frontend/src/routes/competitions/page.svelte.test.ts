@@ -134,3 +134,25 @@ it('keeps every movement available with no matches and uses the shared reset sta
   expect(page.getByRole('checkbox').elements()).toHaveLength(4);
   await expect.element(page.getByRole('checkbox', { name: 'Pull-up', exact: true })).toBeEnabled();
 });
+
+it('keeps In Progress selected when switching tabs, paging and clearing filters', async () => {
+  const live = data('MPDS');
+  live.status = 'live';
+  live.competitions[0].status = 'live';
+  render(CompetitionsPage, { data: live });
+  await expect
+    .element(page.getByRole('button', { name: /In Progress/ }))
+    .toHaveAttribute('aria-current', 'page');
+  const links = page.getByRole('link', { name: 'Next page' }).elements();
+  expect(links.length).toBeGreaterThan(0);
+  expect(
+    links.every(
+      (link) =>
+        new URL(link.getAttribute('href')!, location.origin).searchParams.get('status') === 'live'
+    )
+  ).toBe(true);
+  await page.getByRole('button', { name: /In Progress/ }).click();
+  expect(appPage.url.searchParams.get('status')).toBe('live');
+  expect(appPage.url.searchParams.get('event')).toBe('MPDS');
+  expect(appPage.url.searchParams.has('page')).toBe(false);
+});

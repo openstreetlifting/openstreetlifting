@@ -26,10 +26,10 @@ export const load: PageServerLoad = async ({ url }) => {
   const year = Number(url.searchParams.get('year')) || undefined;
   const page = Number(url.searchParams.get('page') ?? 1) || 1;
 
-  const other = status === UPCOMING_STATUS ? RESULTS_STATUS : UPCOMING_STATUS;
+  const otherStatuses = COMPETITION_STATUS_FILTERS.filter((option) => option.value !== status);
 
   try {
-    const [{ data: competitions, pagination }, facets, otherCount] = await Promise.all([
+    const [{ data: competitions, pagination }, facets, otherCounts] = await Promise.all([
       competitionsService.getAll({
         status,
         federation,
@@ -42,15 +42,19 @@ export const load: PageServerLoad = async ({ url }) => {
         page_size: TABLE_PAGE_SIZE,
       }),
       competitionsService.getFacets(),
-      competitionsService
-        .getAll({ status: other, federation, country, year, q, event, page_size: 1 })
-        .then((response) => response.pagination.total_items)
-        .catch(() => null),
+      Promise.all(
+        otherStatuses.map(({ value }) =>
+          competitionsService
+            .getAll({ status: value, federation, country, year, q, event, page_size: 1 })
+            .then((response) => [value, response.pagination.total_items] as const)
+            .catch(() => null)
+        )
+      ),
     ]);
 
     const counts = {
       [status]: pagination.total_items,
-      ...(otherCount === null ? {} : { [other]: otherCount }),
+      ...Object.fromEntries(otherCounts.filter((count) => count !== null)),
     } as Partial<Record<CompetitionStatus, number>>;
 
     return {

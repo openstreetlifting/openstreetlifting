@@ -25,6 +25,7 @@
 
   const TABS = [
     { status: 'completed', label: 'Results' },
+    { status: 'live', label: 'In Progress' },
     { status: 'upcoming', label: 'Upcoming' },
   ] as const;
 
@@ -58,7 +59,7 @@
     const target = next.status ?? data.status;
     const params = new SvelteURLSearchParams();
 
-    if (target === 'upcoming') params.set('status', 'upcoming');
+    if (target !== 'completed') params.set('status', target);
     if (query.trim()) params.set('q', query.trim());
     if (federation) params.set('federation', federation);
     if (country) params.set('country', country);
@@ -88,7 +89,7 @@
   const seo = $derived(listingSeo(currentPage.url));
 
   const description = $derived(
-    narrowed || showsUpcoming
+    narrowed || data.status !== 'completed'
       ? 'Streetlifting competition results by federation, country and year, with muscle up, pull up, dips and squat standings for every meet in the archive.'
       : `Results from ${pagination.total_items} Streetlifting competitions worldwide, with muscle up, pull up, dips and squat standings, plus the calendar of upcoming meets.`
   );
@@ -183,9 +184,13 @@
         ? 'Lighten the filters or try another name.'
         : showsUpcoming
           ? 'No competitions are planned yet.'
-          : 'No competition results in this view yet.'}
+          : data.status === 'live'
+            ? 'No competitions are in progress right now.'
+            : 'No competition results in this view yet.'}
       resetHref={canReset
-        ? resolve(showsUpcoming ? '/competitions?status=upcoming' : '/competitions')
+        ? resolve(
+            data.status === 'completed' ? '/competitions' : `/competitions?status=${data.status}`
+          )
         : undefined}
     />
   {:else}

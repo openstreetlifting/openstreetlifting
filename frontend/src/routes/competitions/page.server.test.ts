@@ -25,7 +25,7 @@ beforeEach(() => {
   });
 });
 
-it('normalizes selection order and applies the format to both tab counts', async () => {
+it('normalizes selection order and applies the format to all tab counts', async () => {
   const result = await load(request('event=DP&country=FR&year=2026&federation=Test&page=2'));
   expect(competitionsService.getAll).toHaveBeenCalledWith(
     expect.objectContaining({
@@ -68,4 +68,17 @@ it.each(['', 'event=', 'event=invalid'])('leaves format unrestricted for %s', as
   expect(competitionsService.getAll).toHaveBeenCalledWith(
     expect.objectContaining({ event: undefined })
   );
+});
+
+it('loads in-progress results and counts the other statuses with the same filters', async () => {
+  const result = await load(request('status=live&country=FR&event=MPDS&page=2'));
+  expect(result).toMatchObject({ status: 'live', counts: { live: 0, completed: 0, upcoming: 0 } });
+  expect(competitionsService.getAll).toHaveBeenCalledWith(
+    expect.objectContaining({ status: 'live', country: 'FR', event: 'MPDS', page: 2 })
+  );
+  for (const status of ['completed', 'upcoming']) {
+    expect(competitionsService.getAll).toHaveBeenCalledWith(
+      expect.objectContaining({ status, country: 'FR', event: 'MPDS', page_size: 1 })
+    );
+  }
 });

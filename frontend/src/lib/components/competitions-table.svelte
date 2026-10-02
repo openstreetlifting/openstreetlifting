@@ -4,6 +4,7 @@
   import { Table, TABLE_CELL, TABLE_HEAD_CELL } from '$lib/components/ui';
   import { resolve } from '$app/paths';
   import { federationPath, formatCountdown, formatDate, formatLocation } from '$lib/utils';
+  import { TEXT } from '$lib/constants/typography';
   import { CELL, FIGURE, TEXT_CELL } from '$lib/constants/table';
 
   interface Props {
@@ -56,6 +57,9 @@
           >
             {competition.name}
           </a>
+          {#if competition.status === 'live'}
+            <span class="ml-2 {TEXT.micro} text-success">In Progress</span>
+          {/if}
         </td>
         <td
           class="{TABLE_CELL} {CELL.data} whitespace-nowrap"

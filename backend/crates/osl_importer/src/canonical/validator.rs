@@ -140,7 +140,7 @@ impl CanonicalValidator {
         if announced {
             report.errors.push(
                 "entries.csv lists results, so status cannot be \"upcoming\". Move it to \
-                 \"completed\" in the same edit"
+                 \"live\" for partial results or \"completed\" for final results in the same edit"
                     .to_string(),
             );
         }
@@ -523,6 +523,13 @@ mod tests {
     #[test]
     fn accepts_a_well_formed_file() {
         assert!(CanonicalValidator::validate(&completed()).is_ok());
+    }
+
+    #[test]
+    fn accepts_results_while_a_competition_is_in_progress() {
+        let mut canonical = completed();
+        canonical.competition.status = Some(CompetitionStatus::Live);
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
     }
 
     #[test]

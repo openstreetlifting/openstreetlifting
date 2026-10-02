@@ -37,6 +37,7 @@ async fn seed(pool: &PgPool) {
         ("pd-de", Some("PD"), "completed", "DE"),
         ("mpd", Some("MPD"), "completed", "FR"),
         ("mpds", Some("MPDS"), "completed", "FR"),
+        ("in-progress", Some("MPDS"), "live", "FR"),
         ("unknown", None, "completed", "FR"),
         ("upcoming-pd", Some("PD"), "upcoming", "FR"),
         ("upcoming-unknown", None, "upcoming", "FR"),
@@ -109,4 +110,17 @@ async fn nonexistent_combinations_are_empty_and_choices_stay_global(pool: PgPool
             StatusCode::BAD_REQUEST
         );
     }
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn in_progress_competitions_are_filterable_and_readable(pool: PgPool) {
+    seed(&pool).await;
+    let (status, result) = get(&pool, "?status=live&country=FR&event=MPDS").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(result["pagination"]["total_items"], 1);
+    assert_eq!(result["data"][0]["slug"], "in-progress");
+    assert_eq!(result["data"][0]["status"], "live");
+    let (status, detail) = get(&pool, "/in-progress").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(detail["status"], "live");
 }

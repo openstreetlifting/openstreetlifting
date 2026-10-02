@@ -8,6 +8,7 @@ pub enum CompetitionStatus {
     #[default]
     Draft,
     Upcoming,
+    /// In progress, with partial results published as the competition runs.
     Live,
     Completed,
     Cancelled,
