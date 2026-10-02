@@ -1,0 +1,14 @@
+event = "MPDS"
+sources = ["https://app.final-rep.com/#/events/statistics/31sCzL6Fw2OglxafgWzNf3udxM9"]
+
+[competition]
+name = "Ace Cup Series Rennes"
+start_date = "2026-01-18"
+city = "Rennes"
+country = "FR"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "Ace Squad"
+country = "FR"
