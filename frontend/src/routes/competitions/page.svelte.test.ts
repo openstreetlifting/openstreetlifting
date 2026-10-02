@@ -32,6 +32,7 @@ vi.mock('$app/navigation', async () => {
 
 function data(event = ''): PageData {
   return {
+    runningCompetitions: [],
     competitions: ['PD', ''].map((format, i) => ({
       competition_id: String(i),
       slug: `meet-${i}`,

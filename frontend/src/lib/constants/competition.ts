@@ -9,7 +9,7 @@ interface CompetitionStatusOption {
 const STATUS_STYLE: Record<CompetitionStatus, Omit<CompetitionStatusOption, 'value'>> = {
   draft: { label: 'Draft', text: 'text-muted' },
   upcoming: { label: 'Planned', text: 'text-secondary' },
-  live: { label: 'In Progress', text: 'text-success' },
+  live: { label: 'In Progress', text: 'text-secondary' },
   completed: { label: 'Completed', text: 'text-secondary' },
   cancelled: { label: 'Cancelled', text: 'text-muted line-through' },
 };

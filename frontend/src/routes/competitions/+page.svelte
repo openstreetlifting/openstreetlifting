@@ -11,7 +11,7 @@
   import { untrack } from 'svelte';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
-  import { countryName } from '$lib/utils';
+  import { countryName, formatDate, formatLocation } from '$lib/utils';
   import { FIELD, TEXT, CONTROL } from '$lib/constants/typography';
   import Seo from '$lib/components/seo.svelte';
   import { breadcrumbLd, listingSeo } from '$lib/seo';
@@ -112,6 +112,85 @@
   <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: 'Competitions' }]} />
 
   <h1 class="sr-only">Streetlifting competitions</h1>
+
+  {#if data.runningCompetitions.length > 0}
+    <section
+      aria-labelledby="running-heading"
+      class="mb-6 rounded-lg border border-stroke-strong bg-surface-subtle px-4 py-3"
+    >
+      <h2 id="running-heading" class="flex items-center gap-2 text-sm font-medium text-ink">
+        <span aria-hidden="true" class="size-1.5 shrink-0 rounded-full bg-success"></span>
+        Hey! Those competitions are currently running
+      </h2>
+      <ul class="mt-2 space-y-2 text-sm">
+        {#each data.runningCompetitions as competition (competition.slug)}
+          <li class="flex flex-wrap items-center gap-x-6 gap-y-1">
+            <a
+              href={resolve(`/competitions/${competition.slug}`)}
+              class="inline-flex min-h-8 items-center gap-1.5 text-ink underline decoration-stroke-strong underline-offset-4 hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
+            >
+              {competition.name}
+            </a>
+            <dl class="flex flex-wrap items-center gap-x-6 gap-y-1 text-secondary">
+              {#if competition.event_code}
+                <div>
+                  <dt class="sr-only">Format</dt>
+                  <dd
+                    title={competition.movements
+                      .map(({ movement_name }) => movement_name)
+                      .join(', ')}
+                  >
+                    {competition.event_code}
+                  </dd>
+                </div>
+              {/if}
+              <div>
+                <dt class="sr-only">Federation</dt>
+                <dd title={competition.federation.name}>
+                  {competition.federation.abbreviation || competition.federation.name}
+                </dd>
+              </div>
+              {#if competition.country || competition.region || competition.city}
+                <div>
+                  <dt class="sr-only">Location</dt>
+                  <dd>
+                    {formatLocation(competition.country, competition.region, competition.city)}
+                  </dd>
+                </div>
+              {/if}
+              {#if competition.start_date}
+                <div>
+                  <dt class="sr-only">Date</dt>
+                  <dd class="flex flex-wrap items-baseline gap-x-1.5 tabular-nums">
+                    <time class="whitespace-nowrap" datetime={competition.start_date}
+                      >{formatDate(competition.start_date)}</time
+                    >
+                    {#if competition.end_date && competition.end_date !== competition.start_date}
+                      <span class="inline-flex gap-x-1.5">
+                        <span>to</span>
+                        <time class="whitespace-nowrap" datetime={competition.end_date}
+                          >{formatDate(competition.end_date)}</time
+                        >
+                      </span>
+                    {/if}
+                  </dd>
+                </div>
+              {/if}
+            </dl>
+          </li>
+        {/each}
+        {#if (data.counts.live ?? 0) > data.runningCompetitions.length}
+          <li>
+            <a
+              href={listingHref({ status: 'live' })}
+              class="inline-flex min-h-8 items-center text-secondary underline underline-offset-4"
+              >View all in progress</a
+            >
+          </li>
+        {/if}
+      </ul>
+    </section>
+  {/if}
 
   <nav class="mb-4 flex items-center gap-5 border-b border-stroke">
     {#each TABS as tab (tab.status)}

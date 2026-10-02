@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ url }) => {
   const otherStatuses = COMPETITION_STATUS_FILTERS.filter((option) => option.value !== status);
 
   try {
-    const [{ data: competitions, pagination }, facets, otherCounts] = await Promise.all([
+    const [{ data: competitions, pagination }, facets, otherResults] = await Promise.all([
       competitionsService.getAll({
         status,
         federation,
@@ -45,8 +45,16 @@ export const load: PageServerLoad = async ({ url }) => {
       Promise.all(
         otherStatuses.map(({ value }) =>
           competitionsService
-            .getAll({ status: value, federation, country, year, q, event, page_size: 1 })
-            .then((response) => [value, response.pagination.total_items] as const)
+            .getAll({
+              status: value,
+              federation,
+              country,
+              year,
+              q,
+              event,
+              page_size: value === 'live' ? 5 : 1,
+            })
+            .then((response) => ({ status: value, ...response }))
             .catch(() => null)
         )
       ),
@@ -54,11 +62,16 @@ export const load: PageServerLoad = async ({ url }) => {
 
     const counts = {
       [status]: pagination.total_items,
-      ...Object.fromEntries(otherCounts.filter((count) => count !== null)),
+      ...Object.fromEntries(
+        otherResults
+          .filter((result) => result !== null)
+          .map((result) => [result.status, result.pagination.total_items])
+      ),
     } as Partial<Record<CompetitionStatus, number>>;
 
     return {
       competitions,
+      runningCompetitions: otherResults.find((result) => result?.status === 'live')?.data ?? [],
       pagination,
       facets,
       counts,
@@ -73,6 +86,7 @@ export const load: PageServerLoad = async ({ url }) => {
     console.error('Failed to load competitions', { status, page, error });
     return {
       competitions: [],
+      runningCompetitions: [],
       pagination: { page: 1, page_size: TABLE_PAGE_SIZE, total_items: 0, total_pages: 0 },
       facets: { federations: [], years: [], countries: [], formats: [] },
       counts: {} as Partial<Record<CompetitionStatus, number>>,

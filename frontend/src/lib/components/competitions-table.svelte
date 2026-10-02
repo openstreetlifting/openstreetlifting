@@ -58,7 +58,7 @@
             {competition.name}
           </a>
           {#if competition.status === 'live'}
-            <span class="ml-2 {TEXT.micro} text-success">In Progress</span>
+            <span class="ml-2 {TEXT.micro} text-secondary">In Progress</span>
           {/if}
         </td>
         <td

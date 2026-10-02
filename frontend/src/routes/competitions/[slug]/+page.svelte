@@ -300,7 +300,7 @@
   const seoDescription = $derived(
     [
       published
-        ? `Full results and standings from ${competition.name}`
+        ? `${competition.status === 'live' ? 'Partial' : 'Full'} results and standings from ${competition.name}`
         : `${competition.name}, a ${federationLabel} Streetlifting competition`,
       competition.start_date ? `, ${formatLongDate(competition.start_date)}` : '',
       seoWhere ? `, ${seoWhere}` : '',
@@ -375,10 +375,6 @@
       {#if location}
         <dt class="text-muted">Location</dt>
         <dd class="text-ink">{location}</dd>
-      {/if}
-      {#if competition.status === 'live'}
-        <dt class="text-muted">Status</dt>
-        <dd class="text-success">In Progress — results are partial.</dd>
       {/if}
       <dt class="text-muted">Format</dt>
       <dd class="text-ink">
@@ -463,6 +459,15 @@
     {/if}
   </header>
 
+  {#if competition.status === 'live'}
+    <section
+      aria-labelledby="progress-heading"
+      class="mb-6 rounded-lg border border-stroke-strong bg-surface-subtle px-4 py-3"
+    >
+      <h2 id="progress-heading" class="text-sm font-medium text-ink">In Progress</h2>
+    </section>
+  {/if}
+
   {#if published}
     <FilterBar
       bind:search={table.searchFilter}
@@ -525,11 +530,19 @@
 
   {#if !published}
     <div class="border-l-2 border-stroke-strong py-1 pl-5">
-      <p class="text-lg text-ink">This competition has not been lifted yet.</p>
-      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-secondary">
-        {competition.name} is scheduled for {formatDate(competition.start_date)}. There is nothing
-        to rank until the platform closes, and the results will land on this page once they are in.
-      </p>
+      {#if competition.status === 'live'}
+        <p class="text-lg text-ink">Results are not available yet.</p>
+        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-secondary">
+          Results will appear here once they are published.
+        </p>
+      {:else}
+        <p class="text-lg text-ink">This competition has not been lifted yet.</p>
+        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-secondary">
+          {competition.name} is scheduled for {formatDate(competition.start_date)}. There is nothing
+          to rank until the platform closes, and the results will land on this page once they are
+          in.
+        </p>
+      {/if}
     </div>
   {:else if rankings.length === 0 && unplacedOnPage.length === 0 && !busy}
     <RankingsEmpty
