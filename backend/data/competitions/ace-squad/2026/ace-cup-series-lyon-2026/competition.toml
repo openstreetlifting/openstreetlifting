@@ -1,0 +1,14 @@
+event = "MPDS"
+sources = ["https://app.final-rep.com/#/events/statistics/31sEPEU82kOuJiGOVyeWKGedamz"]
+
+[competition]
+name = "Ace Cup Series Lyon"
+start_date = "2026-02-07"
+city = "Lyon"
+country = "FR"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "Ace Squad"
+country = "FR"
