@@ -32,6 +32,8 @@ Create or extend one canonical directory per competition. Each pass must produce
 
 8. **Report the diff.** Show the changed files and summarize added categories or athletes, validation and total checks, missing countries, mixed-contest scoring, and unresolved evidence. Leave the files ready for review. Database imports and commits are outside this extraction workflow unless the user explicitly requests them.
 
+9. **Open a PR when requested.** Use one branch and one PR per competition. Apply the `writing-clearly-and-concisely` skill to PR wording. Keep the description to this single sentence on one line: `Import [<competition>](<source URL>) (closes #<issue>).` Omit the closing reference when there is no linked issue. Verify that the diff covers exactly one competition before opening.
+
 ## Completion
 
 A pass is complete when every supplied row is accounted for, all written values have evidence or a documented allowed default, validation errors are resolved, and remaining warnings or blocked rows are reported. If required evidence is missing, identify exactly what would resolve it.
