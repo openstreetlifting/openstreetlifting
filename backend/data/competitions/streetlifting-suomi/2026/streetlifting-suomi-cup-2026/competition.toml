@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "https://drive.google.com/file/d/1fghGZKD6-nS-Gp0WpkhXESdN0Y_Ytn-B/view",
+    "https://www.suomenstreetworkout.fi/?page_id=1374",
+    "https://drive.google.com/file/d/1FI8NcXhi89ueW7PLtdZtJY_UdcHideHk/view",
+]
+
+[competition]
+name = "Streetlifting Suomi Cup"
+start_date = "2026-08-22"
+city = "Jyväskylä"
+venue = "PTV Gym Jyväskylä"
+country = "FI"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "Streetlifting Suomi"
+country = "FI"
