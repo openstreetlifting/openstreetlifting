@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.38.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.37.0...v0.38.0) (2026-10-02)
+
+
+### Features
+
+* **data:** import FNSL Dips Only 2022 results ([#674](https://github.com/openstreetlifting/openstreetlifting/issues/674)) ([cc5fcd8](https://github.com/openstreetlifting/openstreetlifting/commit/cc5fcd80db0ca815bb44ca05044940dcd8920297))
+* **data:** import FNSL Dips Only 2023 results ([#672](https://github.com/openstreetlifting/openstreetlifting/issues/672)) ([6e24f3d](https://github.com/openstreetlifting/openstreetlifting/commit/6e24f3d92e459b0cb7b06be7a1891bacd156acb9))
+* **data:** import FNSL Dips Only 2024 results ([#667](https://github.com/openstreetlifting/openstreetlifting/issues/667)) ([0b62dc9](https://github.com/openstreetlifting/openstreetlifting/commit/0b62dc9b88548c6325916e7670ea451984a59bb3))
+* **data:** import FNSL Dips Only 2025 results ([#683](https://github.com/openstreetlifting/openstreetlifting/issues/683)) ([bef6112](https://github.com/openstreetlifting/openstreetlifting/commit/bef6112c5b899e8aa7fc03143e53dd6876ecb3b4))
+* **data:** import FNSL Muscle Up Only 2023 results ([#670](https://github.com/openstreetlifting/openstreetlifting/issues/670)) ([3fce471](https://github.com/openstreetlifting/openstreetlifting/commit/3fce47175fb995efe399c26b14374fbcdb82c5aa))
+* **data:** import FNSL Muscle Up Only 2024 results ([#665](https://github.com/openstreetlifting/openstreetlifting/issues/665)) ([1a39e97](https://github.com/openstreetlifting/openstreetlifting/commit/1a39e97a88a4be2e4820791524784955f8650f4c))
+* **data:** import FNSL Premiers Pas 2023 results ([#673](https://github.com/openstreetlifting/openstreetlifting/issues/673)) ([c4b0584](https://github.com/openstreetlifting/openstreetlifting/commit/c4b0584c910b5e4644494c192161739fba1fcf4e))
+* **data:** import FNSL Premiers Pas 2024 results ([#669](https://github.com/openstreetlifting/openstreetlifting/issues/669)) ([5023df9](https://github.com/openstreetlifting/openstreetlifting/commit/5023df9001d9ea55a52a0f87ee46637d303224af))
+* **data:** import FNSL Pull Only 2022 results ([#681](https://github.com/openstreetlifting/openstreetlifting/issues/681)) ([7fa9865](https://github.com/openstreetlifting/openstreetlifting/commit/7fa9865c01e1e3686889af3a9a4d6b5f04ea4611))
+* **data:** import FNSL Pull Only 2023 results ([#671](https://github.com/openstreetlifting/openstreetlifting/issues/671)) ([7e877f7](https://github.com/openstreetlifting/openstreetlifting/commit/7e877f780be6fa56ef5c5cb345a2463cd1f66d99))
+* **data:** import FNSL Pull Only 2024 results ([#666](https://github.com/openstreetlifting/openstreetlifting/issues/666)) ([423c814](https://github.com/openstreetlifting/openstreetlifting/commit/423c814d7e6ac631b24765168aa838743af82f12))
+* **data:** import FNSL Pull Up Only 2025 results ([#653](https://github.com/openstreetlifting/openstreetlifting/issues/653)) ([45ddcba](https://github.com/openstreetlifting/openstreetlifting/commit/45ddcbafba97b1726480836cbfb0c7b96320feea))
+* **data:** import FNSL Squat Only 2025 results ([#664](https://github.com/openstreetlifting/openstreetlifting/issues/664)) ([7f9e4bc](https://github.com/openstreetlifting/openstreetlifting/commit/7f9e4bcdcdd926a66a57a4f05b333689e51fe76c))
+* **data:** import polish finalrep underground data ([#682](https://github.com/openstreetlifting/openstreetlifting/issues/682)) ([27112f0](https://github.com/openstreetlifting/openstreetlifting/commit/27112f04a90ac8f2367d583d390efe117e1f97cb))
+
+
+### Bug Fixes
+
+* **data:** correct Antoine Hebrard in 4Lift 2025 ([#680](https://github.com/openstreetlifting/openstreetlifting/issues/680)) ([24cbfc4](https://github.com/openstreetlifting/openstreetlifting/commit/24cbfc45ae4ea83c91759f1e35aeae9d1399dafa))
+* **data:** correct Rémi Ngouanesavanh in CNSL 2024 ([#668](https://github.com/openstreetlifting/openstreetlifting/issues/668)) ([4c154fa](https://github.com/openstreetlifting/openstreetlifting/commit/4c154fa19eeb30697bfa3e379bc5e87ebd1d05bb))
+* **data:** correct Underground Rabka-Zdrój results ([#685](https://github.com/openstreetlifting/openstreetlifting/issues/685)) ([508efb2](https://github.com/openstreetlifting/openstreetlifting/commit/508efb213377c265070320e52966d6d1085ad135))
+* **data:** correct Underground Warszawa results ([#686](https://github.com/openstreetlifting/openstreetlifting/issues/686)) ([8b8e80d](https://github.com/openstreetlifting/openstreetlifting/commit/8b8e80def3650f9dd23580d8bdb3b3f90a93569b))
+* **data:** correct Youssef Bouida in Belgium 2025 ([#679](https://github.com/openstreetlifting/openstreetlifting/issues/679)) ([39275dd](https://github.com/openstreetlifting/openstreetlifting/commit/39275dd69d11e2e1abc853adef2fbab2a069523d))
+* **data:** correct Youssef Bouida in CNSL 2021 ([#675](https://github.com/openstreetlifting/openstreetlifting/issues/675)) ([c63c861](https://github.com/openstreetlifting/openstreetlifting/commit/c63c86164a8e0503876420f87e91c40a6741ada9))
+* **data:** correct Youssef Bouida in CNSL 2022 ([#676](https://github.com/openstreetlifting/openstreetlifting/issues/676)) ([27a6efd](https://github.com/openstreetlifting/openstreetlifting/commit/27a6efdeece879fbd4db709cc9454f9a8c6c7448))
+* **data:** correct Youssef Bouida in Worlds 2023 ([#677](https://github.com/openstreetlifting/openstreetlifting/issues/677)) ([9d2dd99](https://github.com/openstreetlifting/openstreetlifting/commit/9d2dd997a52e03e09a7d63388f59911aff8413c7))
+* **data:** correct Youssef Bouida in Worlds 2025 ([#678](https://github.com/openstreetlifting/openstreetlifting/issues/678)) ([48b7bae](https://github.com/openstreetlifting/openstreetlifting/commit/48b7bae8c68bd1d010508366f89c77dea37650a8))
+* **deps:** update rust crate utoipa-axum to 0.3.0 ([#656](https://github.com/openstreetlifting/openstreetlifting/issues/656)) ([4da9a9d](https://github.com/openstreetlifting/openstreetlifting/commit/4da9a9da71feb0aee82d57d886647197f01412f6))
+* **deps:** update utoipa monorepo (major) ([#657](https://github.com/openstreetlifting/openstreetlifting/issues/657)) ([262df95](https://github.com/openstreetlifting/openstreetlifting/commit/262df9513c016e801b0675d136166cedf20064df))
+
 ## [0.37.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.36.0...v0.37.0) (2026-09-27)
 
 
