@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.39.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.38.0...v0.39.0) (2026-10-02)
+
+
+### Features
+
+* **competitions:** show in-progress results ([#710](https://github.com/openstreetlifting/openstreetlifting/issues/710)) ([b96a723](https://github.com/openstreetlifting/openstreetlifting/commit/b96a7235b8bbfd773a8d4ab5d48988ab1a1c3a7a))
+* **data:** import AESL Spanish Nationals 2021 results ([#699](https://github.com/openstreetlifting/openstreetlifting/issues/699)) ([6a9d0a7](https://github.com/openstreetlifting/openstreetlifting/commit/6a9d0a74513d5878780f7737f7438e31990797ec))
+* **data:** import Euros 2026 men under 101 kg results ([#712](https://github.com/openstreetlifting/openstreetlifting/issues/712)) ([84c9534](https://github.com/openstreetlifting/openstreetlifting/commit/84c9534f0f2b3bac02c4c3397f5e58d8d4f27170))
+* **data:** import Euros 2026 women under 52 kg results ([#709](https://github.com/openstreetlifting/openstreetlifting/issues/709)) ([5b552bb](https://github.com/openstreetlifting/openstreetlifting/commit/5b552bb6f874f686f7687b8bbabb890874e4220b))
+* **data:** import polish classic nationals 2026 data ([#684](https://github.com/openstreetlifting/openstreetlifting/issues/684)) ([4492c6d](https://github.com/openstreetlifting/openstreetlifting/commit/4492c6da0e90c71a79cde8381f56cef1d4925396))
+
+
+### Bug Fixes
+
+* **data:** preserve full Spanish athlete names ([#698](https://github.com/openstreetlifting/openstreetlifting/issues/698)) ([595c53d](https://github.com/openstreetlifting/openstreetlifting/commit/595c53d0d5c7b7ebf3952a8019dbf3a1ae31a52d))
+
 ## [0.38.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.37.0...v0.38.0) (2026-10-02)
 
 
