@@ -1,4 +1,5 @@
 Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,Alexis,Alle,,FR,,71.24,,disqualified,Bombed the muscle-up,,,2.5x,5x,5x,,37.5,42.5,50,50,92.5,100,103.75,103.75,157.5,167.5,172.5,172.5
 M,Evan,Anaya,,FR,65.4,77.29,325,competed,,recovered,2026,13.75,15,20x,15,45,52.5,57.5,57.5,85,92.5,97.5x,92.5,145,152.5,160,160
 M,Amine,Atamna,,FR,74.8,58.96,278.75,competed,,recovered,2026,1.25,2.5x,2.5x,1.25,42.5,47.5,50x,47.5,75,80x,80x,75,145,155,165x,155
 M,Jules,Grès,,FR,79,74.94,370,competed,,recovered,2026,12.5x,15,17.5x,15,62.5x,65,70x,65,92.5,100,103.75x,100,170,180,190,190

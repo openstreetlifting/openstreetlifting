@@ -1,5 +1,8 @@
 event = "MPDS"
-sources = ["https://app.final-rep.com/#/events/statistics/31sEs0MoH6aMNcWxCLe6IcTuxmw"]
+sources = [
+    "https://app.final-rep.com/#/events/statistics/31sEs0MoH6aMNcWxCLe6IcTuxmw",
+    "https://www.instagram.com/p/DS9u-ofDZ7X/",
+]
 
 [competition]
 name = "Ace Cup Series Reims"
