@@ -1,0 +1,24 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Daniel,Alarcón López,,,,,316.25,competed,,,,,16.25,,,,60,,,,85,,,,155
+M,66,Rodrigo,Flores Cepeda,,,,,347.5,competed,,,,,17.5,,,,75,,,,100,,,,155
+M,66,José Manuel,Mazuecos Nogales,,,,,290,competed,,,,,12.5,,,,57.5,,,,90,,,,130
+M,66,Antonio,Romero Esteve,,,,,246.25,competed,,,,,1.25,,,,50,,,,60,,,,135
+M,66,Rubén Alexandro,Ruiz Ángulo,,,,,320,competed,,,,,20,,,,70,,,,110,,,,120
+M,73,Lorenzo,Díaz García,,,,,267.5,competed,,,,,12.5,,,,50,,,,85,,,,120
+M,73,Marc,Lázaro Flos,,,,,212.5,competed,,,,,5,,,,47.5,,,,55,,,,105
+M,73,David,López Gil,,,,,200,competed,,,,,15,,,,55,,,,60,,,,70
+M,73,Sergio,Vázquez Bautista,,,,,362.5,competed,,,,,25,,,,80,,,,105,,,,152.5
+M,80,Nikolas,Berraondo Imedio,,,,,340,competed,,,,,10,,,,57.5,,,,82.5,,,,190
+M,80,Jorge,Espejo Fuentes,,,,,355,competed,,,,,17.5,,,,67.5,,,,107.5,,,,162.5
+M,80,Carlos,García Picón,,,,,482.5,competed,,,,,22.5,,,,85,,,,160,,,,215
+M,87,Alfonso,Acín Gota,,,,,332.5,competed,,,,,15,,,,57.5,,,,90,,,,170
+M,87,Diego,Ballesteros Onieva,,,,,323.75,competed,,,,,7.5,,,,60,,,,86.25,,,,170
+M,87,Victor,Contreras Sanchez,,,,,377.5,competed,,,,,25,,,,67.5,,,,100,,,,185
+M,87,Gerard,Gabriel Torres Martínez,,,,,368,competed,,,,,15,,,,60,,,,96,,,,197
+M,87,Pedro,García Parra,,,,,443.75,competed,,,,,23.75,,,,65,,,,120,,,,235
+M,94,Javier,Del Río,,,,,307.5,competed,,,,,7.5,,,,72.5,,,,90,,,,137.5
+M,94+,Juan,Martinez Enguidanos,,,,,345,competed,,,,,5,,,,55,,,,75,,,,210
+M,94+,Diego,Rodríguez Gutiérrez,,,,,221.5,competed,,,,,0,,,,26.5,,,,17.5,,,,177.5
+M,94+,Miguel,Tirado Martínez,,,,,425,competed,,,,,30,,,,105,,,,80,,,,210
+F,52,Anaïs,Lozano Rojas,,,,,215,competed,,,,,15,,,,30,,,,50,,,,120
+F,63,Laura,Garcia Bitrian,,,,,255,competed,,,,,20,,,,45,,,,60,,,,130
