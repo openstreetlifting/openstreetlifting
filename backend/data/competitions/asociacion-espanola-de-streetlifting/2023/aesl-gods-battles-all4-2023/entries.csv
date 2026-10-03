@@ -1,0 +1,33 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Pedro Pablo,Blaya Foncubierta,,ES,,,301.25,competed,,,,,15,,,,56.25,,,,75,,,,155
+M,66,Sergio,Blazquez Sánchez,,ES,,,322.5,competed,,,,,12.5,,,,52.5,,,,110,,,,147.5
+M,66,Abel,Farrona Garijo,,ES,,,237.5,competed,,,,,12.5,,,,45,,,,65,,,,115
+M,66,Pablo,Reveriego Sansón,,ES,,,397.5,competed,,,,,25,,,,70,,,,110,,,,192.5
+M,73,Raúl,Delgado Duarte,,ES,,,213.75,competed,,,,,1.25,,,,32.5,,,,60,,,,120
+M,73,Ronal,Espinosa Naranjo,,ES,,,253.75,competed,,,,,1.25,,,,37.5,,,,70,,,,145
+M,73,Gabriel,García Sorivella,,ES,,,350,competed,,,,,5,,,,55,,,,95,,,,195
+M,73,Jon,Lopetegui Pérez,,ES,,,385,competed,,,,,27.5,,,,77.5,,,,110,,,,170
+M,73,Marc,Lázaro Flos,,ES,,,252.5,competed,,,,,7.5,,,,52.5,,,,70,,,,122.5
+M,73,Alberto,Salinas Valcárcel,,ES,,,367.5,competed,,,,,17.5,,,,65,,,,105,,,,180
+M,73,Artur,Zaytsev,,ES,,,230,competed,,,,,10,,,,45,,,,75,,,,100
+M,80,Victor,Contreras Sanchez,,ES,,,400,competed,,,,,30,,,,75,,,,105,,,,190
+M,80,Roberto,Delgado Montoro,,ES,,,287.5,competed,,,,,10,,,,52.5,,,,75,,,,150
+M,80,Javier,Fernandez García,,ES,,,337.5,competed,,,,,10,,,,55,,,,72.5,,,,200
+M,80,Josué,Jaime Caparrós,,ES,,,351.25,competed,,,,,1.25,,,,50,,,,90,,,,210
+M,80,Andrés,Marín Velasco,,ES,,,272.5,competed,,,,,10,,,,52.5,,,,70,,,,140
+M,80,Eloy,Ondoño López,,ES,,,307.5,competed,,,,,17.5,,,,60,,,,85,,,,145
+M,80,Guillermo,Rodrigo Perez,,ES,,,370,competed,,,,,25,,,,80,,,,97.5,,,,167.5
+M,80,Àlex,Ventura Capellà,,ES,,,332.5,competed,,,,,25,,,,72.5,,,,95,,,,140
+M,87,Albaro,Blas Mújica,,ES,,,385,competed,,,,,22.5,,,,60,,,,117.5,,,,185
+M,87,Alejandro,Castillo Moens,,ES,,,305,competed,,,,,10,,,,50,,,,80,,,,165
+M,87,Antonio,Jaime Caparrós,,ES,,,375,competed,,,,,5,,,,50,,,,100,,,,220
+M,87,Antonio,Merlos Fernández,,ES,,,402.5,competed,,,,,15,,,,75,,,,132.5,,,,180
+M,87,Diego,Vasky,,CL,,,366.25,competed,,,,,20,,,,71.25,,,,100,,,,175
+M,87,Kotlinskyi,Vladyslav,,UA,,,395,competed,,,,,25,,,,80,,,,120,,,,170
+M,94,Daniel,Andrades Tocón,,ES,,,425,competed,,,,,20,,,,75,,,,130,,,,200
+M,94+,Juan,Martínez Enguidanos,,ES,,,403.75,competed,,,,,5,,,,56.25,,,,100,,,,242.5
+M,94+,Miguel,Tirado Martínez,,ES,,,455,competed,,,,,27.5,,,,90,,,,127.5,,,,210
+M,94+,Laurynas,Verkulis,,LT,,,372.5,competed,,,,,10,,,,67.5,,,,105,,,,190
+F,52,Victoria,Albalat Peraita,,ES,,,83.75,competed,,,,,3.75,,,,10,,,,15,,,,55
+F,57,Marta,Ossorio Torres,,ES,,,162.5,competed,,,,,10,,,,37.5,,,,40,,,,75
+F,63,Maria del Mar,Martínez Olivo,,ES,,,198.75,competed,,,,,5,,,,33.75,,,,50,,,,110
