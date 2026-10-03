@@ -1,0 +1,18 @@
+event = "PD"
+sources = [
+    "https://streetlifting.es/todos-rankings/",
+    "https://streetlifting.es/?jet_download=c40c422f0a8f57c6b5d9e35d5c3eb73315957c2f",
+]
+
+[competition]
+name = "III Gods Battles Classic"
+start_date = "2023-11-11"
+end_date = "2023-11-12"
+city = "Murcia"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"
