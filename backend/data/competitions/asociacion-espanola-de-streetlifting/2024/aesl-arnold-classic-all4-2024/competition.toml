@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = [
+    "https://streetlifting.es/todos-rankings/",
+    "https://streetlifting.es/?jet_download=c5ff7a0ebfec24571c303a7878b1b6e58a710d5b",
+]
+
+[competition]
+name = "Arnold Classic All4"
+start_date = "2024-10-12"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"

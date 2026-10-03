@@ -1,0 +1,31 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Jorge,García Bernabé,,ES,,,,no_show,,,,,,,,,,,,,,,,,
+M,66,Owen,Gayle,,GB,,,445,competed,,,,,17.5,,,,65,,,,125,,,,237.5
+M,66,Jesús,González Arturo,,ES,,,,no_show,,,,,,,,,,,,,,,,,
+M,66,Ginés,Martínez Pérez,,ES,,,400,competed,,,,,27.5,,,,77.5,,,,117.5,,,,177.5
+M,66,Javier,Sáez Lledo,,ES,,,357.5,competed,,,,,27.5,,,,65,,,,115,,,,150
+M,73,Rodrigo,Banderas González,,ES,,,216.25,competed,,,,,3.75,,,,45,,,,52.5,,,,115
+M,73,Daniel,Gauchia Alba,,ES,,,367.5,competed,,,,,20,,,,67.5,,,,110,,,,170
+M,73,Marc,Lázaro Flos,,ES,,,297.5,competed,,,,,12.5,,,,60,,,,75,,,,150
+M,73,Alejandro,López Martín,,ES,,,370,competed,,,,,27.5,,,,72.5,,,,107.5,,,,162.5
+M,73,Carlos,Martínez Manzano,,ES,,,323,competed,,,,,12.5,,,,73.75,,,,76.75,,,,160
+M,73,Jesús,Toscano Gómez,,ES,,,410,competed,,,,,25,,,,75,,,,130,,,,180
+M,73,Ignacio,Álvarez Calles,,ES,,,313.75,competed,,,,,11.25,,,,66.25,,,,96.25,,,,140
+M,80,Eric,Altarriba Coronado,,ES,,,460,competed,,,,,25,,,,80,,,,125,,,,230
+M,80,Joan,Bauzà Bosch,,ES,,,352.5,competed,,,,,17.5,,,,70,,,,90,,,,175
+M,80,Roberto,Delgado Montoro,,ES,,,308.75,competed,,,,,13.75,,,,50,,,,90,,,,155
+M,80,Carlos,García Picón,,ES,,,485,competed,,,,,25,,,,80,,,,160,,,,220
+M,80,Andrés,Marín Velasco,,ES,,,286.25,competed,,,,,6.25,,,,57.5,,,,82.5,,,,140
+M,80,Guillermo,Mateo Brusca,,ES,,,342.5,competed,,,,,10,,,,52.5,,,,90,,,,190
+M,80,Victor,Valverde Prieto,,ES,,,321.25,competed,,,,,16.25,,,,65,,,,80,,,,160
+M,87,Álvaro,Blas Mújica,,ES,,,426.25,competed,,,,,26.25,,,,70,,,,120,,,,210
+M,87,Sergio,Cascón López,,ES,,,393.75,competed,,,,,10,,,,63.75,,,,100,,,,220
+M,87,Kwame,Hanson,,GB,,,455,competed,,,,,27.5,,,,77.5,,,,135,,,,215
+M,87,Pau,Serra Ujaldón,,ES,,,330,competed,,,,,10,,,,60,,,,100,,,,160
+M,87,Sebastian,Stepnowski,,PL,,,437.5,competed,,,,,25,,,,72.5,,,,122.5,,,,217.5
+M,94,Miguel,Tirado Martínez,,ES,,,462.5,competed,,,,,35,,,,100,,,,127.5,,,,200
+F,52,Ainhoa,Codina Álvarez,,ES,,,142.5,competed,,,,,10,,,,25,,,,35,,,,72.5
+F,52,Estrella,Domínguez González,,ES,,,112.5,competed,,,,,2.5,,,,27.5,,,,30,,,,52.5
+F,57,Arantxa,Fernández Herrero,,ES,,,125,competed,,,,,,,,,12.5,,,,25,,,,87.5
+F,57,Mónica,Martínez Jordá,,ES,,,121.25,competed,,,,,1.25,,,,17.5,,,,32.5,,,,70
+F,57,Olga,Maseda de Andrés,,ES,,,200,competed,,,,,8.75,,,,35,,,,56.25,,,,100
