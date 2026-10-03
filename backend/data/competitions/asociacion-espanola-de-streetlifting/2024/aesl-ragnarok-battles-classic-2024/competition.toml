@@ -1,0 +1,18 @@
+event = "PD"
+sources = [
+    "https://streetlifting.es/todos-rankings/",
+    "https://streetlifting.es/?jet_download=1be7fd13c0e9f6e6c2b92a8cd29b4938f013f456",
+]
+
+[competition]
+name = "III Ragnarok Battles Classic"
+start_date = "2024-03-16"
+end_date = "2024-03-17"
+city = "Guadalajara"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"
