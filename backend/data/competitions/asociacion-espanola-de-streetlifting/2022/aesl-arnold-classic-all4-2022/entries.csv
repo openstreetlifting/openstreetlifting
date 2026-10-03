@@ -1,0 +1,10 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Andrea,Pitzalis,,,,,330,competed,,,,,5,,,,50,,,,95,,,,180
+M,73,Alberto,Perruzza,,,,,392.5,competed,,,,,17.5,,,,65,,,,115,,,,195
+M,80,Oswaldo José,Morales Herrera,,,,,295,competed,,,,,15,,,,70,,,,90,,,,120
+M,87,Antonio,Merlos Fernández,,,,,391.25,competed,,,,,18.75,,,,72.5,,,,130,,,,170
+M,87,Sebastian,Stepnowski,,,,,410,competed,,,,,20,,,,65,,,,120,,,,205
+M,94+,Kamil,Kałuża,,,,,435,competed,,,,,22.5,,,,92.5,,,,130,,,,190
+F,57,Marisol,Hernández Fischer,,,,,206,competed,,,,,13.5,,,,42.5,,,,50,,,,100
+F,66,Laura,Garcia Bitrian,,,,,241.25,competed,,,,,18.75,,,,45,,,,62.5,,,,115
+F,66+,Florencia,Cabrera,,,,,255,competed,,,,,20,,,,45,,,,65,,,,125
