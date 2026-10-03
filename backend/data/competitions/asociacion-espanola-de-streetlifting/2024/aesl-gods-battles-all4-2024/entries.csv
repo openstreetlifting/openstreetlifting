@@ -1,0 +1,29 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Raúl,Delgado Duarte,,,,,253.75,competed,,,,,10,,,,46.25,,,,67.5,,,,130
+M,66,Miguel,Núñez Muñoz,,,,,370,competed,,,,,25,,,,70,,,,100,,,,175
+M,66,Aitor,Puche Sánchez,,,,,320,competed,,,,,23.75,,,,90,,,,101.25,,,,105
+M,66,Diego,Ramírez Arques,,,,,240,competed,,,,,15,,,,60,,,,65,,,,100
+M,73,Sergio,Abellán Saorin,,,,,292.5,competed,,,,,7.5,,,,50,,,,80,,,,155
+M,73,Gabriel,García Sorivella,,,,,361.25,competed,,,,,13.75,,,,57.5,,,,100,,,,190
+M,73,Diego,Lanuza Izquierdo,,,,,367.5,competed,,,,,27.5,,,,72.5,,,,122.5,,,,145
+M,73,Jorge,Michel Cruz Tamayo,,,,,,no_show,,,,,,,,,,,,,,,,,
+M,73,Arnau,Moreno Ruiz,,,,,380,competed,,,,,15,,,,65,,,,100,,,,200
+M,73,Alberto,Salinas Valcárcel,,,,,436.25,competed,,,,,26.25,,,,75,,,,120,,,,215
+M,73,Jesús,Toscano Gómez,,,,,420,competed,,,,,30,,,,75,,,,125,,,,190
+M,73,Artur,Zaytsev,,,,,,no_show,,,,,,,,,,,,,,,,,
+M,80,Daniel,Andrades Tocón,,,,,470,competed,,,,,35,,,,90,,,,130,,,,215
+M,80,Rubén,Ballesteros García,,,,,267.5,competed,,,,,,,,,40,,,,65,,,,162.5
+M,80,Antonio,Berenguer Cobo,,,,,273.75,competed,,,,,11.25,,,,35,,,,72.5,,,,155
+M,80,Jorge,Espejo Fuentes,,,,,390,competed,,,,,22.5,,,,72.5,,,,107.5,,,,187.5
+M,80,Samuel,Hernández Aparicio,,,,,210,competed,,,,,25,,,,75,,,,110,,,,
+M,80,Jon,Lopetegui Pérez,,,,,,no_show,,,,,,,,,,,,,,,,,
+M,80,Guillermo,López Valero,,,,,355,competed,,,,,20,,,,62.5,,,,102.5,,,,170
+M,80,Jose Daniel,Marín Muñoz,,,,,195,competed,,,,,,,,,35,,,,37.5,,,,122.5
+M,80,Carlos,Muñoz Alfonso,,,,,347.5,competed,,,,,20,,,,67.5,,,,105,,,,155
+M,80,Jonathan,Padilla Cruz,,,,,415,competed,,,,,25,,,,75,,,,125,,,,190
+M,87,Darío,Blanco González,,,,,362.5,competed,,,,,17.5,,,,65,,,,100,,,,180
+M,87,Antonio,Merlos Fernández,,,,,435,competed,,,,,27.5,,,,82.5,,,,140,,,,185
+M,87,Jordi,Salort Ferre,,,,,,no_show,,,,,,,,,,,,,,,,,
+M,94+,Laurynas,Verkulis,,,,,397.5,competed,,,,,7.5,,,,70,,,,115,,,,205
+F,57,María,Lozano Vallejo,,,,,146.25,competed,,,,,1.25,,,,15,,,,30,,,,100
+F,63,Isabel,Monfort Simeón,,,,,200,competed,,,,,7.5,,,,25,,,,47.5,,,,120
