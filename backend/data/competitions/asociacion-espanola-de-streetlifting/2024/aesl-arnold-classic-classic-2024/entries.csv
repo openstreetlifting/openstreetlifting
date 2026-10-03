@@ -1,0 +1,11 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Felipe Nicolas,Carrasco Ahumada,,ES,,,112.5,competed,,,,,,,,,47.5,,,,65,,,,
+M,73,Francisco,Aledo Egea,,ES,,,207.5,competed,,,,,,,,,82.5,,,,125,,,,
+M,73,Carlos,Martínez Manzano,,ES,,,150.5,competed,,,,,,,,,73.75,,,,76.75,,,,
+M,73,Jesús,Toscano Gómez,,ES,,,205,competed,,,,,,,,,75,,,,130,,,,
+M,80,Carlos,García Picón,,ES,,,240,competed,,,,,,,,,80,,,,160,,,,
+M,80,Pascual,Vicente Abellán,,ES,,,165,competed,,,,,,,,,62.5,,,,102.5,,,,
+M,87,Sebastian,Stepnowski,,PL,,,195,competed,,,,,,,,,72.5,,,,122.5,,,,
+M,94,Konrad,Helman,,PL,,,255,competed,,,,,,,,,72.5,,,,182.5,,,,
+F,57,Julia,Lis,,PL,,,82.5,competed,,,,,,,,,37.5,,,,45,,,,
+F,57,Mónica,Martínez Jordá,,ES,,,50,competed,,,,,,,,,17.5,,,,32.5,,,,
