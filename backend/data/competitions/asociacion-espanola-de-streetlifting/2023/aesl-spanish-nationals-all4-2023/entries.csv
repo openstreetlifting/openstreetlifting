@@ -1,0 +1,14 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Rodrigo,Flores Cepeda,,ES,,,375,competed,,,,,20,,,,75,,,,107.5,,,,172.5
+M,66,Ginés,Martínez Pérez,,ES,,,368,competed,,,,,25,,,,75.5,,,,100,,,,167.5
+M,73,Joel,Casas Ribas,,ES,,,323.75,competed,,,,,23.75,,,,60,,,,85,,,,155
+M,73,Carlos,Martínez Manzano,,ES,,,317.5,competed,,,,,16.25,,,,71.25,,,,70,,,,160
+M,73,Sergio,Vázquez Bautista,,ES,,,375,competed,,,,,25,,,,85,,,,110,,,,155
+M,80,Jorge,Espejo Fuentes,,ES,,,373.75,competed,,,,,22.5,,,,76.25,,,,110,,,,165
+M,80,Carlos,García Picón,,ES,,,475,competed,,,,,25,,,,80,,,,150,,,,220
+M,80,Eloy,Ondoño López,,ES,,,316.25,competed,,,,,16.25,,,,62.5,,,,82.5,,,,155
+M,87,Alfonso,Azín Gota,,ES,,,350,competed,,,,,10,,,,50,,,,100,,,,190
+M,87,Victor,Contreras Sanchez,,ES,,,382.5,competed,,,,,27.5,,,,70,,,,105,,,,180
+M,94,Javier,Del Río,,ES,,,325,competed,,,,,10,,,,75,,,,100,,,,140
+M,94,Juan,Tirado Catalán,,ES,,,427.5,competed,,,,,22.5,,,,72.5,,,,100,,,,232.5
+F,52,Anaïs,Lozano Rojas,,ES,,,222.5,competed,,,,,15,,,,30,,,,52.5,,,,125
