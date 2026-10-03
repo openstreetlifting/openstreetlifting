@@ -1,0 +1,10 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,80,Pawel,Artur,,PL,,,182.5,competed,,,,,,,,,65,,,,117.5,,,,
+M,80,Jorge,Espejo Fuentes,,ES,,,180,competed,,,,,,,,,75,,,,105,,,,
+M,80,Carlos,García Picón,,ES,,,220,competed,,,,,,,,,80,,,,140,,,,
+M,80,Lluís,Viladecans Bosch,,ES,,,167.5,competed,,,,,,,,,75,,,,92.5,,,,
+M,90,Marc,Altarriba Coronado,,ES,,,217.5,competed,,,,,,,,,75,,,,142.5,,,,
+M,90,Antonio,Merlos Fernández,,ES,,,202.5,competed,,,,,,,,,77.5,,,,125,,,,
+M,90,Mario,Pérez Iniesta,,ES,,,,no_show,,,,,,,,,,,,,,,,,
+F,56,Charlotte,Le Meur,,FR,,,88.75,competed,,,,,,,,,38.75,,,,50,,,,
+F,66,Inès,Marius,,FR,,,77.5,competed,,,,,,,,,30,,,,47.5,,,,
