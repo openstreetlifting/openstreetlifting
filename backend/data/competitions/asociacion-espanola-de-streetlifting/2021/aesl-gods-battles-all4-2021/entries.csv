@@ -1,7 +1,9 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Daniel,Mármol Tovar,,,,,368.75,competed,,,,,31.25,,,,72.5,,,,105,,,,160
 M,73,Santiago,Bermejo Tovar,,,,,240,competed,,,,,20,,,,50,,,,60,,,,110
 M,73,Carlos,Martínez Manzano,,,,,256,competed,,,,,13.5,,,,62.5,,,,57.5,,,,122.5
 M,80,Carlos,García Picón,,,,,440,competed,,,,,20,,,,75,,,,155,,,,190
 M,80,Antonio,Millán Martínez,,,,,305,competed,,,,,12.5,,,,62.5,,,,70,,,,160
+M,80,Eloy,Ondoño López,,,,,265,competed,,,,,0,,,,60,,,,75,,,,130
 M,87,Pedro,García Parra,,,,,377.5,competed,,,,,25,,,,72.5,,,,120,,,,160
 M,87,Mario,Pérez Iniesta,,,,,332.5,competed,,,,,5,,,,60,,,,97.5,,,,170
