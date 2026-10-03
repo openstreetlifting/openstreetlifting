@@ -1,0 +1,45 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Alejandro Javier,Blanes Sanmartín,,ES,,,226.25,competed,,,,,5,,,,45,,,,56.25,,,,120
+M,66,Oscar,García Candelas,,ES,,,370,competed,,,,,21.25,,,,63.75,,,,95,,,,190
+M,66,Nouh,Loudni,,DZ,,,320,competed,,,,,27.5,,,,75,,,,107.5,,,,110
+M,66,Alejandro,Martínez Hipólito,,ES,,,331.25,competed,,,,,27.5,,,,76.25,,,,107.5,,,,120
+M,66,Miguel,Núñez Muñoz,,ES,,,385,competed,,,,,20,,,,65,,,,110,,,,190
+M,66,Adrián,Perez Cifuentes,,ES,,,,no_show,,,,,,,,,,,,,,,,,
+M,66,Samuel,Sanchez Compañ,,ES,,,332.5,competed,,,,,21.25,,,,73.75,,,,95,,,,142.5
+M,66,Javier,Sáez Lledo,,ES,,,362.5,competed,,,,,27.5,,,,62.5,,,,110,,,,162.5
+M,73,Arturo,Acosta,,ES,,,311.25,competed,,,,,16.25,,,,53.75,,,,81.25,,,,160
+M,73,Alvaro,Diez,,ES,,,247.5,competed,,,,,7.5,,,,50,,,,60,,,,130
+M,73,Daniel,Gauchia Alba,,ES,,,415,competed,,,,,25,,,,77.5,,,,127.5,,,,185
+M,73,Luis,Lopez Ezquerra,,ES,,,325,competed,,,,,,,,,55,,,,100,,,,170
+M,73,Kader,Madoune,,DZ,,,,no_show,,,,,,,,,,,,,,,,,
+M,73,Carlos,Muñoz Alfonso,,ES,,,372.5,competed,,,,,25,,,,76.25,,,,116.25,,,,155
+M,73,Roberto,Seller Maestre,,ES,,,195,competed,,,,,,,,,45,,,,60,,,,90
+M,73,Alejandro,Torres Ruiz,,ES,,,,no_show,,,,,,,,,,,,,,,,,
+M,80,Daniel,Andrades Tocón,,ES,,,500,competed,,,,,37.5,,,,97.5,,,,145,,,,220
+M,80,Rodrigo,Banderas González,,ES,,,266.25,competed,,,,,10,,,,50,,,,73.75,,,,132.5
+M,80,Antonio,Berenguer Cobo,,ES,,,285,competed,,,,,10,,,,37.5,,,,77.5,,,,160
+M,80,Javier,Dominguez Lara,,ES,,,,no_show,,,,,,,,,,,,,,,,,
+M,80,Carlos,García Picón,,ES,,,485,competed,,,,,32.5,,,,82.5,,,,150,,,,220
+M,80,Alfonso,Hidalgo,,ES,,,285,competed,,,,,10,,,,50,,,,80,,,,145
+M,80,Mark,Korotun,,UA,,,365,competed,,,,,0,,,,65,,,,90,,,,210
+M,80,Carlos,Martínez Manzano,,ES,,,318.5,competed,,,,,13.5,,,,75,,,,70,,,,160
+M,80,Rodrigo Alejandro,Ospina Rangel,,ES,,,205,competed,,,,,,,,,30,,,,80,,,,95
+M,80,Jonathan,Padilla Cruz,,ES,,,430,competed,,,,,32.5,,,,82.5,,,,115,,,,200
+M,80,Adrián,Rodriguez Gil,,ES,,,322.5,competed,,,,,10,,,,62.5,,,,100,,,,150
+M,80,Artur,Zaytsev,,ES,,,330,competed,,,,,15,,,,65,,,,100,,,,150
+M,87,Rodrigo,Martín Zufri,,ES,,,440,competed,,,,,15,,,,67.5,,,,130,,,,227.5
+M,87,Antonio,Merlos Fernández,,ES,,,415,competed,,,,,25,,,,80,,,,120,,,,190
+M,87,Fran,Molina,,ES,,,370,competed,,,,,20,,,,70,,,,105,,,,175
+M,94+,Marco Antonio,Gonzalez,,ES,,,401.25,competed,,,,,8.75,,,,62.5,,,,130,,,,200
+F,52,Ainhoa,Codina Álvarez,,ES,,,183.75,competed,,,,,17.5,,,,27.5,,,,46.25,,,,92.5
+F,57,María,Lozano Vallejo,,ES,,,202.5,competed,,,,,5,,,,30,,,,50,,,,117.5
+F,57,Mónica,Martínez Jordá,,ES,,,115,competed,,,,,0,,,,17.5,,,,32.5,,,,65
+F,57,Nerea,Ortiz Couvet,,ES,,,196.25,competed,,,,,7.5,,,,23.75,,,,40,,,,125
+F,63,Sara,El Ourzadi,,ES,,,167.5,competed,,,,,,,,,27.5,,,,25,,,,115
+F,63,Natalia,Pastor Tomás,,ES,,,165,competed,,,,,0,,,,35,,,,45,,,,85
+F,63,Laura,Sanchez Molina,,ES,,,,no_show,,,,,,,,,,,,,,,,,
+F,63,María,Varela Jiménez,,ES,,,165,competed,,,,,0,,,,25,,,,35,,,,105
+F,70,Nora,Beltrán Rubio,,ES,,,,no_show,,,,,,,,,,,,,,,,,
+F,70,Raquel,González Pardo,,ES,,,136.25,competed,,,,,,,,,21.25,,,,25,,,,90
+F,70+,Judith,Kleinhansl,,AT,,,255,competed,,,,,12.5,,,,41.25,,,,61.25,,,,140
+F,70+,Valeria,Montes García,,ES,,,,no_show,,,,,,,,,,,,,,,,,
