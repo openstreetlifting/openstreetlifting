@@ -1,0 +1,44 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Jaime,Auñón Rodríguez,,ES,,,286.25,competed,,,,,2.5,,,,56.25,,,,82.5,,,,145
+M,66,Ginés,Martínez Pérez,,ES,,,387.5,competed,,,,,25,,,,75,,,,112.5,,,,175
+M,66,Mario,Otalora Jurado,,ES,,,167.5,competed,,,,,,,,,17.5,,,,30,,,,120
+M,66,Sergio,Palomares Yagüe,,ES,,,327.5,competed,,,,,27.5,,,,67.5,,,,105,,,,127.5
+M,66,Aitor,Puche Sánchez,,ES,,,311.25,competed,,,,,20,,,,81.25,,,,110,,,,100
+M,73,Francisco José,Aliseda Cabanillas,,ES,,,367.5,competed,,,,,20,,,,62.5,,,,107.5,,,,177.5
+M,73,Jhon,Cruz Bravo,,ES,,,256.25,competed,,,,,20,,,,61.25,,,,70,,,,105
+M,73,Daniel,Gauchia Alba,,ES,,,327.5,competed,,,,,12.5,,,,62.5,,,,90,,,,162.5
+M,73,Diego,Lanuza Izquierdo,,ES,,,322.5,competed,,,,,22.5,,,,67.5,,,,107.5,,,,125
+M,73,Marc,Lázaro Flos,,ES,,,282.5,competed,,,,,10,,,,57.5,,,,80,,,,135
+M,73,Gabriel,Martín Pérez,,ES,,,283.75,competed,,,,,12.5,,,,56.25,,,,85,,,,130
+M,73,Carlos,Martínez Manzano,,ES,,,317.5,competed,,,,,7.5,,,,72.5,,,,75,,,,162.5
+M,73,José,Osuna Vilchéz,,ES,,,337.5,competed,,,,,15,,,,57.5,,,,110,,,,155
+M,73,Pedro,Pecero Caballero,,ES,,,300,competed,,,,,10,,,,60,,,,80,,,,150
+M,73,Samuel,Sanchez Compañ,,ES,,,321.25,competed,,,,,18.75,,,,67.5,,,,95,,,,140
+M,73,Sergio,Vázquez Bautista,,ES,,,373.75,competed,,,,,25,,,,83.75,,,,105,,,,160
+M,73,Ignacio,Álvarez Calles,,ES,,,270,competed,,,,,5,,,,60,,,,82.5,,,,122.5
+M,80,Diego,Ballesteros Onieva,,ES,,,352.5,competed,,,,,20,,,,65,,,,90,,,,177.5
+M,80,Jorge,Espejo Fuentes,,ES,,,383.75,competed,,,,,26.25,,,,72.5,,,,105,,,,180
+M,80,Carlos,García Picón,,ES,,,315,competed,,,,,20,,,,80,,,,,,,,215
+M,80,Guillermo,López Valero,,ES,,,330,competed,,,,,17.5,,,,60,,,,102.5,,,,150
+M,80,Ivan,Martin Perez,,ES,,,310,competed,,,,,20,,,,55,,,,80,,,,155
+M,87,Héctor,Borobia Aranda,,ES,,,365,competed,,,,,,,,,67.5,,,,112.5,,,,185
+M,87,Jorge,Cardenal Peralta,,ES,,,360,competed,,,,,20,,,,65,,,,105,,,,170
+M,87,José Enrique,Guirao,,ES,,,450,competed,,,,,30,,,,90,,,,130,,,,200
+M,87,Gerard,Llobet Pérez,,ES,,,422.5,competed,,,,,30,,,,82.5,,,,110,,,,200
+M,87,Jan,Padrón Colomina,,ES,,,390,competed,,,,,12.5,,,,67.5,,,,102.5,,,,207.5
+M,94,Alfonso,Acín Gota,,ES,,,385,competed,,,,,5,,,,57.5,,,,102.5,,,,220
+M,94,Marc,Altarriba Coronado,,ES,,,506.25,competed,,,,,20,,,,76.25,,,,160,,,,250
+M,94,Ramón Buenaventura,Reyes Toledo,,ES,,,310,competed,,,,,10,,,,60,,,,80,,,,160
+M,94,Mario José,Rodriguez Gómez,,ES,,,265,competed,,,,,5,,,,,,,,85,,,,175
+M,94,Juan,Tirado Catalán,,ES,,,410,competed,,,,,25,,,,85,,,,100,,,,200
+M,94+,Yoel,Ballega,,ES,,,352.5,competed,,,,,12.5,,,,60,,,,105,,,,175
+M,94+,Alejandro,Bautista Muñoz,,ES,,,328.75,competed,,,,,2.5,,,,51.25,,,,105,,,,170
+M,94+,Diego,Rodríguez Gutiérrez,,ES,,,323.75,competed,,,,,,,,,46.25,,,,85,,,,192.5
+F,57,Alison,Claramount Gonzalez,,ES,,,,competed,,,,,,,,,15,,,,20,,,,
+F,57,Laura,Laín Muñoz,,ES,,,161.25,competed,,,,,2.5,,,,23.75,,,,37.5,,,,97.5
+F,57,Olga,Maseda de Andrés,,ES,,,155,competed,,,,,5,,,,30,,,,50,,,,70
+F,57,Maragda,Puigcerver Pérez,,ES,,,138.75,competed,,,,,1.25,,,,20,,,,22.5,,,,95
+F,63,María,Madrid Vega,,ES,,,,competed,,,,,,,,,28.75,,,,55,,,,
+F,63,Isabel,Monfort Simeón,,ES,,,,competed,,,,,,,,,20,,,,32.5,,,,
+F,63,Amaia,Urrtikoetxea Otegui,,ES,,,,competed,,,,,,,,,16.25,,,,5,,,,
+F,70,Ruth,Álvarez Moll,,ES,,,166.25,competed,,,,,11.25,,,,25,,,,40,,,,90
