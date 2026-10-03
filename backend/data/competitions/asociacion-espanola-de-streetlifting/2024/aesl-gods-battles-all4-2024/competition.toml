@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = [
+    "https://streetlifting.es/todos-rankings/",
+    "https://streetlifting.es/?jet_download=f0d4a6e145bde82b2444f53fbfe495779c361b6c",
+]
+
+[competition]
+name = "IV Gods Battles All4"
+start_date = "2024-11-23"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"
