@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = [
+    "https://streetlifting.es/todos-rankings/",
+    "https://streetlifting.es/?jet_download=0ddaf077ddb52a9dcdccf96452dcc23a0cfb7702",
+]
+
+[competition]
+name = "V Gods Battles All4"
+start_date = "2025-11-15"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"
