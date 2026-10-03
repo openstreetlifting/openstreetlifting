@@ -1,6 +1,7 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Alejandro Javier,Blanes Sanmartín,,ES,,,205,competed,,,,,2.5,,,,37.5,,,,50,,,,115
 M,66,Oscar,García Candelas,,ES,,,357.5,competed,,,,,21.25,,,,63.75,,,,92.5,,,,180
+M,73,Jose Victor,Alberola Ballesteros,,ES,,,212.5,competed,,,,,0,,,,52.5,,,,60,,,,100
 M,73,Rodrigo,Banderas González,,ES,,,262.5,competed,,,,,13.75,,,,53.75,,,,72.5,,,,122.5
 M,73,Gabriel,García Sorivella,,ES,,,382.5,competed,,,,,15,,,,60,,,,107.5,,,,200
 M,73,Daniel,Gauchia Alba,,ES,,,395,competed,,,,,20,,,,75,,,,125,,,,175
@@ -35,6 +36,7 @@ M,94,Daniel,Sarrión Quijada,,ES,,,381.25,competed,,,,,10,,,,71.25,,,,100,,,,200
 M,94+,Carlos,Gonzalez Camacho,,ES,,,372.5,competed,,,,,7.5,,,,60,,,,100,,,,205
 M,94+,Juan,Martínez Enguidanos,,ES,,,426.25,competed,,,,,11.25,,,,62.5,,,,100,,,,252.5
 F,52,Ainhoa,Codina Álvarez,,ES,,,160,competed,,,,,12.5,,,,25,,,,42.5,,,,80
+F,57,Mónica,Martínez Jordá,,ES,,,110,competed,,,,,0,,,,10,,,,30,,,,70
 F,57,Esther,Perez Pulido,,ES,,,95,competed,,,,,,,,,11.25,,,,21.25,,,,62.5
 F,63,Sara,Leturiaga Lersundi,,ES,,,220,competed,,,,,7.5,,,,35,,,,50,,,,127.5
 F,63,Natalia,Pastor Tomás,,ES,,,,no_show,,,,,,,,,,,,,,,,,
