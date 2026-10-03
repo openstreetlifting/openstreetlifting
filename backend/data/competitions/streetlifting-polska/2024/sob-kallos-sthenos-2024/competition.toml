@@ -1,0 +1,14 @@
+event = "PD"
+sources = [
+    "https://docs.google.com/spreadsheets/d/1KtIFduz0gjleSfQgpbJIwsHm6ifZfLbA/edit?gid=710695198#gid=710695198",
+    "https://www.instagram.com/sob_street_lifting_pl",
+]
+
+[competition]
+name = "SOB Kallos Sthenos 2024"
+start_date = "2024-07-27"
+country = "PL"
+status = "completed"
+
+[federation]
+name = "StreetLifting Polska"
