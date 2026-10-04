@@ -2,12 +2,14 @@ Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Reporte
 M,66,Pedro Pablo,Blaya Foncubierta,,ES,,,301.25,competed,,,,,15,,,,56.25,,,,75,,,,155
 M,66,Sergio,Blazquez Sánchez,,ES,,,322.5,competed,,,,,12.5,,,,52.5,,,,110,,,,147.5
 M,66,Abel,Farrona Garijo,,ES,,,237.5,competed,,,,,12.5,,,,45,,,,65,,,,115
+M,66,Joaquín,Monteagudo Hernández,,ES,,,311.25,competed,,,,,16.25,,,,57.5,,,,82.5,,,,155
 M,66,Daniel Andrés Vicente,Napolitano,,ES,,,,disqualified,Did not attempt pull-up,,,,17.5,,,,,,,,65,,,,150
 M,66,Miguel,Núñez Muñoz,,ES,,,,disqualified,Did not attempt dips,,,,20,,,,65,,,,,,,,160
 M,66,Eugénio,Ondoño López,,ES,,,218.75,competed,,,,,7.5,,,,31.25,,,,62.5,,,,117.5
 M,66,Diego,Ramírez Arques,,ES,,,295,competed,,,,,5,,,,40,,,,55,,,,195
 M,66,Pablo,Reveriego Sansón,,ES,,,397.5,competed,,,,,25,,,,70,,,,110,,,,192.5
 M,73,Raúl,Delgado Duarte,,ES,,,213.75,competed,,,,,1.25,,,,32.5,,,,60,,,,120
+M,73,Franco Ignacio,Díaz,,ES,,,301.25,competed,,,,,15,,,,56.25,,,,80,,,,150
 M,73,Ronal,Espinosa Naranjo,,ES,,,253.75,competed,,,,,1.25,,,,37.5,,,,70,,,,145
 M,73,Gabriel,García Sorivella,,ES,,,350,competed,,,,,5,,,,55,,,,95,,,,195
 M,73,Jon,Lopetegui Pérez,,ES,,,385,competed,,,,,27.5,,,,77.5,,,,110,,,,170
@@ -15,6 +17,7 @@ M,73,Marc,Lázaro Flos,,ES,,,252.5,competed,,,,,7.5,,,,52.5,,,,70,,,,122.5
 M,73,Carlos,Martínez Manzano,,ES,,,305,competed,,,,,0,,,,70,,,,65,,,,170
 M,73,Alberto,Salinas Valcárcel,,ES,,,367.5,competed,,,,,17.5,,,,65,,,,105,,,,180
 M,73,Artur,Zaytsev,,ES,,,230,competed,,,,,10,,,,45,,,,75,,,,100
+M,80,Eric,Altarriba Coronado,,ES,,,407.5,competed,,,,,25,,,,70,,,,110,,,,202.5
 M,80,Victor,Contreras Sanchez,,ES,,,400,competed,,,,,30,,,,75,,,,105,,,,190
 M,80,Roberto,Delgado Montoro,,ES,,,287.5,competed,,,,,10,,,,52.5,,,,75,,,,150
 M,80,Javier,Fernandez García,,ES,,,337.5,competed,,,,,10,,,,55,,,,72.5,,,,200
@@ -22,6 +25,7 @@ M,80,Samuel,Hernández Aparicio,,ES,,,300,competed,,,,,20,,,,70,,,,90,,,,120
 M,80,Josué,Jaime Caparrós,,ES,,,351.25,competed,,,,,1.25,,,,50,,,,90,,,,210
 M,80,Andrés,Marín Velasco,,ES,,,272.5,competed,,,,,10,,,,52.5,,,,70,,,,140
 M,80,Eloy,Ondoño López,,ES,,,307.5,competed,,,,,17.5,,,,60,,,,85,,,,145
+M,80,Miguel Angel,Peña Romero,,ES,,,357.5,competed,,,,,25,,,,82.5,,,,90,,,,160
 M,80,Guillermo,Rodrigo Perez,,ES,,,370,competed,,,,,25,,,,80,,,,97.5,,,,167.5
 M,80,Àlex,Ventura Capellà,,ES,,,332.5,competed,,,,,25,,,,72.5,,,,95,,,,140
 M,87,Albaro,Blas Mújica,,ES,,,385,competed,,,,,22.5,,,,60,,,,117.5,,,,185
