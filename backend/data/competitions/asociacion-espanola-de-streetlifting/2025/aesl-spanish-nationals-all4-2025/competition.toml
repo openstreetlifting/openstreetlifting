@@ -5,7 +5,7 @@ sources = [
 ]
 
 [competition]
-name = "V Campeonato de España All4"
+name = "Campeonato de España V All4"
 start_date = "2025-06-21"
 country = "ES"
 status = "completed"
