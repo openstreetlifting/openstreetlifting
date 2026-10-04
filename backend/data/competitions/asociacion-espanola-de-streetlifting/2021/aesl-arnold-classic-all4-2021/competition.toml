@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "https://streetlifting.es/todos-rankings/",
+    "https://streetlifting.es/?jet_download=6cf6f5fdd9b87a48a992bfe0f02b56191aaeb035",
+    "https://streetlifting.es/sesion-competicion-arnold-classic-streetlifting/",
+]
+
+[competition]
+name = "Arnold Classic All4"
+start_date = "2021-09-17"
+end_date = "2021-09-19"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"
