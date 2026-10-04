@@ -5,7 +5,7 @@ sources = [
 ]
 
 [competition]
-name = "IV Ragnarok Battles Classic"
+name = "Ragnarok Battles IV Classic"
 start_date = "2025-03-22"
 country = "ES"
 status = "completed"
