@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.42.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.41.0...v0.42.0) (2026-10-04)
+
+
+### Features
+
+* **data:** import AESL Arnold Classic All4 2024 ([#747](https://github.com/openstreetlifting/openstreetlifting/issues/747)) ([ec2c5e9](https://github.com/openstreetlifting/openstreetlifting/commit/ec2c5e991a94c7f507d63889dbf8bbe5f9b5e8de))
+* **data:** import AESL Arnold Classic Classic 2024 ([#748](https://github.com/openstreetlifting/openstreetlifting/issues/748)) ([0a2290f](https://github.com/openstreetlifting/openstreetlifting/commit/0a2290f5c47c451cab93749af811edb2b3ce6382))
+* **data:** import AESL Gods Battles All4 2024 ([#749](https://github.com/openstreetlifting/openstreetlifting/issues/749)) ([b1b1ace](https://github.com/openstreetlifting/openstreetlifting/commit/b1b1ace91bceb00698430adbe42c56fbce05007e))
+* **data:** import AESL Gods Battles All4 2025 ([#753](https://github.com/openstreetlifting/openstreetlifting/issues/753)) ([4b7a7ba](https://github.com/openstreetlifting/openstreetlifting/commit/4b7a7baa0702efe7880f7b032cd591fb8fbf48c7))
+* **data:** import AESL Gods Battles Classic 2023 ([#742](https://github.com/openstreetlifting/openstreetlifting/issues/742)) ([b9da400](https://github.com/openstreetlifting/openstreetlifting/commit/b9da400715f1cca776a98c734b97944f91a75a9a))
+* **data:** import AESL Gods Battles Classic 2024 ([#750](https://github.com/openstreetlifting/openstreetlifting/issues/750)) ([867189f](https://github.com/openstreetlifting/openstreetlifting/commit/867189fceecd0d86939ad658076bcfae2913da40))
+* **data:** import AESL Gods Battles Classic 2025 ([#754](https://github.com/openstreetlifting/openstreetlifting/issues/754)) ([8c58dac](https://github.com/openstreetlifting/openstreetlifting/commit/8c58dac575a89083566a00369b139007749074dc))
+* **data:** import AESL Ragnarok Battles All4 2022 ([#737](https://github.com/openstreetlifting/openstreetlifting/issues/737)) ([d84fdea](https://github.com/openstreetlifting/openstreetlifting/commit/d84fdeab0306b2f29a40557772cad280f60bf549))
+* **data:** import AESL Ragnarok Battles All4 2023 ([#743](https://github.com/openstreetlifting/openstreetlifting/issues/743)) ([20722b7](https://github.com/openstreetlifting/openstreetlifting/commit/20722b76a09ebcc5444e73763337bd50cbfe45f8))
+* **data:** import AESL Ragnarok Battles All4 2024 ([#751](https://github.com/openstreetlifting/openstreetlifting/issues/751)) ([d877708](https://github.com/openstreetlifting/openstreetlifting/commit/d87770801772f8858ba4a47a3647b3538b0f66d0))
+* **data:** import AESL Ragnarok Battles All4 2025 ([#755](https://github.com/openstreetlifting/openstreetlifting/issues/755)) ([0e880ca](https://github.com/openstreetlifting/openstreetlifting/commit/0e880ca998bd86bd51e63bc4e2e50284d1a9e6d4))
+* **data:** import AESL Ragnarok Battles Classic 2022 ([#738](https://github.com/openstreetlifting/openstreetlifting/issues/738)) ([4008855](https://github.com/openstreetlifting/openstreetlifting/commit/4008855cac8acbffbad9d0a2c83c9798f3e21e42))
+* **data:** import AESL Ragnarok Battles Classic 2023 ([#744](https://github.com/openstreetlifting/openstreetlifting/issues/744)) ([e1c6466](https://github.com/openstreetlifting/openstreetlifting/commit/e1c6466ea44dcaf48d741b5a0f591bedac8a00b8))
+* **data:** import AESL Ragnarok Battles Classic 2024 ([#752](https://github.com/openstreetlifting/openstreetlifting/issues/752)) ([03eb7b5](https://github.com/openstreetlifting/openstreetlifting/commit/03eb7b5729cf71650934e3164483a15fc2d3a57d))
+* **data:** import AESL Ragnarok Battles Classic 2025 ([#756](https://github.com/openstreetlifting/openstreetlifting/issues/756)) ([1ac6f06](https://github.com/openstreetlifting/openstreetlifting/commit/1ac6f06b922560257b4f5ff50031fc545251aa57))
+* **data:** import AESL Spanish Nationals All4 2022 ([#739](https://github.com/openstreetlifting/openstreetlifting/issues/739)) ([7106bff](https://github.com/openstreetlifting/openstreetlifting/commit/7106bffa8b688a9231b67c9c0d53d107e447e328))
+* **data:** import AESL Spanish Nationals All4 2023 ([#745](https://github.com/openstreetlifting/openstreetlifting/issues/745)) ([b971503](https://github.com/openstreetlifting/openstreetlifting/commit/b9715031941d1df959ee1057915f44213d86e459))
+* **data:** import AESL Spanish Nationals All4 2025 ([#757](https://github.com/openstreetlifting/openstreetlifting/issues/757)) ([e8e94f4](https://github.com/openstreetlifting/openstreetlifting/commit/e8e94f4bee5610f809520d3640f0bfc1cd7f23cc))
+* **data:** import AESL Spanish Nationals Classic 2022 ([#740](https://github.com/openstreetlifting/openstreetlifting/issues/740)) ([8a22723](https://github.com/openstreetlifting/openstreetlifting/commit/8a227232b61a7f89f7ec2c7ddaeb65b1ea8b6d04))
+* **data:** import AESL Spanish Nationals Classic 2023 ([#746](https://github.com/openstreetlifting/openstreetlifting/issues/746)) ([ee86a0d](https://github.com/openstreetlifting/openstreetlifting/commit/ee86a0de6d6956df4c4e3fb378e610d714dd8a6e))
+* **data:** import AESL Spanish Nationals Classic 2025 ([#758](https://github.com/openstreetlifting/openstreetlifting/issues/758)) ([dbe2181](https://github.com/openstreetlifting/openstreetlifting/commit/dbe218175487119aca058a82062edfcc23b1164c))
+* **data:** recover remaining Euros bodyweights ([#767](https://github.com/openstreetlifting/openstreetlifting/issues/767)) ([afc7a4b](https://github.com/openstreetlifting/openstreetlifting/commit/afc7a4bce7698fa8434caa4c5f51cdf89cb5405d))
+
+
+### Bug Fixes
+
+* **data:** place AESL editions after event names ([#771](https://github.com/openstreetlifting/openstreetlifting/issues/771)) ([16f2c65](https://github.com/openstreetlifting/openstreetlifting/commit/16f2c65d521989af8830bf4aa6f85b18614682b8))
+* **data:** restore Diego Ramirez in US source ([#769](https://github.com/openstreetlifting/openstreetlifting/issues/769)) ([ca8ad59](https://github.com/openstreetlifting/openstreetlifting/commit/ca8ad59633babae43dde79fc6b8b393c5bc225df))
+
 ## [0.41.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.40.0...v0.41.0) (2026-10-03)
 
 
