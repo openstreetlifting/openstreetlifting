@@ -5,7 +5,7 @@ sources = [
 ]
 
 [competition]
-name = "II Campeonato de España Classic"
+name = "Campeonato de España II Classic"
 start_date = "2022-07-09"
 city = "Madrid"
 country = "ES"
