@@ -1,8 +1,9 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Alejandro Javier,Blanes Sanmartín,,,,,67.5,competed,,,,,,,,,30,,,,37.5,,,,
 M,66,Aitor,Puche Sánchez,,,,,191.25,competed,,,,,,,,,90,,,,101.25,,,,
-M,73,Kalín,Krasimirov Stoyadinov,,,,,75,competed,,,,,,,,,75,,,,,,,,
+M,73,Kalín,Krasimirov Stoyadinov,,BG,,,75,competed,,,,,,,,,75,,,,,,,,
 M,73,Diego,Lanuza Izquierdo,,,,,195,competed,,,,,,,,,72.5,,,,122.5,,,,
+M,73,Joaquín,Monteagudo Hernández,,,,,166.25,competed,,,,,,,,,63.75,,,,102.5,,,,
 M,73,Roberto,Seller Maestre,,,,,108.75,competed,,,,,,,,,48.75,,,,60,,,,
 M,73,Jesús,Toscano Gómez,,,,,200,competed,,,,,,,,,75,,,,125,,,,
 M,73,Artur,Zaytsev,,,,,,no_show,,,,,,,,,,,,,,,,,
