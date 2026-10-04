@@ -1,0 +1,11 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,70,Adam,Biedziak,,PL,68.1,,245,competed,,,,,,,,,70,,,,85,,,,90
+M,70,Emil,Szymczak,,PL,68.7,,320,competed,,,,,,,,,60,,,,125,,,,135
+M,70,Bartosz,Wójcik,,PL,68.4,,245,competed,,,,,,,,,55,,,,70,,,,120
+M,80,Stanisław,Januszewski,,PL,75,,347.5,competed,,,,,,,,,77.5,,,,125,,,,145
+M,80,Konrad,Porkuszewski,,PL,78.1,,280,competed,,,,,,,,,60,,,,100,,,,120
+M,80,Tomasz,Wiśniewski,,PL,75.6,,310,competed,,,,,,,,,72.5,,,,102.5,,,,135
+M,80+,Krzysztof,Bajera,,PL,100.4,,390,competed,,,,,,,,,70,,,,115,,,,205
+M,80+,Piotr,Kandefer,,PL,89.2,,375,competed,,,,,,,,,50,,,,125,,,,200
+M,80+,Ernest,Raczij,,PL,106,,288,competed,,,,,,,,,50,,,,90,,,,148
+M,80+,Juan,Zumeta,,PL,99.8,,295,competed,,,,,,,,,70,,,,105,,,,120
