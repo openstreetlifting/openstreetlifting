@@ -5,7 +5,7 @@ sources = [
 ]
 
 [competition]
-name = "V Gods Battles Classic"
+name = "Gods Battles V Classic"
 start_date = "2025-11-15"
 country = "ES"
 status = "completed"
