@@ -1,0 +1,12 @@
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,Radosław,Gołek,,PL,92.9,,402.5,competed,,,,,,,,,90,,,,152.5,,,,160
+M,Patryk,Izydorski,,PL,80.5,,330,competed,,,,,,,,,77.5,,,,110,,,,142.5
+M,Kamil,Kałuża,,PL,94.5,,260,competed,,,,,,,,,90,,,,0,,,,170
+M,Mateusz,Koślak,,PL,68.5,,370,competed,,,,,,,,,90,,,,120,,,,160
+M,Daniel,Lis,,PL,86.9,,425,competed,,,,,,,,,70,,,,145,,,,210
+M,Maksymilian,Matusiak,,PL,73.5,,290,competed,,,,,,,,,60,,,,90,,,,140
+M,Bartosz,Napierała,,PL,80.2,,331,competed,,,,,,,,,80,,,,101,,,,150
+M,Bartłomiej,Orchowski,,PL,80.1,,402.5,competed,,,,,,,,,90,,,,142.5,,,,170
+M,Gabriel,Pihan,,PL,100.2,,417.5,competed,,,,,,,,,60,,,,122.5,,,,235
+M,Przemysław,Sarnacki,,PL,98.1,,400,competed,,,,,,,,,85,,,,102.5,,,,212.5
+M,Sebastian,Stepnowski,,PL,78,,355,competed,,,,,,,,,70,,,,115,,,,170

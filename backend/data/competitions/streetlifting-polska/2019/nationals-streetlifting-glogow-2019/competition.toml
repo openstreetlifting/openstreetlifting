@@ -1,0 +1,12 @@
+event = "PDS"
+sources = ["https://docs.google.com/spreadsheets/d/1KtIFduz0gjleSfQgpbJIwsHm6ifZfLbA/edit?gid=710695198#gid=710695198"]
+
+[competition]
+name = "Polish StreetLifting Nationals Głogów"
+start_date = "2019-06-29"
+city = "Głogów"
+country = "PL"
+status = "completed"
+
+[federation]
+name = "StreetLifting Polska"

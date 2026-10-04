@@ -1,0 +1,12 @@
+event = "P"
+sources = ["https://docs.google.com/spreadsheets/d/1-g_jhz1FAbhCpRHGXrOY1A47VWC0NQYe/edit?gid=714116976#gid=714116976"]
+
+[competition]
+name = "III MP Max Weighted Pull-Up"
+start_date = "2018-09-22"
+city = "Sochaczew"
+country = "PL"
+status = "completed"
+
+[federation]
+name = "StreetLifting Polska"
