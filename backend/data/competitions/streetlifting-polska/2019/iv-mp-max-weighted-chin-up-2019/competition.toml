@@ -1,0 +1,12 @@
+event = "P"
+sources = ["https://docs.google.com/spreadsheets/d/1-g_jhz1FAbhCpRHGXrOY1A47VWC0NQYe/edit?gid=714116976#gid=714116976"]
+
+[competition]
+name = "IV MP Max Weighted Chin Up"
+start_date = "2019-09-28"
+city = "Sochaczew"
+country = "PL"
+status = "completed"
+
+[federation]
+name = "StreetLifting Polska"

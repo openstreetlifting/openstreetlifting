@@ -1,0 +1,24 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,70,Daniel,Alarcón López,,ES,,,296.25,competed,,,,,18.75,,,,55,,,,85,,,,137.5
+M,70,Leye,Cisse Sall,,ES,,,257.5,competed,,,,,15,,,,67.5,,,,65,,,,110
+M,70,Carlos,Martínez Manzano,,ES,,,255,competed,,,,,12.5,,,,60,,,,53.75,,,,128.75
+M,70,Daniel,Mármol Tovar,,ES,,,330,competed,,,,,26.25,,,,70,,,,93.75,,,,140
+M,70,Sergio,Vázquez Bautista,,ES,,,325,competed,,,,,27.5,,,,75,,,,95,,,,127.5
+M,80,Pawel,Artur,,PL,,,355,competed,,,,,12.5,,,,65,,,,117.5,,,,160
+M,80,Jorge,Espejo Fuentes,,ES,,,352.5,competed,,,,,22.5,,,,75,,,,105,,,,150
+M,80,Carlos,García Picón,,ES,,,430,competed,,,,,20,,,,80,,,,140,,,,190
+M,80,Kalín,Krasimirov Stoyadinov,,BG,,,390,competed,,,,,20,,,,70,,,,115,,,,185
+M,80,Bartlomiej,Orchowski,,PL,,,461.25,competed,,,,,40,,,,100,,,,141.25,,,,180
+M,80,Lluís,Viladecans Bosch,,ES,,,357.5,competed,,,,,25,,,,75,,,,92.5,,,,165
+M,90,Marc,Altarriba Coronado,,ES,,,455,competed,,,,,25,,,,75,,,,142.5,,,,212.5
+M,90,Pedro,García Parra,,ES,,,393.25,competed,,,,,25,,,,73.25,,,,130,,,,165
+M,90,Kévin,Noslen,,FR,,,422.5,competed,,,,,17.5,,,,82.5,,,,125,,,,197.5
+M,90,Mario,Pérez Iniesta,,ES,,,,no_show,,,,,,,,,,,,,,,,,
+M,100,Roc,García Santamaria,,ES,,,337.5,competed,,,,,15,,,,80,,,,95,,,,147.5
+F,56,Charlotte,Le Meur,,FR,,,215,competed,,,,,13.75,,,,38.75,,,,50,,,,112.5
+F,56,Anaïs,Lozano Rojas,,ES,,,197.5,competed,,,,,13.75,,,,30,,,,48.75,,,,105
+F,56,Elsa Paola,Mouthe Boulogo,,ES,,,152.5,competed,,,,,0,,,,22.5,,,,30,,,,100
+F,56,Ruth,Álvarez Moll,,ES,,,155,competed,,,,,10,,,,30,,,,50,,,,65
+F,66,Celia,Mariscal Román,,ES,,,191.25,competed,,,,,2.5,,,,35,,,,41.25,,,,112.5
+F,66,Inès,Marius,,FR,,,217.5,competed,,,,,0,,,,30,,,,47.5,,,,140
+F,80,Jenser,Mejía Sánchez,,ES,,,186.25,competed,,,,,0,,,,17.5,,,,46.25,,,,122.5
