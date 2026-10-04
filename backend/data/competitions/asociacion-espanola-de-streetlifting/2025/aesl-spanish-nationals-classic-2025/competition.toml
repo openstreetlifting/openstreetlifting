@@ -1,0 +1,16 @@
+event = "PD"
+sources = [
+    "https://streetlifting.es/todos-rankings/",
+    "https://streetlifting.es/?jet_download=89a5abc3ec25b3df0db91791c3b0a652922d3fd9",
+]
+
+[competition]
+name = "Campeonato de España V Classic"
+start_date = "2025-06-21"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"
