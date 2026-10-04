@@ -6,7 +6,7 @@ sources = [
 ]
 
 [competition]
-name = "I Campeonato de España All4"
+name = "Campeonato de España I All4"
 start_date = "2021-07-17"
 end_date = "2021-07-18"
 city = "Benicàssim"
