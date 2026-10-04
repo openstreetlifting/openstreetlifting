@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = [
+    "https://streetlifting.es/todos-rankings/",
+    "https://streetlifting.es/?jet_download=3af2161dc31d3a58ee07442081a44763e1d2d903",
+]
+
+[competition]
+name = "Gods Battles II All4"
+start_date = "2022-11-12"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"

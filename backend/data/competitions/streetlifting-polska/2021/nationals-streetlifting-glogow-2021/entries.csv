@@ -1,0 +1,15 @@
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,Dawid,Adamczak,,PL,77.6,,377.5,competed,,,,,,,,,97.5,,,,125,,,,155
+M,Marcin,Bendyk,,PL,72.8,,277.5,competed,,,,,,,,,65,,,,92.5,,,,120
+M,Radosław,Gołek,,PL,94.8,,370,competed,,,,,,,,,85,,,,130,,,,155
+M,Paweł,Janosik,,PL,74.2,,320,competed,,,,,,,,,60,,,,115,,,,145
+M,Kamil,Kałuża,,PL,82.4,,340,competed,,,,,,,,,87.5,,,,112.5,,,,140
+M,Mateusz,Koślak,,PL,67.6,,375,competed,,,,,,,,,90,,,,115,,,,170
+M,Łukasz,Langner,,PL,85.6,,322.5,competed,,,,,,,,,60,,,,105,,,,157.5
+M,Krystian,Lisiewicz,,PL,88.1,,352.5,competed,,,,,,,,,47.5,,,,120,,,,185
+M,Piotr,Marciszewski,,PL,83.3,,337.5,competed,,,,,,,,,65,,,,90,,,,182.5
+M,Damian,Matuszczak,,PL,85.2,,285,competed,,,,,,,,,60,,,,85,,,,140
+M,Bartłomiej,Orchowski,,PL,79.8,,397.5,competed,,,,,,,,,90,,,,140,,,,167.5
+M,Adam,Siedzińszuk,,PL,81.5,,240,competed,,,,,,,,,0,,,,105,,,,135
+M,Sebastian,Stepnowski,,PL,75,,345,competed,,,,,,,,,65,,,,110,,,,170
+M,Piotr,Wodka,,PL,71.6,,310,competed,,,,,,,,,55,,,,95,,,,160

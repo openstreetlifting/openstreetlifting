@@ -1,0 +1,12 @@
+event = "PD"
+sources = ["https://docs.google.com/spreadsheets/d/1KtIFduz0gjleSfQgpbJIwsHm6ifZfLbA/edit?gid=710695198#gid=710695198"]
+
+[competition]
+name = "Mistrzostwa Szczecina w StreetLifting"
+start_date = "2019-11-10"
+city = "Szczecin"
+country = "PL"
+status = "completed"
+
+[federation]
+name = "StreetLifting Polska"
