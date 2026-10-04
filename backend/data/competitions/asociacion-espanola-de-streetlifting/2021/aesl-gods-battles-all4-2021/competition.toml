@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "https://streetlifting.es/todos-rankings/",
+    "https://streetlifting.es/?jet_download=d913d20b7587bcd212aee1e8536fcfcac42c4ae5",
+    "https://streetlifting.es/i-cto-clasificatorio-para-el-cto-de-espana-streetlifting-2021-2022/",
+]
+
+[competition]
+name = "Gods Battles I All4"
+start_date = "2021-11-20"
+city = "Archena"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"

@@ -1,0 +1,6 @@
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,Tomasz,Dudek,,PL,82.4,,100,competed,,,,,,,,,,,,,100,,,,
+M,Radosław,Gołek,,PL,92.9,,152.5,competed,,,,,,,,,,,,,152.5,,,,
+M,Konrad,Helman,,PL,91.5,,160,competed,,,,,,,,,,,,,160,,,,
+M,Bartłomiej,Orchowski,,PL,80.1,,142.5,competed,,,,,,,,,,,,,142.5,,,,
+M,Joachim,Walczak,,PL,78.5,,110,competed,,,,,,,,,,,,,110,,,,
