@@ -5,7 +5,7 @@ sources = [
 ]
 
 [competition]
-name = "III Campeonato de España All4"
+name = "Campeonato de España III All4"
 start_date = "2023-06-18"
 city = "Castellón"
 country = "ES"
