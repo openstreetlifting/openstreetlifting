@@ -1,0 +1,16 @@
+event = "PD"
+sources = [
+    "https://streetlifting.es/todos-rankings/",
+    "https://streetlifting.es/?jet_download=fa4a0a5bbaa2cd8eda2a3d06191744e15fb14545",
+]
+
+[competition]
+name = "Ragnarok Battles IV Classic"
+start_date = "2025-03-22"
+country = "ES"
+status = "completed"
+
+[federation]
+name = "Asociación Española de Streetlifting"
+abbreviation = "AESL"
+country = "ES"
