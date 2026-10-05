@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.43.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.42.0...v0.43.0) (2026-10-05)
+
+
+### Features
+
+* **data:** complete FinalRep Euros 2026 results ([#788](https://github.com/openstreetlifting/openstreetlifting/issues/788)) ([2da569d](https://github.com/openstreetlifting/openstreetlifting/commit/2da569d93c7c852245b82cf47a146bbbf9aa7955))
+* **data:** import AESL Gods Battles All4 2023 ([#741](https://github.com/openstreetlifting/openstreetlifting/issues/741)) ([e8f6de6](https://github.com/openstreetlifting/openstreetlifting/commit/e8f6de6b2ab3a59a91fc59b4661a4e4bf45a448b))
+* **data:** import sob winter edition 2023 ([#763](https://github.com/openstreetlifting/openstreetlifting/issues/763)) ([f5a4714](https://github.com/openstreetlifting/openstreetlifting/commit/f5a4714b9bf54f570d2f2decd9736f759083e8c3))
+* **frontend:** migrate to SvelteKit 3 ([#786](https://github.com/openstreetlifting/openstreetlifting/issues/786)) ([9d7062d](https://github.com/openstreetlifting/openstreetlifting/commit/9d7062d842c1961e7d3040e4995d4c23dee6a887))
+
+
+### Bug Fixes
+
+* **data:** use confirmed athlete names for AESL imports ([#778](https://github.com/openstreetlifting/openstreetlifting/issues/778)) ([b3a4123](https://github.com/openstreetlifting/openstreetlifting/commit/b3a41231212b0cbe4d90f8fe4f7405862ea63447))
+* **data:** use confirmed Raul Teslevici spelling ([#787](https://github.com/openstreetlifting/openstreetlifting/issues/787)) ([e0428c9](https://github.com/openstreetlifting/openstreetlifting/commit/e0428c9d484fe8b712c2417aa790fcc301c83721))
+* **deps:** update frontend dependencies ([#783](https://github.com/openstreetlifting/openstreetlifting/issues/783)) ([8ac1db3](https://github.com/openstreetlifting/openstreetlifting/commit/8ac1db3478fbc77bd86ea08c046f42877f0a6687))
+
 ## [0.42.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.41.0...v0.42.0) (2026-10-04)
 
 
