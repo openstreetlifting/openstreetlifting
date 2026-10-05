@@ -12,7 +12,7 @@ city = "Tremblay-en-France"
 venue = "Espace Jean Ferrat"
 region = "Île-de-France"
 country = "FR"
-status = "live"
+status = "completed"
 
 [federation]
 name = "FinalRep"
