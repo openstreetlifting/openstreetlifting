@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import type { Participant } from '$lib/types/competition';
+import type { Participant } from '#lib/types/competition.js';
 import { hasRankingResult } from './competition-results';
 
 const result = (overrides: Partial<Participant> = {}): Participant => ({

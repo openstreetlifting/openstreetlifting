@@ -1,6 +1,10 @@
 <script lang="ts">
-  import { ChevronIcon } from '$lib/components/icons';
-  import { FORMAT_MOVEMENTS, formatMovements, normalizeEvent } from '$lib/utils/competition-format';
+  import { ChevronIcon } from '#lib/components/icons/index.js';
+  import {
+    FORMAT_MOVEMENTS,
+    formatMovements,
+    normalizeEvent,
+  } from '#lib/utils/competition-format.js';
 
   let {
     formats,

@@ -1,4 +1,4 @@
-import type { RisConstants } from '$lib/types/ris';
+import type { RisConstants } from '#lib/types/ris.js';
 
 /** The published reference total at this bodyweight: a RIS score of 100. */
 export function benchmarkTotal(constants: RisConstants, bodyweight: number): number {

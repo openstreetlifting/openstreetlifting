@@ -18,7 +18,7 @@ const body = createRawSnippet<[number[]]>((getRows) => ({
 }));
 
 beforeEach(() => {
-  page.url.href = 'https://openstreetlifting.org/countries/fr';
+  (page.url as URL).href = 'https://openstreetlifting.org/countries/fr';
 });
 
 it('renders 50 rows and identical top and bottom navigation before hydration', () => {
@@ -34,7 +34,7 @@ it('renders 50 rows and identical top and bottom navigation before hydration', (
 });
 
 it('pages a complete list independently and preserves the other tables and filters', () => {
-  page.url.search = '?page=2&competitions_page=2&upcoming_page=3&q=Open';
+  (page.url as URL).search = '?page=2&competitions_page=2&upcoming_page=3&q=Open';
   const { body: html } = render(Table<number>, {
     props: { rows, head, body, pageParam: 'competitions_page' },
   });
@@ -48,7 +48,7 @@ it('pages a complete list independently and preserves the other tables and filte
 it.each(['-2', 'bad', '1.5', '999'])(
   'clamps invalid collection page %s to a populated page',
   (value) => {
-    page.url.search = `?table_page=${value}`;
+    (page.url as URL).search = `?table_page=${value}`;
     const { body: html } = render(Table<number>, { props: { rows, head, body } });
     expect(html).toContain(value === '999' ? 'Result 101</td>' : 'Result 1</td>');
   }
@@ -84,7 +84,7 @@ it('shows one page and a singular label for a one-row table', () => {
 });
 
 it('uses the shared navigation for server pages and preserves the base path, filters and hash', () => {
-  page.url.href =
+  (page.url as URL).href =
     'https://openstreetlifting.org/base/countries/fr?page=2&competitions_page=3#athletes';
   const { body: html } = render(Table<number>, {
     props: {

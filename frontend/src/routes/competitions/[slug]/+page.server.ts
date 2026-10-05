@@ -1,10 +1,10 @@
-import { TABLE_PAGE_SIZE } from '$lib/constants/pagination';
-import { competitionsService, rankingsService } from '$lib/server/api';
-import { defaultRankingSort, risProvenance } from '$lib/constants/ranking';
-import { formatAthleteName } from '$lib/utils/format';
+import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
+import { competitionsService, rankingsService } from '#lib/server/api/index.js';
+import { defaultRankingSort, risProvenance } from '#lib/constants/ranking.js';
+import { formatAthleteName } from '#lib/utils/format.js';
 import type { PageServerLoad } from './$types';
 import { error, redirect } from '@sveltejs/kit';
-import { asRankedGender, asRankingMetric } from '$lib/types/enums';
+import { asRankedGender, asRankingMetric } from '#lib/types/enums.js';
 
 const noRankings = () => ({
   data: [],

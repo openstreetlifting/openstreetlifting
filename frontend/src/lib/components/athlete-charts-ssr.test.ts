@@ -2,7 +2,7 @@ import { expect, it } from 'vitest';
 import { render } from 'svelte/server';
 import AthleteProgress from './athlete-progress.svelte';
 import AthleteStrength from './athlete-strength.svelte';
-import { MOVEMENTS } from '$lib/types/enums';
+import { MOVEMENTS } from '#lib/types/enums.js';
 
 it('renders performance geometry in the initial HTML without client effects', () => {
   const { body } = render(AthleteProgress, {

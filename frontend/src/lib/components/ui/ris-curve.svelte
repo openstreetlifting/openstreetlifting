@@ -5,9 +5,9 @@
   import { scaleLinear } from 'd3-scale';
   import { curveLinear } from 'd3-shape';
   import { onMount, untrack } from 'svelte';
-  import type { RisConstants, RisPerformance } from '$lib/types/ris';
-  import { benchmarkTotal, calculateRis } from '$lib/utils/ris';
-  import { formatLongDate } from '$lib/utils/format';
+  import type { RisConstants, RisPerformance } from '#lib/types/ris.js';
+  import { benchmarkTotal, calculateRis } from '#lib/utils/ris.js';
+  import { formatLongDate } from '#lib/utils/format.js';
 
   let {
     constants,

@@ -1,11 +1,16 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { EmailIcon, InstagramIcon, GitHubIcon, DiscordIcon } from '$lib/components/icons';
-  import { TEXT } from '$lib/constants/typography';
-  import Seo from '$lib/components/seo.svelte';
-  import { absolute, breadcrumbLd } from '$lib/seo';
-  import { Breadcrumb } from '$lib/components/ui';
-  import { rankingsHref } from '$lib/state/rankings-return.svelte';
+  import {
+    EmailIcon,
+    InstagramIcon,
+    GitHubIcon,
+    DiscordIcon,
+  } from '#lib/components/icons/index.js';
+  import { TEXT } from '#lib/constants/typography.js';
+  import Seo from '#lib/components/seo.svelte';
+  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
+  import { Breadcrumb } from '#lib/components/ui/index.js';
+  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
 
   const rowClass =
     'flex items-center gap-3 py-4 text-sm text-secondary transition-colors hover:text-ink';
@@ -45,10 +50,15 @@
       <a
         href="mailto:contact@openstreetlifting.org"
         class="underline underline-offset-4 hover:text-ink">contact@openstreetlifting.org</a
-      >. Keep these requests private. You can read more in the
-      <a href={resolve('/privacy')} class="underline underline-offset-4 hover:text-ink"
+      >
+
+      . Keep these requests private. You can read more in the
+
+      <a href={resolve('privacy')} class="underline underline-offset-4 hover:text-ink"
         >privacy notice</a
-      >.
+      >
+
+      .
     </p>
   </div>
 

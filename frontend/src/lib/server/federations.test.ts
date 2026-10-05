@@ -1,8 +1,8 @@
 import { expect, it, vi } from 'vitest';
-import type { Competition } from '$lib/types/competition';
+import type { Competition } from '#lib/types/competition.js';
 import { summarizeFederations } from './federations';
 
-vi.mock('$lib/server/api', () => ({ competitionsService: { getAll: vi.fn() } }));
+vi.mock('#lib/server/api/index.js', () => ({ competitionsService: { getAll: vi.fn() } }));
 
 const competition = (overrides: Partial<Competition>): Competition =>
   ({

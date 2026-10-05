@@ -1,14 +1,17 @@
-/// <reference types="@sveltejs/kit" />
-/// <reference lib="webworker" />
+import { version } from '$app/env';
+import { immutable, assets } from '$app/manifest';
+import { asset } from '$app/paths';
+import { self as worker } from '$app/service-worker';
 
-import { build, files, version } from '$service-worker';
-
-const worker = self as unknown as ServiceWorkerGlobalScope;
+const build = immutable.map(({ path }) => path);
+const files = assets.map(({ path }) => asset(path));
 
 // Hashed bundles and static files are both immutable for the life of a
 // version, so they share one cache that the next version replaces wholesale.
 const CACHE = `assets-${version}`;
-const PRECACHED = new Set([...build, ...files]);
+const PRECACHED = new Set(
+  [...build, ...files].map((path) => new URL(path, worker.location.href).pathname)
+);
 const ORIGIN = `${worker.location.origin}/`;
 
 let handle: Promise<Cache> | undefined;

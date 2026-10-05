@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TEXT } from '$lib/constants/typography';
+  import { TEXT } from '#lib/constants/typography.js';
 
   let {
     sex = $bindable('men'),

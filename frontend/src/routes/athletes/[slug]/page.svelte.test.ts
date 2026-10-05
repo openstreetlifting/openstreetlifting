@@ -1,13 +1,25 @@
 import { beforeEach, expect, it, vi } from 'vitest';
-import { MOVEMENTS } from '$lib/types/enums';
+import { MOVEMENTS } from '#lib/types/enums.js';
 import { page as appPage } from '$app/state';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AthletePage from './+page.svelte';
-import type { AthleteCompetitionSummary, AthleteDetail, MetricStanding } from '$lib/types/athlete';
+import type {
+  AthleteCompetitionSummary,
+  AthleteDetail,
+  MetricStanding,
+} from '#lib/types/athlete.js';
 
-vi.mock('$env/dynamic/public', () => ({ env: {} }));
-vi.mock('$app/paths', () => ({ resolve: (path: string) => path }));
+vi.mock('$app/env/public', () => ({
+  PUBLIC_SITE_URL: 'https://openstreetlifting.org',
+  PUBLIC_ENVIRONMENT: '',
+}));
+vi.mock('$app/paths', () => ({
+  resolve: (path: string, params?: Record<string, string>) =>
+    path.startsWith('/')
+      ? path.replace(/\[([^\]]+)\]/g, (_, key) => params?.[key] ?? '')
+      : `/${path}`,
+}));
 vi.mock('$app/state', async () => {
   const { SvelteURL } = await import('svelte/reactivity');
   return { page: { url: new SvelteURL('http://localhost/athletes/alex-martin'), state: {} } };
@@ -17,13 +29,13 @@ vi.mock('$app/navigation', async () => {
   return {
     beforeNavigate: vi.fn(),
     goto: vi.fn(async (url: string) => {
-      page.url.href = new URL(url, page.url).href;
+      (page.url as URL).href = new URL(url, page.url.href).href;
     }),
   };
 });
 
 beforeEach(() => {
-  appPage.url.search = '';
+  (appPage.url as URL).search = '';
 });
 
 function standing(value: string, weightClass?: string): MetricStanding {

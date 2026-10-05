@@ -1,16 +1,17 @@
 <script lang="ts">
+  import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
-  import { Breadcrumb, Flag } from '$lib/components/ui';
-  import CompetitionsTable from '$lib/components/competitions-table.svelte';
-  import RankingList from '$lib/components/ranking-list.svelte';
-  import Seo from '$lib/components/seo.svelte';
+  import { Breadcrumb, Flag } from '#lib/components/ui/index.js';
+  import CompetitionsTable from '#lib/components/competitions-table.svelte';
+  import RankingList from '#lib/components/ranking-list.svelte';
+  import Seo from '#lib/components/seo.svelte';
   import { resolve } from '$app/paths';
   import { page as currentPage, navigating } from '$app/state';
-  import { rankingsHref } from '$lib/state/rankings-return.svelte';
-  import { slowNavigation } from '$lib/state/slow-navigation.svelte';
-  import { breadcrumbLd, listingSeo } from '$lib/seo';
-  import { countryName, countryPath, federationPath } from '$lib/utils';
-  import { TEXT } from '$lib/constants/typography';
+  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
+  import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
+  import { breadcrumbLd, listingSeo } from '#lib/seo/index.js';
+  import { countryName, countryPath } from '#lib/utils/index.js';
+  import { TEXT } from '#lib/constants/typography.js';
 
   let { data }: { data: PageData } = $props();
 
@@ -74,7 +75,7 @@
             {#each data.federations as federation (federation)}
               <li class="min-w-0">
                 <a
-                  href={resolve(federationPath(federation))}
+                  href={resolve('/federations/[slug]', { slug: slugify(federation) })}
                   class="break-words text-ink underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
                   >{federation}</a
                 >

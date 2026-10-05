@@ -1,7 +1,7 @@
 <script lang="ts">
   import Header from './Header.svelte';
   import Footer from './Footer.svelte';
-  import { umami } from '$lib/analytics';
+  import { umami } from '#lib/analytics.js';
   import '../app.css';
 
   let { children } = $props();

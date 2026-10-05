@@ -1,15 +1,15 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Breadcrumb, Flag } from '$lib/components/ui';
-  import CompetitionsTable from '$lib/components/competitions-table.svelte';
-  import RankingList from '$lib/components/ranking-list.svelte';
-  import Seo from '$lib/components/seo.svelte';
+  import { Breadcrumb, Flag } from '#lib/components/ui/index.js';
+  import CompetitionsTable from '#lib/components/competitions-table.svelte';
+  import RankingList from '#lib/components/ranking-list.svelte';
+  import Seo from '#lib/components/seo.svelte';
   import { page as currentPage, navigating } from '$app/state';
-  import { rankingsHref } from '$lib/state/rankings-return.svelte';
-  import { slowNavigation } from '$lib/state/slow-navigation.svelte';
-  import { breadcrumbLd, federationLd, listingSeo } from '$lib/seo';
-  import { federationPath } from '$lib/utils';
-  import { TEXT } from '$lib/constants/typography';
+  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
+  import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
+  import { breadcrumbLd, federationLd, listingSeo } from '#lib/seo/index.js';
+  import { federationPath } from '#lib/utils/index.js';
+  import { TEXT } from '#lib/constants/typography.js';
 
   let { data }: { data: PageData } = $props();
 

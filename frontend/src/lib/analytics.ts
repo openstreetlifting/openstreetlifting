@@ -1,7 +1,7 @@
-import { env } from '$env/dynamic/public';
+import { PUBLIC_UMAMI_SCRIPT_URL, PUBLIC_UMAMI_WEBSITE_ID } from '$app/env/public';
 
-const scriptUrl = env.PUBLIC_UMAMI_SCRIPT_URL ?? '';
-const websiteId = env.PUBLIC_UMAMI_WEBSITE_ID ?? '';
+const scriptUrl = PUBLIC_UMAMI_SCRIPT_URL ?? '';
+const websiteId = PUBLIC_UMAMI_WEBSITE_ID ?? '';
 
 export const umami = {
   enabled: Boolean(scriptUrl && websiteId),

@@ -1,5 +1,3 @@
-import { env } from '$env/dynamic/private';
+import { BACKEND_URL } from '$app/env/private';
 
-export const config = {
-  apiUrl: env.BACKEND_URL ?? 'http://localhost:8080',
-} as const;
+export const config = { apiUrl: BACKEND_URL ?? 'http://localhost:8080' } as const;

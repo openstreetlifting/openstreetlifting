@@ -1,9 +1,9 @@
 import { expect, it, vi } from 'vitest';
-import type { AthleteSummary } from '$lib/types/athlete';
-import type { Competition } from '$lib/types/competition';
+import type { AthleteSummary } from '#lib/types/athlete.js';
+import type { Competition } from '#lib/types/competition.js';
 import { summarizeCountries } from './countries';
 
-vi.mock('$lib/server/api', () => ({
+vi.mock('#lib/server/api/index.js', () => ({
   athletesService: { getAll: vi.fn() },
   competitionsService: { getAll: vi.fn() },
 }));

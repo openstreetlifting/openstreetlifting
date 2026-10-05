@@ -1,8 +1,8 @@
-import { env } from '$env/dynamic/public';
+import { PUBLIC_APP_VERSION, PUBLIC_GIT_SHA, PUBLIC_ENVIRONMENT } from '$app/env/public';
 
-const appVersion = env.PUBLIC_APP_VERSION ?? '';
-const gitSha = env.PUBLIC_GIT_SHA ?? '';
-const environment = env.PUBLIC_ENVIRONMENT ?? '';
+const appVersion = PUBLIC_APP_VERSION ?? '';
+const gitSha = PUBLIC_GIT_SHA ?? '';
+const environment = PUBLIC_ENVIRONMENT ?? '';
 
 // Outside production the chart's appVersion is the last release, not what is
 // running, so only the commit is shown.

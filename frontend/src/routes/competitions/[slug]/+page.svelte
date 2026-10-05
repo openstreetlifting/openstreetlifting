@@ -17,10 +17,10 @@
     FROZEN_RANK,
     ATHLETE_COLUMN,
     ATHLETE_CONTENT,
-  } from '$lib/components/ui';
+  } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
-  import { rankingsHref } from '$lib/state/rankings-return.svelte';
-  import { slowNavigation } from '$lib/state/slow-navigation.svelte';
+  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
+  import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { page, navigating } from '$app/state';
   import { afterNavigate } from '$app/navigation';
   import {
@@ -32,7 +32,7 @@
     federationPath,
     formatWeight,
     formatAthleteName,
-  } from '$lib/utils';
+  } from '#lib/utils/index.js';
   import {
     ATTEMPT_ROW,
     CELL,
@@ -43,29 +43,29 @@
     REPORTED_MARK,
     REPORTED_GLYPH,
     REPORTED_TITLE,
-  } from '$lib/constants/table';
-  import { GitHubIcon } from '$lib/components/icons';
+  } from '#lib/constants/table.js';
+  import { GitHubIcon } from '#lib/components/icons/index.js';
   import {
     RANKING_SORTS,
     RANKING_SORTS_NO_RIS,
     RANKING_GENDERS,
     defaultRankingSort,
-  } from '$lib/constants/ranking';
-  import { RankingsTable } from '$lib/state/rankings-table.svelte';
-  import type { RankingEntry } from '$lib/types/ranking';
-  import type { Attempt, Participant, CategoryDetail } from '$lib/types/competition';
-  import { GENDERS, asRankingMetric, type AthleteStatus } from '$lib/types/enums';
-  import { hasRankingResult } from '$lib/utils/competition-results';
-  import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '$lib/constants/athlete-status';
-  import { FIELD, TEXT } from '$lib/constants/typography';
-  import Seo from '$lib/components/seo.svelte';
+  } from '#lib/constants/ranking.js';
+  import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
+  import type { RankingEntry } from '#lib/types/ranking.js';
+  import type { Attempt, Participant, CategoryDetail } from '#lib/types/competition.js';
+  import { GENDERS, asRankingMetric, type AthleteStatus } from '#lib/types/enums.js';
+  import { hasRankingResult } from '#lib/utils/competition-results.js';
+  import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
+  import { FIELD, TEXT } from '#lib/constants/typography.js';
+  import Seo from '#lib/components/seo.svelte';
   import {
     breadcrumbLd,
     competitionLd,
     competitionSeoName,
     competitionTitle,
     listingSeo,
-  } from '$lib/seo';
+  } from '#lib/seo/index.js';
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
@@ -108,7 +108,9 @@
     defaultSort: () => data.competition.scoring ?? defaultRankingSort(data.ris),
   });
 
-  afterNavigate(({ type }) => {
+  afterNavigate(({ type, shallow }) => {
+    if (shallow) return;
+
     table.syncFromUrl(page.url, type);
     if (table.focusedAthlete) {
       requestAnimationFrame(() => {
@@ -237,6 +239,7 @@
 
   // Missing scores have no rank, but their entries still belong in the results.
   const NOT_PLACED_ORDER: AthleteStatus[] = ['competed', 'disqualified', 'no_show'];
+
   const selectedMetric = $derived(
     asRankingMetric(table.movementFilter) ?? defaultRankingSort(data.ris)
   );
@@ -247,12 +250,12 @@
         category.participants
           .filter((participant) => !hasRankingResult(participant, selectedMetric))
           .map((participant) => ({ category, participant }))
-      )
-      // The ranked half is filtered by the server, so these have to answer the
+      ) // The ranked half is filtered by the server, so these have to answer the
       // same filters or the table would contradict itself.
       .filter(({ category, participant }) => {
         const { athlete } = participant;
         const search = table.searchFilter.trim().toLowerCase();
+
         return (
           (!table.genderFilter || athlete.gender === table.genderFilter) &&
           (!table.countryFilter || athlete.country === table.countryFilter) &&
@@ -271,7 +274,6 @@
   );
 
   const fieldSize = $derived(pagination.total_items + notPlaced.length);
-
   const fieldPages = $derived(Math.max(1, Math.ceil(fieldSize / pagination.page_size)));
   const unplacedOnPage = $derived(
     notPlaced.slice(
@@ -284,15 +286,12 @@
 
   const seoName = $derived(competitionSeoName(competition));
   const federationHref = $derived(federationPath(competition.federation.name));
-
   const lifterCount = $derived(
     competition.categories.reduce((total, category) => total + category.participants.length, 0)
   );
-
   const seoWhere = $derived(
     formatLocation(competition.city, competition.country && countryName(competition.country))
   );
-
   const seoMovements = $derived(
     competition.movements.map((movement) => movement.movement_name.toLowerCase()).join(', ')
   );
@@ -383,7 +382,7 @@
       <dt class="text-muted">Federation</dt>
       <dd class="min-w-0 text-ink">
         <a
-          href={resolve(federationHref)}
+          href={resolve('/federations/[slug]', { slug: slugify(competition.federation.name) })}
           title={competition.federation.name}
           class="break-words underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
           >{federationLabel}</a
@@ -547,7 +546,7 @@
   {:else if rankings.length === 0 && unplacedOnPage.length === 0 && !busy}
     <RankingsEmpty
       canReset={table.narrowed || pagination.page > 1}
-      resetHref={resolve(`/competitions/${competition.slug}`)}
+      resetHref={resolve(`competitions/${competition.slug}`)}
     />
   {:else}
     <Table
@@ -609,7 +608,7 @@
                     class="shrink-0 [--flag-height:1.25em]"
                   />
                   <a
-                    href={resolve(`/athletes/${entry.athlete.slug}`)}
+                    href={resolve(`athletes/${entry.athlete.slug}`)}
                     class="truncate underline hover:text-secondary"
                   >
                     {formatAthleteName(entry.athlete)}
@@ -684,6 +683,7 @@
             <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.absent}"
               >{NO_VALUE}</td
             >
+
             <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
               <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                 <span class="flex min-w-0 items-center gap-2.5">
@@ -693,7 +693,7 @@
                     class="shrink-0 [--flag-height:1.25em]"
                   />
                   <a
-                    href={resolve(`/athletes/${participant.athlete.slug}`)}
+                    href={resolve(`athletes/${participant.athlete.slug}`)}
                     class="truncate underline hover:text-secondary"
                   >
                     {formatAthleteName(participant.athlete)}

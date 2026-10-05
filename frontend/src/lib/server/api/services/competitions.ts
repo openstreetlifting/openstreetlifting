@@ -4,8 +4,8 @@ import type {
   CompetitionDetail,
   CompetitionFacets,
   CompetitionFilters,
-} from '$lib/types/competition';
-import type { Paginated } from '$lib/types/pagination';
+} from '#lib/types/competition.js';
+import type { Paginated } from '#lib/types/pagination.js';
 
 export const competitionsService = {
   async getAll(filters?: CompetitionFilters): Promise<Paginated<Competition>> {

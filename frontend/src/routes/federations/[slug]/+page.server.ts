@@ -1,7 +1,7 @@
-import { TABLE_PAGE_SIZE } from '$lib/constants/pagination';
+import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
 import { error } from '@sveltejs/kit';
-import { rankingsService } from '$lib/server/api';
-import { isHeld, publishedCompetitions, summarizeFederations } from '$lib/server/federations';
+import { rankingsService } from '#lib/server/api/index.js';
+import { isHeld, publishedCompetitions, summarizeFederations } from '#lib/server/federations.js';
 import type { PageServerLoad } from './$types';
 
 const byDate = (a: { start_date: string | null }, b: { start_date: string | null }) =>

@@ -1,4 +1,4 @@
-import type { RankingMetric } from '$lib/types/enums';
+import type { RankingMetric } from '#lib/types/enums.js';
 
 export const RANKING_LIFTS = [
   { value: 'muscleup', label: 'Muscle Up' },

@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { publishedCompetitions, summarizeFederations } from '$lib/server/federations';
+import { publishedCompetitions, summarizeFederations } from '#lib/server/federations.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

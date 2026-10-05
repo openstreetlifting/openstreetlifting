@@ -1,6 +1,6 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { countryName, countryPath } from '$lib/utils';
+  import { countryName } from '#lib/utils/index.js';
 
   interface Props {
     countryCode: string | null;
@@ -42,7 +42,7 @@
     </svg>
   {:else if link}
     <a
-      href={resolve(countryPath(countryCode!))}
+      href={resolve('/countries/[code]', { code: countryCode!.toLowerCase() })}
       class="inline-flex shrink-0 rounded-[3px] transition-opacity hover:opacity-75 focus:ring-2 focus:ring-focus focus:outline-none"
     >
       {@render flag()}

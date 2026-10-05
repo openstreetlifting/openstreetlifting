@@ -1,5 +1,5 @@
-import { rankingsService } from '$lib/server/api';
-import { asRankedGender } from '$lib/types/enums';
+import { rankingsService } from '#lib/server/api/index.js';
+import { asRankedGender } from '#lib/types/enums.js';
 import type { LayoutServerLoad } from './$types';
 
 // Keep filter options independent of search and pagination reloads.

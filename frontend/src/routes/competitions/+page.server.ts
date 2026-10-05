@@ -1,9 +1,9 @@
-import { TABLE_PAGE_SIZE } from '$lib/constants/pagination';
-import { competitionsService } from '$lib/server/api';
+import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
+import { competitionsService } from '#lib/server/api/index.js';
 import type { PageServerLoad } from './$types';
-import type { CompetitionStatus } from '$lib/types/competition';
-import { COMPETITION_STATUS_FILTERS } from '$lib/constants/competition';
-import { normalizeEvent } from '$lib/utils/competition-format';
+import type { CompetitionStatus } from '#lib/types/competition.js';
+import { COMPETITION_STATUS_FILTERS } from '#lib/constants/competition.js';
+import { normalizeEvent } from '#lib/utils/competition-format.js';
 
 const RESULTS_STATUS: CompetitionStatus = 'completed';
 const UPCOMING_STATUS: CompetitionStatus = 'upcoming';

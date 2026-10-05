@@ -1,5 +1,6 @@
+import type { page } from '$app/state';
+import type { AfterNavigate } from '$app/navigation';
 import { resolve } from '$app/paths';
-import type { AfterNavigate } from '@sveltejs/kit';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 import { ListingSearch } from './listing-search.svelte';
 
@@ -12,7 +13,7 @@ interface RankingsTableConfig {
   basePath: string | (() => string);
   /** Whether this table supports filtering by competition year. */
   includeYear?: boolean;
-  initialUrl: URL;
+  initialUrl: typeof page.url;
   /** Column sorted before anyone picks one. Not every competition has a RIS to sort on. */
   defaultSort?: string | (() => string);
 }
@@ -80,7 +81,7 @@ export class RankingsTable {
    * link that drops the query string (the header logo, back to the unfiltered
    * board) has to reach the selects as well as the rows.
    */
-  syncFromUrl(url: URL, type?: AfterNavigate['type']) {
+  syncFromUrl(url: typeof page.url, type?: AfterNavigate['type']) {
     const params = url.searchParams;
     this.genderFilter = params.get('gender') || null;
     this.categoryFilter = params.get('category') || null;
@@ -128,7 +129,7 @@ export class RankingsTable {
     const queryString = params.toString();
     const path = queryString ? `${this.basePath}?${queryString}` : this.basePath;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- basePath is built at runtime, not a literal route
-    return resolve(path as any);
+    return resolve(path.replace(/^\//, '') as any);
   }
 
   private navigate(targetPage: number) {

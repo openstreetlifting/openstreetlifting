@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import SearchInput from './search-input.svelte';
-  import { ChevronIcon, CloseIcon } from '$lib/components/icons';
-  import { EDGE_TO_EDGE } from '$lib/constants/table';
-  import { CONTROL, FIELD } from '$lib/constants/typography';
+  import { ChevronIcon, CloseIcon } from '#lib/components/icons/index.js';
+  import { EDGE_TO_EDGE } from '#lib/constants/table.js';
+  import { CONTROL, FIELD } from '#lib/constants/typography.js';
 
   interface Props {
     search: string;

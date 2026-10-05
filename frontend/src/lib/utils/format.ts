@@ -1,4 +1,4 @@
-import { NO_VALUE } from '$lib/constants/table';
+import { NO_VALUE } from '#lib/constants/table.js';
 
 export function formatDate(dateString: string | null): string {
   if (!dateString) return '-';

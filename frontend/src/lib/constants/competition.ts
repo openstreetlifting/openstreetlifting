@@ -1,4 +1,4 @@
-import { COMPETITION_STATUSES, type CompetitionStatus } from '$lib/types/enums';
+import { COMPETITION_STATUSES, type CompetitionStatus } from '#lib/types/enums.js';
 
 interface CompetitionStatusOption {
   value: CompetitionStatus;

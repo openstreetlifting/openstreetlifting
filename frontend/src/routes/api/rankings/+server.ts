@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
-import { rankingsService } from '$lib/server/api';
-import { asRankedGender, asRankingMetric } from '$lib/types/enums';
+import { rankingsService } from '#lib/server/api/index.js';
+import { asRankedGender, asRankingMetric } from '#lib/types/enums.js';
 
 export const GET: RequestHandler = async ({ url }) => {
   const data = await rankingsService.getGlobalRankings({

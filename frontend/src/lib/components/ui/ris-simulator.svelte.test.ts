@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import RisSimulator from './ris-simulator.svelte';
-import type { RisFormula } from '$lib/types/ris';
+import type { RisFormula } from '#lib/types/ris.js';
 
 const constants = {
   a: 335.5625,

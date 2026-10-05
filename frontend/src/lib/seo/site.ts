@@ -1,4 +1,5 @@
-import { env } from '$env/dynamic/public';
+import type { page } from '$app/state';
+import { PUBLIC_SITE_URL, PUBLIC_ENVIRONMENT } from '$app/env/public';
 
 export const SITE_NAME = 'OpenStreetlifting';
 
@@ -7,15 +8,12 @@ export const SITE_DESCRIPTION =
 
 // Canonical, Open Graph and sitemap URLs have to be absolute, and a request
 // served behind the ingress cannot tell what the public origin is.
-export const SITE_URL = (env.PUBLIC_SITE_URL ?? 'https://openstreetlifting.org').replace(
-  /\/+$/,
-  ''
-);
+export const SITE_URL = (PUBLIC_SITE_URL ?? 'https://openstreetlifting.org').replace(/\/+$/, '');
 
 // A named pre-release environment serves the same pages as production, so it
 // stays out of the index rather than competing with it. An unset environment is
 // local development, which no crawler reaches.
-const environment = env.PUBLIC_ENVIRONMENT ?? '';
+const environment = PUBLIC_ENVIRONMENT ?? '';
 export const INDEXABLE = environment === '' || environment === 'production';
 
 export const OG_IMAGE = {
@@ -42,7 +40,7 @@ export interface ListingSeo {
   noindex: boolean;
 }
 
-export function listingSeo(url: URL): ListingSeo {
+export function listingSeo(url: typeof page.url): ListingSeo {
   const filtered = [...url.searchParams.keys()].some((key) => !CRAWLABLE_PARAMS.has(key));
   const page = Number(url.searchParams.get('page') ?? 1) || 1;
   const query = !filtered && page > 1 ? `?page=${page}` : '';

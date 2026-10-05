@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { AthleteCompetitionSummary } from '$lib/types/athlete';
+import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
 import { progressPoints, totalFormats } from './athlete-progress';
 
 function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteCompetitionSummary {

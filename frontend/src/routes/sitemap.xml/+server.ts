@@ -1,5 +1,5 @@
-import { SITEMAP_SECTIONS } from '$lib/server/archive';
-import { sitemapIndex, XML_HEADERS } from '$lib/server/sitemap';
+import { SITEMAP_SECTIONS } from '#lib/server/archive.js';
+import { sitemapIndex, XML_HEADERS } from '#lib/server/sitemap.js';
 import type { RequestHandler } from './$types';
 
 const BODY = sitemapIndex(SITEMAP_SECTIONS);

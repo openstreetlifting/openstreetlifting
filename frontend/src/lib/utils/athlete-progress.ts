@@ -1,5 +1,5 @@
-import type { AthleteCompetitionSummary } from '$lib/types/athlete';
-import type { RANKING_SORTS } from '$lib/constants/ranking';
+import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
+import type { RANKING_SORTS } from '#lib/constants/ranking.js';
 
 export type ProgressMetric = (typeof RANKING_SORTS)[number]['value'];
 const MOVEMENTS = {

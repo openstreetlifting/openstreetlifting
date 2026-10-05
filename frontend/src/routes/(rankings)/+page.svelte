@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
   import {
     Card,
@@ -16,26 +17,20 @@
     FROZEN_RANK,
     ATHLETE_COLUMN,
     ATHLETE_CONTENT,
-  } from '$lib/components/ui';
-  import { InstagramIcon } from '$lib/components/icons';
-  import Seo from '$lib/components/seo.svelte';
+  } from '#lib/components/ui/index.js';
+  import { InstagramIcon } from '#lib/components/icons/index.js';
+  import Seo from '#lib/components/seo.svelte';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { afterNavigate } from '$app/navigation';
-  import {
-    formatDate,
-    countryName,
-    federationPath,
-    formatWeight,
-    formatAthleteName,
-  } from '$lib/utils';
-  import { CELL, FIGURE, NO_VALUE, SORTED_COLUMN, TEXT_CELL } from '$lib/constants/table';
-  import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '$lib/constants/ranking';
-  import { RankingsTable } from '$lib/state/rankings-table.svelte';
-  import { rememberRankings } from '$lib/state/rankings-return.svelte';
-  import { slowNavigation } from '$lib/state/slow-navigation.svelte';
-  import { FIELD } from '$lib/constants/typography';
-  import { listingSeo, websiteLd } from '$lib/seo';
+  import { formatDate, countryName, formatWeight, formatAthleteName } from '#lib/utils/index.js';
+  import { CELL, FIGURE, NO_VALUE, SORTED_COLUMN, TEXT_CELL } from '#lib/constants/table.js';
+  import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '#lib/constants/ranking.js';
+  import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
+  import { rememberRankings } from '#lib/state/rankings-return.svelte.js';
+  import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
+  import { FIELD } from '#lib/constants/typography.js';
+  import { listingSeo, websiteLd } from '#lib/seo/index.js';
 
   let { data }: { data: PageData } = $props();
 
@@ -54,7 +49,9 @@
 
   const focused = $derived(page.url.searchParams.get('athlete'));
 
-  afterNavigate(({ type }) => {
+  afterNavigate(({ type, shallow }) => {
+    if (shallow) return;
+
     table.syncFromUrl(page.url, type);
     rememberRankings(page.url.search);
     if (!focused) return;
@@ -170,7 +167,7 @@
       </div>
     </Card>
   {:else if rankings.length === 0 && !busy}
-    <RankingsEmpty canReset={table.narrowed || pagination.page > 1} resetHref={resolve('/')} />
+    <RankingsEmpty canReset={table.narrowed || pagination.page > 1} resetHref={resolve('')} />
   {:else}
     <Table
       rows={rankings}
@@ -221,7 +218,7 @@
                     class="shrink-0 [--flag-height:1.25em]"
                   />
                   <a
-                    href={resolve(`/athletes/${entry.athlete.slug}`)}
+                    href={resolve(`athletes/${entry.athlete.slug}`)}
                     class="truncate underline hover:text-secondary"
                   >
                     {formatAthleteName(entry.athlete)}
@@ -251,7 +248,7 @@
             <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.squat)}</td>
             <td class="{TABLE_CELL} {CELL.data}">
               <a
-                href={resolve(`/competitions/${entry.competition.slug}`)}
+                href={resolve(`competitions/${entry.competition.slug}`)}
                 class="{TEXT_CELL.competition} underline hover:text-secondary"
               >
                 {entry.competition.name}
@@ -259,7 +256,7 @@
             </td>
             <td class="{TABLE_CELL} {CELL.data}" title={entry.federation.name}>
               <a
-                href={resolve(federationPath(entry.federation.name))}
+                href={resolve('/federations/[slug]', { slug: slugify(entry.federation.name) })}
                 class="{TEXT_CELL.federation} underline hover:text-ink"
               >
                 {entry.federation.abbreviation || entry.federation.name}

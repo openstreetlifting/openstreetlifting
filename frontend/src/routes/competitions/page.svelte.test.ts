@@ -5,11 +5,19 @@ import { page as appPage } from '$app/state';
 import { goto } from '$app/navigation';
 import CompetitionsPage from './+page.svelte';
 import type { PageData } from './$types';
-import { FORMAT_MOVEMENTS } from '$lib/utils/competition-format';
+import { FORMAT_MOVEMENTS } from '#lib/utils/competition-format.js';
 
 const navigation = vi.hoisted(() => ({ after: (() => {}) as (event: { type: string }) => void }));
-vi.mock('$env/dynamic/public', () => ({ env: {} }));
-vi.mock('$app/paths', () => ({ resolve: (path: string) => path }));
+vi.mock('$app/env/public', () => ({
+  PUBLIC_SITE_URL: 'https://openstreetlifting.org',
+  PUBLIC_ENVIRONMENT: '',
+}));
+vi.mock('$app/paths', () => ({
+  resolve: (path: string, params?: Record<string, string>) =>
+    path.startsWith('/')
+      ? path.replace(/\[([^\]]+)\]/g, (_, key) => params?.[key] ?? '')
+      : `/${path}`,
+}));
 vi.mock('$app/state', async () => {
   const { SvelteURL } = await import('svelte/reactivity');
   return {
@@ -25,7 +33,7 @@ vi.mock('$app/navigation', async () => {
       navigation.after = callback;
     },
     goto: vi.fn(async (url: string) => {
-      page.url.href = new URL(url, page.url).href;
+      (page.url as URL).href = new URL(url, page.url.href).href;
     }),
   };
 });
@@ -68,7 +76,7 @@ function data(event = ''): PageData {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  appPage.url.href =
+  (appPage.url as URL).href =
     'http://localhost/competitions?country=FR&year=2026&federation=Test&q=meet&page=2';
 });
 
@@ -94,7 +102,7 @@ it('selects an exact format in either click order, preserves filters, and resets
 });
 
 it('restores selection on history navigation and retains format in paging and tab links', async () => {
-  appPage.url.searchParams.set('event', 'PD');
+  (appPage.url as URL).searchParams.set('event', 'PD');
   const screen = await render(CompetitionsPage, { data: data('PD') });
   const links = page.getByRole('link', { name: 'Next page' }).elements();
   expect(links.length).toBeGreaterThan(0);
@@ -108,7 +116,7 @@ it('restores selection on history navigation and retains format in paging and ta
   expect(appPage.url.searchParams.get('event')).toBe('PD');
   expect(appPage.url.searchParams.get('status')).toBe('upcoming');
   expect(appPage.url.searchParams.has('page')).toBe(false);
-  appPage.url.href = 'http://localhost/competitions?event=MS';
+  (appPage.url as URL).href = 'http://localhost/competitions?event=MS';
   await screen.rerender({ data: data('MS') });
   navigation.after({ type: 'popstate' });
   await page.getByText('Muscle-up, Squat', { exact: true }).click();

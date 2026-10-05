@@ -1,8 +1,8 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
-  import Button from '$lib/components/ui/button.svelte';
-  import { TEXT } from '$lib/constants/typography';
+  import Button from '#lib/components/ui/button.svelte';
+  import { TEXT } from '#lib/constants/typography.js';
 
   const copy = $derived.by(() => {
     if (page.status === 404) {
@@ -44,9 +44,10 @@
     </p>
   {/if}
   <div class="mt-8 flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
-    <Button href={resolve('/')} class="min-h-11 text-sm">Back to rankings</Button>
-    <Button href={resolve('/contact')} variant="outline" class="min-h-11 text-sm text-ink">
-      Get in touch
-    </Button>
+    <Button href={resolve('')} class="min-h-11 text-sm">Back to rankings</Button>
+
+    <Button href={resolve('contact')} variant="outline" class="min-h-11 text-sm text-ink"
+      >Get in touch</Button
+    >
   </div>
 </div>

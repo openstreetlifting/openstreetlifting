@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
-import { rankingsService } from '$lib/server/api';
-import { allAthletes, summarizeCountries } from '$lib/server/countries';
-import { publishedCompetitions } from '$lib/server/federations';
+import { rankingsService } from '#lib/server/api/index.js';
+import { allAthletes, summarizeCountries } from '#lib/server/countries.js';
+import { publishedCompetitions } from '#lib/server/federations.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

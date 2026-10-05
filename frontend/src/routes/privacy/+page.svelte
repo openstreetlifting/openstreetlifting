@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { TEXT } from '$lib/constants/typography';
-  import Seo from '$lib/components/seo.svelte';
-  import { absolute, breadcrumbLd } from '$lib/seo';
-  import { Breadcrumb } from '$lib/components/ui';
-  import { rankingsHref } from '$lib/state/rankings-return.svelte';
+  import { TEXT } from '#lib/constants/typography.js';
+  import Seo from '#lib/components/seo.svelte';
+  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
+  import { Breadcrumb } from '#lib/components/ui/index.js';
+  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
 
   const linkClass = 'text-secondary underline underline-offset-4 transition-colors hover:text-ink';
 </script>

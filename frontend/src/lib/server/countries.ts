@@ -1,8 +1,8 @@
-import { athletesService } from '$lib/server/api';
-import { collect } from '$lib/server/api/collect';
-import { isHeld } from '$lib/server/federations';
-import type { AthleteSummary } from '$lib/types/athlete';
-import type { Competition } from '$lib/types/competition';
+import { athletesService } from '#lib/server/api/index.js';
+import { collect } from '#lib/server/api/collect.js';
+import { isHeld } from '#lib/server/federations.js';
+import type { AthleteSummary } from '#lib/types/athlete.js';
+import type { Competition } from '#lib/types/competition.js';
 
 const PAGE_SIZE = 100;
 

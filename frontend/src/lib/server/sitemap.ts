@@ -1,5 +1,5 @@
-import { absolute } from '$lib/seo';
-import type { SitemapSection } from '$lib/server/archive';
+import { absolute } from '#lib/seo/index.js';
+import type { SitemapSection } from '#lib/server/archive.js';
 
 function escapeXml(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

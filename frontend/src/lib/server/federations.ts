@@ -1,7 +1,7 @@
-import { competitionsService } from '$lib/server/api';
-import { collect } from '$lib/server/api/collect';
-import type { Competition } from '$lib/types/competition';
-import { slugify } from '$lib/utils';
+import { competitionsService } from '#lib/server/api/index.js';
+import { collect } from '#lib/server/api/collect.js';
+import type { Competition } from '#lib/types/competition.js';
+import { slugify } from '#lib/utils/index.js';
 
 const PAGE_SIZE = 100;
 

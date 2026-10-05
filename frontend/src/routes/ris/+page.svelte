@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { TEXT } from '$lib/constants/typography';
-  import { REPORTED_GLYPH, REPORTED_MARK } from '$lib/constants/table';
-  import RisCurve from '$lib/components/ui/ris-curve.svelte';
-  import RisCategory from '$lib/components/ui/ris-category.svelte';
-  import RisSimulator from '$lib/components/ui/ris-simulator.svelte';
-  import Seo from '$lib/components/seo.svelte';
-  import { absolute, breadcrumbLd } from '$lib/seo';
-  import { Breadcrumb } from '$lib/components/ui';
-  import { rankingsHref } from '$lib/state/rankings-return.svelte';
+  import { TEXT } from '#lib/constants/typography.js';
+  import { REPORTED_GLYPH, REPORTED_MARK } from '#lib/constants/table.js';
+  import RisCurve from '#lib/components/ui/ris-curve.svelte';
+  import RisCategory from '#lib/components/ui/ris-category.svelte';
+  import RisSimulator from '#lib/components/ui/ris-simulator.svelte';
+  import Seo from '#lib/components/seo.svelte';
+  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
+  import { Breadcrumb } from '#lib/components/ui/index.js';
+  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();

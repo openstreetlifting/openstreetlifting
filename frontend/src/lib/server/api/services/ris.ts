@@ -1,5 +1,5 @@
 import { apiClient } from '../client';
-import type { RisDistribution, RisFormula, RisPerformance } from '$lib/types/ris';
+import type { RisDistribution, RisFormula, RisPerformance } from '#lib/types/ris.js';
 
 export const risService = {
   async getFormulas(year?: number): Promise<RisFormula[]> {

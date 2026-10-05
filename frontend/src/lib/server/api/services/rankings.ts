@@ -1,6 +1,6 @@
 import { apiClient } from '../client';
-import type { RankingsResponse, RankingFilters } from '$lib/types/ranking';
-import type { Gender } from '$lib/types/enums';
+import type { RankingsResponse, RankingFilters } from '#lib/types/ranking.js';
+import type { Gender } from '#lib/types/enums.js';
 
 export const rankingsService = {
   async getGlobalRankings(filters: RankingFilters): Promise<RankingsResponse> {

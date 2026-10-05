@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { AthleteCompetitionSummary } from '$lib/types/athlete';
-  import { RANKING_SORTS } from '$lib/constants/ranking';
-  import { CHART, FIELD, TEXT } from '$lib/constants/typography';
+  import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
+  import { RANKING_SORTS } from '#lib/constants/ranking.js';
+  import { CHART, FIELD, TEXT } from '#lib/constants/typography.js';
   import {
     progressPoints,
     type ProgressMetric,
     type ProgressPoint,
-  } from '$lib/utils/athlete-progress';
-  import { formatLongDate, formatScore, formatWeight } from '$lib/utils/format';
+  } from '#lib/utils/athlete-progress.js';
+  import { formatLongDate, formatScore, formatWeight } from '#lib/utils/format.js';
   import { resolve } from '$app/paths';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
@@ -36,7 +36,9 @@
   } = $props();
   const points = $derived(progressPoints(competitions, metric, format));
   const label = $derived(RANKING_SORTS.find((option) => option.value === metric)!.label);
+
   const best = $derived(points.length ? Math.max(...points.map((point) => point.value)) : null);
+
   const bestPoint = $derived(points.findLast((point) => point.value === best));
   const minimum = $derived(points.length ? Math.min(...points.map((point) => point.value)) : 0);
   const padding = $derived(Math.max(((best ?? 0) - minimum) * 0.15, (best ?? 0) * 0.03, 1));
@@ -50,7 +52,9 @@
   const last = $derived(
     utcMonth.offset(utcMonth.floor(new Date(points.at(-1)?.timestamp ?? 0)), 1)
   );
+
   const xDomain = $derived([points.length === 1 ? utcMonth.offset(first, -1) : first, last]);
+
   const monthLabel = new Intl.DateTimeFormat('en', {
     month: 'short',
     year: 'numeric',
@@ -60,7 +64,7 @@
   function competitionLink(slug: string) {
     const query = new SvelteURLSearchParams({ movement: metric });
     if (athleteSlug) query.set('athlete', athleteSlug);
-    return resolve(`/competitions/${slug}?${query}`);
+    return resolve(`competitions/${slug}?${query}`);
   }
 
   function valueLabel(value: number): string {

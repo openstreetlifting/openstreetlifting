@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { ResolvedPathname } from '$app/types';
-  import { SearchIcon } from '$lib/components/icons';
-  import { EDGE_TO_EDGE } from '$lib/constants/table';
-  import { TEXT } from '$lib/constants/typography';
+  import { SearchIcon } from '#lib/components/icons/index.js';
+  import { EDGE_TO_EDGE } from '#lib/constants/table.js';
+  import { TEXT } from '#lib/constants/typography.js';
   import Button from './button.svelte';
 
   let {

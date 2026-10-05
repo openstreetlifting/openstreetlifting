@@ -2,9 +2,14 @@ import { expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AthleteProgress from './athlete-progress.svelte';
-import type { AthleteCompetitionSummary } from '$lib/types/athlete';
+import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
 
-vi.mock('$app/paths', () => ({ resolve: (path: string) => path }));
+vi.mock('$app/paths', () => ({
+  resolve: (path: string, params?: Record<string, string>) =>
+    path.startsWith('/')
+      ? path.replace(/\[([^\]]+)\]/g, (_, key) => params?.[key] ?? '')
+      : `/${path}`,
+}));
 
 const competitions: AthleteCompetitionSummary[] = [
   {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
   import InfoTip from './info-tip.svelte';
-  import { REPORTED_GLYPH, REPORTED_MARK } from '$lib/constants/table';
+  import { REPORTED_GLYPH, REPORTED_MARK } from '#lib/constants/table.js';
 
   const RIS_SOURCE_URL = 'https://warisradji.com/ris/';
 </script>
@@ -37,7 +37,7 @@
     </p>
 
     <p class="text-secondary">
-      <a href={resolve('/ris')} class="underline transition-colors hover:text-ink"
+      <a href={resolve('ris')} class="underline transition-colors hover:text-ink"
         >Learn more on the ris page of OpenStreetlifting</a
       >
     </p>

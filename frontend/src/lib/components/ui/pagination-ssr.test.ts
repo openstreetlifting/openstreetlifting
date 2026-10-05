@@ -1,9 +1,14 @@
 import { expect, it, vi } from 'vitest';
 import { render } from 'svelte/server';
 import Pagination from './pagination.svelte';
-import { RankingsTable } from '$lib/state/rankings-table.svelte';
+import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
 
-vi.mock('$app/paths', () => ({ resolve: (path: string) => path }));
+vi.mock('$app/paths', () => ({
+  resolve: (path: string, params?: Record<string, string>) =>
+    path.startsWith('/')
+      ? path.replace(/\[([^\]]+)\]/g, (_, key) => params?.[key] ?? '')
+      : `/${path}`,
+}));
 
 function links(body: string): URL[] {
   return [...body.matchAll(/<a\s[^>]*href="([^"]+)"/g)].map(

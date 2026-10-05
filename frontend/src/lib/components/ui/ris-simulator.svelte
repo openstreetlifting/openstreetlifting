@@ -1,8 +1,8 @@
 <script lang="ts">
   import RisCategory from './ris-category.svelte';
-  import { FIELD, TEXT } from '$lib/constants/typography';
-  import type { RisFormula } from '$lib/types/ris';
-  import { benchmarkTotal, bodyweightForRis, calculateRis } from '$lib/utils/ris';
+  import { FIELD, TEXT } from '#lib/constants/typography.js';
+  import type { RisFormula } from '#lib/types/ris.js';
+  import { benchmarkTotal, bodyweightForRis, calculateRis } from '#lib/utils/ris.js';
 
   let {
     edition,

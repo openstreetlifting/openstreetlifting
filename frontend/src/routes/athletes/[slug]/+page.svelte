@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { MAIN_RANKING_PAGE_SIZE } from '$lib/constants/pagination';
+  import { MAIN_RANKING_PAGE_SIZE } from '#lib/constants/pagination.js';
   import type { PageData } from './$types';
-  import type { AthleteCompetitionSummary } from '$lib/types/athlete';
-  import type { Attempt } from '$lib/types/competition';
-  import type { Gender } from '$lib/types/enums';
-  import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '$lib/constants/athlete-status';
+  import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
+  import type { Attempt } from '#lib/types/competition.js';
+  import type { Gender } from '#lib/types/enums.js';
+  import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
   import {
     Card,
     Breadcrumb,
@@ -18,27 +18,27 @@
     FROZEN_HEAD_CELL,
     FROZEN_EDGE,
     FROZEN_RANK,
-  } from '$lib/components/ui';
-  import { ChevronIcon, GlobeIcon, InstagramIcon } from '$lib/components/icons';
+  } from '#lib/components/ui/index.js';
+  import { ChevronIcon, GlobeIcon, InstagramIcon } from '#lib/components/icons/index.js';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
-  import { athleteFilters } from '$lib/utils/athlete-filters';
-  import { totalFormats } from '$lib/utils/athlete-progress';
-  import { rankingsHref } from '$lib/state/rankings-return.svelte';
+  import { athleteFilters } from '#lib/utils/athlete-filters.js';
+  import { totalFormats } from '#lib/utils/athlete-progress.js';
+  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
-  import { RANKING_SORTS } from '$lib/constants/ranking';
+  import { RANKING_SORTS } from '#lib/constants/ranking.js';
   import {
     formatDate,
     formatWeight,
     formatAthleteName,
     countryName,
     countryPath,
-  } from '$lib/utils';
-  import Seo from '$lib/components/seo.svelte';
-  import AthleteProgress from '$lib/components/athlete-progress.svelte';
-  import AthleteStrength from '$lib/components/athlete-strength.svelte';
-  import { absolute, athleteLd, athleteTitle, breadcrumbLd, risStanding } from '$lib/seo';
+  } from '#lib/utils/index.js';
+  import Seo from '#lib/components/seo.svelte';
+  import AthleteProgress from '#lib/components/athlete-progress.svelte';
+  import AthleteStrength from '#lib/components/athlete-strength.svelte';
+  import { absolute, athleteLd, athleteTitle, breadcrumbLd, risStanding } from '#lib/seo/index.js';
   import {
     ATTEMPT_ROW,
     CELL,
@@ -47,8 +47,8 @@
     NO_VALUE,
     NO_RESULT,
     TEXT_CELL,
-  } from '$lib/constants/table';
-  import { FIELD, TEXT } from '$lib/constants/typography';
+  } from '#lib/constants/table.js';
+  import { FIELD, TEXT } from '#lib/constants/typography.js';
 
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
@@ -122,7 +122,7 @@
   const selectedMetric = $derived(filters.ranking);
 
   function updateFilter(key: 'ranking' | 'performance' | 'event', value: string) {
-    const params = new SvelteURLSearchParams(page.url.searchParams);
+    const params = new SvelteURLSearchParams(page.url.search);
     const defaults = {
       ranking: 'ris',
       performance: 'total',
@@ -131,10 +131,10 @@
     if (value === defaults[key]) params.delete(key);
     else params.set(key, value);
     const query = params.toString();
-    return goto(resolve(`/athletes/${athlete.slug}${query ? `?${query}` : ''}${page.url.hash}`), {
-      replaceState: true,
-      keepFocus: true,
-      noScroll: true,
+
+    return goto(resolve(`athletes/${athlete.slug}${query ? `?${query}` : ''}${page.url.hash}`), {
+      replace: true,
+      reset: false,
     });
   }
 
@@ -159,7 +159,6 @@
   }
 
   const athleteName = $derived(formatAthleteName(athlete));
-
   const seoBests = $derived(
     athlete.personal_records
       .map(
@@ -192,7 +191,12 @@
     breadcrumbLd([
       { name: 'Rankings', path: '/' },
       ...(athlete.country
-        ? [{ name: countryName(athlete.country), path: countryPath(athlete.country) }]
+        ? [
+            {
+              name: countryName(athlete.country),
+              path: countryPath(athlete.country),
+            },
+          ]
         : []),
       { name: athleteName, path: `/athletes/${athlete.slug}` },
     ]),
@@ -204,7 +208,12 @@
     items={[
       { label: 'Rankings', href: rankingsHref() },
       ...(athlete.country
-        ? [{ label: countryName(athlete.country), href: countryPath(athlete.country) }]
+        ? [
+            {
+              label: countryName(athlete.country),
+              href: countryPath(athlete.country),
+            },
+          ]
         : []),
       { label: athleteName },
     ]}
@@ -304,7 +313,7 @@
   )}
     {#if query}
       <a
-        href={resolve(`/?${query}`)}
+        href={resolve(`?${query}`)}
         class="group relative isolate block overflow-hidden rounded-xl {CARD_SURFACE} p-3 transition-colors hover:border-stroke-strong hover:bg-surface-hover focus:ring-2 focus:ring-focus focus:outline-none"
       >
         {@render standingContent(country, scope, place, field, missingLabel)}
@@ -375,7 +384,7 @@
             </div>
             <div class={CARD_CAPTION}>
               <a
-                href={resolve(`/competitions/${pr.competition_slug}`)}
+                href={resolve(`competitions/${pr.competition_slug}`)}
                 class="underline hover:text-secondary"
               >
                 {pr.competition_name}
@@ -449,18 +458,20 @@
               </td>
               <td class={TABLE_CELL}>
                 <a
-                  href={resolve(`/competitions/${competition.competition_slug}`)}
+                  href={resolve(`competitions/${competition.competition_slug}`)}
                   class="{TEXT_CELL.competition} text-ink underline hover:text-secondary focus:ring-2 focus:ring-focus focus:outline-none"
                 >
                   {competition.competition_name}
                 </a>
               </td>
-              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
-                {formatWeight(competition.total)}
-              </td>
+
+              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(competition.total)}</td
+              >
+
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
                 <RisScore value={competition.ris_score} source={competition.ris_source} />
               </td>
+
               {#each contested as lift (lift.key)}
                 {@const cell = liftCell(competition, lift)}
                 <td class="{TABLE_CELL} whitespace-nowrap">

@@ -1,6 +1,7 @@
 <script lang="ts">
-  import type { TablePagination } from '$lib/types/pagination';
-  import type { RankingEntry } from '$lib/types/ranking';
+  import { slugify } from '#lib/utils/slug.js';
+  import type { TablePagination } from '#lib/types/pagination.js';
+  import type { RankingEntry } from '#lib/types/ranking.js';
   import {
     Flag,
     Table,
@@ -14,11 +15,11 @@
     FROZEN_RANK,
     ATHLETE_COLUMN,
     ATHLETE_CONTENT,
-  } from '$lib/components/ui';
+  } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
-  import { federationPath, formatAthleteName, formatDate, formatWeight } from '$lib/utils';
-  import { CELL, FIGURE, SORTED_COLUMN, TEXT_CELL } from '$lib/constants/table';
-  import { RANKING_LIFTS } from '$lib/constants/ranking';
+  import { formatAthleteName, formatDate, formatWeight } from '#lib/utils/index.js';
+  import { CELL, FIGURE, SORTED_COLUMN, TEXT_CELL } from '#lib/constants/table.js';
+  import { RANKING_LIFTS } from '#lib/constants/ranking.js';
 
   interface Props {
     entries: RankingEntry[];
@@ -67,7 +68,7 @@
               class="shrink-0 [--flag-height:1.25em]"
             />
             <a
-              href={resolve(`/athletes/${entry.athlete.slug}`)}
+              href={resolve(`athletes/${entry.athlete.slug}`)}
               class="truncate underline hover:text-secondary">{formatAthleteName(entry.athlete)}</a
             >
           </span>
@@ -82,7 +83,7 @@
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.squat)}</td>
         <td class="{TABLE_CELL} {CELL.data}">
           <a
-            href={resolve(`/competitions/${entry.competition.slug}`)}
+            href={resolve(`competitions/${entry.competition.slug}`)}
             class="{TEXT_CELL.competition} underline hover:text-secondary"
           >
             {entry.competition.name}
@@ -91,7 +92,7 @@
         {#if showFederation}
           <td class="{TABLE_CELL} {CELL.data}" title={entry.federation.name}>
             <a
-              href={resolve(federationPath(entry.federation.name))}
+              href={resolve('/federations/[slug]', { slug: slugify(entry.federation.name) })}
               class="{TEXT_CELL.federation} underline hover:text-ink"
             >
               {entry.federation.abbreviation || entry.federation.name}

@@ -40,8 +40,7 @@
 <nav
   aria-label="Pagination"
   class="flex flex-wrap items-center justify-center gap-1"
-  data-sveltekit-keepfocus
-  data-sveltekit-noscroll
+  data-sveltekit-reset={false}
   data-sveltekit-replacestate={replaceState}
 >
   <a

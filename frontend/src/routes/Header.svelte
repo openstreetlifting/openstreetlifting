@@ -2,12 +2,14 @@
   import { page } from '$app/state';
   import { afterNavigate } from '$app/navigation';
   import { resolve } from '$app/paths';
-  import { GitHubIcon, InstagramIcon, MenuIcon, CloseIcon } from '$lib/components/icons';
-  import { NAV_LINK } from '$lib/constants/typography';
+  import { GitHubIcon, InstagramIcon, MenuIcon, CloseIcon } from '#lib/components/icons/index.js';
+  import { NAV_LINK } from '#lib/constants/typography.js';
 
   let menuOpen = $state(false);
 
-  afterNavigate(() => {
+  afterNavigate(({ shallow }) => {
+    if (shallow) return;
+
     menuOpen = false;
   });
 
@@ -27,7 +29,7 @@
     class="mx-auto flex max-w-page flex-wrap items-center justify-between px-4 py-3 sm:px-6 sm:py-4"
   >
     <a
-      href={resolve('/')}
+      href={resolve('')}
       title="OpenStreetlifting, back to the full rankings"
       class="opacity-90 transition-opacity hover:opacity-100"
     >
@@ -70,7 +72,7 @@
     >
       <li>
         <a
-          href={resolve('/')}
+          href={resolve('')}
           class={NAV_LINK}
           class:text-ink={isActive('/')}
           class:text-secondary={!isActive('/')}
@@ -81,7 +83,7 @@
       </li>
       <li>
         <a
-          href={resolve('/competitions')}
+          href={resolve('competitions')}
           class={NAV_LINK}
           class:text-ink={isActive('/competitions')}
           class:text-secondary={!isActive('/competitions')}
@@ -92,7 +94,7 @@
       </li>
       <li>
         <a
-          href={resolve('/ris')}
+          href={resolve('ris')}
           class={NAV_LINK}
           class:text-ink={isActive('/ris')}
           class:text-secondary={!isActive('/ris')}
@@ -113,7 +115,7 @@
       </li>
       <li>
         <a
-          href={resolve('/contact')}
+          href={resolve('contact')}
           class={NAV_LINK}
           class:text-ink={isActive('/contact')}
           class:text-secondary={!isActive('/contact')}

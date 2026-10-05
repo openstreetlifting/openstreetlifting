@@ -1,8 +1,13 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { GitHubIcon, InstagramIcon, DiscordIcon, EmailIcon } from '$lib/components/icons';
-  import { buildInfo } from '$lib/version';
-  import { NAV_LINK } from '$lib/constants/typography';
+  import {
+    GitHubIcon,
+    InstagramIcon,
+    DiscordIcon,
+    EmailIcon,
+  } from '#lib/components/icons/index.js';
+  import { buildInfo } from '#lib/version.js';
+  import { NAV_LINK } from '#lib/constants/typography.js';
 
   const ICON = 'text-secondary transition-colors hover:text-ink';
 </script>
@@ -11,20 +16,19 @@
   <div class="mx-auto max-w-page px-4 py-6 sm:px-6 sm:py-10">
     <div class="flex flex-wrap items-center gap-x-8 gap-y-5">
       <nav aria-label="Footer" class="flex flex-wrap items-center gap-x-5 gap-y-2">
-        <a href={resolve('/')} class={NAV_LINK}>Rankings</a>
-        <a href={resolve('/competitions')} class={NAV_LINK}>Competitions</a>
-        <a href={resolve('/federations')} class={NAV_LINK}>Federations</a>
-        <a href={resolve('/countries')} class={NAV_LINK}>Countries</a>
+        <a href={resolve('')} class={NAV_LINK}>Rankings</a>
+        <a href={resolve('competitions')} class={NAV_LINK}>Competitions</a>
+        <a href={resolve('federations')} class={NAV_LINK}>Federations</a>
+        <a href={resolve('countries')} class={NAV_LINK}>Countries</a>
         <a
           href="https://docs.openstreetlifting.org/"
           target="_blank"
           rel="noopener noreferrer"
-          class={NAV_LINK}
+          class={NAV_LINK}>Documentation</a
         >
-          Documentation
-        </a>
-        <a href={resolve('/contact')} class={NAV_LINK}>Contact</a>
-        <a href={resolve('/privacy')} class={NAV_LINK}>Privacy</a>
+
+        <a href={resolve('contact')} class={NAV_LINK}>Contact</a>
+        <a href={resolve('privacy')} class={NAV_LINK}>Privacy</a>
       </nav>
 
       <div class="flex items-center gap-4 xl:ml-auto">
@@ -41,7 +45,10 @@
             >
           {/if}
           {#if buildInfo.shortSha}
-            {#if buildInfo.label || buildInfo.version}<span aria-hidden="true">&middot;</span>{/if}
+            {#if buildInfo.label || buildInfo.version}
+              <span aria-hidden="true">·</span>
+            {/if}
+
             <a
               href="https://github.com/openstreetlifting/openstreetlifting/commit/{buildInfo.sha}"
               target="_blank"

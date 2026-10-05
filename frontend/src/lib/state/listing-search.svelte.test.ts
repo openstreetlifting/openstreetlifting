@@ -4,7 +4,12 @@ import { ListingSearch } from './listing-search.svelte';
 import { RankingsTable } from './rankings-table.svelte';
 
 vi.mock('$app/navigation', () => ({ goto: vi.fn() }));
-vi.mock('$app/paths', () => ({ resolve: (path: string) => path }));
+vi.mock('$app/paths', () => ({
+  resolve: (path: string, params?: Record<string, string>) =>
+    path.startsWith('/')
+      ? path.replace(/\[([^\]]+)\]/g, (_, key) => params?.[key] ?? '')
+      : `/${path}`,
+}));
 
 const url = (path: string) => new URL(path, 'http://localhost');
 
@@ -31,9 +36,8 @@ it('keeps newer typing when a slow search completes, then applies the newer quer
   expect(search.applied).toBe('martin');
   expect(search.value).toBe('martin');
   expect(goto).toHaveBeenLastCalledWith('/?q=martin', {
-    replaceState: true,
-    keepFocus: true,
-    noScroll: true,
+    replace: true,
+    reset: false,
   });
 });
 

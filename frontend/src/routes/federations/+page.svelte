@@ -1,13 +1,20 @@
 <script lang="ts">
+  import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
-  import { Breadcrumb, Flag, Table, TABLE_CELL, TABLE_HEAD_CELL } from '$lib/components/ui';
-  import Seo from '$lib/components/seo.svelte';
+  import {
+    Breadcrumb,
+    Flag,
+    Table,
+    TABLE_CELL,
+    TABLE_HEAD_CELL,
+  } from '#lib/components/ui/index.js';
+  import Seo from '#lib/components/seo.svelte';
   import { resolve } from '$app/paths';
-  import { rankingsHref } from '$lib/state/rankings-return.svelte';
-  import { absolute, breadcrumbLd } from '$lib/seo';
-  import { countryName, countryPath, federationPath } from '$lib/utils';
-  import { CELL, FIGURE, NO_VALUE } from '$lib/constants/table';
-  import { TEXT } from '$lib/constants/typography';
+  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
+  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
+  import { countryName } from '#lib/utils/index.js';
+  import { CELL, FIGURE, NO_VALUE } from '#lib/constants/table.js';
+  import { TEXT } from '#lib/constants/typography.js';
 
   let { data }: { data: PageData } = $props();
 
@@ -61,7 +68,7 @@
         <tr class="transition-colors">
           <td class="{TABLE_CELL} {CELL.identity}">
             <a
-              href={resolve(federationPath(federation.name))}
+              href={resolve('/federations/[slug]', { slug: slugify(federation.name) })}
               class="underline hover:text-secondary"
             >
               {federation.name}
@@ -70,7 +77,7 @@
           <td class="{TABLE_CELL} {CELL.data}">
             {#if federation.country}
               <a
-                href={resolve(countryPath(federation.country))}
+                href={resolve('/countries/[code]', { code: federation.country.toLowerCase() })}
                 class="flex items-center gap-2 hover:text-ink"
               >
                 <Flag countryCode={federation.country} class="shrink-0 [--flag-height:1.25em]" />

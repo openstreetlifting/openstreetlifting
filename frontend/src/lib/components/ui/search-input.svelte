@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { SearchIcon } from '$lib/components/icons';
-  import { FIELD } from '$lib/constants/typography';
+  import { SearchIcon } from '#lib/components/icons/index.js';
+  import { FIELD } from '#lib/constants/typography.js';
   import { onDestroy } from 'svelte';
   import { beforeNavigate } from '$app/navigation';
 

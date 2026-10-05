@@ -11,9 +11,9 @@
 
 <script lang="ts" generics="Row">
   import type { Snippet } from 'svelte';
-  import { EDGE_TO_EDGE } from '$lib/constants/table';
-  import { TABLE_PAGE_SIZE } from '$lib/constants/pagination';
-  import type { TablePagination } from '$lib/types/pagination';
+  import { EDGE_TO_EDGE } from '#lib/constants/table.js';
+  import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
+  import type { TablePagination } from '#lib/types/pagination.js';
   import { page as currentPage } from '$app/state';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import Pagination from './pagination.svelte';
@@ -62,7 +62,7 @@
 
   function pageHref(target: number): string {
     if (pagination?.pageHref) return pagination.pageHref(target);
-    const params = new SvelteURLSearchParams(currentPage.url.searchParams);
+    const params = new SvelteURLSearchParams(currentPage.url.search);
     if (target > 1) params.set(pageParam, String(target));
     else params.delete(pageParam);
     const query = params.toString();

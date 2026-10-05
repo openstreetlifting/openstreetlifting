@@ -1,4 +1,4 @@
-import { config } from '$lib/server/config';
+import { config } from '#lib/server/config.js';
 
 export class ApiError extends Error {
   constructor(

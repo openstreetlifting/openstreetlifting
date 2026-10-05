@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
-import { archiveIndex, isSitemapSection } from '$lib/server/archive';
-import { urlset, XML_HEADERS } from '$lib/server/sitemap';
+import { archiveIndex, isSitemapSection } from '#lib/server/archive.js';
+import { urlset, XML_HEADERS } from '#lib/server/sitemap.js';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ params }) => {

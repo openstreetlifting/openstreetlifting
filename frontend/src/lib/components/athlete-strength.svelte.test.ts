@@ -2,7 +2,7 @@ import { expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AthleteStrength from './athlete-strength.svelte';
-import type { StrengthProfile } from '$lib/types/athlete';
+import type { StrengthProfile } from '#lib/types/athlete.js';
 
 const profile: StrengthProfile = {
   category: 'Men -80kg',

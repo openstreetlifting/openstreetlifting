@@ -1,16 +1,16 @@
-import { goto } from '$app/navigation';
-import type { AfterNavigate } from '@sveltejs/kit';
+import type { page } from '$app/state';
+import { goto, type AfterNavigate } from '$app/navigation';
 
 export class ListingSearch {
   value = $state('');
   applied = $state('');
   private pending: { href: string } | undefined;
 
-  constructor(url: URL) {
+  constructor(url: typeof page.url) {
     this.value = this.applied = url.searchParams.get('q') ?? '';
   }
 
-  sync(url: URL, type?: AfterNavigate['type']) {
+  sync(url: typeof page.url, type?: AfterNavigate['type']) {
     this.applied = url.searchParams.get('q') ?? '';
     const ownNavigation = type === 'goto' && this.pending?.href === url.pathname + url.search;
     // A completed search must not overwrite characters typed while it was loading.
@@ -21,8 +21,7 @@ export class ListingSearch {
     const request = { href };
     this.pending = request;
     try {
-      // eslint-disable-next-line svelte/no-navigation-without-resolve -- Callers resolve listing URLs.
-      await goto(href, { replaceState, keepFocus: true, noScroll: true });
+      await goto(href, { replace: replaceState, reset: false });
     } finally {
       if (this.pending === request) this.pending = undefined;
     }

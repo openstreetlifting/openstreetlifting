@@ -1,6 +1,6 @@
-import { MAIN_RANKING_PAGE_SIZE } from '$lib/constants/pagination';
-import { rankingsService } from '$lib/server/api';
-import { asRankedGender, asRankingMetric } from '$lib/types/enums';
+import { MAIN_RANKING_PAGE_SIZE } from '#lib/constants/pagination.js';
+import { rankingsService } from '#lib/server/api/index.js';
+import { asRankedGender, asRankingMetric } from '#lib/types/enums.js';
 import type { PageServerLoad } from './$types';
 
 const title = 'Streetlifting rankings and records';

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { formatScore } from '$lib/utils';
-  import { REPORTED_GLYPH, REPORTED_MARK, REPORTED_TITLE } from '$lib/constants/table';
-  import type { RisSource } from '$lib/types/competition';
+  import { formatScore } from '#lib/utils/index.js';
+  import { REPORTED_GLYPH, REPORTED_MARK, REPORTED_TITLE } from '#lib/constants/table.js';
+  import type { RisSource } from '#lib/types/competition.js';
 
   let {
     value,

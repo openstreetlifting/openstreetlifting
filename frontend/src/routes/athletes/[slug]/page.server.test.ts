@@ -1,10 +1,10 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { athletesService } from '$lib/server/api';
-import { ApiError } from '$lib/server/api/client';
+import { athletesService } from '#lib/server/api/index.js';
+import { ApiError } from '#lib/server/api/client.js';
 import { load } from './+page.server';
 
-vi.mock('$lib/server/api', () => ({ athletesService: { getBySlug: vi.fn() } }));
-vi.mock('$lib/server/config', () => ({ config: { apiUrl: 'http://localhost' } }));
+vi.mock('#lib/server/api/index.js', () => ({ athletesService: { getBySlug: vi.fn() } }));
+vi.mock('#lib/server/config', () => ({ config: { apiUrl: 'http://localhost' } }));
 
 afterEach(() => vi.restoreAllMocks());
 

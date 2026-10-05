@@ -1,6 +1,6 @@
 import { apiClient } from '../client';
-import type { AthleteDetail, AthleteSummary } from '$lib/types/athlete';
-import type { Paginated } from '$lib/types/pagination';
+import type { AthleteDetail, AthleteSummary } from '#lib/types/athlete.js';
+import type { Paginated } from '#lib/types/pagination.js';
 
 export const athletesService = {
   async getAll(params: { page: number; page_size: number }): Promise<Paginated<AthleteSummary>> {

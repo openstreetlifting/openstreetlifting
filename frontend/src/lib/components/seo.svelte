@@ -1,5 +1,12 @@
 <script lang="ts">
-  import { INDEXABLE, OG_IMAGE, SITE_NAME, jsonLdScript, pageTitle, type JsonLd } from '$lib/seo';
+  import {
+    INDEXABLE,
+    OG_IMAGE,
+    SITE_NAME,
+    jsonLdScript,
+    pageTitle,
+    type JsonLd,
+  } from '#lib/seo/index.js';
 
   interface Props {
     title: string;

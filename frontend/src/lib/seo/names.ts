@@ -1,6 +1,6 @@
-import type { AthleteStanding } from '$lib/types/athlete';
-import type { Federation } from '$lib/types/competition';
-import { countryName } from '$lib/utils/format';
+import type { AthleteStanding } from '#lib/types/athlete.js';
+import type { Federation } from '#lib/types/competition.js';
+import { countryName } from '#lib/utils/format.js';
 
 const SPORT = 'Streetlifting';
 

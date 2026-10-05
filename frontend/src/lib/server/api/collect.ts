@@ -1,4 +1,4 @@
-import type { Paginated } from '$lib/types/pagination';
+import type { Paginated } from '#lib/types/pagination.js';
 
 export async function collect<T>(fetchPage: (page: number) => Promise<Paginated<T>>): Promise<T[]> {
   const first = await fetchPage(1);

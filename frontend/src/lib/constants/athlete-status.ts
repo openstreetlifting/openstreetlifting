@@ -1,4 +1,4 @@
-import type { AthleteStatus } from '$lib/types/enums';
+import type { AthleteStatus } from '#lib/types/enums.js';
 
 /**
  * How a result that does not stand is shown. `competed` is absent from both

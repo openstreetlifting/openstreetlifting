@@ -1,6 +1,6 @@
-import type { AthleteDetail } from '$lib/types/athlete';
-import type { CompetitionDetail } from '$lib/types/competition';
-import { countryName, federationPath, formatAthleteName } from '$lib/utils';
+import type { AthleteDetail } from '#lib/types/athlete.js';
+import type { CompetitionDetail } from '#lib/types/competition.js';
+import { countryName, federationPath, formatAthleteName } from '#lib/utils/index.js';
 import { competitionSeoName } from './names';
 import { absolute, OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from './site';
 

@@ -1,8 +1,8 @@
-import { rankingsService } from '$lib/server/api';
-import { allAthletes, countryCodes } from '$lib/server/countries';
-import { publishedCompetitions, summarizeFederations } from '$lib/server/federations';
-import { STATIC_ROUTES } from '$lib/constants/routes';
-import { countryPath, federationPath } from '$lib/utils';
+import { rankingsService } from '#lib/server/api/index.js';
+import { allAthletes, countryCodes } from '#lib/server/countries.js';
+import { publishedCompetitions, summarizeFederations } from '#lib/server/federations.js';
+import { STATIC_ROUTES } from '#lib/constants/routes.js';
+import { countryPath, federationPath } from '#lib/utils/index.js';
 
 const CACHE_TTL = 3_600_000;
 

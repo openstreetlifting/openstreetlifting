@@ -1,5 +1,5 @@
-import type { Participant } from '$lib/types/competition';
-import type { Movement, RankingMetric } from '$lib/types/enums';
+import type { Participant } from '#lib/types/competition.js';
+import type { Movement, RankingMetric } from '#lib/types/enums.js';
 
 const movements: Record<Exclude<RankingMetric, 'total' | 'ris'>, Movement> = {
   muscleup: 'Muscle-up',

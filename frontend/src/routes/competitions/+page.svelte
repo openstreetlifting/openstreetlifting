@@ -1,20 +1,20 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Card, Breadcrumb, FilterBar, SearchEmpty } from '$lib/components/ui';
-  import CompetitionsTable from '$lib/components/competitions-table.svelte';
-  import CompetitionFormatFilter from '$lib/components/competition-format-filter.svelte';
+  import { Card, Breadcrumb, FilterBar, SearchEmpty } from '#lib/components/ui/index.js';
+  import CompetitionsTable from '#lib/components/competitions-table.svelte';
+  import CompetitionFormatFilter from '#lib/components/competition-format-filter.svelte';
   import { resolve } from '$app/paths';
-  import { rankingsHref } from '$lib/state/rankings-return.svelte';
-  import { slowNavigation } from '$lib/state/slow-navigation.svelte';
+  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
+  import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { afterNavigate } from '$app/navigation';
-  import { ListingSearch } from '$lib/state/listing-search.svelte';
+  import { ListingSearch } from '#lib/state/listing-search.svelte.js';
   import { untrack } from 'svelte';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
-  import { countryName, formatDate, formatLocation } from '$lib/utils';
-  import { FIELD, TEXT, CONTROL } from '$lib/constants/typography';
-  import Seo from '$lib/components/seo.svelte';
-  import { breadcrumbLd, listingSeo } from '$lib/seo';
+  import { countryName, formatDate, formatLocation } from '#lib/utils/index.js';
+  import { FIELD, TEXT, CONTROL } from '#lib/constants/typography.js';
+  import Seo from '#lib/components/seo.svelte';
+  import { breadcrumbLd, listingSeo } from '#lib/seo/index.js';
 
   let { data }: { data: PageData } = $props();
 
@@ -39,7 +39,9 @@
 
   // The page outlives a navigation, so a link that drops the query string has to
   // reach the controls as well as the rows.
-  afterNavigate(({ type }) => {
+  afterNavigate(({ type, shallow }) => {
+    if (shallow) return;
+
     search.sync(currentPage.url, type);
     federation = data.federation ?? null;
     country = data.country ?? null;
@@ -126,11 +128,11 @@
         {#each data.runningCompetitions as competition (competition.slug)}
           <li class="flex flex-wrap items-center gap-x-6 gap-y-1">
             <a
-              href={resolve(`/competitions/${competition.slug}`)}
+              href={resolve(`competitions/${competition.slug}`)}
               class="inline-flex min-h-8 items-center gap-1.5 text-ink underline decoration-stroke-strong underline-offset-4 hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
+              >{competition.name}</a
             >
-              {competition.name}
-            </a>
+
             <dl class="flex flex-wrap items-center gap-x-6 gap-y-1 text-secondary">
               {#if competition.event_code}
                 <div>
@@ -277,7 +279,10 @@
       {competitions}
       upcoming={showsUpcoming}
       {busy}
-      pagination={{ ...pagination, pageHref: (target) => listingHref({ page: target }) }}
+      pagination={{
+        ...pagination,
+        pageHref: (target) => listingHref({ page: target }),
+      }}
     />
   {/if}
 </div>

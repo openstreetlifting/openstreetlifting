@@ -1,5 +1,5 @@
-import { athletesService } from '$lib/server/api';
-import { ApiError } from '$lib/server/api/client';
+import { athletesService } from '#lib/server/api/index.js';
+import { ApiError } from '#lib/server/api/client.js';
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 

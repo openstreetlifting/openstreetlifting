@@ -1,8 +1,8 @@
 import { beforeEach, expect, it, vi } from 'vitest';
-import { rankingsService } from '$lib/server/api';
+import { rankingsService } from '#lib/server/api/index.js';
 import { load } from './+page.server';
 
-vi.mock('$lib/server/api', () => ({
+vi.mock('#lib/server/api/index.js', () => ({
   rankingsService: {
     getGlobalRankings: vi.fn(),
     getRankingClasses: vi.fn(),

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import InfoTip from '$lib/components/ui/info-tip.svelte';
-  import type { StrengthProfile } from '$lib/types/athlete';
+  import InfoTip from '#lib/components/ui/info-tip.svelte';
+  import type { StrengthProfile } from '#lib/types/athlete.js';
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
   import { Tooltip } from 'layerchart';
   import { scalePoint } from 'd3-scale';
-  import { CHART, TEXT } from '$lib/constants/typography';
-  import { formatWeight } from '$lib/utils/format';
+  import { CHART, TEXT } from '#lib/constants/typography.js';
+  import { formatWeight } from '#lib/utils/format.js';
 
   let { profile }: { profile: StrengthProfile | null | undefined } = $props();
   let chartWidth = $state<number>();

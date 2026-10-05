@@ -1,11 +1,12 @@
 <script lang="ts">
-  import type { TablePagination } from '$lib/types/pagination';
-  import type { Competition } from '$lib/types/competition';
-  import { Table, TABLE_CELL, TABLE_HEAD_CELL } from '$lib/components/ui';
+  import { slugify } from '#lib/utils/slug.js';
+  import type { TablePagination } from '#lib/types/pagination.js';
+  import type { Competition } from '#lib/types/competition.js';
+  import { Table, TABLE_CELL, TABLE_HEAD_CELL } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
-  import { federationPath, formatCountdown, formatDate, formatLocation } from '$lib/utils';
-  import { TEXT } from '$lib/constants/typography';
-  import { CELL, FIGURE, TEXT_CELL } from '$lib/constants/table';
+  import { formatCountdown, formatDate, formatLocation } from '#lib/utils/index.js';
+  import { TEXT } from '#lib/constants/typography.js';
+  import { CELL, FIGURE, TEXT_CELL } from '#lib/constants/table.js';
 
   interface Props {
     competitions: Competition[];
@@ -52,7 +53,7 @@
       <tr class="transition-colors">
         <td class="{TABLE_CELL} {CELL.identity}">
           <a
-            href={resolve(`/competitions/${competition.slug}`)}
+            href={resolve(`competitions/${competition.slug}`)}
             class="{TEXT_CELL.competition} underline hover:text-secondary"
           >
             {competition.name}
@@ -64,15 +65,17 @@
         <td
           class="{TABLE_CELL} {CELL.data} whitespace-nowrap"
           title={competition.movements.map(({ movement_name }) => movement_name).join(' · ')}
+          >{competition.event_code ?? '—'}</td
         >
-          {competition.event_code ?? '—'}
-        </td>
+
         <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap {upcoming ? '' : FIGURE}">
           {upcoming ? formatCountdown(competition.start_date) : (competition.lifter_count ?? 0)}
         </td>
-        <td class="{TABLE_CELL} whitespace-nowrap text-secondary">
-          {competitionDates(competition.start_date, competition.end_date)}
-        </td>
+
+        <td class="{TABLE_CELL} whitespace-nowrap text-secondary"
+          >{competitionDates(competition.start_date, competition.end_date)}</td
+        >
+
         <td class="{TABLE_CELL} {CELL.data}">
           <span class={TEXT_CELL.location}>
             {formatLocation(competition.country, competition.region, competition.city)}
@@ -81,7 +84,7 @@
         {#if showFederation}
           <td class="{TABLE_CELL} {CELL.data}" title={competition.federation.name}>
             <a
-              href={resolve(federationPath(competition.federation.name))}
+              href={resolve('/federations/[slug]', { slug: slugify(competition.federation.name) })}
               class="{TEXT_CELL.federation} underline hover:text-ink"
             >
               {competition.federation.abbreviation || competition.federation.name}

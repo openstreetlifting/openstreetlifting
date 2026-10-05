@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
-import { archiveIndex } from '$lib/server/archive';
-import { absolute, SITE_DESCRIPTION, SITE_NAME } from '$lib/seo';
+import { archiveIndex } from '#lib/server/archive.js';
+import { absolute, SITE_DESCRIPTION, SITE_NAME } from '#lib/seo/index.js';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async () => {
