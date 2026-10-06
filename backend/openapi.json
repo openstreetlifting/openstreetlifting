@@ -6,7 +6,7 @@
     "license": {
       "name": ""
     },
-    "version": "0.46.0"
+    "version": "0.47.0"
   },
   "paths": {
     "/api/v1/athletes": {

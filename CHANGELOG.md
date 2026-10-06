@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.47.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.46.0...v0.47.0) (2026-10-06)
+
+
+### Features
+
+* **data:** import SLI Push & Pull March 2026 ([#801](https://github.com/openstreetlifting/openstreetlifting/issues/801)) ([fb822d7](https://github.com/openstreetlifting/openstreetlifting/commit/fb822d7c870d18f9ace010e38ec770a43b566276))
+* **data:** import SLI RiminiWellness Muscle-Up 2026 ([#803](https://github.com/openstreetlifting/openstreetlifting/issues/803)) ([cf9989b](https://github.com/openstreetlifting/openstreetlifting/commit/cf9989bcfc986e74917d43692fa63d645714c7c4))
+* **data:** import SLI RiminiWellness Push & Pull 2026 ([#806](https://github.com/openstreetlifting/openstreetlifting/issues/806)) ([7bd61d5](https://github.com/openstreetlifting/openstreetlifting/commit/7bd61d536c2ab460c10f0beb0d90859a9ef2ae6e))
+
 ## [0.46.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.45.0...v0.46.0) (2026-10-06)
 
 
