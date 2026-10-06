@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "https://www.instagram.com/p/DUYDTNeDDOy/",
+    "https://www.streetliftings.fr/competions-street-lifting/fnsl-regionale-pays-de-la-loire-grand-ouest/",
+]
+
+[competition]
+name = "Régionale Pays de la Loire"
+start_date = "2026-02-01"
+city = "Saint-Saturnin"
+venue = "CF Astera"
+region = "Pays de la Loire"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
