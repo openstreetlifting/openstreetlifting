@@ -2,7 +2,7 @@ event = "P"
 sources = ["https://docs.google.com/spreadsheets/d/1-g_jhz1FAbhCpRHGXrOY1A47VWC0NQYe/edit?gid=714116976#gid=714116976"]
 
 [competition]
-name = "Łomża Street Power 2018"
+name = "Łomża Street Power"
 start_date = "2018-09-16"
 city = "Łomża"
 country = "PL"
