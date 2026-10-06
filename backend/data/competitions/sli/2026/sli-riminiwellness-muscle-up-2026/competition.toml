@@ -1,0 +1,17 @@
+event = "M"
+sources = [
+    "https://streetlifting-italia.it/__l5e/assets-v1/cb6b74ff-c66f-45ce-ae64-badd021d7dec/RW26_MU.pdf",
+    "https://streetlifting-italia.it/gare-2026",
+]
+
+[competition]
+name = "RiminiWellness Muscle-Up"
+start_date = "2026-05-29"
+city = "Rimini"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
