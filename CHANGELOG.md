@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.45.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.44.0...v0.45.0) (2026-10-06)
+
+
+### Features
+
+* **data:** import Pull Up Nationals 2023 ([#777](https://github.com/openstreetlifting/openstreetlifting/issues/777)) ([ca60084](https://github.com/openstreetlifting/openstreetlifting/commit/ca600849189955dd62c758acb6c5739662d3e50b))
+* **data:** import streetlifting wygoda 2026 ([#780](https://github.com/openstreetlifting/openstreetlifting/issues/780)) ([61c58cd](https://github.com/openstreetlifting/openstreetlifting/commit/61c58cd577580dda47433d96a7fe53306d68dba9))
+
 ## [0.44.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.43.0...v0.44.0) (2026-10-06)
 
 
