@@ -1,0 +1,18 @@
+event = "PD"
+sources = [
+    "https://cdtqddvbrdknehebkdnh.supabase.co/storage/v1/object/public/media/risultati/1788884347326-8g3fdn.pdf",
+    "https://streetlifting-italia.it/gare-2026",
+]
+
+[competition]
+name = "Push & Pull"
+start_date = "2026-03-22"
+city = "Monza"
+venue = "Ironfit"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
