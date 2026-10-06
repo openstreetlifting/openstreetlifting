@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.46.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.45.0...v0.46.0) (2026-10-06)
+
+
+### Features
+
+* **data:** import CWWB 2019 ([#797](https://github.com/openstreetlifting/openstreetlifting/issues/797)) ([ca23480](https://github.com/openstreetlifting/openstreetlifting/commit/ca234805de3e31ee22816319d2777b819bcc231e))
+* **data:** import FNSL Pays de la Loire 2026 ([#796](https://github.com/openstreetlifting/openstreetlifting/issues/796)) ([5bc272a](https://github.com/openstreetlifting/openstreetlifting/commit/5bc272a9bf9b4c3c690835afac2d9cc66195f433))
+* **data:** import FNSL Sud-Est 2025 ([#793](https://github.com/openstreetlifting/openstreetlifting/issues/793)) ([193e1aa](https://github.com/openstreetlifting/openstreetlifting/commit/193e1aa27401caf8821c533209f9c652ecfb2596))
+* **data:** import SLI Street 3 March 2026 ([#799](https://github.com/openstreetlifting/openstreetlifting/issues/799)) ([0b92487](https://github.com/openstreetlifting/openstreetlifting/commit/0b92487a1bbe65a5e2fd3909addacd3dc13677f1))
+
 ## [0.45.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.44.0...v0.45.0) (2026-10-06)
 
 
