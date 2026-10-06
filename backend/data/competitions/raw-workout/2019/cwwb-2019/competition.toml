@@ -1,0 +1,18 @@
+event = "PDS"
+sources = [
+    "https://www.adamraw.cz/clanky/cwwb-2019-complete-results-european-records-tables/",
+    "https://www.adamraw.cz/aktuality/cwwb-2019-probehne-27-4-2019-v-praze/",
+    "https://www.adamraw.cz/clanky/cwwb-2019-all-competitors-list/",
+]
+
+[competition]
+name = "Czech Weighted Workout Battle"
+start_date = "2019-04-27"
+city = "Prague"
+venue = "VTGYM"
+country = "CZ"
+status = "completed"
+
+[federation]
+name = "Raw Workout"
+country = "CZ"
