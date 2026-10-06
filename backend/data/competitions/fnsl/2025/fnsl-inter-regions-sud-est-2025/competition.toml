@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = ["https://www.streetliftings.fr/fnsl-sud-est-2025-resultats/"]
+
+[competition]
+name = "Interrégionale Sud-Est"
+start_date = "2025-03-01"
+end_date = "2025-03-02"
+city = "Épagny Metz-Tessy"
+region = "Auvergne-Rhône-Alpes"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+country = "FR"

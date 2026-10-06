@@ -1,0 +1,54 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Corentin,Alban,,,64.6,89.92,361.25,competed,,2024,,,,22.5,,,,58.75,,,,87.5,,,,192.5
+M,66,Cyril,Brau,,,65.5,99.24,403.75,competed,,2024,,,,23.75,,,,65,,,,115,,,,200
+M,66,Hilario,Fernandes,,,64.9,81.18,327.5,competed,,2024,,,,25,,,,70,,,,75,,,,157.5
+M,66,Mathis,Giot,,,65.1,,,disqualified,No successful muscle-up or pull-up,,,,,,,,,,,,,92.5,,,,150
+M,66,Rayan,Guerroumi,,,62.6,85.08,332.5,competed,,2024,,,,30,,,,77.5,,,,95,,,,130
+M,66,Yann,Izard,,,65.1,83.42,337.5,competed,,2024,,,,15,,,,52.5,,,,80,,,,190
+M,66,Florent,Riou,,,65.7,80.28,327.5,competed,,2024,,,,20,,,,57.5,,,,85,,,,165
+M,66,Evan,Rozier,,,65.3,69.33,281.25,competed,,2024,,,,1.25,,,,50,,,,80,,,,150
+M,66,Alexis,Serre,,,65.4,88,357.5,competed,,2024,,,,32.5,,,,65,,,,102.5,,,,157.5
+M,73,Damien,Bonnet,,,72.3,86.39,385,competed,,2024,,,,20,,,,57.5,,,,117.5,,,,190
+M,73,Antoine,Hebrard,,,73,75.36,338.75,competed,,2024,,,,15,,,,63.75,,,,92.5,,,,167.5
+M,73,Enzo,Ingrassia,,,71.6,96.55,426.5,competed,,2024,,,,27.5,,,,61.5,,,,117.5,,,,220
+M,73,Diego,Le Guennec,,,71.5,82.73,365,competed,,2024,,,,27.5,,,,65,,,,100,,,,172.5
+M,73,Ali,Lessig,,,72.6,99.76,446.25,competed,,2024,,,,31.25,,,,90,,,,115,,,,210
+M,73,Axel,Marhuenda,,,71.7,93.82,415,competed,,2024,,,,27.5,,,,73.75,,,,113.75,,,,200
+M,73,Maxence,Reverdy,,,72.4,87.74,391.5,competed,,2024,,,,26.5,,,,74,,,,106,,,,185
+M,73,Alexandre,Thenoz,,,71.4,72.57,319.75,competed,,2024,,,,18.75,,,,71,,,,92.5,,,,137.5
+M,73,Thomas,Valbuena,,,72.7,,,disqualified,No successful muscle-up,,,,,,,,,72.5,,,,92.5,,,,157.5
+M,80,Julien,Descaillot,,,78.5,72.33,345,competed,,2024,,,,12.5,,,,62.5,,,,100,,,,170
+M,80,Richard,Fanfano,,,79.1,78.71,377.5,competed,,2024,,,,20,,,,70,,,,120,,,,167.5
+M,80,Robin,Grosselet-Vernhes,,,78,70.04,332.5,competed,,2024,,,,5,,,,52.5,,,,95,,,,180
+M,80,Dany,Larbi,,,74.5,,,disqualified,No successful muscle-up,,,,,,,,,55,,,,80,,,,160
+M,80,Maxime,Lauriol,,,77.8,69.12,327.5,competed,,2024,,,,15,,,,67.5,,,,95,,,,150
+M,80,Gaëtan,Orru,,,75.1,78.7,362.5,competed,,2024,,,,20,,,,65,,,,92.5,,,,185
+M,80,Nicolas,Routier-Scappucci,,,79,91.57,438.75,competed,,2024,,,,33.75,,,,82.5,,,,117.5,,,,205
+M,87,Malo,Camus,,,86,81.83,412.5,competed,,2024,,,,22.5,,,,70,,,,105,,,,215
+M,87,Antonin,Chaussignant,,,81.7,80.09,392.5,competed,,2024,,,,20,,,,67.5,,,,105,,,,200
+M,87,Corentin,Favre,,,85,80.31,402.5,competed,,2024,,,,5,,,,65,,,,120,,,,212.5
+M,87,Rayane,Lastab,,,83.3,77.66,385,competed,,2024,,,,15,,,,65,,,,122.5,,,,182.5
+M,87,Darry,Melas,,,81.8,76.16,373.5,competed,,2024,,,,22.5,,,,71,,,,105,,,,175
+M,87,Lucien,Memery,,,87,87.51,443.5,competed,,2024,,,,21,,,,72.5,,,,125,,,,225
+M,87,Denilson,Monteiro,,,85.4,82.41,414,competed,,2024,,,,15,,,,71.5,,,,115,,,,212.5
+M,87,Clément,Naulleau,,,83.4,69.74,346,competed,,2024,,,,22.5,,,,63.5,,,,95,,,,165
+M,87,Thomas,Perri,,,85.5,77.58,390,competed,,2024,,,,25,,,,62.5,,,,117.5,,,,185
+M,87,Rémy,Quercy,,,82.8,77.42,382.5,competed,,2024,,,,5,,,,62.5,,,,110,,,,205
+M,94,Antoine,Berne,,,87.9,,,disqualified,No successful muscle-up,,,,,,,,,60,,,,100,,,,160
+M,94,Tom,Berthier,,,92.3,99.88,517.5,competed,,2024,,,,32.5,,,,85,,,,160,,,,240
+M,94,Jérémy,François,,,90.5,77.7,400,competed,,2024,,,,15,,,,65,,,,125,,,,195
+M,94+,Mehdi,Brahimi,,,97.2,71.44,375,competed,,2024,,,,7.5,,,,47.5,,,,110,,,,210
+M,94+,Killian,Lopez-Rua,,,94,77.57,404,competed,,2024,,,,22.5,,,,71.5,,,,120,,,,190
+F,52,Diane,Maréchal,,,50.9,,,disqualified,No successful muscle-up,,,,,,,,,20,,,,20,,,,85
+F,52,Clara,Torriani,,,49.4,90.89,185,competed,,2024,,,,7.5,,,,25,,,,45,,,,107.5
+F,57,Louane,Emond,,,55,89.41,200,competed,,2024,,,,6.5,,,,31.5,,,,42,,,,120
+F,57,Elina,Illouz,,,55.7,73.62,166.25,competed,,2024,,,,12.5,,,,23.75,,,,30,,,,100
+F,63,Anne-Sophie,Gherardi,,,60.1,83.95,200,competed,,,,,,6.25,,,,27.5,,,,51.25,,,,115
+F,63,Fanny,Guy,,,60.6,81.59,192.5,competed,,2024,,,,7.5,,,,40,,,,42.5,,,,102.5
+F,63,Lô-Anne,Jean-Baptiste,,,58.9,65.79,153.5,competed,,2024,,,,0,,,,20.5,,,,33,,,,100
+F,63,Estelle,Mousset,,,57.7,72.53,167.5,competed,,2024,,,,6.25,,,,26.25,,,,40,,,,95
+F,63,Nell,Verne,,,61.1,73.45,173.75,competed,,2024,,,,0,,,,28.75,,,,45,,,,100
+F,70,Victoria,Carobbi,,,64.2,88.38,200,competed,,,,,,20,,,,25,,,,42.5,,,,112.5
+F,70,Swann,Nguyen,,,65.8,,,disqualified,No successful muscle-up,,,,,,,,,20,,,,55,,,,135
+F,70,Cécile,Prier,,,64.5,,,disqualified,No successful muscle-up,,,,,,,,,22,,,,40,,,,100
+F,70+,Sophie,Boiron,,,72.2,,,disqualified,No successful muscle-up,,,,,,,,,15,,,,27.5,,,,130
