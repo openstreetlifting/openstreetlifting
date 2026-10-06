@@ -1,0 +1,17 @@
+event = "PD"
+sources = [
+    "https://streetlifting-italia.it/__l5e/assets-v1/8393065d-7e30-4d67-8cab-6df5d0c3bcbe/RW26_PP.pdf",
+    "https://streetlifting-italia.it/gare-2026",
+]
+
+[competition]
+name = "RiminiWellness Push & Pull"
+start_date = "2026-05-30"
+city = "Rimini"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
