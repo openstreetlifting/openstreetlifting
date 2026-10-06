@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.44.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.43.0...v0.44.0) (2026-10-06)
+
+
+### Features
+
+* **data:** import ezw minicup 2023 ([#781](https://github.com/openstreetlifting/openstreetlifting/issues/781)) ([340ede4](https://github.com/openstreetlifting/openstreetlifting/commit/340ede4071f690af9cc29d9152e0cb1f97c7ab1b))
+* **data:** import power challenge VIII 2023 ([#768](https://github.com/openstreetlifting/openstreetlifting/issues/768)) ([1bf6dde](https://github.com/openstreetlifting/openstreetlifting/commit/1bf6dde1afa232949f68adfb69fa4aec62caa58e))
+* **data:** import Pull Up Nationals 2016 ([#772](https://github.com/openstreetlifting/openstreetlifting/issues/772)) ([474b5c6](https://github.com/openstreetlifting/openstreetlifting/commit/474b5c677a0d053a831520c6ceaee546088ca1f8))
+* **data:** import Pull Up Nationals 2017 ([#773](https://github.com/openstreetlifting/openstreetlifting/issues/773)) ([3c5d289](https://github.com/openstreetlifting/openstreetlifting/commit/3c5d2895e51556f802411c92057dda45f8393b78))
+* **data:** import Pull Up Nationals 2022 ([#776](https://github.com/openstreetlifting/openstreetlifting/issues/776)) ([67cb604](https://github.com/openstreetlifting/openstreetlifting/commit/67cb60486b02d48416cb9c624f506e7c317c5a8f))
+* **data:** import SOB winter frostbite 2024 ([#765](https://github.com/openstreetlifting/openstreetlifting/issues/765)) ([80d1c74](https://github.com/openstreetlifting/openstreetlifting/commit/80d1c7435ba5be0ac3b316891ec41994dc119a3d))
+* **data:** import streetlifting wygoda 2025 ([#779](https://github.com/openstreetlifting/openstreetlifting/issues/779)) ([4545103](https://github.com/openstreetlifting/openstreetlifting/commit/4545103bc66768831c68bf1d3550ab3d2bd758a3))
+* **data:** import Turniej Lipka 2023 ([#770](https://github.com/openstreetlifting/openstreetlifting/issues/770)) ([666507e](https://github.com/openstreetlifting/openstreetlifting/commit/666507eb9fefbd551fd3609f85c061e546428ced))
+
+
+### Bug Fixes
+
+* **data:** remove years from competition names ([#790](https://github.com/openstreetlifting/openstreetlifting/issues/790)) ([e19c4f3](https://github.com/openstreetlifting/openstreetlifting/commit/e19c4f308850fbfdde930bd1b0d21841b207cade))
+
 ## [0.43.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.42.0...v0.43.0) (2026-10-05)
 
 
