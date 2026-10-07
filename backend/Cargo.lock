@@ -594,9 +594,9 @@ checksum = "1aaf95b3e5c8f23aa320147307562d361db0ae0d51242340f558153b4eb2439b"
 
 [[package]]
 name = "either"
-version = "1.18.0"
+version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "252afb9ae5eaa683babdc6a068b3f5726eb19e05070c731f9b2a23a7c3e8ed34"
+checksum = "0e9c71c2167ca323c882b99918929403426e2373ea17242ff5653e0d5e1058be"
 dependencies = [
  "serde",
 ]
@@ -1270,7 +1270,7 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
 name = "osl_api"
-version = "0.47.0"
+version = "0.48.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -1298,7 +1298,7 @@ dependencies = [
 
 [[package]]
 name = "osl_db"
-version = "0.47.0"
+version = "0.48.0"
 dependencies = [
  "chrono",
  "osl_domain",
@@ -1311,7 +1311,7 @@ dependencies = [
 
 [[package]]
 name = "osl_domain"
-version = "0.47.0"
+version = "0.48.0"
 dependencies = [
  "chrono",
  "rust_decimal",
@@ -1326,7 +1326,7 @@ dependencies = [
 
 [[package]]
 name = "osl_importer"
-version = "0.47.0"
+version = "0.48.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1536,7 +1536,7 @@ checksum = "63b8176103e19a2643978565ca18b50549f6101881c443590420e4dc998a3c69"
 
 [[package]]
 name = "recover-bodyweight"
-version = "0.47.0"
+version = "0.48.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -2655,18 +2655,18 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.60"
+version = "0.8.61"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6400fc4bb7426f6faac3fb07566122bb18622e3022bd2c36426a92ed489b1dbe"
+checksum = "879fb705ce98c32e41ebdb970fbe1204f8492423b314c6ab0354c3e7b5542866"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.60"
+version = "0.8.61"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99c27cc7525bad4df59a45e073c45b2c2aa820efb588234cc23a547ec69a34db"
+checksum = "708882a28301d604fa039cc7727607a98d04c4b86dc76ec9cc683f805d709759"
 dependencies = [
  "proc-macro2",
  "quote",
