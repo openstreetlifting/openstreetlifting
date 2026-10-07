@@ -1,0 +1,18 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,75,Elian,Alkinani,,SE,67.9,,348.75,competed,,12.5,17.5,21.25,21.25,55,62.5,67.5,67.5,80,90,97.5x,90,145,160,170,170
+M,75,Teodor,Dahlgren,,SE,74.1,,400,competed,,10,15,20,20,62.5,70,77.5,77.5,90,102.5,112.5x,102.5,175,195,200,200
+M,75,Emil,Söderberg,,SE,74.8,,308.75,competed,,5,7.5,10,10,55,62.5,66.25,66.25,65,75,82.5,82.5,130,140,150,150
+M,85,Jonathan,Fjällrud,,SE,76.3,,272.5,competed,,1.25,5,10x,5,40,47.5,55x,47.5,65,72.5x,80x,65,140,147.5,155,155
+M,85,David,Scott,,SE,83.5,,405,competed,,10,15x,,10,55,62.5,67.5,67.5,110,122.5,130,130,170,190,197.5,197.5
+M,85,Zack,Viberg,,SE,83.6,,388.75,competed,,20,25,30,30,85,90,93.75,93.75,105,110,115,115,140,150,155x,150
+M,85+,Andreas,Edlund,,SE,103.1,,,disqualified,No valid muscle-up,1.25x,1.25x,1.25x,,55,65,70,70,125,135x,145,145,175,185,195,195
+M,85+,Daniel,Eyafie,,SE,102,,477.5,competed,,5,12.5,17x,12.5,75,85x,85,85,100x,115x,115,115,230,250,265,265
+M,85+,Olof,Lundén,,SE,96,,382.5,competed,,20,25,30x,25,67.5,75x,75,75,80,90,100x,90,170,180,192.5,192.5
+M,85+,Joar,Svensson,,SE,90.8,,322.5,competed,,10,17.5,20,20,55,62.5,70x,62.5,80,85x,85,85,150,155,160x,155
+M,85+,Ali,Zabardast,,SE,100,,385,competed,,5,10,15,15,55,62.5,70,70,105,115x,115x,105,175,185,195,195
+F,60,Isa,Ahlgren,,SE,59.4,,157.5,competed,,,,,,22.5,26.25,28.75,28.75,25,30,33.75,33.75,85,90,95,95
+F,60,Amanda,Svensson,,SE,57.8,,147.5,competed,,1.25,2.5,5,5,15,20,25,25,22.5,30,33.75x,30,85x,85,87.5,87.5
+F,70,Vanja,Bökman,,SE,61.6,,190,competed,,7.5,10,12.5x,10,25,30,32.5x,30,40,45,47.5x,45,100,105,110x,105
+F,70,Frida,Frisk,,SE,66.2,,177.5,competed,,,,,,30,32.5,33.75x,32.5,42.5,45,50x,45,92.5,97.5,100,100
+F,70,Ina,Vestin,,SE,63.6,,177.5,competed,,2.5x,2.5,5,5,27.5,30,32.5x,30,35,37.5,40x,37.5,92.5,97.5,105,105
+F,70,Ellen B,Åkesson,,SE,67.4,,230,competed,,1.25,3.75,10,10,25,30,35x,30,30,35,37.5,37.5,140,147.5,152.5,152.5
