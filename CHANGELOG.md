@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.48.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.47.0...v0.48.0) (2026-10-07)
+
+
+### Features
+
+* **data:** import CWWB 2015 ([#812](https://github.com/openstreetlifting/openstreetlifting/issues/812)) ([5ea6ec8](https://github.com/openstreetlifting/openstreetlifting/commit/5ea6ec8a527ba0a8fac6523a5ab63ad9e6ebba12))
+* **data:** import CWWB 2016 ([#813](https://github.com/openstreetlifting/openstreetlifting/issues/813)) ([c57750a](https://github.com/openstreetlifting/openstreetlifting/commit/c57750a0c29321aa6ee7f958fb2c5173207c94eb))
+* **data:** import CWWB 2017 ([#814](https://github.com/openstreetlifting/openstreetlifting/issues/814)) ([cecb2f1](https://github.com/openstreetlifting/openstreetlifting/commit/cecb2f15ee916ed80f5bae57f11d26b46e359be0))
+* **data:** import sob 2022 ([#811](https://github.com/openstreetlifting/openstreetlifting/issues/811)) ([6097609](https://github.com/openstreetlifting/openstreetlifting/commit/6097609ac9437b7f2fd7c2f9552496ff3cb37e7b))
+* **data:** import sob 2025 ([#810](https://github.com/openstreetlifting/openstreetlifting/issues/810)) ([9858f27](https://github.com/openstreetlifting/openstreetlifting/commit/9858f2730a6dfeff872b49d23bad8a551b0b30fc))
+
 ## [0.47.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.46.0...v0.47.0) (2026-10-06)
 
 
