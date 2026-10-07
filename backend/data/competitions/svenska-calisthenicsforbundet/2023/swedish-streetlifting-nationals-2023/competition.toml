@@ -1,9 +1,7 @@
-# Men only: women's weighted push-ups require event schema support.
 event = "MPDS"
 sources = [
     "https://calisthenicsforbundet.se/2023/06/19/resultat-1rm-sm-2023/",
     "https://calisthenicsforbundet.se/svenska-masterskapen/",
-    "Contributor confirmed June 10–11 competition dates, Swedish nationalities, David Scott identity, and Axel Thunell total of 325 kg from successful lifts on 2026-10-07",
 ]
 
 [competition]
