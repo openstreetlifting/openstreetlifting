@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = ["https://www.instagram.com/p/DXrfkbMCIJ8/"]
+
+[competition]
+name = "Interrégionale Nord-Est"
+start_date = "2026-04-18"
+end_date = "2026-04-19"
+city = "Mulhouse"
+venue = "District CrossFit"
+region = "Grand Est"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
