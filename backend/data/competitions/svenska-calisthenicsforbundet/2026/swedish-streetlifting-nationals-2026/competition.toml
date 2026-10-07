@@ -1,0 +1,21 @@
+event = "MPDS"
+sources = [
+    "https://www.instagram.com/p/DakmV9PALe3/",
+    "https://www.instagram.com/p/Dakl6ezAPfi/",
+    "https://calisthenicsforbundet.se/",
+]
+
+[competition]
+name = "Swedish Streetlifting Nationals"
+start_date = "2026-06-13"
+end_date = "2026-06-14"
+city = "Nacka"
+venue = "Nacka Strandsmässan"
+region = "Stockholm County"
+country = "SE"
+status = "completed"
+
+[federation]
+name = "Svenska Calisthenicsförbundet"
+abbreviation = "SCF"
+country = "SE"
