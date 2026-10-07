@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.50.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.49.0...v0.50.0) (2026-10-07)
+
+
+### Features
+
+* **data:** import FNSL Hauts-de-France 2025 ([#828](https://github.com/openstreetlifting/openstreetlifting/issues/828)) ([14ccb90](https://github.com/openstreetlifting/openstreetlifting/commit/14ccb902240d37e8ef8229c9090b0692d8079c39))
+* **data:** import FNSL Nord-Est 2026 ([#830](https://github.com/openstreetlifting/openstreetlifting/issues/830)) ([7b563fa](https://github.com/openstreetlifting/openstreetlifting/commit/7b563fab003d0fc1623e8abfa00173ee9eb8a5a7))
+
 ## [0.49.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.48.0...v0.49.0) (2026-10-07)
 
 
