@@ -1,8 +1,5 @@
 event = "MPDS"
-sources = [
-    "https://drive.google.com/file/d/1ClocT8STg2H8qZ8vYAaZgop7OvsecbYm/view",
-    "Contributor confirmed 16–17 August 2025 in Stockholm, athlete name matches, and Swedish nationalities except Harry Twister (BA) and Fredrik Semskar (FI) on 2026-10-07",
-]
+sources = ["https://drive.google.com/file/d/1ClocT8STg2H8qZ8vYAaZgop7OvsecbYm/view"]
 
 [competition]
 name = "Swedish Streetlifting Nationals"
