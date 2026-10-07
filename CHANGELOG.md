@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.49.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.48.0...v0.49.0) (2026-10-07)
+
+
+### Features
+
+* **data:** import Swedish Streetlifting Nationals 2023 ([#820](https://github.com/openstreetlifting/openstreetlifting/issues/820)) ([9040649](https://github.com/openstreetlifting/openstreetlifting/commit/904064973b4e86ae3a9d3c1355d8bdc0bfd81731))
+* **data:** import Swedish Streetlifting Nationals 2024 ([#819](https://github.com/openstreetlifting/openstreetlifting/issues/819)) ([d97ee9e](https://github.com/openstreetlifting/openstreetlifting/commit/d97ee9eff9204441a5e00d2b1b9eb20bf45c7bf5))
+* **data:** import Swedish Streetlifting Nationals 2025 ([#818](https://github.com/openstreetlifting/openstreetlifting/issues/818)) ([dc969e1](https://github.com/openstreetlifting/openstreetlifting/commit/dc969e119c7953f43f7a9069c71f7350d263760e))
+* **data:** import Swedish Streetlifting Nationals 2026 ([#816](https://github.com/openstreetlifting/openstreetlifting/issues/816)) ([13a5108](https://github.com/openstreetlifting/openstreetlifting/commit/13a5108a6c9a904e30f6e538ee3767c8419818c6))
+
 ## [0.48.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.47.0...v0.48.0) (2026-10-07)
 
 
