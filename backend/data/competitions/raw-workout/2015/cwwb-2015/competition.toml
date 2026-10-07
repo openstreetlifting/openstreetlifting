@@ -1,0 +1,14 @@
+event = "PDS"
+sources = ["https://www.adamraw.cz/clanky/cwwb-2015-report-a-vysledky/"]
+
+[competition]
+name = "Czech Weighted Workout Battle"
+start_date = "2015-05-09"
+city = "Ostrava"
+venue = "Performance Power Center"
+country = "CZ"
+status = "completed"
+
+[federation]
+name = "Raw Workout"
+country = "CZ"
