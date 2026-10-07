@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "https://drive.google.com/file/d/1ClocT8STg2H8qZ8vYAaZgop7OvsecbYm/view",
+    "Contributor confirmed 16–17 August 2025 in Stockholm, athlete name matches, and Swedish nationalities except Harry Twister (BA) and Fredrik Semskar (FI) on 2026-10-07",
+]
+
+[competition]
+name = "Swedish Streetlifting Nationals"
+start_date = "2025-08-16"
+end_date = "2025-08-17"
+city = "Stockholm"
+region = "Stockholm County"
+country = "SE"
+status = "completed"
+
+[federation]
+name = "Svenska Calisthenicsförbundet"
+abbreviation = "SCF"
+country = "SE"

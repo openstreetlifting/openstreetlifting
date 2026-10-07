@@ -1,0 +1,42 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Elian,Alkinani,,SE,65.6,,357.5,competed,,,,,15,,,,62.5,,,,115,,,,165
+M,66,Julius,Elwin,,SE,61.2,,254.5,competed,,,,,6,,,,46,,,,67.5,,,,135
+M,73,Teodor,Dahlgren,,SE,72.25,,411,competed,,,,,15,,,,75,,,,120,,,,201
+M,73,Simon,Kåreswed,,SE,71.7,,332.5,competed,,,,,12.5,,,,55,,,,92.5,,,,172.5
+M,73,Fredrik,Semskar,,FI,71.65,,325,competed,,,,,10,,,,75,,,,90,,,,150
+M,73,Fabian,Söderson,,SE,72.85,,247.5,competed,,,,,2.5,,,,45,,,,75,,,,125
+M,80,Wilmer,Gimbringer,,SE,78.5,,362.5,competed,,,,,7.5,,,,65,,,,105,,,,185
+M,80,Johan,Kang,,SE,78.9,,417.5,competed,,,,,15,,,,70,,,,122.5,,,,210
+M,80,Tasnim,Karim,,SE,77.65,,285,competed,,,,,12.5,,,,47.5,,,,60,,,,165
+M,80,Samuel,Kidane Yohannes,,SE,79.65,,377.75,competed,,,,,0.25,,,,57.5,,,,110,,,,210
+M,80,Emil,Söderberg,,SE,75.6,,290,competed,,,,,2.5,,,,65,,,,80,,,,142.5
+M,80,Harry,Twister,,BA,78.33,,345.5,competed,,,,,28,,,,67.5,,,,100,,,,150
+M,87,Simon,Imhäuser,,SE,86.85,,417.5,competed,,,,,37.5,,,,100,,,,150,,,,130
+M,87,Jonatan,Malmlöf,,SE,84.5,,312,competed,,,,,5,,,,55,,,,82,,,,170
+M,87,Johan,Salo,,SE,86.15,,,disqualified,No valid muscle-up,,,,,,,,35,,,,75,,,,150
+M,87,Zack,Viberg,,SE,84.4,,433,competed,,,,,20,,,,100.5,,,,132.5,,,,180
+M,94,Miles,Clarke Bolin,,SE,93.8,,,disqualified,No valid muscle-up,,,,,,,,53.5,,,,105,,,,192.5
+M,94,Albin,Gordan,,SE,92.9,,482.5,competed,,,,,20,,,,77.5,,,,140,,,,245
+M,94,Alexander,Hernelind,,SE,92.25,,330.25,competed,,,,,0.25,,,,60,,,,110,,,,160
+M,101,Lars,Lucas,,SE,96.95,,388.5,competed,,,,,2.5,,,,76,,,,100,,,,210
+M,101,Olof,Lundén,,SE,97.4,,362.5,competed,,,,,5,,,,67.5,,,,100,,,,190
+F,52,Fanny,Jonsson,,SE,50.53,,136.25,competed,,,,,,,,,25,,,,31.25,,,,80
+F,52,Linnea,Stenson,,SE,51,,124,competed,,,,,7.5,,,,24,,,,32.5,,,,60
+F,57,Isa,Ahlgren,,SE,55.75,,150.25,competed,,,,,2.75,,,,27.5,,,,37.5,,,,82.5
+F,57,Sanna,Andersson,,SE,53.7,,181.25,competed,,,,,1.25,,,,20,,,,40,,,,120
+F,57,Sara,Brantvall,,SE,56.15,,113.75,competed,,,,,,,,,13.75,,,,25,,,,75
+F,57,Michaela,Jonsson,,SE,55,,115,competed,,,,,,,,,15,,,,25,,,,75
+F,57,Sara,Olsson,,SE,53.1,,156.5,competed,,,,,11.25,,,,27.25,,,,38,,,,80
+F,57,Hedvig,Sjölander,,SE,55.2,,155.75,competed,,,,,,,,,25,,,,35.75,,,,95
+F,57,Anna,Tarasova,,SE,55.55,,122.5,competed,,,,,,,,,15,,,,20,,,,87.5
+F,63,Camilla,Björkgren,,SE,61.1,,200,competed,,,,,,,,,35,,,,45,,,,120
+F,63,Vanja,Bökman,,SE,61.9,,215,competed,,,,,15,,,,30,,,,55,,,,115
+F,63,Lina,Hedman,,SE,61.7,,218.5,competed,,,,,1,,,,25,,,,50,,,,142.5
+F,63,Majda,Rekanovic,,SE,62.9,,150,competed,,,,,,,,,23,,,,40,,,,87
+F,63,Ina,Vestin,,SE,62.25,,216.25,competed,,,,,10,,,,36.25,,,,55,,,,115
+F,70,Therese,Dimitric,,SE,68.85,,,disqualified,No valid squat,,,,,,,,5,,,,17,,,,
+F,70,Frida,Frisk,,SE,68.45,,201,competed,,,,,,,,,35,,,,56,,,,110
+F,70,Märta,Paulsson,,SE,67.2,,250,competed,,,,,13,,,,37,,,,60,,,,140
+F,70,Sofia,Rydh,,SE,68,,138,competed,,,,,,,,,18,,,,27.5,,,,92.5
+F,70+,Ida,Lundén,,SE,81.7,,187.5,competed,,,,,,,,,25,,,,42.5,,,,120
+F,70+,Ellen B,Åkesson,,SE,71,,225,competed,,,,,10,,,,37.5,,,,52.5,,,,125
