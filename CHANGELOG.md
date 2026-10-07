@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.51.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.50.0...v0.51.0) (2026-10-07)
+
+
+### Features
+
+* **data:** import cali battle 2025 ([#826](https://github.com/openstreetlifting/openstreetlifting/issues/826)) ([adf923c](https://github.com/openstreetlifting/openstreetlifting/commit/adf923c7bfd6830861065aadfb3a60ca3d480a2e))
+* **data:** import otwock 2024 ([#825](https://github.com/openstreetlifting/openstreetlifting/issues/825)) ([eaaf129](https://github.com/openstreetlifting/openstreetlifting/commit/eaaf129a3067899e55f813338ad50ef8fe53e875))
+* **data:** import phoenix games 2026 ([#823](https://github.com/openstreetlifting/openstreetlifting/issues/823)) ([3472b4c](https://github.com/openstreetlifting/openstreetlifting/commit/3472b4cf5da321ff15a2e21bcb38c57249452027))
+* **data:** import sl classic piotrkow trybunalski ([#822](https://github.com/openstreetlifting/openstreetlifting/issues/822)) ([e488c8c](https://github.com/openstreetlifting/openstreetlifting/commit/e488c8c5a74234c1c3722d20d67e884f38826809))
+* **data:** import turniej lipka krajenska 2024 ([#824](https://github.com/openstreetlifting/openstreetlifting/issues/824)) ([3e63378](https://github.com/openstreetlifting/openstreetlifting/commit/3e6337857f86bc3d2293ffa47f8268fc135ef8ae))
+* **data:** import WCL Competition ([#827](https://github.com/openstreetlifting/openstreetlifting/issues/827)) ([7f63bf8](https://github.com/openstreetlifting/openstreetlifting/commit/7f63bf8ff061c2880456243df2f49109a5b1cba4))
+
+
+### Bug Fixes
+
+* **data:** retain Przemysław Sitkowski full name ([#832](https://github.com/openstreetlifting/openstreetlifting/issues/832)) ([48dbfa2](https://github.com/openstreetlifting/openstreetlifting/commit/48dbfa2af49b51fd4da55882365079e0b77b6374))
+
 ## [0.50.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.49.0...v0.50.0) (2026-10-07)
 
 
