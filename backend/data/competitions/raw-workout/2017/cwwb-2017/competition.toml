@@ -1,0 +1,17 @@
+event = "PDS"
+sources = [
+    "https://www.adamraw.cz/clanky/cwwb-2017-complete-results-european-records-tables/",
+    "https://www.adamraw.cz/aktuality/cwwb-2017-probehne-21-10-2017-v-ostrave/",
+]
+
+[competition]
+name = "Czech Weighted Workout Battle"
+start_date = "2017-10-21"
+city = "Ostrava"
+venue = "Performance Power Center"
+country = "CZ"
+status = "completed"
+
+[federation]
+name = "Raw Workout"
+country = "CZ"

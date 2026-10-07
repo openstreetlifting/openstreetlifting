@@ -1,0 +1,17 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,75,Stanislav,Maťúš,,SK,72.2,,340,competed,,,,,,65,75,80x,75,100,110,117.5x,110,140,150,155,155
+M,75,Dávid,Meluš,,SK,73.4,,307.5,competed,,,,,,70,75,77.5,77.5,100,105,110x,105,120,125,135x,125
+M,75,Pavel,Nguyen,,CZ,74.4,,330,competed,,,,,,60,65,70,70,115x,115,120,120,120,125,140,140
+M,75,Filip,Němčok,,CZ,74.9,,290,competed,,,,,,60,65,70x,65,90,100,105x,100,120,125,130x,125
+M,85,Vojtěch,Holý,,CZ,84.5,,330,competed,,,,,,70,80,85x,80,90,100,105x,100,140,150,,150
+M,85,Jakub,Král,,CZ,84.8,,270,competed,,,,,,60,65x,,60,60,,,60,130,140,150,150
+M,85,Daniel,Ondrušík,,CZ,82.5,,340,competed,,,,,,65,70,77.5x,70,95,100,105,105,150,160,165,165
+M,85,Jones,Saleh,,DK,83.3,,280,competed,,,,,,60,65,70,70,115,120,130x,120,70,80,90,90
+M,85,Marek,Zálešák,,CZ,79,,,disqualified,All squat attempts failed,,,,,60,70x,70,70,55,65x,,55,110x,110x,110x,
+M,85+,Petr,Dostál,,CZ,90,,325,competed,,,,,,55,60,70x,60,120x,125,140x,125,140,155x,,140
+M,85+,Andrej,Katrenčík,,SK,99.3,,420,competed,,,,,,60,70,80x,70,140,150,160x,150,180,190,200,200
+M,85+,Boris,Petrákovič,,SK,108.7,,370,competed,,,,,,65,75x,75x,65,120,130,135,135,155,170,180x,170
+M,85+,Ivan,Sokol,,SK,86,,370,competed,,,,,,60,70x,70,70,90,100,110,110,180,190,195x,190
+M,85+,Pavel,Šanda,,CZ,105,,412.5,competed,,,,,,60,70,77.5,77.5,115,125,135,135,180,190,200,200
+F,60,Monika,Najdenovová,,CZ,58.3,,135,competed,,,,,,25,32x,30,30,35,40,47.5x,40,50,60,65,65
+F,60,Kateřina,Weisserová,,CZ,54,,135,competed,,,,,,20,27.5,30x,27.5,30,42.5,45x,42.5,40,55,65,65
