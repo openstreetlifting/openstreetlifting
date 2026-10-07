@@ -2,6 +2,7 @@ event = "MPDS"
 sources = [
     "FinalRep app, /events-api/v1/events/{id}/statistics",
     "https://final-rep.com/event-calendar/",
+    "Contributor confirmed Olivia Bjurling is Swedish on 2026-10-07",
 ]
 
 [competition]
