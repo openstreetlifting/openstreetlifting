@@ -1,0 +1,34 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Franck,Da Silva,,,64.3,87.17,348.75,competed,,,,,17.5,,,,62.5,,,,101.25,,,,167.5
+M,66,Florian,Hennebert,,,65.5,71.28,290,competed,,,,,15,,,,55,,,,80,,,,140
+M,66,Florian,Serdobbel,,,65.2,65.41,265,competed,,,,,10,,,,45,,,,70,,,,140
+M,73,Corentin,Berroyer,,,71.3,73.57,323.75,competed,,,,,13.75,,,,60,,,,100,,,,150
+M,73,Sam,Demarecaux,,,72.1,59.89,266.25,competed,,,,,6.25,,,,47.5,,,,72.5,,,,140
+M,73,Louis,Dupas,,,70.3,82.87,360,competed,,,,,20,,,,65,,,,100,,,,175
+M,73,Yves,Durand,,,71.2,80.77,355,competed,,,,,15,,,,60,,,,100,,,,180
+M,73,Cyril,Pacheco,,,72.7,78.15,350,competed,,,,,21.25,,,,58.75,,,,105,,,,165
+M,80,Augustin,Battistini,,,77.9,57.46,,disqualified,No successful muscle-up,,,,,,,,42.5,,,,70,,,,160
+M,80,Sofian,Drancourt,,,78,83.21,395,competed,,,,,20,,,,80,,,,110,,,,185
+M,80,Raphaël,Ducastel,,,80.1,72.5,350.75,competed,,,,,16.25,,,,62.5,,,,95,,,,177
+M,80,Yanis,Fournel,,,79.9,64.45,311.25,competed,,,,,13.75,,,,47.5,,,,80,,,,170
+M,80,Quentin,Gilleron,,,77.4,73.57,320,competed,,,,,10,,,,55,,,,80,,,,175
+M,80,Lorenzo,Giordani,,,75.6,81.5,377.5,competed,,,,,20,,,,67.5,,,,110,,,,180
+M,87,Zack,Delabassé,,,79.9,60,300,competed,,,,,10,,,,47.5,,,,80,,,,162.5
+M,87,Ruben,Dutoict,,,84,67.26,335,competed,,,,,10,,,,65,,,,105,,,,155
+M,87,Samuel,Gautier,,,86.6,80.57,407.5,competed,,,,,12.5,,,,62.5,,,,112.5,,,,220
+M,87,Clément,Leguis,,,85.3,83.65,420,competed,,,,,10,,,,60,,,,120,,,,230
+M,87,Quentin,Lehoult,,,85.9,59.54,300,competed,,,,,11.25,,,,46.25,,,,82.5,,,,160
+M,87,Loïc,Magadur,,,,,,no_show,,,,,,,,,,,,,,,,,
+M,87,Hugo,Poulet,,,85.4,77.38,388.75,competed,,,,,10,,,,58.75,,,,117.5,,,,202.5
+M,94,Maxence,Bekima,,,92.2,81.33,421.25,competed,,,,,20,,,,78.75,,,,107.5,,,,215
+M,94,Victor,Dierckens,,,91.2,80.89,417.5,competed,,,,,15,,,,65,,,,110,,,,227.5
+M,94,Martin,Groult,,,89.3,57.58,295,competed,,,,,5,,,,50,,,,105,,,,135
+M,94+,Laurent,Makabau Dibwe,,,99.5,,,disqualified,No successful squat,,,,5,,,,70,,,,110,,,,
+F,52,Athyss,Baroux,,,47.5,,,disqualified,No successful squat,,,,0,,,,25,,,,35,,,,
+F,57,Marine,Bonnet,,,55.2,74.11,166.25,competed,,,,,5,,,,21.25,,,,37.5,,,,102.5
+F,57,Mariane,Dupas,,,56.2,84.72,192.5,competed,,,,,8.75,,,,23.75,,,,50,,,,110
+F,57,Coralie,Goedaer Dupas,,,55.5,74.92,168.75,competed,,,,,2.5,,,,28.75,,,,35,,,,102.5
+F,57,Gwendoline,Meignen,,,54.2,87.07,,disqualified,No successful muscle-up,,,,,,,,25,,,,32.5,,,,135
+F,57,Clara,Pasquier,,,53.1,59.85,130,competed,,,,,0,,,,25,,,,30,,,,75
+F,70+,Alexandra,Gautheron,,,75.8,79.68,192.5,competed,,,,,2.5,,,,20,,,,50,,,,120
+F,70+,Marie,Vouters,,,82.2,,,disqualified,"No successful muscle-up, pull-up",,,,,,,,,,,,25,,,,117.5

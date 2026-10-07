@@ -1,0 +1,20 @@
+event = "MPDS"
+sources = [
+    "https://www.instagram.com/p/DHBDg_4slt2/",
+    "https://www.instagram.com/p/DHBDskYsv6P/",
+]
+
+[competition]
+name = "Régionale Hauts-de-France"
+start_date = "2025-03-01"
+end_date = "2025-03-02"
+city = "Roubaix"
+venue = "Fitness Park Roubaix"
+region = "Hauts-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
