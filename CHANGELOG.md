@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.52.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.51.0...v0.52.0) (2026-10-07)
+
+
+### Features
+
+* **data:** import Łomza Street Power competition 2021 ([#833](https://github.com/openstreetlifting/openstreetlifting/issues/833)) ([0d71b36](https://github.com/openstreetlifting/openstreetlifting/commit/0d71b360485f7420d7b86fc65a6850aa13d7c808))
+* **data:** import Łomza Street Power competition 2024 ([#834](https://github.com/openstreetlifting/openstreetlifting/issues/834)) ([63dff1b](https://github.com/openstreetlifting/openstreetlifting/commit/63dff1b434cb6ff20d339e7a56e3dedf2d9616b7))
+* **data:** import Łomza Street Power competition 2025 ([#835](https://github.com/openstreetlifting/openstreetlifting/issues/835)) ([b26274b](https://github.com/openstreetlifting/openstreetlifting/commit/b26274b379e283323f734d6281256108981d310d))
+* **data:** import Łomza Street Power competition 2026 ([#836](https://github.com/openstreetlifting/openstreetlifting/issues/836)) ([52ce4d9](https://github.com/openstreetlifting/openstreetlifting/commit/52ce4d92e93635b0d55e4289c25a50caf915724a))
+* **data:** import sl classic drawsko pomorskie ([#821](https://github.com/openstreetlifting/openstreetlifting/issues/821)) ([6d8b362](https://github.com/openstreetlifting/openstreetlifting/commit/6d8b3624a54f96f5831d0000326bda0ae61b0762))
+
 ## [0.51.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.50.0...v0.51.0) (2026-10-07)
 
 
