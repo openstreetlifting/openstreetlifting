@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.53.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.52.0...v0.53.0) (2026-10-08)
+
+
+### Features
+
+* **data:** import FR UG Czechia 2025 ([#838](https://github.com/openstreetlifting/openstreetlifting/issues/838)) ([7014f8f](https://github.com/openstreetlifting/openstreetlifting/commit/7014f8f1c8d9247e798c8528a11509b692c984fd))
+
 ## [0.52.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.51.0...v0.52.0) (2026-10-07)
 
 
