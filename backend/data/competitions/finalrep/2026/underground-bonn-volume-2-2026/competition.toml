@@ -1,0 +1,13 @@
+event = "MPDS"
+sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
+
+[competition]
+name = "Underground Bonn Vol. 2"
+start_date = "2026-07-11"
+city = "Bonn"
+country = "DE"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "FinalRep"
