@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/3EIIaGfFyiCIqkGa4SbF7sCri8y/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Saigon Underground"
+start_date = "2026-06-28"
+country = "VN"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "FinalRep"
