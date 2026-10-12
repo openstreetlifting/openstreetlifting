@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.55.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.54.0...v0.55.0) (2026-10-12)
+
+
+### Features
+
+* **data:** import FR UG Barbattle Against Gravity 2026 ([#843](https://github.com/openstreetlifting/openstreetlifting/issues/843)) ([cee2513](https://github.com/openstreetlifting/openstreetlifting/commit/cee251328013707e85bd7e0404a459279992100c))
+* **scoring:** support published RIS for shorter events ([#846](https://github.com/openstreetlifting/openstreetlifting/issues/846)) ([30f834e](https://github.com/openstreetlifting/openstreetlifting/commit/30f834e648bbdc98e49541f1b4a9b3b04bc723e1))
+
+
+### Bug Fixes
+
+* **deps:** update frontend dependencies ([#845](https://github.com/openstreetlifting/openstreetlifting/issues/845)) ([fd36429](https://github.com/openstreetlifting/openstreetlifting/commit/fd364291cb08cefd248f56831ef86ede77e647a9))
+
 ## [0.54.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.53.0...v0.54.0) (2026-10-09)
 
 
