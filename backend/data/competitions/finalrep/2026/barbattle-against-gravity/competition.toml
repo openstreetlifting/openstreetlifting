@@ -1,0 +1,15 @@
+event = "PD"
+sources = [
+    "FinalRep app, /events-api/v1/events/3GpAb0t5vkfcu9oVZ7pTUoreFg1/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Barbattle: Against Gravity"
+start_date = "2026-09-13"
+country = "ID"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "FinalRep"
