@@ -42,17 +42,18 @@ type RisShape = {
 };
 
 export function risProvenance(competition: RisShape): RisProvenance {
-  const scored = competition.categories.flatMap((category) =>
-    category.participants.filter((participant) => participant.ris_score != null)
-  );
-  if (scored.length === 0) {
-    return competition.movements.length === ALL4_MOVEMENTS || competition.scoring === 'ris'
-      ? 'not-published'
-      : 'not-contested';
+  let hasReported = false;
+  for (const category of competition.categories) {
+    for (const participant of category.participants) {
+      if (participant.ris_score == null) continue;
+      if (participant.ris_source !== 'reported') return 'recomputed';
+      hasReported = true;
+    }
   }
-  return scored.some((participant) => participant.ris_source !== 'reported')
-    ? 'recomputed'
-    : 'reported';
+  if (hasReported) return 'reported';
+  return competition.movements.length === ALL4_MOVEMENTS || competition.scoring === 'ris'
+    ? 'not-published'
+    : 'not-contested';
 }
 
 /**

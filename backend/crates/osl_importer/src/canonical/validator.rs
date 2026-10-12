@@ -206,6 +206,7 @@ impl CanonicalValidator {
     }
 
     fn check_athletes(canonical: &CanonicalFormat, report: &mut ValidationReport) {
+        let uses_reported_ris = canonical.uses_reported_ris();
         if canonical
             .categories
             .iter()
@@ -218,7 +219,7 @@ impl CanonicalValidator {
         }
         if canonical.competition.scoring == Some(osl_domain::Scoring::Ris)
             && canonical.movements != osl_domain::Movement::ALL
-            && !canonical.uses_reported_ris()
+            && !uses_reported_ris
         {
             report
                 .errors
@@ -249,7 +250,7 @@ impl CanonicalValidator {
                     }
                     Ok(None) => {}
                 }
-                if canonical.uses_reported_ris()
+                if uses_reported_ris
                     && athlete.status == AthleteStatus::Competed
                     && athlete.reported_ris.is_none()
                 {
