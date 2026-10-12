@@ -25,7 +25,12 @@ export function totalFormats(competitions: AthleteCompetitionSummary[]): string[
   return [
     ...new Set(
       competitions
-        .filter((c) => c.status === 'competed' && c.event && numeric(c.total) !== null)
+        .filter(
+          (c) =>
+            c.status === 'competed' &&
+            c.event &&
+            (numeric(c.total) !== null || numeric(c.ris_score) !== null)
+        )
         .map((c) => c.event!)
     ),
   ].sort((a, b) => (a === 'MPDS' ? -1 : b === 'MPDS' ? 1 : a.localeCompare(b)));
@@ -41,8 +46,8 @@ export function progressPoints(
     if (competition.status !== 'competed' || !competition.competition_date) continue;
     const timestamp = Date.parse(competition.competition_date);
     if (!Number.isFinite(timestamp)) continue;
-    // Totals only describe the same performance when the contested movements match.
-    if (metric === 'total' && competition.event !== event) continue;
+    // Totals and RIS describe the same performance only within one event.
+    if ((metric === 'total' || metric === 'ris') && competition.event !== event) continue;
     const value = numeric(
       metric === 'total'
         ? competition.total

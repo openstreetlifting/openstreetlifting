@@ -1,6 +1,7 @@
 use super::models::*;
 use crate::{ImporterError, Result};
 use osl_domain::{Edition, Movement, NativeScript, NormalizedAthleteName};
+use rust_decimal::Decimal;
 use sqlx::PgPool;
 use tracing::debug;
 use uuid::Uuid;
@@ -22,6 +23,7 @@ struct ImportedFacts {
 struct ContestKey {
     weight_class_id: Option<Uuid>,
     division_id: Option<Uuid>,
+    gender: osl_domain::Gender,
 }
 
 impl<'a> CanonicalTransformer<'a> {
@@ -87,14 +89,23 @@ impl<'a> CanonicalTransformer<'a> {
             .await?;
 
         let mut imported = ImportedFacts::default();
+        let uses_reported_ris = canonical.uses_reported_ris();
+        let is_full_event = canonical.movements == Movement::ALL;
 
         for category in &canonical.categories {
             let contest = self.resolve_contest(category, federation_id, tx).await?;
 
             for athlete in &category.athletes {
+                // Shorter events keep published scores even when bodyweight and total are known.
+                let ranking_ris = athlete.reported_ris.filter(|_| {
+                    athlete.status == osl_domain::AthleteStatus::Competed
+                        && (uses_reported_ris
+                            || (is_full_event
+                                && (athlete.bodyweight.is_none() || athlete.total.is_none())))
+                });
                 self.import_athlete_performance(
                     athlete,
-                    category,
+                    ranking_ris,
                     competition_id,
                     contest,
                     &mut imported,
@@ -427,24 +438,20 @@ impl<'a> CanonicalTransformer<'a> {
         Ok(ContestKey {
             weight_class_id,
             division_id,
+            gender: category.gender,
         })
     }
 
     async fn import_athlete_performance(
         &self,
         athlete: &AthleteData,
-        category: &CategoryData,
+        ranking_ris: Option<Decimal>,
         competition_id: Uuid,
         contest: ContestKey,
         imported: &mut ImportedFacts,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
         let athlete_id = self.upsert_athlete(athlete, tx).await?;
-        // Preserve the published score; bodyweight allows a separate ranking score.
-        let ranking_ris = athlete.reported_ris.filter(|_| {
-            athlete.status == osl_domain::AthleteStatus::Competed
-                && (athlete.bodyweight.is_none() || athlete.total.is_none())
-        });
         let bodyweight_source = athlete.bodyweight_source().map(BodyweightSource::as_str);
         let reported_ris_edition = athlete.reported_ris_edition.map(|edition| edition.year());
 
@@ -482,7 +489,7 @@ impl<'a> CanonicalTransformer<'a> {
             reported_ris_edition,
             athlete.total,
             athlete.country.map(|country| country.as_str().to_owned()),
-            (category.gender == osl_domain::Gender::Mx).then_some("MX")
+            (contest.gender == osl_domain::Gender::Mx).then_some("MX")
         )
         .fetch_one(&mut **tx)
         .await?;

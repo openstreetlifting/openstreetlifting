@@ -21,6 +21,27 @@ function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteComp
 }
 
 describe('athlete progress', () => {
+  it('keeps published shorter-event RIS separate from All4 progress', () => {
+    const competitions = [
+      result(),
+      result({
+        competition_id: 'underground',
+        event: 'PDS',
+        ris_score: '88.84',
+        ris_source: 'reported',
+      }),
+      result({
+        competition_id: 'score-only',
+        event: 'PD',
+        total: null,
+        ris_score: '70',
+        ris_source: 'reported',
+      }),
+    ];
+    expect(totalFormats(competitions)).toEqual(['MPDS', 'PD', 'PDS']);
+    expect(progressPoints(competitions, 'ris').map((p) => p.value)).toEqual([100]);
+    expect(progressPoints(competitions, 'ris', 'PDS').map((p) => p.value)).toEqual([88.84]);
+  });
   it('separates total event formats and excludes unknown formats', () => {
     const competitions = [
       result(),

@@ -155,7 +155,11 @@ impl<'a> RankingRepository<'a> {
         query.push(sort_column);
         query.push(" IS NOT NULL ");
 
-        if filter.movement == RankingMovement::Total && filter.competition_id.is_none() {
+        if matches!(
+            filter.movement,
+            RankingMovement::Total | RankingMovement::Ris
+        ) && filter.competition_id.is_none()
+        {
             query.push(" AND event_code = ");
             query.push_bind(filter.event.clone());
         }
@@ -232,7 +236,7 @@ impl<'a> RankingRepository<'a> {
     }
 
     /// Returns the athlete's global and country place for every metric exposed
-    /// by the rankings board. RIS remains an open comparison. Kilogram metrics
+    /// by the rankings board. RIS and total stay within their event. Kilogram metrics
     /// compare athletes of the same sex and weight class; totals also stay
     /// within the four-movement event while individual lifts span every event.
     pub async fn get_athlete_metric_standings(
@@ -264,11 +268,11 @@ impl<'a> RankingRepository<'a> {
 
             query.push(format!("('{}', ", movement.as_str()));
 
-            // A total only means something within one event.
-            if movement == RankingMovement::Total {
+            // Global total and RIS standings compare the All4 event only.
+            if matches!(movement, RankingMovement::Total | RankingMovement::Ris) {
                 query.push("CASE WHEN event_code = ");
                 query.push_bind(osl_domain::FULL_EVENT);
-                query.push(" THEN total END)");
+                query.push(format!(" THEN {} END)", movement.as_column()));
             } else {
                 query.push(format!("{})", movement.as_column()));
             }

@@ -15,7 +15,7 @@ export interface RankingEntry {
   division?: string | null;
   ris: number | null;
   ris_source: RisSource | null;
-  /** Absent outside the four-movement event, where a total does not compare. */
+  /** Total across the movements contested at this competition. */
   total: number | null;
   /** Absent when the competition did not contest the movement. */
   muscleup: number | null;
@@ -43,7 +43,7 @@ export interface RankingFilters {
   q?: string | null;
   movement?: RankingMetric;
   direction?: SortDirection;
-  /** Which event to rank totals within. Ignored for single-movement boards. */
+  /** Event used for total and RIS rankings. Single lifts compare across events. */
   event?: string | null;
   /** Weight class suffix, e.g. `-73kg`, matched regardless of gender. */
   category?: string | null;

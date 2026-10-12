@@ -14,6 +14,19 @@ pub struct CanonicalFormat {
     pub categories: Vec<CategoryData>,
 }
 
+impl CanonicalFormat {
+    /// Shorter events may rank by published RIS when the whole meet has no weight classes.
+    pub fn uses_reported_ris(&self) -> bool {
+        !self.movements.is_empty()
+            && self.movements != Movement::ALL
+            && self.competition.scoring == Some(osl_domain::Scoring::Ris)
+            && self
+                .categories
+                .iter()
+                .all(|category| category.bounds() == (None, None))
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct CompetitionData {
     pub name: String,

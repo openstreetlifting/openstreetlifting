@@ -27,35 +27,33 @@ const ALL4_MOVEMENTS = 4;
 /**
  * Where a competition's RIS came from, or why it has none.
  *
- * `recomputed` and `reported` both follow the bodyweight: a score is recomputed
- * wherever bodyweight and total are available, and the federation's published score is kept
- * where either is missing, which the table marks row by row. A meet can carry both,
- * and is reported only when no score in it could be recomputed.
- * `not-contested` is a property of the meet, since RIS is fitted to a four lift
- * total and a shorter event never had one.
- * `not-published` is a gap in the record: all four were contested, but the
- * source gave neither bodyweight nor score.
+ * All4 RIS is recomputed wherever bodyweight and total are available. Shorter events use published
+ * scores when the meet explicitly ranks by RIS and has no weight classes.
+ * A meet can carry both sources and is reported when none were recomputed.
+ * `not-contested` means a shorter event has no ranking RIS.
+ * `not-published` means the source lacks the score or inputs required for RIS ranking.
  */
 export type RisProvenance = 'recomputed' | 'reported' | 'not-contested' | 'not-published';
 
 type RisShape = {
+  scoring?: string | null;
   movements: unknown[];
   categories: { participants: { ris_score?: string | null; ris_source?: string | null }[] }[];
 };
 
 export function risProvenance(competition: RisShape): RisProvenance {
-  if (competition.movements.length !== ALL4_MOVEMENTS) {
-    return 'not-contested';
+  let hasReported = false;
+  for (const category of competition.categories) {
+    for (const participant of category.participants) {
+      if (participant.ris_score == null) continue;
+      if (participant.ris_source !== 'reported') return 'recomputed';
+      hasReported = true;
+    }
   }
-  const scored = competition.categories.flatMap((category) =>
-    category.participants.filter((participant) => participant.ris_score != null)
-  );
-  if (scored.length === 0) {
-    return 'not-published';
-  }
-  return scored.some((participant) => participant.ris_source !== 'reported')
-    ? 'recomputed'
-    : 'reported';
+  if (hasReported) return 'reported';
+  return competition.movements.length === ALL4_MOVEMENTS || competition.scoring === 'ris'
+    ? 'not-published'
+    : 'not-contested';
 }
 
 /**

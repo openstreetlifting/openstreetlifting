@@ -36,6 +36,18 @@ it('separates a shorter event from a four lift meet with no published score', ()
   expect(risProvenance(meet(all4, [{}, {}]))).toBe('not-published');
 });
 
+it('shows published RIS for a shorter event and makes RIS the default sort', () => {
+  const provenance = risProvenance(
+    meet(['P', 'D', 'S'], [{ ris_score: '88.84', ris_source: 'reported' }])
+  );
+  expect(provenance).toBe('reported');
+  expect(defaultRankingSort(provenance)).toBe('ris');
+});
+
+it('marks a declared shorter RIS event as unavailable when no scores were published', () => {
+  expect(risProvenance({ ...meet(['P', 'D', 'S'], [{}]), scoring: 'ris' })).toBe('not-published');
+});
+
 it('sorts on total whenever no athlete has a RIS to sort on', () => {
   expect(defaultRankingSort('recomputed')).toBe('ris');
   expect(defaultRankingSort('reported')).toBe('ris');

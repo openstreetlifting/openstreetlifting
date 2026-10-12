@@ -43,6 +43,7 @@ fn mixed_contests_require_athlete_sex_and_an_explicit_scoring_rule() {
     );
     let mut canonical = mixed(Some(Scoring::Ris), false);
     canonical.movements.pop();
+    canonical.categories[0].weight_class_max = Some(common::decimal("80"));
     assert!(
         CanonicalValidator::validate(&canonical)
             .unwrap_err()

@@ -404,7 +404,13 @@
           {:else if data.ris === 'not-published'}
             Unavailable
             <InfoTip label="Why RIS is unavailable">
-              <p>RIS scores are unavailable because the required bodyweight or total is missing.</p>
+              {#if competition.movements.length < 4}
+                <p>Published RIS scores are missing from the source.</p>
+              {:else}
+                <p>
+                  RIS scores are unavailable because the required bodyweight or total is missing.
+                </p>
+              {/if}
             </InfoTip>
           {:else}
             None

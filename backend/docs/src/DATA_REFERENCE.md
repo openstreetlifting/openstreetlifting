@@ -65,7 +65,10 @@ it preserves a later end date. Optional fields can be left out.
 
 ### Event
 
-`event` lists the movements contested, using these letters in this order:
+OpenStreetLifting covers streetlifting competitions combining muscle-up,
+pull-up, dips and squat. The main formats are `MPDS`, sometimes called **All4**,
+and `PD`, sometimes called **Classic**. `event` lists the contested movements
+using these letters in this order:
 
 | Letter | Movement  |
 | ------ | --------- |
@@ -74,8 +77,9 @@ it preserves a later end date. Optional fields can be left out.
 | `D`    | Dips      |
 | `S`    | Squat     |
 
-Use `MPDS` for all four movements or `PD` for pull-up and dips. Include `event`
-whenever you add results.
+Use `MPDS` for all four movements or `PD` for pull-up and dips. Other
+combinations of these four lifts, such as `PDS`, use the same letter order.
+Include `event` whenever you add results.
 
 ### Status
 
@@ -152,7 +156,9 @@ scoring = "ris"
 ```
 
 - `total`: rank by `TotalKg`.
-- `ris`: rank by RIS, using each athlete's own formula. Requires `event = "MPDS"`.
+- `ris`: rank by RIS. All4 uses each athlete's own formula when its inputs are
+  available. Shorter events use published scores and require a competition
+  without weight classes; see [RIS for fewer than four lifts](#ris-for-fewer-than-four-lifts).
 
 This setting applies to every contest in the competition. Without it, existing
 single-sex contests rank by total when they have weight classes, or by RIS when
@@ -162,8 +168,8 @@ scoring rules, resolve that format before importing it.
 A missing ranking metric leaves the result unplaced. RIS ties use total, then
 lighter known bodyweight; total ties use lighter known bodyweight. These are OSL
 placings from the stored results, not a transcription of federation placings.
-Computed RIS uses OSL's current edition; published scores remain marked as
-reported when the inputs needed to recompute them are missing.
+Computed All4 RIS uses OSL's current edition. Published scores remain marked as
+reported when the event is shorter or the inputs needed to recompute them are missing.
 
 A competition can contain mixed and single-sex contests together. Keep each
 athlete's `Sex` on every row, and set `CategorySex=MX` only on mixed entries.
@@ -286,9 +292,11 @@ results are unknown, both values are preserved and a warning explains why the
 score could not be checked. Calculated ranking scores are stored separately;
 they never replace `ReportedRis` in the CSV. A published RIS can still be used
 when bodyweight is known but the total is missing. Scores published for shorter
-events remain source evidence; OSL does not recompute them with the All4 formula.
+events remain source evidence; eligible shorter competitions can use those
+published scores for ranking, as described below. OSL does not recompute them
+with the All4 formula.
 
-Missing bodyweights can still be recovered from a published score and a complete
+For All4, missing bodyweights can be recovered from a published score and a complete
 total. The recovery tool writes the estimate to `BodyweightKg`, marks it
 `BodyweightSource=recovered`, and preserves `ReportedRis` and
 `ReportedRisEdition`. All four fields are required for a recovered bodyweight;
@@ -297,6 +305,61 @@ the estimate must reproduce the original score. A reported weigh-in uses
 
 The former `Ris` header is rejected. Rename it to `ReportedRis`, preserving its
 values. Existing archive files already use the new name.
+
+### RIS for fewer than four lifts
+
+Some competitions, such as FinalRep Underground 3L, rank athletes by a published
+RIS score across pull-up, dips and squat. Record the actual event as `PDS`.
+Muscle-ups were not contested, so their cells stay empty.
+
+For any supported event with one, two or three movements, RIS ranking requires:
+
+- `scoring = "ris"` under `[competition]`, supported by the organizer's rules.
+- No weight classes anywhere in the competition. Omit `WeightClassKg`; a meet
+  containing even one weight-classed contest is ineligible for shorter-event RIS.
+- The organizer's published score in `ReportedRis` for each athlete who receives
+  a RIS placing.
+
+Men's, women's, mixed and division contests may remain separate. Here, “no
+weight classes” means no weight limits; it does not mean combining those groups.
+For a mixed contest, retain each athlete's `Sex` and set `CategorySex=MX`.
+
+For example, the metadata for a three-lift RIS competition includes:
+
+```toml
+event = "PDS"
+sources = ["<organizer's results URL or document reference>"]
+
+[competition]
+name = "Example Underground"
+start_date = "2026-06-28"
+country = "VN"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "FinalRep"
+```
+
+Keep the usual lift, total and bodyweight evidence. A known bodyweight does not
+replace a published shorter-event score with a calculated All4 score. OSL
+preserves `ReportedRisEdition` when established by the source, but does not
+verify a shorter-event score against the All4 formula or recover bodyweight from
+it. A missing score produces a warning and leaves that athlete without a RIS
+placing, even when total and bodyweight are known. Disqualified and no-show
+athletes remain unranked under the usual status rules.
+
+Shorter-event scores appear as **reported** on competition and athlete pages.
+Updating OSL's All4 formula leaves them intact. RIS rankings and athlete progress
+compare scores within one event: `PDS` scores do not enter the default `MPDS`
+global ranking or All4 profile standings. API consumers can request a shorter
+event with the rankings `event` filter; a competition's own leaderboard already
+uses that competition's event. RIS ties still use total, then known bodyweight.
+
+The four-lift rules remain unchanged: All4 may use weight classes and OSL may
+calculate its RIS from bodyweight and total. A shorter competition ranked by
+total may retain published RIS as evidence, but those scores do not determine
+placings or enter RIS rankings.
 
 ## Validation
 

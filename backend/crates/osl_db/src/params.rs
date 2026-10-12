@@ -109,7 +109,7 @@ pub struct RankingFilter {
     pub name: Option<String>,
     pub movement: RankingMovement,
     pub direction: SortDirection,
-    /// Which event a total is ranked within. Ignored when ranking by a single
+    /// Which event total and RIS are ranked within. Ignored when ranking by a single
     /// movement, since those compare across events.
     pub event: String,
     pub category: Option<WeightClass>,

@@ -13,7 +13,7 @@ use crate::movement::Movement;
 
 pub const FULL_EVENT: &str = "MPDS";
 
-/// Whether a total and a RIS mean anything for this event.
+/// Whether the event supports calculated All4 RIS.
 ///
 /// The RIS formula divides by a benchmark fitted to four-lift totals, so
 /// applying it to fewer movements measures against the wrong reference and
@@ -64,7 +64,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn only_the_four_movement_event_carries_a_total() {
+    fn only_the_four_movement_event_supports_calculated_ris() {
         assert!(is_full_event(Some("MPDS")));
     }
 

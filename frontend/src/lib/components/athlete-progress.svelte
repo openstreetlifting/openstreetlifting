@@ -92,7 +92,7 @@
           {/each}
         </select>
       </label>
-      {#if metric === 'total' && formats.length > 1}
+      {#if (metric === 'total' || metric === 'ris') && formats.length > 1}
         <label class="flex items-center gap-2 text-xs text-muted">
           Event
           <select
@@ -284,7 +284,7 @@
     {/if}
   {:else}
     <p class="border-y border-stroke py-8 text-sm text-secondary">
-      No dated {label} results available{metric === 'total'
+      No dated {label} results available{metric === 'total' || metric === 'ris'
         ? ` for ${format === 'MPDS' ? 'all four lifts' : format}`
         : ''}.
     </p>
