@@ -30,7 +30,8 @@ pub enum WeightClassSlug {
 }
 
 impl WeightClassSlug {
-    pub fn as_str(&self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(&self) -> &'static str {
         match self {
             Self::F52 => "F-52",
             Self::F57 => "F-57",
@@ -89,7 +90,7 @@ impl std::str::FromStr for WeightClassSlug {
             "M-94" => Ok(Self::M94),
             "M-101" => Ok(Self::M101),
             "M+101" => Ok(Self::MPlus101),
-            other => Err(format!("unknown weight class slug: {}", other)),
+            other => Err(format!("unknown weight class slug: {other}")),
         }
     }
 }
@@ -101,7 +102,8 @@ pub enum WeightClass {
 }
 
 impl WeightClass {
-    pub fn of(min: Option<Decimal>, max: Option<Decimal>) -> Option<Self> {
+    #[must_use]
+    pub const fn of(min: Option<Decimal>, max: Option<Decimal>) -> Option<Self> {
         match (min, max) {
             (_, Some(max)) => Some(Self::UpTo(max)),
             (Some(min), None) => Some(Self::Above(min)),
@@ -109,6 +111,7 @@ impl WeightClass {
         }
     }
 
+    #[must_use]
     pub fn label(min: Option<Decimal>, max: Option<Decimal>) -> String {
         Self::of(min, max)
             .map(|class| class.to_string())

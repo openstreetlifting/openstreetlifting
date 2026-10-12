@@ -107,7 +107,9 @@ impl CanonicalValidator {
         Self::check_athlete_names(canonical, &mut report);
         Self::check_athlete_identities(canonical, &mut report);
 
-        if !report.errors.is_empty() {
+        if report.errors.is_empty() {
+            Ok(report)
+        } else {
             // One problem per line: a competition can fail a dozen checks at once,
             // and a single joined line is unreadable at exactly that moment.
             Err(ImporterError::ValidationError(format!(
@@ -115,8 +117,6 @@ impl CanonicalValidator {
                 report.errors.len(),
                 report.errors.join("\n    ")
             )))
-        } else {
-            Ok(report)
         }
     }
 
@@ -171,7 +171,7 @@ impl CanonicalValidator {
             .categories
             .iter()
             .filter(|category| category.division.is_none())
-            .map(|category| category.label())
+            .map(super::models::CategoryData::label)
             .collect();
 
         if !missing.is_empty() {
@@ -192,7 +192,7 @@ impl CanonicalValidator {
 
         for spellings in by_fold.values().filter(|s| s.len() > 1) {
             let mut spellings: Vec<&str> = spellings.iter().copied().collect();
-            spellings.sort();
+            spellings.sort_unstable();
             report.errors.push(format!(
                 "Divisions {} differ only in case or spacing, so they would import as \
                  separate contests. Pick one spelling",
@@ -205,6 +205,10 @@ impl CanonicalValidator {
         }
     }
 
+    #[expect(
+        clippy::too_many_lines,
+        reason = "Keep per-athlete validation together while accumulating every problem"
+    )]
     fn check_athletes(canonical: &CanonicalFormat, report: &mut ValidationReport) {
         let uses_reported_ris = canonical.uses_reported_ris();
         if canonical
@@ -246,7 +250,7 @@ impl CanonicalValidator {
                 match athlete.validate_score_source(&canonical.movements) {
                     Err(reason) => report.errors.push(format!("Athlete '{label}': {reason}")),
                     Ok(Some(reason)) => {
-                        report.warnings.push(format!("Athlete '{label}': {reason}"))
+                        report.warnings.push(format!("Athlete '{label}': {reason}"));
                     }
                     Ok(None) => {}
                 }

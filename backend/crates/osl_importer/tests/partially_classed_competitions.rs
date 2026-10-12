@@ -6,9 +6,9 @@ mod common;
 #[test]
 fn classed_men_and_unclassed_women_survive_csv_preparation() {
     let men = common::men_80(vec![common::athlete("Alex", "Example")]);
-    let mut woman = common::athlete("Sam", "Example");
-    woman.gender = Gender::F;
-    let mut women = common::men_80(vec![woman]);
+    let mut athlete = common::athlete("Sam", "Example");
+    athlete.gender = Gender::F;
+    let mut women = common::men_80(vec![athlete]);
     women.gender = Gender::F;
     women.weight_class_slug = None;
     let canonical = common::competition("partially-classed", vec![men, women]);

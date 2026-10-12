@@ -16,6 +16,7 @@ pub struct CanonicalFormat {
 
 impl CanonicalFormat {
     /// Shorter events may rank by published RIS when the whole meet has no weight classes.
+    #[must_use]
     pub fn uses_reported_ris(&self) -> bool {
         !self.movements.is_empty()
             && self.movements != Movement::ALL
@@ -65,13 +66,15 @@ pub struct CategoryData {
 }
 
 impl CategoryData {
+    #[must_use]
     pub fn bounds(&self) -> (Option<Decimal>, Option<Decimal>) {
-        match self.weight_class_slug.as_ref() {
-            Some(slug) => slug.bounds(),
-            None => (self.weight_class_min, self.weight_class_max),
-        }
+        self.weight_class_slug.as_ref().map_or(
+            (self.weight_class_min, self.weight_class_max),
+            WeightClassSlug::bounds,
+        )
     }
 
+    #[must_use]
     pub fn label(&self) -> String {
         let (min, max) = self.bounds();
         category_label(self.division.as_deref(), self.gender, min, max)
@@ -97,16 +100,19 @@ pub struct AthleteData {
 }
 
 impl AthleteData {
+    #[must_use]
     pub fn display_name(&self) -> String {
         display_name(&self.first_name, &self.last_name)
     }
 
+    #[must_use]
     pub fn bodyweight_source(&self) -> Option<BodyweightSource> {
         self.bodyweight_source
-            .or(self.bodyweight.map(|_| BodyweightSource::Reported))
+            .or_else(|| self.bodyweight.map(|_| BodyweightSource::Reported))
     }
 
     /// Sum the event's successful bests only when every movement is present.
+    #[must_use]
     pub fn total_from_lifts(&self, movements: &[Movement]) -> Option<Decimal> {
         if self.status != AthleteStatus::Competed || movements.is_empty() {
             return None;
@@ -250,7 +256,8 @@ pub enum BodyweightSource {
 }
 
 impl BodyweightSource {
-    pub fn as_str(self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
         match self {
             Self::Reported => "reported",
             Self::Recovered => "recovered",
@@ -317,15 +324,15 @@ impl LiftData {
     /// What the competition page shows for the movement, and what the importer
     /// stores as `max_weight`. Derived whenever the attempts are known, so the
     /// column can never contradict them.
+    #[must_use]
     pub fn best(&self) -> Option<Decimal> {
-        match self.attempts.as_ref() {
-            Some(attempts) => attempts
+        self.attempts.as_ref().map_or(self.best_lift, |attempts| {
+            attempts
                 .iter()
                 .filter(|attempt| attempt.is_successful)
                 .map(|attempt| attempt.weight)
-                .max(),
-            None => self.best_lift,
-        }
+                .max()
+        })
     }
 }
 

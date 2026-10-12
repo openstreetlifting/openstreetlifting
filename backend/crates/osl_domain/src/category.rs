@@ -2,6 +2,7 @@ use rust_decimal::Decimal;
 
 use crate::{Gender, WeightClass};
 
+#[must_use]
 pub fn category_label(
     division: Option<&str>,
     gender: Gender,

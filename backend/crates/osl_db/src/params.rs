@@ -1,7 +1,7 @@
-//! Input types owned by osl_db.
+//! Input types owned by `osl_db`.
 //!
-//! Repositories take these rather than API request DTOs, so osl_db stays
-//! independent of the HTTP layer. osl_api converts its validated request
+//! Repositories take these rather than API request DTOs, so `osl_db` stays
+//! independent of the HTTP layer. `osl_api` converts its validated request
 //! bodies into these on the way in.
 
 use osl_domain::{CompetitionStatus, Gender, WeightClass};
@@ -9,7 +9,7 @@ use uuid::Uuid;
 
 /// A slice of a collection, already resolved to SQL `LIMIT` / `OFFSET`.
 ///
-/// The page-number arithmetic stays in osl_api; repositories only ever see
+/// The page-number arithmetic stays in `osl_api`; repositories only ever see
 /// the resolved bounds.
 #[derive(Debug, Clone, Copy)]
 pub struct Page {
@@ -19,7 +19,7 @@ pub struct Page {
 
 /// Movement the global ranking is sorted by.
 ///
-/// Lives here rather than in osl_api because the variants map directly
+/// Lives here rather than in `osl_api` because the variants map directly
 /// onto CTE column names in the ranking query.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum RankingMovement {
@@ -34,17 +34,18 @@ pub enum RankingMovement {
 
 impl RankingMovement {
     /// Every metric a standing is worked out for.
-    pub const ALL: [RankingMovement; 6] = [
-        RankingMovement::Ris,
-        RankingMovement::Total,
-        RankingMovement::Muscleup,
-        RankingMovement::Pullup,
-        RankingMovement::Dips,
-        RankingMovement::Squat,
+    pub const ALL: [Self; 6] = [
+        Self::Ris,
+        Self::Total,
+        Self::Muscleup,
+        Self::Pullup,
+        Self::Dips,
+        Self::Squat,
     ];
 
     /// The column the value is read from in the `movement_weights` CTE.
-    pub fn as_column(&self) -> &'static str {
+    #[must_use]
+    pub const fn as_column(&self) -> &'static str {
         match self {
             Self::Muscleup => "muscleup",
             Self::Pullup => "pullup",
@@ -57,7 +58,8 @@ impl RankingMovement {
 
     /// What the metric is called once unioned into one column. Only RIS differs
     /// from its column.
-    pub fn as_str(&self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(&self) -> &'static str {
         match self {
             Self::Muscleup => "muscleup",
             Self::Pullup => "pullup",
@@ -93,7 +95,8 @@ pub enum SortDirection {
 }
 
 impl SortDirection {
-    pub fn as_sql(&self) -> &'static str {
+    #[must_use]
+    pub const fn as_sql(&self) -> &'static str {
         match self {
             Self::Desc => "DESC",
             Self::Asc => "ASC",

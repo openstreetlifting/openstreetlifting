@@ -26,13 +26,15 @@ pub struct DeletedCompetition {
 }
 
 impl SyncPlan {
-    pub fn is_empty(&self) -> bool {
+    #[must_use]
+    pub const fn is_empty(&self) -> bool {
         self.competitions.is_empty() && self.athletes.is_empty() && self.federations.is_empty()
     }
 }
 
 impl<'a> CompetitionSync<'a> {
-    pub fn new(pool: &'a PgPool) -> Self {
+    #[must_use]
+    pub const fn new(pool: &'a PgPool) -> Self {
         Self { pool }
     }
 

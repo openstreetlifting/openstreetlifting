@@ -1,6 +1,28 @@
 import { expect, it } from 'vitest';
-import type { Participant } from '#lib/types/competition.js';
-import { hasRankingResult } from './competition-results';
+import type { CategoryDetail, Participant } from '#lib/types/competition.js';
+import { hasRankingResult, weightClasses } from './competition-results';
+
+it('lists classes once per sex in weight order across divisions using the published labels', () => {
+  const categories: CategoryDetail[] = (
+    [
+      { division: 'Junior', gender: 'M', weight_class: '-80kg' },
+      { division: 'Open', gender: 'M', weight_class: '+101kg' },
+      { division: 'Open', gender: 'M', weight_class: '-66kg' },
+      { division: 'Open', gender: 'M', weight_class: '-80kg' },
+      { division: 'Open', gender: 'M', weight_class: '-101kg' },
+      { division: 'Open', gender: 'M', weight_class: '' },
+      { division: 'Open', gender: 'F', weight_class: '-52.5kg' },
+      { division: 'Junior', gender: 'F', weight_class: '-52kg' },
+    ] as const
+  ).map((category) => ({
+    category: { ...category, name: category.weight_class },
+    participants: [],
+  }));
+
+  expect(weightClasses(categories, 'M')).toEqual(['-66kg', '-80kg', '-101kg', '', '+101kg']);
+  expect(weightClasses(categories, 'F')).toEqual(['-52kg', '-52.5kg']);
+  expect(weightClasses(categories, 'MX')).toEqual([]);
+});
 
 const result = (overrides: Partial<Participant> = {}): Participant => ({
   participant_id: 'entry-1',

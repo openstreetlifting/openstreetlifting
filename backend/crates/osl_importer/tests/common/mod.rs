@@ -123,19 +123,19 @@ pub fn scored(mut athlete: AthleteData, ris: &str) -> AthleteData {
 
 pub fn disqualified(mut athlete: AthleteData, reason: Option<&str>) -> AthleteData {
     athlete.status = AthleteStatus::Disqualified;
-    athlete.status_reason = reason.map(|r| r.to_string());
+    athlete.status_reason = reason.map(std::string::ToString::to_string);
     athlete
 }
 
 pub fn no_show(mut athlete: AthleteData, reason: Option<&str>) -> AthleteData {
     athlete.status = AthleteStatus::NoShow;
-    athlete.status_reason = reason.map(|r| r.to_string());
+    athlete.status_reason = reason.map(std::string::ToString::to_string);
     athlete.bodyweight = None;
     athlete.lifts.clear();
     athlete
 }
 
-pub fn numbered(mut athlete: AthleteData, disambiguation: i16) -> AthleteData {
+pub const fn numbered(mut athlete: AthleteData, disambiguation: i16) -> AthleteData {
     athlete.disambiguation = Some(disambiguation);
     athlete
 }
@@ -158,7 +158,7 @@ pub fn attempts(
         .iter()
         .enumerate()
         .map(|(index, (weight, is_successful))| AttemptData {
-            attempt_number: index as i16 + 1,
+            attempt_number: i16::try_from(index + 1).expect("test attempt number fits i16"),
             weight: decimal(weight),
             is_successful: *is_successful,
         })

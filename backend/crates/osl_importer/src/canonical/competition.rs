@@ -46,6 +46,7 @@ pub struct CompetitionSection {
 }
 
 impl CompetitionSection {
+    #[must_use]
     pub fn into_data(self, slug: String, federation: FederationData) -> CompetitionData {
         CompetitionData {
             name: self.name,
@@ -62,6 +63,7 @@ impl CompetitionSection {
         }
     }
 
+    #[must_use]
     pub fn from_data(competition: &CompetitionData) -> Self {
         Self {
             name: competition.name.clone(),

@@ -14,7 +14,8 @@ pub enum AthleteStatus {
 }
 
 impl AthleteStatus {
-    pub fn as_str(&self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(&self) -> &'static str {
         match self {
             Self::Competed => "competed",
             Self::Disqualified => "disqualified",
@@ -22,7 +23,8 @@ impl AthleteStatus {
         }
     }
 
-    pub fn competed(&self) -> bool {
+    #[must_use]
+    pub const fn competed(&self) -> bool {
         matches!(self, Self::Competed)
     }
 }
@@ -41,7 +43,7 @@ impl std::str::FromStr for AthleteStatus {
             "competed" => Ok(Self::Competed),
             "disqualified" => Ok(Self::Disqualified),
             "no_show" => Ok(Self::NoShow),
-            other => Err(format!("unknown athlete status: {}", other)),
+            other => Err(format!("unknown athlete status: {other}")),
         }
     }
 }

@@ -9,7 +9,7 @@
 //! So nothing is rewritten here. The file holds the name as it should be read,
 //! and a name that breaks these rules is reported and fixed by hand.
 //!
-//! The rules follow OpenPowerlifting's checker, the largest curated database of
+//! The rules follow `OpenPowerlifting`'s checker, the largest curated database of
 //! international lifter names, so a name spelled for one reads correctly in the
 //! other.
 
@@ -47,6 +47,7 @@ const ALLOWED_PUNCTUATION: [char; 4] = [' ', '\'', '.', '-'];
 /// assert!(check_name("", "Redacted Athlete #3").is_empty());
 /// assert!(!check_name("antoine", "auvray").is_empty());
 /// ```
+#[must_use]
 pub fn check_name(first_name: &str, last_name: &str) -> Vec<String> {
     let mut problems = Vec::new();
     let full = crate::display_name(first_name, last_name);

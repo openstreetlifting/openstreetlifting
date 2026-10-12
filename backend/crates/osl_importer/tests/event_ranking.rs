@@ -109,6 +109,32 @@ async fn the_event_records_which_movements_were_contested(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
+async fn event_codes_and_computed_ris_do_not_depend_on_input_movement_order(pool: PgPool) {
+    let mut canonical = competition(
+        "reordered-event",
+        ALL_FOUR,
+        vec![four_lift_athlete("Ada", "Fourlift", "50")],
+    );
+    canonical.movements.reverse();
+    import(&pool, canonical).await;
+
+    let (event, source): (String, String) = sqlx::query_as(
+        "SELECT c.event_code, cp.ris_source
+         FROM competitions c
+         JOIN competition_participants cp USING (competition_id)",
+    )
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+    assert_eq!(event, "MPDS");
+    assert_eq!(source, "computed");
+    assert_eq!(
+        rank(&pool, RankingMovement::Total).await,
+        (vec!["Fourlift".into()], 1)
+    );
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
 async fn a_partial_event_stays_out_of_the_total_ranking(pool: PgPool) {
     seed_both_events(&pool).await;
 

@@ -77,65 +77,6 @@ class ApiClient {
 
     return this.handleResponse<T>(response);
   }
-
-  async post<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
-    const url = this.buildUrl(path, options?.params);
-    const response = await fetch(url, {
-      ...options,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-
-    return this.handleResponse<T>(response);
-  }
-
-  async put<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
-    const url = this.buildUrl(path, options?.params);
-    const response = await fetch(url, {
-      ...options,
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-
-    return this.handleResponse<T>(response);
-  }
-
-  async patch<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
-    const url = this.buildUrl(path, options?.params);
-    const response = await fetch(url, {
-      ...options,
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-
-    return this.handleResponse<T>(response);
-  }
-
-  async delete<T>(path: string, options?: RequestOptions): Promise<T> {
-    const url = this.buildUrl(path, options?.params);
-    const response = await fetch(url, {
-      ...options,
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-    });
-
-    return this.handleResponse<T>(response);
-  }
 }
 
 export const apiClient = new ApiClient(config.apiUrl);

@@ -60,7 +60,7 @@ fn fixture(slug: &str, name: &str) -> CanonicalFormat {
     )
 }
 
-fn success(output: Output) {
+fn success(output: &Output) {
     assert!(
         output.status.success(),
         "{}",
@@ -88,9 +88,9 @@ fn dry_run_validates_files_without_a_database() {
     let workspace = Workspace::new();
     let directory = workspace.write(&fixture("meet", "Alpha"));
     let path = directory.to_str().unwrap();
-    success(workspace.run(&["competitions", path, "--dry-run", "--prune"], None));
+    success(&workspace.run(&["competitions", path, "--dry-run", "--prune"], None));
     let overlapping = workspace.run(&["competitions", ".", path, "--dry-run"], None);
-    success(overlapping);
+    success(&overlapping);
     for args in [
         vec!["competitions", "missing", "--dry-run"],
         vec!["competitions", path, "missing", "--dry-run"],
@@ -162,7 +162,7 @@ fn formatting_preview_and_check_leave_files_unchanged() {
     let path = directory.join("competition.toml");
     let contents = format!("\n{}", std::fs::read_to_string(&path).unwrap());
     std::fs::write(&path, &contents).unwrap();
-    success(workspace.run(&["prepare", ".", "--dry-run"], None));
+    success(&workspace.run(&["prepare", ".", "--dry-run"], None));
     assert_eq!(std::fs::read_to_string(&path).unwrap(), contents);
     assert!(
         !workspace
@@ -171,8 +171,8 @@ fn formatting_preview_and_check_leave_files_unchanged() {
             .success()
     );
     assert_eq!(std::fs::read_to_string(&path).unwrap(), contents);
-    success(workspace.run(&["prepare", "."], None));
-    success(workspace.run(&["prepare", ".", "--check"], None));
+    success(&workspace.run(&["prepare", "."], None));
+    success(&workspace.run(&["prepare", ".", "--check"], None));
 }
 
 #[test]
@@ -210,7 +210,7 @@ fn optional_entry_headers_are_restored_without_changing_results() {
         let reduced = writer.into_inner().unwrap();
         std::fs::write(&entries_path, &reduced).unwrap();
 
-        success(workspace.run(&["competitions", ".", "--dry-run"], None));
+        success(&workspace.run(&["competitions", ".", "--dry-run"], None));
         assert_eq!(std::fs::read(&entries_path).unwrap(), reduced);
         assert!(
             !workspace
@@ -218,9 +218,9 @@ fn optional_entry_headers_are_restored_without_changing_results() {
                 .status
                 .success()
         );
-        success(workspace.run(&["prepare", "."], None));
+        success(&workspace.run(&["prepare", "."], None));
         assert_eq!(std::fs::read_to_string(&entries_path).unwrap(), original);
-        success(workspace.run(&["prepare", ".", "--check"], None));
+        success(&workspace.run(&["prepare", ".", "--check"], None));
     }
 }
 
@@ -287,7 +287,7 @@ fn help_hides_credentials_and_redaction_validates_identity_options() {
         ])
         .output()
         .unwrap();
-    success(output);
+    success(&output);
     assert!(!workspace.0.join("data/athletes/privacy.csv").exists());
 }
 
@@ -298,7 +298,7 @@ async fn dry_run_and_invalid_inputs_cannot_import_or_prune(pool: PgPool) {
     common::import(&pool, fixture("removed", "Bravo")).await;
     workspace.write(&fixture("kept", "Charlie"));
     let before = snapshot(&pool).await;
-    success(workspace.run(&["competitions", ".", "--dry-run", "--prune"], Some(&pool)));
+    success(&workspace.run(&["competitions", ".", "--dry-run", "--prune"], Some(&pool)));
     assert_eq!(snapshot(&pool).await, before);
     assert!(
         !workspace
@@ -317,7 +317,7 @@ async fn dry_run_and_invalid_inputs_cannot_import_or_prune(pool: PgPool) {
     );
     assert_eq!(snapshot(&pool).await, before);
     std::fs::remove_dir_all(bad).unwrap();
-    success(workspace.run(&["competitions", ".", "--prune"], Some(&pool)));
+    success(&workspace.run(&["competitions", ".", "--prune"], Some(&pool)));
     let names: Vec<String> =
         sqlx::query_scalar("SELECT last_name FROM athletes ORDER BY last_name")
             .fetch_all(&pool)
@@ -331,7 +331,7 @@ async fn competition_import_prunes_missing_results(pool: PgPool) {
     let workspace = Workspace::new();
     common::import(&pool, fixture("removed", "Bravo")).await;
     workspace.write(&fixture("kept", "Alpha"));
-    success(workspace.run(&["competitions", ".", "--prune"], Some(&pool)));
+    success(&workspace.run(&["competitions", ".", "--prune"], Some(&pool)));
     let slugs: Vec<String> = sqlx::query_scalar("SELECT slug FROM competitions")
         .fetch_all(&pool)
         .await
@@ -353,11 +353,11 @@ async fn instagram_and_recompute_previews_leave_stored_data_unchanged(pool: PgPo
         .await
         .unwrap();
     let before = snapshot(&pool).await;
-    success(workspace.run(&["instagram", "instagram.csv", "--dry-run"], Some(&pool)));
-    success(workspace.run(&["recompute-ris", "--dry-run"], Some(&pool)));
+    success(&workspace.run(&["instagram", "instagram.csv", "--dry-run"], Some(&pool)));
+    success(&workspace.run(&["recompute-ris", "--dry-run"], Some(&pool)));
     assert_eq!(snapshot(&pool).await, before);
-    success(workspace.run(&["instagram", "instagram.csv"], Some(&pool)));
-    success(workspace.run(&["recompute-ris"], Some(&pool)));
+    success(&workspace.run(&["instagram", "instagram.csv"], Some(&pool)));
+    success(&workspace.run(&["recompute-ris"], Some(&pool)));
     assert_ne!(snapshot(&pool).await, before);
     let handles: Vec<String> = sqlx::query_scalar("SELECT handle FROM athlete_socials")
         .fetch_all(&pool)
@@ -381,7 +381,7 @@ fn preparation_stores_missing_totals_and_checks_are_read_only() {
             .status
             .success()
     );
-    success(workspace.run(&["prepare", ".", "--dry-run"], None));
+    success(&workspace.run(&["prepare", ".", "--dry-run"], None));
     assert!(
         !workspace
             .run(&["competitions", ".", "--dry-run"], None)
@@ -389,13 +389,13 @@ fn preparation_stores_missing_totals_and_checks_are_read_only() {
             .success()
     );
     assert_eq!(std::fs::read(&path).unwrap(), original);
-    success(workspace.run(&["prepare", "."], None));
+    success(&workspace.run(&["prepare", "."], None));
     assert_eq!(
         store::read(&directory).unwrap().categories[0].athletes[0].total,
         Some(common::decimal("300"))
     );
-    success(workspace.run(&["prepare", ".", "--check"], None));
-    success(workspace.run(&["competitions", ".", "--dry-run"], None));
+    success(&workspace.run(&["prepare", ".", "--check"], None));
+    success(&workspace.run(&["competitions", ".", "--dry-run"], None));
 }
 
 #[test]

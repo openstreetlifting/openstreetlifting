@@ -1,4 +1,7 @@
-use super::models::*;
+use super::models::{
+    AthleteData, AttemptData, BodyweightSource, CanonicalFormat, CategoryData, FederationData,
+    LiftData,
+};
 use crate::{ImporterError, Result};
 use osl_domain::{Edition, Movement, NativeScript, NormalizedAthleteName};
 use rust_decimal::Decimal;
@@ -27,7 +30,8 @@ struct ContestKey {
 }
 
 impl<'a> CanonicalTransformer<'a> {
-    pub fn new(pool: &'a PgPool) -> Self {
+    #[must_use]
+    pub const fn new(pool: &'a PgPool) -> Self {
         Self { pool }
     }
 
@@ -82,15 +86,16 @@ impl<'a> CanonicalTransformer<'a> {
         canonical: &CanonicalFormat,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<()> {
-        let (competition_id, federation_id) =
-            self.upsert_competition(&canonical.competition, tx).await?;
+        let (competition_id, federation_id) = self.upsert_competition(canonical, tx).await?;
 
         self.upsert_competition_movements(competition_id, &canonical.movements, tx)
             .await?;
 
         let mut imported = ImportedFacts::default();
         let uses_reported_ris = canonical.uses_reported_ris();
-        let is_full_event = canonical.movements == Movement::ALL;
+        let is_full_event = Movement::ALL
+            .iter()
+            .all(|movement| canonical.movements.contains(movement));
 
         for category in &canonical.categories {
             let contest = self.resolve_contest(category, federation_id, tx).await?;
@@ -118,16 +123,12 @@ impl<'a> CanonicalTransformer<'a> {
         self.prune_absent_facts(competition_id, canonical, &imported, tx)
             .await?;
 
-        // After the prune, so the event reflects the movements that survived.
-        let event_code = self.refresh_event_code(competition_id, tx).await?;
-
-        if osl_domain::is_full_event(event_code.as_deref()) {
+        if is_full_event {
             debug!(%competition_id, "Computing RIS scores for eligible participants");
             self.compute_ris_for_competition(competition_id, tx).await?;
         } else {
             debug!(
                 %competition_id,
-                event = event_code.as_deref().unwrap_or("none"),
                 "RIS computation skipped; the event does not include all four movements"
             );
         }
@@ -135,41 +136,13 @@ impl<'a> CanonicalTransformer<'a> {
         Ok(())
     }
 
-    /// Rewrites the competition's event from the movements it actually has, so
-    /// a file that drops a movement changes the event rather than leaving a
-    /// stale one behind.
-    async fn refresh_event_code(
-        &self,
-        competition_id: Uuid,
-        tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
-    ) -> Result<Option<String>> {
-        let event_code = sqlx::query_scalar!(
-            r#"
-            UPDATE competitions
-            SET event_code = (
-                SELECT string_agg(m.code, '' ORDER BY m.display_order)
-                FROM competition_movements cm
-                JOIN movements m ON m.name = cm.movement_name
-                WHERE cm.competition_id = $1
-            )
-            WHERE competition_id = $1
-            RETURNING event_code
-            "#,
-            competition_id
-        )
-        .fetch_one(&mut **tx)
-        .await?;
-
-        Ok(event_code)
-    }
-
     /// A canonical file is the whole truth about its competition, so a row it
     /// no longer lists has been corrected away and must go. Only facts the
     /// competition owns are pruned: athletes, weight classes, divisions,
     /// movements and federations are shared between competitions and stay.
     ///
-    /// Order matters. Participants go first and take their lifts, attempts and
-    /// RIS history with them through the foreign keys, which leaves the later
+    /// Order matters. Participants go first and take their lifts and attempts
+    /// with them through the foreign keys, which leaves the later
     /// statements looking only at the participants and lifts that survived.
     async fn prune_absent_facts(
         &self,
@@ -248,17 +221,26 @@ impl<'a> CanonicalTransformer<'a> {
 
     async fn upsert_competition(
         &self,
-        competition: &CompetitionData,
+        canonical: &CanonicalFormat,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<(Uuid, Uuid)> {
+        let competition = &canonical.competition;
+        let event_code: Option<String> = (!canonical.movements.is_empty()).then(|| {
+            // Library callers may supply movements in a different order than files do.
+            Movement::ALL
+                .iter()
+                .filter(|movement| canonical.movements.contains(movement))
+                .map(osl_domain::Movement::code)
+                .collect()
+        });
         let federation_id = self
             .get_or_create_federation(&competition.federation, tx)
             .await?;
 
         let competition_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, city, region, country, scoring, venue)
-            VALUES ($1, $2, COALESCE($3, 'completed'), $4, $5, $6, $7, $8, $9, $10, $11)
+            INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, city, region, country, scoring, venue, event_code)
+            VALUES ($1, $2, COALESCE($3, 'completed'), $4, $5, $6, $7, $8, $9, $10, $11, $12)
             ON CONFLICT (slug)
             DO UPDATE SET
                 name = EXCLUDED.name,
@@ -270,7 +252,8 @@ impl<'a> CanonicalTransformer<'a> {
                 region = EXCLUDED.region,
                 country = EXCLUDED.country,
                 scoring = EXCLUDED.scoring,
-                venue = EXCLUDED.venue
+                venue = EXCLUDED.venue,
+                event_code = EXCLUDED.event_code
             RETURNING competition_id as "competition_id: Uuid"
             "#,
             competition.name,
@@ -285,8 +268,9 @@ impl<'a> CanonicalTransformer<'a> {
             competition.city,
             competition.region,
             competition.country.as_str(),
-            competition.scoring.map(|scoring| scoring.as_str()),
-            competition.venue
+            competition.scoring.map(osl_domain::Scoring::as_str),
+            competition.venue,
+            event_code
         )
         .fetch_one(&mut **tx)
         .await?;
@@ -337,7 +321,7 @@ impl<'a> CanonicalTransformer<'a> {
         .fetch_one(&mut **tx)
         .await
         .map_err(|e| {
-            ImporterError::TransformationError(format!("Failed to create federation: {}", e))
+            ImporterError::TransformationError(format!("Failed to create federation: {e}"))
         })?;
 
         Ok(federation_id)
@@ -360,7 +344,7 @@ impl<'a> CanonicalTransformer<'a> {
                 "#,
                 competition_id,
                 movement.as_str(),
-                movement.display_order() as i32
+                i32::from(movement.display_order())
             )
             .execute(&mut **tx)
             .await?;
@@ -453,7 +437,7 @@ impl<'a> CanonicalTransformer<'a> {
     ) -> Result<()> {
         let athlete_id = self.upsert_athlete(athlete, tx).await?;
         let bodyweight_source = athlete.bodyweight_source().map(BodyweightSource::as_str);
-        let reported_ris_edition = athlete.reported_ris_edition.map(|edition| edition.year());
+        let reported_ris_edition = athlete.reported_ris_edition.map(osl_domain::Edition::year);
 
         let participant_id = sqlx::query_scalar!(
             r#"
@@ -517,9 +501,8 @@ impl<'a> CanonicalTransformer<'a> {
             .and_then(NativeScript::detect);
 
         let normalized_name = NormalizedAthleteName::new(&athlete.first_name, &athlete.last_name);
-        let redacted =
-            osl_domain::redaction::RedactedAthlete::from_match_key(&normalized_name.match_name())
-                .is_some();
+        let match_key = normalized_name.match_name();
+        let redacted = osl_domain::redaction::RedactedAthlete::from_match_key(&match_key).is_some();
         if redacted && athlete.native_name.is_some() {
             return Err(crate::ImporterError::ValidationError(
                 "A redacted athlete cannot carry a NativeName".into(),
@@ -529,8 +512,6 @@ impl<'a> CanonicalTransformer<'a> {
 
         // The folded name is what decides who this is. The stored name keeps
         // whatever spelling the file used, so the page shows the accents.
-        let match_key = normalized_name.match_name();
-
         let existing = sqlx::query_scalar!(
             r#"
             SELECT athlete_id as "athlete_id: Uuid" FROM athletes
@@ -548,17 +529,13 @@ impl<'a> CanonicalTransformer<'a> {
         let native_script = script.map(NativeScript::as_str);
 
         if let Some(id) = existing {
-            // match_key is rewritten so a row backfilled by the migration takes
-            // the importer's fold, which is the authority.
             sqlx::query!(
                 r#"
                 UPDATE athletes
-                SET match_key = $1,
-                    native_name = COALESCE($2, native_name),
-                    native_script = COALESCE($3, native_script)
-                WHERE athlete_id = $4
+                SET native_name = COALESCE($1, native_name),
+                    native_script = COALESCE($2, native_script)
+                WHERE athlete_id = $3
                 "#,
-                match_key,
                 athlete.native_name,
                 native_script,
                 id
@@ -635,7 +612,7 @@ impl<'a> CanonicalTransformer<'a> {
         .await?
         .unwrap_or(false)
         {
-            final_slug = format!("{}-{}", base_slug, counter);
+            final_slug = format!("{base_slug}-{counter}");
             counter += 1;
         }
 

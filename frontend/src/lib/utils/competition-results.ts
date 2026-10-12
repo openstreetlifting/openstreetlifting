@@ -1,5 +1,19 @@
-import type { Participant } from '#lib/types/competition.js';
-import type { Movement, RankingMetric } from '#lib/types/enums.js';
+import type { CategoryDetail, Participant } from '#lib/types/competition.js';
+import type { Gender, Movement, RankingMetric } from '#lib/types/enums.js';
+
+/** Class labels are shared across divisions; capped classes precede open classes. */
+export function weightClasses(categories: CategoryDetail[], gender: Gender): string[] {
+  const max = (label: string) =>
+    label.startsWith('-') ? Number.parseFloat(label.slice(1)) : Infinity;
+  const min = (label: string) => (label.startsWith('+') ? Number.parseFloat(label.slice(1)) : 0);
+  return [
+    ...new Set(
+      categories
+        .filter(({ category }) => category.gender === gender)
+        .map(({ category }) => category.weight_class)
+    ),
+  ].sort((a, b) => max(a) - max(b) || min(a) - min(b));
+}
 
 const movements: Record<Exclude<RankingMetric, 'total' | 'ris'>, Movement> = {
   muscleup: 'Muscle-up',

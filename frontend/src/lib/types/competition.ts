@@ -95,8 +95,6 @@ export interface Category {
   division?: string | null;
   gender: Gender;
   weight_class: string;
-  weight_class_min: string | null;
-  weight_class_max: string | null;
 }
 
 export interface CategoryDetail {

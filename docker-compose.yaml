@@ -24,15 +24,17 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
+      args:
+        BIN: osl_api
     container_name: openstreetlifting_web_api
     restart: unless-stopped
     env_file:
-      - .env
+      - backend/.env
     environment:
-      DB_HOST: postgres
       HOST: 0.0.0.0
+      PORT: 8080
       DATABASE_URL: postgresql://${DB_USER:-appuser}:${DB_PASSWORD:-apppassword}@postgres:5432/${DB_NAME:-appdb}
     ports:
       - "${PORT:-8080}:8080"
@@ -44,11 +46,13 @@ services:
 
   importer:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
+      args:
+        BIN: import
     container_name: openstreetlifting_importer
     env_file:
-      - .env
+      - backend/.env
     environment:
       DATABASE_URL: postgresql://${DB_USER:-appuser}:${DB_PASSWORD:-apppassword}@postgres:5432/${DB_NAME:-appdb}
     networks:
@@ -58,7 +62,6 @@ services:
         condition: service_healthy
     profiles:
       - tools
-    entrypoint: ["/app/import"]
 
 volumes:
   postgres_data:

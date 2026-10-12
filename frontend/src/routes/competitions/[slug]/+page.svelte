@@ -55,7 +55,7 @@
   import type { RankingEntry } from '#lib/types/ranking.js';
   import type { Attempt, Participant, CategoryDetail } from '#lib/types/competition.js';
   import { GENDERS, asRankingMetric, type AthleteStatus } from '#lib/types/enums.js';
-  import { hasRankingResult } from '#lib/utils/competition-results.js';
+  import { hasRankingResult, weightClasses } from '#lib/utils/competition-results.js';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
   import { FIELD, TEXT } from '#lib/constants/typography.js';
   import Seo from '#lib/components/seo.svelte';
@@ -177,8 +177,7 @@
     if (!lift && best === null) return { kind: 'absent' };
 
     if (lift?.attempts.length) {
-      const attempts = [...lift.attempts].sort((a, b) => a.attempt_number - b.attempt_number);
-      return { kind: 'attempts', attempts, best };
+      return { kind: 'attempts', attempts: lift.attempts, best };
     }
 
     return best === null ? { kind: 'bombed' } : { kind: 'best', best };
@@ -219,22 +218,11 @@
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
   const representedClasses = $derived(
-    GENDERS.map((gender) => {
-      const categories = competition.categories
-        .filter(({ category }) => category.gender === gender)
-        .map(({ category }) => category)
-        .sort(
-          (a, b) =>
-            Number(a.weight_class_max ?? Infinity) - Number(b.weight_class_max ?? Infinity) ||
-            Number(a.weight_class_min ?? 0) - Number(b.weight_class_min ?? 0)
-        );
-
-      return {
-        gender,
-        label: { M: 'Men', F: 'Women', MX: 'Mixed' }[gender],
-        classes: [...new Set(categories.map((category) => category.weight_class))],
-      };
-    }).filter(({ classes }) => classes.length > 0)
+    GENDERS.map((gender) => ({
+      gender,
+      label: { M: 'Men', F: 'Women', MX: 'Mixed' }[gender],
+      classes: weightClasses(competition.categories, gender),
+    })).filter(({ classes }) => classes.length > 0)
   );
 
   // Missing scores have no rank, but their entries still belong in the results.

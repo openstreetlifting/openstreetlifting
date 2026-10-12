@@ -25,7 +25,8 @@ impl Database {
         Ok(Self { pool })
     }
 
-    pub fn from_pool(pool: PgPool) -> Self {
+    #[must_use]
+    pub const fn from_pool(pool: PgPool) -> Self {
         Self { pool }
     }
 
@@ -34,7 +35,8 @@ impl Database {
         Ok(())
     }
 
-    pub fn pool(&self) -> &PgPool {
+    #[must_use]
+    pub const fn pool(&self) -> &PgPool {
         &self.pool
     }
 

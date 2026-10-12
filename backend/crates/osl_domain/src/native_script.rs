@@ -1,5 +1,7 @@
 //! Folding leaves a non-Latin name alone, so nobody typing `Radovan Repac`
-//! finds `Радован Репац`. Transliteration is lossy and language specific, so
+//! finds `Радован Репац`.
+//!
+//! Transliteration is lossy and language specific, so
 //! the Latin spelling is written by hand and the native one carried beside it.
 
 use std::fmt;
@@ -15,7 +17,8 @@ pub enum NativeScript {
 }
 
 impl NativeScript {
-    pub fn as_str(self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
         match self {
             Self::Cyrillic => "cyrillic",
             Self::Greek => "greek",
@@ -35,6 +38,7 @@ impl NativeScript {
     /// assert_eq!(NativeScript::detect("조정우"), Some(NativeScript::Korean));
     /// assert_eq!(NativeScript::detect("Mérandon"), None);
     /// ```
+    #[must_use]
     pub fn detect(name: &str) -> Option<Self> {
         let mut found: Option<Self> = None;
 
@@ -64,7 +68,8 @@ impl NativeScript {
         found
     }
 
-    pub fn is_latin(c: char) -> bool {
+    #[must_use]
+    pub const fn is_latin(c: char) -> bool {
         c.is_ascii_alphabetic() || matches!(c, '\u{00C0}'..='\u{024F}' | '\u{1E00}'..='\u{1EFF}')
     }
 }

@@ -51,15 +51,21 @@ pub const IDENTITY_COLUMNS: [&str; 10] = [
 
 pub const ATTEMPTS_PER_MOVEMENT: i16 = 3;
 
+#[must_use]
 pub fn attempt_column(movement: Movement, attempt: i16) -> String {
     format!("{}{}Kg", movement.column_prefix(), attempt)
 }
 
+#[must_use]
 pub fn best_column(movement: Movement) -> String {
     format!("Best{}Kg", movement.column_prefix())
 }
 
 #[derive(Debug, Clone, Copy, Default)]
+#[expect(
+    clippy::struct_excessive_bools,
+    reason = "Each flag independently controls whether a CSV column is present"
+)]
 pub struct Layout {
     pub mixed: bool,
     pub divisioned: bool,
@@ -69,6 +75,7 @@ pub struct Layout {
     pub reported_ris_editions: bool,
 }
 
+#[must_use]
 pub fn headers(layout: Layout) -> Vec<String> {
     let mut headers: Vec<String> = layout
         .divisioned
@@ -119,10 +126,9 @@ pub fn parse_attempt(cell: &str) -> Result<Option<Attempt>, String> {
         return Ok(None);
     }
 
-    let (raw, is_successful) = match cell.strip_suffix(['x', 'X']) {
-        Some(raw) => (raw.trim_end(), false),
-        None => (cell, true),
-    };
+    let (raw, is_successful) = cell
+        .strip_suffix(['x', 'X'])
+        .map_or((cell, true), |raw| (raw.trim_end(), false));
 
     if raw.is_empty() {
         return Err(format!(
@@ -147,6 +153,7 @@ pub fn parse_attempt(cell: &str) -> Result<Option<Attempt>, String> {
     }))
 }
 
+#[must_use]
 pub fn render_attempt(attempt: &Attempt) -> String {
     let weight = attempt.weight.normalize();
 
@@ -169,6 +176,7 @@ pub fn parse_decimal(cell: &str) -> Result<Option<Decimal>, String> {
         .map_err(|_| format!("'{cell}' is not a number"))
 }
 
+#[must_use]
 pub fn render_decimal(value: Option<Decimal>) -> String {
     value.map(|v| v.normalize().to_string()).unwrap_or_default()
 }
@@ -224,17 +232,19 @@ impl Columns {
         let unknown: Vec<&String> = index.keys().filter(|c| !expected.contains(c)).collect();
         if !unknown.is_empty() {
             let mut unknown: Vec<&str> = unknown.iter().map(|c| c.as_str()).collect();
-            unknown.sort();
+            unknown.sort_unstable();
             return Err(format!("unknown column(s): {}", unknown.join(", ")));
         }
 
         Ok(Self { index })
     }
 
+    #[must_use]
     pub fn has(&self, column: &str) -> bool {
         self.index.contains_key(column)
     }
 
+    #[must_use]
     pub fn get<'a>(&self, record: &'a csv::StringRecord, column: &str) -> &'a str {
         self.index
             .get(column)

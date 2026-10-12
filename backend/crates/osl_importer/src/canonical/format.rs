@@ -18,7 +18,9 @@ pub fn prepare(canonical: &mut CanonicalFormat) -> crate::Result<()> {
 }
 
 pub fn normalize(canonical: &mut CanonicalFormat) {
-    canonical.movements.sort_by_key(|m| m.display_order());
+    canonical
+        .movements
+        .sort_by_key(osl_domain::Movement::display_order);
     canonical.movements.dedup();
     canonical
         .categories

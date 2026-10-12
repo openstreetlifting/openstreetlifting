@@ -7,7 +7,9 @@ use crate::error::Result;
 use crate::projections::ris::ScorableParticipant;
 
 /// The formula divides by a benchmark fitted to four-lift totals, so it means
-/// nothing on a shorter event. Published shorter-event scores and All4 scores
+/// nothing on a shorter event.
+///
+/// Published shorter-event scores and All4 scores
 /// lacking bodyweight or total remain reported and are not recomputed.
 pub async fn scorable_participants<'e, E>(
     executor: E,

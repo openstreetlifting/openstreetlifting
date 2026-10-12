@@ -4,51 +4,7 @@ import type { Gender } from '#lib/types/enums.js';
 
 export const rankingsService = {
   async getGlobalRankings(filters: RankingFilters): Promise<RankingsResponse> {
-    const params: Record<string, string | number> = {
-      page: filters.page,
-    };
-
-    if (filters.page_size) {
-      params.page_size = filters.page_size;
-    }
-
-    if (filters.gender) {
-      params.gender = filters.gender;
-    }
-
-    if (filters.country) {
-      params.country = filters.country;
-    }
-
-    if (filters.federation) {
-      params.federation = filters.federation;
-    }
-
-    if (filters.q) {
-      params.q = filters.q;
-    }
-
-    if (filters.movement) {
-      params.movement = filters.movement;
-    }
-
-    if (filters.direction) {
-      params.direction = filters.direction;
-    }
-
-    if (filters.category) {
-      params.category = filters.category;
-    }
-
-    if (filters.year) {
-      params.year = filters.year;
-    }
-
-    if (filters.competition_id) {
-      params.competition_id = filters.competition_id;
-    }
-
-    return apiClient.get<RankingsResponse>('/api/v1/rankings', { params });
+    return apiClient.get<RankingsResponse>('/api/v1/rankings', { params: { ...filters } });
   },
 
   async getRankingClasses(

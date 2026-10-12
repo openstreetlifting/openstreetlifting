@@ -59,6 +59,7 @@ impl PrivacyList {
         Self::load_with_key(path, std::env::var(KEY_ENV).ok().filter(|s| !s.is_empty()))
     }
 
+    #[expect(clippy::missing_panics_doc, reason = "HMAC accepts keys of any length")]
     pub fn load_with_key(path: &Path, key: Option<String>) -> Result<Self> {
         let key = key.filter(|key| !key.is_empty());
         if !path.exists() {
@@ -95,7 +96,7 @@ impl PrivacyList {
             } else {
                 decode_hash(&record.key_check).context("invalid KeyCheck")?;
             }
-            let entry = parse(record)
+            let entry = parse(&record)
                 .map_err(|problem| anyhow!("{}: line {line}: {problem}", path.display()))?;
 
             if !seen_ids.insert(entry.redacted.id()) {
@@ -129,18 +130,22 @@ impl PrivacyList {
         })
     }
 
-    pub fn len(&self) -> usize {
+    #[must_use]
+    pub const fn len(&self) -> usize {
         self.entries.len()
     }
 
-    pub fn is_empty(&self) -> bool {
+    #[must_use]
+    pub const fn is_empty(&self) -> bool {
         self.entries.is_empty()
     }
 
-    pub fn has_key(&self) -> bool {
+    #[must_use]
+    pub const fn has_key(&self) -> bool {
         self.key.is_some()
     }
 
+    #[must_use]
     pub fn path(&self) -> &Path {
         &self.path
     }
@@ -183,12 +188,14 @@ impl PrivacyList {
             })
     }
 
+    #[must_use]
     pub fn hash(&self, full_name: &str) -> Option<String> {
         self.key
             .as_deref()
             .map(|key| hash_with(key, &match_key(full_name)))
     }
 
+    #[must_use]
     pub fn lookup(&self, full_name: &str, gender: &str, disambiguation: Option<i16>) -> Lookup {
         let Some(hash) = self.hash(full_name) else {
             return Lookup::MissingKey;
@@ -269,7 +276,7 @@ fn decode_hash(value: &str) -> Result<Vec<u8>> {
         .collect()
 }
 
-fn parse(record: PrivacyRecord) -> std::result::Result<PrivacyEntry, String> {
+fn parse(record: &PrivacyRecord) -> std::result::Result<PrivacyEntry, String> {
     let hash = record.hash.trim().to_lowercase();
 
     if hash.len() != 64 || !hash.chars().all(|c| c.is_ascii_hexdigit()) {
@@ -322,7 +329,14 @@ fn optional(value: Option<&str>) -> Option<&str> {
     value.map(str::trim).filter(|value| !value.is_empty())
 }
 
+#[must_use]
+#[expect(
+    clippy::missing_panics_doc,
+    reason = "HMAC accepts keys of any length and writing to a String cannot fail"
+)]
 pub fn hash_with(key: &str, match_key: &str) -> String {
+    use std::fmt::Write;
+
     let mut mac =
         Hmac::<Sha256>::new_from_slice(key.as_bytes()).expect("HMAC takes a key of any length");
     mac.update(match_key.as_bytes());
@@ -330,8 +344,10 @@ pub fn hash_with(key: &str, match_key: &str) -> String {
     mac.finalize()
         .into_bytes()
         .iter()
-        .map(|byte| format!("{byte:02x}"))
-        .collect()
+        .fold(String::with_capacity(64), |mut hash, byte| {
+            write!(hash, "{byte:02x}").expect("writing to a String cannot fail");
+            hash
+        })
 }
 
 /// Keeps the next import from undoing a redaction the files already carry.

@@ -4,6 +4,9 @@ edition = "2024"
 version.workspace = true
 publish.workspace = true
 
+[lints]
+workspace = true
+
 [dependencies]
 osl_db = { path = "../osl_db" }
 osl_domain = { path = "../osl_domain" }

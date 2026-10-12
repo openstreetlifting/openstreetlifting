@@ -7,6 +7,7 @@ use unicode_normalization::UnicodeNormalization;
 /// assert_eq!(slugify("Fédération Française"), "federation-francaise");
 /// assert_eq!(slugify("Street  Lifting / UK"), "street-lifting-uk");
 /// ```
+#[must_use]
 pub fn slugify(text: &str) -> String {
     let without_accents: String = text
         .nfd()

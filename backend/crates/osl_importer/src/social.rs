@@ -63,10 +63,10 @@ struct AthleteIdentity {
 
 impl AthleteIdentity {
     fn describe(&self) -> String {
-        match self.disambiguation {
-            Some(number) => format!("{}/{} #{}", self.gender, self.country, number),
-            None => format!("{}/{}", self.gender, self.country),
-        }
+        self.disambiguation.map_or_else(
+            || format!("{}/{}", self.gender, self.country),
+            |number| format!("{}/{} #{number}", self.gender, self.country),
+        )
     }
 }
 
@@ -129,7 +129,7 @@ pub async fn load_instagram_handles(file: &Path, pool: &PgPool) -> Result<Instag
         )
         .execute(&mut *tx)
         .await
-        .with_context(|| format!("handle '{}' is already taken by another athlete", handle))?;
+        .with_context(|| format!("handle '{handle}' is already taken by another athlete"))?;
     }
 
     tx.commit().await?;
@@ -254,7 +254,7 @@ fn read_file(file: &Path) -> Result<Vec<HandleRow>> {
         let row = parse_record(&record, &headers)?;
 
         if let Some(first) = athletes.insert(row.query.clone(), row.label.clone()) {
-            bail!("'{}' is listed twice", first);
+            bail!("'{first}' is listed twice");
         }
 
         // An account belongs to one athlete, which the database enforces, so
@@ -279,10 +279,10 @@ pub(crate) fn parse_record(
     record: &csv::StringRecord,
     headers: &csv::StringRecord,
 ) -> Result<HandleRow> {
-    parse(record.deserialize(Some(headers))?)
+    parse(&record.deserialize(Some(headers))?)
 }
 
-fn parse(record: InstagramRecord) -> Result<HandleRow> {
+fn parse(record: &InstagramRecord) -> Result<HandleRow> {
     let label = record.name.trim().to_string();
     if label.is_empty() {
         bail!("a row has a handle with no name");
@@ -365,7 +365,7 @@ mod tests {
         country: Option<&str>,
         handle: &str,
     ) -> Result<HandleRow> {
-        parse(InstagramRecord {
+        parse(&InstagramRecord {
             name: name.to_string(),
             sex: sex.map(str::to_string),
             country: country.map(str::to_string),

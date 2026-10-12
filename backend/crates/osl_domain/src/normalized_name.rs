@@ -26,8 +26,8 @@ impl NormalizedAthleteName {
     /// assert_eq!(name.database_last_name(), "Gherardi");
     /// ```
     pub fn new(first_name: impl Into<String>, last_name: impl Into<String>) -> Self {
-        let first_name = normalize_name_part(first_name.into());
-        let last_name = normalize_name_part(last_name.into());
+        let first_name = normalize_name_part(&first_name.into());
+        let last_name = normalize_name_part(&last_name.into());
 
         Self {
             first_name,
@@ -35,14 +35,17 @@ impl NormalizedAthleteName {
         }
     }
 
+    #[must_use]
     pub fn database_first_name(&self) -> &str {
         &self.first_name
     }
 
+    #[must_use]
     pub fn database_last_name(&self) -> &str {
         &self.last_name
     }
 
+    #[must_use]
     pub fn as_database_tuple(&self) -> (&str, &str) {
         (&self.first_name, &self.last_name)
     }
@@ -58,6 +61,7 @@ impl NormalizedAthleteName {
     /// assert_eq!(plain.match_name(), accented.match_name());
     /// assert_eq!(accented.database_last_name(), "Mérandon");
     /// ```
+    #[must_use]
     pub fn match_name(&self) -> String {
         format!("{} {}", fold(&self.first_name), fold(&self.last_name))
             .trim()
@@ -76,6 +80,7 @@ impl NormalizedAthleteName {
 /// assert_eq!(display_name("Adrien", "Pelfresne"), "Adrien Pelfresne");
 /// assert_eq!(display_name("", "Darkhan"), "Darkhan");
 /// ```
+#[must_use]
 pub fn display_name(first_name: &str, last_name: &str) -> String {
     format!("{first_name} {last_name}").trim().to_string()
 }
@@ -107,7 +112,7 @@ fn fold(name: &str) -> String {
 /// `Anne-Sophie`, `D'Almeida` and `DeFrancesco` all have capitals no rule can
 /// rebuild once they are lost, so the file is the authority and
 /// [`crate::name_rules`] refuses a name that is spelled wrongly.
-fn normalize_name_part(name: String) -> String {
+fn normalize_name_part(name: &str) -> String {
     name.trim().to_string()
 }
 

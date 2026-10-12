@@ -14,14 +14,10 @@ pub enum Movement {
 
 // The spellings are the `movements.name` primary key referenced by `movement_name` columns.
 impl Movement {
-    pub const ALL: [Movement; 4] = [
-        Movement::MuscleUp,
-        Movement::PullUp,
-        Movement::Dips,
-        Movement::Squat,
-    ];
+    pub const ALL: [Self; 4] = [Self::MuscleUp, Self::PullUp, Self::Dips, Self::Squat];
 
-    pub fn code(&self) -> char {
+    #[must_use]
+    pub const fn code(&self) -> char {
         match self {
             Self::MuscleUp => 'M',
             Self::PullUp => 'P',
@@ -30,7 +26,8 @@ impl Movement {
         }
     }
 
-    pub fn as_str(&self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(&self) -> &'static str {
         match self {
             Self::MuscleUp => "Muscle-up",
             Self::PullUp => "Pull-up",
@@ -39,7 +36,8 @@ impl Movement {
         }
     }
 
-    pub fn display_order(&self) -> i16 {
+    #[must_use]
+    pub const fn display_order(&self) -> i16 {
         match self {
             Self::MuscleUp => 1,
             Self::PullUp => 2,
@@ -48,7 +46,8 @@ impl Movement {
         }
     }
 
-    pub fn column_prefix(&self) -> &'static str {
+    #[must_use]
+    pub const fn column_prefix(&self) -> &'static str {
         match self {
             Self::MuscleUp => "MuscleUp",
             Self::PullUp => "PullUp",
@@ -57,10 +56,12 @@ impl Movement {
         }
     }
 
+    #[must_use]
     pub fn from_code(code: char) -> Option<Self> {
         Self::ALL.into_iter().find(|m| m.code() == code)
     }
 
+    #[must_use]
     pub fn from_name(name: &str) -> Option<Self> {
         Self::ALL.into_iter().find(|m| m.as_str() == name)
     }
@@ -95,7 +96,7 @@ mod tests {
 
     #[test]
     fn all_is_in_display_order() {
-        let orders: Vec<_> = Movement::ALL.iter().map(|m| m.display_order()).collect();
+        let orders: Vec<_> = Movement::ALL.iter().map(Movement::display_order).collect();
         assert_eq!(orders, vec![1, 2, 3, 4]);
     }
 

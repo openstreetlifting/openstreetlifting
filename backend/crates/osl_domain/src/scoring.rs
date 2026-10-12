@@ -10,7 +10,8 @@ pub enum Scoring {
 }
 
 impl Scoring {
-    pub fn as_str(self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
         match self {
             Self::Total => "total",
             Self::Ris => "ris",

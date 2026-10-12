@@ -99,9 +99,9 @@ jobs:
         with:
           components: clippy
           cache-workspaces: backend
-      - name: Run clippy
+      - name: Run Clippy (all, pedantic, nursery, cargo)
         working-directory: backend
-        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+        run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
       - name: Check standalone domain has no infrastructure dependencies
         working-directory: backend
         run: |

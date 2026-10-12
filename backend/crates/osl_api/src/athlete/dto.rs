@@ -56,6 +56,7 @@ pub struct StrengthComparison {
 }
 
 impl StrengthProfile {
+    #[must_use]
     pub fn from_rows(rows: Vec<AthleteStrengthRow>) -> Option<Self> {
         let first = rows.first()?;
         Some(Self {
@@ -145,6 +146,7 @@ impl MetricStanding {
 }
 
 impl AthleteStanding {
+    #[must_use]
     pub fn from_rows(rows: Vec<AthleteMetricStandingRow>) -> Option<Self> {
         if rows.is_empty() {
             return None;

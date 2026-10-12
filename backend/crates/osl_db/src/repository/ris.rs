@@ -8,7 +8,8 @@ pub struct RisRepository<'a> {
 }
 
 impl<'a> RisRepository<'a> {
-    pub fn new(pool: &'a PgPool) -> Self {
+    #[must_use]
+    pub const fn new(pool: &'a PgPool) -> Self {
         Self { pool }
     }
 

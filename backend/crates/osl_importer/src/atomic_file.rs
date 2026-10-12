@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use anyhow::{Context, Result};
 use uuid::Uuid;
 
-pub(crate) struct Replacement {
+pub struct Replacement {
     temporary: PathBuf,
     destination: PathBuf,
 }
@@ -15,7 +15,7 @@ impl Replacement {
         let parent = destination
             .parent()
             .filter(|p| !p.as_os_str().is_empty())
-            .unwrap_or(Path::new("."));
+            .unwrap_or_else(|| Path::new("."));
         std::fs::create_dir_all(parent)?;
         let replacement = Self {
             temporary: parent.join(format!(".osl-{}.tmp", Uuid::new_v4())),
@@ -46,7 +46,7 @@ impl Replacement {
             .destination
             .parent()
             .filter(|p| !p.as_os_str().is_empty())
-            .unwrap_or(Path::new("."));
+            .unwrap_or_else(|| Path::new("."));
         File::open(parent)?.sync_all()?;
         Ok(())
     }

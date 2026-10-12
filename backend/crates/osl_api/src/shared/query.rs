@@ -22,6 +22,7 @@ impl Include {
         )
     }
 
+    #[must_use]
     pub fn has(&self, name: &str) -> bool {
         self.0.iter().any(|v| v == name)
     }

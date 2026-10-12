@@ -17,7 +17,7 @@ pub fn slug_of(directory: &Path) -> Result<String> {
     directory
         .file_name()
         .and_then(|name| name.to_str())
-        .map(|name| name.to_string())
+        .map(std::string::ToString::to_string)
         .ok_or_else(|| {
             ImporterError::ImportError(format!(
                 "{} has no directory name to take a slug from",
@@ -50,6 +50,7 @@ fn expected_location(canonical: &CanonicalFormat) -> PathBuf {
         .join(&canonical.competition.slug)
 }
 
+#[must_use]
 pub fn is_competition_directory(path: &Path) -> bool {
     path.is_dir()
         && (path.join(competition::FILE_NAME).is_file() || path.join(LEGACY_FILE_NAME).is_file())
@@ -137,7 +138,13 @@ pub fn render(canonical: &CanonicalFormat) -> Result<(String, Option<String>)> {
     let event = if canonical.movements.is_empty() {
         None
     } else {
-        Some(canonical.movements.iter().map(|m| m.code()).collect())
+        Some(
+            canonical
+                .movements
+                .iter()
+                .map(osl_domain::Movement::code)
+                .collect(),
+        )
     };
 
     let file = CompetitionFile {
@@ -365,6 +372,10 @@ fn read_lifts(
     Ok(lifts)
 }
 
+#[expect(
+    clippy::too_many_lines,
+    reason = "Keep the CSV row construction in the same order as its columns"
+)]
 fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
     let mut writer = csv::Writer::from_writer(Vec::new());
 
@@ -480,7 +491,9 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                     row.push(cell);
                 }
 
-                row.push(entries::render_decimal(lift.and_then(|lift| lift.best())));
+                row.push(entries::render_decimal(
+                    lift.and_then(super::models::LiftData::best),
+                ));
             }
 
             writer.write_record(&row).map_err(|e| {

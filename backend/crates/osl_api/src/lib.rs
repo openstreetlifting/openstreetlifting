@@ -35,6 +35,7 @@ pub struct AppState {
 }
 
 impl AppState {
+    #[must_use]
     pub fn new(db: Database, cache_enabled: bool) -> Self {
         Self {
             db: Arc::new(db),
@@ -129,7 +130,7 @@ pub fn app(state: AppState) -> Router {
         .allow_origin(Any)
         .allow_methods(Any)
         .allow_headers(Any)
-        .max_age(Duration::from_secs(3600));
+        .max_age(Duration::from_hours(1));
 
     let middleware_stack = ServiceBuilder::new()
         .layer(SetRequestIdLayer::new(

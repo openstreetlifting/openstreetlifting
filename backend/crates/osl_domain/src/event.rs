@@ -26,12 +26,15 @@ pub const FULL_EVENT: &str = "MPDS";
 /// assert!(!is_full_event(Some("M")));
 /// assert!(!is_full_event(None));
 /// ```
+#[must_use]
 pub fn is_full_event(event_code: Option<&str>) -> bool {
     event_code == Some(FULL_EVENT)
 }
 
 /// The movements an event code names, rejecting a code whose letters are
-/// unknown, repeated or out of display order. One set of movements therefore
+/// unknown, repeated or out of display order.
+///
+/// One set of movements therefore
 /// has exactly one spelling, which is what lets `event_code` be compared as a
 /// string.
 pub fn movements(event_code: &str) -> Result<Vec<Movement>, String> {
@@ -85,7 +88,7 @@ mod tests {
 
     #[test]
     fn the_full_event_is_every_movement() {
-        let codes: String = Movement::ALL.iter().map(|m| m.code()).collect();
+        let codes: String = Movement::ALL.iter().map(Movement::code).collect();
         assert_eq!(codes, FULL_EVENT);
         assert_eq!(movements(FULL_EVENT).unwrap(), Movement::ALL.to_vec());
     }

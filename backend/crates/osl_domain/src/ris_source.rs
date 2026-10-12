@@ -12,14 +12,16 @@ pub enum RisSource {
 }
 
 impl RisSource {
-    pub fn as_str(&self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(&self) -> &'static str {
         match self {
             Self::Computed => "computed",
             Self::Reported => "reported",
         }
     }
 
-    pub fn is_reported(&self) -> bool {
+    #[must_use]
+    pub const fn is_reported(&self) -> bool {
         matches!(self, Self::Reported)
     }
 }
@@ -38,8 +40,7 @@ impl std::str::FromStr for RisSource {
             "computed" => Ok(Self::Computed),
             "reported" => Ok(Self::Reported),
             other => Err(format!(
-                "unknown ris source: {}, expected computed or reported",
-                other
+                "unknown ris source: {other}, expected computed or reported"
             )),
         }
     }

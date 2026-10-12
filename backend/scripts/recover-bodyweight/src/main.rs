@@ -11,7 +11,7 @@
 //! cargo run -p recover-bodyweight -- --edition 2026 data/competitions/sli/2026
 //! ```
 use std::collections::BTreeMap;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use anyhow::{Result, bail};
 use clap::Parser;
@@ -59,7 +59,7 @@ struct Outcome {
 }
 
 impl Outcome {
-    fn considered(&self) -> usize {
+    const fn considered(&self) -> usize {
         self.recovered + self.refused.len()
     }
 
@@ -77,6 +77,10 @@ impl Outcome {
         }
     }
 
+    #[expect(
+        clippy::cast_precision_loss,
+        reason = "An approximate ratio is sufficient for the refusal threshold and report"
+    )]
     fn refusal_rate(&self) -> f64 {
         match self.considered() {
             0 => 0.0,
@@ -132,10 +136,10 @@ fn main() -> Result<()> {
             continue;
         }
 
-        let cut = match outcome.median_cut() {
-            Some(cut) => format!("median difference from class limit: {cut} kg"),
-            None => "no weight class limits to compare".to_string(),
-        };
+        let cut = outcome.median_cut().map_or_else(
+            || "no weight class limits to compare".to_string(),
+            |cut| format!("median difference from class limit: {cut} kg"),
+        );
         println!(
             "  {slug}: accepted bodyweights: {}; rejected: {}; {cut}",
             outcome.recovered,
@@ -308,11 +312,11 @@ fn competition_directories(paths: &[PathBuf]) -> Result<Vec<PathBuf>> {
     let mut directories = Vec::new();
 
     for path in paths {
-        if !path.exists() {
-            bail!("{} does not exist", path.display());
+        if !path.is_dir() {
+            bail!("{} is not a directory", path.display());
         }
 
-        collect(path, &mut directories)?;
+        store::collect_competitions(path, &mut directories)?;
     }
 
     directories.sort();
@@ -323,22 +327,6 @@ fn competition_directories(paths: &[PathBuf]) -> Result<Vec<PathBuf>> {
     }
 
     Ok(directories)
-}
-
-fn collect(path: &Path, found: &mut Vec<PathBuf>) -> Result<()> {
-    if store::is_competition_directory(path) {
-        found.push(path.to_path_buf());
-        return Ok(());
-    }
-
-    for entry in std::fs::read_dir(path)? {
-        let entry = entry?.path();
-        if entry.is_dir() {
-            collect(&entry, found)?;
-        }
-    }
-
-    Ok(())
 }
 
 fn dec(value: f64) -> Decimal {

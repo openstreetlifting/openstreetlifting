@@ -12,6 +12,7 @@ pub struct AppCaches {
 }
 
 impl AppCaches {
+    #[must_use]
     pub fn new(enabled: bool) -> Self {
         Self {
             ris_distribution: Cache::new(enabled, policy::RIS_DISTRIBUTION),
@@ -71,9 +72,10 @@ impl<T: Clone> Cache<T> {
             value: value.clone(),
             expires_at: Instant::now() + self.policy.ttl,
         });
+        drop(entry);
         tracing::debug!(
             cache = self.policy.name,
-            elapsed_ms = start.elapsed().as_millis() as u64,
+            elapsed_ms = u64::try_from(start.elapsed().as_millis()).unwrap_or(u64::MAX),
             "Cache refreshed"
         );
         Ok(value)

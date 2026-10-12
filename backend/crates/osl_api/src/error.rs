@@ -11,22 +11,17 @@ use std::fmt;
 pub enum WebError {
     Storage(StorageError),
     BadRequest(String),
-    #[allow(dead_code)]
-    Unauthorized,
-    #[allow(dead_code)]
     NotFound,
-    #[allow(dead_code)]
     InternalServerError(String),
 }
 
 impl fmt::Display for WebError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::Storage(e) => write!(f, "Storage error: {}", e),
-            Self::BadRequest(msg) => write!(f, "Bad request: {}", msg),
-            Self::Unauthorized => write!(f, "Unauthorized"),
+            Self::Storage(e) => write!(f, "Storage error: {e}"),
+            Self::BadRequest(msg) => write!(f, "Bad request: {msg}"),
             Self::NotFound => write!(f, "Resource not found"),
-            Self::InternalServerError(msg) => write!(f, "Internal server error: {}", msg),
+            Self::InternalServerError(msg) => write!(f, "Internal server error: {msg}"),
         }
     }
 }
@@ -34,23 +29,20 @@ impl fmt::Display for WebError {
 impl IntoResponse for WebError {
     fn into_response(self) -> Response {
         let status = match &self {
-            Self::Storage(StorageError::NotFound) => StatusCode::NOT_FOUND,
-            Self::Storage(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::Storage(StorageError::NotFound) | Self::NotFound => StatusCode::NOT_FOUND,
+            Self::Storage(_) | Self::InternalServerError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::BadRequest(_) => StatusCode::BAD_REQUEST,
-            Self::Unauthorized => StatusCode::UNAUTHORIZED,
-            Self::NotFound => StatusCode::NOT_FOUND,
-            Self::InternalServerError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         };
 
         let body = match &self {
-            Self::Storage(StorageError::NotFound) => json!({"error": "Resource not found"}),
+            Self::Storage(StorageError::NotFound) | Self::NotFound => {
+                json!({"error": "Resource not found"})
+            }
             Self::Storage(e) => {
                 tracing::error!(error = ?e, "Request failed during a database operation");
                 json!({"error": "An internal error occurred"})
             }
             Self::BadRequest(msg) => json!({"error": msg}),
-            Self::Unauthorized => json!({"error": "Unauthorized"}),
-            Self::NotFound => json!({"error": "Resource not found"}),
             Self::InternalServerError(msg) => {
                 tracing::error!(error = %msg, "Request failed with an internal error");
                 json!({"error": "An internal error occurred"})

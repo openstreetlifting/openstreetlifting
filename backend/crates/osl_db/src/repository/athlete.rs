@@ -16,7 +16,8 @@ pub struct AthleteRepository<'a> {
 }
 
 impl<'a> AthleteRepository<'a> {
-    pub fn new(pool: &'a PgPool) -> Self {
+    #[must_use]
+    pub const fn new(pool: &'a PgPool) -> Self {
         Self { pool }
     }
 
@@ -171,6 +172,10 @@ impl<'a> AthleteRepository<'a> {
             .collect())
     }
 
+    #[expect(
+        clippy::too_many_lines,
+        reason = "Keep the detail queries and their assembled response together"
+    )]
     pub async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
         let rows = sqlx::query!(
             r#"
@@ -279,6 +284,10 @@ impl<'a> AthleteRepository<'a> {
             .collect();
 
         // Entering multiple divisions at one meet still counts as one competition.
+        #[expect(
+            clippy::cast_possible_wrap,
+            reason = "An allocated collection cannot contain more than isize::MAX elements"
+        )]
         let total_competitions = competitions
             .iter()
             .map(|competition| competition.competition_id)
@@ -305,40 +314,5 @@ impl<'a> AthleteRepository<'a> {
             total_competitions,
             instagram_handle,
         })
-    }
-
-    pub async fn generate_unique_slug(&self, first_name: &str, last_name: &str) -> Result<String> {
-        let base_slug = format!("{}-{}", first_name, last_name)
-            .to_lowercase()
-            .chars()
-            .filter(|c| c.is_alphanumeric() || *c == '-')
-            .collect::<String>()
-            .split('-')
-            .filter(|s| !s.is_empty())
-            .collect::<Vec<&str>>()
-            .join("-");
-
-        let base_slug = if base_slug.is_empty() {
-            "athlete".to_string()
-        } else {
-            base_slug
-        };
-
-        let mut final_slug = base_slug.clone();
-        let mut counter = 2;
-
-        while sqlx::query_scalar!(
-            "SELECT EXISTS(SELECT 1 FROM athletes WHERE slug = $1)",
-            final_slug
-        )
-        .fetch_one(self.pool)
-        .await?
-        .unwrap_or(false)
-        {
-            final_slug = format!("{}-{}", base_slug, counter);
-            counter += 1;
-        }
-
-        Ok(final_slug)
     }
 }

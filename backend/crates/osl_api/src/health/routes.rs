@@ -15,7 +15,7 @@ async fn liveness() -> StatusCode {
 
 async fn readiness(State(state): State<AppState>) -> (StatusCode, Json<Value>) {
     match state.db.ping().await {
-        Ok(_) => (StatusCode::OK, Json(json!({"status": "ok"}))),
+        Ok(()) => (StatusCode::OK, Json(json!({"status": "ok"}))),
         Err(e) => {
             tracing::error!(error = %e, "Readiness check could not reach PostgreSQL");
             (

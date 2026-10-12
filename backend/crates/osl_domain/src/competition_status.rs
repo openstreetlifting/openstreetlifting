@@ -15,7 +15,8 @@ pub enum CompetitionStatus {
 }
 
 impl CompetitionStatus {
-    pub fn as_str(&self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(&self) -> &'static str {
         match self {
             Self::Draft => "draft",
             Self::Upcoming => "upcoming",
@@ -42,7 +43,7 @@ impl std::str::FromStr for CompetitionStatus {
             "live" => Ok(Self::Live),
             "completed" => Ok(Self::Completed),
             "cancelled" => Ok(Self::Cancelled),
-            other => Err(format!("unknown competition status: {}", other)),
+            other => Err(format!("unknown competition status: {other}")),
         }
     }
 }

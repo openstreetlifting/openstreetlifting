@@ -1,7 +1,7 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-/// The CountryCode is represented as ISO 3166-1
-/// https://en.wikipedia.org/wiki/ISO_3166-2
+/// The `CountryCode` is represented as ISO 3166-1
+/// <https://en.wikipedia.org/wiki/ISO_3166-2>
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct CountryCode([u8; 2]);
 
@@ -10,10 +10,9 @@ impl CountryCode {
         let trimmed = raw.trim();
         let bytes = trimmed.as_bytes();
 
-        if bytes.len() != 2 || !bytes.iter().all(|b| b.is_ascii_alphabetic()) {
+        if bytes.len() != 2 || !bytes.iter().all(u8::is_ascii_alphabetic) {
             return Err(format!(
-                "'{}' is not an ISO 3166-1 alpha-2 country code, expected two letters like FR",
-                trimmed
+                "'{trimmed}' is not an ISO 3166-1 alpha-2 country code, expected two letters like FR"
             ));
         }
 
@@ -23,6 +22,11 @@ impl CountryCode {
         ]))
     }
 
+    #[must_use]
+    #[expect(
+        clippy::missing_panics_doc,
+        reason = "The private representation only contains validated ASCII letters"
+    )]
     pub fn as_str(&self) -> &str {
         std::str::from_utf8(&self.0).expect("country code is ascii")
     }

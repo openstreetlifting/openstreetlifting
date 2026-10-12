@@ -19,7 +19,8 @@ fn escape_like(pattern: &str) -> String {
 }
 
 impl<'a> RankingRepository<'a> {
-    pub fn new(pool: &'a PgPool) -> Self {
+    #[must_use]
+    pub const fn new(pool: &'a PgPool) -> Self {
         Self { pool }
     }
 
@@ -36,7 +37,7 @@ impl<'a> RankingRepository<'a> {
 
     fn movement_weights(filter: Option<&RankingFilter>) -> QueryBuilder<Postgres> {
         let mut query = QueryBuilder::new(
-            r#"
+            r"
             WITH movement_weights AS (
                 SELECT
                     cp.participant_id,
@@ -78,7 +79,7 @@ impl<'a> RankingRepository<'a> {
                    AND ats.social_id = (SELECT social_id FROM socials WHERE name = 'instagram')
                 WHERE cp.status = 'competed'
                   AND (l.lift_id IS NOT NULL OR cp.total IS NOT NULL OR cp.ris_score IS NOT NULL)
-            "#,
+            ",
         );
 
         if let Some(filter) = filter {
@@ -125,7 +126,7 @@ impl<'a> RankingRepository<'a> {
         }
 
         query.push(
-            r#"
+            r"
                 GROUP BY cp.participant_id, a.athlete_id, a.first_name, a.last_name,
                          a.slug, a.country, a.gender, cp.bodyweight, d.name, cp.weight_class_id,
                          wc.min_kg, wc.max_kg,
@@ -133,7 +134,7 @@ impl<'a> RankingRepository<'a> {
                          c.competition_id, c.name, c.slug, c.start_date, c.event_code, f.name, f.abbreviation,
                          ats.handle
             ),
-            "#,
+            ",
         );
 
         query
@@ -245,7 +246,7 @@ impl<'a> RankingRepository<'a> {
     ) -> Result<Vec<AthleteMetricStandingRow>> {
         let mut query = Self::movement_weights(None);
         query.push(
-            r#"
+            r"
             metric_candidates AS (
                 SELECT movement_weights.athlete_id,
                        movement_weights.participant_id,
@@ -258,7 +259,7 @@ impl<'a> RankingRepository<'a> {
                        metric.value
                 FROM movement_weights
                 CROSS JOIN LATERAL ( VALUES
-            "#,
+            ",
         );
 
         for (index, movement) in RankingMovement::ALL.into_iter().enumerate() {
@@ -279,7 +280,7 @@ impl<'a> RankingRepository<'a> {
         }
 
         query.push(
-            r#"
+            r"
                 ) AS metric(name, value)
                 WHERE metric.value IS NOT NULL
             ),
@@ -288,11 +289,11 @@ impl<'a> RankingRepository<'a> {
                     metric, weight_class_id
                 FROM metric_candidates
                 WHERE (metric = 'ris' OR weight_class_id IS NOT NULL) AND athlete_id =
-            "#,
+            ",
         );
         query.push_bind(athlete_id);
         query.push(
-            r#"
+            r"
                 ORDER BY metric, value DESC, start_date DESC, participant_id
             ),
             comparable AS (
@@ -329,7 +330,7 @@ impl<'a> RankingRepository<'a> {
                    global_place, global_field, country, country_place, country_field
             FROM placed
             WHERE athlete_id =
-            "#,
+            ",
         );
         query.push_bind(athlete_id);
         query.push(" ORDER BY metric ");
@@ -351,16 +352,14 @@ impl<'a> RankingRepository<'a> {
         competition_id: Option<Uuid>,
     ) -> Result<Vec<String>> {
         let mut query = QueryBuilder::new(
-            r#"
+            r"
             SELECT min_kg, max_kg FROM (
                 SELECT DISTINCT wc.min_kg, wc.max_kg
                 FROM competition_participants cp
                 INNER JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
-            "#,
+            ",
         );
-
-        let mut has_where = false;
 
         if let Some(gender) = gender {
             query.push(if competition_id.is_some() {
@@ -369,11 +368,10 @@ impl<'a> RankingRepository<'a> {
                 " WHERE a.gender = "
             });
             query.push_bind(gender.as_str());
-            has_where = true;
         }
 
         if let Some(competition_id) = competition_id {
-            query.push(if has_where { " AND " } else { " WHERE " });
+            query.push(if gender.is_some() { " AND " } else { " WHERE " });
             query.push(" cp.competition_id = ");
             query.push_bind(competition_id);
         }
@@ -398,13 +396,13 @@ impl<'a> RankingRepository<'a> {
     /// dropdown never offers a filter that returns nothing.
     pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
         let federations: Vec<String> = sqlx::query_scalar(
-            r#"
+            r"
             SELECT DISTINCT f.name
             FROM federations f
             INNER JOIN competitions c ON c.federation_id = f.federation_id
             INNER JOIN competition_participants cp ON cp.competition_id = c.competition_id
             ORDER BY f.name
-            "#,
+            ",
         )
         .fetch_all(self.pool)
         .await?;
@@ -415,11 +413,11 @@ impl<'a> RankingRepository<'a> {
     /// Distinct competition years, most recent first.
     pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
         let years: Vec<i32> = sqlx::query_scalar(
-            r#"
+            r"
             SELECT DISTINCT EXTRACT(YEAR FROM start_date)::int as year
             FROM competitions
             ORDER BY year DESC
-            "#,
+            ",
         )
         .fetch_all(self.pool)
         .await?;
@@ -434,12 +432,12 @@ impl<'a> RankingRepository<'a> {
         competition_id: Option<Uuid>,
     ) -> Result<Vec<String>> {
         let mut query = QueryBuilder::new(
-            r#"
+            r"
             SELECT DISTINCT a.country
             FROM athletes a
             INNER JOIN competition_participants cp ON cp.athlete_id = a.athlete_id
             WHERE a.country IS NOT NULL
-            "#,
+            ",
         );
 
         if let Some(competition_id) = competition_id {

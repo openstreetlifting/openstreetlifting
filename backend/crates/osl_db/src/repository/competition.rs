@@ -1,6 +1,5 @@
 use rust_decimal::Decimal;
 use sqlx::{PgPool, Postgres, QueryBuilder};
-use std::collections::HashMap;
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
@@ -20,7 +19,8 @@ pub struct CompetitionRepository<'a> {
 }
 
 impl<'a> CompetitionRepository<'a> {
-    pub fn new(pool: &'a PgPool) -> Self {
+    #[must_use]
+    pub const fn new(pool: &'a PgPool) -> Self {
         Self { pool }
     }
 
@@ -32,7 +32,7 @@ impl<'a> CompetitionRepository<'a> {
         filter: &CompetitionFilter,
     ) -> Result<(Vec<CompetitionSummaryRow>, i64)> {
         let mut query = QueryBuilder::new(
-            r#"
+            r"
             SELECT c.competition_id, c.name, c.created_at, c.slug, c.status, c.scoring,
                    c.federation_id, c.venue, c.city, c.region, c.country,
                    c.start_date, c.end_date,
@@ -40,7 +40,7 @@ impl<'a> CompetitionRepository<'a> {
             FROM competitions c
             JOIN federations f ON f.federation_id = c.federation_id
             LEFT JOIN competition_participants p ON p.competition_id = c.competition_id
-            "#,
+            ",
         );
 
         Self::push_filters(&mut query, filter);
@@ -56,11 +56,11 @@ impl<'a> CompetitionRepository<'a> {
             query.build_query_as().fetch_all(self.pool).await?;
 
         let mut counter = QueryBuilder::new(
-            r#"
+            r"
             SELECT COUNT(*)
             FROM competitions c
             JOIN federations f ON f.federation_id = c.federation_id
-            "#,
+            ",
         );
 
         Self::push_filters(&mut counter, filter);
@@ -162,12 +162,12 @@ impl<'a> CompetitionRepository<'a> {
     /// dropdown never offers a filter that returns nothing.
     pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
         let federations: Vec<String> = sqlx::query_scalar(
-            r#"
+            r"
             SELECT DISTINCT f.name
             FROM federations f
             JOIN competitions c ON c.federation_id = f.federation_id
             ORDER BY f.name
-            "#,
+            ",
         )
         .fetch_all(self.pool)
         .await?;
@@ -178,12 +178,12 @@ impl<'a> CompetitionRepository<'a> {
     /// Years a competition was held in, most recent first.
     pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
         let years: Vec<i32> = sqlx::query_scalar(
-            r#"
+            r"
             SELECT DISTINCT EXTRACT(YEAR FROM start_date)::int as year
             FROM competitions
             WHERE start_date IS NOT NULL
             ORDER BY year DESC
-            "#,
+            ",
         )
         .fetch_all(self.pool)
         .await?;
@@ -194,12 +194,12 @@ impl<'a> CompetitionRepository<'a> {
     /// Countries a competition was held in, alphabetical.
     pub async fn list_distinct_countries(&self) -> Result<Vec<String>> {
         let countries: Vec<String> = sqlx::query_scalar(
-            r#"
+            r"
             SELECT DISTINCT country
             FROM competitions
             WHERE country IS NOT NULL
             ORDER BY country
-            "#,
+            ",
         )
         .fetch_all(self.pool)
         .await?;
@@ -264,31 +264,14 @@ impl<'a> CompetitionRepository<'a> {
         self.get_detailed_competition(competition).await
     }
 
-    async fn compute_category_rankings(&self, competition_id: Uuid) -> Result<HashMap<Uuid, i32>> {
-        let rankings = sqlx::query!(
-            r#"
-            SELECT participant_id AS "participant_id!", rank AS "rank!"
-            FROM participant_standings WHERE competition_id = $1
-            "#,
-            competition_id
-        )
-        .fetch_all(self.pool)
-        .await?;
-
-        Ok(rankings
-            .into_iter()
-            .map(|r| (r.participant_id, r.rank))
-            .collect())
-    }
-
+    #[expect(
+        clippy::too_many_lines,
+        reason = "Keep the detail queries and their assembled response together"
+    )]
     async fn get_detailed_competition(
         &self,
         competition: CompetitionRow,
     ) -> Result<CompetitionDetail> {
-        let ranking_map = self
-            .compute_category_rankings(competition.competition_id)
-            .await?;
-
         let federation = sqlx::query_as!(
             FederationRow,
             "SELECT federation_id, name, rulebook_id, country, abbreviation
@@ -341,16 +324,19 @@ impl<'a> CompetitionRepository<'a> {
 
         for category in categories {
             let participants = sqlx::query!(
-                r#"SELECT cp.participant_id, cp.competition_id, cp.athlete_id, cp.bodyweight, cp.total,
-                        cp.status as "status: AthleteStatus", cp.created_at, cp.status_reason,
+                r#"SELECT cp.participant_id, cp.athlete_id, cp.bodyweight, cp.total,
+                        cp.status as "status: AthleteStatus", cp.status_reason, placed.rank as "rank?",
                         cp.ris_score, cp.ris_source as "ris_source: RisSource"
                  FROM competition_participants cp
                  INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
                  LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+                 LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id
+                                                       AND placed.competition_id = cp.competition_id
                  WHERE cp.competition_id = $1
                    AND cp.weight_class_id IS NOT DISTINCT FROM $2
                    AND cp.division_id IS NOT DISTINCT FROM $3
-                   AND COALESCE(cp.category_gender, wc.gender, a.gender) = $4"#,
+                   AND COALESCE(cp.category_gender, wc.gender, a.gender) = $4
+                 ORDER BY placed.rank NULLS LAST"#,
                 competition.competition_id,
                 category.weight_class_id,
                 category.division_id,
@@ -413,13 +399,11 @@ impl<'a> CompetitionRepository<'a> {
                     });
                 }
 
-                let rank = ranking_map.get(&participant.participant_id).copied();
-
                 participant_details.push(ParticipantDetail {
                     participant_id: participant.participant_id,
                     athlete,
                     bodyweight: participant.bodyweight,
-                    rank,
+                    rank: participant.rank,
                     ris_score: participant.ris_score,
                     ris_source: participant.ris_source,
                     status: participant.status,
@@ -428,8 +412,6 @@ impl<'a> CompetitionRepository<'a> {
                     lifts: lift_details,
                 });
             }
-
-            participant_details.sort_by_key(|p| (p.rank.is_none(), p.rank));
 
             category_details.push(CategoryParticipants {
                 category,

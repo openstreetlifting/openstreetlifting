@@ -10,7 +10,7 @@ use tokio::sync::Notify;
 
 const POLICY: CachePolicy = CachePolicy {
     name: "test",
-    ttl: Duration::from_secs(60),
+    ttl: Duration::from_mins(1),
 };
 
 #[tokio::test]

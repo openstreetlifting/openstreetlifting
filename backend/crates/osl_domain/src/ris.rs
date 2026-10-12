@@ -1,5 +1,7 @@
 //! The Relative Index for Streetlifting, created by Waris Radji and Mathieu
-//! Ardoin, <https://warisradji.com/ris/>. FinalRep refits the constants each
+//! Ardoin, <https://warisradji.com/ris/>.
+//!
+//! `FinalRep` refits the constants each
 //! year, so a score only means something next to the edition that produced it.
 //!
 //! `RIS = Total * 100 / f(BW)` where
@@ -28,17 +30,17 @@ pub struct Constants {
 
 const MEN_2024: Constants = Constants {
     a: 308.5,
-    k: 536.363293273545,
-    b: 0.1013742998889087,
-    v: 60.39746396108519,
-    q: 2.2100554021356436,
+    k: 536.363_293_273_545,
+    b: 0.101_374_299_888_908_7,
+    v: 60.397_463_961_085_19,
+    q: 2.210_055_402_135_643_6,
 };
 const WOMEN_2024: Constants = Constants {
-    a: 180.83333333333334,
-    k: 241.74894812447127,
-    b: 0.24737447093352963,
-    v: 50.192523991912516,
-    q: 1.3834293214001367,
+    a: 180.833_333_333_333_34,
+    k: 241.748_948_124_471_27,
+    b: 0.247_374_470_933_529_63,
+    v: 50.192_523_991_912_516,
+    q: 1.383_429_321_400_136_7,
 };
 const MEN_2025: Constants = Constants {
     a: 338.0,
@@ -56,17 +58,17 @@ const WOMEN_2025: Constants = Constants {
 };
 const MEN_2026: Constants = Constants {
     a: 335.5625,
-    k: 556.1103380806655,
-    b: 0.10289374204365953,
-    v: 76.74125992622565,
-    q: 0.4973075488457353,
+    k: 556.110_338_080_665_5,
+    b: 0.102_893_742_043_659_53,
+    v: 76.741_259_926_225_65,
+    q: 0.497_307_548_845_735_3,
 };
 const WOMEN_2026: Constants = Constants {
     a: 189.0625,
-    k: 281.8317115772956,
-    b: 0.28812554082125424,
-    v: 69.83492229989282,
-    q: 0.004337919108356886,
+    k: 281.831_711_577_295_6,
+    b: 0.288_125_540_821_254_24,
+    v: 69.834_922_299_892_82,
+    q: 0.004_337_919_108_356_886,
 };
 
 impl Edition {
@@ -76,7 +78,8 @@ impl Edition {
 
     pub const ALL: [Self; 3] = [Self::V2024, Self::V2025, Self::V2026];
 
-    pub fn year(self) -> i32 {
+    #[must_use]
+    pub const fn year(self) -> i32 {
         match self {
             Self::V2024 => 2024,
             Self::V2025 => 2025,
@@ -84,11 +87,17 @@ impl Edition {
         }
     }
 
+    #[must_use]
     pub fn from_year(year: i32) -> Option<Self> {
         Self::ALL.into_iter().find(|it| it.year() == year)
     }
 
     /// Select the formula for an athlete; mixed is a contest category.
+    ///
+    /// # Panics
+    ///
+    /// Panics for [`Gender::Mx`], which has no athlete-sex formula.
+    #[must_use]
     pub fn constants(self, gender: Gender) -> Constants {
         match (self, gender) {
             (Self::V2024, Gender::F) => WOMEN_2024,
@@ -105,11 +114,16 @@ impl Edition {
 impl Constants {
     /// The total an average elite athlete of this bodyweight is expected to
     /// put up.
+    #[expect(
+        clippy::suboptimal_flops,
+        reason = "Keep the published formula's operation order and score rounding"
+    )]
     fn benchmark(&self, bodyweight: f64) -> f64 {
         self.a + (self.k - self.a) / (1.0 + self.q * (-self.b * (bodyweight - self.v)).exp())
     }
 }
 
+#[must_use]
 pub fn compute(bodyweight: Decimal, total: Decimal, gender: Gender, edition: Edition) -> Decimal {
     let constants = edition.constants(gender);
     let benchmark = constants.benchmark(bodyweight.to_f64().unwrap_or_default());

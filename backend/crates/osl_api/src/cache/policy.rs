@@ -9,5 +9,5 @@ pub struct CachePolicy {
 
 pub const RIS_DISTRIBUTION: CachePolicy = CachePolicy {
     name: "ris_distribution",
-    ttl: Duration::from_secs(60 * 60),
+    ttl: Duration::from_hours(1),
 };

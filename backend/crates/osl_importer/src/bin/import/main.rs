@@ -25,9 +25,8 @@ async fn main() -> Result<()> {
     let log_level = if cli.verbose { "debug" } else { "info" };
     tracing_subscriber::registry()
         .with(
-            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-                format!("import={},osl_importer={}", log_level, log_level).into()
-            }),
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| format!("import={log_level},osl_importer={log_level}").into()),
         )
         .with(tracing_subscriber::fmt::layer().with_writer(std::io::stderr))
         .init();
@@ -82,7 +81,7 @@ async fn main() -> Result<()> {
             check,
             dry_run,
         } => {
-            handle_prepare(&paths, check, dry_run).await?;
+            handle_prepare(&paths, check, dry_run)?;
         }
     }
 
@@ -252,7 +251,7 @@ async fn handle_recompute_ris(database_url: &str, dry_run: bool) -> Result<()> {
     Ok(())
 }
 
-async fn handle_prepare(paths: &[PathBuf], check: bool, dry_run: bool) -> Result<()> {
+fn handle_prepare(paths: &[PathBuf], check: bool, dry_run: bool) -> Result<()> {
     let directories = competition_directories(paths)?;
 
     // Validate every directory before writing any changes.
@@ -350,7 +349,7 @@ fn validate_competition_slugs(directories: &[PathBuf]) -> Result<()> {
             directories = directories.len(),
             "Competition slug appears in multiple directories"
         );
-        for directory in directories.iter() {
+        for directory in *directories {
             tracing::error!(competition = %slug, directory = %directory.display(), "Duplicate competition directory");
         }
     }
@@ -422,22 +421,16 @@ fn report_prune(plan: &SyncPlan) {
         return;
     }
 
-    if !plan.competitions.is_empty() {
-        for competition in &plan.competitions {
-            tracing::info!(competition = %competition.slug, name = %competition.name, "Deleted competition absent from the input");
-        }
+    for competition in &plan.competitions {
+        tracing::info!(competition = %competition.slug, name = %competition.name, "Deleted competition absent from the input");
     }
 
-    if !plan.athletes.is_empty() {
-        for athlete in &plan.athletes {
-            tracing::info!(athlete = %athlete, "Deleted athlete with no competition entries");
-        }
+    for athlete in &plan.athletes {
+        tracing::info!(athlete = %athlete, "Deleted athlete with no competition entries");
     }
 
-    if !plan.federations.is_empty() {
-        for federation in &plan.federations {
-            tracing::info!(federation = %federation, "Deleted federation with no competitions");
-        }
+    for federation in &plan.federations {
+        tracing::info!(federation = %federation, "Deleted federation with no competitions");
     }
 
     tracing::info!(

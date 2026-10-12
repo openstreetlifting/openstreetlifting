@@ -105,8 +105,8 @@ impl GlobalRankingFilter {
                 .and_then(|label| WeightClass::from_str(label).ok()),
             year: self.year,
             competition_id: self.competition_id,
-            offset: self.pagination.offset() as i64,
-            limit: self.pagination.limit() as i64,
+            offset: self.pagination.offset(),
+            limit: i64::from(self.pagination.limit()),
         }
     }
 }

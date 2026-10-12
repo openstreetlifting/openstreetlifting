@@ -14,6 +14,7 @@ pub struct AthleteQuery {
 }
 
 impl AthleteQuery {
+    #[must_use]
     pub fn new(
         full_name: &str,
         gender: Option<String>,
@@ -28,6 +29,7 @@ impl AthleteQuery {
         }
     }
 
+    #[must_use]
     pub fn matches_parts(&self, gender: &str, country: &str, disambiguation: Option<i16>) -> bool {
         self.gender.as_deref().is_none_or(|g| g == gender)
             && self.country.as_deref().is_none_or(|c| c == country)
@@ -36,6 +38,7 @@ impl AthleteQuery {
                 .is_none_or(|number| Some(number) == disambiguation)
     }
 
+    #[must_use]
     pub fn matches_entry(&self, athlete: &AthleteData) -> bool {
         if match_key(&athlete.display_name()) != self.match_key {
             return false;
@@ -46,12 +49,12 @@ impl AthleteQuery {
             athlete
                 .country
                 .as_ref()
-                .map(|country| country.as_str())
-                .unwrap_or(""),
+                .map_or("", osl_domain::CountryCode::as_str),
             athlete.disambiguation,
         )
     }
 
+    #[must_use]
     pub fn narrowing(&self) -> String {
         let mut columns = Vec::new();
 

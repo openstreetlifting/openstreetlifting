@@ -1,3 +1,8 @@
+#![expect(
+    clippy::option_if_let_else,
+    reason = "Utoipa emits this conditional in the generic PaginatedResponse schema implementation"
+)]
+
 use osl_db::params::{Page, SortDirection};
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
@@ -47,11 +52,11 @@ fn number_from_query<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Resul
     }
 }
 
-fn default_page() -> u32 {
+const fn default_page() -> u32 {
     1
 }
 
-fn default_page_size() -> u32 {
+const fn default_page_size() -> u32 {
     50
 }
 
@@ -66,18 +71,21 @@ impl PaginationParams {
         Ok(())
     }
 
-    pub fn offset(&self) -> u32 {
-        (self.page - 1) * self.page_size
+    #[must_use]
+    pub fn offset(&self) -> i64 {
+        (i64::from(self.page) - 1) * i64::from(self.page_size)
     }
 
-    pub fn limit(&self) -> u32 {
+    #[must_use]
+    pub const fn limit(&self) -> u32 {
         self.page_size
     }
 
+    #[must_use]
     pub fn to_page(&self) -> Page {
         Page {
-            limit: self.limit() as i64,
-            offset: self.offset() as i64,
+            limit: i64::from(self.limit()),
+            offset: self.offset(),
         }
     }
 }
@@ -91,8 +99,14 @@ pub struct PaginationMeta {
 }
 
 impl PaginationMeta {
+    /// # Panics
+    ///
+    /// Panics if `page_size` is zero; query validation requires a positive size.
+    #[must_use]
     pub fn new(page: u32, page_size: u32, total_items: i64) -> Self {
-        let total_pages = ((total_items as f64) / (page_size as f64)).ceil() as u32;
+        let items = u64::try_from(total_items).unwrap_or_default();
+        let pages = items.div_ceil(u64::from(page_size));
+        let total_pages = u32::try_from(pages).unwrap_or(u32::MAX);
         Self {
             page,
             page_size,
@@ -109,6 +123,7 @@ pub struct PaginatedResponse<T> {
 }
 
 impl<T> PaginatedResponse<T> {
+    #[must_use]
     pub fn new(data: Vec<T>, page: u32, page_size: u32, total_items: i64) -> Self {
         Self {
             data,
@@ -138,6 +153,7 @@ impl From<Direction> for SortDirection {
 
 #[cfg(test)]
 mod tests {
+    use super::{PaginationMeta, PaginationParams};
     use axum::extract::Query;
     use osl_domain::{CompetitionStatus, Gender};
     use serde_json::json;
@@ -146,6 +162,39 @@ mod tests {
     use crate::ranking::dto::{ClassesFilter, GlobalRankingFilter};
     use crate::ris::dto::ComputeRisRequest;
     use crate::shared::filters::RankedGender;
+
+    #[test]
+    fn page_counts_round_up_and_preserve_the_response_limit() {
+        for (total_items, page_size, expected_pages) in [
+            (0, 50, 0),
+            (50, 50, 1),
+            (51, 50, 2),
+            (i64::from(u32::MAX) * 100, 100, u32::MAX),
+            (i64::MAX, 100, u32::MAX),
+        ] {
+            let meta = PaginationMeta::new(1, page_size, total_items);
+            assert_eq!(meta.total_items, total_items);
+            assert_eq!(meta.total_pages, expected_pages);
+        }
+    }
+
+    #[test]
+    fn large_page_numbers_keep_the_full_database_offset() {
+        let pagination = PaginationParams {
+            page: u32::MAX,
+            page_size: 100,
+        };
+        assert!(pagination.validate().is_ok());
+        assert_eq!(pagination.offset(), 429_496_729_400);
+        assert_eq!(pagination.to_page().offset, 429_496_729_400);
+
+        let ranking = Query::<GlobalRankingFilter>::try_from_uri(
+            &"/rankings?page=4294967295&page_size=100".parse().unwrap(),
+        )
+        .unwrap();
+        assert!(ranking.validate().is_ok());
+        assert_eq!(ranking.to_db_filter().offset, 429_496_729_400);
+    }
 
     #[test]
     fn ris_requests_keep_lenient_gender_parsing() {

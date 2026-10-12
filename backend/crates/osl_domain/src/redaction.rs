@@ -19,20 +19,24 @@ const PREFIX: &str = "Redacted Athlete";
 pub struct RedactedAthlete(u32);
 
 impl RedactedAthlete {
+    #[must_use]
     pub fn new(id: u32) -> Option<Self> {
         (id > 0).then_some(Self(id))
     }
 
+    #[must_use]
     pub fn from_match_key(key: &str) -> Option<Self> {
         let number = key.strip_prefix("redacted athlete ")?;
         let redacted = Self::new(number.parse().ok()?)?;
         (number == redacted.id().to_string()).then_some(redacted)
     }
 
-    pub fn id(self) -> u32 {
+    #[must_use]
+    pub const fn id(self) -> u32 {
         self.0
     }
 
+    #[must_use]
     pub fn last_name(self) -> String {
         self.to_string()
     }
@@ -44,6 +48,7 @@ impl RedactedAthlete {
     /// assert!(RedactedAthlete::parse("Redacted Athlete #07").is_none());
     /// assert!(RedactedAthlete::parse("Adrien Pelfresne").is_none());
     /// ```
+    #[must_use]
     pub fn parse(name: &str) -> Option<Self> {
         let number = name
             .trim()
@@ -76,6 +81,7 @@ impl fmt::Display for RedactedAthlete {
 /// assert!(is_redacted("Redacted", "Athlete #2"));
 /// assert!(!is_redacted("Adrien", "Pelfresne"));
 /// ```
+#[must_use]
 pub fn is_redacted(first_name: &str, last_name: &str) -> bool {
     RedactedAthlete::parse(&display_name(first_name, last_name)).is_some()
 }

@@ -13,7 +13,8 @@ pub enum Gender {
 }
 
 impl Gender {
-    pub fn as_str(&self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(&self) -> &'static str {
         match self {
             Self::M => "M",
             Self::F => "F",
@@ -36,7 +37,7 @@ impl std::str::FromStr for Gender {
             "M" => Ok(Self::M),
             "F" => Ok(Self::F),
             "MX" => Ok(Self::Mx),
-            other => Err(format!("unknown gender: {}, expected M, F or MX", other)),
+            other => Err(format!("unknown gender: {other}, expected M, F or MX")),
         }
     }
 }
