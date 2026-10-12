@@ -21,6 +21,7 @@ export class ListingSearch {
     const request = { href };
     this.pending = request;
     try {
+      // eslint-disable-next-line svelte/no-navigation-without-resolve
       await goto(href, { replace: replaceState, reset: false });
     } finally {
       if (this.pending === request) this.pending = undefined;
