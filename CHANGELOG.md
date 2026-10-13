@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.56.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.55.0...v0.56.0) (2026-10-13)
+
+
+### Features
+
+* **data:** import DCSV German Championship 2026 ([#849](https://github.com/openstreetlifting/openstreetlifting/issues/849)) ([bec1c73](https://github.com/openstreetlifting/openstreetlifting/commit/bec1c73dd15c84da8005d4388ffa719b932af163))
+* **data:** import FR UG Saigon 2026 ([#848](https://github.com/openstreetlifting/openstreetlifting/issues/848)) ([52521dc](https://github.com/openstreetlifting/openstreetlifting/commit/52521dcda82c62340fca81a0a68edbc3a76158c6))
+
 ## [0.55.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.54.0...v0.55.0) (2026-10-12)
 
 

@@ -1224,7 +1224,7 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
 name = "osl_api"
-version = "0.55.0"
+version = "0.56.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -1250,7 +1250,7 @@ dependencies = [
 
 [[package]]
 name = "osl_db"
-version = "0.55.0"
+version = "0.56.0"
 dependencies = [
  "chrono",
  "osl_domain",
@@ -1263,7 +1263,7 @@ dependencies = [
 
 [[package]]
 name = "osl_domain"
-version = "0.55.0"
+version = "0.56.0"
 dependencies = [
  "rust_decimal",
  "serde",
@@ -1276,7 +1276,7 @@ dependencies = [
 
 [[package]]
 name = "osl_importer"
-version = "0.55.0"
+version = "0.56.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1288,7 +1288,7 @@ dependencies = [
  "osl_domain",
  "rust_decimal",
  "serde",
- "sha2 0.11.0",
+ "sha2 0.11.1",
  "sqlx",
  "thiserror",
  "tokio",
@@ -1480,7 +1480,7 @@ checksum = "63b8176103e19a2643978565ca18b50549f6101881c443590420e4dc998a3c69"
 
 [[package]]
 name = "recover-bodyweight"
-version = "0.55.0"
+version = "0.56.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -1662,9 +1662,9 @@ dependencies = [
 
 [[package]]
 name = "sha2"
-version = "0.11.0"
+version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "446ba717509524cb3f22f17ecc096f10f4822d76ab5c0b9822c5f9c284e825f4"
+checksum = "47d7069beb7d6ac7b9acd1039986e73443f24234f41074da099d6f994ac9ad19"
 dependencies = [
  "cfg-if",
  "cpufeatures 0.3.1",
@@ -1847,7 +1847,7 @@ dependencies = [
  "rust_decimal",
  "serde",
  "sha1",
- "sha2 0.11.0",
+ "sha2 0.11.1",
  "sqlx-core",
  "thiserror",
  "tracing",
@@ -1882,7 +1882,7 @@ dependencies = [
  "rust_decimal",
  "serde",
  "serde_json",
- "sha2 0.11.0",
+ "sha2 0.11.1",
  "smallvec",
  "sqlx-core",
  "stringprep",
@@ -2575,18 +2575,18 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.62"
+version = "0.8.63"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86502bf56ac7c77571a32e2647bb2a15894565e981fb2a48d7bde2d91c965a9d"
+checksum = "e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.62"
+version = "0.8.63"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5457206954b06561e2608c7e19cf58b1926586d999c246eebe4502f7e2039d1a"
+checksum = "863ad3ac83293fb4d740aedbfdc9240dd8d1a50c1099acd76ce80ce7c7230c7f"
 dependencies = [
  "proc-macro2",
  "quote",
