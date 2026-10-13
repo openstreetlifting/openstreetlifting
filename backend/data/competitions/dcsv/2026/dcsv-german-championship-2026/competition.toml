@@ -1,0 +1,20 @@
+event = "MPDS"
+sources = [
+    "https://www.dcs-verband.de/wp-content/uploads/2026/09/Wettkampftabelle-DM-Weighted-Calisthenics-2026.pdf",
+    "https://www.dcs-verband.de/deutsche-meisterschaft-weighted-calisthenics/",
+]
+
+[competition]
+name = "Deutsche Meisterschaft Weighted Calisthenics"
+start_date = "2026-09-26"
+end_date = "2026-09-27"
+city = "Wetzlar"
+venue = "Calisthenics Wetzlar"
+region = "Hessen"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "DCSV"
+abbreviation = "DCSV"
+country = "DE"
