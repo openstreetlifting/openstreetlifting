@@ -112,12 +112,9 @@ impl Edition {
 }
 
 impl Constants {
-    /// The total an average elite athlete of this bodyweight is expected to
-    /// put up.
-    #[expect(
-        clippy::suboptimal_flops,
-        reason = "Keep the published formula's operation order and score rounding"
-    )]
+    /// Expected elite total at this bodyweight.
+    /// Keep the published operation order to preserve score rounding.
+    #[expect(clippy::suboptimal_flops)]
     fn benchmark(&self, bodyweight: f64) -> f64 {
         self.a + (self.k - self.a) / (1.0 + self.q * (-self.b * (bodyweight - self.v)).exp())
     }

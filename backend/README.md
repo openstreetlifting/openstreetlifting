@@ -67,8 +67,6 @@ cargo fmt --all -- --check
 SQLX_OFFLINE=true cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
 ```
 
-The workspace enables Clippy's `all`, `pedantic`, `nursery`, and `cargo` groups for every crate, including tests and scripts. CI rejects warnings. The workspace manifest documents exceptions for internal error documentation and transitive dependency versions; any code-specific exceptions include a reason at the relevant item. As [Clippy recommends](https://doc.rust-lang.org/clippy/usage.html#clippyrestriction), select individual `restriction` lints when needed: the whole group contains conflicting policies.
-
 Database tests need a running PostgreSQL server and a role that can create test databases. Export `DATABASE_URL` from your local configuration, then run:
 
 ```sh

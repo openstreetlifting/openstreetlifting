@@ -34,6 +34,4 @@ tracing-subscriber.workspace = true
 uuid.workspace = true
 
 [dev-dependencies]
-# The workspace sqlx carries `migrate`, which `#[sqlx::test]` needs to build
-# each test its own database.
 sqlx.workspace = true

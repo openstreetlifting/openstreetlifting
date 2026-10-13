@@ -23,10 +23,7 @@ impl CountryCode {
     }
 
     #[must_use]
-    #[expect(
-        clippy::missing_panics_doc,
-        reason = "The private representation only contains validated ASCII letters"
-    )]
+    #[expect(clippy::missing_panics_doc)]
     pub fn as_str(&self) -> &str {
         std::str::from_utf8(&self.0).expect("country code is ascii")
     }

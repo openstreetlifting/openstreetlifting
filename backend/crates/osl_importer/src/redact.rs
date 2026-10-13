@@ -46,14 +46,8 @@ pub struct RedactionPlan {
     pub handles: usize,
 }
 
-#[expect(
-    clippy::missing_panics_doc,
-    reason = "The nonempty identity is only unwrapped after checking its length"
-)]
-#[expect(
-    clippy::too_many_lines,
-    reason = "Identity resolution and affected files form one redaction plan"
-)]
+#[expect(clippy::missing_panics_doc)]
+#[expect(clippy::too_many_lines)]
 pub fn plan(
     tree: &Path,
     instagram: &Path,

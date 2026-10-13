@@ -172,10 +172,7 @@ impl<'a> AthleteRepository<'a> {
             .collect())
     }
 
-    #[expect(
-        clippy::too_many_lines,
-        reason = "Keep the detail queries and their assembled response together"
-    )]
+    #[expect(clippy::too_many_lines)]
     pub async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
         let rows = sqlx::query!(
             r#"
@@ -284,10 +281,7 @@ impl<'a> AthleteRepository<'a> {
             .collect();
 
         // Entering multiple divisions at one meet still counts as one competition.
-        #[expect(
-            clippy::cast_possible_wrap,
-            reason = "An allocated collection cannot contain more than isize::MAX elements"
-        )]
+        #[expect(clippy::cast_possible_wrap)]
         let total_competitions = competitions
             .iter()
             .map(|competition| competition.competition_id)

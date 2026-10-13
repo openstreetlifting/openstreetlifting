@@ -1,7 +1,4 @@
-#![expect(
-    clippy::option_if_let_else,
-    reason = "Utoipa emits this conditional in the generic PaginatedResponse schema implementation"
-)]
+#![expect(clippy::option_if_let_else)]
 
 use osl_db::params::{Page, SortDirection};
 use serde::{Deserialize, Serialize};

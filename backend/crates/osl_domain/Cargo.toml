@@ -8,7 +8,6 @@ publish.workspace = true
 workspace = true
 
 [features]
-# Infrastructure integrations are opt-in; the shared vocabulary builds without them.
 sqlx = ["dep:sqlx"]
 utoipa = ["dep:utoipa"]
 

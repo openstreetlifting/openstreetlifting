@@ -205,10 +205,7 @@ impl CanonicalValidator {
         }
     }
 
-    #[expect(
-        clippy::too_many_lines,
-        reason = "Keep per-athlete validation together while accumulating every problem"
-    )]
+    #[expect(clippy::too_many_lines)]
     fn check_athletes(canonical: &CanonicalFormat, report: &mut ValidationReport) {
         let uses_reported_ris = canonical.uses_reported_ris();
         if canonical

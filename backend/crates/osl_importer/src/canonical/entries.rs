@@ -62,10 +62,7 @@ pub fn best_column(movement: Movement) -> String {
 }
 
 #[derive(Debug, Clone, Copy, Default)]
-#[expect(
-    clippy::struct_excessive_bools,
-    reason = "Each flag independently controls whether a CSV column is present"
-)]
+#[expect(clippy::struct_excessive_bools)]
 pub struct Layout {
     pub mixed: bool,
     pub divisioned: bool,

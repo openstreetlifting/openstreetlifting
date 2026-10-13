@@ -372,10 +372,7 @@ fn read_lifts(
     Ok(lifts)
 }
 
-#[expect(
-    clippy::too_many_lines,
-    reason = "Keep the CSV row construction in the same order as its columns"
-)]
+#[expect(clippy::too_many_lines)]
 fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
     let mut writer = csv::Writer::from_writer(Vec::new());
 

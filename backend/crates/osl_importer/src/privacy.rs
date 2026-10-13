@@ -59,7 +59,7 @@ impl PrivacyList {
         Self::load_with_key(path, std::env::var(KEY_ENV).ok().filter(|s| !s.is_empty()))
     }
 
-    #[expect(clippy::missing_panics_doc, reason = "HMAC accepts keys of any length")]
+    #[expect(clippy::missing_panics_doc)]
     pub fn load_with_key(path: &Path, key: Option<String>) -> Result<Self> {
         let key = key.filter(|key| !key.is_empty());
         if !path.exists() {
@@ -330,10 +330,7 @@ fn optional(value: Option<&str>) -> Option<&str> {
 }
 
 #[must_use]
-#[expect(
-    clippy::missing_panics_doc,
-    reason = "HMAC accepts keys of any length and writing to a String cannot fail"
-)]
+#[expect(clippy::missing_panics_doc)]
 pub fn hash_with(key: &str, match_key: &str) -> String {
     use std::fmt::Write;
 

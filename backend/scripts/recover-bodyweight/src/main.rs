@@ -77,10 +77,7 @@ impl Outcome {
         }
     }
 
-    #[expect(
-        clippy::cast_precision_loss,
-        reason = "An approximate ratio is sufficient for the refusal threshold and report"
-    )]
+    #[expect(clippy::cast_precision_loss)]
     fn refusal_rate(&self) -> f64 {
         match self.considered() {
             0 => 0.0,

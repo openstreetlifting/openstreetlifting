@@ -264,10 +264,7 @@ impl<'a> CompetitionRepository<'a> {
         self.get_detailed_competition(competition).await
     }
 
-    #[expect(
-        clippy::too_many_lines,
-        reason = "Keep the detail queries and their assembled response together"
-    )]
+    #[expect(clippy::too_many_lines)]
     async fn get_detailed_competition(
         &self,
         competition: CompetitionRow,

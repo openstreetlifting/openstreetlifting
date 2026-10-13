@@ -17,10 +17,7 @@ all = { level = "warn", priority = -1 }
 pedantic = { level = "warn", priority = -1 }
 nursery = { level = "warn", priority = -1 }
 cargo = { level = "warn", priority = -1 }
-# These unpublished application crates propagate contextual errors rather than
-# documenting a stable public library's error contract on every function.
 missing_errors_doc = "allow"
-# SQLx, HTTP, and cryptography dependencies require different transitive versions.
 multiple_crate_versions = "allow"
 
 [workspace.dependencies]
