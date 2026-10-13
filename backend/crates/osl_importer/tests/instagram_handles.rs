@@ -214,7 +214,7 @@ async fn a_column_that_matches_nobody_says_what_the_name_does_match(pool: PgPool
     let report = check_instagram_handles(handles.path(), &pool).await;
 
     assert!(report.is_err());
-    assert!(attached(&pool).await.is_empty());
+    assert_eq!(attached(&pool).await, [] as [(String, String); 0]);
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
@@ -327,7 +327,7 @@ async fn replacement_aliases_cannot_restore_a_handle(pool: PgPool) {
     ] {
         let handles = HandleFile::new(&format!("Name,Instagram\n{name},fixture_handle\n"));
         assert!(load_instagram_handles(handles.path(), &pool).await.is_err());
-        assert!(attached(&pool).await.is_empty());
+        assert_eq!(attached(&pool).await, [] as [(String, String); 0]);
     }
 }
 
@@ -343,7 +343,7 @@ async fn reimport_clears_identity_details_previously_attached_to_a_replacement(p
     let details: (Option<String>, Option<String>, Option<String>) = sqlx::query_as("SELECT native_name, native_script, profile_picture_url FROM athletes WHERE match_key = 'redacted athlete 1'")
         .fetch_one(&pool).await.unwrap();
     assert_eq!(details, (None, None, None));
-    assert!(attached(&pool).await.is_empty());
+    assert_eq!(attached(&pool).await, [] as [(String, String); 0]);
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

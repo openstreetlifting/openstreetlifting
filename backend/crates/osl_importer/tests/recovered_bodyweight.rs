@@ -61,7 +61,7 @@ fn published_bodyweight_and_ris_are_checked_against_the_source_edition() {
         let mut canonical = recovered();
         canonical.categories[0].athletes[0].bodyweight_source = source;
         let report = CanonicalValidator::validate(&canonical).unwrap();
-        assert!(report.warnings.is_empty());
+        assert_eq!(report.warnings, [] as [String; 0]);
 
         // A source may publish only a total, with no lift breakdown.
         let athlete = &mut canonical.categories[0].athletes[0];

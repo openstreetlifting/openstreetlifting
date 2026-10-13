@@ -113,7 +113,7 @@ async fn a_name_that_matches_nobody_returns_nothing(pool: PgPool) {
     let (names, total) = search(&pool, &filter(Some("nobody"))).await;
 
     assert_eq!(total, 0);
-    assert!(names.is_empty());
+    assert_eq!(names, [] as [String; 0]);
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
