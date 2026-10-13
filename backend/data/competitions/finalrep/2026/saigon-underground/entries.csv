@@ -1,6 +1,6 @@
 Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,Phạm,Anh Nhân,,VN,,74.76,317.5,competed,,,,,,40,45,50,50,85x,90,95,95,155,170x,172.5,172.5
-M,Bay,Bay,,,,62.28,260,competed,,,,,,55,65,70x,65,95,105x,105x,95,80x,100,125x,100
+M,,Bay,,,,62.28,260,competed,,,,,,55,65,70x,65,95,105x,105x,95,80x,100,125x,100
 M,Hieu,Bui,,VN,,76.2,320,competed,,,,,,60,70,75x,70,100,115,120,120,100,120,130,130
 M,Lê,Bảo Minh Quân,,VN,,59.58,275,competed,,,,,,45,50,55,55,75,80,82.5x,80,130,135,140,140
 M,Minh,Cường,,,,0,,disqualified,,,,,,0x,0x,0x,,0x,0x,0x,,0x,0x,0x,
@@ -13,7 +13,7 @@ M,Thanh,Lâm Nguyễn Võ,,,,62.5,225,competed,,,,,,45,50x,50,50,65,70x,70x,65,9
 M,Nguyen,Mai Minh Quy,,VN,,43.71,,disqualified,,,,,,45x,55,60x,55,90x,97.5x,97.5x,,130,150,160x,150
 M,Trần,Minh Thư,,,,65.84,280,competed,,,,,,50,60x,65x,50,80,90,100,100,125x,125x,130,130
 M,Chí,Nguyên Nguyễn Huỳnh,,VN,,33.31,,disqualified,,,,,,30x,35,45x,35,80x,80x,80x,,130x,130,140x,130
-M,Alexey.manager,Pavlov,,,,59.5,322.5,competed,,,,,,40x,50,57.5,57.5,70,80,85,85,160,170,180,180
+M,Alexey,Pavlov,,,,59.5,322.5,competed,,,,,,40x,50,57.5,57.5,70,80,85,85,160,170,180,180
 M,Nguyễn,Phan Hoàng Nam,,VN,,54.63,230,competed,,,,,,60,65x,65x,60,70,80,85x,80,90x,90x,90,90
 M,Nguyen,Tan Phat,,VN,,49.33,220,competed,,,,,,40x,45,46.25x,45,65,75x,80,80,85x,95,120x,95
 M,Đoàn,Thái Bảo Phúc,,VN,,79.64,328.75,competed,,,,,,42.5x,50,55x,50,60,70,78.75,78.75,180,190,200,200

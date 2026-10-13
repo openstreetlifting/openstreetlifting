@@ -1,4 +1,4 @@
-event = "MPDS"
+event = "PDS"
 sources = [
     "FinalRep app, /events-api/v1/events/3EIIaGfFyiCIqkGa4SbF7sCri8y/statistics",
     "https://final-rep.com/event-calendar/",
