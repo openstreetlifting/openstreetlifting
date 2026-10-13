@@ -172,12 +172,12 @@ async fn a_competition_without_weight_classes_lists_none(pool: PgPool) {
     .await
     .unwrap();
 
-    assert!(
+    assert_eq!(
         RankingRepository::new(&pool)
             .list_distinct_classes(None, Some(competition.competition_id))
             .await
-            .unwrap()
-            .is_empty()
+            .unwrap(),
+        [] as [String; 0]
     );
 }
 
@@ -195,11 +195,11 @@ async fn a_competition_narrows_the_list_to_what_it_contested(pool: PgPool) {
             .unwrap(),
         vec!["-80kg"]
     );
-    assert!(
+    assert_eq!(
         repository
             .list_distinct_classes(None, Some(Uuid::new_v4()))
             .await
-            .unwrap()
-            .is_empty()
+            .unwrap(),
+        [] as [String; 0]
     );
 }

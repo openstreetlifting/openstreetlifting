@@ -113,7 +113,7 @@ async fn a_federation_nobody_competed_under_ranks_nobody(pool: PgPool) {
     let (placings, total) = placings(&pool, &filter(Some("Unknown Federation"))).await;
 
     assert_eq!(total, 0);
-    assert!(placings.is_empty());
+    assert_eq!(placings, [] as [(String, i64); 0]);
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

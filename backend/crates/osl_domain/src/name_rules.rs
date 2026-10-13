@@ -258,9 +258,9 @@ mod tests {
 
     #[test]
     fn intercaps_are_a_spelling_not_a_mistake() {
-        assert!(check_name("Andrea", "DeFrancesco").is_empty());
-        assert!(check_name("Sean", "McDonald").is_empty());
-        assert!(check_name("Larodrick", "LaRue").is_empty());
+        assert_eq!(check_name("Andrea", "DeFrancesco"), [] as [String; 0]);
+        assert_eq!(check_name("Sean", "McDonald"), [] as [String; 0]);
+        assert_eq!(check_name("Larodrick", "LaRue"), [] as [String; 0]);
     }
 
     #[test]
@@ -273,21 +273,21 @@ mod tests {
     fn both_halves_of_a_hyphenated_name_are_capitalized() {
         assert!(problems("Jean-rodrigue", "Perle").contains("'Jean-rodrigue' capitalized"));
         assert!(problems("Lea", "Goutte-toquet").contains("'Goutte-toquet' capitalized"));
-        assert!(check_name("Jean-Rodrigue", "Perle").is_empty());
+        assert_eq!(check_name("Jean-Rodrigue", "Perle"), [] as [String; 0]);
     }
 
     #[test]
     fn particles_keep_their_place_but_not_the_front() {
-        assert!(check_name("Martina", "de Iturbe").is_empty());
-        assert!(check_name("Franck", "da Silva").is_empty());
-        assert!(check_name("Kevin", "van der Berg").is_empty());
+        assert_eq!(check_name("Martina", "de Iturbe"), [] as [String; 0]);
+        assert_eq!(check_name("Franck", "da Silva"), [] as [String; 0]);
+        assert_eq!(check_name("Kevin", "van der Berg"), [] as [String; 0]);
         // The same word opening the name is a first name that lost its capital.
         assert!(problems("de", "Iturbe").contains("'de' capitalized"));
     }
 
     #[test]
     fn a_french_particle_hides_the_capital_behind_it() {
-        assert!(check_name("José", "d'Almeida").is_empty());
+        assert_eq!(check_name("José", "d'Almeida"), [] as [String; 0]);
         assert!(problems("José", "d'almeida").contains("'d'almeida' capitalized"));
     }
 
@@ -321,14 +321,14 @@ mod tests {
         assert!(flagged.contains("NativeName"), "{flagged}");
         assert!(problems("", "조정우").contains("written in korean"));
         // Latin with accents is not another alphabet.
-        assert!(check_name("Alexie", "Bărbieru").is_empty());
+        assert_eq!(check_name("Alexie", "Bărbieru"), [] as [String; 0]);
     }
 
     #[test]
     fn the_native_name_holds_only_its_own_alphabet() {
-        assert!(check_native_name("Радован Репац").is_empty());
-        assert!(check_native_name("조정우").is_empty());
-        assert!(check_native_name("").is_empty());
+        assert_eq!(check_native_name("Радован Репац"), [] as [String; 0]);
+        assert_eq!(check_native_name("조정우"), [] as [String; 0]);
+        assert_eq!(check_native_name(""), [] as [String; 0]);
 
         assert!(
             check_native_name("Radovan Repac")
@@ -344,8 +344,8 @@ mod tests {
 
     #[test]
     fn initials_keep_their_capitals() {
-        assert!(check_name("S.E.M", "Visser").is_empty());
-        assert!(check_name("Émilie", "L").is_empty());
+        assert_eq!(check_name("S.E.M", "Visser"), [] as [String; 0]);
+        assert_eq!(check_name("Émilie", "L"), [] as [String; 0]);
     }
 
     #[test]
@@ -356,15 +356,15 @@ mod tests {
 
     #[test]
     fn an_athlete_with_one_name_is_checked_on_that_name() {
-        assert!(check_name("", "Darkhan").is_empty());
+        assert_eq!(check_name("", "Darkhan"), [] as [String; 0]);
         assert!(problems("", "svon").contains("'svon' capitalized"));
         assert!(problems("", "").contains("no name"));
     }
 
     #[test]
     fn a_redacted_athlete_is_allowed_its_number() {
-        assert!(check_name("", "Redacted Athlete #1").is_empty());
-        assert!(check_name("", "Redacted Athlete #9001").is_empty());
+        assert_eq!(check_name("", "Redacted Athlete #1"), [] as [String; 0]);
+        assert_eq!(check_name("", "Redacted Athlete #9001"), [] as [String; 0]);
     }
 
     #[test]

@@ -176,7 +176,10 @@ async fn unknown_country_keeps_global_rankings_and_profile_history(pool: PgPool)
     assert_eq!(rows[0].athlete_id, id);
     filter.country = Some("FR".into());
     assert_eq!(repo.get_global_ranking(&filter).await.unwrap().1, 0);
-    assert!(repo.list_distinct_countries(None).await.unwrap().is_empty());
+    assert_eq!(
+        repo.list_distinct_countries(None).await.unwrap(),
+        [] as [String; 0]
+    );
     let history = AthleteRepository::new(&pool)
         .find_by_slug_detailed(&slug)
         .await
