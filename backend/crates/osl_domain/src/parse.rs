@@ -1,6 +1,5 @@
 use thiserror::Error;
 
-/// A string that does not name a variant of the type it was read into.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 #[error("{0}")]
 pub struct ParseError(String);

@@ -9,9 +9,6 @@ use crate::rows::{
     federation::FederationRow,
 };
 
-/// A competition and how many lifters it recorded. The count is what tells a
-/// reader a competition has results behind it, so it is carried by the list itself
-/// rather than looked up per row.
 #[derive(Debug, FromRow)]
 pub struct CompetitionSummaryRow {
     #[sqlx(flatten)]
@@ -56,7 +53,6 @@ pub struct ParticipantDetail {
     pub participant_id: Uuid,
     pub athlete: AthleteRow,
     pub bodyweight: Option<Decimal>,
-    /// Placing within the contest, computed from lift results or a reported total.
     pub rank: Option<i32>,
     pub ris_score: Option<Decimal>,
     pub ris_source: Option<RisSource>,
@@ -69,8 +65,6 @@ pub struct ParticipantDetail {
 #[derive(Debug)]
 pub struct LiftDetail {
     pub movement_name: Movement,
-    /// Best successful attempt. 0 is a bodyweight-only lift, and None means
-    /// the movement was contested with no attempt succeeding.
     pub best_weight: Option<Decimal>,
     pub attempts: Vec<AttemptSummary>,
 }

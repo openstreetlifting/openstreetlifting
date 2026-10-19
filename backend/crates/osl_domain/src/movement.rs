@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-/// One of the four lifts.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Movement {
@@ -12,7 +11,6 @@ pub enum Movement {
     Squat,
 }
 
-// The spellings are the `movements.name` primary key referenced by `movement_name` columns.
 impl Movement {
     pub const ALL: [Self; 4] = [Self::MuscleUp, Self::PullUp, Self::Dips, Self::Squat];
 

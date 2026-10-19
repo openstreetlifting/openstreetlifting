@@ -1,15 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-/// Outcome of an athlete's participation in a competition. `competed` is the
-/// only one whose result stands for rankings and records.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum AthleteStatus {
     Competed,
-    // An athlete who took attempts and was disqualified by bombing a movement or a judge call.
+    // took attempts but was disqualified by bombing or a judge call.
     Disqualified,
-    // An athlete who did not compete.
+    // did not compete.
     NoShow,
 }
 

@@ -22,8 +22,6 @@ pub struct CountriesFilter {
     pub competition_id: Option<Uuid>,
 }
 
-/// What a ranking board is sorted by. Not only movements: a total and a RIS
-/// score are ranked from the same list.
 #[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum RankingMetric {

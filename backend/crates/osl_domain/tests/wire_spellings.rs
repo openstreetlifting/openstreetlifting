@@ -4,8 +4,6 @@ fn wire(value: impl serde::Serialize) -> String {
     serde_json::to_string(&value).unwrap()
 }
 
-/// The spellings are the published contract, so a change that breaks every
-/// client has to break this test first.
 #[test]
 fn the_wire_spellings_are_fixed() {
     assert_eq!(wire(Gender::M), "\"M\"");
@@ -31,7 +29,6 @@ fn the_wire_spellings_are_fixed() {
     assert_eq!(wire(Movement::Squat), "\"Squat\"");
 }
 
-/// Serde is what clients read and `as_str` is what gets bound into Postgres.
 #[test]
 fn the_database_spells_them_the_same_way() {
     for gender in [

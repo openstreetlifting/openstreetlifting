@@ -5,7 +5,6 @@ use utoipa::OpenApi;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // cargo run -p osl_api -- --dump-openapi > openapi.json
     if std::env::args().any(|arg| arg == "--dump-openapi") {
         println!("{}", osl_api::ApiDoc::openapi().to_pretty_json()?);
         return Ok(());

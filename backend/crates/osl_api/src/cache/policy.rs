@@ -1,6 +1,5 @@
 use std::time::Duration;
 
-/// Keep dataset freshness decisions here, separate from deployment configuration.
 #[derive(Clone, Copy)]
 pub struct CachePolicy {
     pub name: &'static str,

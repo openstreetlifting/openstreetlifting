@@ -22,7 +22,6 @@ pub struct CompetitionListQuery {
     pub include: Include,
     #[serde(default, deserialize_with = "crate::shared::dto::optional_from_str")]
     pub status: Option<CompetitionStatus>,
-    /// Exact format in canonical MPDS order, e.g. PD for pull-up and dips only.
     pub event: Option<String>,
     pub federation: Option<String>,
     pub country: Option<String>,

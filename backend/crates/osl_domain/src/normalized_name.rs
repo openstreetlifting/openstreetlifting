@@ -1,13 +1,5 @@
 use unicode_normalization::UnicodeNormalization;
 
-/// Athlete name in the two forms the database needs.
-///
-/// Sources spell the same athlete differently ("ADRIEN PELFRESNE", "Adrien
-/// Pelfresne"), which would create duplicates. The match form is folded down
-/// until every spelling of one person collapses onto the same string, and is
-/// only ever compared, never displayed. The database form is what the file
-/// says, trimmed, because capitalisation is a spelling the file has to get
-/// right rather than one this type can derive.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NormalizedAthleteName {
     first_name: String,
@@ -15,8 +7,6 @@ pub struct NormalizedAthleteName {
 }
 
 impl NormalizedAthleteName {
-    /// # Examples
-    ///
     /// ```
     /// use osl_domain::normalized_name::NormalizedAthleteName;
     ///
@@ -50,8 +40,6 @@ impl NormalizedAthleteName {
         (&self.first_name, &self.last_name)
     }
 
-    /// The name as it is compared, not as it is shown.
-    ///
     /// ```
     /// use osl_domain::normalized_name::NormalizedAthleteName;
     ///
@@ -69,11 +57,6 @@ impl NormalizedAthleteName {
     }
 }
 
-/// The two halves joined for a reader.
-///
-/// An athlete with only one name has no first name, so the halves are joined
-/// rather than interpolated with a space that would sit there on its own.
-///
 /// ```
 /// use osl_domain::normalized_name::display_name;
 ///
@@ -85,13 +68,6 @@ pub fn display_name(first_name: &str, last_name: &str) -> String {
     format!("{first_name} {last_name}").trim().to_string()
 }
 
-/// Folds a name part down to what identity should ignore: accents, case, and
-/// how someone chose to punctuate. `Mérandon`, `MERANDON` and `merandon` all
-/// land on `merandon`, and `Jean-Luc` matches `Jean Luc`.
-///
-/// Apostrophes are dropped rather than spaced so `O'Brien` matches `OBrien`.
-/// Anything else that is not alphanumeric becomes a space, and runs of spaces
-/// collapse, so a stray comma or double space cannot split a person in two.
 fn fold(name: &str) -> String {
     let without_accents: String = name
         .nfd()
@@ -108,10 +84,6 @@ fn fold(name: &str) -> String {
     spaced.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
-/// Only whitespace is taken off. Casing is left exactly as the file spells it:
-/// `Anne-Sophie`, `D'Almeida` and `DeFrancesco` all have capitals no rule can
-/// rebuild once they are lost, so the file is the authority and
-/// [`crate::name_rules`] refuses a name that is spelled wrongly.
 fn normalize_name_part(name: &str) -> String {
     name.trim().to_string()
 }
@@ -129,8 +101,6 @@ mod tests {
 
     #[test]
     fn the_file_decides_how_a_name_is_capitalised() {
-        // Casing a machine cannot rebuild has to survive the trip to the
-        // database, so it is carried through rather than recomputed.
         for spelling in ["Anne-Sophie", "D'Almeida", "DeFrancesco", "McDonald"] {
             assert_eq!(
                 NormalizedAthleteName::new(spelling, "X").database_first_name(),
@@ -181,15 +151,12 @@ mod tests {
 
     #[test]
     fn punctuation_does_not_split_a_person() {
-        // A hyphen and a space are the same choice made twice.
         assert_eq!(
             match_name("Jean-Luc", "Picard"),
             match_name("Jean Luc", "Picard")
         );
-        // An apostrophe disappears rather than becoming a gap.
         assert_eq!(match_name("Sean", "O'Brien"), match_name("Sean", "OBrien"));
         assert_eq!(match_name("Sean", "O’Brien"), match_name("Sean", "OBrien"));
-        // Stray punctuation and doubled spaces collapse.
         assert_eq!(match_name("Anna", "Smith,"), match_name("Anna", "Smith"));
         assert_eq!(
             match_name("Anna  Marie", "Smith"),
@@ -208,7 +175,6 @@ mod tests {
 
     #[test]
     fn non_latin_names_survive_folding() {
-        // Nothing to strip, but it must not fold away to nothing either.
         assert_eq!(match_name("Иван", "Петров"), "иван петров");
         assert_eq!(match_name("大輔", "田中"), "大輔 田中");
     }

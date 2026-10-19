@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-/// Where a competition is in its life.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -8,7 +7,6 @@ pub enum CompetitionStatus {
     #[default]
     Draft,
     Upcoming,
-    /// In progress, with partial results published as the competition runs.
     Live,
     Completed,
     Cancelled,

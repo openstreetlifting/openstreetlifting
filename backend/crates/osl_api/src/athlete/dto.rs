@@ -49,7 +49,7 @@ pub struct StrengthProfile {
 pub struct StrengthComparison {
     pub movement_name: Movement,
     pub value: Option<rust_decimal::Decimal>,
-    /// Percentage of other athletes below this result, with ties counting as half.
+    /// Percentage of other athletes below this result, ties counting as half.
     pub percentile: Option<f64>,
     /// Other athletes with a valid best for this lift in the same sex and weight class.
     pub field: i64,
@@ -177,7 +177,6 @@ impl AthleteStanding {
     }
 }
 
-/// No best weight means a bombed movement; `event` distinguishes it from an uncontested one.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteLift {
     pub movement_name: Movement,
@@ -197,11 +196,8 @@ pub struct AthleteCompetitionSummary {
     pub rank: Option<i32>,
     pub total: Option<rust_decimal::Decimal>,
     pub ris_score: Option<rust_decimal::Decimal>,
-    /// Reported scores cannot be re-scored without bodyweight; computed scores
-    /// use the current formula. Absent alongside a missing score.
     pub ris_source: Option<RisSource>,
     pub status: AthleteStatus,
-    /// The movements the competition ran, as letters of MPDS.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub event: Option<String>,
     pub lifts: Vec<AthleteLift>,

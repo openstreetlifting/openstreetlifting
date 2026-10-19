@@ -2,7 +2,6 @@ use sqlx::{Postgres, Transaction};
 
 use crate::error::{Result, StorageError};
 
-/// Resolve profile countries from source entries after the complete import batch.
 pub async fn refresh(tx: &mut Transaction<'_, Postgres>) -> Result<()> {
     let conflict = sqlx::query!(
         r#"SELECT a.first_name, a.last_name,

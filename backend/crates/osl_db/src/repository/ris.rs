@@ -13,13 +13,6 @@ impl<'a> RisRepository<'a> {
         Self { pool }
     }
 
-    /// Every performance the current edition scored, with its athlete and meet.
-    /// Reported scores are left out: they were produced by constants we
-    /// did not choose, so plotting them against our curve would compare two
-    /// scales.
-    ///
-    /// One row per performance rather than per athlete, because the curve is
-    /// fitted to performances and a repeat competitor is not one point.
     pub async fn scored_performances(&self) -> Result<Vec<ScoredPerformance>> {
         let performances = sqlx::query_as!(
             ScoredPerformance,

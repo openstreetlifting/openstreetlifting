@@ -1,5 +1,5 @@
 //! Numbered replacement names for athletes who request name removal.
-//! The same number identifies their results across competitions.
+//! This number identifies their results across competitions.
 
 use std::fmt;
 

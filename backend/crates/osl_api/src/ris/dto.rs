@@ -65,7 +65,6 @@ impl From<Edition> for RisFormulaResponse {
     }
 }
 
-/// One plotted performance, including links back to its athlete and competition.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RisPerformanceResponse {
     pub participant_id: uuid::Uuid,
@@ -78,7 +77,6 @@ pub struct RisPerformanceResponse {
     pub total: Decimal,
 }
 
-/// The archive's own performances, grouped by the reference curve they use.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RisDistributionResponse {
     pub men: Vec<RisPerformanceResponse>,

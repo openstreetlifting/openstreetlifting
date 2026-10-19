@@ -53,8 +53,6 @@ pub struct FederationInfo {
 pub struct MovementInfo {
     pub movement_name: Movement,
     pub display_order: Option<i32>,
-    /// Its letter in the event code, so a competition running all four reads
-    /// as `MPDS`.
     pub code: String,
 }
 
@@ -80,7 +78,6 @@ pub struct ParticipantDetail {
     pub bodyweight: Option<rust_decimal::Decimal>,
     pub rank: Option<i32>,
     pub ris_score: Option<rust_decimal::Decimal>,
-    /// Absent alongside a missing score.
     pub ris_source: Option<RisSource>,
     pub status: AthleteStatus,
     pub status_reason: Option<String>,
@@ -101,8 +98,6 @@ pub struct AthleteInfo {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct LiftDetail {
     pub movement_name: Movement,
-    /// Best successful attempt. Zero is a bodyweight-only lift, and absent
-    /// means the movement was contested with no attempt succeeding.
     pub best_weight: Option<rust_decimal::Decimal>,
     pub attempts: Vec<AttemptInfo>,
 }

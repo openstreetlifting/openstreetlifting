@@ -24,8 +24,6 @@ impl<'a> CompetitionRepository<'a> {
         Self { pool }
     }
 
-    /// Every filter is applied here rather than on the page, so the total the
-    /// pager divides counts the same rows it pages through.
     pub async fn list(
         &self,
         page: &Page,
@@ -70,8 +68,6 @@ impl<'a> CompetitionRepository<'a> {
         Ok((competitions, total))
     }
 
-    /// Shared by the page and its total so the two can never disagree about
-    /// which rows are in the list.
     fn push_filters(query: &mut QueryBuilder<Postgres>, filter: &CompetitionFilter) {
         query.push(" WHERE TRUE ");
 
@@ -158,8 +154,6 @@ impl<'a> CompetitionRepository<'a> {
         Ok((results, total))
     }
 
-    /// Federations that have run at least one competition, alphabetical, so the
-    /// dropdown never offers a filter that returns nothing.
     pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
         let federations: Vec<String> = sqlx::query_scalar(
             r"
@@ -175,7 +169,6 @@ impl<'a> CompetitionRepository<'a> {
         Ok(federations)
     }
 
-    /// Years a competition was held in, most recent first.
     pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
         let years: Vec<i32> = sqlx::query_scalar(
             r"
@@ -191,7 +184,6 @@ impl<'a> CompetitionRepository<'a> {
         Ok(years)
     }
 
-    /// Countries a competition was held in, alphabetical.
     pub async fn list_distinct_countries(&self) -> Result<Vec<String>> {
         let countries: Vec<String> = sqlx::query_scalar(
             r"

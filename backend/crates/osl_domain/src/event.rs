@@ -1,42 +1,12 @@
-//! Which movements a competition contested.
-//!
-//! A competition declares its movements and everyone in it contests all of them, so
-//! the event belongs to the competition rather than to each athlete.
-//!
-//! A total is only a total within one event. Adding four lifts and adding one
-//! produce numbers that must never be ranked against each other, and the same
-//! goes for the RIS derived from them. A single movement is different: a
-//! muscle-up is a muscle-up whatever else the competition ran, so those compare
-//! freely across events.
-
 use crate::movement::Movement;
 
 pub const FULL_EVENT: &str = "MPDS";
 
-/// Whether the event supports calculated All4 RIS.
-///
-/// The RIS formula divides by a benchmark fitted to four-lift totals, so
-/// applying it to fewer movements measures against the wrong reference and
-/// carries a bodyweight bias rather than removing one.
-///
-/// ```
-/// use osl_domain::event::{is_full_event, FULL_EVENT};
-///
-/// assert!(is_full_event(Some(FULL_EVENT)));
-/// assert!(!is_full_event(Some("M")));
-/// assert!(!is_full_event(None));
-/// ```
 #[must_use]
 pub fn is_full_event(event_code: Option<&str>) -> bool {
     event_code == Some(FULL_EVENT)
 }
 
-/// The movements an event code names, rejecting a code whose letters are
-/// unknown, repeated or out of display order.
-///
-/// One set of movements therefore
-/// has exactly one spelling, which is what lets `event_code` be compared as a
-/// string.
 pub fn movements(event_code: &str) -> Result<Vec<Movement>, String> {
     if event_code.is_empty() {
         return Err("event is empty, expected letters from MPDS".to_string());
@@ -81,8 +51,6 @@ mod tests {
     #[test]
     fn an_unknown_event_does_not() {
         assert!(!is_full_event(None));
-        // Order is fixed by display_order, so a reordered code is not the
-        // full event and must not be treated as one.
         assert!(!is_full_event(Some("SDPM")));
     }
 

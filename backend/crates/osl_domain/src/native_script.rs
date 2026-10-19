@@ -1,9 +1,3 @@
-//! Folding leaves a non-Latin name alone, so nobody typing `Radovan Repac`
-//! finds `Радован Репац`.
-//!
-//! Transliteration is lossy and language specific, so
-//! the Latin spelling is written by hand and the native one carried beside it.
-
 use std::fmt;
 use std::str::FromStr;
 
@@ -28,9 +22,6 @@ impl NativeScript {
         }
     }
 
-    /// A name written only in kanji is the same characters a Chinese name uses,
-    /// so it reads as [`NativeScript::Han`] and only kana make it Japanese.
-    ///
     /// ```
     /// use osl_domain::native_script::NativeScript;
     ///

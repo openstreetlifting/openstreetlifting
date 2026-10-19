@@ -6,7 +6,6 @@ use tokio::{sync::Mutex, time::Instant};
 
 use policy::CachePolicy;
 
-/// One bounded snapshot per dataset. Add typed slots here as new policies are needed.
 pub struct AppCaches {
     pub ris_distribution: Cache<Bytes>,
 }
@@ -25,8 +24,6 @@ struct Entry<T> {
     expires_at: Instant,
 }
 
-/// A process-local, lazy TTL cache. Use cheaply cloned values such as Bytes or Arc<T>.
-/// The lock serializes refreshes; cancellation releases it without publishing partial data.
 pub struct Cache<T> {
     enabled: bool,
     policy: CachePolicy,

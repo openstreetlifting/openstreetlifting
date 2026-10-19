@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-/// The metric used to place athletes within a contest.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

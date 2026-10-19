@@ -1,5 +1,3 @@
-//! Suppression records for names removed from the published archive.
-
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 

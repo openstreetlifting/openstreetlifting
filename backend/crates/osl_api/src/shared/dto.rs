@@ -4,7 +4,6 @@ use osl_db::params::{Page, SortDirection};
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
-/// Accept the domain parser's input spellings while responses use canonical serde spellings.
 pub fn from_str<'de, D, T>(deserializer: D) -> Result<T, D::Error>
 where
     D: serde::Deserializer<'de>,
@@ -98,7 +97,7 @@ pub struct PaginationMeta {
 impl PaginationMeta {
     /// # Panics
     ///
-    /// Panics if `page_size` is zero; query validation requires a positive size.
+    /// Panics if `page_size` is zero; query validation requires positive size.
     #[must_use]
     pub fn new(page: u32, page_size: u32, total_items: i64) -> Self {
         let items = u64::try_from(total_items).unwrap_or_default();
@@ -129,8 +128,6 @@ impl<T> PaginatedResponse<T> {
     }
 }
 
-/// Which way a sorted list runs. Shared by the ranking and the competition
-/// list, which disagree about the sensible default but not about the values.
 #[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum Direction {

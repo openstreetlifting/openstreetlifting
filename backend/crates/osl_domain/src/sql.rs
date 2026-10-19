@@ -1,8 +1,3 @@
-//! Postgres decoding for the enums stored as text.
-
-/// Reads an enum from the text in its column.
-///
-/// Takes any type with `FromStr<Err = String>`.
 #[macro_export]
 macro_rules! text_enum {
     ($($enum:ty),+ $(,)?) => {$(

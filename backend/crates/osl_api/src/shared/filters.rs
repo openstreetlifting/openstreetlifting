@@ -2,7 +2,6 @@ use osl_domain::Gender;
 use serde::{Deserialize, Deserializer, Serialize};
 use utoipa::ToSchema;
 
-/// Athlete sex for global rankings, or contest sex within a competition.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum RankedGender {

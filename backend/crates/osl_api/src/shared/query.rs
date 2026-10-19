@@ -5,9 +5,6 @@ use utoipa::{
 };
 
 /// Comma-separated `?include=` list, e.g. `?include=competitions,records`.
-///
-/// Unknown names are rejected rather than ignored: a client asking for data
-/// it will not receive should hear about it, not silently get less.
 #[derive(Debug, Default, Clone)]
 pub struct Include(Vec<String>);
 
@@ -27,7 +24,6 @@ impl Include {
         self.0.iter().any(|v| v == name)
     }
 
-    /// Fails on any name outside `allowed`, listing what was accepted.
     pub fn validate(&self, allowed: &[&str]) -> Result<(), String> {
         for value in &self.0 {
             if !allowed.contains(&value.as_str()) {

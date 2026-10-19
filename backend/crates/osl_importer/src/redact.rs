@@ -1,7 +1,4 @@
-//! Removes athlete names from published competition files while preserving results.
-//!
-//! The site and CSV downloads share these files. Redaction requires an
-//! unambiguous athlete match.
+//! Removes an athlete names from competition files but preserving results.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};

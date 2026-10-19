@@ -1,6 +1,3 @@
-//! Athlete identity uses the folded name, sex and disambiguation.
-//! Country is an optional search filter, not part of identity.
-
 use osl_domain::normalized_name::NormalizedAthleteName;
 
 use crate::canonical::models::AthleteData;

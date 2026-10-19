@@ -109,8 +109,6 @@ async fn get(pool: &PgPool, uri: &str) -> (StatusCode, Value) {
     (status, body)
 }
 
-/// The name is replaced in the files, so the import creates a new athlete and
-/// the prune takes the old one with it.
 async fn redact_in_place(pool: &PgPool) {
     import(
         pool,

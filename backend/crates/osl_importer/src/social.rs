@@ -1,32 +1,17 @@
-//! Attaching a social handle to an athlete, from a file that names them.
-//!
-//! A handle is written against a name, because a name is what the person
-//! adding it knows. Identity, though, is the folded name together with gender,
-//! country and disambiguation, so a name is a coarser key than an athlete: two
-//! people who share one are two rows the name alone cannot tell apart.
-//!
-//! Nothing is guessed when that happens. The row is refused and the file is
-//! narrowed by hand with the columns `entries.csv` already uses, so the file
-//! can say which of the two it means instead of leaving it to whichever row
-//! came back first.
-
 use std::collections::BTreeMap;
 use std::path::Path;
 
 use anyhow::{Context, Result, anyhow, bail};
 use osl_domain::{CountryCode, Gender};
+#[cfg(feature = "database")]
 use sqlx::PgPool;
+#[cfg(feature = "database")]
 use uuid::Uuid;
 
 use crate::identity::AthleteQuery;
 
-/// A row of the file.
-///
-/// `Sex`, `Country` and `Disambiguation` are spelled the way `entries.csv`
-/// spells them, so the values can be copied across from the result that
-/// created the athlete. They are blank for everyone whose name already names
-/// one person, which is nearly everyone, and `serde(default)` lets a file that
-/// predates them keep working.
+/// row of the file.
+/// `Sex`, `Country` and `Disambiguation` are spelled like in `entries.csv`
 #[derive(Debug, serde::Deserialize)]
 struct InstagramRecord {
     #[serde(rename = "Name")]
@@ -41,26 +26,24 @@ struct InstagramRecord {
     instagram: String,
 }
 
-/// A row with its columns checked: an athlete to find, and the handle to give
-/// them.
 #[derive(Debug)]
 pub(crate) struct HandleRow {
-    /// The name as the file spells it, so every message about this row can be
-    /// found by searching the file for what it says.
     label: String,
     pub(crate) query: AthleteQuery,
     handle: String,
 }
 
-/// An athlete as the database identifies them.
+#[cfg(any(feature = "database", test))]
 #[derive(Debug)]
 struct AthleteIdentity {
+    #[cfg(feature = "database")]
     athlete_id: Uuid,
     gender: String,
     country: String,
     disambiguation: Option<i16>,
 }
 
+#[cfg(any(feature = "database", test))]
 impl AthleteIdentity {
     fn describe(&self) -> String {
         self.disambiguation.map_or_else(
@@ -77,27 +60,17 @@ pub struct InstagramReport {
     pub ambiguous: Vec<String>,
 }
 
-/// Checks the file on its own: that it parses, that each handle is spelled
-/// like a handle, and that no athlete or handle is listed twice.
-///
-/// It cannot tell whether a name still names one athlete, which needs the
-/// athletes. Prefer [`check_instagram_handles`] wherever a database is reachable.
 pub fn validate_file(file: &Path) -> Result<usize> {
     Ok(read_file(file)?.len())
 }
 
-/// Resolves every row against the database without writing anything.
-///
-/// A name stops naming one athlete the moment a competition brings in a second
-/// person who shares it, and the file that was correct yesterday is the one
-/// that breaks. Running this on the pull request that adds that competition
-/// puts the failure next to its cause, rather than in the deploy that runs the
-/// import.
+#[cfg(feature = "database")]
 pub async fn check_instagram_handles(file: &Path, pool: &PgPool) -> Result<InstagramReport> {
     let (_, report) = resolve(read_file(file)?, pool).await?;
     Ok(report)
 }
 
+#[cfg(feature = "database")]
 pub async fn load_instagram_handles(file: &Path, pool: &PgPool) -> Result<InstagramReport> {
     let (resolved, report) = resolve(read_file(file)?, pool).await?;
 
@@ -137,11 +110,7 @@ pub async fn load_instagram_handles(file: &Path, pool: &PgPool) -> Result<Instag
     Ok(report)
 }
 
-/// Pairs every row with the one athlete it names, or refuses the whole file.
-///
-/// A row that names nobody and a row that names two people are both mistakes
-/// only a human can settle, and a file that is half applied is harder to
-/// reason about than one that was not applied at all, so neither is written.
+#[cfg(feature = "database")]
 async fn resolve(
     rows: Vec<HandleRow>,
     pool: &PgPool,
@@ -209,9 +178,7 @@ async fn resolve(
     Ok((resolved, report))
 }
 
-/// Nobody matched. Whether that is a name the database has never seen or a
-/// narrowing that excluded the athlete it meant are different mistakes, so
-/// they read differently.
+#[cfg(any(feature = "database", test))]
 fn no_athlete(row: &HandleRow, named: &[AthleteIdentity]) -> String {
     if named.is_empty() {
         return format!("No athlete named '{}'", row.label);
@@ -225,6 +192,7 @@ fn no_athlete(row: &HandleRow, named: &[AthleteIdentity]) -> String {
     )
 }
 
+#[cfg(any(feature = "database", test))]
 fn too_many_athletes(row: &HandleRow, candidates: &[&AthleteIdentity]) -> String {
     format!(
         "'{}' matches {} athletes: {}. Fill in Sex, Country or Disambiguation to say which one",
@@ -234,6 +202,7 @@ fn too_many_athletes(row: &HandleRow, candidates: &[&AthleteIdentity]) -> String
     )
 }
 
+#[cfg(any(feature = "database", test))]
 fn describe_all<'a>(athletes: impl Iterator<Item = &'a AthleteIdentity>) -> String {
     let mut described: Vec<String> = athletes.map(AthleteIdentity::describe).collect();
     described.sort();
@@ -257,9 +226,6 @@ fn read_file(file: &Path) -> Result<Vec<HandleRow>> {
             bail!("'{first}' is listed twice");
         }
 
-        // An account belongs to one athlete, which the database enforces, so
-        // two rows claiming it is a mistake worth naming here rather than an
-        // insert to let fail.
         if let Some(first) = handles.insert(row.handle.to_lowercase(), row.label.clone()) {
             bail!(
                 "'{}' and '{}' are both listed with the handle '{}'",
@@ -340,8 +306,6 @@ fn parse(record: &InstagramRecord) -> Result<HandleRow> {
     })
 }
 
-/// A column left blank is a column the file did not fill in, whether it holds
-/// nothing or only spaces.
 fn optional(value: Option<&str>) -> Option<&str> {
     value.map(str::trim).filter(|value| !value.is_empty())
 }
@@ -352,6 +316,7 @@ mod tests {
 
     fn identity(gender: &str, country: &str, disambiguation: Option<i16>) -> AthleteIdentity {
         AthleteIdentity {
+            #[cfg(feature = "database")]
             athlete_id: Uuid::nil(),
             gender: gender.to_string(),
             country: country.to_string(),

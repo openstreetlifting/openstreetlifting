@@ -7,8 +7,9 @@ RUN cargo install cargo-chef --locked --version 0.1.77
 WORKDIR /app
 
 FROM chef AS planner
+ARG BIN
 COPY . .
-RUN cargo chef prepare --recipe-path recipe.json
+RUN cargo chef prepare --recipe-path recipe.json --bin "${BIN}"
 
 FROM chef AS builder
 ARG BIN
@@ -16,9 +17,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   curl \
   && rm -rf /var/lib/apt/lists/*
 COPY --from=planner /app/recipe.json recipe.json
-RUN cargo chef cook --release --locked --recipe-path recipe.json
+RUN cargo chef cook --release --locked --recipe-path recipe.json --bin "${BIN}"
 COPY . .
-RUN cargo build --release --locked --bin ${BIN}
+RUN cargo build --release --locked --bin "${BIN}"
 
 FROM debian:bookworm-slim AS runtime
 RUN apt-get update && apt-get install -y --no-install-recommends \

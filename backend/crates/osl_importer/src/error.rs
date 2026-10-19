@@ -4,9 +4,11 @@ pub type Result<T> = std::result::Result<T, ImporterError>;
 
 #[derive(Error, Debug)]
 pub enum ImporterError {
+    #[cfg(feature = "database")]
     #[error("Database error: {0}")]
     DatabaseError(#[from] sqlx::Error),
 
+    #[cfg(feature = "database")]
     #[error("Storage error: {0}")]
     StorageError(#[from] osl_db::error::StorageError),
 

@@ -10,7 +10,6 @@ pub struct ScorableParticipant {
     pub total: Decimal,
 }
 
-/// A scored performance and the athlete and competition needed to identify it.
 #[derive(Debug, Clone)]
 pub struct ScoredPerformance {
     pub participant_id: Uuid,

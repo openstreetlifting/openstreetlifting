@@ -7,7 +7,6 @@ use uuid::Uuid;
 use crate::projections::competition::AttemptSummary;
 use crate::rows::athlete::AthleteRow;
 
-/// No best weight means the athlete contested the movement but made no successful lift.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AthleteLiftRow {
     pub movement_name: Movement,

@@ -1,42 +1,17 @@
-//! The spelling rules an athlete name has to follow to enter the database.
-//!
-//! Names arrive from federation spreadsheets, registration forms and screenshots,
-//! each with their own idea of formatting: full capitals, styled Unicode fonts
-//! pasted out of Instagram, emoji, nicknames in quotes. The importer used to
-//! rewrite what it received, which quietly mangled every name a machine cannot
-//! case correctly (`Anne-Sophie`, `D'Almeida`, `DeFrancesco`).
-//!
-//! So nothing is rewritten here. The file holds the name as it should be read,
-//! and a name that breaks these rules is reported and fixed by hand.
-//!
-//! The rules follow `OpenPowerlifting`'s checker, the largest curated database of
-//! international lifter names, so a name spelled for one reads correctly in the
-//! other.
-
+//! spelling rules athlete name NEED to follow for it to be a validated entry.
 use crate::native_script::NativeScript;
 use unicode_normalization::UnicodeNormalization;
 
-/// Words that stay lowercase inside a name, mostly articles and patronymic
-/// particles. `van`, `de` and `von` are part of the surname, not the start of
-/// it, so they only keep their case away from the front of the name.
 const PARTICLES: &[&str] = &[
     "bin", "da", "de", "do", "del", "den", "der", "des", "di", "dos", "du", "e", "el", "i", "in",
     "in't", "la", "le", "los", "op", "of", "'t", "te", "ten", "ter", "und", "v", "v.", "v.d.",
     "van", "von", "zur", "y", "zu",
 ];
 
-/// Generational suffixes, which are read as letters rather than as a word and
-/// so are the one place capitals are correct.
 const SUFFIXES: &[&str] = &["II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 
-/// Punctuation a name may contain. Everything else — digits, underscores,
-/// brackets, emoji, currency and the rest — is formatting that came along with
-/// the name rather than part of it.
 const ALLOWED_PUNCTUATION: [char; 4] = [' ', '\'', '.', '-'];
 
-/// Every way `first_name last_name` fails the spelling rules, worded so the fix
-/// is obvious to whoever opens the file.
-///
 /// ```
 /// use osl_domain::name_rules::check_name;
 ///
@@ -63,7 +38,6 @@ pub fn check_name(first_name: &str, last_name: &str) -> Vec<String> {
 
     check_characters(&full, &mut problems);
 
-    // Identity, search and the URL are built on the Latin spelling.
     if let Some(script) = NativeScript::detect(&full) {
         problems.push(format!(
             "'{full}' is written in {script}. Put the Latin spelling here and '{full}' in \
@@ -87,14 +61,6 @@ pub fn check_name(first_name: &str, last_name: &str) -> Vec<String> {
     problems
 }
 
-/// Rejects anything that is not a letter or name punctuation, and any letter
-/// that is a font variant of one.
-///
-/// Styled Unicode alphabets are the trap here: a name pasted from a social
-/// profile can be mathematical bold or fullwidth, which reads as letters to a
-/// human and to `is_alphabetic`, but sorts and matches as a different string
-/// entirely. NFKC folds those variants onto the plain letters they imitate, so
-/// a name that survives it unchanged is already written in plain characters.
 fn check_characters(full: &str, problems: &mut Vec<String>) {
     let canonical: String = full.nfkc().collect();
     if canonical != full {
@@ -144,12 +110,8 @@ fn check_words(full: &str, problems: &mut Vec<String>) {
             continue;
         }
 
-        // A French name carries its particle in front of the surname it belongs
-        // to, so the capital to look at is the one after the apostrophe.
         let stem = word.strip_prefix("d'").unwrap_or(word);
 
-        // Either side of a hyphen is a name in its own right and carries its own
-        // capital, so `Jean-Rodrigue` is two names joined rather than one word.
         if stem.split('-').any(|part| {
             part.chars()
                 .next()
@@ -163,12 +125,7 @@ fn check_words(full: &str, problems: &mut Vec<String>) {
     }
 }
 
-/// A name shouted in capitals is how a spreadsheet was formatted, not how the
-/// name is read, and it is the one casing a machine cannot restore: `MCDONALD`
-/// could be `McDonald` or `Macdonald`. So it is refused rather than guessed at.
 fn check_capitals(full: &str, word: &str, stem: &str, problems: &mut Vec<String>) {
-    // Initials are read letter by letter, so their capitals are the spelling
-    // rather than a shout: `S.E.M Visser` is written exactly that way.
     if word.contains('.') {
         return;
     }
@@ -281,7 +238,6 @@ mod tests {
         assert_eq!(check_name("Martina", "de Iturbe"), [] as [String; 0]);
         assert_eq!(check_name("Franck", "da Silva"), [] as [String; 0]);
         assert_eq!(check_name("Kevin", "van der Berg"), [] as [String; 0]);
-        // The same word opening the name is a first name that lost its capital.
         assert!(problems("de", "Iturbe").contains("'de' capitalized"));
     }
 
@@ -293,7 +249,6 @@ mod tests {
 
     #[test]
     fn styled_letters_are_rewritten_to_plain_ones() {
-        // Mathematical bold reads as a name but matches as a different string.
         let flagged = problems("𝐉𝐨𝐡𝐧", "Smith");
         assert!(flagged.contains("styled or full-width"), "{flagged}");
         assert!(flagged.contains("John Smith"), "{flagged}");
@@ -320,7 +275,6 @@ mod tests {
         assert!(flagged.contains("written in cyrillic"), "{flagged}");
         assert!(flagged.contains("NativeName"), "{flagged}");
         assert!(problems("", "조정우").contains("written in korean"));
-        // Latin with accents is not another alphabet.
         assert_eq!(check_name("Alexie", "Bărbieru"), [] as [String; 0]);
     }
 

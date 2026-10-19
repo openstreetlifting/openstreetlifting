@@ -24,7 +24,6 @@ impl<'a> RankingRepository<'a> {
         Self { pool }
     }
 
-    /// Returns one page of the global ranking plus the unpaginated total.
     pub async fn get_global_ranking(
         &self,
         filter: &RankingFilter,
@@ -140,15 +139,6 @@ impl<'a> RankingRepository<'a> {
         query
     }
 
-    /// Who belongs in this ranking at all.
-    ///
-    /// Ranking by one movement spans every event, because a muscle-up is a
-    /// muscle-up whatever else the competition ran; it only drops athletes who never
-    /// contested it. Ranking by total stays inside a single event, because
-    /// adding four lifts and adding one are not the same measurement.
-    ///
-    /// One competition is already one event, so scoping its own leaderboard again
-    /// only risks measuring it against the wrong one and returning nothing.
     fn push_eligible(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
         let sort_column = filter.movement.as_column();
 
@@ -168,14 +158,6 @@ impl<'a> RankingRepository<'a> {
         query.push(" ) ");
     }
 
-    /// A ranking is a list of people, so a lifter who has competed three times
-    /// is still one of them, represented by the competition where they were at
-    /// their best on the column being ranked. Higher is better for every column,
-    /// so the pick does not follow the sort direction: ascending order reverses
-    /// the same ranking rather than asking for anyone's worst result.
-    ///
-    /// A competition's own results are left alone. There the rows are entries,
-    /// and an athlete who entered two categories entered them both.
     fn push_ranking_pool(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
         if filter.competition_id.is_some() {
             query.push(" , ranking_pool AS ( SELECT * FROM eligible ) ");
@@ -236,10 +218,6 @@ impl<'a> RankingRepository<'a> {
         Ok(rows)
     }
 
-    /// Returns the athlete's global and country place for every metric exposed
-    /// by the rankings board. RIS and total stay within their event. Kilogram metrics
-    /// compare athletes of the same sex and weight class; totals also stay
-    /// within the four-movement event while individual lifts span every event.
     pub async fn get_athlete_metric_standings(
         &self,
         athlete_id: Uuid,
@@ -341,11 +319,6 @@ impl<'a> RankingRepository<'a> {
         Ok(standings)
     }
 
-    /// Distinct weight classes, sorted by weight so the filter dropdown reads
-    /// smallest to largest. Men and women don't share the same classes, so an
-    /// optional gender narrows the list to what that gender actually has. An
-    /// optional competition further narrows it to the classes actually
-    /// contested at that competition.
     pub async fn list_distinct_classes(
         &self,
         gender: Option<Gender>,
@@ -392,8 +365,6 @@ impl<'a> RankingRepository<'a> {
         Ok(classes)
     }
 
-    /// Federations someone has actually competed under, alphabetical, so the
-    /// dropdown never offers a filter that returns nothing.
     pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
         let federations: Vec<String> = sqlx::query_scalar(
             r"
@@ -410,7 +381,6 @@ impl<'a> RankingRepository<'a> {
         Ok(federations)
     }
 
-    /// Distinct competition years, most recent first.
     pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
         let years: Vec<i32> = sqlx::query_scalar(
             r"
@@ -425,8 +395,6 @@ impl<'a> RankingRepository<'a> {
         Ok(years)
     }
 
-    /// Distinct countries athletes have actually competed under, alphabetical.
-    /// An optional competition narrows it to who competed at that competition.
     pub async fn list_distinct_countries(
         &self,
         competition_id: Option<Uuid>,

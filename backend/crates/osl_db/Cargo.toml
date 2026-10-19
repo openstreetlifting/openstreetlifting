@@ -1,6 +1,6 @@
 [package]
 name = "osl_db"
-edition = "2024"
+edition.workspace = true
 version.workspace = true
 publish.workspace = true
 
@@ -12,6 +12,14 @@ osl_domain = { path = "../osl_domain", features = ["sqlx"] }
 chrono.workspace = true
 rust_decimal.workspace = true
 serde.workspace = true
-sqlx.workspace = true
+sqlx = { workspace = true, features = [
+  "runtime-tokio",
+  "macros",
+  "migrate",
+  "json",
+  "chrono",
+  "rust_decimal",
+  "uuid",
+] }
 thiserror.workspace = true
 uuid.workspace = true

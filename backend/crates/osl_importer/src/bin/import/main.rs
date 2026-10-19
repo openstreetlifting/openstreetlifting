@@ -254,7 +254,6 @@ async fn handle_recompute_ris(database_url: &str, dry_run: bool) -> Result<()> {
 fn handle_prepare(paths: &[PathBuf], check: bool, dry_run: bool) -> Result<()> {
     let directories = competition_directories(paths)?;
 
-    // Validate every directory before writing any changes.
     let mut prepared = Vec::new();
     for directory in &directories {
         let mut canonical = store::read(directory)?;
