@@ -5,19 +5,53 @@ on:
       - backend/**
       - .github/workflows/ci-backend.yaml
     branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
 jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      rust: ${{ steps.filter.outputs.rust }}
+      data: ${{ steps.filter.outputs.data }}
+    steps:
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            rust:
+              - 'backend/Cargo.*'
+              - 'backend/crates/**'
+              - 'backend/scripts/**'
+              - 'backend/.cargo/**'
+              - 'backend/.sqlx/**'
+              - 'backend/rust-toolchain*'
+              - 'backend/openapi.json'
+              - '.github/workflows/ci-backend.yaml'
+            data:
+              - 'backend/data/**'
+
   format:
     name: Format
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
     steps:
       - uses: actions/checkout@v7
       - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           components: rustfmt
-          cache-workspaces: backend
+          cache: false
       - name: Check formatting
         working-directory: backend
         run: cargo fmt --all -- --check
@@ -25,6 +59,8 @@ jobs:
   imports:
     name: Import files
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.rust == 'true' || needs.changes.outputs.data == 'true'
     services:
       postgres:
         image: postgres:18-alpine
@@ -51,16 +87,12 @@ jobs:
       - uses: taiki-e/install-action@v2
         with:
           tool: sqlx-cli
-      # Require valid totals and consistent file formatting before import.
-      - name: Check canonical files are prepared
+      - name: Check competitions files are prepared
         working-directory: backend
-        run: cargo run -p osl_importer --bin import -- prepare --check ./data/competitions ./data/staging/competitions
+        run: cargo run --locked -p osl_importer --bin import -- prepare --check ./data/competitions ./data/staging/competitions
       - name: Run migrations
         working-directory: backend
         run: sqlx migrate run --source crates/osl_db/migrations
-      # Imported rather than only validated, because a handle names an athlete
-      # and the athletes have to exist before the next step can look one up.
-      # The import validates every file on its way in.
       - name: Import canonical files
         working-directory: backend
         run: |
@@ -68,29 +100,26 @@ jobs:
           if [[ "${{ github.event.pull_request.head.repo.fork }}" == "true" && -z "$OSL_PRIVACY_KEY" ]]; then
             args+=(--dry-run --skip-privacy-check)
           fi
-          cargo run -p osl_importer --bin import -- competitions \
+          cargo run --locked -p osl_importer --bin import -- competitions \
             ./data/competitions \
             ./data/staging/competitions "${args[@]}"
-      # Fork pull requests cannot check suppressed names without the secret.
       - name: Check nobody on the privacy list is named
         if: github.event.pull_request.head.repo.fork == false
         working-directory: backend
-        run: cargo run -p osl_importer --bin import -- privacy --directory ./data/competitions
-      # A competition arriving with a second athlete of the same name is what
-      # takes a name in instagram.csv from naming one person to naming two.
-      # Checking against the imported tree puts that failure on the pull
-      # request that causes it rather than on the deploy.
+        run: cargo run --locked -p osl_importer --bin import -- privacy --directory ./data/competitions
       - name: Validate athlete social handles
         working-directory: backend
         run: |
           if [[ "${{ github.event.pull_request.head.repo.fork }}" == "true" && -z "$OSL_PRIVACY_KEY" ]]; then
             unset DATABASE_URL
           fi
-          cargo run -p osl_importer --bin import -- instagram --dry-run
+          cargo run --locked -p osl_importer --bin import -- instagram --dry-run
 
   lint:
     name: Clippy
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
     env:
       SQLX_OFFLINE: true
     steps:
@@ -102,19 +131,23 @@ jobs:
       - name: Run Clippy (all, pedantic, nursery, cargo)
         working-directory: backend
         run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
-      - name: Check standalone domain has no infrastructure dependencies
+      - name: Check standalone domain and file tools have no infrastructure dependencies
         working-directory: backend
         run: |
-          cargo check -p osl_domain
-          cargo tree -p osl_domain --prefix none > /tmp/osl-domain-dependencies.txt
-          if grep -E '^(sqlx|utoipa)(-| )' /tmp/osl-domain-dependencies.txt; then
-            echo "osl_domain must build without SQLx or Utoipa by default"
-            exit 1
-          fi
+          for package in osl_domain recover-bodyweight; do
+            cargo check --locked -p "$package"
+            cargo tree --locked -p "$package" --prefix none > "/tmp/$package-dependencies.txt"
+            if grep -E '^(sqlx|osl_db|utoipa|tokio|tracing-subscriber)(-| )' "/tmp/$package-dependencies.txt"; then
+              echo "$package must build without database, runtime or OpenAPI dependencies"
+              exit 1
+            fi
+          done
 
   test:
     name: Tests
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
     services:
       postgres:
         image: postgres:18-alpine
@@ -144,13 +177,13 @@ jobs:
         run: sqlx migrate run --source crates/osl_db/migrations
       - name: Run tests
         working-directory: backend
-        run: cargo nextest run --workspace --all-features
+        run: cargo nextest run --workspace --all-features --locked
 
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
     if: always()
-    needs: [format, imports, lint, test]
+    needs: [changes, format, imports, lint, test]
     steps:
       - name: Check all jobs passed
         run: |
