@@ -1,3 +1,4 @@
+import { logger } from '#lib/server/logger.js';
 import { athletesService } from '#lib/server/api/index.js';
 import { ApiError } from '#lib/server/api/client.js';
 import type { PageServerLoad } from './$types';
@@ -12,7 +13,7 @@ export const load: PageServerLoad = async ({ params }) => {
     if (err instanceof ApiError && err.status === 404) {
       error(404, 'Athlete not found');
     }
-    console.error('Failed to load athlete', { slug: params.slug, error: err });
+    logger.error({ err }, 'Athlete page load failed');
     error(503, 'Athlete details are unavailable right now');
   }
 };

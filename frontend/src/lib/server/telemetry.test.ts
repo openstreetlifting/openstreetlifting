@@ -19,11 +19,12 @@ it('keeps Pino error details and active trace context in separate fields', async
     const expected = span.spanContext();
     logger.error({ err: new TypeError('unavailable'), attempt: 2 }, 'Page load failed');
     const log = JSON.parse(lines[0]);
+    expect(lines[0]).not.toContain('unavailable');
     expect(log.trace_id).toBe(expected.traceId);
     expect(log.span_id).toBe(expected.spanId);
     expect(log.attributes).toMatchObject({
       'error.type': 'TypeError',
-      'exception.message': 'unavailable',
+
       attempt: 2,
     });
     expect(log).toMatchObject({

@@ -1,3 +1,4 @@
+import { logger } from '#lib/server/logger.js';
 import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
 import { error, redirect } from '@sveltejs/kit';
 import { rankingsService } from '#lib/server/api/index.js';
@@ -29,7 +30,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
       }),
     ]);
   } catch (err) {
-    console.error('Failed to load country', { code, error: err });
+    logger.error({ err }, 'Country page load failed');
     error(503, 'Country details are unavailable right now');
   }
 

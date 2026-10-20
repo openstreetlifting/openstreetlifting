@@ -30,7 +30,8 @@ pub async fn instrument_http(request: Request, next: Next) -> Response {
         .headers()
         .get("x-request-id")
         .and_then(|value| value.to_str().ok())
-        .unwrap_or("");
+        .and_then(|value| uuid::Uuid::parse_str(value).ok())
+        .map_or_else(String::new, |id| id.to_string());
     let span = tracing::info_span!(
         "http.server.request",
         otel.name = %format!("{method} {route}"),
@@ -40,7 +41,7 @@ pub async fn instrument_http(request: Request, next: Next) -> Response {
         http.response.status_code = Empty,
         error.type = Empty,
         otel.status_code = Empty,
-        request_id,
+        request_id = %request_id,
     );
     let parent = global::get_text_map_propagator(|propagator| {
         propagator.extract(&RequestHeaders(request.headers()))
@@ -70,7 +71,11 @@ pub async fn instrument_http(request: Request, next: Next) -> Response {
                 response.headers_mut().insert("traceparent", value);
             }
         }
-        tracing::info!("HTTP request completed");
+        if status.is_server_error() {
+            tracing::error!("API HTTP request failed");
+        } else {
+            tracing::debug!("API HTTP request completed");
+        }
         response
     }
     .instrument(span)

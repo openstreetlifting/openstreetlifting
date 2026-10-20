@@ -1,3 +1,4 @@
+import { logger } from '#lib/server/logger.js';
 import { error } from '@sveltejs/kit';
 import { archiveIndex } from '#lib/server/archive.js';
 import { absolute, SITE_DESCRIPTION, SITE_NAME } from '#lib/seo/index.js';
@@ -8,7 +9,7 @@ export const GET: RequestHandler = async () => {
   try {
     ({ counts } = await archiveIndex());
   } catch (err) {
-    console.error('Failed to build llms.txt', err);
+    logger.error({ err }, 'LLM index generation failed');
     error(503, 'llms.txt unavailable');
   }
 

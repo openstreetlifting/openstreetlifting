@@ -26,8 +26,8 @@ pub struct TelemetryGuard {
 
 impl Drop for TelemetryGuard {
     fn drop(&mut self) {
-        if let Err(err) = self.tracer_provider.shutdown() {
-            eprintln!("failed to flush traces: {err}");
+        if self.tracer_provider.shutdown().is_err() {
+            tracing::error!(error.type = "telemetry_shutdown", "Rust trace exporter shutdown failed");
         }
     }
 }
@@ -97,4 +97,21 @@ fn build_tracer_provider(resource: Resource) -> anyhow::Result<SdkTracerProvider
     }
 
     Ok(builder.build())
+}
+
+/// Report initialization failure when no subscriber is available yet.
+pub fn report_startup_failure(service_name: &str) {
+    eprintln!(
+        "{}",
+        serde_json::json!({
+            "timestamp": chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Nanos, true),
+            "severity_text": "FATAL",
+            "severity_number": 21,
+            "message": "Rust telemetry initialization failed",
+            "logger": "osl_telemetry",
+            "resource": { "service.name": service_name },
+            "attributes": { "error.type": "telemetry_initialization" },
+            "spans": [],
+        })
+    );
 }

@@ -1,3 +1,4 @@
+import { logger } from '#lib/server/logger.js';
 import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
 import { competitionsService } from '#lib/server/api/index.js';
 import type { PageServerLoad } from './$types';
@@ -83,7 +84,7 @@ export const load: PageServerLoad = async ({ url }) => {
       event,
     };
   } catch (error) {
-    console.error('Failed to load competitions', { status, page, error });
+    logger.error({ status, page, err: error }, 'Competition directory load failed');
     return {
       competitions: [],
       runningCompetitions: [],

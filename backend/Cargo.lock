@@ -1730,6 +1730,7 @@ name = "osl_telemetry"
 version = "0.56.0"
 dependencies = [
  "anyhow",
+ "chrono",
  "opentelemetry",
  "opentelemetry-otlp",
  "opentelemetry_sdk",

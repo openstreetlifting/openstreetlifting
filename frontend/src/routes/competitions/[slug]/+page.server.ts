@@ -1,3 +1,4 @@
+import { logger } from '#lib/server/logger.js';
 import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
 import { competitionsService, rankingsService } from '#lib/server/api/index.js';
 import { defaultRankingSort, risProvenance } from '#lib/constants/ranking.js';
@@ -16,7 +17,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   try {
     competition = await competitionsService.getById(params.slug);
   } catch (err) {
-    console.error('Failed to load competition', { slug: params.slug, error: err });
+    logger.error({ err }, 'Competition page load failed');
     throw error(404, 'Competition not found');
   }
 
@@ -93,7 +94,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
         competition_id: competition.competition_id,
       })
       .catch((err) => {
-        console.error('Failed to load competition rankings', { slug: params.slug, error: err });
+        logger.error({ err }, 'Competition rankings load failed');
         error(502, 'Competition results are temporarily unavailable');
       }),
   ]);

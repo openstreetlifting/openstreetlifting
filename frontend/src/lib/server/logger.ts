@@ -25,8 +25,7 @@ export function createLogger(destination: pino.DestinationStream = process.stdou
         },
       },
       formatters: {
-        level: (label, level) => ({
-          level,
+        level: (label) => ({
           severity_text: label.toUpperCase(),
           severity_number: severityNumbers[label],
         }),
@@ -37,14 +36,10 @@ export function createLogger(destination: pino.DestinationStream = process.stdou
           attributes: {
             ...attributes,
             ...(err instanceof Error
-              ? {
-                  'error.type': err.name,
-                  'exception.message': err.message,
-                  'exception.stacktrace': err.stack,
-                }
+              ? { 'error.type': err.name }
               : err === undefined
                 ? {}
-                : { 'exception.message': String(err) }),
+                : { 'error.type': typeof err }),
           },
         }),
       },

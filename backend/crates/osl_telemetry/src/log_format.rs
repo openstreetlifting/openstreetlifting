@@ -25,6 +25,7 @@ pub struct JsonWithTraceContext {
 }
 
 impl JsonWithTraceContext {
+    #[must_use]
     pub fn new(resource: &opentelemetry_sdk::Resource) -> Self {
         Self {
             dispatch: Arc::default(),
@@ -76,9 +77,15 @@ where
 
         let mut attributes = Map::new();
         event.record(&mut FieldVisitor(&mut attributes));
+        if attributes.remove("fatal") == Some(Value::Bool(true)) {
+            line.insert("severity_text".into(), "FATAL".into());
+            line.insert("severity_number".into(), 21.into());
+        }
         line.insert(
             "message".into(),
-            attributes.remove("message").unwrap_or_else(|| "".into()),
+            attributes
+                .remove("message")
+                .unwrap_or_else(|| "Diagnostic event recorded".into()),
         );
         line.insert("attributes".into(), attributes.into());
 

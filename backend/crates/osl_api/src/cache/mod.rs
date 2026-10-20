@@ -54,7 +54,10 @@ impl<T: Clone> Cache<T> {
         if let Some(cached) = entry.as_ref()
             && cached.expires_at > Instant::now()
         {
-            tracing::debug!(cache = self.policy.name, "Cache hit");
+            tracing::debug!(
+                osl.cache.name = self.policy.name,
+                "Cached dataset retrieved"
+            );
             metrics::counter!("osl_cache_requests_total", "cache" => self.policy.name, "result" => "hit").increment(1);
             return Ok(cached.value.clone());
         }
@@ -72,7 +75,10 @@ impl<T: Clone> Cache<T> {
         let value = match result {
             Ok(value) => value,
             Err(error) => {
-                tracing::warn!(cache = self.policy.name, "Cache refresh failed");
+                tracing::debug!(
+                    osl.cache.name = self.policy.name,
+                    "Dataset cache refresh failed"
+                );
                 metrics::counter!("osl_cache_refreshes_total", "cache" => self.policy.name, "result" => "error").increment(1);
                 // Neither errors nor expired snapshots are served as successful results.
                 return Err(error);
@@ -85,7 +91,7 @@ impl<T: Clone> Cache<T> {
         });
         drop(entry);
         tracing::debug!(
-            cache = self.policy.name,
+            osl.cache.name = self.policy.name,
             elapsed_ms = u64::try_from(start.elapsed().as_millis()).unwrap_or(u64::MAX),
             "Cache refreshed"
         );

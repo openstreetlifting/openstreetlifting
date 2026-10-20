@@ -87,7 +87,7 @@ async fn remote_parent_correlates_logs_spans_and_response_even_with_warn_logs() 
                     "traceparent",
                     "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
                 )
-                .header("x-request-id", "request-123")
+                .header("x-request-id", "eb9957b3-ffb8-43b7-bc48-4a2a8414c2ef")
                 .body(Body::empty())
                 .unwrap(),
         )
@@ -99,8 +99,11 @@ async fn remote_parent_correlates_logs_spans_and_response_even_with_warn_logs() 
         .lines()
         .map(|line| serde_json::from_str(line).unwrap())
         .collect();
-    assert_eq!(lines.len(), 1);
-    let log = &lines[0];
+    assert_eq!(lines.len(), 2);
+    let log = lines
+        .iter()
+        .find(|log| log["severity_text"] == "WARN")
+        .unwrap();
     assert_eq!(log["trace_id"], "4bf92f3577b34da6a3ce929d0e0e4736");
     assert_eq!(log["severity_number"], 13);
     assert_eq!(log["severity_text"], "WARN");
@@ -108,7 +111,10 @@ async fn remote_parent_correlates_logs_spans_and_response_even_with_warn_logs() 
     assert_eq!(log["attributes"]["attempt"], 2);
     assert_eq!(log["resource"]["service.name"], "test-api");
     assert_eq!(log["spans"][0]["http.route"], "/athletes/{slug}");
-    assert_eq!(log["spans"][0]["request_id"], "request-123");
+    assert_eq!(
+        log["spans"][0]["request_id"],
+        "eb9957b3-ffb8-43b7-bc48-4a2a8414c2ef"
+    );
     assert!(log["timestamp"].as_str().unwrap().ends_with('Z'));
     assert!(log["logger"].as_str().unwrap().contains("telemetry::tests"));
     let spans = exporter.get_finished_spans().unwrap();
@@ -152,10 +158,20 @@ fn explicit_event_parent_and_late_span_fields_are_preserved() {
         let other = tracing::info_span!("unrelated");
         let _entered = other.enter();
         tracing::info!(parent: &parent, timestamp = "cannot override timestamp", "Operation completed");
+        tracing::error!(parent: None, fatal = true, error.type = "fixture", "Test process terminated");
     });
-    let log: Value = serde_json::from_slice(&output.0.lock().unwrap()).unwrap();
+    let records: Vec<Value> = String::from_utf8(output.0.lock().unwrap().clone())
+        .unwrap()
+        .lines()
+        .map(|line| serde_json::from_str(line).unwrap())
+        .collect();
+    let log = &records[0];
     assert_eq!(log["spans"][0]["name"], "operation");
     assert_eq!(log["spans"][0]["result"], "done");
     assert!(log["trace_id"].as_str().is_some_and(|id| id.len() == 32));
     assert_ne!(log["timestamp"], log["attributes"]["timestamp"]);
+    assert_eq!(records[1]["severity_text"], "FATAL");
+    assert_eq!(records[1]["severity_number"], 21);
+    assert!(records[1]["attributes"].get("fatal").is_none());
+    assert!(records[1].get("trace_id").is_none());
 }

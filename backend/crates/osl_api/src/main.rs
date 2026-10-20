@@ -4,31 +4,47 @@ use osl_db::Database;
 use utoipa::OpenApi;
 
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
+async fn main() -> std::process::ExitCode {
     if std::env::args().any(|arg| arg == "--dump-openapi") {
-        println!("{}", osl_api::ApiDoc::openapi().to_pretty_json()?);
-        return Ok(());
+        return osl_api::ApiDoc::openapi().to_pretty_json().map_or(
+            std::process::ExitCode::FAILURE,
+            |schema| {
+                println!("{schema}");
+                std::process::ExitCode::SUCCESS
+            },
+        );
     }
 
     dotenvy::dotenv().ok();
+    let Ok(_telemetry) = telemetry::init("osl-api", "info,sqlx=off") else {
+        osl_telemetry::report_startup_failure("osl-api");
+        return std::process::ExitCode::FAILURE;
+    };
+    if run().await.is_err() {
+        tracing::error!(fatal = true, error.type = "api_runtime", "API process terminated");
+        std::process::ExitCode::FAILURE
+    } else {
+        std::process::ExitCode::SUCCESS
+    }
+}
 
-    let _telemetry = telemetry::init("osl-api", "info,sqlx=off")?;
+async fn run() -> anyhow::Result<()> {
     let metrics = telemetry::init_recorder()?;
 
-    tracing::info!("Starting OpenStreetlifting API");
+    tracing::info!("API process initialized");
 
     let config = Config::from_env().context("Failed to load API configuration")?;
     tracing::debug!(
         cache_enabled = config.cache_enabled,
         "API configuration loaded"
     );
-    tracing::debug!("Connecting to PostgreSQL");
+    tracing::debug!("API database connection requested");
     let db = Database::new(&config.database_url)
         .await
         .context("Failed to initialize database")?;
-    tracing::debug!("Connected to PostgreSQL");
+    tracing::debug!("API database connection established");
 
-    tracing::debug!("Running database migrations");
+    tracing::debug!("Database migration execution requested");
     db.run_migrations()
         .await
         .context("Failed to run migrations")?;
@@ -40,11 +56,8 @@ async fn main() -> anyhow::Result<()> {
 
     let bind_address = format!("{}:{}", config.host, config.port);
     let listener = tokio::net::TcpListener::bind(&bind_address).await?;
-    tracing::info!("API listening at http://{}", bind_address);
-    tracing::debug!(
-        "Swagger UI available at http://{}/swagger-ui/",
-        bind_address
-    );
+    tracing::info!(server.address = %config.host, server.port = config.port, "API listener started");
+    tracing::debug!(url.path = "/swagger-ui/", "Swagger UI route registered");
 
     let (shutdown_tx, mut api_shutdown) = tokio::sync::watch::channel(false);
     let mut metrics_shutdown = api_shutdown.clone();
@@ -93,7 +106,7 @@ async fn shutdown_signal() {
     let sigterm = std::future::pending::<()>();
 
     tokio::select! {
-        () = ctrl_c  => { tracing::info!("Received Ctrl-C, shutting down"); }
-        () = sigterm => { tracing::info!("Received SIGTERM, shutting down"); }
+        () = ctrl_c  => { tracing::info!("API shutdown requested by Ctrl-C"); }
+        () = sigterm => { tracing::info!("API shutdown requested by SIGTERM"); }
     }
 }

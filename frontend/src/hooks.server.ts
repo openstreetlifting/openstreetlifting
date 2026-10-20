@@ -26,9 +26,9 @@ export const handle: Handle = async ({ event, resolve }) => {
   if (response.status >= 500) {
     event.tracing.root.setAttribute('error.type', String(response.status));
     event.tracing.root.setStatus({ code: SpanStatusCode.ERROR });
-    logger.error(attributes, 'HTTP request failed');
+    logger.error(attributes, 'Frontend HTTP request failed');
   } else {
-    logger.info(attributes, 'HTTP request completed');
+    logger.debug(attributes, 'Frontend HTTP request completed');
   }
   return response;
 };
@@ -36,7 +36,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 export const handleError: HandleServerError = ({ error, event }) => {
   logger.error(
     { err: error, 'http.route': event.route.id ?? 'unmatched' },
-    'Unhandled server error'
+    'Unhandled frontend server error occurred'
   );
   return { message: 'An unexpected error occurred' };
 };
