@@ -1624,6 +1624,7 @@ dependencies = [
  "chrono",
  "dotenvy",
  "http-body-util",
+ "metrics",
  "metrics-exporter-prometheus",
  "opentelemetry",
  "opentelemetry-otlp",
@@ -1651,6 +1652,7 @@ name = "osl_db"
 version = "0.56.0"
 dependencies = [
  "chrono",
+ "metrics",
  "osl_domain",
  "rust_decimal",
  "serde",

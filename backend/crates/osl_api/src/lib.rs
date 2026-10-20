@@ -27,6 +27,7 @@ pub mod ranking;
 pub mod ris;
 pub mod router;
 pub mod shared;
+pub mod telemetry;
 
 #[derive(Clone)]
 pub struct AppState {
