@@ -1,6 +1,10 @@
 # Anything other than "production" is treated as a pre-release environment and
 # shows the commit in the footer instead of a version.
 environment: ""
+telemetry:
+  otlpEndpoint: ""
+  traceSampler: parentbased_traceidratio
+  traceSampleRatio: "1.0"
 frontend:
   image:
     repository: ghcr.io/openstreetlifting/frontend
@@ -10,6 +14,7 @@ frontend:
   service:
     port: 3000
   env:
+    logLevel: info
     backendUrl: "http://openstreetlifting-backend:8080"
     siteUrl: "https://openstreetlifting.org"
     umamiScriptUrl: "https://umami.adrienpelfresne.com/script.js"
@@ -29,10 +34,16 @@ backend:
   replicaCount: 1
   service:
     port: 8080
+  serviceMonitor:
+    enabled: false
+    labels: {}
   config:
     host: "0.0.0.0"
     port: 8080
     logFormat: "json"
+    rustLog: "info,sqlx=off"
+    metricsHost: "0.0.0.0"
+    metricsPort: 9090
     cacheEnabled: true
   database:
     secretName: osl-postgres-app

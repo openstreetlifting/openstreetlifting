@@ -38,7 +38,6 @@ impl JsonWithTraceContext {
     }
 }
 
-
 impl<S: Subscriber> tracing_subscriber::Layer<S> for JsonWithTraceContext {
     fn on_register_dispatch(&self, dispatch: &tracing::Dispatch) {
         let _ = self.dispatch.set(dispatch.downgrade());

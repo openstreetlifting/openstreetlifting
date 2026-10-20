@@ -22,7 +22,6 @@ function safeAttributes(attributes: Attributes): Attributes {
   );
 }
 
-
 export function sanitizeSpans(spans: Spans): Spans {
   return spans.map((span) => ({
     name: span.name,

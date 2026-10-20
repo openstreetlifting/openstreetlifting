@@ -1,0 +1,88 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+  filelog:
+    include: [/var/log/osl/*.jsonl]
+    start_at: beginning
+    operators:
+      - type: json_parser
+        parse_to: body
+        on_error: drop
+        timestamp:
+          parse_from: body.timestamp
+          layout_type: gotime
+          layout: "2006-01-02T15:04:05.999999999Z07:00"
+        severity:
+          parse_from: body.severity_text
+        scope_name:
+          parse_from: body.logger
+      - type: trace_parser
+        if: 'body.trace_id != nil and body.span_id != nil'
+        trace_id:
+          parse_from: body.trace_id
+        span_id:
+          parse_from: body.span_id
+        trace_flags:
+          parse_from: body.trace_flags
+      - type: move
+        from: body.resource["service.name"]
+        to: resource["service.name"]
+      - type: move
+        if: 'body.resource["service.version"] != nil'
+        from: body.resource["service.version"]
+        to: resource["service.version"]
+      - type: move
+        if: 'body.resource["deployment.environment.name"] != nil'
+        from: body.resource["deployment.environment.name"]
+        to: resource["deployment.environment.name"]
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: osl-api
+          scrape_interval: 15s
+          static_configs:
+            - targets: ["${env:OSL_METRICS_TARGET}"]
+
+processors:
+  transform/logs:
+    log_statements:
+      - context: log
+        statements:
+          - merge_maps(attributes, body["attributes"], "upsert")
+          - set(attributes["osl.log.spans"], body["spans"]) where body["spans"] != nil
+          - set(body, body["message"])
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 128
+    spike_limit_mib: 32
+  batch:
+    timeout: 1s
+    send_batch_size: 512
+  resource/api:
+    attributes:
+      - key: service.name
+        value: osl-api
+        action: upsert
+
+exporters:
+  debug:
+    verbosity: detailed
+    sampling_initial: 100
+    sampling_thereafter: 1
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [debug]
+    logs:
+      receivers: [filelog]
+      processors: [memory_limiter, transform/logs, batch]
+      exporters: [debug]
+    metrics:
+      receivers: [prometheus]
+      processors: [memory_limiter, resource/api, batch]
+      exporters: [debug]

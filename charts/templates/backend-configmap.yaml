@@ -9,4 +9,13 @@ data:
   HOST: {{ .Values.backend.config.host | quote }}
   PORT: {{ .Values.backend.config.port | quote }}
   LOG_FORMAT: {{ .Values.backend.config.logFormat | quote }}
+  RUST_LOG: {{ .Values.backend.config.rustLog | quote }}
+  METRICS_HOST: {{ .Values.backend.config.metricsHost | quote }}
+  METRICS_PORT: {{ .Values.backend.config.metricsPort | quote }}
+  OTEL_SERVICE_NAME: "osl-api"
+  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.telemetry.otlpEndpoint | quote }}
+  OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+  OTEL_TRACES_SAMPLER: {{ .Values.telemetry.traceSampler | quote }}
+  OTEL_TRACES_SAMPLER_ARG: {{ .Values.telemetry.traceSampleRatio | quote }}
+  OTEL_RESOURCE_ATTRIBUTES: {{ printf "deployment.environment.name=%s" (default "development" .Values.environment) | quote }}
   CACHE_ENABLED: {{ .Values.backend.config.cacheEnabled | quote }}

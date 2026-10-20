@@ -24,7 +24,6 @@ if (!runtime.oslTelemetry) {
     ...(exportEnabled
       ? { traceExporter: new SafeTraceExporter() }
       : {
-
           spanProcessors: [
             { onStart() {}, onEnd() {}, async forceFlush() {}, async shutdown() {} },
           ],

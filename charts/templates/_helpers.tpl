@@ -32,6 +32,20 @@ containers:
     args:
       {{- toYaml .args | nindent 6 }}
     env:
+      - name: LOG_FORMAT
+        value: "json"
+      - name: OTEL_SERVICE_NAME
+        value: "osl-importer"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: {{ $root.Values.telemetry.otlpEndpoint | quote }}
+      - name: OTEL_EXPORTER_OTLP_PROTOCOL
+        value: "http/protobuf"
+      - name: OTEL_TRACES_SAMPLER
+        value: {{ $root.Values.telemetry.traceSampler | quote }}
+      - name: OTEL_TRACES_SAMPLER_ARG
+        value: {{ $root.Values.telemetry.traceSampleRatio | quote }}
+      - name: OTEL_RESOURCE_ATTRIBUTES
+        value: {{ printf "deployment.environment.name=%s" (default "development" $root.Values.environment) | quote }}
       - name: DATABASE_URL
         valueFrom:
           secretKeyRef:

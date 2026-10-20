@@ -48,7 +48,6 @@ pub fn init(service_name: &str, default_filter: &str) -> anyhow::Result<Telemetr
         .unwrap_or_else(|_| EnvFilter::new(default_filter))
         .or(filter_fn(is_span));
 
-
     let trace_layer = tracing_opentelemetry::layer()
         .with_tracer(tracer_provider.tracer(TRACER_NAME))
         .with_filter(LevelFilter::INFO);

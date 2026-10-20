@@ -34,9 +34,11 @@ services:
     environment:
       HOST: 0.0.0.0
       PORT: 8080
+      METRICS_HOST: 0.0.0.0
       DATABASE_URL: postgresql://${DB_USER:-appuser}:${DB_PASSWORD:-apppassword}@postgres:5432/${DB_NAME:-appdb}
     ports:
       - "${PORT:-8080}:8080"
+      - "127.0.0.1:9090:9090"
     networks:
       - app-network
     depends_on:

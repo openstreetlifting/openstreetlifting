@@ -26,6 +26,18 @@ spec:
               containerPort: {{ .Values.frontend.service.port }}
               protocol: TCP
           env:
+            - name: LOG_LEVEL
+              value: {{ .Values.frontend.env.logLevel | quote }}
+            - name: OTEL_SERVICE_NAME
+              value: "osl-frontend"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.telemetry.otlpEndpoint | quote }}
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "http/protobuf"
+            - name: OTEL_TRACES_SAMPLER
+              value: {{ .Values.telemetry.traceSampler | quote }}
+            - name: OTEL_TRACES_SAMPLER_ARG
+              value: {{ .Values.telemetry.traceSampleRatio | quote }}
             - name: BACKEND_URL
               value: {{ .Values.frontend.env.backendUrl | quote }}
             - name: PUBLIC_SITE_URL

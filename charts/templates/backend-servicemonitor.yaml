@@ -1,0 +1,27 @@
+{{- if .Values.backend.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: openstreetlifting-backend
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openstreetlifting.labels" . | nindent 4 }}
+    {{- with .Values.backend.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "openstreetlifting.backend.selectorLabels" . | nindent 6 }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s
+      relabelings:
+        - targetLabel: environment
+          replacement: {{ default "development" .Values.environment | quote }}
+{{- end }}
