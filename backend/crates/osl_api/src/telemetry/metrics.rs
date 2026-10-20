@@ -12,6 +12,21 @@ const LATENCY_BUCKETS: &[f64] = &[
     0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0,
 ];
 
+pub(super) fn method_label(method: &axum::http::Method) -> &'static str {
+    match method.as_str() {
+        "GET" => "GET",
+        "HEAD" => "HEAD",
+        "POST" => "POST",
+        "PUT" => "PUT",
+        "DELETE" => "DELETE",
+        "CONNECT" => "CONNECT",
+        "OPTIONS" => "OPTIONS",
+        "TRACE" => "TRACE",
+        "PATCH" => "PATCH",
+        _ => "_OTHER",
+    }
+}
+
 pub fn init_recorder() -> PrometheusHandle {
     PrometheusBuilder::new()
         .set_buckets_for_metric(Matcher::Full(REQUEST_DURATION.into()), LATENCY_BUCKETS)
@@ -29,7 +44,7 @@ pub async fn track_http(req: Request, next: Next) -> Response {
         .get::<MatchedPath>()
         .map(|path| path.as_str().to_owned())
         .unwrap_or_else(|| "unmatched".to_owned());
-    let method = req.method().to_string();
+    let method = method_label(req.method()).to_owned();
 
     let response = next.run(req).await;
 

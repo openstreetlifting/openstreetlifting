@@ -42,13 +42,13 @@ utoipa = { workspace = true, features = ["axum_extras", "chrono", "decimal", "uu
 utoipa-swagger-ui = { version = "10.0.0", features = ["axum"] }
 
 opentelemetry = "0.33.1"
-opentelemetry-otlp = { version = "0.33.1", features = ["grpc-tonic"] }
+opentelemetry-otlp = { version = "0.33.1", default-features = false, features = ["trace", "http-proto", "reqwest-blocking-client", "reqwest-rustls", "internal-logs"] }
 opentelemetry_sdk = "0.33.1"
 tracing-opentelemetry = "0.34.0"
-axum-tracing-opentelemetry = "0.42.1"
 metrics-exporter-prometheus = "0.18.3"
 
 [dev-dependencies]
+opentelemetry_sdk = { version = "0.33.1", features = ["testing"] }
 osl_importer = { path = "../osl_importer", default-features = false, features = ["database"] }
 http-body-util = "0.1.3"
 sqlx = { workspace = true, features = ["runtime-tokio", "macros", "migrate"] }

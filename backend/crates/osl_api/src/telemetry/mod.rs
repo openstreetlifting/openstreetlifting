@@ -1,12 +1,22 @@
+mod http;
 mod log_format;
 mod metrics;
 
+#[cfg(test)]
+mod tests;
+
+pub use http::instrument_http;
 pub use metrics::{init_recorder, track_http};
 
-use opentelemetry::{global, trace::TracerProvider as _};
+use anyhow::Context;
+use opentelemetry::{KeyValue, global, trace::TracerProvider as _};
 use opentelemetry_sdk::{Resource, propagation::TraceContextPropagator, trace::SdkTracerProvider};
 use tracing_subscriber::{
-    EnvFilter, fmt::format::JsonFields, layer::SubscriberExt, util::SubscriberInitExt,
+    EnvFilter, Layer,
+    filter::{FilterExt, LevelFilter, filter_fn},
+    fmt::format::JsonFields,
+    layer::SubscriberExt,
+    util::SubscriberInitExt,
 };
 
 const DEFAULT_LOG_FILTER: &str = "info,sqlx=warn";
@@ -25,39 +35,64 @@ impl Drop for TelemetryGuard {
     }
 }
 
-pub fn init() -> TelemetryGuard {
-    let tracer_provider = build_tracer_provider();
+pub fn init() -> anyhow::Result<TelemetryGuard> {
+    let resource = Resource::builder()
+        .with_service_name(std::env::var("OTEL_SERVICE_NAME").unwrap_or_else(|_| "osl-api".into()))
+        .with_attribute(KeyValue::new("service.version", env!("CARGO_PKG_VERSION")))
+        .build();
+    let tracer_provider = build_tracer_provider(resource.clone())?;
 
     global::set_text_map_propagator(TraceContextPropagator::new());
     global::set_tracer_provider(tracer_provider.clone());
 
-    let filter =
-        EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(DEFAULT_LOG_FILTER));
+    let filter = EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| EnvFilter::new(DEFAULT_LOG_FILTER))
+        .or(filter_fn(|metadata| metadata.is_span()));
 
-    let log_layer = tracing_subscriber::fmt::layer()
-        .fmt_fields(JsonFields::new())
-        .event_format(log_format::JsonWithTraceContext);
-
-    let trace_layer =
-        tracing_opentelemetry::layer().with_tracer(tracer_provider.tracer(TRACER_NAME));
+    // Log verbosity and span collection are independent. RUST_LOG=warn still
+    // produces request spans and gives warning/error logs valid correlation IDs.
+    let trace_layer = tracing_opentelemetry::layer()
+        .with_tracer(tracer_provider.tracer(TRACER_NAME))
+        .with_filter(LevelFilter::INFO);
+    let formatter = log_format::JsonWithTraceContext::new(&resource);
+    let log_layer = if std::env::var("LOG_FORMAT").as_deref() == Ok("json") {
+        tracing_subscriber::fmt::layer()
+            .with_ansi(false)
+            .fmt_fields(JsonFields::new())
+            .event_format(formatter.clone())
+            .with_filter(filter)
+            .boxed()
+    } else {
+        tracing_subscriber::fmt::layer().with_filter(filter).boxed()
+    };
 
     tracing_subscriber::registry()
-        .with(filter)
-        .with(log_layer)
         .with(trace_layer)
-        .init();
+        .with(formatter)
+        .with(log_layer)
+        .try_init()
+        .context("Failed to install telemetry subscriber")?;
 
-    TelemetryGuard { tracer_provider }
+    Ok(TelemetryGuard { tracer_provider })
 }
 
-fn build_tracer_provider() -> SdkTracerProvider {
-    let exporter = opentelemetry_otlp::SpanExporter::builder()
-        .with_http()
-        .build()
-        .expect("OTLP span exporter must build");
+fn build_tracer_provider(resource: Resource) -> anyhow::Result<SdkTracerProvider> {
+    let mut builder = SdkTracerProvider::builder().with_resource(resource);
+    // Keep local correlation working without requiring a running collector.
+    let export_enabled = std::env::var("OTEL_SDK_DISABLED").as_deref() != Ok("true")
+        && [
+            "OTEL_EXPORTER_OTLP_ENDPOINT",
+            "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT",
+        ]
+        .iter()
+        .any(|key| std::env::var(key).is_ok_and(|value| !value.is_empty()));
+    if export_enabled {
+        let exporter = opentelemetry_otlp::SpanExporter::builder()
+            .with_http()
+            .build()
+            .context("Failed to build OTLP/HTTP trace exporter")?;
+        builder = builder.with_batch_exporter(exporter);
+    }
 
-    SdkTracerProvider::builder()
-        .with_batch_exporter(exporter)
-        .with_resource(Resource::builder().build())
-        .build()
+    Ok(builder.build())
 }

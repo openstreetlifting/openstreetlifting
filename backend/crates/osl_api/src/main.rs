@@ -1,5 +1,5 @@
 use anyhow::Context;
-use osl_api::{AppState, app, config::Config};
+use osl_api::{AppState, app, config::Config, telemetry};
 use osl_db::Database;
 use utoipa::OpenApi;
 
@@ -12,27 +12,7 @@ async fn main() -> anyhow::Result<()> {
 
     dotenvy::dotenv().ok();
 
-    let log_format = std::env::var("LOG_FORMAT").unwrap_or_default();
-    let filter =
-        tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into());
-
-    match log_format.as_str() {
-        "json" => {
-            tracing_subscriber::fmt()
-                .json()
-                .with_env_filter(filter)
-                .with_current_span(true)
-                .init();
-        }
-        _ => {
-            tracing_subscriber::fmt()
-                .with_env_filter(filter)
-                .with_target(true)
-                .with_file(true)
-                .with_line_number(true)
-                .init();
-        }
-    }
+    let _telemetry = telemetry::init()?;
 
     tracing::info!("Starting OpenStreetlifting API");
 
