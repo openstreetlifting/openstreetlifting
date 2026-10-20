@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     sveltekit({
+      tracing: { server: true },
       // Consult https://svelte.dev/docs/kit/integrations
       // for more information about preprocessors
       preprocess: vitePreprocess(),

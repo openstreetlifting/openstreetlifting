@@ -1,4 +1,5 @@
 import { config } from '#lib/server/config.js';
+import { context, propagation, SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 
 export class ApiError extends Error {
   constructor(
@@ -66,16 +67,31 @@ class ApiClient {
 
   async get<T>(path: string, options?: RequestOptions): Promise<T> {
     const url = this.buildUrl(path, options?.params);
-    const response = await fetch(url, {
-      ...options,
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
+    return trace.getTracer('osl.frontend.api').startActiveSpan(
+      'GET backend',
+      {
+        kind: SpanKind.CLIENT,
+        attributes: { 'http.request.method': 'GET', 'server.address': new URL(url).hostname },
       },
-    });
-
-    return this.handleResponse<T>(response);
+      async (span) => {
+        try {
+          const headers = new Headers(options?.headers);
+          headers.set('Content-Type', 'application/json');
+          const carrier: Record<string, string> = {};
+          propagation.inject(context.active(), carrier);
+          for (const [key, value] of Object.entries(carrier)) headers.set(key, value);
+          const response = await fetch(url, { ...options, method: 'GET', headers });
+          span.setAttribute('http.response.status_code', response.status);
+          return await this.handleResponse<T>(response);
+        } catch (error) {
+          span.setStatus({ code: SpanStatusCode.ERROR });
+          span.setAttribute('error.type', error instanceof Error ? error.name : 'Error');
+          throw error;
+        } finally {
+          span.end();
+        }
+      }
+    );
   }
 }
 
