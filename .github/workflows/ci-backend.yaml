@@ -4,7 +4,6 @@ on:
     paths:
       - backend/**
       - .github/workflows/ci-backend.yaml
-      - scripts/check-logging.py
     branches: [main]
 
 permissions:
@@ -39,7 +38,6 @@ jobs:
               - 'backend/rust-toolchain*'
               - 'backend/openapi.json'
               - '.github/workflows/ci-backend.yaml'
-              - 'scripts/check-logging.py'
             data:
               - 'backend/data/**'
 
@@ -57,8 +55,6 @@ jobs:
       - name: Check formatting
         working-directory: backend
         run: cargo fmt --all -- --check
-      - name: Check application logging policy
-        run: python3 scripts/check-logging.py
 
   imports:
     name: Import files

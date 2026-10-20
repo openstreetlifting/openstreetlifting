@@ -48,8 +48,7 @@ pub fn init(service_name: &str, default_filter: &str) -> anyhow::Result<Telemetr
         .unwrap_or_else(|_| EnvFilter::new(default_filter))
         .or(filter_fn(is_span));
 
-    // Log verbosity and span collection are independent. RUST_LOG=warn still
-    // produces request spans and gives warning/error logs valid correlation IDs.
+
     let trace_layer = tracing_opentelemetry::layer()
         .with_tracer(tracer_provider.tracer(TRACER_NAME))
         .with_filter(LevelFilter::INFO);
@@ -80,7 +79,7 @@ pub fn init(service_name: &str, default_filter: &str) -> anyhow::Result<Telemetr
 
 fn build_tracer_provider(resource: Resource) -> anyhow::Result<SdkTracerProvider> {
     let mut builder = SdkTracerProvider::builder().with_resource(resource);
-    // Keep local correlation working without requiring a running collector.
+
     let export_enabled = std::env::var("OTEL_SDK_DISABLED").as_deref() != Ok("true")
         && [
             "OTEL_EXPORTER_OTLP_ENDPOINT",
@@ -99,7 +98,6 @@ fn build_tracer_provider(resource: Resource) -> anyhow::Result<SdkTracerProvider
     Ok(builder.build())
 }
 
-/// Report initialization failure when no subscriber is available yet.
 pub fn report_startup_failure(service_name: &str) {
     eprintln!(
         "{}",

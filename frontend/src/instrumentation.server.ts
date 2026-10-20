@@ -3,7 +3,6 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import { logger } from '#lib/server/logger.js';
 import { SafeTraceExporter } from '#lib/server/trace-exporter.js';
 
-// Vite can reload this entry point. Register the SDK once per Node process.
 const runtime = globalThis as typeof globalThis & { oslTelemetry?: NodeSDK };
 
 if (!runtime.oslTelemetry) {
@@ -19,13 +18,13 @@ if (!runtime.oslTelemetry) {
         'deployment.environment.name': process.env.PUBLIC_ENVIRONMENT || 'development',
       })
     ),
-    // Pino writes logs to stdout; no second log-export pipeline is needed.
+
     logRecordProcessors: [],
     metricReaders: [],
     ...(exportEnabled
       ? { traceExporter: new SafeTraceExporter() }
       : {
-          // Still create real contexts locally, without contacting a collector.
+
           spanProcessors: [
             { onStart() {}, onEnd() {}, async forceFlush() {}, async shutdown() {} },
           ],
@@ -36,7 +35,7 @@ if (!runtime.oslTelemetry) {
     logger.fatal({ err }, 'Frontend process terminated');
   });
   runtime.oslTelemetry = sdk;
-  // adapter-node emits this after draining HTTP requests.
+
   process.once('sveltekit:shutdown', () => {
     void sdk.shutdown().catch((err: unknown) => {
       logger.error({ err }, 'Frontend trace exporter shutdown failed');

@@ -38,8 +38,7 @@ impl JsonWithTraceContext {
     }
 }
 
-// tracing suppresses the thread's default dispatch while formatting an event.
-// Keep a weak reference to the owning subscriber to resolve explicit parents.
+
 impl<S: Subscriber> tracing_subscriber::Layer<S> for JsonWithTraceContext {
     fn on_register_dispatch(&self, dispatch: &tracing::Dispatch) {
         let _ = self.dispatch.set(dispatch.downgrade());
@@ -107,7 +106,6 @@ where
             .collect::<Vec<_>>();
         line.insert("spans".into(), spans.into());
 
-        // Resolve the event's parent, which may differ from the current span.
         let context = ctx.parent_span().and_then(|span| {
             let dispatch = self.dispatch.get()?.upgrade()?;
             get_otel_context(&span.id(), &dispatch)

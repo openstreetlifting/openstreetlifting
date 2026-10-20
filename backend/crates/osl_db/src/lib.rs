@@ -40,7 +40,6 @@ impl Database {
         &self.pool
     }
 
-    /// Sample the live pool on scrape, rather than storing a stale background snapshot.
     pub fn record_pool_metrics(&self) {
         let size = self.pool.size();
         let idle = u32::try_from(self.pool.num_idle())

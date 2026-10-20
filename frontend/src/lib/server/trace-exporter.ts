@@ -22,8 +22,7 @@ function safeAttributes(attributes: Attributes): Attributes {
   );
 }
 
-// SvelteKit adds full URLs and exception messages to its built-in spans. Send
-// a sanitized copy so those values never leave the application via OTLP.
+
 export function sanitizeSpans(spans: Spans): Spans {
   return spans.map((span) => ({
     name: span.name,
