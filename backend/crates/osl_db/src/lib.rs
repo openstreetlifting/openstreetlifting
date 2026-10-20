@@ -40,6 +40,20 @@ impl Database {
         &self.pool
     }
 
+    /// Sample the live pool on scrape, rather than storing a stale background snapshot.
+    pub fn record_pool_metrics(&self) {
+        let size = self.pool.size();
+        let idle = u32::try_from(self.pool.num_idle())
+            .unwrap_or(size)
+            .min(size);
+        metrics::gauge!("db_client_connections", "db_system_name" => "postgresql", "state" => "used")
+            .set(f64::from(size - idle));
+        metrics::gauge!("db_client_connections", "db_system_name" => "postgresql", "state" => "idle")
+            .set(f64::from(idle));
+        metrics::gauge!("db_client_connections_max", "db_system_name" => "postgresql")
+            .set(f64::from(self.pool.options().get_max_connections()));
+    }
+
     pub async fn ping(&self) -> Result<()> {
         sqlx::query("SELECT 1").execute(&self.pool).await?;
         Ok(())

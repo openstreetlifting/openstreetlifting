@@ -6,7 +6,7 @@ mod metrics;
 mod tests;
 
 pub use http::instrument_http;
-pub use metrics::{init_recorder, track_http};
+pub use metrics::{init_recorder, metrics_router, track_http};
 
 use anyhow::Context;
 use opentelemetry::{KeyValue, global, trace::TracerProvider as _};
@@ -21,6 +21,10 @@ use tracing_subscriber::{
 
 const DEFAULT_LOG_FILTER: &str = "info,sqlx=warn";
 const TRACER_NAME: &str = env!("CARGO_PKG_NAME");
+
+fn is_span(metadata: &tracing::Metadata<'_>) -> bool {
+    metadata.is_span()
+}
 
 #[must_use = "dropping the guard immediately stops trace export"]
 pub struct TelemetryGuard {
@@ -47,7 +51,7 @@ pub fn init() -> anyhow::Result<TelemetryGuard> {
 
     let filter = EnvFilter::try_from_default_env()
         .unwrap_or_else(|_| EnvFilter::new(DEFAULT_LOG_FILTER))
-        .or(filter_fn(|metadata| metadata.is_span()));
+        .or(filter_fn(is_span));
 
     // Log verbosity and span collection are independent. RUST_LOG=warn still
     // produces request spans and gives warning/error logs valid correlation IDs.

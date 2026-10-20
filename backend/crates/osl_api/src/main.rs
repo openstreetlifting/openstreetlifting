@@ -13,6 +13,7 @@ async fn main() -> anyhow::Result<()> {
     dotenvy::dotenv().ok();
 
     let _telemetry = telemetry::init()?;
+    let metrics = telemetry::init_recorder()?;
 
     tracing::info!("Starting OpenStreetlifting API");
 
@@ -33,6 +34,9 @@ async fn main() -> anyhow::Result<()> {
         .context("Failed to run migrations")?;
     tracing::info!("Database migrations completed");
     let state = AppState::new(db, config.cache_enabled);
+    let metrics_app = telemetry::metrics_router(metrics, state.db.clone());
+    let metrics_listener =
+        tokio::net::TcpListener::bind((config.metrics_host.as_str(), config.metrics_port)).await?;
 
     let bind_address = format!("{}:{}", config.host, config.port);
     let listener = tokio::net::TcpListener::bind(&bind_address).await?;
@@ -42,9 +46,30 @@ async fn main() -> anyhow::Result<()> {
         bind_address
     );
 
-    axum::serve(listener, app(state))
-        .with_graceful_shutdown(shutdown_signal())
-        .await?;
+    let (shutdown_tx, mut api_shutdown) = tokio::sync::watch::channel(false);
+    let mut metrics_shutdown = api_shutdown.clone();
+    let signal = tokio::spawn(async move {
+        shutdown_signal().await;
+        let _ = shutdown_tx.send(true);
+    });
+    let result = tokio::try_join!(
+        async {
+            axum::serve(listener, app(state))
+                .with_graceful_shutdown(async move {
+                    let _ = api_shutdown.changed().await;
+                })
+                .await
+        },
+        async {
+            axum::serve(metrics_listener, metrics_app)
+                .with_graceful_shutdown(async move {
+                    let _ = metrics_shutdown.changed().await;
+                })
+                .await
+        },
+    );
+    signal.abort();
+    result?;
 
     Ok(())
 }

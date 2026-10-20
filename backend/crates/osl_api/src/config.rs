@@ -6,6 +6,8 @@ pub struct Config {
     pub port: u16,
     pub database_url: String,
     pub cache_enabled: bool,
+    pub metrics_host: String,
+    pub metrics_port: u16,
 }
 
 impl Config {
@@ -18,6 +20,11 @@ impl Config {
             database_url: std::env::var("DATABASE_URL")
                 .context("Cannot load DATABASE_URL env variable")?,
             cache_enabled: parse_cache_enabled(std::env::var("CACHE_ENABLED").ok().as_deref())?,
+            metrics_host: std::env::var("METRICS_HOST").unwrap_or_else(|_| "127.0.0.1".into()),
+            metrics_port: std::env::var("METRICS_PORT")
+                .unwrap_or_else(|_| "9090".into())
+                .parse()
+                .context("METRICS_PORT must be a port number")?,
         })
     }
 }

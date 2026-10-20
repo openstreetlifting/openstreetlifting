@@ -129,7 +129,7 @@ pub fn app(state: AppState) -> Router {
         .allow_origin(Any)
         .allow_methods(Any)
         .allow_headers(Any)
-        .expose_headers(["traceparent".parse().unwrap(), x_request_id.clone()])
+        .expose_headers([HeaderName::from_static("traceparent"), x_request_id.clone()])
         .max_age(Duration::from_hours(1));
 
     let middleware_stack = ServiceBuilder::new()
@@ -139,6 +139,7 @@ pub fn app(state: AppState) -> Router {
         ))
         .layer(PropagateRequestIdLayer::new(x_request_id))
         .layer(axum::middleware::from_fn(telemetry::instrument_http))
+        .layer(axum::middleware::from_fn(telemetry::track_http))
         .layer(TimeoutLayer::with_status_code(
             StatusCode::GATEWAY_TIMEOUT,
             Duration::from_secs(30),

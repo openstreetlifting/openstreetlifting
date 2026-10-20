@@ -24,6 +24,7 @@ impl<'a> CompetitionRepository<'a> {
         Self { pool }
     }
 
+    #[tracing::instrument(name = "repository.competition.list", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list(
         &self,
         page: &Page,
@@ -108,6 +109,7 @@ impl<'a> CompetitionRepository<'a> {
         }
     }
 
+    #[tracing::instrument(name = "repository.competition.list_with_details", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list_with_details(
         &self,
         page: &Page,
@@ -154,6 +156,7 @@ impl<'a> CompetitionRepository<'a> {
         Ok((results, total))
     }
 
+    #[tracing::instrument(name = "repository.competition.list_distinct_federations", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
         let federations: Vec<String> = sqlx::query_scalar(
             r"
@@ -169,6 +172,7 @@ impl<'a> CompetitionRepository<'a> {
         Ok(federations)
     }
 
+    #[tracing::instrument(name = "repository.competition.list_distinct_years", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
         let years: Vec<i32> = sqlx::query_scalar(
             r"
@@ -184,6 +188,7 @@ impl<'a> CompetitionRepository<'a> {
         Ok(years)
     }
 
+    #[tracing::instrument(name = "repository.competition.list_distinct_countries", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list_distinct_countries(&self) -> Result<Vec<String>> {
         let countries: Vec<String> = sqlx::query_scalar(
             r"
@@ -199,6 +204,7 @@ impl<'a> CompetitionRepository<'a> {
         Ok(countries)
     }
 
+    #[tracing::instrument(name = "repository.competition.list_distinct_formats", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list_distinct_formats(&self) -> Result<Vec<String>> {
         Ok(sqlx::query_scalar(
             "SELECT DISTINCT event_code FROM competitions
@@ -208,6 +214,7 @@ impl<'a> CompetitionRepository<'a> {
         .await?)
     }
 
+    #[tracing::instrument(name = "repository.competition.find_by_id", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn find_by_id(&self, id: Uuid) -> Result<CompetitionRow> {
         let competition = sqlx::query_as!(
             CompetitionRow,
@@ -227,6 +234,7 @@ impl<'a> CompetitionRepository<'a> {
         Ok(competition)
     }
 
+    #[tracing::instrument(name = "repository.competition.find_by_slug", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn find_by_slug(&self, slug: &str) -> Result<CompetitionRow> {
         let competition = sqlx::query_as!(
             CompetitionRow,
@@ -246,11 +254,13 @@ impl<'a> CompetitionRepository<'a> {
         Ok(competition)
     }
 
+    #[tracing::instrument(name = "repository.competition.find_by_slug_detailed", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn find_by_slug_detailed(&self, slug: &str) -> Result<CompetitionDetail> {
         let competition = self.find_by_slug(slug).await?;
         self.get_detailed_competition(competition).await
     }
 
+    #[tracing::instrument(name = "repository.competition.find_by_id_detailed", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn find_by_id_detailed(&self, id: Uuid) -> Result<CompetitionDetail> {
         let competition = self.find_by_id(id).await?;
         self.get_detailed_competition(competition).await

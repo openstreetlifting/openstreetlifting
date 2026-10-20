@@ -85,7 +85,7 @@ where
         let spans = ctx
             .event_scope()
             .into_iter()
-            .flat_map(|scope| scope.from_root())
+            .flat_map(tracing_subscriber::registry::Scope::from_root)
             .map(|span| {
                 let mut fields = span
                     .extensions()

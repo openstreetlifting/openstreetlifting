@@ -63,7 +63,7 @@ async fn remote_parent_correlates_logs_spans_and_response_even_with_warn_logs() 
                 .with_writer(output.clone())
                 .fmt_fields(JsonFields::new())
                 .event_format(formatter)
-                .with_filter(LevelFilter::WARN.or(filter_fn(|metadata| metadata.is_span()))),
+                .with_filter(LevelFilter::WARN.or(filter_fn(super::is_span))),
         );
     let service = Router::new()
         .route(

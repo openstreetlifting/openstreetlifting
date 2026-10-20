@@ -21,6 +21,7 @@ impl<'a> AthleteRepository<'a> {
         Self { pool }
     }
 
+    #[tracing::instrument(name = "repository.athlete.list", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list(&self, page: &Page) -> Result<(Vec<AthleteRow>, i64)> {
         let athletes = sqlx::query_as!(
             AthleteRow,
@@ -45,6 +46,7 @@ impl<'a> AthleteRepository<'a> {
         Ok((athletes, total))
     }
 
+    #[tracing::instrument(name = "repository.athlete.find_by_slug", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn find_by_slug(&self, slug: &str) -> Result<AthleteRow> {
         let athlete = sqlx::query_as!(
             AthleteRow,
@@ -82,6 +84,7 @@ impl<'a> AthleteRepository<'a> {
         Ok(athlete_from_history)
     }
 
+    #[tracing::instrument(name = "repository.athlete.find_by_id", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn find_by_id(&self, id: Uuid) -> Result<AthleteRow> {
         let athlete = sqlx::query_as!(
             AthleteRow,
@@ -101,11 +104,13 @@ impl<'a> AthleteRepository<'a> {
         Ok(athlete)
     }
 
+    #[tracing::instrument(name = "repository.athlete.find_by_slug_detailed", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn find_by_slug_detailed(&self, slug: &str) -> Result<AthleteDetail> {
         let athlete = self.find_by_slug(slug).await?;
         self.get_detailed_athlete(athlete).await
     }
 
+    #[tracing::instrument(name = "repository.athlete.strength_profile", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn strength_profile(&self, athlete_id: Uuid) -> Result<Vec<AthleteStrengthRow>> {
         let rows = sqlx::query!(
             r#"
@@ -173,6 +178,7 @@ impl<'a> AthleteRepository<'a> {
     }
 
     #[expect(clippy::too_many_lines)]
+    #[tracing::instrument(name = "repository.athlete.get_detailed_athlete", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
         let rows = sqlx::query!(
             r#"
