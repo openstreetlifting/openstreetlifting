@@ -132,7 +132,6 @@
           {
             "name": "event",
             "in": "query",
-            "description": "Exact format in canonical MPDS order, e.g. PD for pull-up and dips only.",
             "required": false,
             "schema": {
               "type": [
@@ -794,8 +793,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "description": "The movements the competition ran, as letters of MPDS."
+            ]
           },
           "lifts": {
             "type": "array",
@@ -819,8 +817,7 @@
           "ris_source": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/RisSource",
-                "description": "Reported scores cannot be re-scored without bodyweight; computed scores\nuse the current formula. Absent alongside a missing score."
+                "$ref": "#/components/schemas/RisSource"
               },
               {
                 "type": "null"
@@ -887,7 +884,6 @@
       },
       "AthleteLift": {
         "type": "object",
-        "description": "No best weight means a bombed movement; `event` distinguishes it from an uncontested one.",
         "required": [
           "movement_name",
           "attempts"
@@ -1079,7 +1075,6 @@
       },
       "AthleteStatus": {
         "type": "string",
-        "description": "Outcome of an athlete's participation in a competition. `competed` is the\nonly one whose result stands for rankings and records.",
         "enum": [
           "competed",
           "disqualified",
@@ -1301,7 +1296,6 @@
       },
       "CompetitionStatus": {
         "type": "string",
-        "description": "Where a competition is in its life.",
         "enum": [
           "draft",
           "upcoming",
@@ -1375,7 +1369,6 @@
       },
       "Direction": {
         "type": "string",
-        "description": "Which way a sorted list runs. Shared by the ranking and the competition\nlist, which disagree about the sensible default but not about the values.",
         "enum": [
           "desc",
           "asc"
@@ -1400,7 +1393,6 @@
       },
       "Gender": {
         "type": "string",
-        "description": "Which category an athlete competes in.",
         "enum": [
           "M",
           "F",
@@ -1557,8 +1549,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "description": "Best successful attempt. Zero is a bodyweight-only lift, and absent\nmeans the movement was contested with no attempt succeeding."
+            ]
           },
           "movement_name": {
             "$ref": "#/components/schemas/Movement"
@@ -1598,7 +1589,6 @@
       },
       "Movement": {
         "type": "string",
-        "description": "One of the four lifts.",
         "enum": [
           "Muscle-up",
           "Pull-up",
@@ -1614,8 +1604,7 @@
         ],
         "properties": {
           "code": {
-            "type": "string",
-            "description": "Its letter in the event code, so a competition running all four reads\nas `MPDS`."
+            "type": "string"
           },
           "display_order": {
             "type": [
@@ -2085,8 +2074,7 @@
           "ris_source": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/RisSource",
-                "description": "Absent alongside a missing score."
+                "$ref": "#/components/schemas/RisSource"
               },
               {
                 "type": "null"
@@ -2142,7 +2130,6 @@
       },
       "RankedGender": {
         "type": "string",
-        "description": "Athlete sex for global rankings, or contest sex within a competition.",
         "enum": [
           "M",
           "F",
@@ -2151,7 +2138,6 @@
       },
       "RankingMetric": {
         "type": "string",
-        "description": "What a ranking board is sorted by. Not only movements: a total and a RIS\nscore are ranked from the same list.",
         "enum": [
           "muscleup",
           "pullup",
@@ -2178,7 +2164,6 @@
       },
       "RisDistributionResponse": {
         "type": "object",
-        "description": "The archive's own performances, grouped by the reference curve they use.",
         "required": [
           "men",
           "women"
@@ -2220,7 +2205,6 @@
       },
       "RisPerformanceResponse": {
         "type": "object",
-        "description": "One plotted performance, including links back to its athlete and competition.",
         "required": [
           "participant_id",
           "athlete_name",
@@ -2270,7 +2254,6 @@
       },
       "Scoring": {
         "type": "string",
-        "description": "The metric used to place athletes within a contest.",
         "enum": [
           "total",
           "ris"
@@ -2314,7 +2297,7 @@
               "null"
             ],
             "format": "double",
-            "description": "Percentage of other athletes below this result, with ties counting as half."
+            "description": "Percentage of other athletes below this result, ties counting as half."
           },
           "value": {
             "type": [
