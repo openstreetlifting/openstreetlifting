@@ -84,7 +84,7 @@ pub async fn track_http(req: Request, next: Next) -> Response {
     let method = method_label(req.method()).to_owned();
     let active = metrics::gauge!("http_server_active_requests", "http_request_method" => method.clone(), "http_route" => route.clone());
     active.increment(1.0);
-    // Cancellation and timeouts also release the in-flight gauge.
+
     let _active = ActiveRequest(active);
 
     let response = next.run(req).await;
@@ -145,5 +145,29 @@ mod tests {
             method_label(&Method::from_bytes(b"CUSTOM").unwrap()),
             "_OTHER"
         );
+    }
+
+    #[tokio::test]
+    async fn application_router_records_request_metrics() {
+        let recorder = PrometheusBuilder::new().build_recorder();
+        let handle = recorder.handle();
+        let _recorder = metrics::set_default_local_recorder(&recorder);
+        let pool = sqlx::postgres::PgPoolOptions::new()
+            .connect_lazy("postgres://localhost/unused")
+            .unwrap();
+        let state = crate::AppState::new(osl_db::Database::from_pool(pool), false);
+        let response = crate::app(state)
+            .oneshot(
+                HttpRequest::builder()
+                    .uri("/health/live")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), axum::http::StatusCode::OK);
+        let output = handle.render();
+        assert!(output.contains("http_server_requests"), "{output}");
+        assert!(output.contains("http_route=\"/health/live\""), "{output}");
     }
 }

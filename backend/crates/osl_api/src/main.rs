@@ -30,6 +30,14 @@ async fn main() -> std::process::ExitCode {
 
 async fn run() -> anyhow::Result<()> {
     let metrics = telemetry::init_recorder()?;
+    let upkeep = metrics.clone();
+    tokio::spawn(async move {
+        let mut interval = tokio::time::interval(std::time::Duration::from_secs(5));
+        loop {
+            interval.tick().await;
+            upkeep.run_upkeep();
+        }
+    });
 
     tracing::info!("API process initialized");
 
