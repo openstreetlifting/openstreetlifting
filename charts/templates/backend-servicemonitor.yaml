@@ -10,9 +10,6 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  namespaceSelector:
-    matchNames:
-      - {{ .Release.Namespace }}
   selector:
     matchLabels:
       {{- include "openstreetlifting.backend.selectorLabels" . | nindent 6 }}

@@ -18,7 +18,6 @@ if (!runtime.oslTelemetry) {
         'deployment.environment.name': process.env.PUBLIC_ENVIRONMENT || 'development',
       })
     ),
-
     logRecordProcessors: [],
     metricReaders: [],
     ...(exportEnabled
