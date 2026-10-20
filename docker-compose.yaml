@@ -3,8 +3,6 @@ services:
     image: postgres:18
     container_name: openstreetlifting_postgres
     restart: unless-stopped
-    # Defaults match backend/.env.example so `docker compose up -d postgres`
-    # works from a fresh clone with no root .env.
     environment:
       POSTGRES_USER: ${DB_USER:-appuser}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-apppassword}
@@ -17,7 +15,8 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-appuser} -d ${DB_NAME:-appdb}"]
+      test:
+        ["CMD-SHELL", "pg_isready -U ${DB_USER:-appuser} -d ${DB_NAME:-appdb}"]
       interval: 10s
       timeout: 5s
       retries: 5

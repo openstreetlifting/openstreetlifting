@@ -7,9 +7,8 @@ RUN cargo install cargo-chef --locked --version 0.1.77
 WORKDIR /app
 
 FROM chef AS planner
-ARG BIN
 COPY . .
-RUN cargo chef prepare --recipe-path recipe.json --bin "${BIN}"
+RUN cargo chef prepare --recipe-path recipe.json
 
 FROM chef AS builder
 ARG BIN
@@ -31,9 +30,6 @@ WORKDIR /app
 ARG BIN
 ENV BIN=${BIN}
 COPY --chown=appuser:appuser --from=builder /app/target/release/${BIN} /app/server
-# The canonical files are the data, so the importer image carries the whole tree
-# it is expected to reconcile against. Shipping a partial one would make a prune
-# delete competitions that only look unclaimed.
 COPY --chown=appuser:appuser --from=builder /app/data /app/data
 USER appuser
 EXPOSE 8080
