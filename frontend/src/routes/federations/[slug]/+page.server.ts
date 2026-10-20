@@ -1,3 +1,4 @@
+import { logger } from '#lib/server/logger.js';
 import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
 import { error } from '@sveltejs/kit';
 import { rankingsService } from '#lib/server/api/index.js';
@@ -14,7 +15,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   try {
     competitions = await publishedCompetitions();
   } catch (err) {
-    console.error('Failed to load federation', { slug: params.slug, error: err });
+    logger.error({ err }, 'Federation page load failed');
     error(503, 'Federation details are unavailable right now');
   }
 
@@ -43,7 +44,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
       pagination: rankings.pagination,
     };
   } catch (err) {
-    console.error('Failed to load federation rankings', { slug: params.slug, error: err });
+    logger.error({ err }, 'Federation rankings load failed');
     error(503, 'Federation details are unavailable right now');
   }
 };

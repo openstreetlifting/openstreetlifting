@@ -1,3 +1,4 @@
+import { logger } from '#lib/server/logger.js';
 import { error } from '@sveltejs/kit';
 import { rankingsService } from '#lib/server/api/index.js';
 import { allAthletes, summarizeCountries } from '#lib/server/countries.js';
@@ -13,7 +14,7 @@ export const load: PageServerLoad = async () => {
     ]);
     return { countries: summarizeCountries(competitions, athletes, rankedCountries) };
   } catch (err) {
-    console.error('Failed to load countries', err);
+    logger.error({ err }, 'Country directory load failed');
     error(503, 'Countries are unavailable right now');
   }
 };

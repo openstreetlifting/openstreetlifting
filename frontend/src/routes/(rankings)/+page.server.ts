@@ -1,3 +1,4 @@
+import { logger } from '#lib/server/logger.js';
 import { MAIN_RANKING_PAGE_SIZE } from '#lib/constants/pagination.js';
 import { rankingsService } from '#lib/server/api/index.js';
 import { asRankedGender, asRankingMetric } from '#lib/types/enums.js';
@@ -40,7 +41,7 @@ export const load: PageServerLoad = async ({ url }) => {
       pagination: initialData.pagination,
     };
   } catch (error) {
-    console.error('Failed to load rankings', error);
+    logger.error({ err: error }, 'Global rankings load failed');
     return {
       title,
       description,

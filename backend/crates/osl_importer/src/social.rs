@@ -165,9 +165,11 @@ async fn resolve(
     }
 
     if !report.unknown.is_empty() || !report.ambiguous.is_empty() {
-        for problem in report.unknown.iter().chain(&report.ambiguous) {
-            tracing::error!("{problem}");
-        }
+        tracing::error!(
+            unknown = report.unknown.len(),
+            ambiguous = report.ambiguous.len(),
+            "Instagram athlete matching failed"
+        );
         bail!(
             "{} unknown and {} ambiguous name(s), nothing was written",
             report.unknown.len(),

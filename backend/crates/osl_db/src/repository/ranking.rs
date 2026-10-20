@@ -24,6 +24,7 @@ impl<'a> RankingRepository<'a> {
         Self { pool }
     }
 
+    #[tracing::instrument(name = "repository.ranking.get_global_ranking", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn get_global_ranking(
         &self,
         filter: &RankingFilter,
@@ -218,6 +219,7 @@ impl<'a> RankingRepository<'a> {
         Ok(rows)
     }
 
+    #[tracing::instrument(name = "repository.ranking.get_athlete_metric_standings", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn get_athlete_metric_standings(
         &self,
         athlete_id: Uuid,
@@ -319,6 +321,7 @@ impl<'a> RankingRepository<'a> {
         Ok(standings)
     }
 
+    #[tracing::instrument(name = "repository.ranking.list_distinct_classes", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list_distinct_classes(
         &self,
         gender: Option<Gender>,
@@ -365,6 +368,7 @@ impl<'a> RankingRepository<'a> {
         Ok(classes)
     }
 
+    #[tracing::instrument(name = "repository.ranking.list_distinct_federations", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
         let federations: Vec<String> = sqlx::query_scalar(
             r"
@@ -381,6 +385,7 @@ impl<'a> RankingRepository<'a> {
         Ok(federations)
     }
 
+    #[tracing::instrument(name = "repository.ranking.list_distinct_years", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
         let years: Vec<i32> = sqlx::query_scalar(
             r"
@@ -395,6 +400,7 @@ impl<'a> RankingRepository<'a> {
         Ok(years)
     }
 
+    #[tracing::instrument(name = "repository.ranking.list_distinct_countries", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list_distinct_countries(
         &self,
         competition_id: Option<Uuid>,

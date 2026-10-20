@@ -124,7 +124,7 @@ impl<'a> CanonicalTransformer<'a> {
             .await?;
 
         if is_full_event {
-            debug!(%competition_id, "Computing RIS scores for eligible participants");
+            debug!(%competition_id, "Competition RIS computation requested");
             self.compute_ris_for_competition(competition_id, tx).await?;
         } else {
             debug!(

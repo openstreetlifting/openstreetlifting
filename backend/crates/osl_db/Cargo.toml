@@ -23,3 +23,5 @@ sqlx = { workspace = true, features = [
 ] }
 thiserror.workspace = true
 uuid.workspace = true
+metrics.workspace = true
+tracing.workspace = true

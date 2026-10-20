@@ -38,13 +38,13 @@ impl IntoResponse for WebError {
             Self::Storage(StorageError::NotFound) | Self::NotFound => {
                 json!({"error": "Resource not found"})
             }
-            Self::Storage(e) => {
-                tracing::error!(error = ?e, "Request failed during a database operation");
+            Self::Storage(_) => {
+                tracing::error!(error.type = "database", "Database request operation failed");
                 json!({"error": "An internal error occurred"})
             }
             Self::BadRequest(msg) => json!({"error": msg}),
-            Self::InternalServerError(msg) => {
-                tracing::error!(error = %msg, "Request failed with an internal error");
+            Self::InternalServerError(_) => {
+                tracing::error!(error.type = "internal", "Internal request operation failed");
                 json!({"error": "An internal error occurred"})
             }
         };

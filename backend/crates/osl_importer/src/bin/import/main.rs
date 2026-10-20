@@ -11,26 +11,38 @@ use osl_importer::sync::SyncPlan;
 use sqlx::postgres::PgPoolOptions;
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 mod cli;
 use cli::{Cli, Commands};
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() -> std::process::ExitCode {
     dotenvy::dotenv().ok();
 
     let cli = Cli::parse();
 
     let log_level = if cli.verbose { "debug" } else { "info" };
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| format!("import={log_level},osl_importer={log_level}").into()),
-        )
-        .with(tracing_subscriber::fmt::layer().with_writer(std::io::stderr))
-        .init();
+    let Ok(_telemetry) = osl_telemetry::init(
+        "osl-importer",
+        &format!("import={log_level},osl_importer={log_level},osl_telemetry=info"),
+    ) else {
+        osl_telemetry::report_startup_failure("osl-importer");
+        return std::process::ExitCode::FAILURE;
+    };
+    match run(cli).await {
+        Ok(()) => std::process::ExitCode::SUCCESS,
+        Err(error) => {
+            // Interactive command diagnostics are not sent to JSON telemetry.
+            if std::env::var("LOG_FORMAT").as_deref() != Ok("json") {
+                eprintln!("{error:#}");
+            }
+            tracing::error!(fatal = true, error.type = "import_command", "Importer command terminated");
+            std::process::ExitCode::FAILURE
+        }
+    }
+}
 
+async fn run(cli: Cli) -> Result<()> {
     match cli.command {
         Commands::Competitions {
             paths,
@@ -101,13 +113,13 @@ async fn handle_instagram(file: PathBuf, dry_run: bool, database_url: Option<&st
         let count = osl_importer::social::validate_file(&file)?;
         tracing::warn!(
             handles = count,
-            file = %file.display(),
-            "CSV validated without checking athlete matches. Set DATABASE_URL to check matches"
+            osl.file.kind = "instagram",
+            "Instagram CSV validation completed without database matching"
         );
         return Ok(());
     };
 
-    tracing::debug!("Connecting to PostgreSQL");
+    tracing::debug!("Instagram database connection requested");
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(database_url)
@@ -131,9 +143,7 @@ async fn handle_instagram(file: PathBuf, dry_run: bool, database_url: Option<&st
 
 fn import_privacy(path: &Path, skip: bool) -> Result<Option<PrivacyList>> {
     if skip {
-        tracing::warn!(
-            "Skipped checks for removed names. Run validation with OSL_PRIVACY_KEY before publication"
-        );
+        tracing::warn!("Removed-name validation skipped");
         return Ok(None);
     }
     let list = PrivacyList::load(path)?;
@@ -157,9 +167,6 @@ fn handle_redact(
     let plan = redact::plan(directory, instagram_file, &list, &query, name)?;
 
     tracing::info!(
-        athlete = %plan.label,
-        identity = %plan.identity.describe(),
-        replacement = %plan.redacted,
         competitions = plan.competitions.len(),
         entries = plan.entries,
         handles_to_remove = plan.handles,
@@ -167,19 +174,23 @@ fn handle_redact(
     );
 
     for competition in &plan.competitions {
-        tracing::info!(directory = %competition.display(), "Redaction target");
+        tracing::info!(
+            competition = competition
+                .file_name()
+                .and_then(|name| name.to_str())
+                .unwrap_or("unknown"),
+            "Competition redaction target selected"
+        );
     }
 
     if dry_run {
-        tracing::info!("Dry run complete; no files changed. Rerun without --dry-run to apply");
+        tracing::info!("Redaction dry run completed");
         return Ok(());
     }
 
     redact::apply(instagram_file, &mut list, &query, &plan)?;
 
-    tracing::info!(
-        "Redaction saved. Review and commit the changes, then deploy and import the complete dataset with competitions --prune"
-    );
+    tracing::info!("Name-removal changes saved");
 
     Ok(())
 }
@@ -190,7 +201,7 @@ fn handle_privacy(privacy_file: &Path, directory: &Path) -> Result<()> {
     let directories = competition_directories(&[directory.to_path_buf()])?;
 
     if list.is_empty() {
-        tracing::info!(file = %list.path().display(), "No name-removal records");
+        tracing::info!(osl.file.kind = "privacy", "Name-removal list was empty");
         return Ok(());
     }
 
@@ -201,10 +212,10 @@ fn handle_privacy(privacy_file: &Path, directory: &Path) -> Result<()> {
     for competition in &directories {
         let canonical = store::read(competition)?;
 
-        if let Err(problem) = privacy::check_competition(&canonical, &list) {
+        if privacy::check_competition(&canonical, &list).is_err() {
             tracing::error!(
-                directory = %competition.display(),
-                error = %problem,
+                competition = competition.file_name().and_then(|name| name.to_str()).unwrap_or("unknown"),
+                error.type = "privacy_validation",
                 "Privacy check failed"
             );
             failures += 1;
@@ -228,7 +239,7 @@ fn handle_privacy(privacy_file: &Path, directory: &Path) -> Result<()> {
 }
 
 async fn handle_recompute_ris(database_url: &str, dry_run: bool) -> Result<()> {
-    tracing::debug!("Connecting to PostgreSQL");
+    tracing::debug!("RIS database connection requested");
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(database_url)
@@ -239,10 +250,7 @@ async fn handle_recompute_ris(database_url: &str, dry_run: bool) -> Result<()> {
         let count = osl_db::services::ris_computation::scorable_participants(&pool, None)
             .await?
             .len();
-        tracing::info!(
-            participants = count,
-            "RIS recomputation preview; no database changes"
-        );
+        tracing::info!(participants = count, "RIS recomputation preview completed");
         return Ok(());
     }
     let count = osl_db::services::ris_computation::recompute_all_ris(&pool).await?;
@@ -277,12 +285,18 @@ fn handle_prepare(paths: &[PathBuf], check: bool, dry_run: bool) -> Result<()> {
     if changed.is_empty() {
         tracing::info!(
             competitions = directories.len(),
-            "Competition files already prepared"
+            "Competition file preparation check passed"
         );
         return Ok(());
     }
     for (directory, _) in &changed {
-        tracing::info!(directory = %directory.display(), "Preparation target");
+        tracing::info!(
+            competition = directory
+                .file_name()
+                .and_then(|name| name.to_str())
+                .unwrap_or("unknown"),
+            "Competition preparation target selected"
+        );
     }
     if check {
         bail!(
@@ -293,7 +307,7 @@ fn handle_prepare(paths: &[PathBuf], check: bool, dry_run: bool) -> Result<()> {
     if dry_run {
         tracing::info!(
             competitions = changed.len(),
-            "Preparation preview; no files changed"
+            "Competition preparation preview completed"
         );
     } else {
         for (directory, canonical) in &changed {
@@ -346,11 +360,8 @@ fn validate_competition_slugs(directories: &[PathBuf]) -> Result<()> {
         tracing::error!(
             competition = %slug,
             directories = directories.len(),
-            "Competition slug appears in multiple directories"
+            "Competition slug uniqueness check failed"
         );
-        for directory in *directories {
-            tracing::error!(competition = %slug, directory = %directory.display(), "Duplicate competition directory");
-        }
     }
 
     bail!(
@@ -375,9 +386,12 @@ async fn handle_competitions(
             Ok(canonical) => prepared.push(canonical),
             Err(error) => {
                 failures += 1;
+                if std::env::var("LOG_FORMAT").as_deref() != Ok("json") {
+                    eprintln!("{error:#}");
+                }
                 tracing::error!(
-                    directory = %directory.display(),
-                    error = %format_args!("{error:#}"),
+                    competition = directory.file_name().and_then(|name| name.to_str()).unwrap_or("unknown"),
+                    error.type = "competition_validation",
                     "Competition validation failed"
                 );
             }
@@ -394,7 +408,7 @@ async fn handle_competitions(
             "Competition files validated; no database changes"
         );
         if prune {
-            tracing::info!("Pruning skipped; dry runs do not preview deletions");
+            tracing::info!("Dry-run pruning skipped");
         }
         return Ok(());
     }
@@ -416,20 +430,16 @@ async fn handle_competitions(
 
 fn report_prune(plan: &SyncPlan) {
     if plan.is_empty() {
-        tracing::info!("Nothing to prune");
+        tracing::info!("Pruning candidate list was empty");
         return;
     }
 
     for competition in &plan.competitions {
-        tracing::info!(competition = %competition.slug, name = %competition.name, "Deleted competition absent from the input");
-    }
-
-    for athlete in &plan.athletes {
-        tracing::info!(athlete = %athlete, "Deleted athlete with no competition entries");
+        tracing::info!(competition = %competition.slug, name = %competition.name, "Competition absent from import input deleted");
     }
 
     for federation in &plan.federations {
-        tracing::info!(federation = %federation, "Deleted federation with no competitions");
+        tracing::info!(federation = %federation, "Federation without competitions deleted");
     }
 
     tracing::info!(

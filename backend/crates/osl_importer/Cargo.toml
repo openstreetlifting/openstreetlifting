@@ -15,7 +15,7 @@ cli = [
   "dep:clap",
   "dep:dotenvy",
   "dep:tokio",
-  "dep:tracing-subscriber",
+  "dep:osl_telemetry",
 ]
 
 [[bin]]
@@ -25,6 +25,7 @@ required-features = ["cli"]
 
 [dependencies]
 osl_db = { path = "../osl_db", optional = true }
+osl_telemetry = { path = "../osl_telemetry", optional = true }
 osl_domain = { path = "../osl_domain" }
 anyhow.workspace = true
 chrono.workspace = true
@@ -46,5 +47,4 @@ sqlx = { workspace = true, optional = true, features = [
 thiserror.workspace = true
 tokio = { workspace = true, optional = true, features = ["macros", "rt-multi-thread"] }
 tracing.workspace = true
-tracing-subscriber = { workspace = true, optional = true }
 uuid.workspace = true

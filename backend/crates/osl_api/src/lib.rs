@@ -10,9 +10,7 @@ use tower_http::{
     cors::{Any, CorsLayer},
     request_id::{MakeRequestId, PropagateRequestIdLayer, RequestId, SetRequestIdLayer},
     timeout::TimeoutLayer,
-    trace::{DefaultOnResponse, TraceLayer},
 };
-use tracing::Level;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use uuid::Uuid;
@@ -27,6 +25,7 @@ pub mod ranking;
 pub mod ris;
 pub mod router;
 pub mod shared;
+pub mod telemetry;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -130,6 +129,7 @@ pub fn app(state: AppState) -> Router {
         .allow_origin(Any)
         .allow_methods(Any)
         .allow_headers(Any)
+        .expose_headers([HeaderName::from_static("traceparent"), x_request_id.clone()])
         .max_age(Duration::from_hours(1));
 
     let middleware_stack = ServiceBuilder::new()
@@ -138,23 +138,8 @@ pub fn app(state: AppState) -> Router {
             MakeRequestUuid,
         ))
         .layer(PropagateRequestIdLayer::new(x_request_id))
-        .layer(
-            TraceLayer::new_for_http()
-                .make_span_with(|req: &axum::http::Request<_>| {
-                    let rid = req
-                        .headers()
-                        .get("x-request-id")
-                        .and_then(|v| v.to_str().ok())
-                        .unwrap_or("unknown");
-                    tracing::info_span!(
-                        "http_request",
-                        method = %req.method(),
-                        uri = %req.uri().path(),
-                        request_id = %rid,
-                    )
-                })
-                .on_response(DefaultOnResponse::new().level(Level::INFO)),
-        )
+        .layer(axum::middleware::from_fn(telemetry::instrument_http))
+        .layer(axum::middleware::from_fn(telemetry::track_http))
         .layer(TimeoutLayer::with_status_code(
             StatusCode::GATEWAY_TIMEOUT,
             Duration::from_secs(30),

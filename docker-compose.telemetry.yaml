@@ -1,0 +1,13 @@
+services:
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.163.1
+    command: ["--config=/etc/otelcol/config.yaml"]
+    environment:
+      OSL_METRICS_TARGET: host.docker.internal:9090
+    ports:
+      - "127.0.0.1:4318:4318"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./telemetry/collector.yaml:/etc/otelcol/config.yaml:ro
+      - ./.telemetry:/var/log/osl:ro

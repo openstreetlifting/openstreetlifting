@@ -13,6 +13,7 @@ impl<'a> RisRepository<'a> {
         Self { pool }
     }
 
+    #[tracing::instrument(name = "repository.ris.scored_performances", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn scored_performances(&self) -> Result<Vec<ScoredPerformance>> {
         let performances = sqlx::query_as!(
             ScoredPerformance,

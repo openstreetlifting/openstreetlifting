@@ -1,3 +1,4 @@
+import { logger } from '#lib/server/logger.js';
 import { error } from '@sveltejs/kit';
 import { archiveIndex, isSitemapSection } from '#lib/server/archive.js';
 import { urlset, XML_HEADERS } from '#lib/server/sitemap.js';
@@ -12,7 +13,7 @@ export const GET: RequestHandler = async ({ params }) => {
   try {
     paths = (await archiveIndex()).paths[params.section];
   } catch (err) {
-    console.error('Failed to build sitemap', { section: params.section, error: err });
+    logger.error({ 'osl.sitemap.section': params.section, err }, 'Sitemap generation failed');
     error(503, 'Sitemap unavailable');
   }
 
