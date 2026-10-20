@@ -11,7 +11,6 @@ use osl_importer::sync::SyncPlan;
 use sqlx::postgres::PgPoolOptions;
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 mod cli;
 use cli::{Cli, Commands};
@@ -23,13 +22,10 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
 
     let log_level = if cli.verbose { "debug" } else { "info" };
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| format!("import={log_level},osl_importer={log_level}").into()),
-        )
-        .with(tracing_subscriber::fmt::layer().with_writer(std::io::stderr))
-        .init();
+    let _telemetry = osl_telemetry::init(
+        "osl-importer",
+        &format!("import={log_level},osl_importer={log_level},osl_telemetry=info"),
+    )?;
 
     match cli.command {
         Commands::Competitions {

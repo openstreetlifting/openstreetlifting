@@ -1653,11 +1653,11 @@ dependencies = [
  "metrics",
  "metrics-exporter-prometheus",
  "opentelemetry",
- "opentelemetry-otlp",
  "opentelemetry_sdk",
  "osl_db",
  "osl_domain",
  "osl_importer",
+ "osl_telemetry",
  "rust_decimal",
  "serde",
  "serde_json",
@@ -1713,6 +1713,7 @@ dependencies = [
  "hmac",
  "osl_db",
  "osl_domain",
+ "osl_telemetry",
  "rust_decimal",
  "serde",
  "sha2 0.11.1",
@@ -1721,8 +1722,21 @@ dependencies = [
  "tokio",
  "toml",
  "tracing",
- "tracing-subscriber",
  "uuid",
+]
+
+[[package]]
+name = "osl_telemetry"
+version = "0.56.0"
+dependencies = [
+ "anyhow",
+ "opentelemetry",
+ "opentelemetry-otlp",
+ "opentelemetry_sdk",
+ "serde_json",
+ "tracing",
+ "tracing-opentelemetry",
+ "tracing-subscriber",
 ]
 
 [[package]]

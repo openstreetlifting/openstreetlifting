@@ -9,6 +9,7 @@ workspace = true
 
 [dependencies]
 osl_db = { path = "../osl_db" }
+osl_telemetry = { path = "../osl_telemetry" }
 osl_domain = { path = "../osl_domain", features = ["utoipa"] }
 anyhow.workspace = true
 chrono.workspace = true
@@ -42,7 +43,6 @@ utoipa = { workspace = true, features = ["axum_extras", "chrono", "decimal", "uu
 utoipa-swagger-ui = { version = "10.0.0", features = ["axum"] }
 
 opentelemetry = "0.33.1"
-opentelemetry-otlp = { version = "0.33.1", default-features = false, features = ["trace", "http-proto", "reqwest-blocking-client", "reqwest-rustls", "internal-logs"] }
 opentelemetry_sdk = "0.33.1"
 tracing-opentelemetry = "0.34.0"
 metrics-exporter-prometheus = "0.18.3"

@@ -19,13 +19,13 @@ use tracing_subscriber::{
 };
 
 #[derive(Clone)]
-pub(super) struct JsonWithTraceContext {
+pub struct JsonWithTraceContext {
     resource: Value,
     dispatch: Arc<OnceLock<tracing::dispatcher::WeakDispatch>>,
 }
 
 impl JsonWithTraceContext {
-    pub(super) fn new(resource: &opentelemetry_sdk::Resource) -> Self {
+    pub fn new(resource: &opentelemetry_sdk::Resource) -> Self {
         Self {
             dispatch: Arc::default(),
             resource: resource

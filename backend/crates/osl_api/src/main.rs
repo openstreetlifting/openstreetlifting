@@ -12,7 +12,7 @@ async fn main() -> anyhow::Result<()> {
 
     dotenvy::dotenv().ok();
 
-    let _telemetry = telemetry::init()?;
+    let _telemetry = telemetry::init("osl-api", "info,sqlx=off")?;
     let metrics = telemetry::init_recorder()?;
 
     tracing::info!("Starting OpenStreetlifting API");

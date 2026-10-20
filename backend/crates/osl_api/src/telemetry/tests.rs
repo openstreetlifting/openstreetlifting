@@ -1,4 +1,4 @@
-use super::{http::instrument_http, log_format::JsonWithTraceContext};
+use super::http::instrument_http;
 use axum::{Router, body::Body, http::Request, middleware::from_fn, routing::get};
 use opentelemetry::{
     global,
@@ -9,6 +9,7 @@ use opentelemetry_sdk::{
     propagation::TraceContextPropagator,
     trace::{InMemorySpanExporter, SdkTracerProvider},
 };
+use osl_telemetry::JsonWithTraceContext;
 use serde_json::Value;
 use std::{
     io::{self, Write},
@@ -22,6 +23,10 @@ use tracing_subscriber::{
     fmt::{MakeWriter, format::JsonFields},
     layer::SubscriberExt,
 };
+
+fn include_span_metadata(metadata: &tracing::Metadata<'_>) -> bool {
+    metadata.is_span()
+}
 
 #[derive(Clone, Default)]
 struct Buffer(Arc<Mutex<Vec<u8>>>);
@@ -63,7 +68,7 @@ async fn remote_parent_correlates_logs_spans_and_response_even_with_warn_logs() 
                 .with_writer(output.clone())
                 .fmt_fields(JsonFields::new())
                 .event_format(formatter)
-                .with_filter(LevelFilter::WARN.or(filter_fn(super::is_span))),
+                .with_filter(LevelFilter::WARN.or(filter_fn(include_span_metadata))),
         );
     let service = Router::new()
         .route(
