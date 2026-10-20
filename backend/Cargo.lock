@@ -1727,7 +1727,7 @@ dependencies = [
 
 [[package]]
 name = "osl_telemetry"
-version = "0.56.0"
+version = "0.56.1"
 dependencies = [
  "anyhow",
  "chrono",
