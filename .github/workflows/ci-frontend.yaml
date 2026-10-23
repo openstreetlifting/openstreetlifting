@@ -2,16 +2,37 @@ name: "Frontend CI"
 
 on:
   pull_request:
-    paths:
-      - frontend/**
-      - backend/openapi.json
-      - .github/workflows/ci-frontend.yaml
+    branches: [main]
+  merge_group:
+    types: [checks_requested]
     branches: [main]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
+  changes:
+    name: Detect Frontend Changes
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ github.event_name == 'merge_group' || steps.filter.outputs.frontend == 'true' }}
+    steps:
+      - uses: dorny/paths-filter@v4
+        id: filter
+        if: github.event_name == 'pull_request'
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - 'backend/openapi.json'
+              - '.github/workflows/ci-frontend.yaml'
+
   format:
     name: Format
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -32,6 +53,8 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -55,6 +78,8 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -75,6 +100,8 @@ jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -88,16 +115,15 @@ jobs:
       - name: Install dependencies
         working-directory: frontend
         run: pnpm install --frozen-lockfile
-      # The browser project needs a Playwright download and has no tests yet.
       - name: Run tests
         working-directory: frontend
         run: pnpm exec vitest run --project server
 
   ci-success:
-    name: CI Success
+    name: Frontend CI Success
     runs-on: ubuntu-latest
     if: always()
-    needs: [format, lint, build, test]
+    needs: [changes, format, lint, build, test]
     steps:
       - name: Check all jobs passed
         run: |

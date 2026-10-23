@@ -1,9 +1,9 @@
 name: "Backend CI"
 on:
   pull_request:
-    paths:
-      - backend/**
-      - .github/workflows/ci-backend.yaml
+    branches: [main]
+  merge_group:
+    types: [checks_requested]
     branches: [main]
 
 permissions:
@@ -22,11 +22,12 @@ jobs:
     name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
-      rust: ${{ steps.filter.outputs.rust }}
-      data: ${{ steps.filter.outputs.data }}
+      rust: ${{ github.event_name == 'merge_group' || steps.filter.outputs.rust == 'true' }}
+      data: ${{ github.event_name == 'merge_group' || steps.filter.outputs.data == 'true' }}
     steps:
       - uses: dorny/paths-filter@v4
         id: filter
+        if: github.event_name == 'pull_request'
         with:
           filters: |
             rust:
@@ -104,7 +105,7 @@ jobs:
             ./data/competitions \
             ./data/staging/competitions "${args[@]}"
       - name: Check nobody on the privacy list is named
-        if: github.event.pull_request.head.repo.fork == false
+        if: github.event_name == 'merge_group' || github.event.pull_request.head.repo.fork == false
         working-directory: backend
         run: cargo run --locked -p osl_importer --bin import -- privacy --directory ./data/competitions
       - name: Validate athlete social handles
@@ -180,7 +181,7 @@ jobs:
         run: cargo nextest run --workspace --all-features --locked
 
   ci-success:
-    name: CI Success
+    name: Backend CI Success
     runs-on: ubuntu-latest
     if: always()
     needs: [changes, format, imports, lint, test]
