@@ -42,11 +42,11 @@ it('propagates a distinct backend client span and preserves caller headers', asy
   const fetch = vi.fn().mockResolvedValue(Response.json({ ok: true }));
   vi.stubGlobal('fetch', fetch);
   await trace.getTracer('test').startActiveSpan('page', async (span) => {
-    await apiClient.get('/api/v1/athletes/private-slug', {
+    await apiClient.GET('/api/v1/athletes/{slug}', {
       headers: new Headers({ 'x-custom': 'kept' }),
-      params: { q: 'private search' },
+      params: { path: { slug: 'private-slug' }, query: { include: 'standing' } },
     });
-    const headers = fetch.mock.calls[0][1].headers as Headers;
+    const headers = (fetch.mock.calls[0][0] as Request).headers;
     const parent = headers.get('traceparent')!.split('-');
     expect(parent[1]).toBe(span.spanContext().traceId);
     expect(parent[2]).not.toBe(span.spanContext().spanId);
@@ -60,8 +60,8 @@ it('keeps parallel requests in their own traces', async () => {
   const traces: string[] = [];
   vi.stubGlobal(
     'fetch',
-    vi.fn(async (_url, options: RequestInit) => {
-      traces.push(new Headers(options.headers).get('traceparent')!.split('-')[1]);
+    vi.fn(async (request: Request) => {
+      traces.push(request.headers.get('traceparent')!.split('-')[1]);
       await Promise.resolve();
       return Response.json({ ok: true });
     })
@@ -69,7 +69,7 @@ it('keeps parallel requests in their own traces', async () => {
   const expected = await Promise.all(
     [1, 2].map(() =>
       trace.getTracer('test').startActiveSpan('page', { kind: SpanKind.SERVER }, async (span) => {
-        await apiClient.get('/api/v1/rankings');
+        await apiClient.GET('/api/v1/rankings');
         span.end();
         return span.spanContext().traceId;
       })

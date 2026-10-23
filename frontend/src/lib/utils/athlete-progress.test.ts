@@ -5,6 +5,7 @@ import { progressPoints, totalFormats } from './athlete-progress';
 function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteCompetitionSummary {
   return {
     competition_id: 'meet-1',
+    division: null,
     competition_name: 'Worlds',
     competition_slug: 'worlds',
     competition_date: '2025-10-04',

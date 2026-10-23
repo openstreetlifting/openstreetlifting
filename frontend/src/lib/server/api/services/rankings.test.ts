@@ -32,7 +32,7 @@ it('sends event and ranking filters through the API client without unset values'
     })
   ).toEqual(response);
 
-  const url = new URL(fetch.mock.calls[0][0]);
+  const url = new URL((fetch.mock.calls[0][0] as Request).url);
   expect(url.origin + url.pathname).toBe('http://backend.test/api/v1/rankings');
   expect(Object.fromEntries(url.searchParams)).toEqual({
     page: '2',

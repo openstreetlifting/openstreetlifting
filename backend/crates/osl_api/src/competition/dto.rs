@@ -21,37 +21,51 @@ pub struct CompetitionResponse {
     pub created_at: chrono::NaiveDateTime,
     pub slug: String,
     pub status: CompetitionStatus,
+    #[schema(required = true)]
     pub scoring: Option<osl_domain::Scoring>,
     pub federation_id: Uuid,
+    #[schema(required = true)]
     pub city: Option<String>,
+    #[schema(required = true)]
     pub venue: Option<String>,
+    #[schema(required = true)]
     pub region: Option<String>,
+    #[schema(required = true)]
     pub country: Option<String>,
+    #[schema(required = true)]
     pub start_date: Option<NaiveDate>,
+    #[schema(required = true)]
     pub end_date: Option<NaiveDate>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub federation: Option<FederationInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub movements: Option<Vec<MovementInfo>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(required = true)]
     pub event_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub categories: Option<Vec<CategoryDetail>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(required = true)]
     pub lifter_count: Option<i64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[schema(as = CompetitionFederation)]
 pub struct FederationInfo {
     pub federation_id: Uuid,
     pub name: String,
+    #[schema(required = true)]
     pub abbreviation: Option<String>,
+    #[schema(required = true)]
     pub country: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct MovementInfo {
     pub movement_name: Movement,
+    #[schema(required = true)]
     pub display_order: Option<i32>,
     pub code: String,
 }
@@ -65,7 +79,7 @@ pub struct CategoryDetail {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CategoryInfo {
     pub name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(required = true)]
     pub division: Option<String>,
     pub gender: Gender,
     pub weight_class: String,
@@ -75,22 +89,30 @@ pub struct CategoryInfo {
 pub struct ParticipantDetail {
     pub participant_id: Uuid,
     pub athlete: AthleteInfo,
+    #[schema(required = true)]
     pub bodyweight: Option<rust_decimal::Decimal>,
+    #[schema(required = true)]
     pub rank: Option<i32>,
+    #[schema(required = true)]
     pub ris_score: Option<rust_decimal::Decimal>,
+    #[schema(required = true)]
     pub ris_source: Option<RisSource>,
     pub status: AthleteStatus,
+    #[schema(required = true)]
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,
+    #[schema(required = true)]
     pub total: Option<rust_decimal::Decimal>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[schema(as = CompetitionAthlete)]
 pub struct AthleteInfo {
     pub athlete_id: uuid::Uuid,
     pub first_name: String,
     pub last_name: String,
     pub gender: Gender,
+    #[schema(required = true)]
     pub country: Option<String>,
     pub slug: String,
 }
@@ -98,6 +120,7 @@ pub struct AthleteInfo {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct LiftDetail {
     pub movement_name: Movement,
+    #[schema(required = true)]
     pub best_weight: Option<rust_decimal::Decimal>,
     pub attempts: Vec<AttemptInfo>,
 }

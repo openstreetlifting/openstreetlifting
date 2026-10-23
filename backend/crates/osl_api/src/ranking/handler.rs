@@ -7,7 +7,7 @@ use osl_db::repository::ranking::RankingRepository;
 use super::dto::{ClassesFilter, CountriesFilter, GlobalRankingEntry, GlobalRankingFilter};
 use crate::AppState;
 use crate::error::{WebError, WebResult};
-use crate::shared::dto::PaginatedResponse;
+use crate::shared::dto::{PaginatedResponse, PaginationParams};
 
 #[utoipa::path(
     get,
@@ -84,7 +84,7 @@ pub async fn list_ranking_years(State(state): State<AppState>) -> WebResult<Json
 #[utoipa::path(
     get,
     path = "/api/v1/rankings",
-    params(GlobalRankingFilter),
+    params(PaginationParams, GlobalRankingFilter),
     responses(
         (status = 200, description = "Global ranking retrieved successfully", body = PaginatedResponse<GlobalRankingEntry>),
         (status = 400, description = "Invalid query parameters")

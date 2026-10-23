@@ -50,6 +50,7 @@ impl From<RankingMetric> for RankingMovement {
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct GlobalRankingFilter {
     #[serde(flatten)]
+    #[param(ignore)]
     pub pagination: crate::shared::dto::PaginationParams,
     pub gender: Option<RankedGender>,
     pub country: Option<String>,
@@ -115,30 +116,41 @@ pub struct GlobalRankingEntry {
     pub rank: i64,
     pub athlete: AthleteInfo,
     pub category: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(required = true)]
     pub division: Option<String>,
+    #[schema(required = true)]
     pub ris: Option<f64>,
+    #[schema(required = true)]
     pub ris_source: Option<RisSource>,
+    #[schema(required = true)]
     pub total: Option<f64>,
+    #[schema(required = true)]
     pub muscleup: Option<f64>,
+    #[schema(required = true)]
     pub pullup: Option<f64>,
+    #[schema(required = true)]
     pub dips: Option<f64>,
+    #[schema(required = true)]
     pub squat: Option<f64>,
+    #[schema(required = true)]
     pub event: Option<String>,
     pub competition: CompetitionInfo,
     pub federation: FederationInfo,
 }
 
 #[derive(Debug, Serialize, ToSchema)]
+#[schema(as = RankingAthlete)]
 pub struct AthleteInfo {
     pub athlete_id: Uuid,
     pub first_name: String,
     pub last_name: String,
     pub slug: String,
+    #[schema(required = true)]
     pub country: Option<String>,
     pub gender: Gender,
+    #[schema(required = true)]
     pub bodyweight: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(required = true)]
     pub instagram_handle: Option<String>,
 }
 
@@ -147,12 +159,15 @@ pub struct CompetitionInfo {
     pub competition_id: Uuid,
     pub name: String,
     pub slug: String,
+    #[schema(required = true)]
     pub date: Option<NaiveDate>,
 }
 
 #[derive(Debug, Serialize, ToSchema)]
+#[schema(as = RankingFederation)]
 pub struct FederationInfo {
     pub name: String,
+    #[schema(required = true)]
     pub abbreviation: Option<String>,
 }
 

@@ -84,11 +84,7 @@ sqlx migrate add --source crates/osl_db/migrations <name>
 sqlx migrate run --source crates/osl_db/migrations
 ```
 
-After changing API routes or response types, regenerate the checked-in schema:
-
-```sh
-cargo run -p osl_api -- --dump-openapi > openapi.json
-```
+After changing API types or routes, [sync the contract and frontend types](../frontend/README.md#api-contract).
 
 ## Data changes
 

@@ -35,7 +35,7 @@ export function athleteTitle(name: string, country: string | null): string {
     : `${name} - ${SPORT} results`;
 }
 
-export function risStanding(standing: AthleteStanding | null | undefined): string {
+export function risStanding(standing: Pick<AthleteStanding, 'ris'> | null | undefined): string {
   const ris = standing?.ris;
   if (!ris) return '';
 

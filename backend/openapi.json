@@ -107,6 +107,26 @@
         "operationId": "list_competitions",
         "parameters": [
           {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
             "name": "include",
             "in": "query",
             "required": false,
@@ -191,14 +211,6 @@
             "required": false,
             "schema": {
               "$ref": "#/components/schemas/Direction"
-            }
-          },
-          {
-            "name": "pagination",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/PaginationParams"
             }
           }
         ],
@@ -365,11 +377,23 @@
         "operationId": "get_global_ranking",
         "parameters": [
           {
-            "name": "pagination",
+            "name": "page",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
-              "$ref": "#/components/schemas/PaginationParams"
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
             }
           },
           {
@@ -758,8 +782,15 @@
           "competition_id",
           "competition_name",
           "competition_slug",
+          "competition_date",
           "category_name",
+          "division",
+          "rank",
+          "total",
+          "ris_score",
+          "ris_source",
           "status",
+          "event",
           "lifts"
         ],
         "properties": {
@@ -835,57 +866,11 @@
           }
         }
       },
-      "AthleteInfo": {
-        "type": "object",
-        "required": [
-          "athlete_id",
-          "first_name",
-          "last_name",
-          "slug",
-          "gender"
-        ],
-        "properties": {
-          "athlete_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "bodyweight": {
-            "type": [
-              "number",
-              "null"
-            ],
-            "format": "double"
-          },
-          "country": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "first_name": {
-            "type": "string"
-          },
-          "gender": {
-            "$ref": "#/components/schemas/Gender"
-          },
-          "instagram_handle": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "last_name": {
-            "type": "string"
-          },
-          "slug": {
-            "type": "string"
-          }
-        }
-      },
       "AthleteLift": {
         "type": "object",
         "required": [
           "movement_name",
+          "best_weight",
           "attempts"
         ],
         "properties": {
@@ -912,8 +897,12 @@
           "athlete_id",
           "first_name",
           "last_name",
+          "native_name",
           "slug",
           "gender",
+          "country",
+          "profile_picture_url",
+          "instagram_handle",
           "created_at"
         ],
         "properties": {
@@ -922,10 +911,7 @@
             "format": "uuid"
           },
           "competitions": {
-            "type": [
-              "array",
-              "null"
-            ],
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/AthleteCompetitionSummary"
             }
@@ -962,10 +948,7 @@
             ]
           },
           "personal_records": {
-            "type": [
-              "array",
-              "null"
-            ],
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/PersonalRecord"
             }
@@ -1000,16 +983,21 @@
             ]
           },
           "total_competitions": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "type": "integer",
             "format": "int64"
           }
         }
       },
       "AthleteStanding": {
         "type": "object",
+        "required": [
+          "ris",
+          "total",
+          "muscleup",
+          "pullup",
+          "dips",
+          "squat"
+        ],
         "properties": {
           "dips": {
             "oneOf": [
@@ -1123,6 +1111,7 @@
         "type": "object",
         "required": [
           "name",
+          "division",
           "gender",
           "weight_class"
         ],
@@ -1144,12 +1133,78 @@
           }
         }
       },
+      "CompetitionAthlete": {
+        "type": "object",
+        "required": [
+          "athlete_id",
+          "first_name",
+          "last_name",
+          "gender",
+          "country",
+          "slug"
+        ],
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "country": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        }
+      },
+      "CompetitionFederation": {
+        "type": "object",
+        "required": [
+          "federation_id",
+          "name",
+          "abbreviation",
+          "country"
+        ],
+        "properties": {
+          "abbreviation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "country": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "federation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "CompetitionInfo": {
         "type": "object",
         "required": [
           "competition_id",
           "name",
-          "slug"
+          "slug",
+          "date"
         ],
         "properties": {
           "competition_id": {
@@ -1179,14 +1234,20 @@
           "created_at",
           "slug",
           "status",
-          "federation_id"
+          "scoring",
+          "federation_id",
+          "city",
+          "venue",
+          "region",
+          "country",
+          "start_date",
+          "end_date",
+          "event_code",
+          "lifter_count"
         ],
         "properties": {
           "categories": {
-            "type": [
-              "array",
-              "null"
-            ],
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/CategoryDetail"
             }
@@ -1225,14 +1286,7 @@
             ]
           },
           "federation": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/FederationInfo"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/CompetitionFederation"
           },
           "federation_id": {
             "type": "string",
@@ -1246,10 +1300,7 @@
             "format": "int64"
           },
           "movements": {
-            "type": [
-              "array",
-              "null"
-            ],
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/MovementInfo"
             }
@@ -1374,23 +1425,6 @@
           "asc"
         ]
       },
-      "FederationInfo": {
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "properties": {
-          "abbreviation": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
       "Gender": {
         "type": "string",
         "enum": [
@@ -1438,12 +1472,21 @@
           "rank",
           "athlete",
           "category",
+          "division",
+          "ris",
+          "ris_source",
+          "total",
+          "muscleup",
+          "pullup",
+          "dips",
+          "squat",
+          "event",
           "competition",
           "federation"
         ],
         "properties": {
           "athlete": {
-            "$ref": "#/components/schemas/AthleteInfo"
+            "$ref": "#/components/schemas/RankingAthlete"
           },
           "category": {
             "type": "string"
@@ -1471,7 +1514,7 @@
             ]
           },
           "federation": {
-            "$ref": "#/components/schemas/FederationInfo"
+            "$ref": "#/components/schemas/RankingFederation"
           },
           "muscleup": {
             "type": [
@@ -1536,6 +1579,7 @@
         "type": "object",
         "required": [
           "movement_name",
+          "best_weight",
           "attempts"
         ],
         "properties": {
@@ -1560,7 +1604,9 @@
         "type": "object",
         "required": [
           "value",
-          "global"
+          "class",
+          "global",
+          "country"
         ],
         "properties": {
           "class": {
@@ -1600,6 +1646,7 @@
         "type": "object",
         "required": [
           "movement_name",
+          "display_order",
           "code"
         ],
         "properties": {
@@ -1633,8 +1680,12 @@
                 "athlete_id",
                 "first_name",
                 "last_name",
+                "native_name",
                 "slug",
                 "gender",
+                "country",
+                "profile_picture_url",
+                "instagram_handle",
                 "created_at"
               ],
               "properties": {
@@ -1643,10 +1694,7 @@
                   "format": "uuid"
                 },
                 "competitions": {
-                  "type": [
-                    "array",
-                    "null"
-                  ],
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/AthleteCompetitionSummary"
                   }
@@ -1683,10 +1731,7 @@
                   ]
                 },
                 "personal_records": {
-                  "type": [
-                    "array",
-                    "null"
-                  ],
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/PersonalRecord"
                   }
@@ -1721,10 +1766,7 @@
                   ]
                 },
                 "total_competitions": {
-                  "type": [
-                    "integer",
-                    "null"
-                  ],
+                  "type": "integer",
                   "format": "int64"
                 }
               }
@@ -1752,14 +1794,20 @@
                 "created_at",
                 "slug",
                 "status",
-                "federation_id"
+                "scoring",
+                "federation_id",
+                "city",
+                "venue",
+                "region",
+                "country",
+                "start_date",
+                "end_date",
+                "event_code",
+                "lifter_count"
               ],
               "properties": {
                 "categories": {
-                  "type": [
-                    "array",
-                    "null"
-                  ],
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/CategoryDetail"
                   }
@@ -1798,14 +1846,7 @@
                   ]
                 },
                 "federation": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/FederationInfo"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/CompetitionFederation"
                 },
                 "federation_id": {
                   "type": "string",
@@ -1819,10 +1860,7 @@
                   "format": "int64"
                 },
                 "movements": {
-                  "type": [
-                    "array",
-                    "null"
-                  ],
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/MovementInfo"
                   }
@@ -1889,12 +1927,21 @@
                 "rank",
                 "athlete",
                 "category",
+                "division",
+                "ris",
+                "ris_source",
+                "total",
+                "muscleup",
+                "pullup",
+                "dips",
+                "squat",
+                "event",
                 "competition",
                 "federation"
               ],
               "properties": {
                 "athlete": {
-                  "$ref": "#/components/schemas/AthleteInfo"
+                  "$ref": "#/components/schemas/RankingAthlete"
                 },
                 "category": {
                   "type": "string"
@@ -1922,7 +1969,7 @@
                   ]
                 },
                 "federation": {
-                  "$ref": "#/components/schemas/FederationInfo"
+                  "$ref": "#/components/schemas/RankingFederation"
                 },
                 "muscleup": {
                   "type": [
@@ -2035,12 +2082,18 @@
         "required": [
           "participant_id",
           "athlete",
+          "bodyweight",
+          "rank",
+          "ris_score",
+          "ris_source",
           "status",
-          "lifts"
+          "status_reason",
+          "lifts",
+          "total"
         ],
         "properties": {
           "athlete": {
-            "$ref": "#/components/schemas/AthleteInfo"
+            "$ref": "#/components/schemas/CompetitionAthlete"
           },
           "bodyweight": {
             "type": [
@@ -2104,7 +2157,8 @@
           "movement_name",
           "max_weight",
           "competition_name",
-          "competition_slug"
+          "competition_slug",
+          "date"
         ],
         "properties": {
           "competition_name": {
@@ -2135,6 +2189,74 @@
           "F",
           "MX"
         ]
+      },
+      "RankingAthlete": {
+        "type": "object",
+        "required": [
+          "athlete_id",
+          "first_name",
+          "last_name",
+          "slug",
+          "country",
+          "gender",
+          "bodyweight",
+          "instagram_handle"
+        ],
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bodyweight": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "country": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "instagram_handle": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        }
+      },
+      "RankingFederation": {
+        "type": "object",
+        "required": [
+          "name",
+          "abbreviation"
+        ],
+        "properties": {
+          "abbreviation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        }
       },
       "RankingMetric": {
         "type": "string",
@@ -2280,6 +2402,8 @@
         "type": "object",
         "required": [
           "movement_name",
+          "value",
+          "percentile",
           "field"
         ],
         "properties": {

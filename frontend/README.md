@@ -39,7 +39,22 @@ pnpm test
 
 `pnpm test` runs server and browser tests. Browser tests require Playwright's Chromium; install it with `pnpm exec playwright install chromium`. To run only the server tests, as CI does, use `pnpm exec vitest run --project server`.
 
-When changing an API contract, update the frontend types and callers alongside the [backend schema](../backend/openapi.json).
+## API contract
+
+After changing Rust DTOs or route annotations, run from `frontend`:
+
+```sh
+pnpm api:sync
+pnpm check
+```
+
+Generation uses your current checkout, including uncommitted changes. Commit the [OpenAPI schema](../backend/openapi.json), generated types, and caller changes together. CI checks freshness.
+
+Responses use `null` for missing values and omit unrequested sections. Requested empty collections are `[]`; requested sections without a result are `null`.
+
+`pnpm dev` regenerates types from local OpenAPI. `pnpm api:watch` watches that file for changes.
+
+Deployments use their commit's types. Set `BACKEND_URL` to a compatible API.
 
 ## Build
 

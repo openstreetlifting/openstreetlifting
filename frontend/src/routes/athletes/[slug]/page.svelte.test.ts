@@ -41,7 +41,7 @@ beforeEach(() => {
 function standing(value: string, weightClass?: string): MetricStanding {
   return {
     value,
-    class: weightClass,
+    class: weightClass ?? null,
     global: { place: 101, field: 120 },
     country: { code: 'FR', place: 3, field: 12 },
   };
@@ -52,11 +52,13 @@ function athlete(): AthleteDetail {
     athlete_id: 'test-athlete',
     first_name: 'Alex',
     last_name: 'Martin',
+    native_name: null,
+    instagram_handle: null,
+    strength_profile: null,
     slug: 'alex-martin',
     gender: 'M',
     country: 'FR',
     profile_picture_url: null,
-    instagram_handle: null,
     created_at: '2026-01-01T00:00:00',
     competitions: [],
     personal_records: [],
@@ -132,7 +134,14 @@ it('switches both cards and their leaderboard filters for every kilogram metric'
 
 it('shows unranked cards without links when the selected metric is missing', async () => {
   const partial = athlete();
-  partial.standing = { pullup: standing('60', '-80') };
+  partial.standing = {
+    ris: null,
+    total: null,
+    muscleup: null,
+    pullup: standing('60', '-80'),
+    dips: null,
+    squat: null,
+  };
   render(AthletePage, { data: { athlete: partial } });
   await expect.element(page.getByRole('combobox', { name: 'Metric' })).toHaveValue('ris');
   expect(page.getByRole('link', { name: /Global/ }).elements()).toHaveLength(0);
@@ -158,6 +167,7 @@ it('renders multiple divisions from the same meet and distinguishes absent, bomb
   const lifter = athlete();
   const result: AthleteCompetitionSummary = {
     competition_id: 'same-meet',
+    division: null,
     competition_name: 'One Meet',
     competition_slug: 'one-meet',
     competition_date: '2026-01-01',
@@ -254,7 +264,9 @@ it('does not mistake a classless category name for a weight class', async () => 
 it('keeps global rankings and history when country is not recorded', async () => {
   const lifter = athlete();
   lifter.country = null;
-  for (const metric of Object.values(lifter.standing!)) metric.country = null;
+  for (const metric of Object.values(lifter.standing!)) {
+    if (metric) metric.country = null;
+  }
   render(AthletePage, { data: { athlete: lifter } });
   await expect.element(page.getByText('Country not recorded', { exact: true })).toBeVisible();
   await expect

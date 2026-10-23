@@ -25,6 +25,7 @@ where
 }
 
 #[derive(Debug, Default, Deserialize, IntoParams, ToSchema)]
+#[into_params(parameter_in = Query)]
 pub struct PaginationParams {
     #[serde(default = "default_page", deserialize_with = "number_from_query")]
     pub page: u32,

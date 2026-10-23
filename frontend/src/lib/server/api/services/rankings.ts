@@ -1,33 +1,33 @@
-import { apiClient } from '../client';
-import type { RankingsResponse, RankingFilters } from '#lib/types/ranking.js';
+import { apiClient, apiData } from '../client';
+import type { RankingFilters } from '#lib/types/ranking.js';
 import type { Gender } from '#lib/types/enums.js';
 
 export const rankingsService = {
-  async getGlobalRankings(filters: RankingFilters): Promise<RankingsResponse> {
-    return apiClient.get<RankingsResponse>('/api/v1/rankings', { params: { ...filters } });
+  getGlobalRankings(query: RankingFilters) {
+    return apiData(apiClient.GET('/api/v1/rankings', { params: { query } }));
   },
 
-  async getRankingClasses(
-    gender?: Gender | null,
-    competitionId?: string | null
-  ): Promise<string[]> {
-    const params: Record<string, string> = {};
-    if (gender) params.gender = gender;
-    if (competitionId) params.competition_id = competitionId;
-    return apiClient.get<string[]>('/api/v1/rankings/classes', { params });
+  getRankingClasses(gender?: Gender | null, competitionId?: string | null) {
+    return apiData(
+      apiClient.GET('/api/v1/rankings/classes', {
+        params: { query: { gender, competition_id: competitionId } },
+      })
+    );
   },
 
-  async getRankingFederations(): Promise<string[]> {
-    return apiClient.get<string[]>('/api/v1/rankings/federations');
+  getRankingFederations() {
+    return apiData(apiClient.GET('/api/v1/rankings/federations'));
   },
 
-  async getRankingYears(): Promise<number[]> {
-    return apiClient.get<number[]>('/api/v1/rankings/years');
+  getRankingYears() {
+    return apiData(apiClient.GET('/api/v1/rankings/years'));
   },
 
-  async getRankingCountries(competitionId?: string | null): Promise<string[]> {
-    const params: Record<string, string> = {};
-    if (competitionId) params.competition_id = competitionId;
-    return apiClient.get<string[]>('/api/v1/rankings/countries', { params });
+  getRankingCountries(competitionId?: string | null) {
+    return apiData(
+      apiClient.GET('/api/v1/rankings/countries', {
+        params: { query: { competition_id: competitionId } },
+      })
+    );
   },
 };
