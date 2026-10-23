@@ -116,8 +116,7 @@ pub struct GlobalRankingEntry {
     pub rank: i64,
     pub athlete: AthleteInfo,
     pub category: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[schema(nullable = false)]
+    #[schema(required = true)]
     pub division: Option<String>,
     #[schema(required = true)]
     pub ris: Option<f64>,
@@ -151,8 +150,7 @@ pub struct AthleteInfo {
     pub gender: Gender,
     #[schema(required = true)]
     pub bodyweight: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[schema(nullable = false)]
+    #[schema(required = true)]
     pub instagram_handle: Option<String>,
 }
 

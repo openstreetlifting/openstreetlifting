@@ -3,12 +3,13 @@ import type { components } from '#lib/api/schema.generated.js';
 import type { CompetitionFilters } from '#lib/types/competition.js';
 
 function withDetails(competition: components['schemas']['CompetitionResponse']) {
-  if (!competition.federation) throw new Error('Competition federation is missing');
+  if (!competition.federation || !competition.movements) {
+    throw new Error('Requested competition sections are missing');
+  }
   return {
     ...competition,
     federation: competition.federation,
-    movements: competition.movements ?? [],
-    categories: competition.categories ?? [],
+    movements: competition.movements,
   };
 }
 
@@ -23,13 +24,15 @@ export const competitionsService = {
   },
 
   async getById(slug: string) {
-    return withDetails(
+    const competition = withDetails(
       await apiData(
         apiClient.GET('/api/v1/competitions/{slug}', {
           params: { path: { slug }, query: { include: 'federation,results,movements' } },
         })
       )
     );
+    if (!competition.categories) throw new Error('Requested competition results are missing');
+    return { ...competition, categories: competition.categories };
   },
 
   async getFacets() {

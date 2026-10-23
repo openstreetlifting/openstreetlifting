@@ -50,6 +50,8 @@ pnpm check
 
 Generation uses your current checkout, including uncommitted changes. Commit the [OpenAPI schema](../backend/openapi.json), generated types, and caller changes together. CI checks freshness.
 
+Responses use `null` for missing values and omit unrequested sections. Requested empty collections are `[]`; requested sections without a result are `null`.
+
 `pnpm dev` regenerates types from local OpenAPI. `pnpm api:watch` watches that file for changes.
 
 Deployments use their commit's types. Set `BACKEND_URL` to a compatible API.

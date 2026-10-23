@@ -42,14 +42,12 @@ pub struct CompetitionResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub movements: Option<Vec<MovementInfo>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[schema(nullable = false)]
+    #[schema(required = true)]
     pub event_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub categories: Option<Vec<CategoryDetail>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[schema(nullable = false)]
+    #[schema(required = true)]
     pub lifter_count: Option<i64>,
 }
 
@@ -81,8 +79,7 @@ pub struct CategoryDetail {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CategoryInfo {
     pub name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[schema(nullable = false)]
+    #[schema(required = true)]
     pub division: Option<String>,
     pub gender: Gender,
     pub weight_class: String,

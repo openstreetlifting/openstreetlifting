@@ -281,8 +281,8 @@ export interface components {
       competition_id: string;
       competition_name: string;
       competition_slug: string;
-      division?: string;
-      event?: string;
+      division: string | null;
+      event: string | null;
       lifts: components['schemas']['AthleteLift'][];
       rank: number | null;
       ris_score: string | null;
@@ -302,23 +302,23 @@ export interface components {
       created_at: string;
       first_name: string;
       gender: components['schemas']['Gender'];
-      instagram_handle?: string;
+      instagram_handle: string | null;
       last_name: string;
-      native_name?: string;
+      native_name: string | null;
       personal_records?: components['schemas']['PersonalRecord'][];
       profile_picture_url: string | null;
       slug: string;
-      standing?: components['schemas']['AthleteStanding'];
-      strength_profile?: components['schemas']['StrengthProfile'];
+      standing?: components['schemas']['AthleteStanding'] | null;
+      strength_profile?: components['schemas']['StrengthProfile'] | null;
       total_competitions?: number;
     };
     AthleteStanding: {
-      dips?: components['schemas']['MetricStanding'];
-      muscleup?: components['schemas']['MetricStanding'];
-      pullup?: components['schemas']['MetricStanding'];
-      ris?: components['schemas']['MetricStanding'];
-      squat?: components['schemas']['MetricStanding'];
-      total?: components['schemas']['MetricStanding'];
+      dips: components['schemas']['MetricStanding'] | null;
+      muscleup: components['schemas']['MetricStanding'] | null;
+      pullup: components['schemas']['MetricStanding'] | null;
+      ris: components['schemas']['MetricStanding'] | null;
+      squat: components['schemas']['MetricStanding'] | null;
+      total: components['schemas']['MetricStanding'] | null;
     };
     AthleteStatus: 'competed' | 'disqualified' | 'no_show';
     AttemptInfo: {
@@ -331,7 +331,7 @@ export interface components {
       participants: components['schemas']['ParticipantDetail'][];
     };
     CategoryInfo: {
-      division?: string;
+      division: string | null;
       gender: components['schemas']['Gender'];
       name: string;
       weight_class: string;
@@ -363,10 +363,10 @@ export interface components {
       country: string | null;
       created_at: string;
       end_date: string | null;
-      event_code?: string;
+      event_code: string | null;
       federation?: components['schemas']['CompetitionFederation'];
       federation_id: string;
-      lifter_count?: number;
+      lifter_count: number | null;
       movements?: components['schemas']['MovementInfo'][];
       name: string;
       region: string | null;
@@ -406,7 +406,7 @@ export interface components {
       category: string;
       competition: components['schemas']['CompetitionInfo'];
       dips: number | null;
-      division?: string;
+      division: string | null;
       event: string | null;
       federation: components['schemas']['RankingFederation'];
       muscleup: number | null;
@@ -425,7 +425,7 @@ export interface components {
       movement_name: components['schemas']['Movement'];
     };
     MetricStanding: {
-      class?: string;
+      class: string | null;
       country: components['schemas']['CountryStanding'] | null;
       global: components['schemas']['StandingPlace'];
       value: string;
@@ -444,14 +444,14 @@ export interface components {
         created_at: string;
         first_name: string;
         gender: components['schemas']['Gender'];
-        instagram_handle?: string;
+        instagram_handle: string | null;
         last_name: string;
-        native_name?: string;
+        native_name: string | null;
         personal_records?: components['schemas']['PersonalRecord'][];
         profile_picture_url: string | null;
         slug: string;
-        standing?: components['schemas']['AthleteStanding'];
-        strength_profile?: components['schemas']['StrengthProfile'];
+        standing?: components['schemas']['AthleteStanding'] | null;
+        strength_profile?: components['schemas']['StrengthProfile'] | null;
         total_competitions?: number;
       }[];
       pagination: components['schemas']['PaginationMeta'];
@@ -464,10 +464,10 @@ export interface components {
         country: string | null;
         created_at: string;
         end_date: string | null;
-        event_code?: string;
+        event_code: string | null;
         federation?: components['schemas']['CompetitionFederation'];
         federation_id: string;
-        lifter_count?: number;
+        lifter_count: number | null;
         movements?: components['schemas']['MovementInfo'][];
         name: string;
         region: string | null;
@@ -485,7 +485,7 @@ export interface components {
         category: string;
         competition: components['schemas']['CompetitionInfo'];
         dips: number | null;
-        division?: string;
+        division: string | null;
         event: string | null;
         federation: components['schemas']['RankingFederation'];
         muscleup: number | null;
@@ -535,7 +535,7 @@ export interface components {
       country: string | null;
       first_name: string;
       gender: components['schemas']['Gender'];
-      instagram_handle?: string;
+      instagram_handle: string | null;
       last_name: string;
       slug: string;
     };

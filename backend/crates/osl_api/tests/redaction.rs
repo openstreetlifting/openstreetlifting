@@ -137,8 +137,8 @@ async fn the_athlete_page_carries_no_identity(pool: PgPool) {
     assert_eq!(body["first_name"], "");
     assert_eq!(body["last_name"], "Redacted Athlete #1");
     assert_eq!(body["slug"], "redacted-athlete-1");
-    assert!(body.get("native_name").is_none(), "{body}");
-    assert!(body.get("instagram_handle").is_none(), "{body}");
+    assert_eq!(body.get("native_name"), Some(&Value::Null), "{body}");
+    assert_eq!(body.get("instagram_handle"), Some(&Value::Null), "{body}");
     assert_eq!(body["profile_picture_url"], Value::Null);
 }
 
@@ -229,4 +229,63 @@ async fn unknown_country_keeps_results_and_global_standings(pool: PgPool) {
     assert_eq!(status, StatusCode::OK);
     assert_eq!(rankings["data"].as_array().unwrap().len(), 1);
     assert_eq!(rankings["data"][0]["athlete"]["country"], Value::Null);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn requested_sections_distinguish_empty_results_from_omission(pool: PgPool) {
+    sqlx::query(
+        "INSERT INTO athletes (first_name, last_name, gender, slug, match_key)
+         VALUES ('Alex', 'Martin', 'M', 'alex-martin', 'alex martin')",
+    )
+    .execute(&pool)
+    .await
+    .unwrap();
+
+    let (status, body) = get(&pool, "/api/v1/athletes/alex-martin").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body.get("native_name"), Some(&Value::Null));
+    assert_eq!(body.get("country"), Some(&Value::Null));
+    assert!(body.get("standing").is_none());
+    assert!(body.get("strength_profile").is_none());
+    assert!(body.get("competitions").is_none());
+    assert!(body.get("personal_records").is_none());
+
+    let (status, body) = get(&pool, "/api/v1/athletes/alex-martin?include=standing").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body.get("standing"), Some(&Value::Null));
+    assert!(body.get("strength_profile").is_none());
+    assert!(body.get("competitions").is_none());
+
+    let (status, body) = get(
+        &pool,
+        "/api/v1/athletes/alex-martin?include=competitions,records,standing,strength_profile",
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body["competitions"], serde_json::json!([]));
+    assert_eq!(body["personal_records"], serde_json::json!([]));
+    assert_eq!(body["total_competitions"], 0);
+    assert_eq!(body.get("standing"), Some(&Value::Null));
+    assert_eq!(body.get("strength_profile"), Some(&Value::Null));
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn populated_responses_keep_values_and_nulls_consistent(pool: PgPool) {
+    import(
+        &pool,
+        meet("meet", vec![entry("Alina", "Riyaz", Some("Алина Рияз"))]),
+    )
+    .await;
+    let (status, body) = get(
+        &pool,
+        "/api/v1/athletes/alina-riyaz?include=competitions,records,standing,strength_profile",
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body["native_name"], "Алина Рияз");
+    assert_eq!(body["country"], "FR");
+    assert_eq!(body["competitions"][0].get("division"), Some(&Value::Null));
+    assert!(body["standing"].is_object());
+    assert_eq!(body["standing"]["ris"].get("class"), Some(&Value::Null));
+    assert!(body["strength_profile"].is_object());
 }

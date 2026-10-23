@@ -48,6 +48,7 @@ it('adds the country to an athlete title when known', () => {
 it('states the RIS standing in the country and worldwide', () => {
   const standing = {
     ris: {
+      class: null,
       value: '114.46',
       global: { place: 4, field: 1859 },
       country: { code: 'FR', place: 1, field: 442 },
@@ -56,12 +57,14 @@ it('states the RIS standing in the country and worldwide', () => {
   expect(risStanding(standing)).toBe(
     'Ranked #1 of 442 in France and #4 of 1,859 worldwide by RIS.'
   );
-  expect(risStanding({ pullup: standing.ris })).toBe('');
+  expect(risStanding({ ris: null })).toBe('');
   expect(risStanding(null)).toBe('');
 });
 
 it('describes the global standing without inventing a country', () => {
   expect(
-    risStanding({ ris: { value: '114.46', global: { place: 4, field: 1859 }, country: null } })
+    risStanding({
+      ris: { class: null, value: '114.46', global: { place: 4, field: 1859 }, country: null },
+    })
   ).toBe('Ranked #4 of 1,859 worldwide by RIS.');
 });

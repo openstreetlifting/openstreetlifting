@@ -15,6 +15,7 @@ it('renders performance geometry in the initial HTML without client effects', ()
           competition_slug: 'euros',
           competition_date: '2024-11-02',
           category_name: 'Men -80kg',
+          division: null,
           rank: 1,
           total: '400',
           ris_score: null,

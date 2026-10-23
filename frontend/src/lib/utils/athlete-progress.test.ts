@@ -5,6 +5,7 @@ import { progressPoints, totalFormats } from './athlete-progress';
 function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteCompetitionSummary {
   return {
     competition_id: 'meet-1',
+    division: null,
     competition_name: 'Worlds',
     competition_slug: 'worlds',
     competition_date: '2025-10-04',
@@ -46,7 +47,7 @@ describe('athlete progress', () => {
     const competitions = [
       result(),
       result({ competition_id: 'meet-2', event: 'PD', total: '200' }),
-      result({ competition_id: 'meet-3', event: undefined, total: '400' }),
+      result({ competition_id: 'meet-3', event: null, total: '400' }),
     ];
     expect(totalFormats(competitions)).toEqual(['MPDS', 'PD']);
     expect(progressPoints(competitions, 'total').map((p) => p.value)).toEqual([300]);

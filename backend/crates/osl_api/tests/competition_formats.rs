@@ -124,3 +124,26 @@ async fn in_progress_competitions_are_filterable_and_readable(pool: PgPool) {
     assert_eq!(status, StatusCode::OK);
     assert_eq!(detail["status"], "live");
 }
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn requested_empty_competition_sections_are_present(pool: PgPool) {
+    seed(&pool).await;
+    let (status, body) = get(&pool, "/upcoming-unknown").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body.get("event_code"), Some(&Value::Null));
+    assert_eq!(body.get("lifter_count"), Some(&Value::Null));
+    for field in ["federation", "movements", "categories"] {
+        assert!(body.get(field).is_none(), "{field}");
+    }
+
+    let (status, body) = get(
+        &pool,
+        "/upcoming-unknown?include=federation,movements,results",
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert!(body["federation"].is_object());
+    assert_eq!(body["federation"].get("abbreviation"), Some(&Value::Null));
+    assert_eq!(body["movements"], json!([]));
+    assert_eq!(body["categories"], json!([]));
+}

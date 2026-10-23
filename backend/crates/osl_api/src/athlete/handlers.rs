@@ -98,8 +98,14 @@ pub async fn get_athlete(
         )?;
 
         let mut response = AthleteResponse::from_detail(detail, &query.include);
-        response.standing = AthleteStanding::from_rows(metric_standings);
-        response.strength_profile = StrengthProfile::from_rows(strength_profile);
+        response.standing = query
+            .include
+            .has("standing")
+            .then(|| AthleteStanding::from_rows(metric_standings));
+        response.strength_profile = query
+            .include
+            .has("strength_profile")
+            .then(|| StrengthProfile::from_rows(strength_profile));
 
         return Ok(Json(response));
     }

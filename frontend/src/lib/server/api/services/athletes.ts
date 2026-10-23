@@ -18,11 +18,23 @@ export const athletesService = {
       })
     );
 
+    if (
+      athlete.competitions === undefined ||
+      athlete.personal_records === undefined ||
+      athlete.total_competitions === undefined ||
+      athlete.standing === undefined ||
+      athlete.strength_profile === undefined
+    ) {
+      throw new Error('Requested athlete sections are missing');
+    }
+
     return {
       ...athlete,
-      competitions: athlete.competitions ?? [],
-      personal_records: athlete.personal_records ?? [],
-      total_competitions: athlete.total_competitions ?? 0,
+      competitions: athlete.competitions,
+      personal_records: athlete.personal_records,
+      total_competitions: athlete.total_competitions,
+      standing: athlete.standing,
+      strength_profile: athlete.strength_profile,
     };
   },
 };
