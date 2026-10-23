@@ -2,15 +2,36 @@ name: "Chart CI"
 
 on:
   pull_request:
-    paths:
-      - charts/**
-      - .github/workflows/ci-chart.yaml
+    branches: [main]
+  merge_group:
+    types: [checks_requested]
     branches: [main]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
+  changes:
+    name: Detect Chart Changes
+    runs-on: ubuntu-latest
+    outputs:
+      chart: ${{ github.event_name == 'merge_group' || steps.filter.outputs.chart == 'true' }}
+    steps:
+      - uses: dorny/paths-filter@v4
+        id: filter
+        if: github.event_name == 'pull_request'
+        with:
+          filters: |
+            chart:
+              - 'charts/**'
+              - '.github/workflows/ci-chart.yaml'
+
   lint:
     name: Lint & Validate
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.chart == 'true'
     steps:
       - uses: actions/checkout@v7
       - name: Install Helm
@@ -31,10 +52,10 @@ jobs:
         run: helm package charts/ --destination dist/
 
   ci-success:
-    name: CI Success
+    name: Chart CI Success
     runs-on: ubuntu-latest
     if: always()
-    needs: [lint]
+    needs: [changes, lint]
     steps:
       - name: Check all jobs passed
         run: |
