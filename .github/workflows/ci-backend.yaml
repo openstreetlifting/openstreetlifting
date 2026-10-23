@@ -22,7 +22,6 @@ jobs:
     name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
-      # Queue candidates run every check against the combined merge result.
       rust: ${{ github.event_name == 'merge_group' || steps.filter.outputs.rust == 'true' }}
       data: ${{ github.event_name == 'merge_group' || steps.filter.outputs.data == 'true' }}
     steps:

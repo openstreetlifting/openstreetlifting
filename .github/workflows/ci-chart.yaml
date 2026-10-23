@@ -42,8 +42,6 @@ jobs:
             | tar xz -C /usr/local/bin
       - name: Lint chart
         run: helm lint charts/
-      # The chart is published for self-hosters, so it has to render without a
-      # deployment repository supplying values.
       - name: Validate default rendering
         run: |
           helm template charts/ \

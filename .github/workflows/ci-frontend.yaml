@@ -115,7 +115,6 @@ jobs:
       - name: Install dependencies
         working-directory: frontend
         run: pnpm install --frozen-lockfile
-      # The browser project needs a Playwright download and has no tests yet.
       - name: Run tests
         working-directory: frontend
         run: pnpm exec vitest run --project server

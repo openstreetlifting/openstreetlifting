@@ -9,8 +9,6 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      # A GitHub App token instead of a PAT, because a PAT expires and takes
-      # releases down with it until someone notices.
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
