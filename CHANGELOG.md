@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.56.3](https://github.com/openstreetlifting/openstreetlifting/compare/v0.56.2...v0.56.3) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @opentelemetry/resources to v3 ([#862](https://github.com/openstreetlifting/openstreetlifting/issues/862)) ([83d406d](https://github.com/openstreetlifting/openstreetlifting/commit/83d406ddd23c4ec1758de6efc3f0ca026f847b24))
+* **deps:** update frontend dependencies ([#861](https://github.com/openstreetlifting/openstreetlifting/issues/861)) ([52b2b8e](https://github.com/openstreetlifting/openstreetlifting/commit/52b2b8ecd5bb4efd98d5492bd8afa8be5e0f1cad))
+
+
+### Refactoring
+
+* **api:** align response contracts and frontend types ([#858](https://github.com/openstreetlifting/openstreetlifting/issues/858)) ([60e8855](https://github.com/openstreetlifting/openstreetlifting/commit/60e88554c92f27228b01104a179ae90027c45396))
+
 ## [0.56.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.56.1...v0.56.2) (2026-10-20)
 
 
