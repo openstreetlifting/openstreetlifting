@@ -46,7 +46,7 @@ describe('athlete progress', () => {
     const competitions = [
       result(),
       result({ competition_id: 'meet-2', event: 'PD', total: '200' }),
-      result({ competition_id: 'meet-3', event: null, total: '400' }),
+      result({ competition_id: 'meet-3', event: undefined, total: '400' }),
     ];
     expect(totalFormats(competitions)).toEqual(['MPDS', 'PD']);
     expect(progressPoints(competitions, 'total').map((p) => p.value)).toEqual([300]);

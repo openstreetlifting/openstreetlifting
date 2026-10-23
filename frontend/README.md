@@ -39,7 +39,24 @@ pnpm test
 
 `pnpm test` runs server and browser tests. Browser tests require Playwright's Chromium; install it with `pnpm exec playwright install chromium`. To run only the server tests, as CI does, use `pnpm exec vitest run --project server`.
 
-When changing an API contract, update the frontend types and callers alongside the [backend schema](../backend/openapi.json).
+## API contract
+
+Rust API types and route annotations generate [OpenAPI](../backend/openapi.json). `openapi-typescript` generates `src/lib/api/schema.generated.ts`, including enum values, and `openapi-fetch` uses it to type API requests and responses. Keep generated files committed and edit the Rust definitions when changing the contract.
+
+After changing backend types or routes, run from `frontend`:
+
+```sh
+pnpm api:sync
+pnpm check
+```
+
+`api:sync` compiles the API, exports OpenAPI, and regenerates TypeScript from your current checkout, including uncommitted changes. It requires Rust but does not start the API or connect to a database. Update Utoipa annotations alongside handler signatures so the exported contract describes the HTTP API.
+
+After pulling a schema change, `pnpm api:generate` regenerates TypeScript without compiling Rust. `pnpm dev` also runs it before starting. To regenerate whenever the local OpenAPI file changes, run `pnpm api:watch` in another terminal.
+
+`pnpm check` verifies that generated types match the committed schema and checks frontend callers. CI also checks that OpenAPI matches the Rust definitions. Contract changes, generated files, and affected callers belong in the same pull request.
+
+Every command reads files in the current branch. Feature development uses that branch's local contract; it never downloads a schema from `main` or a running environment. Integration and production images use their commit's checked-in types, with `BACKEND_URL` selecting the running API. Deploy compatible backend and frontend versions together; types do not change at runtime.
 
 ## Build
 

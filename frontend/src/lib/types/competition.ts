@@ -1,128 +1,21 @@
-import type { AthleteStatus, CompetitionStatus, Gender, Movement, RisSource } from './enums';
+import type { components, paths } from '#lib/api/schema.generated.js';
 
 export type { AthleteStatus, CompetitionStatus, Gender, Movement, RisSource } from './enums';
 
-export interface Federation {
-  federation_id: string;
-  name: string;
-  abbreviation: string | null;
-  country: string | null;
-}
+type Schemas = components['schemas'];
+type CompetitionResponse = Schemas['CompetitionResponse'];
 
-export interface CompetitionMovement {
-  movement_name: Movement;
-  display_order: number | null;
-  /** Its letter in the event code, so all four read as `MPDS`. */
-  code: string;
-}
-
-export interface Competition {
-  competition_id: string;
-  name: string;
-  created_at: string;
-  slug: string;
-  status: CompetitionStatus;
-  scoring?: import('./enums').Scoring | null;
-  city: string | null;
-  venue?: string | null;
-  region: string | null;
-  country: string | null;
-  start_date: string | null;
-  end_date: string | null;
+export type Federation = Schemas['CompetitionFederation'];
+export type CompetitionMovement = Schemas['MovementInfo'];
+export type Attempt = Schemas['AttemptInfo'];
+export type Participant = Schemas['ParticipantDetail'];
+export type CategoryDetail = Schemas['CategoryDetail'];
+export type Competition = Omit<CompetitionResponse, 'federation' | 'movements'> & {
   federation: Federation;
   movements: CompetitionMovement[];
-  event_code?: string | null;
-  lifter_count?: number;
-}
-
-export interface CompetitionFilters {
-  status?: CompetitionStatus;
-  event?: string;
-  federation?: string;
-  country?: string;
-  year?: number;
-  q?: string;
-  direction?: 'asc' | 'desc';
-  page?: number;
-  page_size?: number;
-}
-
-export interface CompetitionFacets {
-  formats: string[];
-  federations: string[];
-  years: number[];
-  countries: string[];
-}
-
-export interface AthleteInfo {
-  athlete_id: string;
-  first_name: string;
-  last_name: string;
-  gender: Gender;
-  country: string | null;
-  slug: string;
-  bodyweight?: number | null;
-  instagram_handle?: string | null;
-}
-
-export interface Attempt {
-  attempt_number: number;
-  weight: string;
-  is_successful: boolean;
-}
-
-export interface Lift {
-  movement_name: Movement;
-  best_weight: string | null;
-  attempts: Attempt[];
-}
-
-export interface Participant {
-  participant_id: string;
-  athlete: AthleteInfo;
-  bodyweight: string | null;
-  rank: number | null;
-  total: string | null;
-  ris_score: string | null;
-  ris_source: RisSource | null;
-  status: AthleteStatus;
-  status_reason: string | null;
-  lifts: Lift[];
-}
-
-export interface Category {
-  name: string;
-  division?: string | null;
-  gender: Gender;
-  weight_class: string;
-}
-
-export interface CategoryDetail {
-  category: Category;
-  participants: Participant[];
-}
-
-export interface CompetitionDetail {
-  competition_id: string;
-  name: string;
-  slug: string;
-  status: CompetitionStatus;
-  scoring?: import('./enums').Scoring | null;
-  city: string | null;
-  venue?: string | null;
-  region: string | null;
-  country: string | null;
-  start_date: string | null;
-  end_date: string | null;
-  federation: Federation;
-  movements: CompetitionMovement[];
-  event_code?: string | null;
-  categories: CategoryDetail[];
-}
-
-export interface CompetitionInfo {
-  competition_id: string;
-  name: string;
-  slug: string;
-  date: string | null;
-}
+};
+export type CompetitionDetail = Competition & { categories: CategoryDetail[] };
+export type CompetitionFilters = Omit<
+  NonNullable<paths['/api/v1/competitions']['get']['parameters']['query']>,
+  'include'
+>;

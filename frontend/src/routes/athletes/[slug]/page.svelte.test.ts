@@ -56,7 +56,6 @@ function athlete(): AthleteDetail {
     gender: 'M',
     country: 'FR',
     profile_picture_url: null,
-    instagram_handle: null,
     created_at: '2026-01-01T00:00:00',
     competitions: [],
     personal_records: [],
@@ -148,7 +147,7 @@ it('shows unranked cards without links when the selected metric is missing', asy
 
 it('omits the ranking controls when the athlete has no ranked performances', async () => {
   const unranked = athlete();
-  unranked.standing = null;
+  unranked.standing = undefined;
   render(AthletePage, { data: { athlete: unranked } });
   expect(page.getByRole('combobox', { name: 'Metric' }).elements()).toHaveLength(0);
   await expect.element(page.getByRole('heading', { name: 'Competition history' })).toBeVisible();

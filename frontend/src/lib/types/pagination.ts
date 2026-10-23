@@ -1,14 +1,10 @@
-export interface PaginationMeta {
-  page: number;
-  page_size: number;
-  total_items: number;
-  total_pages: number;
-}
+import type { components } from '#lib/api/schema.generated.js';
 
-export interface Paginated<T> {
-  data: T[];
-  pagination: PaginationMeta;
-}
+export type PaginationMeta = components['schemas']['PaginationMeta'];
+export type Paginated<T> = Omit<
+  components['schemas']['PaginatedResponse_AthleteResponse'],
+  'data'
+> & { data: T[] };
 
 export interface TablePagination extends Pick<
   PaginationMeta,

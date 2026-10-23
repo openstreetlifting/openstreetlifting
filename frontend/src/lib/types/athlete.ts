@@ -1,98 +1,17 @@
-import type { AthleteStatus, Gender, Movement, RisSource } from './enums';
-import type { Attempt } from './competition';
+import type { components } from '#lib/api/schema.generated.js';
 
-export interface AthleteSummary {
-  athlete_id: string;
-  first_name: string;
-  last_name: string;
-  slug: string;
-  gender: Gender;
-  country: string | null;
-  profile_picture_url: string | null;
-  created_at: string;
-}
+type Schemas = components['schemas'];
 
-export interface StandingPlace {
-  place: number;
-  field: number;
-}
-
-export interface CountryStanding extends StandingPlace {
-  code: string;
-}
-
-export interface MetricStanding {
-  value: string;
-  class?: string;
-  global: StandingPlace;
-  country: CountryStanding | null;
-}
-
-export interface AthleteStanding {
-  ris?: MetricStanding | null;
-  total?: MetricStanding | null;
-  muscleup?: MetricStanding | null;
-  pullup?: MetricStanding | null;
-  dips?: MetricStanding | null;
-  squat?: MetricStanding | null;
-}
-
-export interface AthleteDetail {
-  athlete_id: string;
-  first_name: string;
-  last_name: string;
-  native_name?: string | null;
-  slug: string;
-  gender: Gender;
-  country: string | null;
-  profile_picture_url: string | null;
-  instagram_handle: string | null;
-  created_at: string;
-  competitions: AthleteCompetitionSummary[];
-  personal_records: PersonalRecord[];
-  total_competitions: number;
-  standing?: AthleteStanding | null;
-  strength_profile?: StrengthProfile | null;
-}
-
-export interface StrengthProfile {
-  category: string;
-  lifts: StrengthComparison[];
-}
-
-export interface StrengthComparison {
-  movement_name: Movement;
-  value: string | null;
-  percentile: number | null;
-  field: number;
-}
-
-export interface AthleteLift {
-  movement_name: Movement;
-  best_weight: string | null;
-  attempts: Attempt[];
-}
-
-export interface AthleteCompetitionSummary {
-  competition_id: string;
-  competition_name: string;
-  competition_slug: string;
-  competition_date: string | null;
-  category_name: string;
-  division?: string | null;
-  rank: number | null;
-  total: string | null;
-  ris_score: string | null;
-  ris_source: RisSource | null;
-  status: AthleteStatus;
-  event?: string | null;
-  lifts: AthleteLift[];
-}
-
-export interface PersonalRecord {
-  movement_name: Movement;
-  max_weight: string;
-  competition_name: string;
-  competition_slug: string;
-  date: string | null;
-}
+export type AthleteSummary = Schemas['AthleteResponse'];
+export type AthleteDetail = Omit<
+  AthleteSummary,
+  'competitions' | 'personal_records' | 'total_competitions'
+> & {
+  competitions: NonNullable<AthleteSummary['competitions']>;
+  personal_records: NonNullable<AthleteSummary['personal_records']>;
+  total_competitions: NonNullable<AthleteSummary['total_competitions']>;
+};
+export type AthleteStanding = Schemas['AthleteStanding'];
+export type MetricStanding = Schemas['MetricStanding'];
+export type StrengthProfile = Schemas['StrengthProfile'];
+export type AthleteCompetitionSummary = Schemas['AthleteCompetitionSummary'];

@@ -30,6 +30,7 @@ pub struct CompetitionListQuery {
     #[serde(default)]
     pub direction: Direction,
     #[serde(flatten)]
+    #[param(ignore)]
     pub pagination: PaginationParams,
 }
 
@@ -61,7 +62,7 @@ pub struct CompetitionQuery {
 #[utoipa::path(
     get,
     path = "/api/v1/competitions",
-    params(CompetitionListQuery),
+    params(PaginationParams, CompetitionListQuery),
     responses(
         (status = 200, description = "A page of competitions", body = PaginatedResponse<CompetitionResponse>),
         (status = 400, description = "Invalid pagination, include value or event code")

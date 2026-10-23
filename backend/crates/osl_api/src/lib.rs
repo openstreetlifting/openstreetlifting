@@ -170,8 +170,45 @@ mod tests {
         assert_eq!(
             ApiDoc::openapi().to_pretty_json().unwrap(),
             committed.trim_end(),
-            "backend/openapi.json is stale, run: \
-             cargo run -p osl_api -- --dump-openapi > openapi.json"
+            "backend/openapi.json is stale, run from frontend: pnpm api:sync"
         );
+    }
+
+    #[test]
+    fn list_endpoints_document_flat_query_pagination() {
+        let schema = serde_json::to_value(ApiDoc::openapi()).unwrap();
+        for path in [
+            "/api/v1/athletes",
+            "/api/v1/competitions",
+            "/api/v1/rankings",
+        ] {
+            let parameters = schema["paths"][path]["get"]["parameters"]
+                .as_array()
+                .unwrap();
+            for name in ["page", "page_size"] {
+                let parameter = parameters.iter().find(|p| p["name"] == name).unwrap();
+                assert_eq!(parameter["in"], "query", "{path}: {name}");
+                assert_eq!(parameter["required"], false, "{path}: {name}");
+            }
+            assert!(parameters.iter().all(|p| p["name"] != "pagination"));
+        }
+    }
+
+    #[test]
+    fn competition_and_ranking_projections_have_distinct_schemas() {
+        let schema = serde_json::to_value(ApiDoc::openapi()).unwrap();
+        let schemas = &schema["components"]["schemas"];
+        for field in ["federation", "athlete"] {
+            let competition = if field == "federation" {
+                &schemas["CompetitionResponse"]["properties"][field]
+            } else {
+                &schemas["ParticipantDetail"]["properties"][field]
+            };
+            let ranking = &schemas["GlobalRankingEntry"]["properties"][field];
+            assert_ne!(competition["$ref"], ranking["$ref"]);
+        }
+        assert!(schemas["CompetitionFederation"]["properties"]["federation_id"].is_object());
+        assert!(schemas["CompetitionAthlete"]["properties"]["bodyweight"].is_null());
+        assert!(schemas["RankingAthlete"]["properties"]["bodyweight"].is_object());
     }
 }

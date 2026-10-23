@@ -19,23 +19,32 @@ pub struct AthleteResponse {
     pub first_name: String,
     pub last_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub native_name: Option<String>,
     pub slug: String,
     pub gender: Gender,
+    #[schema(required = true)]
     pub country: Option<String>,
+    #[schema(required = true)]
     pub profile_picture_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub instagram_handle: Option<String>,
     pub created_at: NaiveDateTime,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub competitions: Option<Vec<AthleteCompetitionSummary>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub personal_records: Option<Vec<PersonalRecord>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub total_competitions: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub standing: Option<AthleteStanding>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub strength_profile: Option<StrengthProfile>,
 }
 
@@ -48,8 +57,10 @@ pub struct StrengthProfile {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct StrengthComparison {
     pub movement_name: Movement,
+    #[schema(required = true)]
     pub value: Option<rust_decimal::Decimal>,
     /// Percentage of other athletes below this result, ties counting as half.
+    #[schema(required = true)]
     pub percentile: Option<f64>,
     /// Other athletes with a valid best for this lift in the same sex and weight class.
     pub field: i64,
@@ -96,24 +107,32 @@ pub struct CountryStanding {
 pub struct MetricStanding {
     pub value: rust_decimal::Decimal,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub class: Option<String>,
     pub global: StandingPlace,
+    #[schema(required = true)]
     pub country: Option<CountryStanding>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteStanding {
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub ris: Option<MetricStanding>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub total: Option<MetricStanding>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub muscleup: Option<MetricStanding>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub pullup: Option<MetricStanding>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub dips: Option<MetricStanding>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub squat: Option<MetricStanding>,
 }
 
@@ -180,6 +199,7 @@ impl AthleteStanding {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteLift {
     pub movement_name: Movement,
+    #[schema(required = true)]
     pub best_weight: Option<rust_decimal::Decimal>,
     pub attempts: Vec<AttemptInfo>,
 }
@@ -189,16 +209,23 @@ pub struct AthleteCompetitionSummary {
     pub competition_id: Uuid,
     pub competition_name: String,
     pub competition_slug: String,
+    #[schema(required = true)]
     pub competition_date: Option<chrono::NaiveDate>,
     pub category_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub division: Option<String>,
+    #[schema(required = true)]
     pub rank: Option<i32>,
+    #[schema(required = true)]
     pub total: Option<rust_decimal::Decimal>,
+    #[schema(required = true)]
     pub ris_score: Option<rust_decimal::Decimal>,
+    #[schema(required = true)]
     pub ris_source: Option<RisSource>,
     pub status: AthleteStatus,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     pub event: Option<String>,
     pub lifts: Vec<AthleteLift>,
 }
@@ -209,6 +236,7 @@ pub struct PersonalRecord {
     pub max_weight: rust_decimal::Decimal,
     pub competition_name: String,
     pub competition_slug: String,
+    #[schema(required = true)]
     pub date: Option<chrono::NaiveDate>,
 }
 
