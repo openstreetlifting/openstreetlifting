@@ -84,12 +84,7 @@ sqlx migrate add --source crates/osl_db/migrations <name>
 sqlx migrate run --source crates/osl_db/migrations
 ```
 
-After changing API routes or response types, regenerate the checked-in schema and frontend types from `frontend`:
-
-```sh
-pnpm api:sync
-pnpm check
-```
+After changing API types or routes, [sync the contract and frontend types](../frontend/README.md#api-contract).
 
 ## Data changes
 

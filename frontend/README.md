@@ -41,22 +41,18 @@ pnpm test
 
 ## API contract
 
-Rust API types and route annotations generate [OpenAPI](../backend/openapi.json). `openapi-typescript` generates `src/lib/api/schema.generated.ts`, including enum values, and `openapi-fetch` uses it to type API requests and responses. Keep generated files committed and edit the Rust definitions when changing the contract.
-
-After changing backend types or routes, run from `frontend`:
+After changing Rust DTOs or route annotations, run from `frontend`:
 
 ```sh
 pnpm api:sync
 pnpm check
 ```
 
-`api:sync` compiles the API, exports OpenAPI, and regenerates TypeScript from your current checkout, including uncommitted changes. It requires Rust but does not start the API or connect to a database. Update Utoipa annotations alongside handler signatures so the exported contract describes the HTTP API.
+Generation uses your current checkout, including uncommitted changes. Commit the [OpenAPI schema](../backend/openapi.json), generated types, and caller changes together. CI checks freshness.
 
-After pulling a schema change, `pnpm api:generate` regenerates TypeScript without compiling Rust. `pnpm dev` also runs it before starting. To regenerate whenever the local OpenAPI file changes, run `pnpm api:watch` in another terminal.
+`pnpm dev` regenerates types from local OpenAPI. `pnpm api:watch` watches that file for changes.
 
-`pnpm check` verifies that generated types match the committed schema and checks frontend callers. CI also checks that OpenAPI matches the Rust definitions. Contract changes, generated files, and affected callers belong in the same pull request.
-
-Every command reads files in the current branch. Feature development uses that branch's local contract; it never downloads a schema from `main` or a running environment. Integration and production images use their commit's checked-in types, with `BACKEND_URL` selecting the running API. Deploy compatible backend and frontend versions together; types do not change at runtime.
+Deployments use their commit's types. Set `BACKEND_URL` to a compatible API.
 
 ## Build
 
