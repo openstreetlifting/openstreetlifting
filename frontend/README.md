@@ -37,7 +37,7 @@ pnpm lint
 pnpm test
 ```
 
-`pnpm test` runs server and browser tests. Browser tests require Playwright's Chromium; install it with `pnpm exec playwright install chromium`. To run only the server tests, as CI does, use `pnpm exec vitest run --project server`.
+`pnpm test` runs server and browser tests, as CI does. Browser tests require Playwright's Chromium; install it with `pnpm exec playwright install chromium`. To run only the server tests, use `pnpm exec vitest run --project server`.
 
 ## API contract
 

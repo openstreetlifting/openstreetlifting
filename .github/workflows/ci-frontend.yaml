@@ -118,9 +118,12 @@ jobs:
       - name: Install dependencies
         working-directory: frontend
         run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        working-directory: frontend
+        run: pnpm exec playwright install --with-deps chromium
       - name: Run tests
         working-directory: frontend
-        run: pnpm exec vitest run --project server
+        run: pnpm test
 
   ci-success:
     name: Frontend CI Success
