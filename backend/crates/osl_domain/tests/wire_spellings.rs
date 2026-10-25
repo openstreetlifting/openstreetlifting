@@ -5,7 +5,7 @@ fn wire(value: impl serde::Serialize) -> String {
 }
 
 #[test]
-fn the_wire_spellings_are_fixed() {
+fn preserves_wire_spellings() {
     assert_eq!(wire(Gender::M), "\"M\"");
     assert_eq!(wire(Gender::F), "\"F\"");
     assert_eq!(wire(Gender::Mx), "\"MX\"");
@@ -30,7 +30,7 @@ fn the_wire_spellings_are_fixed() {
 }
 
 #[test]
-fn the_database_spells_them_the_same_way() {
+fn matches_database_spellings() {
     for gender in [
         osl_domain::Gender::M,
         osl_domain::Gender::F,

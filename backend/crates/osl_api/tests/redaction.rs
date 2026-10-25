@@ -123,7 +123,7 @@ async fn redact_in_place(pool: &PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_athlete_page_carries_no_identity(pool: PgPool) {
+async fn removes_identity_when_athlete_is_redacted(pool: PgPool) {
     import(
         &pool,
         meet("meet", vec![entry("Alina", "Riyaz", Some("Алина Рияз"))]),
@@ -143,7 +143,7 @@ async fn the_athlete_page_carries_no_identity(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_old_page_is_gone(pool: PgPool) {
+async fn returns_not_found_for_previous_slug(pool: PgPool) {
     import(&pool, meet("meet", vec![entry("Alina", "Riyaz", None)])).await;
 
     let (found, _) = get(&pool, "/api/v1/athletes/alina-riyaz").await;
@@ -156,7 +156,7 @@ async fn the_old_page_is_gone(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_result_still_counts(pool: PgPool) {
+async fn preserves_results_when_athlete_is_redacted(pool: PgPool) {
     import(&pool, meet("meet", vec![entry("Alina", "Riyaz", None)])).await;
     redact_in_place(&pool).await;
 
@@ -179,7 +179,7 @@ async fn the_result_still_counts(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn no_endpoint_gives_the_name_back(pool: PgPool) {
+async fn hides_redacted_names_across_endpoints(pool: PgPool) {
     import(
         &pool,
         meet("meet", vec![entry("Alina", "Riyaz", Some("Алина Рияз"))]),
@@ -208,7 +208,7 @@ async fn no_endpoint_gives_the_name_back(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn unknown_country_keeps_results_and_global_standings(pool: PgPool) {
+async fn preserves_standings_when_country_is_unknown(pool: PgPool) {
     let mut athlete = entry("Alina", "Riyaz", None);
     athlete.country = None;
     import(&pool, meet("meet", vec![athlete])).await;
@@ -232,7 +232,7 @@ async fn unknown_country_keeps_results_and_global_standings(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn requested_sections_distinguish_empty_results_from_omission(pool: PgPool) {
+async fn returns_empty_sections_when_requested(pool: PgPool) {
     sqlx::query(
         "INSERT INTO athletes (first_name, last_name, gender, slug, match_key)
          VALUES ('Alex', 'Martin', 'M', 'alex-martin', 'alex martin')",
@@ -270,7 +270,7 @@ async fn requested_sections_distinguish_empty_results_from_omission(pool: PgPool
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn populated_responses_keep_values_and_nulls_consistent(pool: PgPool) {
+async fn preserves_populated_fields_and_nulls(pool: PgPool) {
     import(
         &pool,
         meet("meet", vec![entry("Alina", "Riyaz", Some("Алина Рияз"))]),

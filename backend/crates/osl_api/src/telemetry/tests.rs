@@ -50,7 +50,7 @@ impl<'a> MakeWriter<'a> for Buffer {
 }
 
 #[tokio::test]
-async fn remote_parent_correlates_logs_spans_and_response_even_with_warn_logs() {
+async fn propagates_remote_trace_context() {
     global::set_text_map_propagator(TraceContextPropagator::new());
     let exporter = InMemorySpanExporter::default();
     let provider = SdkTracerProvider::builder()
@@ -138,7 +138,7 @@ async fn remote_parent_correlates_logs_spans_and_response_even_with_warn_logs() 
 }
 
 #[test]
-fn explicit_event_parent_and_late_span_fields_are_preserved() {
+fn preserves_event_parents_and_late_span_fields() {
     let provider = SdkTracerProvider::builder().build();
     let output = Buffer::default();
     let formatter = JsonWithTraceContext::new(&Resource::builder_empty().build());

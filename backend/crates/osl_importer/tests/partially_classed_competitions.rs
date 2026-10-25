@@ -4,7 +4,7 @@ use osl_importer::canonical::{store, validator::CanonicalValidator};
 mod common;
 
 #[test]
-fn classed_men_and_unclassed_women_survive_csv_preparation() {
+fn preserves_partially_classed_entries_on_preparation() {
     let men = common::men_80(vec![common::athlete("Alex", "Example")]);
     let mut athlete = common::athlete("Sam", "Example");
     athlete.gender = Gender::F;

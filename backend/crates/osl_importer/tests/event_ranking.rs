@@ -87,7 +87,7 @@ async fn seed_both_events(pool: &PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_event_records_which_movements_were_contested(pool: PgPool) {
+async fn records_contested_movements(pool: PgPool) {
     seed_both_events(&pool).await;
 
     let events: Vec<(String, Option<String>)> =
@@ -109,7 +109,7 @@ async fn the_event_records_which_movements_were_contested(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn event_codes_and_computed_ris_do_not_depend_on_input_movement_order(pool: PgPool) {
+async fn normalizes_event_order_before_scoring(pool: PgPool) {
     let mut canonical = competition(
         "reordered-event",
         ALL_FOUR,
@@ -135,7 +135,7 @@ async fn event_codes_and_computed_ris_do_not_depend_on_input_movement_order(pool
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_partial_event_stays_out_of_the_total_ranking(pool: PgPool) {
+async fn excludes_partial_events_from_full_event_totals(pool: PgPool) {
     seed_both_events(&pool).await;
 
     let (names, total) = rank(&pool, RankingMovement::Total).await;
@@ -145,7 +145,7 @@ async fn a_partial_event_stays_out_of_the_total_ranking(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_single_movement_ranking_spans_every_event(pool: PgPool) {
+async fn ranks_single_movements_across_events(pool: PgPool) {
     seed_both_events(&pool).await;
 
     let (names, total) = rank(&pool, RankingMovement::Muscleup).await;
@@ -156,7 +156,7 @@ async fn a_single_movement_ranking_spans_every_event(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn an_uncontested_movement_is_absent_rather_than_zero(pool: PgPool) {
+async fn preserves_uncontested_movements_as_absent(pool: PgPool) {
     seed_both_events(&pool).await;
 
     let (names, total) = rank(&pool, RankingMovement::Squat).await;
@@ -181,7 +181,7 @@ async fn an_uncontested_movement_is_absent_rather_than_zero(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn no_ris_is_computed_outside_the_full_event(pool: PgPool) {
+async fn omits_computed_ris_for_partial_events(pool: PgPool) {
     seed_both_events(&pool).await;
 
     let scores: Vec<(String, Option<rust_decimal::Decimal>)> = sqlx::query_as(
@@ -213,7 +213,7 @@ async fn no_ris_is_computed_outside_the_full_event(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_three_movement_meet_is_its_own_event(pool: PgPool) {
+async fn preserves_three_movement_events(pool: PgPool) {
     import(
         &pool,
         competition(
@@ -243,7 +243,7 @@ async fn a_three_movement_meet_is_its_own_event(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn dropping_a_movement_from_the_file_changes_the_event(pool: PgPool) {
+async fn updates_event_when_movements_are_removed(pool: PgPool) {
     import(
         &pool,
         competition(
@@ -286,7 +286,7 @@ async fn dropping_a_movement_from_the_file_changes_the_event(pool: PgPool) {
 /// A competition's own leaderboard is one event by definition, so it must not be
 /// scoped to the default four-lift event and come back empty.
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_competitions_own_total_board_ignores_the_event_filter(pool: PgPool) {
+async fn ignores_event_filter_within_competition(pool: PgPool) {
     let classic = &[Movement::PullUp, Movement::Dips];
     import(
         &pool,
@@ -328,7 +328,7 @@ async fn a_competitions_own_total_board_ignores_the_event_filter(pool: PgPool) {
 
 /// The global board keeps its event scope, since a two lift total is not a four lift one.
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_global_total_board_still_stays_inside_one_event(pool: PgPool) {
+async fn filters_global_totals_by_event(pool: PgPool) {
     import(
         &pool,
         competition(

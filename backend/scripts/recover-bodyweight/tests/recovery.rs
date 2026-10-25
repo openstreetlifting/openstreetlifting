@@ -40,7 +40,7 @@ impl Drop for Fixture {
 const VALID: &str = "M,94,Xavier,Macias,,FR,,113.43,586.5,competed,,,,,50,,,,110,,,,175,,,,251.5\n";
 
 #[test]
-fn one_candidate_recovers_and_keeps_original_score_while_check_is_read_only() {
+fn recovers_bodyweight_and_preserves_source_score() {
     let fixture = Fixture::new(VALID);
     let csv = std::fs::read(fixture.0.join("entries.csv")).unwrap();
     let metadata = std::fs::read(fixture.0.join("competition.toml")).unwrap();
@@ -75,7 +75,7 @@ fn one_candidate_recovers_and_keeps_original_score_while_check_is_read_only() {
 }
 
 #[test]
-fn a_published_total_supports_recovery_without_inventing_lifts() {
+fn recovers_bodyweight_from_reported_totals() {
     let fixture = Fixture::new(VALID);
     let mut canonical = store::read(&fixture.0).unwrap();
     let athlete = &mut canonical.categories[0].athletes[0];
@@ -95,7 +95,7 @@ fn a_published_total_supports_recovery_without_inventing_lifts() {
 }
 
 #[test]
-fn incomplete_total_is_rejected_and_valid_rows_are_reported_as_withheld() {
+fn withholds_recoveries_when_rejections_exceed_threshold() {
     let incomplete = VALID
         .replace("Xavier,Macias", "John,Doe")
         .replace("251.5\n", "\n")
@@ -118,7 +118,7 @@ fn incomplete_total_is_rejected_and_valid_rows_are_reported_as_withheld() {
 }
 
 #[test]
-fn exactly_twenty_percent_rejected_does_not_withhold_valid_recoveries() {
+fn allows_twenty_percent_rejections() {
     let mut rows = String::new();
     for name in ["Anna", "Ben", "Chris", "Dan"] {
         rows.push_str(&VALID.replace("Xavier", name));

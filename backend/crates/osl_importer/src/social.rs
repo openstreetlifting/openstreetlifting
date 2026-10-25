@@ -342,7 +342,7 @@ mod tests {
     }
 
     #[test]
-    fn a_row_reads_the_columns_it_was_given() {
+    fn parses_identity_columns() {
         let parsed = row("Tony Nguyen", Some("m"), Some("fr"), "@tony").unwrap();
 
         assert_eq!(parsed.label, "Tony Nguyen");
@@ -352,7 +352,7 @@ mod tests {
     }
 
     #[test]
-    fn a_blank_column_is_left_unset() {
+    fn ignores_blank_identity_columns() {
         let parsed = row("Tony Nguyen", Some("  "), None, "tony").unwrap();
 
         assert_eq!(parsed.query.gender, None);
@@ -360,7 +360,7 @@ mod tests {
     }
 
     #[test]
-    fn a_column_that_cannot_be_read_names_the_row_it_is_in() {
+    fn identifies_rows_with_invalid_columns() {
         let problem = row("Tony Nguyen", Some("male"), None, "tony")
             .unwrap_err()
             .to_string();
@@ -374,14 +374,14 @@ mod tests {
     }
 
     #[test]
-    fn a_handle_is_still_checked_for_being_one() {
+    fn rejects_invalid_handles() {
         assert!(row("Tony Nguyen", None, None, "").is_err());
         assert!(row("Tony Nguyen", None, None, "tony nguyen").is_err());
         assert!(row("", None, None, "tony").is_err());
     }
 
     #[test]
-    fn an_ambiguous_row_is_told_what_would_settle_it() {
+    fn lists_candidates_when_identity_is_ambiguous() {
         let row = row("Tony Nguyen", None, None, "tony").unwrap();
         let candidates = [identity("M", "US", None), identity("M", "FR", None)];
 
@@ -393,7 +393,7 @@ mod tests {
     }
 
     #[test]
-    fn a_narrowing_that_matches_nobody_says_what_the_name_does_match() {
+    fn lists_candidates_when_filters_do_not_match() {
         let row = row("Tony Nguyen", None, Some("DE"), "tony").unwrap();
         let named = [identity("M", "FR", None), identity("M", "US", None)];
 
@@ -404,7 +404,7 @@ mod tests {
     }
 
     #[test]
-    fn a_name_nobody_carries_says_only_that() {
+    fn reports_unknown_athletes() {
         let row = row("Tony Nguyen", None, None, "tony").unwrap();
 
         assert_eq!(no_athlete(&row, &[]), "No athlete named 'Tony Nguyen'");

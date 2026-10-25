@@ -58,7 +58,7 @@ fn fixture(class: Class, ris: Option<&str>) -> CanonicalFormat {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_file_without_a_status_imports_as_completed(pool: PgPool) {
+async fn defaults_missing_status_to_completed(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
@@ -75,7 +75,7 @@ async fn a_file_without_a_status_imports_as_completed(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn reimport_keeps_a_status_the_file_does_not_state(pool: PgPool) {
+async fn preserves_status_when_source_omits_it(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     let mut cancelled = canonical(Class::Slug(WeightClassSlug::M73));
@@ -98,7 +98,7 @@ async fn reimport_keeps_a_status_the_file_does_not_state(pool: PgPool) {
 /// The class is part of what a result is, so correcting it refiles the lifter
 /// rather than editing the class they were in.
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn reimport_moves_a_lifter_to_the_corrected_class(pool: PgPool) {
+async fn updates_corrected_weight_classes(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
@@ -118,7 +118,7 @@ async fn reimport_moves_a_lifter_to_the_corrected_class(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn open_class_is_stored_as_a_lower_bound(pool: PgPool) {
+async fn stores_open_class_lower_bounds(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
@@ -133,7 +133,7 @@ async fn open_class_is_stored_as_a_lower_bound(pool: PgPool) {
 /// A competition running two divisions in one class is two contests, so each keeps its
 /// own winner instead of the second collapsing onto the first.
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn two_divisions_in_one_class_each_get_a_winner(pool: PgPool) {
+async fn ranks_divisions_separately(pool: PgPool) {
     let mut elite = fixture(Class::Slug(WeightClassSlug::M73), None);
     elite.categories[0].division = Some("Elite".to_string());
 
@@ -183,7 +183,7 @@ async fn participant_classes(pool: &PgPool) -> Vec<(Option<Decimal>, Option<Deci
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_reported_score_is_kept_and_marked(pool: PgPool) {
+async fn preserves_reported_scores_and_provenance(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
@@ -203,7 +203,7 @@ async fn a_reported_score_is_kept_and_marked(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_computed_score_is_marked_as_ours(pool: PgPool) {
+async fn marks_computed_scores(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer
@@ -221,7 +221,7 @@ async fn a_computed_score_is_marked_as_ours(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_recompute_leaves_a_reported_score_alone(pool: PgPool) {
+async fn preserves_reported_scores_when_recomputing(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     let file = fixture(Class::Slug(WeightClassSlug::M73), Some("84.21"));
@@ -240,7 +240,7 @@ async fn a_recompute_leaves_a_reported_score_alone(pool: PgPool) {
 /// Correcting a federation name or a date in the file has to reach the database,
 /// or the file stops being the truth about its own competition the moment one exists.
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn reimport_lands_a_corrected_federation_and_dates(pool: PgPool) {
+async fn updates_corrected_competition_metadata(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
 
     transformer

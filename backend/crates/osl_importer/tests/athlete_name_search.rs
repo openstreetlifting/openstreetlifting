@@ -69,7 +69,7 @@ async fn search(pool: &PgPool, filter: &RankingFilter) -> (Vec<String>, i64) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn no_search_returns_everyone(pool: PgPool) {
+async fn returns_all_athletes_when_search_is_absent(pool: PgPool) {
     seed(&pool).await;
 
     let (names, total) = search(&pool, &filter(None)).await;
@@ -79,7 +79,7 @@ async fn no_search_returns_everyone(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_last_name_matches_regardless_of_case(pool: PgPool) {
+async fn matches_last_names_case_insensitively(pool: PgPool) {
     seed(&pool).await;
 
     let (names, total) = search(&pool, &filter(Some("DUPONT"))).await;
@@ -89,7 +89,7 @@ async fn a_last_name_matches_regardless_of_case(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_first_name_matches_too(pool: PgPool) {
+async fn matches_first_names(pool: PgPool) {
     seed(&pool).await;
 
     let (names, _) = search(&pool, &filter(Some("pierre"))).await;
@@ -98,7 +98,7 @@ async fn a_first_name_matches_too(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_full_name_matches_across_both_columns(pool: PgPool) {
+async fn matches_full_names(pool: PgPool) {
     seed(&pool).await;
 
     let (names, _) = search(&pool, &filter(Some("jean dup"))).await;
@@ -107,7 +107,7 @@ async fn a_full_name_matches_across_both_columns(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_name_that_matches_nobody_returns_nothing(pool: PgPool) {
+async fn returns_empty_results_when_name_is_unknown(pool: PgPool) {
     seed(&pool).await;
 
     let (names, total) = search(&pool, &filter(Some("nobody"))).await;
@@ -117,7 +117,7 @@ async fn a_name_that_matches_nobody_returns_nothing(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_total_counts_the_matches_and_not_the_whole_ranking(pool: PgPool) {
+async fn counts_matching_athletes(pool: PgPool) {
     seed(&pool).await;
 
     let paged = RankingFilter {
@@ -131,7 +131,7 @@ async fn the_total_counts_the_matches_and_not_the_whole_ranking(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn search_composes_with_the_other_filters(pool: PgPool) {
+async fn combines_search_with_ranking_filters(pool: PgPool) {
     seed(&pool).await;
 
     let unknown_competition = RankingFilter {
@@ -144,7 +144,7 @@ async fn search_composes_with_the_other_filters(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn like_wildcards_are_matched_literally(pool: PgPool) {
+async fn matches_wildcards_literally(pool: PgPool) {
     seed(&pool).await;
 
     for wildcard in ["%", "_", "%dupont%"] {
@@ -154,7 +154,7 @@ async fn like_wildcards_are_matched_literally(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_match_keeps_the_place_the_whole_ranking_gave_it(pool: PgPool) {
+async fn preserves_rank_when_searching(pool: PgPool) {
     seed(&pool).await;
 
     let (placings, _) = placings(&pool, &filter(Some("pierre"))).await;
@@ -163,7 +163,7 @@ async fn a_match_keeps_the_place_the_whole_ranking_gave_it(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn several_matches_each_keep_their_own_place(pool: PgPool) {
+async fn preserves_ranks_when_search_has_multiple_matches(pool: PgPool) {
     seed(&pool).await;
 
     let (placings, _) = placings(&pool, &filter(Some("dupont"))).await;
@@ -178,7 +178,7 @@ async fn several_matches_each_keep_their_own_place(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_place_follows_the_ranking_filters_and_not_the_search(pool: PgPool) {
+async fn applies_ranking_filters_before_search(pool: PgPool) {
     seed(&pool).await;
     import(
         &pool,

@@ -62,7 +62,7 @@ async fn seed(pool: &PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn exact_formats_filter_rows_and_totals_before_pagination(pool: PgPool) {
+async fn filters_formats_before_pagination(pool: PgPool) {
     seed(&pool).await;
     let mut slugs = Vec::new();
     for page in [1, 2] {
@@ -95,7 +95,7 @@ async fn exact_formats_filter_rows_and_totals_before_pagination(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn nonexistent_combinations_are_empty_and_choices_stay_global(pool: PgPool) {
+async fn returns_empty_results_for_unmatched_filters(pool: PgPool) {
     seed(&pool).await;
     let (status, empty) = get(&pool, "?event=MS&country=FR").await;
     assert_eq!(status, StatusCode::OK);
@@ -113,7 +113,7 @@ async fn nonexistent_combinations_are_empty_and_choices_stay_global(pool: PgPool
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn in_progress_competitions_are_filterable_and_readable(pool: PgPool) {
+async fn lists_and_reads_live_competitions(pool: PgPool) {
     seed(&pool).await;
     let (status, result) = get(&pool, "?status=live&country=FR&event=MPDS").await;
     assert_eq!(status, StatusCode::OK);
@@ -126,7 +126,7 @@ async fn in_progress_competitions_are_filterable_and_readable(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn requested_empty_competition_sections_are_present(pool: PgPool) {
+async fn returns_requested_empty_sections(pool: PgPool) {
     seed(&pool).await;
     let (status, body) = get(&pool, "/upcoming-unknown").await;
     assert_eq!(status, StatusCode::OK);

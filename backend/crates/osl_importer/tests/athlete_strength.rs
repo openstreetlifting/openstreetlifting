@@ -16,7 +16,7 @@ async fn profile(pool: &PgPool) -> Vec<AthleteStrengthRow> {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn compares_one_best_per_other_athlete_and_gives_ties_half_credit(pool: PgPool) {
+async fn credits_ties_in_best_result_comparisons(pool: PgPool) {
     import(
         &pool,
         competition(
@@ -57,7 +57,7 @@ async fn compares_one_best_per_other_athlete_and_gives_ties_half_credit(pool: Pg
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn uses_latest_competed_category_for_every_axis_and_excludes_other_sexes(pool: PgPool) {
+async fn compares_with_latest_category_and_gender(pool: PgPool) {
     let mut earlier = competition(
         "earlier",
         vec![category(
@@ -122,7 +122,7 @@ async fn uses_latest_competed_category_for_every_axis_and_excludes_other_sexes(p
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn preserves_zero_and_keeps_missing_lifts_or_peers_unscored(pool: PgPool) {
+async fn preserves_zero_and_unscored_lifts(pool: PgPool) {
     import(
         &pool,
         competition(

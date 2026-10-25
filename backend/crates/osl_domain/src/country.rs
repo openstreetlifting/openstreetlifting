@@ -73,7 +73,7 @@ mod tests {
     }
 
     #[test]
-    fn same_country_written_two_ways_compares_equal() {
+    fn compares_normalized_codes_equally() {
         assert_eq!(
             CountryCode::parse("fr").unwrap(),
             CountryCode::parse("FR").unwrap()

@@ -26,7 +26,7 @@ fn mixed(scoring: Option<Scoring>, classed: bool) -> CanonicalFormat {
 }
 
 #[test]
-fn mixed_contests_require_athlete_sex_and_an_explicit_scoring_rule() {
+fn requires_sex_and_scoring_for_mixed_contests() {
     assert!(
         CanonicalValidator::validate(&mixed(None, false))
             .unwrap_err()
@@ -53,7 +53,7 @@ fn mixed_contests_require_athlete_sex_and_an_explicit_scoring_rule() {
 }
 
 #[test]
-fn mixed_csv_round_trips_without_changing_athlete_sex() {
+fn preserves_athlete_sex_on_round_trip() {
     let canonical = mixed(Some(Scoring::Ris), false);
     CanonicalValidator::validate(&canonical).unwrap();
     let path = std::env::temp_dir().join(format!("osl-mixed-{}", Uuid::new_v4()));
@@ -92,7 +92,7 @@ fn mixed_csv_round_trips_without_changing_athlete_sex() {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn mixed_results_use_athlete_formulas_and_the_declared_ranking(pool: PgPool) {
+async fn uses_athlete_sex_and_declared_scoring(pool: PgPool) {
     for classed in [false, true] {
         for scoring in [Scoring::Ris, Scoring::Total] {
             let canonical = mixed(Some(scoring), classed);
@@ -146,7 +146,7 @@ async fn mixed_results_use_athlete_formulas_and_the_declared_ranking(pool: PgPoo
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_missing_scoring_metric_has_no_placing(pool: PgPool) {
+async fn omits_rank_when_scoring_metric_is_missing(pool: PgPool) {
     let mut canonical = mixed(Some(Scoring::Ris), false);
     canonical.categories[0].athletes[0].bodyweight = None;
     CanonicalTransformer::new(&pool)
@@ -167,7 +167,7 @@ async fn a_missing_scoring_metric_has_no_placing(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn one_identity_can_enter_mixed_and_single_sex_contests(pool: PgPool) {
+async fn shares_identity_across_contest_types(pool: PgPool) {
     let mut canonical = mixed(Some(Scoring::Total), false);
     let mut men = canonical.categories[0].clone();
     men.gender = Gender::M;

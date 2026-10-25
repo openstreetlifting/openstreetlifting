@@ -28,7 +28,7 @@ async fn identity(pool: &PgPool) -> (Uuid, String, Option<String>) {
 }
 
 #[test]
-fn empty_country_round_trips_without_using_the_host_country() {
+fn preserves_unknown_country_on_round_trip() {
     let canonical = meet("unknown", None);
     CanonicalValidator::validate(&canonical).unwrap();
     let directory = std::env::temp_dir().join(format!("osl-country-{}", Uuid::new_v4()));
@@ -41,7 +41,7 @@ fn empty_country_round_trips_without_using_the_host_country() {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn learning_and_correcting_country_preserves_identity_and_links(pool: PgPool) {
+async fn preserves_identity_when_country_changes(pool: PgPool) {
     let importer = CanonicalTransformer::new(&pool);
     importer
         .import_to_database(meet("first", None))
@@ -61,7 +61,7 @@ async fn learning_and_correcting_country_preserves_identity_and_links(pool: PgPo
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn missing_country_does_not_erase_evidence_from_another_result(pool: PgPool) {
+async fn preserves_country_when_input_is_missing(pool: PgPool) {
     let importer = CanonicalTransformer::new(&pool);
     for reverse in [false, true] {
         let mut batch = vec![meet("known", Some("FR")), meet("unknown", None)];
@@ -81,7 +81,7 @@ async fn missing_country_does_not_erase_evidence_from_another_result(pool: PgPoo
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn conflicting_imports_roll_back_and_complete_corrections_are_atomic(pool: PgPool) {
+async fn rejects_conflicting_country_updates_atomically(pool: PgPool) {
     let importer = CanonicalTransformer::new(&pool);
     importer
         .import_batch(
@@ -132,7 +132,7 @@ async fn conflicting_imports_roll_back_and_complete_corrections_are_atomic(pool:
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn pruning_removes_old_country_evidence_within_the_import(pool: PgPool) {
+async fn removes_country_evidence_when_results_are_pruned(pool: PgPool) {
     let importer = CanonicalTransformer::new(&pool);
     importer
         .import_to_database(meet("old", Some("FR")))
@@ -149,7 +149,7 @@ async fn pruning_removes_old_country_evidence_within_the_import(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn unknown_country_keeps_global_rankings_and_profile_history(pool: PgPool) {
+async fn preserves_history_when_country_is_unknown(pool: PgPool) {
     CanonicalTransformer::new(&pool)
         .import_to_database(meet("unknown", None))
         .await
@@ -190,7 +190,7 @@ async fn unknown_country_keeps_global_rankings_and_profile_history(pool: PgPool)
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn identity_migration_preserves_existing_profiles_and_participants(pool: PgPool) {
+async fn preserves_profiles_during_identity_migration(pool: PgPool) {
     let importer = CanonicalTransformer::new(&pool);
     for (country, number) in [("FR", 1), ("US", 2)] {
         let mut canonical = meet(&format!("old-{country}"), Some(country));
@@ -291,7 +291,7 @@ async fn tony_pair(pool: &PgPool) -> (Uuid, Uuid) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn confirmed_merge_preserves_results_records_socials_and_old_urls(pool: PgPool) {
+async fn preserves_results_and_links_when_merging_athletes(pool: PgPool) {
     let (removed, retained) = tony_pair(&pool).await;
     let old_slug: String = sqlx::query_scalar("SELECT slug FROM athletes WHERE athlete_id = $1")
         .bind(removed)
@@ -373,7 +373,7 @@ async fn confirmed_merge_preserves_results_records_socials_and_old_urls(pool: Pg
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn confirmed_merge_rejects_conflicting_social_accounts(pool: PgPool) {
+async fn rejects_merges_with_conflicting_social_accounts(pool: PgPool) {
     tony_pair(&pool).await;
     sqlx::query("INSERT INTO athlete_socials (athlete_id, social_id, handle) SELECT a.athlete_id, s.social_id, 'tony_' || a.country FROM athletes a CROSS JOIN socials s WHERE s.name = 'instagram'")
         .execute(&pool).await.unwrap();
@@ -390,7 +390,7 @@ async fn confirmed_merge_rejects_conflicting_social_accounts(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn confirmed_merge_rejects_duplicate_results_atomically(pool: PgPool) {
+async fn rejects_merges_with_duplicate_results(pool: PgPool) {
     let (removed, retained) = tony_pair(&pool).await;
     sqlx::query("UPDATE competition_participants SET competition_id = (SELECT competition_id FROM competition_participants WHERE athlete_id = $1) WHERE athlete_id = $2")
         .bind(retained).bind(removed).execute(&pool).await.unwrap();

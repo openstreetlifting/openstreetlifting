@@ -85,7 +85,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn codes_and_names_round_trip() {
+    fn round_trips_codes_and_names() {
         for movement in Movement::ALL {
             assert_eq!(Movement::from_code(movement.code()), Some(movement));
             assert_eq!(Movement::from_name(movement.as_str()), Some(movement));
@@ -93,13 +93,13 @@ mod tests {
     }
 
     #[test]
-    fn all_is_in_display_order() {
+    fn lists_movements_in_display_order() {
         let orders: Vec<_> = Movement::ALL.iter().map(Movement::display_order).collect();
         assert_eq!(orders, vec![1, 2, 3, 4]);
     }
 
     #[test]
-    fn serde_spells_them_the_way_the_database_does() {
+    fn serializes_database_spellings() {
         for movement in Movement::ALL {
             assert_eq!(
                 serde_json::to_string(&movement).unwrap(),
@@ -109,7 +109,7 @@ mod tests {
     }
 
     #[test]
-    fn nothing_shares_a_letter_or_a_column() {
+    fn uses_unique_codes_and_columns() {
         for (index, movement) in Movement::ALL.iter().enumerate() {
             for other in &Movement::ALL[index + 1..] {
                 assert_ne!(movement.code(), other.code());

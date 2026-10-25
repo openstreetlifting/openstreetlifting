@@ -257,21 +257,21 @@ mod tests {
     use std::str::FromStr;
 
     #[test]
-    fn a_bare_weight_is_a_good_lift() {
+    fn parses_bare_weights_as_successful() {
         let attempt = parse_attempt("100").unwrap().unwrap();
         assert_eq!(attempt.weight, Decimal::from(100));
         assert!(attempt.is_successful);
     }
 
     #[test]
-    fn an_x_suffix_is_a_miss() {
+    fn parses_x_suffix_as_failed() {
         let attempt = parse_attempt("100x").unwrap().unwrap();
         assert_eq!(attempt.weight, Decimal::from(100));
         assert!(!attempt.is_successful);
     }
 
     #[test]
-    fn zero_is_a_lift_and_can_be_missed() {
+    fn preserves_zero_weight_attempts() {
         let good = parse_attempt("0").unwrap().unwrap();
         assert_eq!(good.weight, Decimal::ZERO);
         assert!(good.is_successful);
@@ -282,19 +282,19 @@ mod tests {
     }
 
     #[test]
-    fn an_empty_cell_is_not_an_attempt() {
+    fn ignores_empty_attempt_cells() {
         assert!(parse_attempt("").unwrap().is_none());
         assert!(parse_attempt("   ").unwrap().is_none());
     }
 
     #[test]
-    fn a_negative_weight_points_at_the_x_suffix() {
+    fn suggests_x_suffix_for_negative_weights() {
         let error = parse_attempt("-100").unwrap_err();
         assert!(error.contains("100x"), "{error}");
     }
 
     #[test]
-    fn rendering_round_trips() {
+    fn round_trips_attempts() {
         for cell in ["100", "100x", "0", "0x", "12.5", "12.5x"] {
             let attempt = parse_attempt(cell).unwrap().unwrap();
             assert_eq!(render_attempt(&attempt), cell);
@@ -302,7 +302,7 @@ mod tests {
     }
 
     #[test]
-    fn trailing_zeros_are_stripped() {
+    fn strips_trailing_zeros() {
         let attempt = Attempt {
             weight: Decimal::from_str("100.00").unwrap(),
             is_successful: true,
@@ -311,7 +311,7 @@ mod tests {
     }
 
     #[test]
-    fn headers_cover_every_movement() {
+    fn includes_headers_for_all_movements() {
         let headers = headers(Layout::default());
         assert_eq!(headers.len(), 10 + 4 * 4);
         assert!(headers.contains(&"MuscleUp1Kg".to_string()));
@@ -319,7 +319,7 @@ mod tests {
     }
 
     #[test]
-    fn a_divisioned_meet_leads_with_the_division() {
+    fn prefixes_headers_with_division() {
         let headers = headers(Layout {
             divisioned: true,
             native_names: false,
@@ -330,7 +330,7 @@ mod tests {
     }
 
     #[test]
-    fn a_classed_meet_names_the_class_after_the_sex() {
+    fn places_weight_class_after_sex() {
         let headers = headers(Layout {
             classed: true,
             ..Layout::default()
@@ -341,12 +341,12 @@ mod tests {
     }
 
     #[test]
-    fn a_meet_without_weight_classes_omits_the_column() {
+    fn omits_class_header_when_classes_are_absent() {
         assert!(!headers(Layout::default()).contains(&WEIGHT_CLASS.to_string()));
     }
 
     #[test]
-    fn an_unknown_column_is_rejected() {
+    fn rejects_unknown_columns() {
         let mut header = csv::StringRecord::from(headers(Layout::default()));
         header.push_field("Total");
         let error = Columns::read(&header).unwrap_err();
@@ -354,7 +354,7 @@ mod tests {
     }
 
     #[test]
-    fn the_old_ris_header_is_rejected_even_alongside_reported_ris() {
+    fn rejects_legacy_ris_headers() {
         for alongside in [false, true] {
             let mut fields = headers(Layout::default());
             if !alongside {
@@ -368,7 +368,7 @@ mod tests {
     }
 
     #[test]
-    fn legacy_total_headers_are_rejected_with_or_without_the_new_column() {
+    fn rejects_legacy_total_headers() {
         for alongside in [false, true] {
             let mut fields = headers(Layout::default());
             if !alongside {
@@ -380,7 +380,7 @@ mod tests {
     }
 
     #[test]
-    fn missing_required_columns_are_rejected() {
+    fn rejects_missing_required_columns() {
         for column in [
             SEX,
             LAST_NAME,
@@ -399,7 +399,7 @@ mod tests {
     }
 
     #[test]
-    fn misspelled_optional_columns_are_rejected() {
+    fn rejects_misspelled_optional_columns() {
         for (column, typo) in [
             (FIRST_NAME, "Firstname"),
             (DISAMBIGUATION, "Disambiguaton"),
@@ -414,7 +414,7 @@ mod tests {
     }
 
     #[test]
-    fn a_file_without_a_division_column_is_accepted() {
+    fn accepts_files_without_division_columns() {
         for layout in [
             Layout::default(),
             Layout {

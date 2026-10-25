@@ -54,7 +54,7 @@ fn competition() -> CompetitionResponse {
 }
 
 #[test]
-fn athlete_scalars_are_null_and_unrequested_sections_are_absent() {
+fn serializes_missing_athlete_values_as_null() {
     let body = serde_json::to_value(AthleteResponse::from(athlete_row())).unwrap();
     for field in [
         "native_name",
@@ -76,7 +76,7 @@ fn athlete_scalars_are_null_and_unrequested_sections_are_absent() {
 }
 
 #[test]
-fn requested_empty_lists_and_missing_objects_remain_distinct() {
+fn serializes_requested_empty_sections() {
     let detail = AthleteDetail {
         athlete: athlete_row(),
         competitions: Vec::new(),
@@ -98,7 +98,7 @@ fn requested_empty_lists_and_missing_objects_remain_distinct() {
 }
 
 #[test]
-fn populated_sections_preserve_values_and_null_metric_fields() {
+fn preserves_populated_sections_and_null_metrics() {
     let mut response = AthleteResponse::from(athlete_row());
     response.native_name = Some("Алекс Мартин".into());
     response.country = Some("FR".into());
@@ -135,7 +135,7 @@ fn populated_sections_preserve_values_and_null_metric_fields() {
 }
 
 #[test]
-fn competition_sections_are_omitted_until_requested() {
+fn omits_unrequested_competition_sections() {
     let mut response = competition();
     let body = serde_json::to_value(&response).unwrap();
     for field in ["city", "venue", "country", "event_code", "lifter_count"] {
@@ -162,7 +162,7 @@ fn competition_sections_are_omitted_until_requested() {
 }
 
 #[test]
-fn rankings_keep_missing_values_and_uncontested_lifts_as_null() {
+fn preserves_zero_and_null_ranking_values() {
     let response = GlobalRankingEntry {
         participant_id: Uuid::nil(),
         rank: 1,
@@ -215,7 +215,7 @@ fn rankings_keep_missing_values_and_uncontested_lifts_as_null() {
 }
 
 #[test]
-fn response_schemas_require_every_field_except_conditional_sections() {
+fn requires_fields_except_conditional_sections() {
     let schema = serde_json::to_value(ApiDoc::openapi()).unwrap();
     for (name, definition) in schema["components"]["schemas"].as_object().unwrap() {
         if matches!(name.as_str(), "ComputeRisRequest" | "PaginationParams") {
@@ -258,7 +258,7 @@ fn response_schemas_require_every_field_except_conditional_sections() {
 }
 
 #[test]
-fn request_fields_keep_their_own_missing_and_null_rules() {
+fn validates_request_field_presence() {
     for extra in [
         json!({}),
         json!({"formula_year": null}),

@@ -101,13 +101,13 @@ country = "FR"
 "#;
 
     #[test]
-    fn a_well_formed_file_parses() {
+    fn parses_valid_files() {
         let parsed: CompetitionFile = toml::from_str(COMPETITION).unwrap();
         assert_eq!(parsed.competition.city.as_deref(), Some("Sevran"));
     }
 
     #[test]
-    fn a_one_day_event_defaults_its_end_date_and_keeps_its_venue() {
+    fn defaults_end_date_for_single_day_events() {
         let text = COMPETITION.replace("end_date = \"2026-05-17\"", "venue = \"Main Hall\"");
         let file: CompetitionFile = toml::from_str(&text).unwrap();
         let data = file.competition.into_data("elite".into(), file.federation);
@@ -119,7 +119,7 @@ country = "FR"
     }
 
     #[test]
-    fn a_multi_day_event_keeps_its_explicit_end_date() {
+    fn preserves_explicit_end_dates() {
         let file: CompetitionFile = toml::from_str(COMPETITION).unwrap();
         let data = file.competition.into_data("elite".into(), file.federation);
         assert_eq!(data.end_date, NaiveDate::from_ymd_opt(2026, 5, 17).unwrap());
@@ -128,7 +128,7 @@ country = "FR"
     }
 
     #[test]
-    fn a_misspelled_key_is_rejected() {
+    fn rejects_unknown_keys() {
         let text = COMPETITION.replace("city =", "citty =");
         let error = toml::from_str::<CompetitionFile>(&text)
             .unwrap_err()
@@ -137,7 +137,7 @@ country = "FR"
     }
 
     #[test]
-    fn a_leftover_format_version_is_rejected() {
+    fn rejects_legacy_format_versions() {
         let text = format!("format_version = \"2.0.0\"\n{COMPETITION}");
         let error = toml::from_str::<CompetitionFile>(&text)
             .unwrap_err()

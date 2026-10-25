@@ -47,7 +47,7 @@ async fn scored_with(pool: &PgPool, slug: &str) -> (Decimal, i32) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_meet_older_than_the_formula_is_still_scored(pool: PgPool) {
+async fn scores_competitions_predating_formula(pool: PgPool) {
     import(&pool, competition_held_in(2022, "old-competition")).await;
 
     let (score, year) = scored_with(&pool, "old-competition").await;
@@ -57,7 +57,7 @@ async fn a_meet_older_than_the_formula_is_still_scored(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn meets_from_different_years_share_one_formula(pool: PgPool) {
+async fn uses_same_formula_across_competition_years(pool: PgPool) {
     import(&pool, competition_held_in(2022, "old-competition")).await;
     import(&pool, competition_held_in(2026, "recent-competition")).await;
 

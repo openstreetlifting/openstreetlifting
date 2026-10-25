@@ -34,7 +34,7 @@ fn stated_best_lifter() -> AthleteData {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_stated_best_lift_is_stored_as_max_weight(pool: PgPool) {
+async fn stores_reported_best_lifts(pool: PgPool) {
     import(
         &pool,
         competition("test-competition", vec![men_80(vec![stated_best_lifter()])]),
@@ -48,7 +48,7 @@ async fn a_stated_best_lift_is_stored_as_max_weight(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_stated_best_lift_creates_no_attempt_rows(pool: PgPool) {
+async fn omits_attempts_when_only_best_lift_is_known(pool: PgPool) {
     import(
         &pool,
         competition("test-competition", vec![men_80(vec![stated_best_lifter()])]),
@@ -70,7 +70,7 @@ async fn a_stated_best_lift_creates_no_attempt_rows(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_stated_best_lift_still_counts_toward_the_total(pool: PgPool) {
+async fn includes_reported_best_lifts_in_totals(pool: PgPool) {
     import(
         &pool,
         competition("test-competition", vec![men_80(vec![stated_best_lifter()])]),

@@ -175,7 +175,7 @@ mod tests {
     ];
 
     #[test]
-    fn reproduces_the_published_worlds_2023_scores() {
+    fn matches_published_worlds_2023_scores() {
         for (bodyweight, total, published) in MEN_WORLDS_2023 {
             assert_eq!(
                 compute(dec(bodyweight), dec(total), Gender::M, Edition::V2024),

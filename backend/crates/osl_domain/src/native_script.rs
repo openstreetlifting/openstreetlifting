@@ -94,7 +94,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn each_alphabet_is_recognised() {
+    fn recognizes_supported_scripts() {
         assert_eq!(
             NativeScript::detect("Радован Репац"),
             Some(NativeScript::Cyrillic)
@@ -105,7 +105,7 @@ mod tests {
     }
 
     #[test]
-    fn kana_make_a_name_japanese() {
+    fn recognizes_japanese_when_kana_is_present() {
         assert_eq!(NativeScript::detect("たなか"), Some(NativeScript::Japanese));
         // Kanji and kana together are still one Japanese name.
         assert_eq!(
@@ -115,7 +115,7 @@ mod tests {
     }
 
     #[test]
-    fn a_latin_name_is_in_no_native_script() {
+    fn returns_none_for_latin_names() {
         assert_eq!(NativeScript::detect("Adrien Pelfresne"), None);
         assert_eq!(NativeScript::detect("Mérandon"), None);
         assert_eq!(NativeScript::detect("Bărbieru"), None);
@@ -123,12 +123,12 @@ mod tests {
     }
 
     #[test]
-    fn two_unrelated_alphabets_are_not_one_name() {
+    fn rejects_mixed_scripts() {
         assert_eq!(NativeScript::detect("Радован 조정우"), None);
     }
 
     #[test]
-    fn punctuation_belongs_to_no_script() {
+    fn ignores_punctuation() {
         assert_eq!(
             NativeScript::detect("Радован-Репац"),
             Some(NativeScript::Cyrillic)
@@ -136,7 +136,7 @@ mod tests {
     }
 
     #[test]
-    fn accented_latin_is_still_latin() {
+    fn recognizes_accented_latin() {
         for c in ['a', 'Z', 'é', 'ü', 'ő', 'ș', 'ā', 'ẞ'] {
             assert!(NativeScript::is_latin(c), "{c}");
         }
@@ -146,7 +146,7 @@ mod tests {
     }
 
     #[test]
-    fn names_round_trip_through_their_stored_form() {
+    fn round_trips_stored_script_names() {
         for script in [
             NativeScript::Cyrillic,
             NativeScript::Greek,

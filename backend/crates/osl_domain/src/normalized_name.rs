@@ -93,14 +93,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_normalization_preserves_order() {
+    fn preserves_name_order() {
         let name = NormalizedAthleteName::new("Adrien", "Pelfresne");
         assert_eq!(name.database_first_name(), "Adrien");
         assert_eq!(name.database_last_name(), "Pelfresne");
     }
 
     #[test]
-    fn the_file_decides_how_a_name_is_capitalised() {
+    fn preserves_source_capitalization() {
         for spelling in ["Anne-Sophie", "D'Almeida", "DeFrancesco", "McDonald"] {
             assert_eq!(
                 NormalizedAthleteName::new(spelling, "X").database_first_name(),
@@ -110,21 +110,21 @@ mod tests {
     }
 
     #[test]
-    fn capitalisation_still_does_not_split_a_person() {
+    fn ignores_case_when_matching() {
         let shouted = NormalizedAthleteName::new("ADRIEN", "PELFRESNE");
         let plain = NormalizedAthleteName::new("Adrien", "Pelfresne");
         assert_eq!(shouted.match_name(), plain.match_name());
     }
 
     #[test]
-    fn test_normalization_trims_whitespace() {
+    fn trims_whitespace() {
         let name = NormalizedAthleteName::new("  Adrien  ", "  Pelfresne  ");
         assert_eq!(name.database_first_name(), "Adrien");
         assert_eq!(name.database_last_name(), "Pelfresne");
     }
 
     #[test]
-    fn test_different_names_not_equal() {
+    fn distinguishes_different_names() {
         let name1 = NormalizedAthleteName::new("Adrien", "Pelfresne");
         let name2 = NormalizedAthleteName::new("Adrienne", "Pelfresne");
         assert_ne!(name1, name2);
@@ -135,14 +135,14 @@ mod tests {
     }
 
     #[test]
-    fn accents_do_not_split_a_person() {
+    fn ignores_accents_when_matching() {
         assert_eq!(match_name("Lea", "MERANDON"), match_name("Léa", "Mérandon"));
         assert_eq!(match_name("Joao", "Silva"), match_name("João", "Sílva"));
         assert_eq!(match_name("Muller", "X"), match_name("Müller", "X"));
     }
 
     #[test]
-    fn the_displayed_name_keeps_its_accents() {
+    fn preserves_display_accents() {
         let name = NormalizedAthleteName::new("Léa", "Mérandon");
         assert_eq!(name.database_first_name(), "Léa");
         assert_eq!(name.database_last_name(), "Mérandon");
@@ -150,7 +150,7 @@ mod tests {
     }
 
     #[test]
-    fn punctuation_does_not_split_a_person() {
+    fn ignores_punctuation_when_matching() {
         assert_eq!(
             match_name("Jean-Luc", "Picard"),
             match_name("Jean Luc", "Picard")
@@ -165,7 +165,7 @@ mod tests {
     }
 
     #[test]
-    fn different_people_still_differ() {
+    fn distinguishes_similar_names() {
         assert_ne!(
             match_name("Adrien", "Pelfresne"),
             match_name("Adrienne", "Pelfresne")
@@ -174,7 +174,7 @@ mod tests {
     }
 
     #[test]
-    fn non_latin_names_survive_folding() {
+    fn preserves_non_latin_scripts() {
         assert_eq!(match_name("Иван", "Петров"), "иван петров");
         assert_eq!(match_name("大輔", "田中"), "大輔 田中");
     }

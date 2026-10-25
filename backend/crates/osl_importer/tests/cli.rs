@@ -84,7 +84,7 @@ async fn snapshot(pool: &PgPool) -> Vec<String> {
 }
 
 #[test]
-fn dry_run_validates_files_without_a_database() {
+fn validates_dry_runs_without_database() {
     let workspace = Workspace::new();
     let directory = workspace.write(&fixture("meet", "Alpha"));
     let path = directory.to_str().unwrap();
@@ -101,7 +101,7 @@ fn dry_run_validates_files_without_a_database() {
 }
 
 #[test]
-fn missing_or_blank_sources_block_preparation_and_import() {
+fn rejects_missing_sources() {
     let workspace = Workspace::new();
     for canonical in [
         fixture("results", "Alpha"),
@@ -140,7 +140,7 @@ fn missing_or_blank_sources_block_preparation_and_import() {
 }
 
 #[test]
-fn removed_commands_and_flags_are_rejected() {
+fn rejects_removed_commands_and_flags() {
     let workspace = Workspace::new();
     for args in [
         vec!["fmt", "."],
@@ -156,7 +156,7 @@ fn removed_commands_and_flags_are_rejected() {
 }
 
 #[test]
-fn formatting_preview_and_check_leave_files_unchanged() {
+fn preserves_files_during_format_previews() {
     let workspace = Workspace::new();
     let directory = workspace.write(&fixture("meet", "Alpha"));
     let path = directory.join("competition.toml");
@@ -176,7 +176,7 @@ fn formatting_preview_and_check_leave_files_unchanged() {
 }
 
 #[test]
-fn optional_entry_headers_are_restored_without_changing_results() {
+fn restores_optional_headers_without_changing_results() {
     let workspace = Workspace::new();
     let mut canonical = fixture("meet", "Alpha");
     canonical.categories[0].athletes[0].first_name.clear();
@@ -225,7 +225,7 @@ fn optional_entry_headers_are_restored_without_changing_results() {
 }
 
 #[test]
-fn help_hides_credentials_and_redaction_validates_identity_options() {
+fn hides_credentials_and_checks_redaction_options() {
     let workspace = Workspace::new();
     let output = Command::new(env!("CARGO_BIN_EXE_import"))
         .current_dir(&workspace.0)
@@ -292,7 +292,7 @@ fn help_hides_credentials_and_redaction_validates_identity_options() {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn dry_run_and_invalid_inputs_cannot_import_or_prune(pool: PgPool) {
+async fn preserves_database_during_invalid_or_dry_runs(pool: PgPool) {
     let workspace = Workspace::new();
     common::import(&pool, fixture("kept", "Alpha")).await;
     common::import(&pool, fixture("removed", "Bravo")).await;
@@ -327,7 +327,7 @@ async fn dry_run_and_invalid_inputs_cannot_import_or_prune(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn competition_import_prunes_missing_results(pool: PgPool) {
+async fn prunes_missing_results_on_import(pool: PgPool) {
     let workspace = Workspace::new();
     common::import(&pool, fixture("removed", "Bravo")).await;
     workspace.write(&fixture("kept", "Alpha"));
@@ -340,7 +340,7 @@ async fn competition_import_prunes_missing_results(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn instagram_and_recompute_previews_leave_stored_data_unchanged(pool: PgPool) {
+async fn preserves_database_during_previews(pool: PgPool) {
     let workspace = Workspace::new();
     common::import(&pool, fixture("meet", "Alpha")).await;
     std::fs::write(
@@ -367,7 +367,7 @@ async fn instagram_and_recompute_previews_leave_stored_data_unchanged(pool: PgPo
 }
 
 #[test]
-fn preparation_stores_missing_totals_and_checks_are_read_only() {
+fn fills_missing_totals_during_preparation() {
     let workspace = Workspace::new();
     let directory = workspace.write(&fixture("meet", "Alpha"));
     let mut canonical = store::read(&directory).unwrap();
@@ -399,7 +399,7 @@ fn preparation_stores_missing_totals_and_checks_are_read_only() {
 }
 
 #[test]
-fn preparation_conflicts_block_every_file_in_the_batch() {
+fn preserves_batch_when_preparation_conflicts() {
     let workspace = Workspace::new();
     let first = workspace.write(&fixture("a-valid", "Alpha"));
     let second = workspace.write(&fixture("z-conflict", "Bravo"));
@@ -430,7 +430,7 @@ fn preparation_conflicts_block_every_file_in_the_batch() {
 }
 
 #[test]
-fn country_conflicts_stop_preparation_before_writing_any_file() {
+fn preserves_files_when_countries_conflict() {
     let workspace = Workspace::new();
     let first = workspace.write(&fixture("first", "Alpha"));
     let mut conflicting = fixture("second", "Alpha");

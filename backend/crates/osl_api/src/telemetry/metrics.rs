@@ -114,7 +114,7 @@ mod tests {
     use tower::ServiceExt;
 
     #[tokio::test]
-    async fn records_bounded_routes_status_and_latency() {
+    async fn records_bounded_request_metrics() {
         let recorder = PrometheusBuilder::new().build_recorder();
         let handle = recorder.handle();
         let _recorder = metrics::set_default_local_recorder(&recorder);
@@ -148,7 +148,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn application_router_records_request_metrics() {
+    async fn records_metrics_through_application_router() {
         let recorder = PrometheusBuilder::new().build_recorder();
         let handle = recorder.handle();
         let _recorder = metrics::set_default_local_recorder(&recorder);

@@ -81,7 +81,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn a_whole_name_folds_the_way_the_two_halves_do() {
+    fn normalizes_full_names() {
         assert_eq!(match_key("Léa MERANDON"), "lea merandon");
         assert_eq!(
             match_key("Adrien Pelfresne"),
@@ -90,17 +90,17 @@ mod tests {
     }
 
     #[test]
-    fn a_middle_name_stays_part_of_the_key() {
+    fn preserves_middle_names_in_keys() {
         assert_eq!(match_key("Jean Luc Picard"), match_key("Jean-Luc Picard"));
     }
 
     #[test]
-    fn different_people_do_not_collide() {
+    fn distinguishes_different_athletes() {
         assert_ne!(match_key("Tom Berthier"), match_key("Tom Bertier"));
     }
 
     #[test]
-    fn a_blank_column_matches_anything() {
+    fn matches_any_identity_when_filters_are_empty() {
         let query = AthleteQuery::new("Tony Nguyen", None, None, None);
 
         assert!(query.matches_parts("M", "FR", None));
@@ -108,7 +108,7 @@ mod tests {
     }
 
     #[test]
-    fn a_filled_column_narrows() {
+    fn applies_identity_filters() {
         let query = AthleteQuery::new("Tony Nguyen", None, Some("FR".into()), None);
 
         assert!(query.matches_parts("M", "FR", None));
@@ -122,7 +122,7 @@ mod tests {
     }
 
     #[test]
-    fn the_columns_narrow_together() {
+    fn combines_identity_filters() {
         let one = AthleteQuery::new("Tony Nguyen", Some("F".into()), Some("IT".into()), None);
 
         assert!(one.matches_parts("F", "IT", None));

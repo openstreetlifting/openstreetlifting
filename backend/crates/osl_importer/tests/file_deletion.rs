@@ -66,7 +66,7 @@ async fn last_names(pool: &PgPool) -> Vec<String> {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_competition_no_file_claims_is_deleted(pool: PgPool) {
+async fn deletes_unclaimed_competitions(pool: PgPool) {
     two_meets(&pool).await;
 
     let plan = CompetitionSync::new(&pool)
@@ -97,7 +97,7 @@ async fn a_competition_no_file_claims_is_deleted(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn an_athlete_left_with_no_result_goes_too(pool: PgPool) {
+async fn deletes_athletes_without_results(pool: PgPool) {
     two_meets(&pool).await;
 
     CompetitionSync::new(&pool)
@@ -113,7 +113,7 @@ async fn an_athlete_left_with_no_result_goes_too(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn reference_data_is_left_alone(pool: PgPool) {
+async fn preserves_reference_data(pool: PgPool) {
     two_meets(&pool).await;
 
     let movements = count(&pool, "SELECT COUNT(*) FROM movements").await;
@@ -137,7 +137,7 @@ async fn reference_data_is_left_alone(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn claiming_nothing_is_refused(pool: PgPool) {
+async fn rejects_empty_claim_sets(pool: PgPool) {
     two_meets(&pool).await;
 
     let refused = CompetitionSync::new(&pool).apply(&[]).await;
@@ -153,7 +153,7 @@ async fn claiming_nothing_is_refused(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_dry_run_reports_without_deleting(pool: PgPool) {
+async fn previews_deletions_without_writing(pool: PgPool) {
     two_meets(&pool).await;
 
     let plan = CompetitionSync::new(&pool)
@@ -177,7 +177,7 @@ async fn a_dry_run_reports_without_deleting(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_federation_left_with_no_competition_goes_too(pool: PgPool) {
+async fn deletes_federations_without_competitions(pool: PgPool) {
     import(
         &pool,
         competition("kept-competition", vec![athlete("Clara", "Clean")]),

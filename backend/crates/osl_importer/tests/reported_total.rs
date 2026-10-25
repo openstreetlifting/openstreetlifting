@@ -35,7 +35,7 @@ fn filter(movement: RankingMovement) -> RankingFilter {
 }
 
 #[test]
-fn totals_require_a_nonnegative_competed_result_and_accept_partial_breakdowns() {
+fn validates_reported_totals() {
     CanonicalValidator::validate(&source()).unwrap();
     let mut negative = source();
     negative.categories[0].athletes[0].total = Some(Decimal::NEGATIVE_ONE);
@@ -60,7 +60,7 @@ fn totals_require_a_nonnegative_competed_result_and_accept_partial_breakdowns() 
 }
 
 #[test]
-fn formatting_preserves_a_total_without_creating_lifts() {
+fn preserves_totals_without_inventing_lifts() {
     let directory = std::env::temp_dir().join(format!("osl-total-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir(&directory).unwrap();
     store::write(&directory, &source()).unwrap();
@@ -81,7 +81,7 @@ fn formatting_preserves_a_total_without_creating_lifts() {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn total_only_results_rank_and_score_without_movement_records(pool: PgPool) {
+async fn ranks_and_scores_total_only_results(pool: PgPool) {
     let mut canonical = source();
     let mut unknown_weight = common::athlete("Unknown", "Weight");
     unknown_weight.bodyweight = None;
@@ -184,7 +184,7 @@ async fn total_only_results_rank_and_score_without_movement_records(pool: PgPool
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn reimport_can_replace_a_total_with_lifts_and_back(pool: PgPool) {
+async fn replaces_totals_with_lifts_and_back(pool: PgPool) {
     common::import(&pool, source()).await;
     let mut breakdown = source();
     let athlete = &mut breakdown.categories[0].athletes[0];
@@ -219,7 +219,7 @@ async fn reimport_can_replace_a_total_with_lifts_and_back(pool: PgPool) {
 }
 
 #[test]
-fn preparation_fills_complete_totals_and_preserves_partial_source_totals() {
+fn fills_complete_totals_and_preserves_partial_totals() {
     use osl_importer::canonical::format::prepare;
     let mut canonical = source();
     let athlete = &mut canonical.categories[0].athletes[0];
@@ -249,7 +249,7 @@ fn preparation_fills_complete_totals_and_preserves_partial_source_totals() {
 }
 
 #[test]
-fn preparation_rejects_conflicts_without_replacing_the_total() {
+fn preserves_totals_when_evidence_conflicts() {
     use osl_importer::canonical::format::prepare;
     for total in [399, 401] {
         let mut canonical = source();
@@ -270,7 +270,7 @@ fn preparation_rejects_conflicts_without_replacing_the_total() {
 }
 
 #[test]
-fn preparation_uses_the_declared_event_and_counts_successful_zeroes() {
+fn calculates_totals_from_declared_events() {
     use osl_importer::canonical::format::prepare;
     let mut canonical = source();
     canonical.movements = vec![Movement::PullUp, Movement::Dips];
@@ -295,7 +295,7 @@ fn preparation_uses_the_declared_event_and_counts_successful_zeroes() {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn partial_breakdowns_never_become_totals_and_reimport_clears_scores(pool: PgPool) {
+async fn clears_scores_when_breakdowns_are_incomplete(pool: PgPool) {
     let mut canonical = source();
     canonical.categories[0].athletes[0] = common::best(
         canonical.categories[0].athletes[0].clone(),
@@ -344,7 +344,7 @@ async fn partial_breakdowns_never_become_totals_and_reimport_clears_scores(pool:
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn import_rejects_missing_or_conflicting_totals_before_changing_stored_results(pool: PgPool) {
+async fn rejects_invalid_totals_before_import(pool: PgPool) {
     use osl_importer::canonical::transformer::CanonicalTransformer;
     common::import(&pool, source()).await;
     for total in [None, Some(Decimal::from(399)), Some(Decimal::from(401))] {
@@ -372,7 +372,7 @@ async fn import_rejects_missing_or_conflicting_totals_before_changing_stored_res
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn total_migration_backfills_complete_results_and_removes_subtotal_scores(pool: PgPool) {
+async fn backfills_complete_totals_during_migration(pool: PgPool) {
     let complete = common::lifting(
         common::athlete("Complete", "Result"),
         ["0", "70", "110", "210"],
@@ -426,7 +426,7 @@ async fn total_migration_backfills_complete_results_and_removes_subtotal_scores(
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn classless_reported_scores_rank_without_inventing_totals(pool: PgPool) {
+async fn ranks_classless_reported_scores_without_totals(pool: PgPool) {
     let mut known = common::scored(common::athlete("Known", "Total"), "100");
     known.total = Some(Decimal::from(400));
     let unknown = common::scored(common::athlete("Unknown", "Total"), "100");

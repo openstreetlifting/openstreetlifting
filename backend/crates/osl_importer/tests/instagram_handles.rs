@@ -60,7 +60,7 @@ async fn attached(pool: &PgPool) -> Vec<(String, String)> {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_name_nobody_else_carries_needs_no_columns(pool: PgPool) {
+async fn resolves_unique_names_without_filters(pool: PgPool) {
     import(
         &pool,
         file("competition-one", vec![athlete("Léa", "Mérandon")]),
@@ -79,7 +79,7 @@ async fn a_name_nobody_else_carries_needs_no_columns(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_file_written_before_the_columns_existed_still_reads(pool: PgPool) {
+async fn accepts_legacy_files_without_identity_columns(pool: PgPool) {
     import(
         &pool,
         file("competition-one", vec![athlete("Léa", "Mérandon")]),
@@ -94,7 +94,7 @@ async fn a_file_written_before_the_columns_existed_still_reads(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_name_two_athletes_carry_is_refused_until_a_column_settles_it(pool: PgPool) {
+async fn requires_filters_when_names_are_ambiguous(pool: PgPool) {
     import(
         &pool,
         file(
@@ -135,7 +135,7 @@ async fn a_name_two_athletes_carry_is_refused_until_a_column_settles_it(pool: Pg
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn each_of_two_namesakes_can_hold_their_own_handle(pool: PgPool) {
+async fn attaches_separate_handles_to_namesakes(pool: PgPool) {
     import(
         &pool,
         file(
@@ -167,7 +167,7 @@ async fn each_of_two_namesakes_can_hold_their_own_handle(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_disambiguation_number_tells_two_athletes_of_one_country_apart(pool: PgPool) {
+async fn resolves_namesakes_by_disambiguation(pool: PgPool) {
     import(
         &pool,
         file(
@@ -199,7 +199,7 @@ async fn a_disambiguation_number_tells_two_athletes_of_one_country_apart(pool: P
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_column_that_matches_nobody_says_what_the_name_does_match(pool: PgPool) {
+async fn rejects_unmatched_identity_filters(pool: PgPool) {
     import(
         &pool,
         file("competition-one", vec![athlete("Tony", "Nguyen")]),
@@ -218,7 +218,7 @@ async fn a_column_that_matches_nobody_says_what_the_name_does_match(pool: PgPool
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn one_bad_row_holds_back_the_whole_file(pool: PgPool) {
+async fn preserves_database_when_any_row_is_invalid(pool: PgPool) {
     import(
         &pool,
         file(
@@ -246,7 +246,7 @@ async fn one_bad_row_holds_back_the_whole_file(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn checking_resolves_without_writing(pool: PgPool) {
+async fn resolves_handles_without_writing_when_checking(pool: PgPool) {
     import(
         &pool,
         file("competition-one", vec![athlete("Léa", "Mérandon")]),
@@ -267,7 +267,7 @@ async fn checking_resolves_without_writing(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn an_account_cannot_be_listed_against_two_athletes(pool: PgPool) {
+async fn rejects_accounts_shared_by_athletes(pool: PgPool) {
     import(
         &pool,
         file(
@@ -292,7 +292,7 @@ async fn an_account_cannot_be_listed_against_two_athletes(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn an_athlete_listed_twice_is_refused(pool: PgPool) {
+async fn rejects_duplicate_athlete_rows(pool: PgPool) {
     import(
         &pool,
         file("competition-one", vec![athlete("Léa", "Mérandon")]),
@@ -314,7 +314,7 @@ async fn an_athlete_listed_twice_is_refused(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn replacement_aliases_cannot_restore_a_handle(pool: PgPool) {
+async fn rejects_handles_for_redacted_aliases(pool: PgPool) {
     import(
         &pool,
         file("redacted", vec![athlete("", "Redacted Athlete #1")]),
@@ -332,7 +332,7 @@ async fn replacement_aliases_cannot_restore_a_handle(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn reimport_clears_identity_details_previously_attached_to_a_replacement(pool: PgPool) {
+async fn clears_redacted_identity_on_reimport(pool: PgPool) {
     let fixture = || file("redacted", vec![athlete("", "Redacted Athlete #1")]);
     import(&pool, fixture()).await;
     sqlx::query("UPDATE athletes SET native_name = 'Фикстур Альфа', native_script = 'cyrillic', profile_picture_url = 'https://example.com/fixture.jpg' WHERE match_key = 'redacted athlete 1'")
@@ -347,7 +347,7 @@ async fn reimport_clears_identity_details_previously_attached_to_a_replacement(p
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn direct_import_cannot_attach_a_native_name_to_a_replacement(pool: PgPool) {
+async fn rejects_native_names_for_redacted_aliases(pool: PgPool) {
     let mut replacement = athlete("", "Redacted Athlete #1");
     replacement.total = replacement.total_from_lifts(&[Movement::MuscleUp]);
     replacement.native_name = Some("Фикстур Альфа".into());

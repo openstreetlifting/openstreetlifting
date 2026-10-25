@@ -91,7 +91,7 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn a_mixed_category_cannot_select_a_ris_formula() {
+    async fn rejects_ris_for_mixed_categories() {
         let result = calculate_ris(JsonBody(ComputeRisRequest {
             bodyweight: 80.into(),
             total: 300.into(),

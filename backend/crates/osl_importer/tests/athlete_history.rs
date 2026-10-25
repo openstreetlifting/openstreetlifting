@@ -6,7 +6,7 @@ mod common;
 use common::{athlete, competition, disqualified, import, in_division, lifting, men_80};
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn history_provides_records_in_movement_order_and_counts_distinct_meets(pool: PgPool) {
+async fn orders_records_and_counts_distinct_competitions(pool: PgPool) {
     let lifter = || athlete("Alex", "Martin");
     import(
         &pool,
@@ -77,7 +77,7 @@ async fn history_provides_records_in_movement_order_and_counts_distinct_meets(po
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn bombed_and_uncontested_movements_do_not_create_records(pool: PgPool) {
+async fn excludes_bombed_and_uncontested_records(pool: PgPool) {
     let lifter = common::attempts(
         common::attempts(
             athlete("Partial", "Lifter"),

@@ -96,7 +96,7 @@ async fn enter(
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn classes_are_listed_lightest_first(pool: PgPool) {
+async fn lists_classes_lightest_first(pool: PgPool) {
     let competition = competition(&pool).await;
     enter(&pool, &competition, "M", Some(94), Some(101), None).await;
     enter(&pool, &competition, "M", None, Some(66), None).await;
@@ -112,7 +112,7 @@ async fn classes_are_listed_lightest_first(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn a_gender_only_sees_its_own_classes(pool: PgPool) {
+async fn filters_classes_by_gender(pool: PgPool) {
     let competition = competition(&pool).await;
     enter(&pool, &competition, "M", Some(73), Some(80), None).await;
     enter(&pool, &competition, "F", Some(63), Some(70), None).await;
@@ -136,7 +136,7 @@ async fn a_gender_only_sees_its_own_classes(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn one_class_run_by_two_divisions_is_listed_once(pool: PgPool) {
+async fn deduplicates_classes_across_divisions(pool: PgPool) {
     let competition = competition(&pool).await;
     enter(&pool, &competition, "M", Some(73), Some(80), Some("Elite")).await;
     enter(&pool, &competition, "M", Some(73), Some(80), Some("Open")).await;
@@ -150,7 +150,7 @@ async fn one_class_run_by_two_divisions_is_listed_once(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn a_competition_without_weight_classes_lists_none(pool: PgPool) {
+async fn returns_empty_list_when_classes_are_absent(pool: PgPool) {
     let competition = competition(&pool).await;
 
     let athlete_id: Uuid = sqlx::query_scalar(
@@ -182,7 +182,7 @@ async fn a_competition_without_weight_classes_lists_none(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn a_competition_narrows_the_list_to_what_it_contested(pool: PgPool) {
+async fn filters_classes_by_competition(pool: PgPool) {
     let competition = competition(&pool).await;
     enter(&pool, &competition, "M", Some(73), Some(80), None).await;
 

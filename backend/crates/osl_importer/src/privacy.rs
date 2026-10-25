@@ -387,7 +387,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn the_hash_hides_the_name() {
+    fn hides_names_in_hashes() {
         let hashed = hash_with("test-key", &match_key("Alina Riyaz"));
 
         assert_eq!(hashed.len(), 64);
@@ -396,7 +396,7 @@ mod tests {
     }
 
     #[test]
-    fn the_same_athlete_spelled_differently_hashes_the_same() {
+    fn normalizes_names_before_hashing() {
         assert_eq!(
             hash_with("test-key", &match_key("Léa Mérandon")),
             hash_with("test-key", &match_key("LEA MERANDON"))
@@ -404,7 +404,7 @@ mod tests {
     }
 
     #[test]
-    fn a_different_key_gives_a_different_hash() {
+    fn changes_hash_when_key_changes() {
         assert_ne!(
             hash_with("one", &match_key("Alina Riyaz")),
             hash_with("two", &match_key("Alina Riyaz"))
@@ -412,7 +412,7 @@ mod tests {
     }
 
     #[test]
-    fn different_people_do_not_collide() {
+    fn distinguishes_different_athletes() {
         assert_ne!(
             hash_with("test-key", &match_key("Tom Berthier")),
             hash_with("test-key", &match_key("Tom Bertier"))

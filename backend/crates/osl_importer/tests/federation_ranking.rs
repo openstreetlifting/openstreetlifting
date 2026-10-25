@@ -77,7 +77,7 @@ async fn placings(pool: &PgPool, filter: &RankingFilter) -> (Vec<(String, i64)>,
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn no_federation_ranks_everyone(pool: PgPool) {
+async fn ranks_all_athletes_when_federation_is_absent(pool: PgPool) {
     seed(&pool).await;
 
     let (placings, total) = placings(&pool, &filter(None)).await;
@@ -94,7 +94,7 @@ async fn no_federation_ranks_everyone(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_federation_ranks_only_its_own_athletes(pool: PgPool) {
+async fn filters_rankings_by_federation(pool: PgPool) {
     seed(&pool).await;
 
     let (placings, total) = placings(&pool, &filter(Some("FNSL"))).await;
@@ -107,7 +107,7 @@ async fn a_federation_ranks_only_its_own_athletes(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_federation_nobody_competed_under_ranks_nobody(pool: PgPool) {
+async fn returns_empty_rankings_when_federation_is_unknown(pool: PgPool) {
     seed(&pool).await;
 
     let (placings, total) = placings(&pool, &filter(Some("Unknown Federation"))).await;
@@ -117,7 +117,7 @@ async fn a_federation_nobody_competed_under_ranks_nobody(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_search_inside_a_federation_keeps_the_federation_place(pool: PgPool) {
+async fn preserves_federation_rank_when_searching(pool: PgPool) {
     seed(&pool).await;
 
     let searched = RankingFilter {
@@ -131,7 +131,7 @@ async fn a_search_inside_a_federation_keeps_the_federation_place(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_federation_list_holds_only_federations_with_results(pool: PgPool) {
+async fn lists_federations_with_results(pool: PgPool) {
     seed(&pool).await;
     let mut announced = common::announcement("upcoming-open");
     announced.competition.federation.name = "Announced Federation".to_string();
