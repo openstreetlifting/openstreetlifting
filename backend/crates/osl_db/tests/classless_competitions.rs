@@ -57,7 +57,7 @@ async fn enter(
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn a_participant_can_have_no_weight_class(pool: PgPool) {
+async fn accepts_participants_without_weight_classes(pool: PgPool) {
     let competition_id = competition(&pool).await;
     let athlete_id = athlete(&pool, "Memmer", "M").await;
 
@@ -76,7 +76,7 @@ async fn a_participant_can_have_no_weight_class(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn two_classless_lifters_share_one_competition(pool: PgPool) {
+async fn accepts_multiple_classless_participants(pool: PgPool) {
     let competition_id = competition(&pool).await;
     let first = athlete(&pool, "Memmer", "M").await;
     let second = athlete(&pool, "Topic", "M").await;
@@ -88,7 +88,7 @@ async fn two_classless_lifters_share_one_competition(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn the_same_lifter_cannot_enter_one_classless_contest_twice(pool: PgPool) {
+async fn rejects_duplicate_classless_entries(pool: PgPool) {
     let competition_id = competition(&pool).await;
     let athlete_id = athlete(&pool, "Memmer", "M").await;
 
@@ -104,7 +104,7 @@ async fn the_same_lifter_cannot_enter_one_classless_contest_twice(pool: PgPool) 
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn men_and_women_are_separate_contests(pool: PgPool) {
+async fn separates_classless_contests_by_gender(pool: PgPool) {
     let competition_id = competition(&pool).await;
     let man = athlete(&pool, "Memmer", "M").await;
     let woman = athlete(&pool, "Weber", "F").await;
@@ -134,7 +134,7 @@ async fn men_and_women_are_separate_contests(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn a_classless_contest_ranks_on_ris(pool: PgPool) {
+async fn ranks_classless_contests_by_ris(pool: PgPool) {
     let competition_id = competition(&pool).await;
     let lighter = athlete(&pool, "Topic", "M").await;
     let heavier = athlete(&pool, "Memmer", "M").await;

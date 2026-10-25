@@ -164,7 +164,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn the_committed_schema_is_current() {
+    fn matches_committed_openapi() {
         let committed = include_str!("../../../openapi.json");
 
         assert_eq!(
@@ -175,7 +175,7 @@ mod tests {
     }
 
     #[test]
-    fn list_endpoints_document_flat_query_pagination() {
+    fn documents_flat_query_pagination() {
         let schema = serde_json::to_value(ApiDoc::openapi()).unwrap();
         for path in [
             "/api/v1/athletes",
@@ -195,7 +195,7 @@ mod tests {
     }
 
     #[test]
-    fn competition_and_ranking_projections_have_distinct_schemas() {
+    fn separates_competition_and_ranking_schemas() {
         let schema = serde_json::to_value(ApiDoc::openapi()).unwrap();
         let schemas = &schema["components"]["schemas"];
         for field in ["federation", "athlete"] {

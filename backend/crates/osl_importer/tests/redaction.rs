@@ -126,7 +126,7 @@ fn redact(workspace: &Workspace, name: &str, country: Option<&str>) -> redact::R
 }
 
 #[test]
-fn the_name_goes_and_the_result_stays() {
+fn preserves_results_when_redacting() {
     let workspace = Workspace::new();
     let mut entry = lifter("Alina", "Riyaz");
     entry.native_name = Some("Алина Рияз".to_string());
@@ -153,7 +153,7 @@ fn the_name_goes_and_the_result_stays() {
 }
 
 #[test]
-fn the_file_no_longer_holds_the_name_anywhere() {
+fn removes_names_from_competition_files() {
     let workspace = Workspace::new();
     let directory = workspace.write_competition(&competition(
         "meet",
@@ -168,7 +168,7 @@ fn the_file_no_longer_holds_the_name_anywhere() {
 }
 
 #[test]
-fn a_name_that_names_two_people_is_refused() {
+fn rejects_ambiguous_athletes() {
     let workspace = Workspace::new();
     let directory = workspace.write_competition(&competition(
         "meet",
@@ -197,7 +197,7 @@ fn a_name_that_names_two_people_is_refused() {
 }
 
 #[test]
-fn narrowing_picks_the_one_that_was_meant() {
+fn selects_athletes_by_identity_filters() {
     let workspace = Workspace::new();
     let directory = workspace.write_competition(&competition(
         "meet",
@@ -226,7 +226,7 @@ fn narrowing_picks_the_one_that_was_meant() {
 }
 
 #[test]
-fn a_name_nobody_carries_is_refused() {
+fn rejects_unknown_athletes() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -251,7 +251,7 @@ fn a_name_nobody_carries_is_refused() {
 }
 
 #[test]
-fn every_competition_they_entered_is_rewritten() {
+fn rewrites_all_athlete_competitions() {
     let workspace = Workspace::new();
     let first = workspace.write_competition(&competition(
         "meet-one",
@@ -271,7 +271,7 @@ fn every_competition_they_entered_is_rewritten() {
 }
 
 #[test]
-fn the_handle_goes_with_the_name() {
+fn removes_redacted_handles() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -292,7 +292,7 @@ fn the_handle_goes_with_the_name() {
 }
 
 #[test]
-fn a_handle_for_someone_who_shares_the_name_is_left_alone() {
+fn preserves_handles_for_namesakes() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -315,7 +315,7 @@ fn a_handle_for_someone_who_shares_the_name_is_left_alone() {
 }
 
 #[test]
-fn a_later_competition_naming_them_is_refused() {
+fn rejects_reimport_of_redacted_names() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -336,7 +336,7 @@ fn a_later_competition_naming_them_is_refused() {
 }
 
 #[test]
-fn everybody_else_still_imports() {
+fn accepts_unaffected_athletes() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -350,7 +350,7 @@ fn everybody_else_still_imports() {
 }
 
 #[test]
-fn the_redaction_is_recorded_without_the_name() {
+fn records_suppression_without_names() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -369,7 +369,7 @@ fn the_redaction_is_recorded_without_the_name() {
 }
 
 #[test]
-fn the_list_recognises_the_name_it_cannot_show() {
+fn matches_suppressed_names() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -391,7 +391,7 @@ fn the_list_recognises_the_name_it_cannot_show() {
 }
 
 #[test]
-fn without_the_key_the_list_says_so_rather_than_passing() {
+fn reports_missing_privacy_keys() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -407,7 +407,7 @@ fn without_the_key_the_list_says_so_rather_than_passing() {
 }
 
 #[test]
-fn without_the_key_nothing_is_redacted() {
+fn rejects_redaction_when_key_is_missing() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -429,7 +429,7 @@ fn without_the_key_nothing_is_redacted() {
 }
 
 #[test]
-fn two_redactions_get_two_numbers() {
+fn allocates_distinct_redaction_ids() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -445,7 +445,7 @@ fn two_redactions_get_two_numbers() {
 }
 
 #[test]
-fn allocation_has_no_reserved_range() {
+fn allocates_ids_above_existing_maximum() {
     let workspace = Workspace::new();
     let mut list = workspace.list();
     list.append(privacy::PrivacyEntry {
@@ -466,7 +466,7 @@ fn allocation_has_no_reserved_range() {
 }
 
 #[test]
-fn a_returning_athlete_keeps_their_replacement_and_retry_is_a_noop() {
+fn reuses_redaction_ids_on_retry() {
     let workspace = Workspace::new();
     let first = workspace.write_competition(&competition(
         "first",
@@ -490,7 +490,7 @@ fn a_returning_athlete_keeps_their_replacement_and_retry_is_a_noop() {
 }
 
 #[test]
-fn missing_and_incorrect_keys_cannot_approve_an_import() {
+fn rejects_imports_without_verified_keys() {
     let workspace = Workspace::new();
     let original = competition("meet", vec![men_80(vec![lifter("Alina", "Riyaz")])]);
     workspace.write_competition(&original);
@@ -503,7 +503,7 @@ fn missing_and_incorrect_keys_cannot_approve_an_import() {
 }
 
 #[test]
-fn instagram_cleanup_respects_headers_and_preserves_remaining_columns() {
+fn preserves_columns_when_removing_handles() {
     for contents in [
         "Name,Instagram\nAlina Riyaz,alina\nSomeone Else,someone\n",
         "Instagram,Country,Name,Sex\nalina,fr,Alina Riyaz,m\nsomeone,FR,Someone Else,M\n",
@@ -527,7 +527,7 @@ fn instagram_cleanup_respects_headers_and_preserves_remaining_columns() {
 }
 
 #[test]
-fn malformed_handles_leave_competitions_and_suppression_untouched() {
+fn preserves_files_when_handles_are_invalid() {
     let workspace = Workspace::new();
     let directory = workspace.write_competition(&competition(
         "meet",
@@ -549,7 +549,7 @@ fn malformed_handles_leave_competitions_and_suppression_untouched() {
 }
 
 #[test]
-fn failure_to_record_suppression_does_not_rewrite_results_or_handles() {
+fn preserves_files_when_suppression_write_fails() {
     let workspace = Workspace::new();
     let directory = workspace.write_competition(&competition(
         "meet",
@@ -574,7 +574,7 @@ fn failure_to_record_suppression_does_not_rewrite_results_or_handles() {
 }
 
 #[test]
-fn an_interrupted_rewrite_can_resume_using_its_recorded_identity() {
+fn resumes_interrupted_redactions() {
     let workspace = Workspace::new();
     let first = workspace.write_competition(&competition(
         "first",
@@ -599,7 +599,7 @@ fn an_interrupted_rewrite_can_resume_using_its_recorded_identity() {
 }
 
 #[test]
-fn an_interruption_after_all_results_still_allows_handle_cleanup() {
+fn cleans_handles_when_rewrite_is_complete() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -614,7 +614,7 @@ fn an_interruption_after_all_results_still_allows_handle_cleanup() {
 }
 
 #[test]
-fn a_replacement_cannot_carry_a_native_name() {
+fn rejects_native_names_for_redacted_aliases() {
     let mut replacement = lifter("", "Redacted Athlete #1");
     replacement.native_name = Some("Фикстур Альфа".into());
     let canonical = competition("meet", vec![men_80(vec![replacement])]);
@@ -624,7 +624,7 @@ fn a_replacement_cannot_carry_a_native_name() {
 }
 
 #[test]
-fn equivalent_replacement_names_cannot_carry_social_handles() {
+fn rejects_handles_for_equivalent_redacted_aliases() {
     let workspace = Workspace::new();
     for name in [
         "Redacted Athlete #1",
@@ -641,7 +641,7 @@ fn equivalent_replacement_names_cannot_carry_social_handles() {
 }
 
 #[test]
-fn an_unnumbered_suppression_does_not_match_another_numbered_person() {
+fn separates_numbered_and_unnumbered_suppressions() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "meet",
@@ -656,7 +656,7 @@ fn an_unnumbered_suppression_does_not_match_another_numbered_person() {
 }
 
 #[test]
-fn the_last_available_id_does_not_overflow() {
+fn rejects_id_overflow() {
     let workspace = Workspace::new();
     let mut list = workspace.list();
     list.append(privacy::PrivacyEntry {
@@ -669,7 +669,7 @@ fn the_last_available_id_does_not_overflow() {
 }
 
 #[test]
-fn cli_requires_verified_key_and_only_allows_bypass_for_validation() {
+fn requires_privacy_key_except_for_validation() {
     let workspace = Workspace::new();
     let directory = workspace.write_competition(&competition(
         "meet",
@@ -729,7 +729,7 @@ fn cli_requires_verified_key_and_only_allows_bypass_for_validation() {
 }
 
 #[test]
-fn country_selection_redacts_unknown_entries_and_suppression_survives_corrections() {
+fn preserves_redaction_when_country_changes() {
     let workspace = Workspace::new();
     workspace.write_competition(&competition(
         "known",

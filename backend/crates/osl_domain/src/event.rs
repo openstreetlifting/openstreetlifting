@@ -37,43 +37,43 @@ mod tests {
     use super::*;
 
     #[test]
-    fn only_the_four_movement_event_supports_calculated_ris() {
+    fn supports_calculated_ris_for_full_events() {
         assert!(is_full_event(Some("MPDS")));
     }
 
     #[test]
-    fn a_partial_event_does_not() {
+    fn rejects_calculated_ris_for_partial_events() {
         for partial in ["M", "MP", "MPD", "PDS", "MPS"] {
             assert!(!is_full_event(Some(partial)), "{partial} is not full");
         }
     }
 
     #[test]
-    fn an_unknown_event_does_not() {
+    fn rejects_calculated_ris_for_unknown_events() {
         assert!(!is_full_event(None));
         assert!(!is_full_event(Some("SDPM")));
     }
 
     #[test]
-    fn the_full_event_is_every_movement() {
+    fn includes_all_movements_in_full_event() {
         let codes: String = Movement::ALL.iter().map(Movement::code).collect();
         assert_eq!(codes, FULL_EVENT);
         assert_eq!(movements(FULL_EVENT).unwrap(), Movement::ALL.to_vec());
     }
 
     #[test]
-    fn a_repeated_movement_is_rejected() {
+    fn rejects_repeated_movements() {
         assert!(movements("MM").is_err());
     }
 
     #[test]
-    fn an_out_of_order_event_is_rejected() {
+    fn rejects_out_of_order_movements() {
         assert!(movements("SDPM").is_err());
         assert!(movements("SP").is_err());
     }
 
     #[test]
-    fn a_letter_outside_the_four_is_rejected() {
+    fn rejects_unknown_movements() {
         assert!(movements("B").is_err());
     }
 }

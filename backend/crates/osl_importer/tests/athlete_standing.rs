@@ -63,7 +63,7 @@ fn metric(
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_place_comes_with_the_field_it_was_taken_in(pool: PgPool) {
+async fn returns_rank_and_field_size(pool: PgPool) {
     a_board(&pool).await;
 
     let standings = standings(&pool, "French").await;
@@ -74,7 +74,7 @@ async fn a_place_comes_with_the_field_it_was_taken_in(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_country_place_only_counts_that_country(pool: PgPool) {
+async fn ranks_within_country(pool: PgPool) {
     a_board(&pool).await;
     let standings = standings(&pool, "Italian").await;
     let italian = metric(&standings, RankingMovement::Ris);
@@ -89,7 +89,7 @@ async fn the_country_place_only_counts_that_country(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn every_ranking_metric_has_a_global_and_country_place(pool: PgPool) {
+async fn returns_standings_for_all_metrics(pool: PgPool) {
     a_board(&pool).await;
     let standings = standings(&pool, "Italian").await;
 
@@ -107,7 +107,7 @@ async fn every_ranking_metric_has_a_global_and_country_place(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_partial_event_only_ranks_its_movements(pool: PgPool) {
+async fn ranks_only_contested_movements(pool: PgPool) {
     let mut half: CanonicalFormat = common::competition(
         "half-event",
         vec![men_80(vec![two_lifts(athlete("No", "Score"))])],
@@ -153,7 +153,7 @@ async fn two_classes(pool: &PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn metric_places_only_compare_the_athletes_weight_class(pool: PgPool) {
+async fn ranks_metrics_within_weight_class(pool: PgPool) {
     two_classes(&pool).await;
     let heavier = standings(&pool, "French").await;
     let heavier_total = metric(&heavier, RankingMovement::Total);
@@ -178,7 +178,7 @@ async fn metric_places_only_compare_the_athletes_weight_class(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn metric_places_do_not_compare_men_and_women(pool: PgPool) {
+async fn separates_metric_standings_by_gender(pool: PgPool) {
     let mut woman = athlete("Strong", "Woman");
     woman.gender = Gender::F;
 
@@ -224,7 +224,7 @@ async fn metric_places_do_not_compare_men_and_women(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_class_place_only_counts_that_class(pool: PgPool) {
+async fn ranks_within_selected_class(pool: PgPool) {
     two_classes(&pool).await;
     let heavier = standings(&pool, "French").await;
     let heavier = metric(&heavier, RankingMovement::Total);
@@ -246,7 +246,7 @@ async fn a_class_place_only_counts_that_class(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_class_country_place_narrows_both_ways(pool: PgPool) {
+async fn ranks_within_selected_class_and_country(pool: PgPool) {
     two_classes(&pool).await;
 
     let italian = standings(&pool, "Italian").await;
@@ -261,7 +261,7 @@ async fn the_class_country_place_narrows_both_ways(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_class_counts_everyone_who_has_lifted_in_it(pool: PgPool) {
+async fn counts_all_athletes_in_class(pool: PgPool) {
     a_board(&pool).await;
     import(
         &pool,
@@ -303,7 +303,7 @@ async fn a_class_counts_everyone_who_has_lifted_in_it(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn tied_card_places_match_both_linked_leaderboards(pool: PgPool) {
+async fn matches_leaderboards_when_results_tie(pool: PgPool) {
     import(
         &pool,
         common::competition(
@@ -368,7 +368,7 @@ async fn tied_card_places_match_both_linked_leaderboards(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn equally_good_results_choose_the_latest_weight_class(pool: PgPool) {
+async fn uses_latest_class_when_results_tie(pool: PgPool) {
     let lifter = || lifting(athlete("Moving", "Class"), ["40", "60", "80", "120"]);
     import(
         &pool,

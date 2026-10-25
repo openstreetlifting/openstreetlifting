@@ -59,7 +59,7 @@ async fn two_years(pool: &PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_lifter_holds_one_place(pool: PgPool) {
+async fn ranks_each_athlete_once(pool: PgPool) {
     two_years(&pool).await;
 
     let (rows, total) = RankingRepository::new(&pool)
@@ -72,7 +72,7 @@ async fn a_lifter_holds_one_place(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_place_shown_is_their_best_on_the_ranked_column(pool: PgPool) {
+async fn ranks_athletes_by_best_result(pool: PgPool) {
     two_years(&pool).await;
     let repo = RankingRepository::new(&pool);
 
@@ -93,7 +93,7 @@ async fn the_place_shown_is_their_best_on_the_ranked_column(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_competition_still_lists_every_entry(pool: PgPool) {
+async fn preserves_all_competition_entries(pool: PgPool) {
     two_years(&pool).await;
 
     let id: Uuid = sqlx::query_scalar("SELECT competition_id FROM competitions WHERE slug = $1")

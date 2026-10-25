@@ -14,7 +14,7 @@ const POLICY: CachePolicy = CachePolicy {
 };
 
 #[tokio::test]
-async fn disabled_cache_always_loads_without_storing_a_snapshot() {
+async fn bypasses_cache_when_disabled() {
     let cache = Cache::new(false, POLICY);
     assert_eq!(
         cache.get_or_try_init(|| async { Ok::<_, ()>(1) }).await,
@@ -28,7 +28,7 @@ async fn disabled_cache_always_loads_without_storing_a_snapshot() {
 }
 
 #[tokio::test(start_paused = true)]
-async fn hits_reuse_the_snapshot_and_expiry_loads_updated_data() {
+async fn refreshes_when_snapshot_expires() {
     let cache = Cache::new(true, POLICY);
     assert_eq!(
         cache.get_or_try_init(|| async { Ok::<_, ()>(1) }).await,
@@ -47,7 +47,7 @@ async fn hits_reuse_the_snapshot_and_expiry_loads_updated_data() {
 }
 
 #[tokio::test(start_paused = true)]
-async fn ttl_starts_after_a_successful_load_not_before_it() {
+async fn starts_ttl_after_successful_load() {
     let cache = Cache::new(true, POLICY);
     cache
         .get_or_try_init(|| async {
@@ -63,7 +63,7 @@ async fn ttl_starts_after_a_successful_load_not_before_it() {
 }
 
 #[tokio::test(start_paused = true)]
-async fn concurrent_requests_share_one_successful_refresh_on_cold_start_and_expiry() {
+async fn shares_refresh_across_concurrent_requests() {
     let cache = Arc::new(Cache::new(true, POLICY));
     let calls = Arc::new(AtomicUsize::new(0));
     for round in 1..=2 {
@@ -90,7 +90,7 @@ async fn concurrent_requests_share_one_successful_refresh_on_cold_start_and_expi
 }
 
 #[tokio::test(start_paused = true)]
-async fn errors_are_not_cached_and_expired_values_are_not_returned_on_failure() {
+async fn propagates_errors_without_serving_stale_data() {
     let cache = Cache::new(true, POLICY);
     assert_eq!(
         cache
@@ -117,7 +117,7 @@ async fn errors_are_not_cached_and_expired_values_are_not_returned_on_failure() 
 }
 
 #[tokio::test]
-async fn a_cancelled_refresh_does_not_leave_the_cache_locked() {
+async fn unlocks_cache_when_refresh_is_cancelled() {
     let cache = Arc::new(Cache::new(true, POLICY));
     let started = Arc::new(Notify::new());
     let task = {
@@ -144,7 +144,7 @@ async fn a_cancelled_refresh_does_not_leave_the_cache_locked() {
 }
 
 #[tokio::test]
-async fn empty_successful_datasets_are_cached() {
+async fn caches_empty_results() {
     let cache = Cache::new(true, POLICY);
     let empty: Vec<u8> = Vec::new();
     assert_eq!(

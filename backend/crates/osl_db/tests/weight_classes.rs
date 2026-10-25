@@ -17,7 +17,7 @@ async fn insert(
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn the_standard_ladder_is_seeded(pool: PgPool) {
+async fn seeds_standard_classes(pool: PgPool) {
     let count: i64 =
         sqlx::query_scalar("SELECT COUNT(*) FROM weight_classes WHERE slug IS NOT NULL")
             .fetch_one(&pool)
@@ -27,23 +27,23 @@ async fn the_standard_ladder_is_seeded(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn the_same_bounds_cannot_be_inserted_twice(pool: PgPool) {
+async fn rejects_duplicate_bounds(pool: PgPool) {
     insert(&pool, "M", Some(75), Some(82)).await.unwrap();
     assert!(insert(&pool, "M", Some(75), Some(82)).await.is_err());
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn an_open_class_cannot_be_inserted_twice(pool: PgPool) {
+async fn rejects_duplicate_open_classes(pool: PgPool) {
     insert(&pool, "M", Some(120), None).await.unwrap();
     assert!(insert(&pool, "M", Some(120), None).await.is_err());
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn a_class_with_no_bound_is_rejected(pool: PgPool) {
+async fn rejects_classes_without_bounds(pool: PgPool) {
     assert!(insert(&pool, "M", None, None).await.is_err());
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn bounds_in_the_wrong_order_are_rejected(pool: PgPool) {
+async fn rejects_reversed_bounds(pool: PgPool) {
     assert!(insert(&pool, "M", Some(90), Some(80)).await.is_err());
 }

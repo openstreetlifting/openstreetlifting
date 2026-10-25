@@ -41,7 +41,7 @@ mod tests {
     use super::parse_cache_enabled;
 
     #[test]
-    fn cache_is_opt_in_and_invalid_settings_are_rejected() {
+    fn validates_cache_settings() {
         assert!(!parse_cache_enabled(None).unwrap());
         assert!(!parse_cache_enabled(Some("false")).unwrap());
         assert!(parse_cache_enabled(Some("true")).unwrap());

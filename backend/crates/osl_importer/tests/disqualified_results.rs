@@ -56,7 +56,7 @@ fn absent() -> AthleteData {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_disqualified_lifter_takes_no_place(pool: PgPool) {
+async fn omits_rank_when_disqualified(pool: PgPool) {
     import(
         &pool,
         competition(
@@ -85,7 +85,7 @@ async fn a_disqualified_lifter_takes_no_place(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_disqualified_result_reaches_no_board(pool: PgPool) {
+async fn excludes_disqualified_results_from_rankings(pool: PgPool) {
     import(
         &pool,
         competition(
@@ -108,7 +108,7 @@ async fn a_disqualified_result_reaches_no_board(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_disqualified_lift_is_not_a_personal_record(pool: PgPool) {
+async fn excludes_disqualified_lifts_from_records(pool: PgPool) {
     import(
         &pool,
         competition("test-competition", vec![men_80(vec![disqualified()])]),
@@ -132,7 +132,7 @@ async fn a_disqualified_lift_is_not_a_personal_record(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn somebody_who_never_lifted_has_no_total(pool: PgPool) {
+async fn omits_total_when_no_lifts_succeed(pool: PgPool) {
     import(
         &pool,
         competition("test-competition", vec![men_80(vec![clean(), absent()])]),

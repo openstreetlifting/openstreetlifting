@@ -186,7 +186,7 @@ mod tests {
     }
 
     #[test]
-    fn a_plainly_written_name_passes() {
+    fn accepts_valid_names() {
         for (first, last) in [
             ("Adrien", "Pelfresne"),
             ("Anne-Sophie", "Gherardi"),
@@ -207,34 +207,34 @@ mod tests {
     }
 
     #[test]
-    fn capitals_a_machine_cannot_restore_are_refused() {
+    fn rejects_all_caps_surnames() {
         assert!(problems("Alexis", "GITTON").contains("in capitals"));
         assert!(problems("Camille", "BOUVOT GINHOUX").contains("in capitals"));
         assert!(problems("José", "D'ALMEIDA").contains("in capitals"));
     }
 
     #[test]
-    fn intercaps_are_a_spelling_not_a_mistake() {
+    fn accepts_internal_capitals() {
         assert_eq!(check_name("Andrea", "DeFrancesco"), [] as [String; 0]);
         assert_eq!(check_name("Sean", "McDonald"), [] as [String; 0]);
         assert_eq!(check_name("Larodrick", "LaRue"), [] as [String; 0]);
     }
 
     #[test]
-    fn every_word_starts_capitalized() {
+    fn requires_capitalized_words() {
         assert!(problems("antoine", "auvray").contains("'antoine' capitalized"));
         assert!(problems("Mateo", "Moure losada").contains("'losada' capitalized"));
     }
 
     #[test]
-    fn both_halves_of_a_hyphenated_name_are_capitalized() {
+    fn requires_capitalized_hyphenated_names() {
         assert!(problems("Jean-rodrigue", "Perle").contains("'Jean-rodrigue' capitalized"));
         assert!(problems("Lea", "Goutte-toquet").contains("'Goutte-toquet' capitalized"));
         assert_eq!(check_name("Jean-Rodrigue", "Perle"), [] as [String; 0]);
     }
 
     #[test]
-    fn particles_keep_their_place_but_not_the_front() {
+    fn accepts_lowercase_particles_except_at_start() {
         assert_eq!(check_name("Martina", "de Iturbe"), [] as [String; 0]);
         assert_eq!(check_name("Franck", "da Silva"), [] as [String; 0]);
         assert_eq!(check_name("Kevin", "van der Berg"), [] as [String; 0]);
@@ -242,13 +242,13 @@ mod tests {
     }
 
     #[test]
-    fn a_french_particle_hides_the_capital_behind_it() {
+    fn requires_capitals_after_french_particles() {
         assert_eq!(check_name("José", "d'Almeida"), [] as [String; 0]);
         assert!(problems("José", "d'almeida").contains("'d'almeida' capitalized"));
     }
 
     #[test]
-    fn styled_letters_are_rewritten_to_plain_ones() {
+    fn rejects_styled_letters() {
         let flagged = problems("𝐉𝐨𝐡𝐧", "Smith");
         assert!(flagged.contains("styled or full-width"), "{flagged}");
         assert!(flagged.contains("John Smith"), "{flagged}");
@@ -256,7 +256,7 @@ mod tests {
     }
 
     #[test]
-    fn formatting_that_is_not_a_name_is_refused() {
+    fn rejects_non_name_characters() {
         assert!(problems("", "uki_citywalker").contains("'_'"));
         assert!(problems("Kevin", "Smith 💪").contains("'💪'"));
         assert!(problems("Kevin", "Smith (SWE)").contains("'('"));
@@ -265,12 +265,12 @@ mod tests {
     }
 
     #[test]
-    fn nicknames_are_not_part_of_the_name() {
+    fn rejects_nicknames() {
         assert!(problems("Loan", "'Seraf' Bernard-Bodier").contains("nickname"));
     }
 
     #[test]
-    fn a_name_in_another_alphabet_belongs_in_the_native_column() {
+    fn requires_native_names_for_non_latin_scripts() {
         let flagged = problems("", "Радован Репац");
         assert!(flagged.contains("written in cyrillic"), "{flagged}");
         assert!(flagged.contains("NativeName"), "{flagged}");
@@ -279,7 +279,7 @@ mod tests {
     }
 
     #[test]
-    fn the_native_name_holds_only_its_own_alphabet() {
+    fn validates_native_name_scripts() {
         assert_eq!(check_native_name("Радован Репац"), [] as [String; 0]);
         assert_eq!(check_native_name("조정우"), [] as [String; 0]);
         assert_eq!(check_native_name(""), [] as [String; 0]);
@@ -297,32 +297,32 @@ mod tests {
     }
 
     #[test]
-    fn initials_keep_their_capitals() {
+    fn accepts_capitalized_initials() {
         assert_eq!(check_name("S.E.M", "Visser"), [] as [String; 0]);
         assert_eq!(check_name("Émilie", "L"), [] as [String; 0]);
     }
 
     #[test]
-    fn suffixes_are_written_without_a_period() {
+    fn rejects_suffix_periods() {
         assert!(problems("Thomas", "Spigner Jr.").contains("ends with a period"));
         assert!(problems("Jr", "Thomas Spigner").contains("moved to the end"));
     }
 
     #[test]
-    fn an_athlete_with_one_name_is_checked_on_that_name() {
+    fn validates_single_names() {
         assert_eq!(check_name("", "Darkhan"), [] as [String; 0]);
         assert!(problems("", "svon").contains("'svon' capitalized"));
         assert!(problems("", "").contains("no name"));
     }
 
     #[test]
-    fn a_redacted_athlete_is_allowed_its_number() {
+    fn accepts_numbered_redacted_names() {
         assert_eq!(check_name("", "Redacted Athlete #1"), [] as [String; 0]);
         assert_eq!(check_name("", "Redacted Athlete #9001"), [] as [String; 0]);
     }
 
     #[test]
-    fn the_exemption_reaches_no_further_than_the_stand_in() {
+    fn rejects_invalid_redaction_aliases() {
         assert!(problems("", "Redacted Athlete #07").contains("'0'"));
         assert!(problems("", "Redacted Athlete 7").contains("'7'"));
         assert!(problems("Kevin", "Smith2").contains("'2'"));

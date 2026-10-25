@@ -63,7 +63,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn absent_include_is_empty() {
+    fn returns_empty_includes_when_absent() {
         let include = Include::parse("");
         assert!(!include.has("competitions"));
         assert!(include.validate(&["competitions"]).is_ok());
@@ -85,7 +85,7 @@ mod tests {
     }
 
     #[test]
-    fn empty_segments_are_dropped() {
+    fn ignores_empty_segments() {
         let include = Include::parse(",,competitions,");
         assert!(include.has("competitions"));
         assert!(include.validate(&["competitions"]).is_ok());

@@ -64,7 +64,7 @@ fn two_lifters() -> Vec<AthleteData> {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_reimport_of_the_same_file_changes_nothing(pool: PgPool) {
+async fn preserves_results_on_identical_reimport(pool: PgPool) {
     import(&pool, file("test-competition", two_lifters())).await;
     let before = participant_count(&pool).await;
 
@@ -76,7 +76,7 @@ async fn a_reimport_of_the_same_file_changes_nothing(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn an_athlete_dropped_from_the_file_loses_their_participation(pool: PgPool) {
+async fn removes_participation_when_athlete_is_dropped(pool: PgPool) {
     import(&pool, file("test-competition", two_lifters())).await;
     assert_eq!(participant_count(&pool).await, 2);
 
@@ -97,7 +97,7 @@ async fn an_athlete_dropped_from_the_file_loses_their_participation(pool: PgPool
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_lift_dropped_from_the_file_is_removed(pool: PgPool) {
+async fn removes_lifts_when_dropped_from_source(pool: PgPool) {
     let both = vec![athlete(
         "Ada",
         "Lovelace",
@@ -121,7 +121,7 @@ async fn a_lift_dropped_from_the_file_is_removed(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn an_attempt_dropped_from_the_file_is_removed(pool: PgPool) {
+async fn removes_attempts_when_dropped_from_source(pool: PgPool) {
     let three = vec![athlete(
         "Ada",
         "Lovelace",
@@ -146,7 +146,7 @@ async fn an_attempt_dropped_from_the_file_is_removed(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn pruning_one_competition_leaves_the_others_alone(pool: PgPool) {
+async fn preserves_other_competitions_when_pruning(pool: PgPool) {
     import(&pool, file("first-competition", two_lifters())).await;
     import(&pool, file("second-competition", two_lifters())).await;
     assert_eq!(participant_count(&pool).await, 4);
@@ -176,7 +176,7 @@ async fn pruning_one_competition_leaves_the_others_alone(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_movement_dropped_from_the_file_is_removed(pool: PgPool) {
+async fn removes_movements_when_dropped_from_source(pool: PgPool) {
     import(&pool, file("test-competition", two_lifters())).await;
     assert_eq!(
         count(&pool, "SELECT COUNT(*) FROM competition_movements").await,
@@ -220,7 +220,7 @@ fn full_event_file(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_dropped_participant_takes_its_score(pool: PgPool) {
+async fn removes_scores_when_participants_are_dropped(pool: PgPool) {
     import(
         &pool,
         full_event_file("test-competition", two_lifters_full_event()),

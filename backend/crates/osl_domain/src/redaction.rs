@@ -93,7 +93,7 @@ mod tests {
     use crate::slugify;
 
     #[test]
-    fn a_stand_in_survives_being_written_and_read_back() {
+    fn round_trips_redacted_names() {
         for id in [1, 2, 9, 10, 143, 9001, 99_999] {
             let athlete = RedactedAthlete::new(id).unwrap();
             assert_eq!(RedactedAthlete::parse(&athlete.to_string()), Some(athlete));
@@ -101,13 +101,13 @@ mod tests {
     }
 
     #[test]
-    fn the_numbering_starts_at_one() {
+    fn rejects_zero_ids() {
         assert!(RedactedAthlete::new(0).is_none());
         assert!(RedactedAthlete::parse("Redacted Athlete #0").is_none());
     }
 
     #[test]
-    fn only_one_spelling_is_a_stand_in() {
+    fn accepts_only_canonical_redacted_names() {
         for spelling in [
             "Redacted Athlete #07",
             "Redacted Athlete #+7",
@@ -128,7 +128,7 @@ mod tests {
     }
 
     #[test]
-    fn a_real_name_is_never_a_stand_in() {
+    fn rejects_real_names() {
         for (first, last) in [
             ("Adrien", "Pelfresne"),
             ("Anne-Sophie", "Gherardi"),
@@ -140,7 +140,7 @@ mod tests {
     }
 
     #[test]
-    fn the_number_reaches_the_url() {
+    fn includes_id_in_slug() {
         let athlete = RedactedAthlete::new(7).unwrap();
         let name = NormalizedAthleteName::new("", athlete.last_name());
 
@@ -149,7 +149,7 @@ mod tests {
     }
 
     #[test]
-    fn two_stand_ins_are_two_athletes() {
+    fn distinguishes_redacted_athletes() {
         let first = NormalizedAthleteName::new("", RedactedAthlete::new(1).unwrap().last_name());
         let second = NormalizedAthleteName::new("", RedactedAthlete::new(2).unwrap().last_name());
 

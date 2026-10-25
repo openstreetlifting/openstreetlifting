@@ -7,7 +7,7 @@ mod common;
 use common::{announcement, athlete, competition, lifting, men_80};
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn an_announcement_imports_without_results(pool: PgPool) {
+async fn imports_announcements_without_results(pool: PgPool) {
     common::import(&pool, announcement("test-open")).await;
 
     let row =
@@ -22,7 +22,7 @@ async fn an_announcement_imports_without_results(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn results_fill_in_the_announced_competition(pool: PgPool) {
+async fn updates_announcements_when_results_arrive(pool: PgPool) {
     common::import(&pool, announcement("test-open")).await;
     let announced = competition_id(&pool).await;
 

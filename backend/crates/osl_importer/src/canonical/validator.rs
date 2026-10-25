@@ -535,24 +535,24 @@ mod tests {
     }
 
     #[test]
-    fn accepts_a_well_formed_file() {
+    fn accepts_valid_results() {
         assert!(CanonicalValidator::validate(&completed()).is_ok());
     }
 
     #[test]
-    fn accepts_results_while_a_competition_is_in_progress() {
+    fn accepts_live_results() {
         let mut canonical = completed();
         canonical.competition.status = Some(CompetitionStatus::Live);
         assert!(CanonicalValidator::validate(&canonical).is_ok());
     }
 
     #[test]
-    fn accepts_an_announcement() {
+    fn accepts_valid_announcements() {
         assert!(CanonicalValidator::validate(&announced()).is_ok());
     }
 
     #[test]
-    fn a_federation_name_that_slugifies_to_nothing_is_rejected() {
+    fn rejects_unsluggable_federation_names() {
         let mut canonical = completed();
         canonical.competition.federation.name = "---".to_string();
 
@@ -563,49 +563,49 @@ mod tests {
     }
 
     #[test]
-    fn an_end_date_before_the_start_is_rejected() {
+    fn rejects_end_dates_before_start_dates() {
         let mut canonical = completed();
         canonical.competition.end_date = NaiveDate::from_ymd_opt(2025, 12, 31).unwrap();
         assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
-    fn an_announcement_without_an_upcoming_status_is_rejected() {
+    fn rejects_announcements_when_status_is_not_upcoming() {
         let mut canonical = announced();
         canonical.competition.status = Some(CompetitionStatus::Completed);
         assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
-    fn an_announcement_without_any_status_is_rejected() {
+    fn rejects_announcements_when_status_is_absent() {
         let mut canonical = announced();
         canonical.competition.status = None;
         assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
-    fn results_under_an_upcoming_status_are_rejected() {
+    fn rejects_results_when_status_is_upcoming() {
         let mut canonical = completed();
         canonical.competition.status = Some(CompetitionStatus::Upcoming);
         assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
-    fn results_without_an_event_are_rejected() {
+    fn rejects_results_when_event_is_absent() {
         let mut canonical = completed();
         canonical.movements.clear();
         assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
-    fn an_announcement_may_omit_its_event() {
+    fn accepts_announcements_without_events() {
         let mut canonical = announced();
         canonical.movements.clear();
         assert!(CanonicalValidator::validate(&canonical).is_ok());
     }
 
     #[test]
-    fn published_bodyweight_and_ris_without_an_edition_warns() {
+    fn warns_when_source_edition_is_absent() {
         let mut canonical = completed();
         canonical.movements = Movement::ALL.to_vec();
         canonical.categories[0].athletes[0].reported_ris = Some(Decimal::from(90));
@@ -619,7 +619,7 @@ mod tests {
     }
 
     #[test]
-    fn neither_bodyweight_nor_ris_only_warns() {
+    fn warns_when_bodyweight_and_ris_are_absent() {
         let mut canonical = completed();
         canonical.categories[0].athletes[0].bodyweight = None;
 
@@ -628,14 +628,14 @@ mod tests {
     }
 
     #[test]
-    fn a_disambiguation_below_one_is_rejected() {
+    fn rejects_nonpositive_disambiguation() {
         let mut canonical = completed();
         canonical.categories[0].athletes[0].disambiguation = Some(0);
         assert!(CanonicalValidator::validate(&canonical).is_err());
     }
 
     #[test]
-    fn the_same_athlete_twice_in_one_category_is_rejected() {
+    fn rejects_duplicate_category_entries() {
         let mut canonical = completed();
         canonical.categories[0]
             .athletes
@@ -644,7 +644,7 @@ mod tests {
     }
 
     #[test]
-    fn the_same_athlete_in_two_categories_only_warns() {
+    fn warns_when_athlete_enters_multiple_categories() {
         let mut canonical = completed();
         let mut second = canonical.categories[0].clone();
         second.weight_class_slug = Some(WeightClassSlug::M87);
@@ -655,7 +655,7 @@ mod tests {
     }
 
     #[test]
-    fn the_same_athlete_in_two_divisions_only_warns() {
+    fn warns_when_athlete_enters_multiple_divisions() {
         let mut canonical = completed();
         canonical.categories[0].division = Some("Elite".to_string());
 
@@ -668,12 +668,12 @@ mod tests {
     }
 
     #[test]
-    fn a_meet_with_no_divisions_is_fine() {
+    fn accepts_competitions_without_divisions() {
         assert!(CanonicalValidator::validate(&completed()).is_ok());
     }
 
     #[test]
-    fn an_entry_without_a_division_in_a_divisioned_meet_is_rejected() {
+    fn requires_divisions_when_competition_uses_them() {
         let mut canonical = completed();
         canonical.categories[0].division = Some("Elite".to_string());
 
@@ -689,7 +689,7 @@ mod tests {
     }
 
     #[test]
-    fn divisions_differing_only_in_case_are_rejected() {
+    fn rejects_case_variant_divisions() {
         let mut canonical = completed();
         canonical.categories[0].division = Some("Elite".to_string());
 
@@ -705,7 +705,7 @@ mod tests {
     }
 
     #[test]
-    fn two_real_divisions_are_accepted() {
+    fn accepts_distinct_divisions() {
         let mut canonical = completed();
         canonical.categories[0].division = Some("Elite".to_string());
 
@@ -718,7 +718,7 @@ mod tests {
     }
 
     #[test]
-    fn a_negative_best_lift_is_rejected() {
+    fn rejects_negative_best_lifts() {
         let mut canonical = completed();
         canonical.categories[0].athletes[0].lifts[0].attempts = None;
         canonical.categories[0].athletes[0].lifts[0].best_lift = Some(Decimal::from(-10));
@@ -726,7 +726,7 @@ mod tests {
     }
 
     #[test]
-    fn a_bombed_movement_left_as_competed_is_rejected() {
+    fn rejects_bombed_results_when_status_is_competed() {
         let mut canonical = completed();
         canonical.categories[0].athletes[0].lifts[0].attempts = Some(vec![AttemptData {
             attempt_number: 1,
@@ -737,7 +737,7 @@ mod tests {
     }
 
     #[test]
-    fn a_bombed_movement_is_accepted_once_disqualified() {
+    fn accepts_bombed_results_when_disqualified() {
         let mut canonical = completed();
         canonical.categories[0].athletes[0].status = AthleteStatus::Disqualified;
         canonical.categories[0].athletes[0].total = None;

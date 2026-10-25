@@ -592,7 +592,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn a_bound_is_read_off_the_suffix() {
+    fn parses_weight_class_bounds() {
         assert_eq!(parse_weight_class("80"), Ok(WeightClass::UpTo(80.into())));
         assert_eq!(
             parse_weight_class("101+"),
@@ -601,7 +601,7 @@ mod tests {
     }
 
     #[test]
-    fn a_bound_of_zero_or_less_is_refused() {
+    fn rejects_nonpositive_class_bounds() {
         // `0+` reads as a class open at the bottom, which the database has no row for.
         assert!(parse_weight_class("0+").is_err());
         assert!(parse_weight_class("0").is_err());
@@ -609,7 +609,7 @@ mod tests {
     }
 
     #[test]
-    fn anything_that_is_not_a_number_is_refused() {
+    fn rejects_nonnumeric_classes() {
         assert!(parse_weight_class("D/C").is_err());
         assert!(parse_weight_class("").is_err());
     }
@@ -642,7 +642,7 @@ mod tests {
     ];
 
     #[test]
-    fn a_file_without_the_class_column_reads_no_class() {
+    fn returns_none_when_class_header_is_absent() {
         let mut cells = NAMED.to_vec();
         cells.push((entries::REPORTED_RIS, "84.66"));
 
@@ -652,7 +652,7 @@ mod tests {
     }
 
     #[test]
-    fn an_empty_class_cell_reads_as_an_unclassed_contest() {
+    fn returns_none_when_class_cell_is_empty() {
         let layout = entries::Layout {
             mixed: false,
             classed: true,
@@ -665,7 +665,7 @@ mod tests {
     }
 
     #[test]
-    fn a_classless_category_renders_without_the_column() {
+    fn omits_class_columns_when_rendering_classless_contests() {
         assert_eq!(
             weight_class_cell(&CategoryData {
                 division: None,

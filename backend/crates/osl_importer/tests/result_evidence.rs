@@ -8,7 +8,7 @@ use sqlx::PgPool;
 mod common;
 
 #[test]
-fn disqualification_does_not_allow_invalid_lift_evidence() {
+fn rejects_invalid_evidence_when_disqualified() {
     for (number, weight, best) in [
         (0, "10", None),
         (4, "10", None),
@@ -36,7 +36,7 @@ fn disqualification_does_not_allow_invalid_lift_evidence() {
 }
 
 #[test]
-fn a_no_show_may_keep_a_published_zero_but_cannot_have_a_positive_score() {
+fn accepts_only_zero_scores_for_no_shows() {
     for (score, valid) in [(None, true), (Some("0"), true), (Some("1"), false)] {
         let mut athlete = common::no_show(common::athlete("Absent", "Lifter"), None);
         athlete.reported_ris = score.map(common::decimal);
@@ -52,7 +52,7 @@ fn a_no_show_may_keep_a_published_zero_but_cannot_have_a_positive_score() {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn partial_results_keep_reported_ris_even_when_bodyweight_is_known(pool: PgPool) {
+async fn preserves_reported_ris_for_partial_results(pool: PgPool) {
     let mut athlete = common::athlete("Partial", "Result");
     athlete.reported_ris = Some(common::decimal("72.3"));
     athlete = common::best(athlete, Movement::PullUp, "60");
@@ -76,7 +76,7 @@ async fn partial_results_keep_reported_ris_even_when_bodyweight_is_known(pool: P
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn disqualified_published_scores_are_preserved_without_a_ranking_score(pool: PgPool) {
+async fn preserves_disqualified_scores_without_ranking_them(pool: PgPool) {
     let mut athlete = common::athlete("Disqualified", "Result");
     athlete.bodyweight = None;
     athlete.status = AthleteStatus::Disqualified;

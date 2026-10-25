@@ -159,7 +159,7 @@ mod tests {
     use crate::shared::filters::RankedGender;
 
     #[test]
-    fn page_counts_round_up_and_preserve_the_response_limit() {
+    fn rounds_up_page_counts() {
         for (total_items, page_size, expected_pages) in [
             (0, 50, 0),
             (50, 50, 1),
@@ -174,7 +174,7 @@ mod tests {
     }
 
     #[test]
-    fn large_page_numbers_keep_the_full_database_offset() {
+    fn preserves_large_pagination_offsets() {
         let pagination = PaginationParams {
             page: u32::MAX,
             page_size: 100,
@@ -192,7 +192,7 @@ mod tests {
     }
 
     #[test]
-    fn ris_requests_keep_lenient_gender_parsing() {
+    fn parses_lenient_request_genders() {
         for (raw, expected) in [(" f ", Gender::F), ("m", Gender::M), (" mx ", Gender::Mx)] {
             let request: ComputeRisRequest = serde_json::from_value(json!({
                 "bodyweight": "60", "total": "200", "gender": raw
@@ -217,7 +217,7 @@ mod tests {
     }
 
     #[test]
-    fn optional_query_enums_keep_lenient_and_absent_inputs() {
+    fn parses_optional_query_enums() {
         let query = Query::<CompetitionListQuery>::try_from_uri(
             &"/competitions?status=%20COMPLETED%20".parse().unwrap(),
         )
@@ -264,7 +264,7 @@ mod tests {
     }
 
     #[test]
-    fn ranking_gender_parses_contest_sex_and_requires_a_competition_for_mixed() {
+    fn requires_competition_when_gender_is_mixed() {
         for (raw, expected) in [
             ("%20m%20", RankedGender::M),
             ("f", RankedGender::F),

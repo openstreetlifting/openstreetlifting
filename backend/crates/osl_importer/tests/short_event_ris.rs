@@ -40,7 +40,7 @@ fn underground() -> CanonicalFormat {
 }
 
 #[test]
-fn shorter_ris_events_require_no_weight_classes_in_the_entire_meet() {
+fn rejects_weight_classes_for_short_ris_events() {
     for movements in [
         vec![Movement::Squat],
         vec![Movement::PullUp, Movement::Dips],
@@ -71,7 +71,7 @@ fn shorter_ris_events_require_no_weight_classes_in_the_entire_meet() {
 }
 
 #[test]
-fn shorter_ris_events_allow_sex_and_division_groups_and_warn_about_missing_scores() {
+fn accepts_grouped_short_ris_events() {
     let mut canonical = underground();
     let mut women = canonical.categories[0].clone();
     women.gender = Gender::F;
@@ -93,7 +93,7 @@ fn shorter_ris_events_allow_sex_and_division_groups_and_warn_about_missing_score
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn published_short_event_scores_decide_placings_and_survive_recomputation(pool: PgPool) {
+async fn preserves_reported_scores_when_recomputing_short_events(pool: PgPool) {
     let canonical = underground();
     CanonicalValidator::validate(&canonical).unwrap();
     common::import(&pool, canonical).await;
@@ -141,7 +141,7 @@ async fn published_short_event_scores_decide_placings_and_survive_recomputation(
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn shorter_event_scores_stay_out_of_all4_rankings_and_profile_standings(pool: PgPool) {
+async fn excludes_short_events_from_full_event_standings(pool: PgPool) {
     common::import(&pool, underground()).await;
     let repository = RankingRepository::new(&pool);
     let mut filter = RankingFilter {
@@ -178,7 +178,7 @@ async fn shorter_event_scores_stay_out_of_all4_rankings_and_profile_standings(po
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn shorter_scores_require_explicit_ris_scoring_and_are_cleared_on_correction(pool: PgPool) {
+async fn clears_short_scores_when_scoring_changes(pool: PgPool) {
     common::import(&pool, underground()).await;
     let mut canonical = underground();
     canonical.competition.scoring = Some(Scoring::Total);

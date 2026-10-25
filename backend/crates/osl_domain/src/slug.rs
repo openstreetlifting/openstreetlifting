@@ -27,19 +27,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn accents_and_case_are_folded() {
+    fn normalizes_accents_and_case() {
         assert_eq!(slugify("Fédération"), "federation");
         assert_eq!(slugify("FNSL"), "fnsl");
     }
 
     #[test]
-    fn runs_of_punctuation_collapse_to_one_hyphen() {
+    fn collapses_punctuation_to_hyphens() {
         assert_eq!(slugify("Street -- Lifting"), "street-lifting");
         assert_eq!(slugify("  FNSL  "), "fnsl");
     }
 
     #[test]
-    fn a_name_with_nothing_to_slug_is_empty() {
+    fn returns_empty_slug_for_punctuation() {
         assert_eq!(slugify("---"), "");
     }
 }

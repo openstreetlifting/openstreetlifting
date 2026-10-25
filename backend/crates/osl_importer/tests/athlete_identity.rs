@@ -34,7 +34,7 @@ async fn athlete_count(pool: &PgPool) -> i64 {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn one_person_spelled_three_ways_stays_one_athlete(pool: PgPool) {
+async fn merges_equivalent_name_spellings(pool: PgPool) {
     import(
         &pool,
         file("competition-one", vec![athlete("Lea", "MERANDON", None)]),
@@ -64,7 +64,7 @@ async fn one_person_spelled_three_ways_stays_one_athlete(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_stored_name_keeps_the_spelling_the_file_used(pool: PgPool) {
+async fn preserves_source_name_spelling(pool: PgPool) {
     import(
         &pool,
         file("competition-one", vec![athlete("Léa", "Mérandon", None)]),
@@ -87,7 +87,7 @@ async fn the_stored_name_keeps_the_spelling_the_file_used(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn two_people_sharing_a_name_stay_apart(pool: PgPool) {
+async fn keeps_namesakes_distinct_across_imports(pool: PgPool) {
     import(
         &pool,
         file(
@@ -121,7 +121,7 @@ async fn two_people_sharing_a_name_stay_apart(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn punctuation_does_not_create_a_second_athlete(pool: PgPool) {
+async fn ignores_punctuation_when_matching_athletes(pool: PgPool) {
     import(
         &pool,
         file(
@@ -140,7 +140,7 @@ async fn punctuation_does_not_create_a_second_athlete(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_reimport_creates_no_new_athlete(pool: PgPool) {
+async fn preserves_identity_when_reimporting(pool: PgPool) {
     import(
         &pool,
         file("competition-one", vec![athlete("Lea", "Merandon", None)]),
@@ -158,7 +158,7 @@ async fn a_reimport_creates_no_new_athlete(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_database_refuses_a_duplicate_identity(pool: PgPool) {
+async fn rejects_duplicate_identities(pool: PgPool) {
     import(
         &pool,
         file("competition-one", vec![athlete("Lea", "Merandon", None)]),
@@ -180,7 +180,7 @@ async fn the_database_refuses_a_duplicate_identity(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn disambiguation_keeps_namesakes_from_different_countries_apart(pool: PgPool) {
+async fn separates_namesakes_by_disambiguation(pool: PgPool) {
     let spanish = from(athlete("Jose", "Garcia", None), "ES");
     let mexican = from(athlete("Jose", "Garcia", Some(2)), "MX");
 
@@ -190,7 +190,7 @@ async fn disambiguation_keeps_namesakes_from_different_countries_apart(pool: PgP
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn an_athlete_with_only_one_name_is_imported_under_it(pool: PgPool) {
+async fn imports_single_names(pool: PgPool) {
     import(
         &pool,
         file("competition-one", vec![athlete("", "Darkhan", None)]),

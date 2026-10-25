@@ -21,7 +21,7 @@ async fn get(uri: &str) -> (StatusCode, Vec<u8>) {
 }
 
 #[tokio::test]
-async fn formulas_are_a_collection_with_or_without_a_year() {
+async fn lists_formulas_with_optional_year_filter() {
     let (status, body) = get("/api/v1/ris/formulas").await;
     assert_eq!(status, StatusCode::OK);
     let all: Vec<Value> = serde_json::from_slice(&body).unwrap();
@@ -39,14 +39,14 @@ async fn formulas_are_a_collection_with_or_without_a_year() {
 }
 
 #[tokio::test]
-async fn an_unpublished_year_returns_an_empty_collection() {
+async fn returns_empty_list_when_year_is_unpublished() {
     let (status, body) = get("/api/v1/ris/formulas?year=1900").await;
     assert_eq!(status, StatusCode::OK);
     assert_eq!(serde_json::from_slice::<Value>(&body).unwrap(), json!([]));
 }
 
 #[tokio::test]
-async fn malformed_year_filters_are_rejected() {
+async fn rejects_invalid_year_filters() {
     for year in ["invalid", "2026.5", "", "999999999999"] {
         assert_eq!(
             get(&format!("/api/v1/ris/formulas?year={year}")).await.0,
@@ -56,7 +56,7 @@ async fn malformed_year_filters_are_rejected() {
 }
 
 #[tokio::test]
-async fn the_year_path_is_removed_and_current_still_resolves() {
+async fn serves_current_formula_without_year_routes() {
     assert_eq!(
         get("/api/v1/ris/formulas/2026").await.0,
         StatusCode::NOT_FOUND

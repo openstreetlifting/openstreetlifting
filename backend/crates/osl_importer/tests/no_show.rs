@@ -42,7 +42,7 @@ fn entered() -> osl_importer::canonical::models::CanonicalFormat {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn each_outcome_keeps_its_own_status(pool: PgPool) {
+async fn preserves_participant_statuses(pool: PgPool) {
     import(&pool, entered()).await;
 
     assert_eq!(
@@ -56,7 +56,7 @@ async fn each_outcome_keeps_its_own_status(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn only_the_lifter_who_competed_is_ranked(pool: PgPool) {
+async fn ranks_only_competed_participants(pool: PgPool) {
     import(&pool, entered()).await;
 
     let (ranked, total) = RankingRepository::new(&pool)
@@ -82,7 +82,7 @@ async fn only_the_lifter_who_competed_is_ranked(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn the_competition_still_lists_everyone(pool: PgPool) {
+async fn lists_all_competition_participants(pool: PgPool) {
     import(&pool, entered()).await;
 
     let listed: i64 = sqlx::query_scalar(

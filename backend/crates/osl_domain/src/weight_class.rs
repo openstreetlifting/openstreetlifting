@@ -154,7 +154,7 @@ mod tests {
     use std::str::FromStr;
 
     #[test]
-    fn lightest_class_has_no_lower_bound() {
+    fn omits_lower_bound_for_lightest_class() {
         assert_eq!(
             WeightClassSlug::M66.bounds(),
             (None, Some(Decimal::from(66)))
@@ -162,7 +162,7 @@ mod tests {
     }
 
     #[test]
-    fn a_middle_class_starts_where_the_one_below_ends() {
+    fn starts_class_at_previous_upper_bound() {
         assert_eq!(
             WeightClassSlug::M80.bounds(),
             (Some(Decimal::from(73)), Some(Decimal::from(80)))
@@ -170,7 +170,7 @@ mod tests {
     }
 
     #[test]
-    fn an_open_class_has_no_upper_bound() {
+    fn omits_upper_bound_for_open_classes() {
         assert_eq!(
             WeightClassSlug::MPlus101.bounds(),
             (Some(Decimal::from(101)), None)
@@ -178,30 +178,30 @@ mod tests {
     }
 
     #[test]
-    fn a_capped_class_is_named_by_its_ceiling() {
+    fn labels_capped_classes_by_upper_bound() {
         let (min, max) = WeightClassSlug::M80.bounds();
         assert_eq!(WeightClass::label(min, max), "-80kg");
     }
 
     #[test]
-    fn an_open_class_is_named_by_its_floor() {
+    fn labels_open_classes_by_lower_bound() {
         let (min, max) = WeightClassSlug::MPlus101.bounds();
         assert_eq!(WeightClass::label(min, max), "+101kg");
     }
 
     #[test]
-    fn a_class_without_bounds_has_no_name() {
+    fn returns_empty_label_when_bounds_are_absent() {
         assert_eq!(WeightClass::label(None, None), "");
     }
 
     #[test]
-    fn trailing_zeros_are_stripped() {
+    fn strips_trailing_zeros() {
         let max = Decimal::from_str("52.00").unwrap();
         assert_eq!(WeightClass::label(None, Some(max)), "-52kg");
     }
 
     #[test]
-    fn labels_round_trip() {
+    fn round_trips_labels() {
         for class in [
             WeightClass::UpTo(Decimal::from(80)),
             WeightClass::Above(Decimal::from(101)),
@@ -212,7 +212,7 @@ mod tests {
     }
 
     #[test]
-    fn a_label_without_a_sign_is_not_a_class() {
+    fn rejects_invalid_labels() {
         assert!(WeightClass::from_str("80kg").is_err());
         assert!(WeightClass::from_str("-80").is_err());
         assert!(WeightClass::from_str("Men -80kg").is_err());

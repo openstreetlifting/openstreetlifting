@@ -29,7 +29,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn a_division_leads_the_name() {
+    fn prefixes_labels_with_division() {
         assert_eq!(
             category_label(
                 Some("Elite"),
@@ -42,7 +42,7 @@ mod tests {
     }
 
     #[test]
-    fn a_meet_without_divisions_names_gender_and_class_alone() {
+    fn labels_gender_and_class_when_division_is_absent() {
         assert_eq!(
             category_label(None, Gender::F, Some(Decimal::from(70)), None),
             "Women +70kg"
@@ -50,12 +50,12 @@ mod tests {
     }
 
     #[test]
-    fn a_contest_without_a_weight_class_is_named_by_gender_alone() {
+    fn labels_gender_when_class_is_absent() {
         assert_eq!(category_label(None, Gender::M, None, None), "Men");
     }
 
     #[test]
-    fn a_division_survives_a_missing_weight_class() {
+    fn preserves_division_when_class_is_absent() {
         assert_eq!(
             category_label(Some("Elite"), Gender::M, None, None),
             "Elite Men"

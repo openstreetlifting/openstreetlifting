@@ -88,7 +88,7 @@ fn bomber() -> AthleteData {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_bodyweight_lift_is_stored_as_zero(pool: PgPool) {
+async fn stores_bodyweight_lifts_as_zero(pool: PgPool) {
     import(
         &pool,
         competition("test-competition", vec![bodyweight_lifter()]),
@@ -103,7 +103,7 @@ async fn a_bodyweight_lift_is_stored_as_zero(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_bombed_movement_is_stored_as_absent(pool: PgPool) {
+async fn stores_bombed_lifts_as_absent(pool: PgPool) {
     import(&pool, competition("test-competition", vec![bomber()])).await;
 
     assert_eq!(
@@ -118,7 +118,7 @@ async fn a_bombed_movement_is_stored_as_absent(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn every_attempt_is_kept_including_the_failures(pool: PgPool) {
+async fn preserves_failed_attempts(pool: PgPool) {
     import(&pool, competition("test-competition", vec![bomber()])).await;
 
     let attempts: i64 = sqlx::query_scalar(
@@ -133,7 +133,7 @@ async fn every_attempt_is_kept_including_the_failures(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_bombed_result_has_no_total(pool: PgPool) {
+async fn omits_total_when_result_is_bombed(pool: PgPool) {
     import(&pool, competition("test-competition", vec![bomber()])).await;
 
     let total: Option<Decimal> = sqlx::query_scalar(
@@ -149,7 +149,7 @@ async fn a_bombed_result_has_no_total(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_bodyweight_lifter_still_appears_on_that_movement(pool: PgPool) {
+async fn ranks_successful_zero_weight_lifts(pool: PgPool) {
     import(
         &pool,
         competition("test-competition", vec![bodyweight_lifter(), bomber()]),
@@ -181,7 +181,7 @@ async fn a_bodyweight_lifter_still_appears_on_that_movement(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_bomber_is_left_off_that_movements_board(pool: PgPool) {
+async fn excludes_bombed_lifts_from_rankings(pool: PgPool) {
     import(
         &pool,
         competition("test-competition", vec![bodyweight_lifter(), bomber()]),
@@ -217,7 +217,7 @@ async fn a_bomber_is_left_off_that_movements_board(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn a_negative_weight_is_still_refused(pool: PgPool) {
+async fn rejects_negative_weights(pool: PgPool) {
     import(
         &pool,
         competition("test-competition", vec![bodyweight_lifter()]),

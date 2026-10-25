@@ -28,7 +28,7 @@ fn recovered() -> CanonicalFormat {
 }
 
 #[test]
-fn source_evidence_is_required_and_checked() {
+fn requires_valid_source_evidence() {
     let valid = recovered();
     CanonicalValidator::validate(&valid).unwrap();
     let mut missing_edition = valid.clone();
@@ -56,7 +56,7 @@ fn source_evidence_is_required_and_checked() {
 }
 
 #[test]
-fn published_bodyweight_and_ris_are_checked_against_the_source_edition() {
+fn validates_scores_against_source_edition() {
     for source in [None, Some(BodyweightSource::Reported)] {
         let mut canonical = recovered();
         canonical.categories[0].athletes[0].bodyweight_source = source;
@@ -79,7 +79,7 @@ fn published_bodyweight_and_ris_are_checked_against_the_source_edition() {
 }
 
 #[test]
-fn published_scores_with_insufficient_evidence_are_preserved_with_a_warning() {
+fn warns_when_recovery_evidence_is_incomplete() {
     let mut canonical = recovered();
     canonical.categories[0].athletes[0].bodyweight_source = None;
     canonical.categories[0].athletes[0].reported_ris_edition = None;
@@ -108,7 +108,7 @@ fn published_scores_with_insufficient_evidence_are_preserved_with_a_warning() {
 }
 
 #[test]
-fn total_requires_each_movement_and_consistent_attempts_but_accepts_zero() {
+fn validates_complete_totals() {
     let mut athlete = recovered().categories.remove(0).athletes.remove(0);
     assert_eq!(athlete.complete_total().unwrap(), common::decimal("586.5"));
     let squat = athlete.lifts.pop().unwrap();
@@ -152,7 +152,7 @@ fn total_requires_each_movement_and_consistent_attempts_but_accepts_zero() {
 }
 
 #[test]
-fn csv_round_trip_keeps_recovery_evidence_and_rejects_a_contradictory_best() {
+fn validates_recovery_evidence_on_round_trip() {
     let directory = std::env::temp_dir().join(format!("osl-recovery-csv-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir(&directory).unwrap();
     store::write(&directory, &recovered()).unwrap();
@@ -195,7 +195,7 @@ fn csv_round_trip_keeps_recovery_evidence_and_rejects_a_contradictory_best() {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn recovered_2024_score_is_ranked_using_2026_and_source_survives_recompute(pool: PgPool) {
+async fn recomputes_recovered_scores_with_current_edition(pool: PgPool) {
     let canonical = recovered();
     let mut reported = canonical.clone();
     reported.categories[0].athletes[0].bodyweight = None;
@@ -257,7 +257,7 @@ async fn recovered_2024_score_is_ranked_using_2026_and_source_survives_recompute
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn published_bodyweight_keeps_source_score_and_edition_through_recompute(pool: PgPool) {
+async fn preserves_source_evidence_when_recomputing(pool: PgPool) {
     let importer = CanonicalTransformer::new(&pool);
     for edition in [Some(Edition::V2024), None] {
         let mut canonical = recovered();
@@ -296,7 +296,7 @@ async fn published_bodyweight_keeps_source_score_and_edition_through_recompute(p
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn correcting_recovery_back_to_source_only_does_not_leave_stale_provenance(pool: PgPool) {
+async fn clears_provenance_when_recovery_is_removed(pool: PgPool) {
     let mut canonical = recovered();
     let importer = CanonicalTransformer::new(&pool);
     importer
