@@ -1,9 +1,12 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import type { ResolvedPathname } from '$app/types';
   import { SearchIcon } from '#lib/components/icons/index.js';
   import { EDGE_TO_EDGE } from '#lib/constants/table.js';
   import { TEXT } from '#lib/constants/typography.js';
   import Button from './button.svelte';
+
+  const i18n = useI18n();
 
   let {
     title,
@@ -34,7 +37,7 @@
 
     {#if resetHref}
       <Button href={resetHref} class="mt-6 min-h-11 w-full text-sm active:scale-[0.98] sm:w-auto">
-        Clear search &amp; filters
+        {i18n.t('Clear search & filters')}
       </Button>
     {/if}
   </div>

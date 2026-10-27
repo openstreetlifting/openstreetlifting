@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { provideI18n } from '#lib/i18n/index.js';
+  import type { LayoutData } from './$types';
   import Header from './Header.svelte';
   import Footer from './Footer.svelte';
   import { umami } from '#lib/analytics.js';
   import '../app.css';
 
-  let { children } = $props();
+  let { data, children }: { data: LayoutData; children: import('svelte').Snippet } = $props();
+  provideI18n(() => data.locale);
 </script>
 
 <svelte:head>

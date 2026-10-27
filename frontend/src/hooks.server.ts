@@ -1,10 +1,26 @@
 import { SpanStatusCode, isSpanContextValid } from '@opentelemetry/api';
 import type { Handle, HandleServerError } from '@sveltejs/kit/hooks';
+import { LOCALE_COOKIE, negotiateLocale } from '#lib/i18n/locale.js';
 import { logger } from '#lib/server/logger.js';
 
 export const handle: Handle = async ({ event, resolve }) => {
   const started = performance.now();
-  const response = await resolve(event);
+  event.locals.locale = negotiateLocale(
+    event.cookies.get(LOCALE_COOKIE),
+    event.request.headers.get('accept-language')
+  );
+  const response = await resolve(event, {
+    transformPageChunk: ({ html }) => html.replace('%lang%', event.locals.locale),
+  });
+  if (
+    event.isDataRequest ||
+    response.headers.get('content-type')?.includes('text/html') ||
+    event.route.id === '/manifest.webmanifest'
+  ) {
+    response.headers.append('Vary', 'Accept-Language, Cookie');
+    response.headers.set('Content-Language', event.locals.locale);
+    response.headers.set('Cache-Control', 'private, no-cache');
+  }
   event.tracing.root.setAttributes({
     'http.request.method': event.request.method,
     'http.route': event.route.id ?? 'unmatched',

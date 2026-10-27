@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
+import { I18N_CONTEXT, I18n } from '#lib/i18n/index.js';
 import RisSimulator from './ris-simulator.svelte';
 import type { RisFormula } from '#lib/types/ris.js';
 
@@ -114,4 +115,21 @@ it('does not show scenarios for blank or invalid inputs', async () => {
     .toBeVisible();
   await screen.getByRole('textbox', { name: 'Bodyweight', exact: true }).fill('20');
   await expect.element(screen.getByRole('status', { name: 'RIS:' })).not.toBeInTheDocument();
+});
+
+it('runs the calculator in French with decimal comma input and localized results', async () => {
+  const screen = await render(RisSimulator, {
+    props: { edition },
+    context: new Map([[I18N_CONTEXT, new I18n(() => 'fr')]]),
+  });
+  await screen.getByRole('textbox', { name: 'Poids de corps', exact: true }).fill('80,0');
+  await screen.getByRole('textbox', { name: 'Total soulevé', exact: true }).fill('500');
+  await expect.element(screen.getByRole('status', { name: 'RIS:' })).toHaveTextContent('100,35');
+  await screen.getByRole('textbox', { name: 'RIS cible' }).fill('110');
+  await expect.element(screen.getByText('48,1 kg de plus', { exact: true })).toBeVisible();
+  await expect.element(screen.getByText('8,5 kg de moins', { exact: true })).toBeVisible();
+  await screen.getByRole('button', { name: 'Femmes', exact: true }).click();
+  await expect
+    .element(screen.getByRole('button', { name: 'Femmes', exact: true }))
+    .toHaveAttribute('aria-pressed', 'true');
 });

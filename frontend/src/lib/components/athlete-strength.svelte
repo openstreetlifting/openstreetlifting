@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import InfoTip from '#lib/components/ui/info-tip.svelte';
   import type { StrengthProfile } from '#lib/types/athlete.js';
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
@@ -6,6 +7,8 @@
   import { scalePoint } from 'd3-scale';
   import { CHART, TEXT } from '#lib/constants/typography.js';
   import { formatWeight } from '#lib/utils/format.js';
+
+  const i18n = useI18n();
 
   let { profile }: { profile: StrengthProfile | null | undefined } = $props();
   let chartWidth = $state<number>();
@@ -19,21 +22,22 @@
   const scored = $derived(lifts.filter((lift) => lift.percentile !== null));
   const complete = $derived(scored.length === directions.length);
   const outline = $derived([...lifts, lifts[0]]);
-  const percent = new Intl.NumberFormat('en', { maximumFractionDigits: 1 });
+  const percent = $derived(new Intl.NumberFormat(i18n.locale, { maximumFractionDigits: 1 }));
 </script>
 
 <section class="@container min-w-0 max-w-reading" aria-labelledby="strength-heading">
   <div class="mb-4 flex min-h-8 items-center gap-2">
-    <h2 id="strength-heading" class="{TEXT.heading} text-ink">Strength profile</h2>
+    <h2 id="strength-heading" class="{TEXT.heading} text-ink">{i18n.t('Strength profile')}</h2>
     {#if profile}
-      <InfoTip label="About Strength profile">
-        <p class="font-medium text-ink">Strength profile</p>
-        <p class="mt-2">{profile.category} · All time</p>
+      <InfoTip label={i18n.t('About Strength profile')}>
+        <p class="font-medium text-ink">{i18n.t('Strength profile')}</p>
+        <p class="mt-2">{profile.category} {i18n.t('· All time')}</p>
         <p class="mt-3">
-          Compares each best lift with other athletes’ bests. Percentile is the percentage of peers
-          below that result, counting ties as half.
+          {i18n.t(
+            'Compares each best lift with other athletes’ bests. Percentile is the percentage of peers below that result, counting ties as half.'
+          )}
         </p>
-        <p class="mt-3">Peer counts vary by lift.</p>
+        <p class="mt-3">{i18n.t('Peer counts vary by lift.')}</p>
       </InfoTip>
     {/if}
   </div>
@@ -65,10 +69,13 @@
               style="width: 100cqw; height: 100%"
               center
               role="group"
-              aria-label="Lift percentiles compared with other athletes in {profile.category}"
+              aria-label={i18n.t('Lift percentiles compared with other athletes in {category}', {
+                category: profile.category,
+              })}
             >
               <Axis
                 placement="angle"
+                format={(value: string) => i18n.movement(value)}
                 grid={{ class: 'stroke-stroke' }}
                 stroke="var(--color-stroke)"
                 tickLabelProps={{ class: CHART.label }}
@@ -113,9 +120,10 @@
                       tabindex={0}
                       class="cursor-pointer outline-none focus-visible:stroke-focus"
                       strokeWidth={2}
-                      aria-label="{point.data.movement_name}: percentile {percent.format(
-                        point.data.percentile
-                      )}"
+                      aria-label={i18n.t('{movement}: percentile {percentile}', {
+                        movement: i18n.movement(point.data.movement_name),
+                        percentile: percent.format(point.data.percentile),
+                      })}
                       onclick={() => context.tooltip.show({ data: point.data })}
                       onfocus={() => context.tooltip.show({ data: point.data })}
                       onpointerenter={(event) => {
@@ -156,13 +164,17 @@
               {#snippet children({ data: lift })}
                 <div role="tooltip">
                   <p class="text-sm font-medium">
-                    {lift.movement_name} · {formatWeight(lift.value)} kg
+                    {i18n.movement(lift.movement_name)} · {formatWeight(lift.value, i18n.locale)} kg
                   </p>
                   <p class="mt-1 font-mono text-lg font-bold">
-                    {percent.format(lift.percentile)} percentile
+                    {percent.format(lift.percentile)}
+                    {i18n.t('percentile')}
                   </p>
                   <p class="mt-1 text-xs text-muted">
-                    Compared with {lift.field} other {lift.field === 1 ? 'athlete' : 'athletes'}
+                    {i18n.t('Compared with {count} other {athletes}', {
+                      count: i18n.number(lift.field, 0),
+                      athletes: i18n.count('athlete', lift.field),
+                    })}
                   </p>
                 </div>
               {/snippet}
@@ -171,20 +183,20 @@
         </Chart>
       </div>
       <dl
-        aria-label="Lift percentiles"
+        aria-label={i18n.t('Lift percentiles')}
         class="mx-auto grid w-full max-w-xs gap-3 text-sm @min-[36rem]:w-auto"
       >
         {#each lifts as lift (lift.movement_name)}
           <div class="flex items-baseline justify-between gap-5 whitespace-nowrap">
-            <dt class="text-secondary">{lift.movement_name}</dt>
+            <dt class="text-secondary">{i18n.movement(lift.movement_name)}</dt>
             <dd class="text-right">
               {#if lift.percentile !== null}
                 <span class="font-mono font-semibold text-ink"
                   >{percent.format(lift.percentile)}</span
                 >
-                <span class="text-xs text-muted">percentile</span>
+                <span class="text-xs text-muted">{i18n.t('percentile')}</span>
               {:else}
-                <span class="text-muted" aria-label="Not enough data">—</span>
+                <span class="text-muted" aria-label={i18n.t('Not enough data')}>—</span>
               {/if}
             </dd>
           </div>
@@ -193,15 +205,15 @@
     </div>
     {#if scored.some((lift) => lift.field < 5)}
       <p class="mt-3 text-xs text-muted">
-        Limited comparison: fewer than five peers for some lifts.
+        {i18n.t('Limited comparison: fewer than five peers for some lifts.')}
       </p>
     {/if}
     {#if !complete}
-      <p class="mt-3 text-xs text-muted">Not enough data to score all four lifts.</p>
+      <p class="mt-3 text-xs text-muted">{i18n.t('Not enough data to score all four lifts.')}</p>
     {/if}
   {:else}
     <p class="border-y border-stroke py-8 text-sm text-secondary">
-      A completed competition is needed to establish a comparison category.
+      {i18n.t('A completed competition is needed to establish a comparison category.')}
     </p>
   {/if}
 </section>

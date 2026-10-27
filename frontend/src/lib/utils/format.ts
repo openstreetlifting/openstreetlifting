@@ -1,24 +1,29 @@
+import type { Locale } from '#lib/i18n/locale.js';
 import { NO_VALUE } from '#lib/constants/table.js';
 
-export function formatDate(dateString: string | null): string {
+export function formatDate(dateString: string | null, locale: Locale = 'en'): string {
   if (!dateString) return '-';
   const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  return `${day}-${month}-${date.getFullYear()}`;
+  if (Number.isNaN(date.getTime())) return '-';
+  return new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : locale, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date);
 }
 
-const longDate = new Intl.DateTimeFormat('en', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
-
-export function formatLongDate(dateString: string | null): string {
+export function formatLongDate(dateString: string | null, locale: Locale = 'en'): string {
   if (!dateString) return '';
   const date = new Date(dateString);
-  return Number.isNaN(date.getTime()) ? '' : longDate.format(date);
+  return Number.isNaN(date.getTime())
+    ? ''
+    : new Intl.DateTimeFormat(locale, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }).format(date);
 }
 
 export function formatLocation(...parts: (string | null | undefined)[]): string {
@@ -31,27 +36,27 @@ export function formatAthleteName(athlete: { first_name: string; last_name: stri
   return [athlete.first_name, athlete.last_name].filter(Boolean).join(' ');
 }
 
-const relativeTime = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-
 // A date on its own does not say how soon a competition is, which is the only thing
 // worth knowing about one nobody has lifted yet.
-export function formatCountdown(dateString: string | null): string {
+export function formatCountdown(dateString: string | null, locale: Locale = 'en'): string {
   if (!dateString) return '';
 
   const target = new Date(dateString);
   if (Number.isNaN(target.getTime())) return '';
 
+  const relativeTime = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
   const days = Math.round((target.getTime() - Date.now()) / 86_400_000);
   if (Math.abs(days) < 14) return relativeTime.format(days, 'day');
   if (Math.abs(days) < 60) return relativeTime.format(Math.round(days / 7), 'week');
   return relativeTime.format(Math.round(days / 30), 'month');
 }
 
-const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
-
-export function countryName(countryCode: string): string {
+export function countryName(countryCode: string, locale: Locale = 'en'): string {
   try {
-    return regionNames.of(countryCode.toUpperCase()) ?? countryCode;
+    return (
+      new Intl.DisplayNames([locale], { type: 'region' }).of(countryCode.toUpperCase()) ??
+      countryCode
+    );
   } catch {
     return countryCode;
   }
@@ -59,12 +64,25 @@ export function countryName(countryCode: string): string {
 
 // A lift of 0 is a real result, a muscle-up at bodyweight, so only the absence
 // of a value is a dash. Guarding on truthiness silently turns it into no data.
-export function formatWeight(weight: number | string | null | undefined): string {
-  return weight === null || weight === undefined || weight === '' ? NO_VALUE : `${weight}`;
+export function formatWeight(
+  weight: number | string | null | undefined,
+  locale: Locale = 'en'
+): string {
+  if (weight === null || weight === undefined || weight === '') return NO_VALUE;
+  return locale === 'en'
+    ? `${weight}`
+    : new Intl.NumberFormat(locale, { maximumFractionDigits: 3 }).format(Number(weight));
 }
 
-export function formatScore(score: number | string | null | undefined): string {
+export function formatScore(
+  score: number | string | null | undefined,
+  locale: Locale = 'en'
+): string {
   return score === null || score === undefined || score === ''
     ? NO_VALUE
-    : Number(score).toFixed(2);
+    : new Intl.NumberFormat(locale, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        useGrouping: false,
+      }).format(Number(score));
 }

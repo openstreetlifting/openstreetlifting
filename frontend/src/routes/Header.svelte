@@ -1,9 +1,13 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
+  import LanguagePicker from '#lib/components/language-picker.svelte';
   import { page } from '$app/state';
   import { afterNavigate } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { GitHubIcon, InstagramIcon, MenuIcon, CloseIcon } from '#lib/components/icons/index.js';
   import { NAV_LINK } from '#lib/constants/typography.js';
+
+  const i18n = useI18n();
 
   let menuOpen = $state(false);
 
@@ -30,7 +34,7 @@
   >
     <a
       href={resolve('')}
-      title="OpenStreetlifting, back to the full rankings"
+      title={i18n.t('OpenStreetlifting, back to the full rankings')}
       class="opacity-90 transition-opacity hover:opacity-100"
     >
       <img src="/logo_width.svg" alt="OpenStreetlifting" class="h-7 w-auto sm:h-8" />
@@ -41,7 +45,7 @@
       onclick={() => (menuOpen = !menuOpen)}
       aria-expanded={menuOpen}
       aria-controls="primary-nav"
-      aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+      aria-label={menuOpen ? i18n.t('Close menu') : i18n.t('Open menu')}
       class="rounded-lg p-2 text-secondary transition-colors hover:text-ink focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none md:hidden"
     >
       {#if menuOpen}
@@ -57,7 +61,7 @@
         <span
           class="{NAV_LINK} cursor-not-allowed text-muted hover:text-muted"
           aria-disabled="true"
-          title="Coming soon"
+          title={i18n.t('Coming soon')}
         >
           {label}
         </span>
@@ -78,7 +82,7 @@
           class:text-secondary={!isActive('/')}
           aria-current={isActive('/') ? 'page' : undefined}
         >
-          Rankings
+          {i18n.t('Rankings')}
         </a>
       </li>
       <li>
@@ -89,7 +93,7 @@
           class:text-secondary={!isActive('/competitions')}
           aria-current={isActive('/competitions') ? 'page' : undefined}
         >
-          Competitions
+          {i18n.t('Competitions')}
         </a>
       </li>
       <li>
@@ -101,7 +105,7 @@
           aria-current={isActive('/ris') ? 'page' : undefined}>RIS</a
         >
       </li>
-      {@render comingSoon('Records')}
+      {@render comingSoon(i18n.t('Records'))}
       {@render comingSoon('FAQ')}
       <li>
         <a
@@ -110,7 +114,7 @@
           rel="noopener noreferrer"
           class={NAV_LINK}
         >
-          Docs
+          {i18n.t('Docs')}
         </a>
       </li>
       <li>
@@ -121,9 +125,10 @@
           class:text-secondary={!isActive('/contact')}
           aria-current={isActive('/contact') ? 'page' : undefined}
         >
-          Contact
+          {i18n.t('Contact')}
         </a>
       </li>
+      <li><LanguagePicker /></li>
       <li class="flex items-center gap-3">
         <a
           href="https://github.com/openstreetlifting/openstreetlifting"

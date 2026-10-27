@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { TablePagination } from '#lib/types/pagination.js';
   import type { Competition } from '#lib/types/competition.js';
@@ -7,6 +8,8 @@
   import { formatCountdown, formatDate, formatLocation } from '#lib/utils/index.js';
   import { TEXT } from '#lib/constants/typography.js';
   import { CELL, FIGURE, TEXT_CELL } from '#lib/constants/table.js';
+
+  const i18n = useI18n();
 
   interface Props {
     competitions: Competition[];
@@ -25,8 +28,8 @@
   }: Props = $props();
 
   function competitionDates(start: string | null, end: string | null): string {
-    const from = formatDate(start);
-    return end && end !== start ? `${from} - ${formatDate(end)}` : from;
+    const from = formatDate(start, i18n.locale);
+    return end && end !== start ? `${from} - ${formatDate(end, i18n.locale)}` : from;
   }
 </script>
 
@@ -38,13 +41,14 @@
   pageParam={upcoming ? 'upcoming_page' : 'competitions_page'}
 >
   {#snippet head()}
-    <th class="{TABLE_HEAD_CELL} text-secondary">Competition</th>
-    <th class="{TABLE_HEAD_CELL} text-secondary">Format</th>
-    <th class="{TABLE_HEAD_CELL} text-secondary">{upcoming ? 'When' : 'Lifters'}</th>
-    <th class="{TABLE_HEAD_CELL} text-secondary">Date</th>
-    <th class="{TABLE_HEAD_CELL} text-secondary">Location</th>
+    <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competition')}</th>
+    <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Format')}</th>
+    <th class="{TABLE_HEAD_CELL} text-secondary">{upcoming ? i18n.t('When') : i18n.t('Lifters')}</th
+    >
+    <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Date')}</th>
+    <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Location')}</th>
     {#if showFederation}
-      <th class="{TABLE_HEAD_CELL} text-secondary">Federation</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Federation')}</th>
     {/if}
   {/snippet}
 
@@ -59,17 +63,20 @@
             {competition.name}
           </a>
           {#if competition.status === 'live'}
-            <span class="ml-2 {TEXT.micro} text-secondary">In Progress</span>
+            <span class="ml-2 {TEXT.micro} text-secondary">{i18n.t('In Progress')}</span>
           {/if}
         </td>
         <td
           class="{TABLE_CELL} {CELL.data} whitespace-nowrap"
-          title={competition.movements.map(({ movement_name }) => movement_name).join(' · ')}
-          >{competition.event_code ?? '—'}</td
+          title={competition.movements
+            .map(({ movement_name }) => i18n.movement(movement_name))
+            .join(' · ')}>{competition.event_code ?? '—'}</td
         >
 
         <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap {upcoming ? '' : FIGURE}">
-          {upcoming ? formatCountdown(competition.start_date) : (competition.lifter_count ?? 0)}
+          {upcoming
+            ? formatCountdown(competition.start_date, i18n.locale)
+            : (competition.lifter_count ?? 0)}
         </td>
 
         <td class="{TABLE_CELL} whitespace-nowrap text-secondary"

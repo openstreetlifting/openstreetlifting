@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
+
+  const i18n = useI18n();
   interface Props {
     page: number;
     totalPages: number;
@@ -38,7 +41,7 @@
 
 <!-- eslint-disable svelte/no-navigation-without-resolve -- pageHref returns URLs resolved by the caller -->
 <nav
-  aria-label="Pagination"
+  aria-label={i18n.t('Pagination')}
   class="flex flex-wrap items-center justify-center gap-1"
   data-sveltekit-reset={false}
   data-sveltekit-replacestate={replaceState}
@@ -46,14 +49,14 @@
   <a
     href={disabled || page <= 1 ? undefined : pageHref(page - 1)}
     class="{linkBase} gap-1 border border-stroke text-secondary hover:bg-surface-hover hover:text-ink aria-disabled:opacity-40"
-    aria-label="Previous page"
+    aria-label={i18n.t('Previous page')}
     aria-disabled={disabled || page <= 1}
     tabindex={disabled || page <= 1 ? -1 : undefined}
   >
     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
-    <span class="hidden sm:inline">Previous</span>
+    <span class="hidden sm:inline">{i18n.t('Previous')}</span>
   </a>
 
   {#each items as item, index (index)}
@@ -79,11 +82,11 @@
   <a
     href={disabled || page >= totalPages ? undefined : pageHref(page + 1)}
     class="{linkBase} gap-1 border border-stroke text-secondary hover:bg-surface-hover hover:text-ink aria-disabled:opacity-40"
-    aria-label="Next page"
+    aria-label={i18n.t('Next page')}
     aria-disabled={disabled || page >= totalPages}
     tabindex={disabled || page >= totalPages ? -1 : undefined}
   >
-    <span class="hidden sm:inline">Next</span>
+    <span class="hidden sm:inline">{i18n.t('Next')}</span>
     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
     </svg>

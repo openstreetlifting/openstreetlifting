@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { ChevronIcon } from '#lib/components/icons/index.js';
   import {
     FORMAT_MOVEMENTS,
     formatMovements,
     normalizeEvent,
   } from '#lib/utils/competition-format.js';
+
+  const i18n = useI18n();
 
   let {
     formats,
@@ -20,7 +23,13 @@
   const choices = $derived(
     FORMAT_MOVEMENTS.filter(({ code }) => formats.some((format) => format.includes(code)))
   );
-  const label = $derived(value ? formatMovements(value).join(', ') : 'All formats');
+  const label = $derived(
+    value
+      ? formatMovements(value)
+          .map((movement) => i18n.movement(movement))
+          .join(', ')
+      : i18n.t('All formats')
+  );
 
   function dismiss(event: PointerEvent) {
     if (dropdown && event.target instanceof Node && !dropdown.contains(event.target)) {
@@ -40,7 +49,7 @@
 
 <details bind:this={dropdown} class="group relative w-full open:z-30 sm:w-48">
   <summary
-    aria-label="Competition format: {label}"
+    aria-label={i18n.t('Competition format: {label}', { label })}
     class="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-stroke bg-surface px-3 py-2 text-xs text-secondary outline-none hover:border-stroke-strong hover:text-ink focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas group-open:border-stroke-strong group-open:text-ink [&::-webkit-details-marker]:hidden"
   >
     <span class="truncate" title={label}>{label}</span>
@@ -50,7 +59,7 @@
     class="absolute left-0 mt-1.5 w-full overflow-hidden rounded-lg border border-stroke-strong bg-surface shadow-lg shadow-overlay/20"
   >
     <fieldset class="space-y-0.5 p-1">
-      <legend class="sr-only">Match these movements exactly</legend>
+      <legend class="sr-only">{i18n.t('Match these movements exactly')}</legend>
       {#each choices as movement (movement.code)}
         {@const selected = value.includes(movement.code)}
         <label
@@ -87,18 +96,18 @@
               />
             </svg>
           {/if}
-          <span>{movement.label}</span>
+          <span>{i18n.movement(movement.label)}</span>
         </label>
       {/each}
     </fieldset>
     <div class="border-t border-stroke p-1">
       <button
         type="button"
-        aria-label="Clear movements"
+        aria-label={i18n.t('Clear movements')}
         disabled={!value}
         onclick={() => onChange('')}
         class="min-h-11 w-full rounded px-2.5 text-left text-xs text-secondary outline-none enabled:cursor-pointer enabled:hover:bg-surface-hover enabled:hover:text-ink enabled:active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-focus disabled:text-faint sm:min-h-8"
-        >Clear selection</button
+        >{i18n.t('Clear selection')}</button
       >
     </div>
   </div>

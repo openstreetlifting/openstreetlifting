@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { resolve } from '$app/paths';
   import { countryName } from '#lib/utils/index.js';
+
+  const i18n = useI18n();
 
   interface Props {
     countryCode: string | null;
@@ -11,7 +14,9 @@
 
   let { countryCode, background = false, link = false, class: className = '' }: Props = $props();
 
-  const label = $derived(countryCode && countryCode.length === 2 ? countryName(countryCode) : null);
+  const label = $derived(
+    countryCode && countryCode.length === 2 ? countryName(countryCode, i18n.locale) : null
+  );
 
   const fileName = $derived(
     [...(countryCode?.toUpperCase() ?? '')]

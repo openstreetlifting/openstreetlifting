@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
   import { CHART, FIELD, TEXT } from '#lib/constants/typography.js';
@@ -14,6 +15,8 @@
   import { Tooltip } from 'layerchart';
   import { scaleUtc, scaleLinear } from 'd3-scale';
   import { utcMonth } from 'd3-time';
+
+  const i18n = useI18n();
 
   let chartWidth = $state<number>();
 
@@ -35,7 +38,7 @@
     onFormatChange?: (format: string) => void;
   } = $props();
   const points = $derived(progressPoints(competitions, metric, format));
-  const label = $derived(RANKING_SORTS.find((option) => option.value === metric)!.label);
+  const label = $derived(i18n.t(RANKING_SORTS.find((option) => option.value === metric)!.label));
 
   const best = $derived(points.length ? Math.max(...points.map((point) => point.value)) : null);
 
@@ -55,11 +58,13 @@
 
   const xDomain = $derived([points.length === 1 ? utcMonth.offset(first, -1) : first, last]);
 
-  const monthLabel = new Intl.DateTimeFormat('en', {
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
+  const monthLabel = $derived(
+    new Intl.DateTimeFormat(i18n.locale, {
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    })
+  );
 
   function competitionLink(slug: string) {
     const query = new SvelteURLSearchParams({ movement: metric });
@@ -68,40 +73,42 @@
   }
 
   function valueLabel(value: number): string {
-    return metric === 'ris' ? formatScore(value) : `${formatWeight(value)} kg`;
+    return metric === 'ris'
+      ? formatScore(value, i18n.locale)
+      : `${formatWeight(value, i18n.locale)} kg`;
   }
 
   function pointLabel(point: ProgressPoint): string {
-    return `${point.competition.competition_name}, ${formatLongDate(point.competition.competition_date)}, ${valueLabel(point.value)}`;
+    return `${point.competition.competition_name}, ${formatLongDate(point.competition.competition_date, i18n.locale)}, ${valueLabel(point.value)}`;
   }
 </script>
 
 <section class="min-w-0 max-w-reading" aria-labelledby="progress-heading">
   <div class="mb-4 flex min-h-8 flex-wrap items-center justify-between gap-3">
-    <h2 id="progress-heading" class="{TEXT.heading} text-ink">Performance over time</h2>
+    <h2 id="progress-heading" class="{TEXT.heading} text-ink">{i18n.t('Performance over time')}</h2>
     <div class="flex flex-wrap items-center gap-3">
       <label class="flex items-center gap-2 text-xs text-muted">
-        <span class="sr-only">Performance</span>
+        <span class="sr-only">{i18n.t('Performance')}</span>
         <select
           bind:value={metric}
           onchange={(event) => onMetricChange?.(event.currentTarget.value as ProgressMetric)}
           class="{FIELD} px-2.5 py-1.5"
         >
           {#each RANKING_SORTS as option (option.value)}
-            <option value={option.value}>{option.label}</option>
+            <option value={option.value}>{i18n.t(option.label)}</option>
           {/each}
         </select>
       </label>
       {#if (metric === 'total' || metric === 'ris') && formats.length > 1}
         <label class="flex items-center gap-2 text-xs text-muted">
-          Event
+          {i18n.t('Event')}
           <select
             bind:value={format}
             onchange={(event) => onFormatChange?.(event.currentTarget.value)}
             class="{FIELD} px-2.5 py-1.5"
           >
             {#each formats as option (option)}<option value={option}
-                >{option === 'MPDS' ? 'All four lifts' : option}</option
+                >{option === 'MPDS' ? i18n.t('All four lifts') : option}</option
               >{/each}
           </select>
         </label>
@@ -112,9 +119,11 @@
   {#if points.length && best !== null && bestPoint}
     <div class="mb-3 flex justify-end 2xl:min-h-12">
       <p class="text-xs leading-relaxed text-muted">
-        <span class="font-medium uppercase">Best</span>
+        <span class="font-medium uppercase">{i18n.t('Best')}</span>
         <span class="ml-1 font-mono font-semibold text-ink">{valueLabel(best)}</span>
-        on {formatLongDate(bestPoint.competition.competition_date)} at
+        {i18n.t('on')}
+        {formatLongDate(bestPoint.competition.competition_date, i18n.locale)}
+        {i18n.t('at')}
         <a
           href={competitionLink(bestPoint.competition.competition_slug)}
           class="text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
@@ -142,12 +151,12 @@
             <Layer
               viewBox={`0 0 ${context.containerWidth} ${context.containerHeight}`}
               style="width: 100cqw; height: 100%"
-              aria-label="{label} over time"
+              aria-label={i18n.t('{label} over time', { label })}
               role="group"
             >
               <Axis
                 placement="bottom"
-                label="Date"
+                label={i18n.t('Date')}
                 labelProps={{ class: CHART.label }}
                 ticks={{
                   interval: utcMonth.every(
@@ -253,17 +262,17 @@
                     >{point.competition.competition_name}</a
                   >
                   <p class="mt-1 text-xs text-muted">
-                    {formatLongDate(point.competition.competition_date)} · {point.competition
-                      .category_name}{point.competition.division
+                    {formatLongDate(point.competition.competition_date, i18n.locale)} · {point
+                      .competition.category_name}{point.competition.division
                       ? ` · ${point.competition.division}`
                       : ''}
                   </p>
                   {#if metric === 'ris'}<p class="mt-1 text-xs text-muted">
                       {point.competition.ris_source === 'reported'
-                        ? 'Reported'
+                        ? i18n.t('Reported')
                         : point.competition.ris_source === 'computed'
-                          ? 'Computed'
-                          : 'Recorded'} RIS
+                          ? i18n.t('Computed')
+                          : i18n.t('Recorded')} RIS
                     </p>{/if}
                 </div>
               {/snippet}
@@ -274,19 +283,24 @@
     {/key}
     {#if points.length === 1}
       <p class="mt-3 text-xs leading-relaxed text-muted">
-        One result recorded. A trend will appear after another competition.
+        {i18n.t('One result recorded. A trend will appear after another competition.')}
       </p>
     {/if}
     {#if metric === 'ris'}
       <p class="mt-3 text-xs leading-relaxed text-muted">
-        RIS scores are shown as recorded; formula editions and reported scores may differ.
+        {i18n.t(
+          'RIS scores are shown as recorded; formula editions and reported scores may differ.'
+        )}
       </p>
     {/if}
   {:else}
     <p class="border-y border-stroke py-8 text-sm text-secondary">
-      No dated {label} results available{metric === 'total' || metric === 'ris'
-        ? ` for ${format === 'MPDS' ? 'all four lifts' : format}`
-        : ''}.
+      {metric === 'total' || metric === 'ris'
+        ? i18n.t('No dated {movement} results available for {format}.', {
+            movement: label,
+            format: format === 'MPDS' ? i18n.t('All four lifts') : format,
+          })
+        : i18n.t('No dated {movement} results available.', { movement: label })}
     </p>
   {/if}
 </section>

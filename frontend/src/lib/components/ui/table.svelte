@@ -10,6 +10,7 @@
 </script>
 
 <script lang="ts" generics="Row">
+  import { useI18n } from '#lib/i18n/index.js';
   import type { Snippet } from 'svelte';
   import { EDGE_TO_EDGE } from '#lib/constants/table.js';
   import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
@@ -17,6 +18,8 @@
   import { page as currentPage } from '$app/state';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import Pagination from './pagination.svelte';
+
+  const i18n = useI18n();
 
   let {
     head,
@@ -48,17 +51,7 @@
   const visibleRows = $derived(
     pagination ? rows : rows.slice((page - 1) * TABLE_PAGE_SIZE, page * TABLE_PAGE_SIZE)
   );
-  const countLabel = $derived(
-    totalItems === 1
-      ? itemName
-      : {
-          athlete: 'athletes',
-          competition: 'competitions',
-          country: 'countries',
-          federation: 'federations',
-          entry: 'entries',
-        }[itemName]
-  );
+  const countLabel = $derived(i18n.count(itemName, totalItems));
 
   function pageHref(target: number): string {
     if (pagination?.pageHref) return pagination.pageHref(target);
@@ -74,8 +67,12 @@
 {#snippet paginationBar(position: string)}
   <div class="flex flex-wrap items-center justify-between gap-3" data-table-pagination={position}>
     <span class="text-xs text-muted">
-      Page {page} of {totalPages} &middot; {totalItems}
-      {countLabel}
+      {i18n.t('Page {page} of {pages} · {count} {items}', {
+        page: i18n.number(page, 0),
+        pages: i18n.number(totalPages, 0),
+        count: i18n.number(totalItems, 0),
+        items: countLabel,
+      })}
     </span>
     <Pagination
       {page}

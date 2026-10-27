@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { Chart, Points, Spline, Tooltip } from 'layerchart/svg';
   import type { ChartState } from 'layerchart';
   import { resolve } from '$app/paths';
@@ -8,6 +9,8 @@
   import type { RisConstants, RisPerformance } from '#lib/types/ris.js';
   import { benchmarkTotal, calculateRis } from '#lib/utils/ris.js';
   import { formatLongDate } from '#lib/utils/format.js';
+
+  const i18n = useI18n();
 
   let {
     constants,
@@ -122,8 +125,8 @@
 
 <figure class="ris-chart m-0" aria-labelledby="{id}-caption">
   <div class="mb-3 flex items-center justify-between text-xs text-muted">
-    <span>Total, kg</span>
-    <span class="font-mono">RIS 100 benchmark</span>
+    <span>{i18n.t('Total, kg')}</span>
+    <span class="font-mono">{i18n.t('RIS 100 benchmark')}</span>
   </div>
   <div
     class="chart-viewport h-[19rem] sm:h-[23rem]"
@@ -212,15 +215,17 @@
           {#snippet children({ data })}
             <p class="max-w-56 font-medium text-ink">{data.athlete_name}</p>
             <p class="mt-1 max-w-56 text-secondary">{data.competition_name}</p>
-            <p class="mt-0.5 mb-3 text-muted">{formatLongDate(data.competition_date)}</p>
+            <p class="mt-0.5 mb-3 text-muted">
+              {formatLongDate(data.competition_date, i18n.locale)}
+            </p>
             <dl class="grid grid-cols-[1fr_auto] gap-x-6 gap-y-1.5">
-              <dt>Bodyweight</dt>
-              <dd class="text-right font-mono">{data.bodyweight.toFixed(2)} kg</dd>
-              <dt>Total</dt>
-              <dd class="text-right font-mono">{data.total.toFixed(2)} kg</dd>
+              <dt>{i18n.t('Bodyweight')}</dt>
+              <dd class="text-right font-mono">{i18n.number(data.bodyweight, 2)} kg</dd>
+              <dt>{i18n.t('Total')}</dt>
+              <dd class="text-right font-mono">{i18n.number(data.total, 2)} kg</dd>
               <dt>RIS</dt>
               <dd class="text-right font-mono text-ink">
-                {calculateRis(constants, data.bodyweight, data.total).toFixed(2)}
+                {i18n.number(calculateRis(constants, data.bodyweight, data.total), 2)}
               </dd>
             </dl>
           {/snippet}
@@ -228,42 +233,47 @@
       {/snippet}
     </Chart>
   </div>
-  <p class="mt-1 text-right text-xs text-muted">Bodyweight, kg</p>
+  <p class="mt-1 text-right text-xs text-muted">{i18n.t('Bodyweight, kg')}</p>
   <p id="{id}-instructions" class="sr-only">
-    Hover or touch to inspect a performance. With the chart focused, use the left and right arrow
-    keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the
-    selection.
+    {i18n.t(
+      'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.'
+    )}
   </p>
   <p class="sr-only" aria-live="polite">
     {#if keyboardIndex >= 0 && points[keyboardIndex]}
       {@const point = points[keyboardIndex]}
-      {point.athlete_name}, {point.competition_name}, {formatLongDate(point.competition_date)}.
-      Bodyweight {point.bodyweight}
-      kg, total {point.total} kg, RIS {calculateRis(
-        constants,
-        point.bodyweight,
-        point.total
-      ).toFixed(2)}.
+      {i18n.t('{athlete}. Bodyweight {bodyweight} kg, total {total} kg, RIS {score}.', {
+        athlete: `${point.athlete_name}, ${point.competition_name}, ${formatLongDate(point.competition_date, i18n.locale)}`,
+        bodyweight: i18n.number(point.bodyweight),
+        total: i18n.number(point.total),
+        score: i18n.number(calculateRis(constants, point.bodyweight, point.total), 2),
+      })}
     {/if}
   </p>
   <figcaption id="{id}-caption" class="mt-5 text-xs leading-6 text-muted">
-    <span class="font-medium text-secondary">Figure 1.</span>
-    Competition total by bodyweight for the selected gender category. Each point represents a recorded
-    performance; an athlete may contribute more than one. The solid line denotes the RIS 100 benchmark.
-    Performances above and below it have scores greater and less than 100, respectively.
-    {#if !points.length}No recorded performances are available for this category.{/if}
+    <span class="font-medium text-secondary">{i18n.t('Figure 1.')}</span>
+    {i18n.t(
+      'Competition total by bodyweight for the selected gender category. Each point represents a recorded performance; an athlete may contribute more than one. The solid line denotes the RIS 100 benchmark. Performances above and below it have scores greater and less than 100, respectively.'
+    )}
+    {#if !points.length}{i18n.t('No recorded performances are available for this category.')}{/if}
   </figcaption>
 </figure>
 
 {#if selected && selectedPerformances.length}
-  <section aria-label="Selected performances" class="mt-5 border-t border-stroke pt-5">
+  <section aria-label={i18n.t('Selected performances')} class="mt-5 border-t border-stroke pt-5">
     <div class="mb-4 flex items-start justify-between gap-4">
       <div class="flex flex-wrap gap-x-5 gap-y-2 text-xs text-secondary">
-        <span>Bodyweight <span class="font-mono text-ink">{selected.bodyweight} kg</span></span>
-        <span>Total <span class="font-mono text-ink">{selected.total} kg</span></span>
+        <span
+          >{i18n.t('Bodyweight')}
+          <span class="font-mono text-ink">{i18n.number(selected.bodyweight)} kg</span></span
+        >
+        <span
+          >{i18n.t('Total')}
+          <span class="font-mono text-ink">{i18n.number(selected.total)} kg</span></span
+        >
         <span
           >RIS <span class="font-mono text-ink"
-            >{calculateRis(constants, selected.bodyweight, selected.total).toFixed(2)}</span
+            >{i18n.number(calculateRis(constants, selected.bodyweight, selected.total), 2)}</span
           ></span
         >
       </div>
@@ -271,13 +281,15 @@
         type="button"
         onclick={() => (selected = null)}
         class="shrink-0 text-xs text-secondary underline underline-offset-4 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-muted"
-        >Clear selection</button
+        >{i18n.t('Clear selection')}</button
       >
     </div>
     {#if selectedPerformances.length > 1}
       <p class="mb-3 text-xs text-muted">
-        {selectedPerformances.length} performances have the same recorded bodyweight and total and overlap
-        at this point.
+        {i18n.t(
+          '{count} performances have the same recorded bodyweight and total and overlap at this point.',
+          { count: selectedPerformances.length }
+        )}
       </p>
     {/if}
     <ul class="divide-y divide-stroke/50">
@@ -297,7 +309,7 @@
               >{performance.competition_name}</a
             >
             <span class="ml-2 whitespace-nowrap"
-              >{formatLongDate(performance.competition_date)}</span
+              >{formatLongDate(performance.competition_date, i18n.locale)}</span
             >
           </div>
         </li>

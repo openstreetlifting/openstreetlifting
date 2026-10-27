@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
   import {
@@ -31,6 +32,8 @@
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { FIELD } from '#lib/constants/typography.js';
   import { listingSeo, websiteLd } from '#lib/seo/index.js';
+
+  const i18n = useI18n();
 
   let { data }: { data: PageData } = $props();
 
@@ -74,19 +77,21 @@
 </script>
 
 <Seo
-  title={data.title}
-  description={data.description}
+  title={i18n.t('Streetlifting rankings and records')}
+  description={i18n.t(
+    'Global Streetlifting rankings from every competition in the archive: muscle up, pull up, dips and squat results, RIS scores and athlete records.'
+  )}
   canonical={seo.canonical}
   noindex={seo.noindex}
-  jsonLd={[websiteLd()]}
+  jsonLd={[websiteLd(i18n.locale)]}
 />
 
 <div class="mx-auto max-w-page px-4 py-3 sm:px-6 sm:py-12">
-  <h1 class="sr-only">Streetlifting rankings</h1>
+  <h1 class="sr-only">{i18n.t('Streetlifting rankings')}</h1>
 
   <FilterBar
     bind:search={table.searchFilter}
-    placeholder="Search an athlete"
+    placeholder={i18n.t('Search an athlete')}
     onSearch={() => table.handleFilterChange()}
     activeCount={activeFilters}
     onClear={() => table.clearFilters()}
@@ -97,9 +102,9 @@
       onchange={() => table.handleFilterChange()}
       class="w-full {FIELD} px-3 py-2 sm:w-auto"
     >
-      <option value={null}>All Countries</option>
+      <option value={null}>{i18n.t('All Countries')}</option>
       {#each data.countries as countryOption (countryOption)}
-        <option value={countryOption}>{countryName(countryOption)}</option>
+        <option value={countryOption}>{countryName(countryOption, i18n.locale)}</option>
       {/each}
     </select>
     <select
@@ -107,7 +112,7 @@
       onchange={() => table.handleFilterChange()}
       class="w-full {FIELD} px-3 py-2 sm:w-auto"
     >
-      <option value={null}>All Federations</option>
+      <option value={null}>{i18n.t('All Federations')}</option>
       {#each data.federations as federationOption (federationOption)}
         <option value={federationOption}>{federationOption}</option>
       {/each}
@@ -117,7 +122,7 @@
       onchange={() => table.handleFilterChange()}
       class="w-full {FIELD} px-3 py-2 sm:w-auto"
     >
-      <option value={null}>All Years</option>
+      <option value={null}>{i18n.t('All Years')}</option>
       {#each data.years as yearOption (yearOption)}
         <option value={yearOption}>{yearOption}</option>
       {/each}
@@ -131,7 +136,7 @@
       class="w-full {FIELD} px-3 py-2 sm:w-auto"
     >
       {#each genders as gender (gender.label)}
-        <option value={gender.value}>{gender.label}</option>
+        <option value={gender.value}>{i18n.t(gender.label)}</option>
       {/each}
     </select>
     <select
@@ -139,14 +144,14 @@
       onchange={() => table.handleFilterChange()}
       class="w-full {FIELD} px-3 py-2 sm:w-auto"
     >
-      <option value={null}>All Classes</option>
+      <option value={null}>{i18n.t('All Classes')}</option>
       {#each data.classes as classOption (classOption)}
         <option value={classOption}>{classOption}</option>
       {/each}
     </select>
 
     <div class="flex w-full items-center gap-2 sm:w-auto">
-      <label for="sort-by" class="text-sm text-muted">Sort by</label>
+      <label for="sort-by" class="text-sm text-muted">{i18n.t('Sort by')}</label>
       <select
         id="sort-by"
         bind:value={table.movementFilter}
@@ -154,7 +159,7 @@
         class="flex-1 {FIELD} px-3 py-2 sm:flex-none"
       >
         {#each sorts as sort (sort.value)}
-          <option value={sort.value}>{sort.label}</option>
+          <option value={sort.value}>{i18n.t(sort.label)}</option>
         {/each}
       </select>
     </div>
@@ -163,7 +168,7 @@
   {#if data.error}
     <Card class="max-w-summary p-8">
       <div class="text-center">
-        <p class="text-danger">{data.error}</p>
+        <p class="text-danger">{i18n.t('Failed to load rankings')}</p>
       </div>
     </Card>
   {:else if rankings.length === 0 && !busy}
@@ -181,23 +186,23 @@
     >
       {#snippet head()}
         <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
-          >Rank</th
+          >{i18n.t('Rank')}</th
         >
-        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">Athlete</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}">Total</th>
+        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}">{i18n.t('Total')}</th>
         <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
           <RisHeader />
         </th>
         {#each lifts as lift (lift.value)}
           <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.value)}">
-            {lift.label}
+            {i18n.t(lift.label)}
           </th>
         {/each}
-        <th class="{TABLE_HEAD_CELL} text-secondary">Competition</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary">Federation</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary">Date</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary">Sex</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary">Class</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competition')}</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Federation')}</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Date')}</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Sex')}</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>
       {/snippet}
 
       {#snippet body(rows)}
@@ -230,7 +235,9 @@
                     target="_blank"
                     rel="noopener noreferrer"
                     class="inline-flex shrink-0 items-center text-ink transition-colors hover:text-secondary"
-                    aria-label="{formatAthleteName(entry.athlete)} on Instagram"
+                    aria-label={i18n.t('{athlete} on Instagram', {
+                      athlete: formatAthleteName(entry.athlete),
+                    })}
                     title="@{entry.athlete.instagram_handle}"
                   >
                     <InstagramIcon class="h-4 w-4" />
@@ -238,14 +245,24 @@
                 {/if}
               </span>
             </td>
-            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.total)}</td>
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+              >{formatWeight(entry.total, i18n.locale)}</td
+            >
             <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
               <RisScore value={entry.ris} source={entry.ris_source} />
             </td>
-            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.muscleup)}</td>
-            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.pullup)}</td>
-            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.dips)}</td>
-            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.squat)}</td>
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+              >{formatWeight(entry.muscleup, i18n.locale)}</td
+            >
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+              >{formatWeight(entry.pullup, i18n.locale)}</td
+            >
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+              >{formatWeight(entry.dips, i18n.locale)}</td
+            >
+            <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+              >{formatWeight(entry.squat, i18n.locale)}</td
+            >
             <td class="{TABLE_CELL} {CELL.data}">
               <a
                 href={resolve(`competitions/${entry.competition.slug}`)}
@@ -263,7 +280,7 @@
               </a>
             </td>
             <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap">
-              {formatDate(entry.competition.date)}
+              {formatDate(entry.competition.date, i18n.locale)}
             </td>
             <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
             <td class="{TABLE_CELL} {CELL.data}">{entry.category || NO_VALUE}</td>

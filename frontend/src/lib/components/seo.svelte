@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import {
     INDEXABLE,
     OG_IMAGE,
@@ -7,6 +8,8 @@
     pageTitle,
     type JsonLd,
   } from '#lib/seo/index.js';
+
+  const i18n = useI18n();
 
   interface Props {
     title: string;
@@ -41,7 +44,7 @@
 
   <meta property="og:type" content={type} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:locale" content="en" />
+  <meta property="og:locale" content={i18n.locale === 'fr' ? 'fr_FR' : 'en_GB'} />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />

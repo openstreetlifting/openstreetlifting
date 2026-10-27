@@ -46,20 +46,6 @@ async function cacheFirst(request: Request): Promise<Response> {
   return response;
 }
 
-async function networkFirst(request: Request): Promise<Response> {
-  const cache = await open();
-
-  try {
-    const response = await fetch(request);
-    if (response.ok) cache.put(request, response.clone());
-    return response;
-  } catch (err) {
-    const hit = (await cache.match(request)) ?? (await cache.match('/'));
-    if (hit) return hit;
-    throw err;
-  }
-}
-
 worker.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -72,7 +58,5 @@ worker.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (request.mode === 'navigate') {
-    event.respondWith(networkFirst(request));
-  }
+  // Documents depend on the language cookie; only static assets belong in this cache.
 });

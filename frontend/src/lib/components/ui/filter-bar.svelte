@@ -1,9 +1,12 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import type { Snippet } from 'svelte';
   import SearchInput from './search-input.svelte';
   import { ChevronIcon, CloseIcon } from '#lib/components/icons/index.js';
   import { EDGE_TO_EDGE } from '#lib/constants/table.js';
   import { CONTROL, FIELD } from '#lib/constants/typography.js';
+
+  const i18n = useI18n();
 
   interface Props {
     search: string;
@@ -36,11 +39,11 @@
   <button
     type="button"
     onclick={onClear}
-    aria-label="Clear all filters and sorting"
+    aria-label={i18n.t('Clear all filters and sorting')}
     class="{FIELD} {CONTROL} flex shrink-0 items-center gap-1.5 px-3 py-2 text-secondary hover:border-stroke-strong hover:text-ink"
   >
     <CloseIcon class="h-3 w-3" />
-    Clear
+    {i18n.t('Clear')}
   </button>
 {/snippet}
 
@@ -59,7 +62,7 @@
       aria-controls="filter-panel"
       class="{FIELD} {CONTROL} flex shrink-0 items-center gap-1.5 px-3 py-2 text-secondary sm:hidden"
     >
-      Filters
+      {i18n.t('Filters')}
       {#if activeCount > 0}
         <span class="rounded bg-action px-1 text-[0.65rem] font-semibold text-on-action">
           {activeCount}

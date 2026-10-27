@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { resolve } from '$app/paths';
   import {
     GitHubIcon,
@@ -9,26 +10,28 @@
   import { buildInfo } from '#lib/version.js';
   import { NAV_LINK } from '#lib/constants/typography.js';
 
+  const i18n = useI18n();
+
   const ICON = 'text-secondary transition-colors hover:text-ink';
 </script>
 
 <footer class="border-t border-stroke bg-canvas">
   <div class="mx-auto max-w-page px-4 py-6 sm:px-6 sm:py-10">
     <div class="flex flex-wrap items-center gap-x-8 gap-y-5">
-      <nav aria-label="Footer" class="flex flex-wrap items-center gap-x-5 gap-y-2">
-        <a href={resolve('')} class={NAV_LINK}>Rankings</a>
-        <a href={resolve('competitions')} class={NAV_LINK}>Competitions</a>
-        <a href={resolve('federations')} class={NAV_LINK}>Federations</a>
-        <a href={resolve('countries')} class={NAV_LINK}>Countries</a>
+      <nav aria-label={i18n.t('Footer')} class="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <a href={resolve('')} class={NAV_LINK}>{i18n.t('Rankings')}</a>
+        <a href={resolve('competitions')} class={NAV_LINK}>{i18n.t('Competitions')}</a>
+        <a href={resolve('federations')} class={NAV_LINK}>{i18n.t('Federations')}</a>
+        <a href={resolve('countries')} class={NAV_LINK}>{i18n.t('Countries')}</a>
         <a
           href="https://docs.openstreetlifting.org/"
           target="_blank"
           rel="noopener noreferrer"
-          class={NAV_LINK}>Documentation</a
+          class={NAV_LINK}>{i18n.t('Documentation')}</a
         >
 
-        <a href={resolve('contact')} class={NAV_LINK}>Contact</a>
-        <a href={resolve('privacy')} class={NAV_LINK}>Privacy</a>
+        <a href={resolve('contact')} class={NAV_LINK}>{i18n.t('Contact')}</a>
+        <a href={resolve('privacy')} class={NAV_LINK}>{i18n.t('Privacy')}</a>
       </nav>
 
       <div class="flex items-center gap-4 xl:ml-auto">
@@ -86,7 +89,7 @@
         >
           <DiscordIcon class="h-5 w-5" />
         </a>
-        <a href="mailto:contact@openstreetlifting.org" class={ICON} aria-label="Email">
+        <a href="mailto:contact@openstreetlifting.org" class={ICON} aria-label={i18n.t('Email')}>
           <EmailIcon class="h-5 w-5" />
         </a>
       </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
   import {
@@ -16,6 +17,8 @@
   import { CELL, FIGURE, NO_VALUE } from '#lib/constants/table.js';
   import { TEXT } from '#lib/constants/typography.js';
 
+  const i18n = useI18n();
+
   let { data }: { data: PageData } = $props();
 
   const countries = $derived(data.countries);
@@ -23,29 +26,34 @@
 </script>
 
 <Seo
-  title="Streetlifting by country"
-  description="Streetlifting results and rankings for {countries.length} countries, covering {athleteCount} athletes in the OpenStreetlifting archive."
+  title={i18n.t('Streetlifting by country')}
+  description={i18n.t(
+    'Streetlifting results and rankings for {countries} countries, covering {athletes} athletes in the OpenStreetlifting archive.',
+    { countries: i18n.number(countries.length, 0), athletes: i18n.number(athleteCount, 0) }
+  )}
   canonical={absolute('/countries')}
   jsonLd={[
     breadcrumbLd([
-      { name: 'Rankings', path: '/' },
-      { name: 'Countries', path: '/countries' },
+      { name: i18n.t('Rankings'), path: '/' },
+      { name: i18n.t('Countries'), path: '/countries' },
     ]),
   ]}
 />
 
 <div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
-  <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: 'Countries' }]} />
+  <Breadcrumb
+    items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Countries') }]}
+  />
 
-  <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">Countries</h1>
+  <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">{i18n.t('Countries')}</h1>
 
   <Table rows={countries} itemName="country" pageParam="page">
     {#snippet head()}
-      <th class="{TABLE_HEAD_CELL} text-secondary">Country</th>
-      <th class="{TABLE_HEAD_CELL} text-secondary">Athletes</th>
-      <th class="{TABLE_HEAD_CELL} text-secondary">Competitions</th>
-      <th class="{TABLE_HEAD_CELL} text-secondary">Upcoming</th>
-      <th class="{TABLE_HEAD_CELL} text-secondary">Federations</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Country')}</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Athletes')}</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competitions')}</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Upcoming')}</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Federations')}</th>
     {/snippet}
 
     {#snippet body(rows)}
@@ -57,7 +65,7 @@
               class="flex items-center gap-2 hover:text-secondary"
             >
               <Flag countryCode={country.code} class="shrink-0 [--flag-height:1.25em]" />
-              <span class="underline">{countryName(country.code)}</span>
+              <span class="underline">{countryName(country.code, i18n.locale)}</span>
             </a>
           </td>
           <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{country.athletes}</td>

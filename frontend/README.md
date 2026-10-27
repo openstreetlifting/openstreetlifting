@@ -64,3 +64,15 @@ pnpm preview
 ```
 
 The project uses the Node adapter. Run the built server with `node build/index.js`. Deployment configuration supplies its host, port, and API URL.
+
+## Languages
+
+The frontend supports English and French. The server uses the `osl-language` cookie when set, then the browser’s `Accept-Language` preference, with English as the fallback. Selecting a language in the header automatically saves the choice for one year and reloads the same path, filters, and fragment. The dropdown requires JavaScript; server rendering still uses the saved or browser language without it.
+
+Locales share the existing URLs and canonical links. This keeps existing athlete and competition links stable; French does not have a separately indexable URL or `hreflang` alternate. HTML, page-data responses, and the web manifest vary by language and use private caching. The service worker caches static assets only, so offline document fallback is no longer available.
+
+Translations live in `src/lib/i18n/en.ts` and `fr.ts`. English source messages are the translation IDs. French must cover every ID, and interpolation parameters are checked at call sites. Use `useI18n()` inside components and `i18n.t('Message with {value}', { value })` for text. Use the `Message` component for sentences with inline snippets; translation files contain no HTML. The root layout provides a separate instance for each request, following [SvelteKit’s guidance on shared state](https://svelte.dev/docs/kit/state-management#Avoid-shared-state-on-the-server).
+
+Pass `i18n.locale` to date, number, and country formatters. Dates use UTC to preserve competition calendar dates across time zones. Keep API filter values, event codes, athlete names, competition names, and published divisions unchanged. French movement names are **muscle-up**, **traction**, **dips**, and **squat**; **RIS**, **All4**, and event codes such as **MPDS** retain their names.
+
+When adding a language, extend `Locale`, provide its messages and formatters, add it to the picker, and extend the negotiation, catalog, SSR, and calculator tests.

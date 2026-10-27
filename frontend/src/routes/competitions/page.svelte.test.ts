@@ -40,6 +40,7 @@ vi.mock('$app/navigation', async () => {
 
 function data(event = ''): PageData {
   return {
+    locale: 'en',
     runningCompetitions: [],
     competitions: ['PD', ''].map((format, i) => ({
       competition_id: String(i),

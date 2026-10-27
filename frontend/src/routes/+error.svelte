@@ -1,21 +1,24 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import Button from '#lib/components/ui/button.svelte';
   import { TEXT } from '#lib/constants/typography.js';
 
+  const i18n = useI18n();
+
   const copy = $derived.by(() => {
     if (page.status === 404) {
       return {
-        label: 'Page not found',
-        title: 'This page has left the platform.',
+        label: i18n.t('Page not found'),
+        title: i18n.t('This page has left the platform.'),
         description: '',
       };
     }
     return {
-      label: 'Something went wrong',
-      title: 'We couldn’t load this page.',
-      description: 'Please try again later.',
+      label: i18n.t('Something went wrong'),
+      title: i18n.t('We couldn’t load this page.'),
+      description: i18n.t('Please try again later.'),
     };
   });
 </script>
@@ -44,10 +47,10 @@
     </p>
   {/if}
   <div class="mt-8 flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
-    <Button href={resolve('')} class="min-h-11 text-sm">Back to rankings</Button>
+    <Button href={resolve('')} class="min-h-11 text-sm">{i18n.t('Back to rankings')}</Button>
 
     <Button href={resolve('contact')} variant="outline" class="min-h-11 text-sm text-ink"
-      >Get in touch</Button
+      >{i18n.t('Get in touch')}</Button
     >
   </div>
 </div>
