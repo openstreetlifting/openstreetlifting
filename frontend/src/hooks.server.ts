@@ -31,7 +31,6 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.route.id === '/manifest.webmanifest'
   ) {
     response.headers.set('Content-Language', event.locals.locale);
-    response.headers.append('Vary', 'Cookie');
   }
   event.tracing.root.setAttributes({
     'http.request.method': event.request.method,

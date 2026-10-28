@@ -423,8 +423,8 @@ export default {
     'Bei unverändertem Total von {total} {unit} entsprechen {target} RIS {bodyweight}, also {difference} als eingegeben.',
   RIS: 'RIS',
   'Weight unit': 'Gewichtseinheit',
-  'Your weight unit preference is saved in a cookie for one year.':
-    'Ein Cookie speichert deine Gewichtseinheit für ein Jahr.',
+  'Your weight unit preference is saved in your browser.':
+    'Deine bevorzugte Gewichtseinheit wird in deinem Browser gespeichert.',
 } satisfies Record<Message, string>;
 
 export const counts = {

@@ -416,8 +416,8 @@ export default {
     'Przy sumie {total} {unit} wynik {target} RIS odpowiada {bodyweight}, czyli o {difference} od podanej masy ciała.',
   RIS: 'RIS',
   'Weight unit': 'Jednostka masy',
-  'Your weight unit preference is saved in a cookie for one year.':
-    'Plik cookie zapamiętuje wybraną jednostkę masy przez rok.',
+  'Your weight unit preference is saved in your browser.':
+    'Wybrana jednostka masy jest zapisywana w przeglądarce.',
 } satisfies Record<Message, string>;
 
 export const counts = {

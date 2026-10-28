@@ -4,7 +4,7 @@ import { formatWeight } from '#lib/utils/format.js';
 import {
   displayWeight,
   weightUnit,
-  WEIGHT_UNIT_COOKIE,
+  WEIGHT_UNIT_STORAGE_KEY,
   type WeightUnit,
 } from '#lib/utils/weight-unit.js';
 
@@ -19,6 +19,23 @@ export class WeightPreference {
 
   set unit(value: WeightUnit) {
     this.#selected = value;
+  }
+
+  restore(): void {
+    try {
+      this.unit = weightUnit(localStorage.getItem(WEIGHT_UNIT_STORAGE_KEY));
+    } catch {
+      // Keep the default when browser storage is unavailable.
+    }
+  }
+
+  select(unit: WeightUnit): void {
+    this.unit = unit;
+    try {
+      localStorage.setItem(WEIGHT_UNIT_STORAGE_KEY, unit);
+    } catch {
+      // Unit switching still works for this page when persistence is blocked.
+    }
   }
 
   value(kilograms: number): number {
@@ -41,15 +58,9 @@ export class WeightPreference {
 
 export const WEIGHT_UNIT_CONTEXT = Symbol('weight-unit');
 
-export function provideWeightUnit(initial: () => WeightUnit): WeightPreference {
-  const preference = setContext(WEIGHT_UNIT_CONTEXT, new WeightPreference(initial));
-  onMount(() => {
-    // Cached offline pages can have been rendered before the preference changed.
-    const saved = document.cookie
-      .split(';')
-      .find((entry) => entry.trim().startsWith(`${WEIGHT_UNIT_COOKIE}=`));
-    preference.unit = weightUnit(saved?.split('=')[1]);
-  });
+export function provideWeightUnit(): WeightPreference {
+  const preference = setContext(WEIGHT_UNIT_CONTEXT, new WeightPreference());
+  onMount(() => preference.restore());
   return preference;
 }
 

@@ -319,7 +319,7 @@ export const messages = [
   'At a fixed total of {total} {unit}, {target} RIS corresponds to {bodyweight}, or {difference} than the entered bodyweight.',
   'RIS',
   'Weight unit',
-  'Your weight unit preference is saved in a cookie for one year.',
+  'Your weight unit preference is saved in your browser.',
 ] as const;
 
 export type Message = (typeof messages)[number];

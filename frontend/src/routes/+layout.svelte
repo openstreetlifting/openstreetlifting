@@ -9,7 +9,7 @@
 
   let { data, children }: { data: LayoutData; children: import('svelte').Snippet } = $props();
   const i18n = provideI18n(() => data.locale);
-  provideWeightUnit(() => data.weightUnit);
+  provideWeightUnit();
 
   $effect(() => {
     document.documentElement.lang = data.locale;

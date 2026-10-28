@@ -1,4 +1,4 @@
-export const WEIGHT_UNIT_COOKIE = 'osl-weight-unit';
+export const WEIGHT_UNIT_STORAGE_KEY = 'osl-weight-unit';
 export type WeightUnit = 'kg' | 'lb';
 
 // The international avoirdupois pound is exactly 0.45359237 kilograms.
