@@ -1,5 +1,6 @@
 import type { Locale } from '#lib/i18n/locale.js';
 import { NO_VALUE } from '#lib/constants/table.js';
+import { displayWeight, type WeightUnit } from './weight-unit.js';
 
 export function formatDate(dateString: string | null, locale: Locale = 'en'): string {
   if (!dateString) return '-';
@@ -66,12 +67,18 @@ export function countryName(countryCode: string, locale: Locale = 'en'): string 
 // of a value is a dash. Guarding on truthiness silently turns it into no data.
 export function formatWeight(
   weight: number | string | null | undefined,
-  locale: Locale = 'en'
+  locale: Locale = 'en',
+  unit: WeightUnit = 'kg',
+  digits?: number
 ): string {
   if (weight === null || weight === undefined || weight === '') return NO_VALUE;
-  return locale === 'en'
+  return locale === 'en' && unit === 'kg' && digits === undefined
     ? `${weight}`
-    : new Intl.NumberFormat(locale, { maximumFractionDigits: 3 }).format(Number(weight));
+    : new Intl.NumberFormat(locale, {
+        useGrouping: false,
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits ?? (unit === 'lb' ? 2 : 3),
+      }).format(displayWeight(Number(weight), unit));
 }
 
 export function formatScore(

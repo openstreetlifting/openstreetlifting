@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
+  import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { TablePagination } from '#lib/types/pagination.js';
   import type { RankingEntry } from '#lib/types/ranking.js';
@@ -18,11 +19,12 @@
     ATHLETE_CONTENT,
   } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
-  import { formatAthleteName, formatDate, formatWeight } from '#lib/utils/index.js';
+  import { formatAthleteName, formatDate } from '#lib/utils/index.js';
   import { CELL, FIGURE, SORTED_COLUMN, TEXT_CELL } from '#lib/constants/table.js';
   import { RANKING_LIFTS } from '#lib/constants/ranking.js';
 
   const i18n = useI18n();
+  const weights = useWeightUnit();
 
   interface Props {
     entries: RankingEntry[];
@@ -41,7 +43,7 @@
       >{i18n.t('Rank')}</th
     >
     <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
-    <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')}</th>
+    <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')} ({weights.unit})</th>
     <th class="{TABLE_HEAD_CELL} text-secondary {SORTED_COLUMN}">
       <RisHeader />
     </th>
@@ -77,21 +79,22 @@
           </span>
         </td>
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-          >{formatWeight(entry.total, i18n.locale)}</td
+          >{weights.format(entry.total, i18n.locale)}</td
         >
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
           <RisScore value={entry.ris} source={entry.ris_source} />
         </td>
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-          >{formatWeight(entry.muscleup, i18n.locale)}</td
+          >{weights.format(entry.muscleup, i18n.locale)}</td
         >
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-          >{formatWeight(entry.pullup, i18n.locale)}</td
-        >
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.dips, i18n.locale)}</td
+          >{weights.format(entry.pullup, i18n.locale)}</td
         >
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-          >{formatWeight(entry.squat, i18n.locale)}</td
+          >{weights.format(entry.dips, i18n.locale)}</td
+        >
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+          >{weights.format(entry.squat, i18n.locale)}</td
         >
         <td class="{TABLE_CELL} {CELL.data}">
           <a
@@ -117,7 +120,9 @@
           {formatDate(entry.competition.date, i18n.locale)}
         </td>
         <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
-        {#if classed}<td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>{/if}
+        {#if classed}<td class="{TABLE_CELL} {CELL.data}"
+            >{weights.category(entry.category, i18n.locale)}</td
+          >{/if}
       </tr>
     {/each}
   {/snippet}

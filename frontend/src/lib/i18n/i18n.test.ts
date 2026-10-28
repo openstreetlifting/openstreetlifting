@@ -37,7 +37,8 @@ describe('language negotiation', () => {
 
 it('keeps independent locales and interpolates values without interpreting their content', () => {
   expect(
-    fr.t('Attempt {slot}: {weight} kg, {result}', {
+    fr.t('Attempt {slot}: {weight} {unit}, {result}', {
+      unit: 'kg',
       slot: 1,
       weight: '72,5',
       result: fr.t('no lift'),

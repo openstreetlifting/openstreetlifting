@@ -1,6 +1,7 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
   import LanguagePicker from '#lib/components/language-picker.svelte';
+  import WeightUnitPicker from '#lib/components/weight-unit-picker.svelte';
   import { page } from '$app/state';
   import { afterNavigate } from '$app/navigation';
   import { resolve } from '$app/paths';
@@ -48,7 +49,7 @@
       aria-expanded={menuOpen}
       aria-controls="primary-nav"
       aria-label={menuOpen ? i18n.t('Close menu') : i18n.t('Open menu')}
-      class="rounded-lg p-2 text-secondary transition-colors hover:text-ink focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none md:hidden"
+      class="rounded-lg p-2 text-secondary transition-colors hover:text-ink focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none lg:hidden"
     >
       {#if menuOpen}
         <CloseIcon />
@@ -61,7 +62,7 @@
       id="primary-nav"
       class="{menuOpen
         ? 'flex'
-        : 'hidden'} w-full flex-col gap-4 pt-4 pb-2 md:flex md:w-auto md:flex-row md:items-center md:gap-6 md:pt-0 md:pb-0"
+        : 'hidden'} w-full flex-col gap-4 pt-4 pb-2 lg:flex lg:w-auto lg:flex-row lg:items-center lg:gap-4 lg:pt-0 lg:pb-0 xl:gap-6"
     >
       <li>
         <a
@@ -115,7 +116,7 @@
           {i18n.t('Contact')}
         </a>
       </li>
-      <li><LanguagePicker /></li>
+      <li class="flex items-center gap-2"><LanguagePicker /><WeightUnitPicker /></li>
       <li class="flex items-center gap-3">
         <a
           href="https://github.com/openstreetlifting/openstreetlifting"

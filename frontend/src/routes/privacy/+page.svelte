@@ -139,6 +139,7 @@
 
     <section aria-labelledby="visitors">
       <h2 id="visitors" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Website analytics')}</h2>
+      <p class="mb-4">{i18n.t('Your weight unit preference is saved in your browser.')}</p>
       <p class="mb-4">
         {i18n.t(
           'You can browse without an account. Servers receive connection information, including your IP address and browser details, to deliver pages and protect the service, on the basis of legitimate interests under Article 6(1)(f).'

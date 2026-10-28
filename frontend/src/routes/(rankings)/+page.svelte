@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
+  import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
   import {
@@ -24,7 +25,7 @@
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { afterNavigate } from '$app/navigation';
-  import { formatDate, countryName, formatWeight, formatAthleteName } from '#lib/utils/index.js';
+  import { formatDate, countryName, formatAthleteName } from '#lib/utils/index.js';
   import { CELL, FIGURE, NO_VALUE, SORTED_COLUMN, TEXT_CELL } from '#lib/constants/table.js';
   import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '#lib/constants/ranking.js';
   import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
@@ -34,6 +35,7 @@
   import { listingSeo, websiteLd } from '#lib/seo/index.js';
 
   const i18n = useI18n();
+  const weights = useWeightUnit();
 
   let { data }: { data: PageData } = $props();
 
@@ -146,7 +148,7 @@
     >
       <option value={null}>{i18n.t('All Classes')}</option>
       {#each data.classes as classOption (classOption)}
-        <option value={classOption}>{classOption}</option>
+        <option value={classOption}>{weights.category(classOption, i18n.locale)}</option>
       {/each}
     </select>
 
@@ -192,7 +194,9 @@
           >{i18n.t('Rank')}</th
         >
         <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}">{i18n.t('Total')}</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}"
+          >{i18n.t('Total')} ({weights.unit})</th
+        >
         <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
           <RisHeader />
         </th>
@@ -249,22 +253,22 @@
               </span>
             </td>
             <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-              >{formatWeight(entry.total, i18n.locale)}</td
+              >{weights.format(entry.total, i18n.locale)}</td
             >
             <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
               <RisScore value={entry.ris} source={entry.ris_source} />
             </td>
             <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-              >{formatWeight(entry.muscleup, i18n.locale)}</td
+              >{weights.format(entry.muscleup, i18n.locale)}</td
             >
             <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-              >{formatWeight(entry.pullup, i18n.locale)}</td
+              >{weights.format(entry.pullup, i18n.locale)}</td
             >
             <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-              >{formatWeight(entry.dips, i18n.locale)}</td
+              >{weights.format(entry.dips, i18n.locale)}</td
             >
             <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-              >{formatWeight(entry.squat, i18n.locale)}</td
+              >{weights.format(entry.squat, i18n.locale)}</td
             >
             <td class="{TABLE_CELL} {CELL.data}">
               <a
@@ -288,7 +292,9 @@
               {formatDate(entry.competition.date, i18n.locale)}
             </td>
             <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
-            <td class="{TABLE_CELL} {CELL.data}">{entry.category || NO_VALUE}</td>
+            <td class="{TABLE_CELL} {CELL.data}"
+              >{weights.category(entry.category, i18n.locale) || NO_VALUE}</td
+            >
           </tr>
         {/each}
       {/snippet}

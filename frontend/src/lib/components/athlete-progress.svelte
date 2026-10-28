@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
+  import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
   import { CHART, FIELD, TEXT } from '#lib/constants/typography.js';
@@ -8,7 +9,7 @@
     type ProgressMetric,
     type ProgressPoint,
   } from '#lib/utils/athlete-progress.js';
-  import { formatLongDate, formatScore, formatWeight } from '#lib/utils/format.js';
+  import { formatLongDate, formatScore } from '#lib/utils/format.js';
   import { resolve } from '$app/paths';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
@@ -17,6 +18,7 @@
   import { utcMonth } from 'd3-time';
 
   const i18n = useI18n();
+  const weights = useWeightUnit();
 
   let chartWidth = $state<number>();
 
@@ -38,6 +40,12 @@
     onFormatChange?: (format: string) => void;
   } = $props();
   const points = $derived(progressPoints(competitions, metric, format));
+  const chartPoints = $derived(
+    points.map((point) => ({
+      ...point,
+      plotted: metric === 'ris' ? point.value : weights.value(point.value),
+    }))
+  );
   const label = $derived(i18n.t(RANKING_SORTS.find((option) => option.value === metric)!.label));
 
   const best = $derived(points.length ? Math.max(...points.map((point) => point.value)) : null);
@@ -47,7 +55,11 @@
   const padding = $derived(Math.max(((best ?? 0) - minimum) * 0.15, (best ?? 0) * 0.03, 1));
   const yDomain = $derived(
     scaleLinear()
-      .domain([Math.max(0, minimum - padding), (best ?? 0) + padding])
+      .domain(
+        [Math.max(0, minimum - padding), (best ?? 0) + padding].map((value) =>
+          metric === 'ris' ? value : weights.value(value)
+        )
+      )
       .nice(4)
       .domain()
   );
@@ -75,7 +87,7 @@
   function valueLabel(value: number): string {
     return metric === 'ris'
       ? formatScore(value, i18n.locale)
-      : `${formatWeight(value, i18n.locale)} kg`;
+      : `${weights.format(value, i18n.locale)} ${weights.unit}`;
   }
 
   function pointLabel(point: ProgressPoint): string {
@@ -131,16 +143,16 @@
         >
       </p>
     </div>
-    {#key metric + format}
+    {#key metric + format + weights.unit}
       <div class="h-80 w-full" bind:clientWidth={chartWidth}>
         <Chart
           ssr
           width={chartWidth || 400}
           class="relative w-full! overflow-hidden [container-type:inline-size]"
           height={320}
-          data={points}
+          data={chartPoints}
           x="timestamp"
-          y="value"
+          y="plotted"
           xScale={scaleUtc()}
           {xDomain}
           {yDomain}
@@ -177,9 +189,10 @@
               />
               <Axis
                 placement="left"
-                label={metric === 'ris' ? 'RIS' : 'kg'}
+                label={metric === 'ris' ? 'RIS' : weights.unit}
                 labelProps={{ class: CHART.label }}
                 ticks={4}
+                format={(value: number) => i18n.number(value)}
                 tickLabelProps={{ class: CHART.tick }}
                 grid={{ class: 'stroke-stroke' }}
                 stroke="var(--color-stroke)"
@@ -262,10 +275,10 @@
                     >{point.competition.competition_name}</a
                   >
                   <p class="mt-1 text-xs text-muted">
-                    {formatLongDate(point.competition.competition_date, i18n.locale)} · {point
-                      .competition.category_name}{point.competition.division
-                      ? ` · ${point.competition.division}`
-                      : ''}
+                    {formatLongDate(point.competition.competition_date, i18n.locale)} · {weights.category(
+                      point.competition.category_name,
+                      i18n.locale
+                    )}{point.competition.division ? ` · ${point.competition.division}` : ''}
                   </p>
                   {#if metric === 'ris'}<p class="mt-1 text-xs text-muted">
                       {point.competition.ris_source === 'reported'

@@ -208,10 +208,10 @@ export default {
   'Next page': 'Pagina successiva',
   Next: 'Successiva',
   Category: 'Categoria',
-  'Total, kg': 'Totale, kg',
+  'Total, {unit}': 'Totale, {unit}',
   'RIS 100 benchmark': 'Riferimento RIS 100',
   Bodyweight: 'Peso corporeo',
-  'Bodyweight, kg': 'Peso corporeo, kg',
+  'Bodyweight, {unit}': 'Peso corporeo, {unit}',
   'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.':
     'Passa il cursore o tocca una prestazione per esaminarla. Con il grafico attivo, usa le frecce sinistra e destra per scorrere le prestazioni, Inizio o Fine per spostarti agli estremi, Invio per selezionare ed Esc per cancellare la selezione.',
   'Figure 1.': 'Figura 1.',
@@ -238,8 +238,8 @@ export default {
   'Target RIS': 'RIS obiettivo',
   'Target score': 'Punteggio obiettivo',
   Target: 'Obiettivo',
-  'At the entered total, the bodyweight corresponding to this target lies outside the calculator’s 30–220 kg input range.':
-    'Con il totale inserito, il peso corporeo per questo obiettivo è fuori dall’intervallo consentito dal calcolatore (30–220 kg).',
+  'At the entered total, the bodyweight corresponding to this target lies outside the calculator’s {min}–{max} {unit} input range.':
+    'Con il totale inserito, il peso corporeo per questo obiettivo è fuori dall’intervallo consentito dal calcolatore ({min}–{max} {unit}).',
   'At the entered total, the model yields a score at or above this target for any finite bodyweight.':
     'Con il totale inserito, il modello dà un punteggio pari o superiore all’obiettivo per qualsiasi peso corporeo finito.',
   'At the entered total, no finite bodyweight in the model yields this target score.':
@@ -329,7 +329,7 @@ export default {
   'Page {page} of {pages} · {count} {items}': 'Pagina {page} di {pages} · {count} {items}',
   '{athlete} on Instagram': '{athlete} su Instagram',
   'in category {category}': 'nella categoria {category}',
-  'Attempt {slot}: {weight} kg, {result}': 'Tentativo {slot}: {weight} kg, {result}',
+  'Attempt {slot}: {weight} {unit}, {result}': 'Tentativo {slot}: {weight} {unit}, {result}',
   'Attempt {slot} not recorded': 'Tentativo {slot} non registrato',
   'good lift': 'valido',
   'no lift': 'nullo',
@@ -343,7 +343,7 @@ export default {
   'No dated {movement} results available.': 'Nessun risultato con data registrata per {movement}.',
   'No dated {movement} results available for {format}.':
     'Nessun risultato con data registrata per {movement} nel formato {format}.',
-  'Enter a number between {min} and {max} kg.': 'Inserisci un numero tra {min} e {max} kg.',
+  'Enter a number between {min} and {max} {unit}.': 'Inserisci un numero tra {min} e {max} {unit}.',
   '{label} slider': 'Cursore: {label}',
   'The calculated score is above the target of {target} RIS.':
     'Il punteggio calcolato supera l’obiettivo di {target} RIS.',
@@ -355,8 +355,8 @@ export default {
     'Totale di gara in base al peso corporeo con il riferimento RIS 100, {category}, edizione {year}',
   '{count} performances have the same recorded bodyweight and total and overlap at this point.':
     'In questo punto si sovrappongono {count} prestazioni con lo stesso peso corporeo e lo stesso totale registrati.',
-  '{athlete}. Bodyweight {bodyweight} kg, total {total} kg, RIS {score}.':
-    '{athlete}. Peso corporeo {bodyweight} kg, totale {total} kg, RIS {score}.',
+  '{athlete}. Bodyweight {bodyweight} {unit}, total {total} {unit}, RIS {score}.':
+    '{athlete}. Peso corporeo {bodyweight} {unit}, totale {total} {unit}, RIS {score}.',
   '{competition} is scheduled for {date}. Results will appear here once published.':
     '{competition} è in programma per il {date}. I risultati compariranno qui dopo la pubblicazione.',
   'Streetlifting rankings and records': 'Classifiche e record di streetlifting',
@@ -411,14 +411,17 @@ export default {
   '#{place} of {field} worldwide': 'n. {place} su {field} nel mondo',
   'Ranked {places} by RIS.': 'Classifica RIS: {places}.',
   ' and ': ' e ',
-  '{difference} kg more': '{difference} kg in più',
-  '{difference} kg less': '{difference} kg in meno',
-  '{bodyweight} kg bodyweight': '{bodyweight} kg di peso corporeo',
-  'At a fixed bodyweight of {bodyweight} kg, {target} RIS corresponds to a total of {total}, or {difference} than the entered total.':
-    'Mantenendo il peso corporeo a {bodyweight} kg, un punteggio di {target} RIS corrisponde a un totale di {total}: {difference} rispetto al totale inserito.',
-  'At a fixed total of {total} kg, {target} RIS corresponds to {bodyweight}, or {difference} than the entered bodyweight.':
-    'Mantenendo il totale a {total} kg, un punteggio di {target} RIS corrisponde a {bodyweight}: {difference} rispetto al peso corporeo inserito.',
+  '{difference} {unit} more': '{difference} {unit} in più',
+  '{difference} {unit} less': '{difference} {unit} in meno',
+  '{bodyweight} {unit} bodyweight': '{bodyweight} {unit} di peso corporeo',
+  'At a fixed bodyweight of {bodyweight} {unit}, {target} RIS corresponds to a total of {total}, or {difference} than the entered total.':
+    'Mantenendo il peso corporeo a {bodyweight} {unit}, un punteggio di {target} RIS corrisponde a un totale di {total}: {difference} rispetto al totale inserito.',
+  'At a fixed total of {total} {unit}, {target} RIS corresponds to {bodyweight}, or {difference} than the entered bodyweight.':
+    'Mantenendo il totale a {total} {unit}, un punteggio di {target} RIS corrisponde a {bodyweight}: {difference} rispetto al peso corporeo inserito.',
   RIS: 'RIS',
+  'Weight unit': 'Unità di peso',
+  'Your weight unit preference is saved in your browser.':
+    'L’unità di peso scelta viene salvata nel browser.',
 } satisfies Record<Message, string>;
 
 export const counts = {

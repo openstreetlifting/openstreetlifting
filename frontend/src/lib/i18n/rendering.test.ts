@@ -76,7 +76,9 @@ it.each([
 
 it.each(LOCALES)('renders RIS attribution and the reported-score symbol in %s', (locale) => {
   const { body } = render(Ris, {
-    props: { data: { locale, editions: [], distribution: { men: [], women: [] } } },
+    props: {
+      data: { locale, editions: [], distribution: { men: [], women: [] } },
+    },
     context: new Map([[I18N_CONTEXT, new I18n(() => locale)]]),
   });
   expect(body).toContain('href="https://warisradji.com/ris/"');

@@ -4,6 +4,7 @@ import { page as appPage } from '$app/state';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AthletePage from './+page.svelte';
+import { WEIGHT_UNIT_CONTEXT, WeightPreference } from '#lib/state/weight-unit.svelte.js';
 import type {
   AthleteCompetitionSummary,
   AthleteDetail,
@@ -77,6 +78,29 @@ function athlete(): AthleteDetail {
 function query(link: Element): URLSearchParams {
   return new URL(link.getAttribute('href')!, location.origin).searchParams;
 }
+
+it('converts records and class captions without changing leaderboard filter values', async () => {
+  const lifter = athlete();
+  lifter.personal_records = [
+    {
+      movement_name: 'Pull-up',
+      max_weight: '90',
+      competition_name: 'Euros',
+      competition_slug: 'euros',
+      date: '2026-01-01',
+    },
+  ];
+  render(AthletePage, {
+    props: { data: { locale: 'en', athlete: lifter } },
+    context: new Map([[WEIGHT_UNIT_CONTEXT, new WeightPreference(() => 'lb')]]),
+  });
+  await expect.element(page.getByText('198.42', { exact: true })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Metric' }).selectOptions('total');
+  const global = page.getByRole('link', { name: /Global.*#101/ });
+  await expect.element(global).toMatchTextContent('in category -176.37 lb');
+  expect(query(global.element()).get('category')).toBe('-80');
+  expect(lifter.personal_records[0].max_weight).toBe('90');
+});
 
 it('defaults both cards to RIS with separate global and country pages', async () => {
   render(AthletePage, { data: { locale: 'en', athlete: athlete() } });

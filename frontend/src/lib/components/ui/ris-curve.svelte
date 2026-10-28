@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
+  import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import { Chart, Points, Spline, Tooltip } from 'layerchart/svg';
   import type { ChartState } from 'layerchart';
   import { resolve } from '$app/paths';
@@ -9,8 +10,10 @@
   import type { RisConstants, RisPerformance } from '#lib/types/ris.js';
   import { benchmarkTotal, calculateRis } from '#lib/utils/ris.js';
   import { formatLongDate } from '#lib/utils/format.js';
+  import { kilograms } from '#lib/utils/weight-unit.js';
 
   const i18n = useI18n();
+  const weights = useWeightUnit();
 
   let {
     constants,
@@ -125,7 +128,7 @@
 
 <figure class="ris-chart m-0" aria-labelledby="{id}-caption">
   <div class="mb-3 flex items-center justify-between text-xs text-muted">
-    <span>{i18n.t('Total, kg')}</span>
+    <span>{i18n.t('Total, {unit}', { unit: weights.unit })}</span>
     <span class="font-mono">{i18n.t('RIS 100 benchmark')}</span>
   </div>
   <div
@@ -164,13 +167,21 @@
         xAxis: {
           tickMarks: false,
           tickSpacing: 70,
-          format: (value: number) => String(value),
+          ticks: scaleLinear()
+            .domain(xDomain.map((value) => weights.value(value)))
+            .ticks(Math.max(2, Math.floor(chartWidth / 90)))
+            .map((value) => kilograms(value, weights.unit)),
+          format: (value: number) => weights.format(value, i18n.locale),
           tickLabelProps: { fontSize: 11, fill: 'var(--color-secondary)' },
         },
         yAxis: {
           tickMarks: false,
           tickSpacing: 60,
-          format: (value: number) => String(value),
+          ticks: scaleLinear()
+            .domain(yDomain.map((value) => weights.value(value)))
+            .ticks(5)
+            .map((value) => kilograms(value, weights.unit)),
+          format: (value: number) => weights.format(value, i18n.locale),
           tickLabelProps: { fontSize: 11, fill: 'var(--color-secondary)' },
         },
       }}
@@ -220,9 +231,15 @@
             </p>
             <dl class="grid grid-cols-[1fr_auto] gap-x-6 gap-y-1.5">
               <dt>{i18n.t('Bodyweight')}</dt>
-              <dd class="text-right font-mono">{i18n.number(data.bodyweight, 2)} kg</dd>
+              <dd class="text-right font-mono">
+                {weights.format(data.bodyweight, i18n.locale, 2)}
+                {weights.unit}
+              </dd>
               <dt>{i18n.t('Total')}</dt>
-              <dd class="text-right font-mono">{i18n.number(data.total, 2)} kg</dd>
+              <dd class="text-right font-mono">
+                {weights.format(data.total, i18n.locale, 2)}
+                {weights.unit}
+              </dd>
               <dt>RIS</dt>
               <dd class="text-right font-mono text-ink">
                 {i18n.number(calculateRis(constants, data.bodyweight, data.total), 2)}
@@ -233,7 +250,9 @@
       {/snippet}
     </Chart>
   </div>
-  <p class="mt-1 text-right text-xs text-muted">{i18n.t('Bodyweight, kg')}</p>
+  <p class="mt-1 text-right text-xs text-muted">
+    {i18n.t('Bodyweight, {unit}', { unit: weights.unit })}
+  </p>
   <p id="{id}-instructions" class="sr-only">
     {i18n.t(
       'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.'
@@ -242,10 +261,11 @@
   <p class="sr-only" aria-live="polite">
     {#if keyboardIndex >= 0 && points[keyboardIndex]}
       {@const point = points[keyboardIndex]}
-      {i18n.t('{athlete}. Bodyweight {bodyweight} kg, total {total} kg, RIS {score}.', {
+      {i18n.t('{athlete}. Bodyweight {bodyweight} {unit}, total {total} {unit}, RIS {score}.', {
+        unit: weights.unit,
         athlete: `${point.athlete_name}, ${point.competition_name}, ${formatLongDate(point.competition_date, i18n.locale)}`,
-        bodyweight: i18n.number(point.bodyweight),
-        total: i18n.number(point.total),
+        bodyweight: weights.format(point.bodyweight, i18n.locale),
+        total: weights.format(point.total, i18n.locale),
         score: i18n.number(calculateRis(constants, point.bodyweight, point.total), 2),
       })}
     {/if}
@@ -265,11 +285,15 @@
       <div class="flex flex-wrap gap-x-5 gap-y-2 text-xs text-secondary">
         <span
           >{i18n.t('Bodyweight')}
-          <span class="font-mono text-ink">{i18n.number(selected.bodyweight)} kg</span></span
+          <span class="font-mono text-ink"
+            >{weights.format(selected.bodyweight, i18n.locale)} {weights.unit}</span
+          ></span
         >
         <span
           >{i18n.t('Total')}
-          <span class="font-mono text-ink">{i18n.number(selected.total)} kg</span></span
+          <span class="font-mono text-ink"
+            >{weights.format(selected.total, i18n.locale)} {weights.unit}</span
+          ></span
         >
         <span
           >RIS <span class="font-mono text-ink"
