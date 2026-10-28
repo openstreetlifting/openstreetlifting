@@ -1655,7 +1655,7 @@ dependencies = [
 
 [[package]]
 name = "osl_api"
-version = "0.57.0"
+version = "0.57.1"
 dependencies = [
  "anyhow",
  "axum",
@@ -1687,7 +1687,7 @@ dependencies = [
 
 [[package]]
 name = "osl_db"
-version = "0.57.0"
+version = "0.57.1"
 dependencies = [
  "chrono",
  "metrics",
@@ -1702,7 +1702,7 @@ dependencies = [
 
 [[package]]
 name = "osl_domain"
-version = "0.57.0"
+version = "0.57.1"
 dependencies = [
  "rust_decimal",
  "serde",
@@ -1715,7 +1715,7 @@ dependencies = [
 
 [[package]]
 name = "osl_importer"
-version = "0.57.0"
+version = "0.57.1"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1739,7 +1739,7 @@ dependencies = [
 
 [[package]]
 name = "osl_telemetry"
-version = "0.57.0"
+version = "0.57.1"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2071,7 +2071,7 @@ dependencies = [
 
 [[package]]
 name = "recover-bodyweight"
-version = "0.57.0"
+version = "0.57.1"
 dependencies = [
  "anyhow",
  "clap",
