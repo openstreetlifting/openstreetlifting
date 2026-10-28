@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.57.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.57.0...v0.57.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* **data:** set Tristan Gautier country to France ([#869](https://github.com/openstreetlifting/openstreetlifting/issues/869)) ([f2da0c0](https://github.com/openstreetlifting/openstreetlifting/commit/f2da0c0a7332688d0974117f15279c23cd369298))
+
 ## [0.57.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.56.3...v0.57.0) (2026-10-28)
 
 
