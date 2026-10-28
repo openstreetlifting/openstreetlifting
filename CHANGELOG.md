@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.57.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.56.3...v0.57.0) (2026-10-28)
+
+
+### Features
+
+* **frontend:** add French, German, Italian and Polish ([#868](https://github.com/openstreetlifting/openstreetlifting/issues/868)) ([6161db4](https://github.com/openstreetlifting/openstreetlifting/commit/6161db4e78b41743b650e60192ccef7804c0db79))
+
+
+### Bug Fixes
+
+* **deps:** update dependency layerchart to ^2.9.1 ([#866](https://github.com/openstreetlifting/openstreetlifting/issues/866)) ([e82e88c](https://github.com/openstreetlifting/openstreetlifting/commit/e82e88c009f0fc6037e53c8ba5da5dc7e2d17eb8))
+
 ## [0.56.3](https://github.com/openstreetlifting/openstreetlifting/compare/v0.56.2...v0.56.3) (2026-10-25)
 
 
