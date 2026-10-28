@@ -1,9 +1,14 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
+  import LanguagePicker from '#lib/components/language-picker.svelte';
   import { page } from '$app/state';
   import { afterNavigate } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { GitHubIcon, InstagramIcon, MenuIcon, CloseIcon } from '#lib/components/icons/index.js';
+  import { stripLocale } from '#lib/i18n/paths.js';
   import { NAV_LINK } from '#lib/constants/typography.js';
+
+  const i18n = useI18n();
 
   let menuOpen = $state(false);
 
@@ -14,7 +19,8 @@
   });
 
   function isActive(path: string): boolean {
-    return path === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(path);
+    const pathname = stripLocale(page.url.pathname);
+    return path === '/' ? pathname === '/' : pathname.startsWith(path);
   }
 </script>
 
@@ -29,8 +35,8 @@
     class="mx-auto flex max-w-page flex-wrap items-center justify-between px-4 py-3 sm:px-6 sm:py-4"
   >
     <a
-      href={resolve('')}
-      title="OpenStreetlifting, back to the full rankings"
+      href={i18n.href(resolve(''))}
+      title={i18n.t('OpenStreetlifting, back to the full rankings')}
       class="opacity-90 transition-opacity hover:opacity-100"
     >
       <img src="/logo_width.svg" alt="OpenStreetlifting" class="h-7 w-auto sm:h-8" />
@@ -41,7 +47,7 @@
       onclick={() => (menuOpen = !menuOpen)}
       aria-expanded={menuOpen}
       aria-controls="primary-nav"
-      aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+      aria-label={menuOpen ? i18n.t('Close menu') : i18n.t('Open menu')}
       class="rounded-lg p-2 text-secondary transition-colors hover:text-ink focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none md:hidden"
     >
       {#if menuOpen}
@@ -51,19 +57,6 @@
       {/if}
     </button>
 
-    <!-- Records and FAQ are announced but muted until the routes exist. -->
-    {#snippet comingSoon(label: string)}
-      <li>
-        <span
-          class="{NAV_LINK} cursor-not-allowed text-muted hover:text-muted"
-          aria-disabled="true"
-          title="Coming soon"
-        >
-          {label}
-        </span>
-      </li>
-    {/snippet}
-
     <ul
       id="primary-nav"
       class="{menuOpen
@@ -72,37 +65,35 @@
     >
       <li>
         <a
-          href={resolve('')}
+          href={i18n.href(resolve(''))}
           class={NAV_LINK}
           class:text-ink={isActive('/')}
           class:text-secondary={!isActive('/')}
           aria-current={isActive('/') ? 'page' : undefined}
         >
-          Rankings
+          {i18n.t('Rankings')}
         </a>
       </li>
       <li>
         <a
-          href={resolve('competitions')}
+          href={i18n.href(resolve('competitions'))}
           class={NAV_LINK}
           class:text-ink={isActive('/competitions')}
           class:text-secondary={!isActive('/competitions')}
           aria-current={isActive('/competitions') ? 'page' : undefined}
         >
-          Competitions
+          {i18n.t('Competitions')}
         </a>
       </li>
       <li>
         <a
-          href={resolve('ris')}
+          href={i18n.href(resolve('ris'))}
           class={NAV_LINK}
           class:text-ink={isActive('/ris')}
           class:text-secondary={!isActive('/ris')}
           aria-current={isActive('/ris') ? 'page' : undefined}>RIS</a
         >
       </li>
-      {@render comingSoon('Records')}
-      {@render comingSoon('FAQ')}
       <li>
         <a
           href="https://docs.openstreetlifting.org/"
@@ -110,20 +101,21 @@
           rel="noopener noreferrer"
           class={NAV_LINK}
         >
-          Docs
+          {i18n.t('Docs')}
         </a>
       </li>
       <li>
         <a
-          href={resolve('contact')}
+          href={i18n.href(resolve('contact'))}
           class={NAV_LINK}
           class:text-ink={isActive('/contact')}
           class:text-secondary={!isActive('/contact')}
           aria-current={isActive('/contact') ? 'page' : undefined}
         >
-          Contact
+          {i18n.t('Contact')}
         </a>
       </li>
+      <li><LanguagePicker /></li>
       <li class="flex items-center gap-3">
         <a
           href="https://github.com/openstreetlifting/openstreetlifting"

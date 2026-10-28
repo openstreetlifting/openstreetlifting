@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
   import {
@@ -16,6 +17,8 @@
   import { CELL, FIGURE, NO_VALUE } from '#lib/constants/table.js';
   import { TEXT } from '#lib/constants/typography.js';
 
+  const i18n = useI18n();
+
   let { data }: { data: PageData } = $props();
 
   const federations = $derived(data.federations);
@@ -30,37 +33,46 @@
 </script>
 
 <Seo
-  title="Streetlifting federations"
-  description="{federations.length} Streetlifting federations and organisers in the OpenStreetlifting archive, with {competitionCount} competitions of muscle up, pull up, dips and squat results."
+  title={i18n.t('Streetlifting federations')}
+  description={i18n.t(
+    '{federations} Streetlifting federations and organisers in the OpenStreetlifting archive, with {competitions} competitions of muscle up, pull up, dips and squat results.',
+    {
+      federations: i18n.number(federations.length, 0),
+      competitions: i18n.number(competitionCount, 0),
+    }
+  )}
   canonical={absolute('/federations')}
   jsonLd={[
-    breadcrumbLd([
-      { name: 'Rankings', path: '/' },
-      { name: 'Competitions', path: '/competitions' },
-      { name: 'Federations', path: '/federations' },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: i18n.t('Competitions'), path: '/competitions' },
+        { name: i18n.t('Federations'), path: '/federations' },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
 <div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
-      { label: 'Rankings', href: rankingsHref() },
-      { label: 'Competitions', href: '/competitions' },
-      { label: 'Federations' },
+      { label: i18n.t('Rankings'), href: rankingsHref() },
+      { label: i18n.t('Competitions'), href: '/competitions' },
+      { label: i18n.t('Federations') },
     ]}
   />
 
-  <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">Federations</h1>
+  <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">{i18n.t('Federations')}</h1>
 
   <Table rows={federations} itemName="federation" pageParam="page">
     {#snippet head()}
-      <th class="{TABLE_HEAD_CELL} text-secondary">Federation</th>
-      <th class="{TABLE_HEAD_CELL} text-secondary">Country</th>
-      <th class="{TABLE_HEAD_CELL} text-secondary">Competitions</th>
-      <th class="{TABLE_HEAD_CELL} text-secondary">Entries</th>
-      <th class="{TABLE_HEAD_CELL} text-secondary">Upcoming</th>
-      <th class="{TABLE_HEAD_CELL} text-secondary">Active</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Federation')}</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Country')}</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competitions')}</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Entries')}</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Upcoming')}</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Active')}</th>
     {/snippet}
 
     {#snippet body(rows)}
@@ -68,7 +80,7 @@
         <tr class="transition-colors">
           <td class="{TABLE_CELL} {CELL.identity}">
             <a
-              href={resolve('/federations/[slug]', { slug: slugify(federation.name) })}
+              href={i18n.href(resolve('/federations/[slug]', { slug: slugify(federation.name) }))}
               class="underline hover:text-secondary"
             >
               {federation.name}
@@ -77,11 +89,13 @@
           <td class="{TABLE_CELL} {CELL.data}">
             {#if federation.country}
               <a
-                href={resolve('/countries/[code]', { code: federation.country.toLowerCase() })}
+                href={i18n.href(
+                  resolve('/countries/[code]', { code: federation.country.toLowerCase() })
+                )}
                 class="flex items-center gap-2 hover:text-ink"
               >
                 <Flag countryCode={federation.country} class="shrink-0 [--flag-height:1.25em]" />
-                <span class="underline">{countryName(federation.country)}</span>
+                <span class="underline">{countryName(federation.country, i18n.locale)}</span>
               </a>
             {:else}
               {NO_VALUE}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import type { PageData } from './$types';
   import { Card, Breadcrumb, FilterBar, SearchEmpty } from '#lib/components/ui/index.js';
   import CompetitionsTable from '#lib/components/competitions-table.svelte';
@@ -15,6 +16,8 @@
   import { FIELD, TEXT, CONTROL } from '#lib/constants/typography.js';
   import Seo from '#lib/components/seo.svelte';
   import { breadcrumbLd, listingSeo } from '#lib/seo/index.js';
+
+  const i18n = useI18n();
 
   let { data }: { data: PageData } = $props();
 
@@ -70,7 +73,7 @@
     if (next.page && next.page > 1) params.set('page', String(next.page));
 
     const queryString = params.toString();
-    return resolve(queryString ? `/competitions?${queryString}` : '/competitions');
+    return i18n.href(resolve(queryString ? `/competitions?${queryString}` : '/competitions'));
   }
 
   function apply(next: { status?: string; page?: number } = {}, replaceState = false) {
@@ -92,28 +95,38 @@
 
   const description = $derived(
     narrowed || data.status !== 'completed'
-      ? 'Streetlifting competition results by federation, country and year, with muscle up, pull up, dips and squat standings for every meet in the archive.'
-      : `Results from ${pagination.total_items} Streetlifting competitions worldwide, with muscle up, pull up, dips and squat standings, plus the calendar of upcoming meets.`
+      ? i18n.t(
+          'Streetlifting competition results by federation, country and year, with muscle up, pull up, dips and squat standings for every meet in the archive.'
+        )
+      : i18n.t(
+          'Results from {count} Streetlifting competitions worldwide, with muscle up, pull up, dips and squat standings, plus the calendar of upcoming meets.',
+          { count: i18n.number(pagination.total_items, 0) }
+        )
   );
 </script>
 
 <Seo
-  title="Streetlifting competition results"
+  title={i18n.t('Streetlifting competition results')}
   {description}
   canonical={seo.canonical}
   noindex={seo.noindex}
   jsonLd={[
-    breadcrumbLd([
-      { name: 'Rankings', path: '/' },
-      { name: 'Competitions', path: '/competitions' },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: i18n.t('Competitions'), path: '/competitions' },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
 <div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
-  <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: 'Competitions' }]} />
+  <Breadcrumb
+    items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Competitions') }]}
+  />
 
-  <h1 class="sr-only">Streetlifting competitions</h1>
+  <h1 class="sr-only">{i18n.t('Streetlifting competitions')}</h1>
 
   {#if data.runningCompetitions.length > 0}
     <section
@@ -122,13 +135,13 @@
     >
       <h2 id="running-heading" class="flex items-center gap-2 text-sm font-medium text-ink">
         <span aria-hidden="true" class="size-1.5 shrink-0 rounded-full bg-success"></span>
-        Hey! Those competitions are currently running
+        {i18n.t('Hey! Those competitions are currently running')}
       </h2>
       <ul class="mt-2 space-y-2 text-sm">
         {#each data.runningCompetitions as competition (competition.slug)}
           <li class="flex flex-wrap items-center gap-x-6 gap-y-1">
             <a
-              href={resolve(`competitions/${competition.slug}`)}
+              href={i18n.href(resolve(`competitions/${competition.slug}`))}
               class="inline-flex min-h-8 items-center gap-1.5 text-ink underline decoration-stroke-strong underline-offset-4 hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
               >{competition.name}</a
             >
@@ -136,10 +149,10 @@
             <dl class="flex flex-wrap items-center gap-x-6 gap-y-1 text-secondary">
               {#if competition.event_code}
                 <div>
-                  <dt class="sr-only">Format</dt>
+                  <dt class="sr-only">{i18n.t('Format')}</dt>
                   <dd
                     title={competition.movements
-                      .map(({ movement_name }) => movement_name)
+                      .map(({ movement_name }) => i18n.movement(movement_name))
                       .join(', ')}
                   >
                     {competition.event_code}
@@ -147,14 +160,14 @@
                 </div>
               {/if}
               <div>
-                <dt class="sr-only">Federation</dt>
+                <dt class="sr-only">{i18n.t('Federation')}</dt>
                 <dd title={competition.federation.name}>
                   {competition.federation.abbreviation || competition.federation.name}
                 </dd>
               </div>
               {#if competition.country || competition.region || competition.city}
                 <div>
-                  <dt class="sr-only">Location</dt>
+                  <dt class="sr-only">{i18n.t('Location')}</dt>
                   <dd>
                     {formatLocation(competition.country, competition.region, competition.city)}
                   </dd>
@@ -162,16 +175,16 @@
               {/if}
               {#if competition.start_date}
                 <div>
-                  <dt class="sr-only">Date</dt>
+                  <dt class="sr-only">{i18n.t('Date')}</dt>
                   <dd class="flex flex-wrap items-baseline gap-x-1.5 tabular-nums">
                     <time class="whitespace-nowrap" datetime={competition.start_date}
-                      >{formatDate(competition.start_date)}</time
+                      >{formatDate(competition.start_date, i18n.locale)}</time
                     >
                     {#if competition.end_date && competition.end_date !== competition.start_date}
                       <span class="inline-flex gap-x-1.5">
-                        <span>to</span>
+                        <span>{i18n.t('to')}</span>
                         <time class="whitespace-nowrap" datetime={competition.end_date}
-                          >{formatDate(competition.end_date)}</time
+                          >{formatDate(competition.end_date, i18n.locale)}</time
                         >
                       </span>
                     {/if}
@@ -186,7 +199,7 @@
             <a
               href={listingHref({ status: 'live' })}
               class="inline-flex min-h-8 items-center text-secondary underline underline-offset-4"
-              >View all in progress</a
+              >{i18n.t('View all in progress')}</a
             >
           </li>
         {/if}
@@ -203,7 +216,7 @@
         class="-mb-px flex items-baseline gap-1.5 border-b-2 pb-2 {CONTROL} transition-colors focus:ring-2 focus:ring-focus focus:outline-none
  {active ? 'border-ink text-ink' : 'border-transparent text-muted hover:text-secondary'}"
       >
-        {tab.label}
+        {i18n.t(tab.label)}
         {#if data.counts[tab.status] !== undefined}
           <span class="{TEXT.micro} {active ? 'text-secondary' : 'text-muted'}">
             {data.counts[tab.status]}
@@ -215,14 +228,14 @@
 
   <FilterBar
     bind:search={search.value}
-    placeholder="Search a competition"
+    placeholder={i18n.t('Search a competition')}
     onSearch={() => apply({}, true)}
     activeCount={activeFilters}
     onClear={clearFilters}
     clearable={narrowed}
   >
     <select bind:value={federation} onchange={() => apply()} class={SELECT}>
-      <option value={null}>All Federations</option>
+      <option value={null}>{i18n.t('All Federations')}</option>
       {#each data.facets.federations as option (option)}
         <option value={option}>{option}</option>
       {/each}
@@ -238,16 +251,16 @@
     />
 
     <select bind:value={year} onchange={() => apply()} class={SELECT}>
-      <option value={null}>All Years</option>
+      <option value={null}>{i18n.t('All Years')}</option>
       {#each data.facets.years as option (option)}
         <option value={option}>{option}</option>
       {/each}
     </select>
 
     <select bind:value={country} onchange={() => apply()} class={SELECT}>
-      <option value={null}>All Countries</option>
+      <option value={null}>{i18n.t('All Countries')}</option>
       {#each data.facets.countries as option (option)}
-        <option value={option}>{countryName(option)}</option>
+        <option value={option}>{countryName(option, i18n.locale)}</option>
       {/each}
     </select>
   </FilterBar>
@@ -255,22 +268,26 @@
   {#if data.error}
     <Card class="max-w-summary p-8">
       <div class="text-center">
-        <p class="text-danger">{data.error}</p>
+        <p class="text-danger">{i18n.t('Failed to load competitions')}</p>
       </div>
     </Card>
   {:else if competitions.length === 0 && !busy}
     <SearchEmpty
-      title={canReset ? 'Oops, no competitions found.' : 'No competitions to show yet.'}
+      title={canReset
+        ? i18n.t('Oops, no competitions found.')
+        : i18n.t('No competitions to show yet.')}
       description={canReset
-        ? 'Lighten the filters or try another name.'
+        ? i18n.t('Lighten the filters or try another name.')
         : showsUpcoming
-          ? 'No competitions are planned yet.'
+          ? i18n.t('No competitions are planned yet.')
           : data.status === 'live'
-            ? 'No competitions are in progress right now.'
-            : 'No competition results in this view yet.'}
+            ? i18n.t('No competitions are in progress right now.')
+            : i18n.t('No competition results in this view yet.')}
       resetHref={canReset
-        ? resolve(
-            data.status === 'completed' ? '/competitions' : `/competitions?status=${data.status}`
+        ? i18n.href(
+            resolve(
+              data.status === 'completed' ? '/competitions' : `/competitions?status=${data.status}`
+            )
           )
         : undefined}
     />

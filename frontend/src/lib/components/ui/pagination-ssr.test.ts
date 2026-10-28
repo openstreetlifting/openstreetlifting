@@ -84,3 +84,13 @@ it('removes navigation targets while pagination is disabled', () => {
   expect(links(body)).toHaveLength(0);
   expect(body).toContain('aria-current="page"');
 });
+
+it('keeps the URL locale when changing a ranking page or its filters', () => {
+  const table = new RankingsTable({
+    basePath: '/competitions/worlds',
+    initialUrl: new URL('https://openstreetlifting.org/pl/competitions/worlds?country=DE'),
+  });
+  expect(table.pageHref(2)).toBe('/pl/competitions/worlds?country=DE&page=2');
+  table.syncFromUrl(new URL('https://openstreetlifting.org/it/competitions/worlds?gender=F'));
+  expect(table.pageHref(1)).toBe('/it/competitions/worlds?gender=F');
+});

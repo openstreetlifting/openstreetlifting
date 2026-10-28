@@ -1,8 +1,11 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { SearchIcon } from '#lib/components/icons/index.js';
   import { FIELD } from '#lib/constants/typography.js';
   import { onDestroy } from 'svelte';
   import { beforeNavigate } from '$app/navigation';
+
+  const i18n = useI18n();
 
   interface Props {
     value: string;
@@ -63,7 +66,7 @@
     <button
       type="button"
       onclick={clear}
-      aria-label="Clear search"
+      aria-label={i18n.t('Clear search')}
       class="absolute top-1/2 right-2 -translate-y-1/2 rounded px-1 text-muted transition-colors hover:text-ink"
     >
       &times;

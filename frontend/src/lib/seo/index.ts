@@ -7,6 +7,7 @@ export {
   absolute,
   pageTitle,
   listingSeo,
+  localizedUrl,
 } from './site.js';
 export type { ListingSeo } from './site.js';
 export {

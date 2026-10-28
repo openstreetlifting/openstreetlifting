@@ -2,6 +2,8 @@ import type { page } from '$app/state';
 import type { AfterNavigate } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
+import type { Locale } from '#lib/i18n/locale.js';
+import { localeHref, pathLocale } from '#lib/i18n/paths.js';
 import { ListingSearch } from './listing-search.svelte';
 
 interface RankingsTableConfig {
@@ -36,6 +38,7 @@ export class RankingsTable {
   countryFilter = $state<string | null>(null);
   federationFilter = $state<string | null>(null);
   readonly search: ListingSearch;
+  private locale = $state<Locale>();
 
   get searchFilter() {
     return this.search.value;
@@ -82,6 +85,7 @@ export class RankingsTable {
    * board) has to reach the selects as well as the rows.
    */
   syncFromUrl(url: typeof page.url, type?: AfterNavigate['type']) {
+    this.locale = pathLocale(url.pathname);
     const params = url.searchParams;
     this.genderFilter = params.get('gender') || null;
     this.categoryFilter = params.get('category') || null;
@@ -129,7 +133,8 @@ export class RankingsTable {
     const queryString = params.toString();
     const path = queryString ? `${this.basePath}?${queryString}` : this.basePath;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- basePath is built at runtime, not a literal route
-    return resolve(path.replace(/^\//, '') as any);
+    const href = resolve(path.replace(/^\//, '') as any);
+    return this.locale ? localeHref(href, this.locale) : href;
   }
 
   private navigate(targetPage: number) {

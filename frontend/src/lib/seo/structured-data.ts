@@ -1,3 +1,5 @@
+import { I18n } from '#lib/i18n/index.js';
+import type { Locale } from '#lib/i18n/locale.js';
 import type { AthleteDetail } from '#lib/types/athlete.js';
 import type { CompetitionDetail } from '#lib/types/competition.js';
 import { countryName, federationPath, formatAthleteName } from '#lib/utils/index.js';
@@ -18,40 +20,43 @@ const SOCIAL_PROFILES = [
   'https://www.instagram.com/openstreetlifting',
 ];
 
-function organization(): JsonLd {
+function organization(locale: Locale = 'en'): JsonLd {
   return {
     '@type': 'Organization',
     '@id': `${SITE_URL}/#organization`,
     name: SITE_NAME,
     url: SITE_URL,
     logo: absolute('/logo_plate.png'),
-    description: SITE_DESCRIPTION,
+    description: new I18n(() => locale).t(SITE_DESCRIPTION),
     sameAs: SOCIAL_PROFILES,
   };
 }
 
-export function websiteLd(): JsonLd {
+export function websiteLd(locale: Locale = 'en'): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    '@id': `${SITE_URL}/#website`,
+    '@id': `${absolute('/', locale)}#website`,
     name: SITE_NAME,
-    url: SITE_URL,
-    description: SITE_DESCRIPTION,
-    inLanguage: 'en',
-    publisher: organization(),
+    url: absolute('/', locale),
+    description: new I18n(() => locale).t(SITE_DESCRIPTION),
+    inLanguage: locale,
+    publisher: organization(locale),
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/?q={search_term_string}`,
+        urlTemplate: `${absolute('/', locale)}?q={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
   };
 }
 
-export function breadcrumbLd(trail: { name: string; path?: string }[]): JsonLd {
+export function breadcrumbLd(
+  trail: { name: string; path?: string }[],
+  locale: Locale = 'en'
+): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -59,7 +64,7 @@ export function breadcrumbLd(trail: { name: string; path?: string }[]): JsonLd {
       '@type': 'ListItem',
       position: index + 1,
       name: crumb.name,
-      ...(crumb.path ? { item: absolute(crumb.path) } : {}),
+      ...(crumb.path ? { item: absolute(crumb.path, locale) } : {}),
     })),
   };
 }
@@ -71,7 +76,11 @@ const EVENT_STATUS: Record<string, string> = {
   completed: 'https://schema.org/EventScheduled',
 };
 
-export function competitionLd(competition: CompetitionDetail, description: string): JsonLd {
+export function competitionLd(
+  competition: CompetitionDetail,
+  description: string,
+  locale: Locale = 'en'
+): JsonLd {
   const place =
     competition.venue || [competition.city, competition.region].filter(Boolean).join(', ');
 
@@ -79,7 +88,7 @@ export function competitionLd(competition: CompetitionDetail, description: strin
     '@context': 'https://schema.org',
     '@type': 'SportsEvent',
     name: competitionSeoName(competition),
-    url: absolute(`/competitions/${competition.slug}`),
+    url: absolute(`/competitions/${competition.slug}`, locale),
     description,
     image: OG_IMAGE.url,
     ...(competition.start_date ? { startDate: competition.start_date } : {}),
@@ -90,7 +99,7 @@ export function competitionLd(competition: CompetitionDetail, description: strin
       ? {
           location: {
             '@type': 'Place',
-            name: place || countryName(competition.country ?? ''),
+            name: place || countryName(competition.country ?? '', locale),
             address: {
               '@type': 'PostalAddress',
               ...(competition.city ? { addressLocality: competition.city } : {}),
@@ -108,13 +117,14 @@ export function competitionLd(competition: CompetitionDetail, description: strin
         : {}),
     },
     isAccessibleForFree: true,
-    publisher: organization(),
+    publisher: organization(locale),
   };
 }
 
 export function federationLd(
   federation: { name: string; abbreviation: string | null; country: string | null },
-  description: string
+  description: string,
+  locale: Locale = 'en'
 ): JsonLd {
   return {
     '@context': 'https://schema.org',
@@ -123,7 +133,7 @@ export function federationLd(
     ...(federation.abbreviation && federation.abbreviation !== federation.name
       ? { alternateName: federation.abbreviation }
       : {}),
-    url: absolute(federationPath(federation.name)),
+    url: absolute(federationPath(federation.name), locale),
     description,
     sport: 'Streetlifting',
     ...(federation.country
@@ -137,12 +147,17 @@ const SCHEMA_GENDER: Record<string, string> = {
   F: 'https://schema.org/Female',
 };
 
-export function athleteLd(athlete: AthleteDetail, description: string): JsonLd {
-  const url = absolute(`/athletes/${athlete.slug}`);
+export function athleteLd(
+  athlete: AthleteDetail,
+  description: string,
+  locale: Locale = 'en'
+): JsonLd {
+  const url = absolute(`/athletes/${athlete.slug}`, locale);
 
   return {
     '@context': 'https://schema.org',
     '@type': 'ProfilePage',
+    inLanguage: locale,
     url,
     description,
     mainEntity: {
@@ -153,7 +168,7 @@ export function athleteLd(athlete: AthleteDetail, description: string): JsonLd {
       url,
       ...(SCHEMA_GENDER[athlete.gender] ? { gender: SCHEMA_GENDER[athlete.gender] } : {}),
       ...(athlete.country
-        ? { nationality: { '@type': 'Country', name: countryName(athlete.country) } }
+        ? { nationality: { '@type': 'Country', name: countryName(athlete.country, locale) } }
         : {}),
       ...(athlete.instagram_handle
         ? { sameAs: [`https://www.instagram.com/${athlete.instagram_handle}`] }

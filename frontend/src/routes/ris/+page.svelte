@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { TEXT } from '#lib/constants/typography.js';
   import { REPORTED_GLYPH, REPORTED_MARK } from '#lib/constants/table.js';
   import RisCurve from '#lib/components/ui/ris-curve.svelte';
@@ -7,8 +8,11 @@
   import Seo from '#lib/components/seo.svelte';
   import { absolute, breadcrumbLd } from '#lib/seo/index.js';
   import { Breadcrumb } from '#lib/components/ui/index.js';
+  import Message from '#lib/components/ui/message.svelte';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import type { PageData } from './$types';
+
+  const i18n = useI18n();
 
   let { data }: { data: PageData } = $props();
 
@@ -18,32 +22,42 @@
 </script>
 
 <Seo
-  title="The Relative Index for Streetlifting"
-  description="Understand RIS, calculate your score, and explore Streetlifting competition results across bodyweights."
+  title={i18n.t('The Relative Index for Streetlifting')}
+  description={i18n.t(
+    'Understand RIS, calculate your score, and explore Streetlifting competition results across bodyweights.'
+  )}
   canonical={absolute('/ris')}
   jsonLd={[
-    breadcrumbLd([
-      { name: 'Rankings', path: '/' },
-      { name: 'RIS', path: '/ris' },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: 'RIS', path: '/ris' },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
 <article class="mx-auto max-w-reading px-4 pt-10 pb-16 sm:px-6 sm:pt-12">
-  <Breadcrumb items={[{ label: 'Rankings', href: rankingsHref() }, { label: 'RIS' }]} />
+  <Breadcrumb items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: 'RIS' }]} />
 
   <header class="mb-10">
-    <h1 class="{TEXT.title} text-ink">The Relative Index for Streetlifting</h1>
+    <h1 class="{TEXT.title} text-ink">{i18n.t('The Relative Index for Streetlifting')}</h1>
     <p class="mt-3 text-base leading-7 text-secondary">
-      The Relative Index for Streetlifting (RIS) compares competition totals across bodyweights
-      within the same gender category. It uses the combined total of Muscle-up, Pull-up, Dips and
-      Squat.
+      {i18n.t(
+        'The Relative Index for Streetlifting (RIS) compares competition totals across bodyweights within the same gender category. It uses the combined total of Muscle-up, Pull-up, Dips and Squat.'
+      )}
     </p>
     <p class="mt-3 text-base leading-7 text-secondary">
-      RIS was developed by
-      <a href="https://warisradji.com/ris/" class="text-ink underline underline-offset-4"
-        >Waris Radji and Mathieu Ardoin</a
-      >, using results from leading Streetlifting athletes.
+      {#snippet authors()}<a
+          href="https://warisradji.com/ris/"
+          class="text-ink underline underline-offset-4"
+          >{i18n.t('Waris Radji and Mathieu Ardoin')}</a
+        >{/snippet}
+      <Message
+        message={'RIS was developed by {authors}, using results from leading Streetlifting athletes.'}
+        values={{ authors }}
+      />
     </p>
   </header>
 
@@ -53,28 +67,34 @@
 
   <section aria-labelledby="interpretation-heading" class="mb-10 sm:mb-12">
     <h2 id="interpretation-heading" class="{TEXT.heading} text-ink">
-      What does a score of 100 mean?
+      {i18n.t('What does a score of 100 mean?')}
     </h2>
     <p class="mt-3 {TEXT.body} leading-6 text-secondary">
-      A RIS of 100 means your total matches the formula’s reference total for your bodyweight and
-      category. A score of 90 means you lifted 90% of that reference; 110 means you lifted 110%.
+      {i18n.t(
+        'A RIS of 100 means your total matches the formula’s reference total for your bodyweight and category. A score of 90 means you lifted 90% of that reference; 110 means you lifted 110%.'
+      )}
     </p>
     <p class="mt-3 {TEXT.body} leading-6 text-secondary">
-      The reference comes from competition results among leading athletes. A score of 100 is not a
-      maximum.
+      {i18n.t(
+        'The reference comes from competition results among leading athletes. A score of 100 is not a maximum.'
+      )}
     </p>
   </section>
 
   {#if current}
     <section aria-labelledby="explore-heading" class="mb-10 sm:mb-12">
       <div class="mb-7">
-        <h2 id="explore-heading" class="{TEXT.heading} text-ink">Explore competition results</h2>
+        <h2 id="explore-heading" class="{TEXT.heading} text-ink">
+          {i18n.t('Explore competition results')}
+        </h2>
         <p class="mt-3 {TEXT.body} leading-6 text-secondary">
-          Each point represents a performance in the archive. The curve shows the total needed to
-          reach 100 RIS at each bodyweight, using the {current.year} edition.
+          {i18n.t(
+            'Each point represents a performance in the archive. The curve shows the total needed to reach 100 RIS at each bodyweight, using the {year} edition.',
+            { year: current.year }
+          )}
         </p>
         <p class="mt-3 {TEXT.body} leading-6 text-secondary">
-          Select a point to see the athlete, competition and score.
+          {i18n.t('Select a point to see the athlete, competition and score.')}
         </p>
       </div>
       <div class="mb-6"><RisCategory bind:sex /></div>
@@ -93,7 +113,13 @@
               constants={current.constants[category]}
               points={data.distribution[category]}
               active={sex === category}
-              label="Competition total by bodyweight with the RIS 100 benchmark, {category}, {current.year} edition"
+              label={i18n.t(
+                'Competition total by bodyweight with the RIS 100 benchmark, {category}, {year} edition',
+                {
+                  category: category === 'men' ? i18n.t('Men') : i18n.t('Women'),
+                  year: current.year,
+                }
+              )}
             />
           </div>
         {/each}
@@ -103,16 +129,20 @@
 
   <section aria-labelledby="comparability-heading" class="mb-10 sm:mb-12">
     <h2 id="comparability-heading" class="{TEXT.heading} text-ink">
-      Why a score may differ from the published result
+      {i18n.t('Why a score may differ from the published result')}
     </h2>
     <p class="mt-3 {TEXT.body} leading-6 text-secondary">
-      The RIS formula changes between editions. OpenStreetlifting uses the current edition wherever
-      possible, including for older competitions, so recalculated scores share the same reference.
+      {i18n.t(
+        'The RIS formula changes between editions. OpenStreetlifting uses the current edition wherever possible, including for older competitions, so recalculated scores share the same reference.'
+      )}
     </p>
 
     <p class="mt-3 {TEXT.body} leading-6 text-secondary">
-      When a score cannot be recalculated, we keep the published value and mark it with
-      <span class={REPORTED_MARK}>{REPORTED_GLYPH}</span>. These scores may use an older edition.
+      {#snippet mark()}<span class={REPORTED_MARK}>{REPORTED_GLYPH}</span>{/snippet}
+      <Message
+        message={'When a score cannot be recalculated, we keep the published value and mark it with {mark}. These scores may use an older edition.'}
+        values={{ mark }}
+      />
     </p>
   </section>
 </article>

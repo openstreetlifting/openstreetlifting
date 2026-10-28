@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import type { PageData } from './$types';
   import {
     RankingsEmpty,
@@ -24,7 +25,6 @@
   import { page, navigating } from '$app/state';
   import { afterNavigate } from '$app/navigation';
   import {
-    formatDate,
     formatLongDate,
     formatLocation,
     countryName,
@@ -66,6 +66,8 @@
     competitionTitle,
     listingSeo,
   } from '#lib/seo/index.js';
+
+  const i18n = useI18n();
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
@@ -127,7 +129,7 @@
   const sorts = $derived(risSortable ? RANKING_SORTS : RANKING_SORTS_NO_RIS);
   const genders = $derived(
     competition.categories.some(({ category }) => category.gender === 'MX')
-      ? [...RANKING_GENDERS, { value: 'MX', label: 'Mixed' }]
+      ? [...RANKING_GENDERS, { value: 'MX', label: 'Mixed' } as const]
       : RANKING_GENDERS
   );
 
@@ -203,15 +205,17 @@
   );
 
   const formatLabel = $derived(
-    competition.movements.map(({ movement_name }) => movement_name).join(' · ')
+    competition.movements.map(({ movement_name }) => i18n.movement(movement_name)).join(' · ')
   );
 
-  const competitionDate = new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
+  const competitionDate = $derived(
+    new Intl.DateTimeFormat(i18n.locale === 'en' ? 'en-GB' : i18n.locale, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    })
+  );
 
   const location = $derived(formatLocation(competition.city, competition.region));
 
@@ -220,7 +224,7 @@
   const representedClasses = $derived(
     GENDERS.map((gender) => ({
       gender,
-      label: { M: 'Men', F: 'Women', MX: 'Mixed' }[gender],
+      label: i18n.t(({ M: 'Men', F: 'Women', MX: 'Mixed' } as const)[gender]),
       classes: weightClasses(competition.categories, gender),
     })).filter(({ classes }) => classes.length > 0)
   );
@@ -278,47 +282,68 @@
     competition.categories.reduce((total, category) => total + category.participants.length, 0)
   );
   const seoWhere = $derived(
-    formatLocation(competition.city, competition.country && countryName(competition.country))
+    formatLocation(
+      competition.city,
+      competition.country && countryName(competition.country, i18n.locale)
+    )
   );
   const seoMovements = $derived(
-    competition.movements.map((movement) => movement.movement_name.toLowerCase()).join(', ')
+    competition.movements
+      .map((movement) => i18n.movement(movement.movement_name).toLowerCase())
+      .join(', ')
   );
 
   const seoDescription = $derived(
     [
       published
-        ? `${competition.status === 'live' ? 'Partial' : 'Full'} results and standings from ${competition.name}`
-        : `${competition.name}, a ${federationLabel} Streetlifting competition`,
-      competition.start_date ? `, ${formatLongDate(competition.start_date)}` : '',
+        ? competition.status === 'live'
+          ? i18n.t('Partial results and standings from {competition}', {
+              competition: competition.name,
+            })
+          : i18n.t('Full results and standings from {competition}', {
+              competition: competition.name,
+            })
+        : i18n.t('{competition}, a {federation} Streetlifting competition', {
+            competition: competition.name,
+            federation: federationLabel,
+          }),
+      competition.start_date ? `, ${formatLongDate(competition.start_date, i18n.locale)}` : '',
       seoWhere ? `, ${seoWhere}` : '',
       published
-        ? `. ${lifterCount} lifters ranked on ${seoMovements}.`
-        : '. Entered in the OpenStreetlifting calendar.',
+        ? '. ' +
+          i18n.t('{count} lifters ranked on {movements}.', {
+            count: i18n.number(lifterCount, 0),
+            movements: seoMovements,
+          })
+        : '. ' + i18n.t('Entered in the OpenStreetlifting calendar.'),
     ].join('')
   );
 </script>
 
 <Seo
-  title={competitionTitle(seoName, published)}
+  title={competitionTitle(seoName, published, i18n.locale)}
   description={seoDescription}
   canonical={seo.canonical}
   noindex={seo.noindex}
   jsonLd={[
-    competitionLd(competition, seoDescription),
-    breadcrumbLd([
-      { name: 'Rankings', path: '/' },
-      { name: 'Competitions', path: '/competitions' },
-      { name: competition.federation.name, path: federationHref },
-      { name: competition.name, path: `/competitions/${competition.slug}` },
-    ]),
+    competitionLd(competition, seoDescription, i18n.locale),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: i18n.t('Competitions'), path: '/competitions' },
+        { name: competition.federation.name, path: federationHref },
+        { name: competition.name, path: `/competitions/${competition.slug}` },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
 <div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
   <Breadcrumb
     items={[
-      { label: 'Rankings', href: rankingsHref() },
-      { label: 'Competitions', href: '/competitions' },
+      { label: i18n.t('Rankings'), href: rankingsHref() },
+      { label: i18n.t('Competitions'), href: '/competitions' },
       { label: competition.federation.name, href: federationHref },
       { label: competition.name },
     ]}
@@ -342,7 +367,7 @@
       class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:col-span-2 sm:grid-cols-[7rem_minmax(0,1fr)]"
     >
       {#if competition.start_date}
-        <dt class="text-muted">Date</dt>
+        <dt class="text-muted">{i18n.t('Date')}</dt>
         <dd class="text-ink">
           <time datetime={competition.start_date}>
             {competitionDate.format(new Date(competition.start_date))}
@@ -356,65 +381,71 @@
         </dd>
       {/if}
       {#if competition.venue}
-        <dt class="text-muted">Venue</dt>
+        <dt class="text-muted">{i18n.t('Venue')}</dt>
         <dd class="text-ink">{competition.venue}</dd>
       {/if}
       {#if location}
-        <dt class="text-muted">Location</dt>
+        <dt class="text-muted">{i18n.t('Location')}</dt>
         <dd class="text-ink">{location}</dd>
       {/if}
-      <dt class="text-muted">Format</dt>
+      <dt class="text-muted">{i18n.t('Format')}</dt>
       <dd class="text-ink">
-        {formatLabel || (competition.status === 'upcoming' ? 'Format not announced' : '—')}
+        {formatLabel || (competition.status === 'upcoming' ? i18n.t('Format not announced') : '—')}
       </dd>
-      <dt class="text-muted">Federation</dt>
+      <dt class="text-muted">{i18n.t('Federation')}</dt>
       <dd class="min-w-0 text-ink">
         <a
-          href={resolve('/federations/[slug]', { slug: slugify(competition.federation.name) })}
+          href={i18n.href(
+            resolve('/federations/[slug]', { slug: slugify(competition.federation.name) })
+          )}
           title={competition.federation.name}
           class="break-words underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
           >{federationLabel}</a
         >
       </dd>
       {#if competition.scoring}
-        <dt class="text-muted">Scoring</dt>
-        <dd class="text-ink">{competition.scoring === 'ris' ? 'RIS' : 'Total'}</dd>
+        <dt class="text-muted">{i18n.t('Scoring')}</dt>
+        <dd class="text-ink">{competition.scoring === 'ris' ? 'RIS' : i18n.t('Total')}</dd>
       {/if}
       {#if published}
         <dt class="text-muted">RIS</dt>
         <dd class="text-ink">
           {#if data.ris === 'recomputed'}
-            Recomputed
+            {i18n.t('Recomputed')}
           {:else if data.ris === 'reported'}
-            Reported<span class={REPORTED_MARK} title={REPORTED_TITLE} aria-label={REPORTED_TITLE}
-              >{REPORTED_GLYPH}</span
+            {i18n.t('Reported')}<span
+              class={REPORTED_MARK}
+              title={i18n.t(REPORTED_TITLE)}
+              aria-label={i18n.t(REPORTED_TITLE)}>{REPORTED_GLYPH}</span
             >
           {:else if data.ris === 'not-published'}
-            Unavailable
-            <InfoTip label="Why RIS is unavailable">
+            {i18n.t('Unavailable')}
+            <InfoTip label={i18n.t('Why RIS is unavailable')}>
               {#if competition.movements.length < 4}
-                <p>Published RIS scores are missing from the source.</p>
+                <p>{i18n.t('Published RIS scores are missing from the source.')}</p>
               {:else}
                 <p>
-                  RIS scores are unavailable because the required bodyweight or total is missing.
+                  {i18n.t(
+                    'RIS scores are unavailable because the required bodyweight or total is missing.'
+                  )}
                 </p>
               {/if}
             </InfoTip>
           {:else}
-            None
+            {i18n.t('None')}
           {/if}
         </dd>
       {/if}
       {#if published && !classed}
-        <dt class="text-muted">Weight classes</dt>
-        <dd class="text-ink">No weight classes</dd>
+        <dt class="text-muted">{i18n.t('Weight classes')}</dt>
+        <dd class="text-ink">{i18n.t('No weight classes')}</dd>
       {/if}
     </dl>
 
     {#if published && classed}
       <section aria-labelledby="weight-classes-heading" class="sm:col-span-2">
         <h2 id="weight-classes-heading" class="mb-2 text-xs font-medium text-secondary">
-          Weight classes
+          {i18n.t('Weight classes')}
         </h2>
         <dl
           class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
@@ -424,12 +455,12 @@
             <dd>
               <ul
                 class="flex flex-wrap gap-x-2 gap-y-1 text-ink"
-                aria-label="{group.label}'s weight classes"
+                aria-label={i18n.t("{category}'s weight classes", { category: group.label })}
               >
                 {#each group.classes as weightClass, i (weightClass)}
                   <li class="inline-flex items-baseline gap-2 whitespace-nowrap tabular-nums">
                     {#if i > 0}<span aria-hidden="true" class="text-muted">·</span>{/if}
-                    {weightClass || 'No weight classes'}
+                    {weightClass || i18n.t('No weight classes')}
                   </li>
                 {/each}
               </ul>
@@ -447,7 +478,7 @@
         class="inline-flex min-h-11 items-center gap-2 justify-self-start rounded-md border border-stroke px-3 py-2 text-sm font-medium text-secondary transition-colors hover:border-stroke-strong hover:bg-surface-hover hover:text-ink focus:ring-2 focus:ring-focus focus:outline-none sm:col-start-2 sm:row-start-1 sm:self-start sm:justify-self-end"
       >
         <GitHubIcon class="h-4 w-4" />
-        Edit competition on GitHub
+        {i18n.t('Edit competition on GitHub')}
       </a>
     {/if}
   </header>
@@ -457,14 +488,14 @@
       aria-labelledby="progress-heading"
       class="mb-6 rounded-lg border border-stroke-strong bg-surface-subtle px-4 py-3"
     >
-      <h2 id="progress-heading" class="text-sm font-medium text-ink">In Progress</h2>
+      <h2 id="progress-heading" class="text-sm font-medium text-ink">{i18n.t('In Progress')}</h2>
     </section>
   {/if}
 
   {#if published}
     <FilterBar
       bind:search={table.searchFilter}
-      placeholder="Search an athlete"
+      placeholder={i18n.t('Search an athlete')}
       onSearch={() => table.handleFilterChange()}
       activeCount={activeFilters}
       onClear={() => table.clearFilters()}
@@ -475,9 +506,9 @@
         onchange={() => table.handleFilterChange()}
         class="w-full {FIELD} px-3 py-2 sm:w-auto"
       >
-        <option value={null}>All Countries</option>
+        <option value={null}>{i18n.t('All Countries')}</option>
         {#each data.countries as countryOption (countryOption)}
-          <option value={countryOption}>{countryName(countryOption)}</option>
+          <option value={countryOption}>{countryName(countryOption, i18n.locale)}</option>
         {/each}
       </select>
       <select
@@ -489,7 +520,7 @@
         class="w-full {FIELD} px-3 py-2 sm:w-auto"
       >
         {#each genders as gender (gender.label)}
-          <option value={gender.value}>{gender.label}</option>
+          <option value={gender.value}>{i18n.t(gender.label)}</option>
         {/each}
       </select>
       {#if classed}
@@ -498,7 +529,7 @@
           onchange={() => table.handleFilterChange()}
           class="w-full {FIELD} px-3 py-2 sm:w-auto"
         >
-          <option value={null}>All Classes</option>
+          <option value={null}>{i18n.t('All Classes')}</option>
           {#each data.classes as classOption (classOption)}
             <option value={classOption}>{classOption}</option>
           {/each}
@@ -506,7 +537,7 @@
       {/if}
 
       <div class="flex w-full items-center gap-2 sm:w-auto">
-        <label for="sort-by" class="text-sm text-muted">Sort by</label>
+        <label for="sort-by" class="text-sm text-muted">{i18n.t('Sort by')}</label>
         <select
           id="sort-by"
           bind:value={table.movementFilter}
@@ -514,7 +545,7 @@
           class="flex-1 {FIELD} px-3 py-2 sm:flex-none"
         >
           {#each sorts as sort (sort.value)}
-            <option value={sort.value}>{sort.label}</option>
+            <option value={sort.value}>{i18n.t(sort.label)}</option>
           {/each}
         </select>
       </div>
@@ -524,23 +555,27 @@
   {#if !published}
     <div class="border-l-2 border-stroke-strong py-1 pl-5">
       {#if competition.status === 'live'}
-        <p class="text-lg text-ink">Results are not available yet.</p>
+        <p class="text-lg text-ink">{i18n.t('Results are not available yet.')}</p>
         <p class="mt-2 max-w-2xl text-sm leading-relaxed text-secondary">
-          Results will appear here once they are published.
+          {i18n.t('Results will appear here once they are published.')}
         </p>
       {:else}
-        <p class="text-lg text-ink">This competition has not been lifted yet.</p>
+        <p class="text-lg text-ink">{i18n.t('This competition has not been lifted yet.')}</p>
         <p class="mt-2 max-w-2xl text-sm leading-relaxed text-secondary">
-          {competition.name} is scheduled for {formatDate(competition.start_date)}. There is nothing
-          to rank until the platform closes, and the results will land on this page once they are
-          in.
+          {i18n.t(
+            '{competition} is scheduled for {date}. Results will appear here once published.',
+            {
+              competition: competition.name,
+              date: formatLongDate(competition.start_date, i18n.locale),
+            }
+          )}
         </p>
       {/if}
     </div>
   {:else if rankings.length === 0 && unplacedOnPage.length === 0 && !busy}
     <RankingsEmpty
       canReset={table.narrowed || pagination.page > 1}
-      resetHref={resolve(`competitions/${competition.slug}`)}
+      resetHref={i18n.href(resolve(`competitions/${competition.slug}`))}
     />
   {:else}
     <Table
@@ -557,10 +592,10 @@
     >
       {#snippet head()}
         <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
-          >Rank</th
+          >{i18n.t('Rank')}</th
         >
-        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">Athlete</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}">Total</th>
+        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}">{i18n.t('Total')}</th>
         {#if risColumn}
           <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
             <RisHeader />
@@ -568,18 +603,18 @@
         {/if}
         {#each contested as lift (lift.key)}
           <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
-            {lift.label}
+            {i18n.t(lift.label)}
             <span class="{ATTEMPT_ROW} mt-1 text-[0.6rem] font-normal text-muted">
               <span class="text-right">1</span>
               <span class="text-right">2</span>
               <span class="text-right">3</span>
-              <span class="text-right">Best</span>
+              <span class="text-right">{i18n.t('Best')}</span>
             </span>
           </th>
         {/each}
-        <th class="{TABLE_HEAD_CELL} text-secondary">Sex</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Sex')}</th>
         {#if classed}
-          <th class="{TABLE_HEAD_CELL} text-secondary">Class</th>
+          <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>
         {/if}
       {/snippet}
 
@@ -602,7 +637,7 @@
                     class="shrink-0 [--flag-height:1.25em]"
                   />
                   <a
-                    href={resolve(`athletes/${entry.athlete.slug}`)}
+                    href={i18n.href(resolve(`athletes/${entry.athlete.slug}`))}
                     class="truncate underline hover:text-secondary"
                   >
                     {formatAthleteName(entry.athlete)}
@@ -611,14 +646,18 @@
                 {#if participant && participant.status !== 'competed'}
                   <span
                     class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                    title={athleteStatusTitle(participant.status, participant.status_reason)}
+                    title={athleteStatusTitle(
+                      participant.status,
+                      participant.status_reason,
+                      i18n.locale
+                    )}
                   >
                     {ATHLETE_STATUS_LABEL[participant.status]}
                   </span>
                 {/if}
               </span>
             </td>
-            <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total)}</td>
+            <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total, i18n.locale)}</td>
             {#if risColumn}
               <td class="{TABLE_CELL} {CELL.counted}">
                 <RisScore value={entry.ris} source={entry.ris_source} />
@@ -636,10 +675,16 @@
                           ? CELL.discounted
                           : CELL.data}"
                         title={attempt
-                          ? `Attempt ${slot}: ${attempt.weight} kg, ${attempt.is_successful ? 'good lift' : 'no lift'}`
-                          : `Attempt ${slot} not recorded`}
+                          ? i18n.t('Attempt {slot}: {weight} kg, {result}', {
+                              slot,
+                              weight: formatWeight(attempt.weight, i18n.locale),
+                              result: attempt.is_successful
+                                ? i18n.t('good lift')
+                                : i18n.t('no lift'),
+                            })
+                          : i18n.t('Attempt {slot} not recorded', { slot })}
                       >
-                        {attempt ? attempt.weight : ''}
+                        {attempt ? formatWeight(attempt.weight, i18n.locale) : ''}
                       </span>
                     {/each}
                   {:else}
@@ -656,10 +701,12 @@
                     {:else if cell.kind === 'bombed'}
                       <span
                         class="font-normal {CELL.nothing}"
-                        title="No successful {lift.label.toLowerCase()}">{NO_RESULT}</span
+                        title={i18n.t('No successful {movement}', {
+                          movement: i18n.t(lift.label).toLowerCase(),
+                        })}>{NO_RESULT}</span
                       >
                     {:else}
-                      {cell.best}
+                      {formatWeight(cell.best, i18n.locale)}
                     {/if}
                   </span>
                 </span>
@@ -687,7 +734,7 @@
                     class="shrink-0 [--flag-height:1.25em]"
                   />
                   <a
-                    href={resolve(`athletes/${participant.athlete.slug}`)}
+                    href={i18n.href(resolve(`athletes/${participant.athlete.slug}`))}
                     class="truncate underline hover:text-secondary"
                   >
                     {formatAthleteName(participant.athlete)}
@@ -696,7 +743,11 @@
                 {#if participant.status !== 'competed'}
                   <span
                     class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
-                    title={athleteStatusTitle(participant.status, participant.status_reason)}
+                    title={athleteStatusTitle(
+                      participant.status,
+                      participant.status_reason,
+                      i18n.locale
+                    )}
                   >
                     {ATHLETE_STATUS_LABEL[participant.status]}
                   </span>
@@ -704,7 +755,9 @@
               </span>
             </td>
             <td class="{TABLE_CELL} {CELL.counted}">
-              {participant.status === 'competed' ? formatWeight(participant.total) : NO_RESULT}
+              {participant.status === 'competed'
+                ? formatWeight(participant.total, i18n.locale)
+                : NO_RESULT}
             </td>
             {#if risColumn}
               <td class="{TABLE_CELL} {CELL.counted}">
@@ -727,7 +780,7 @@
                           ? CELL.discounted
                           : CELL.data}"
                       >
-                        {attempt ? attempt.weight : ''}
+                        {attempt ? formatWeight(attempt.weight, i18n.locale) : ''}
                       </span>
                     {/each}
                   {:else}
@@ -741,7 +794,7 @@
                     {:else if cell.kind === 'bombed'}
                       <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
                     {:else}
-                      {cell.best}
+                      {formatWeight(cell.best, i18n.locale)}
                     {/if}
                   </span>
                 </span>

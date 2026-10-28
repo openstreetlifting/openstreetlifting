@@ -1,3 +1,4 @@
+import { I18n } from '#lib/i18n/index.js';
 import { CANVAS } from '#lib/constants/theme.js';
 import { PRIMARY_ROUTES } from '#lib/constants/routes.js';
 import { SITE_DESCRIPTION, SITE_NAME } from '#lib/seo/index.js';
@@ -28,14 +29,24 @@ const manifest = {
   shortcuts: PRIMARY_ROUTES.map(({ name, path }) => ({ name, url: path })),
 };
 
-// Nothing here depends on the request, so the document is serialised once.
-const BODY = JSON.stringify(manifest);
-
-export const GET: RequestHandler = () => {
-  return new Response(BODY, {
-    headers: {
-      'content-type': 'application/manifest+json',
-      'cache-control': 'public, max-age=3600',
-    },
-  });
+export const GET: RequestHandler = ({ locals }) => {
+  const i18n = new I18n(() => locals.locale);
+  return new Response(
+    JSON.stringify({
+      ...manifest,
+      lang: i18n.locale,
+      start_url: i18n.href('/'),
+      description: i18n.t(SITE_DESCRIPTION),
+      shortcuts: PRIMARY_ROUTES.map(({ name, path }) => ({
+        name: name === 'RIS' ? name : i18n.t(name),
+        url: i18n.href(path),
+      })),
+    }),
+    {
+      headers: {
+        'content-type': 'application/manifest+json',
+        'cache-control': 'public, max-age=3600',
+      },
+    }
+  );
 };

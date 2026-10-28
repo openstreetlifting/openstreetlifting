@@ -11,7 +11,10 @@ const byDate = (a: { start_date: string | null }, b: { start_date: string | null
 
 export const load: PageServerLoad = async ({ params, url }) => {
   if (params.code !== params.code.toLowerCase()) {
-    redirect(308, `/countries/${params.code.toLowerCase()}${url.search}`);
+    redirect(
+      308,
+      `${url.pathname.replace(/\/[^/]+$/, '/' + params.code.toLowerCase())}${url.search}`
+    );
   }
 
   const code = params.code.toUpperCase();

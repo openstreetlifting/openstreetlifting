@@ -82,3 +82,14 @@ it('redirects an uppercase code to the lowercase URL', async () => {
 it('answers a country with no athletes and no meets with a 404', async () => {
   await expect(load(request('zz'))).rejects.toMatchObject({ status: 404 });
 });
+
+it('retains the language when canonicalizing an uppercase country code', async () => {
+  const event = {
+    ...request('FR', 'page=2'),
+    url: new URL('https://openstreetlifting.org/pl/countries/FR?page=2'),
+  };
+  await expect(load(event)).rejects.toMatchObject({
+    status: 308,
+    location: '/pl/countries/fr?page=2',
+  });
+});

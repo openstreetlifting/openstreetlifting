@@ -1,5 +1,8 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { TEXT } from '#lib/constants/typography.js';
+
+  const i18n = useI18n();
 
   let {
     sex = $bindable('men'),
@@ -9,14 +12,14 @@
 
 <fieldset>
   <legend class="mb-2 {prominent ? 'text-sm font-medium text-ink' : `${TEXT.meta} text-muted`}"
-    >Category</legend
+    >{i18n.t('Category')}</legend
   >
   <div
     class="flex w-fit overflow-hidden rounded-lg border {prominent
       ? 'h-12 border-stroke-strong'
       : 'border-stroke'}"
   >
-    {#each [['men', 'Men'], ['women', 'Women']] as const as [value, label] (value)}
+    {#each [['men', i18n.t('Men')], ['women', i18n.t('Women')]] as const as [value, label] (value)}
       <button
         type="button"
         aria-pressed={sex === value}

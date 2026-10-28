@@ -79,7 +79,7 @@ function query(link: Element): URLSearchParams {
 }
 
 it('defaults both cards to RIS with separate global and country pages', async () => {
-  render(AthletePage, { data: { athlete: athlete() } });
+  render(AthletePage, { data: { locale: 'en', athlete: athlete() } });
   await expect.element(page.getByRole('combobox', { name: 'Metric' })).toHaveValue('ris');
   const global = page.getByRole('link', { name: /Global.*#101/ });
   const country = page.getByRole('link', { name: /France.*#3/ });
@@ -96,7 +96,7 @@ it('defaults both cards to RIS with separate global and country pages', async ()
 });
 
 it('switches both cards and their leaderboard filters for every kilogram metric', async () => {
-  render(AthletePage, { data: { athlete: athlete() } });
+  render(AthletePage, { data: { locale: 'en', athlete: athlete() } });
   for (const [metric, label] of [
     ['total', 'Total'],
     ['muscleup', 'Muscle Up'],
@@ -142,7 +142,7 @@ it('shows unranked cards without links when the selected metric is missing', asy
     dips: null,
     squat: null,
   };
-  render(AthletePage, { data: { athlete: partial } });
+  render(AthletePage, { data: { locale: 'en', athlete: partial } });
   await expect.element(page.getByRole('combobox', { name: 'Metric' })).toHaveValue('ris');
   expect(page.getByRole('link', { name: /Global/ }).elements()).toHaveLength(0);
   const countryCards = page
@@ -158,7 +158,7 @@ it('shows unranked cards without links when the selected metric is missing', asy
 it('omits the ranking controls when the athlete has no ranked performances', async () => {
   const unranked = athlete();
   unranked.standing = null;
-  render(AthletePage, { data: { athlete: unranked } });
+  render(AthletePage, { data: { locale: 'en', athlete: unranked } });
   expect(page.getByRole('combobox', { name: 'Metric' }).elements()).toHaveLength(0);
   await expect.element(page.getByRole('heading', { name: 'Competition history' })).toBeVisible();
 });
@@ -203,7 +203,7 @@ it('renders multiple divisions from the same meet and distinguishes absent, bomb
     },
   ];
   lifter.total_competitions = 1;
-  render(AthletePage, { data: { athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
   await expect.element(page.getByRole('cell', { name: 'Open', exact: true })).toBeVisible();
   await expect.element(page.getByRole('cell', { name: 'Junior', exact: true })).toBeVisible();
   expect(
@@ -228,7 +228,7 @@ it('labels athlete metadata and keeps the native name and accessible social link
       field: 20,
     })),
   };
-  render(AthletePage, { data: { athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
   await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
   const header = page
     .getByRole('heading', { name: /Alex Martin/, level: 1 })
@@ -251,7 +251,7 @@ it('does not mistake a classless category name for a weight class', async () => 
       field: 20,
     })),
   };
-  render(AthletePage, { data: { athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
   await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
   const header = page
     .getByRole('heading', { name: /Alex Martin/, level: 1 })
@@ -267,7 +267,7 @@ it('keeps global rankings and history when country is not recorded', async () =>
   for (const metric of Object.values(lifter.standing!)) {
     if (metric) metric.country = null;
   }
-  render(AthletePage, { data: { athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
   await expect.element(page.getByText('Country not recorded', { exact: true })).toBeVisible();
   await expect
     .element(page.getByText('Country needed for national ranking', { exact: true }))

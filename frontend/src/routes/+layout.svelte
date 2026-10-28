@@ -1,13 +1,21 @@
 <script lang="ts">
+  import { provideI18n } from '#lib/i18n/index.js';
+  import type { LayoutData } from './$types';
   import Header from './Header.svelte';
   import Footer from './Footer.svelte';
   import { umami } from '#lib/analytics.js';
   import '../app.css';
 
-  let { children } = $props();
+  let { data, children }: { data: LayoutData; children: import('svelte').Snippet } = $props();
+  const i18n = provideI18n(() => data.locale);
+
+  $effect(() => {
+    document.documentElement.lang = data.locale;
+  });
 </script>
 
 <svelte:head>
+  <link rel="manifest" href={i18n.href('/manifest.webmanifest')} />
   {#if umami.enabled}
     <script defer src={umami.scriptUrl} data-website-id={umami.websiteId}></script>
   {/if}

@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
+import { I18N_CONTEXT, I18n } from '#lib/i18n/index.js';
 import RisSimulator from './ris-simulator.svelte';
 import type { RisFormula } from '#lib/types/ris.js';
 
@@ -115,3 +116,52 @@ it('does not show scenarios for blank or invalid inputs', async () => {
   await screen.getByRole('textbox', { name: 'Bodyweight', exact: true }).fill('20');
   await expect.element(screen.getByRole('status', { name: 'RIS:' })).not.toBeInTheDocument();
 });
+
+it.each([
+  [
+    'fr',
+    'Poids de corps',
+    'Total soulevé',
+    'RIS cible',
+    '48,1 kg de plus',
+    '8,5 kg de moins',
+    'Femmes',
+  ],
+  ['de', 'Körpergewicht', 'Total', 'Ziel-RIS', '48,1 kg mehr', '8,5 kg weniger', 'Frauen'],
+  [
+    'it',
+    'Peso corporeo',
+    'Totale sollevato',
+    'RIS obiettivo',
+    '48,1 kg in più',
+    '8,5 kg in meno',
+    'Donne',
+  ],
+  [
+    'pl',
+    'Masa ciała',
+    'Suma w bojach',
+    'Docelowy RIS',
+    '48,1 kg więcej',
+    '8,5 kg mniej',
+    'Kobiety',
+  ],
+] as const)(
+  'runs the calculator in %s with decimal comma input and localized results',
+  async (locale, bodyweight, total, target, more, less, women) => {
+    const screen = await render(RisSimulator, {
+      props: { edition },
+      context: new Map([[I18N_CONTEXT, new I18n(() => locale)]]),
+    });
+    await screen.getByRole('textbox', { name: bodyweight, exact: true }).fill('80,0');
+    await screen.getByRole('textbox', { name: total, exact: true }).fill('500');
+    await expect.element(screen.getByRole('status', { name: 'RIS:' })).toHaveTextContent('100,35');
+    await screen.getByRole('textbox', { name: target }).fill('110');
+    await expect.element(screen.getByText(more, { exact: true })).toBeVisible();
+    await expect.element(screen.getByText(less, { exact: true })).toBeVisible();
+    await screen.getByRole('button', { name: women, exact: true }).click();
+    await expect
+      .element(screen.getByRole('button', { name: women, exact: true }))
+      .toHaveAttribute('aria-pressed', 'true');
+  }
+);

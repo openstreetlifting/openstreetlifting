@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { TablePagination } from '#lib/types/pagination.js';
   import type { RankingEntry } from '#lib/types/ranking.js';
@@ -21,6 +22,8 @@
   import { CELL, FIGURE, SORTED_COLUMN, TEXT_CELL } from '#lib/constants/table.js';
   import { RANKING_LIFTS } from '#lib/constants/ranking.js';
 
+  const i18n = useI18n();
+
   interface Props {
     entries: RankingEntry[];
     showFederation?: boolean;
@@ -35,23 +38,23 @@
 <Table rows={entries} itemName="athlete" pageParam="page" {pagination} {busy}>
   {#snippet head()}
     <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
-      >Rank</th
+      >{i18n.t('Rank')}</th
     >
-    <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">Athlete</th>
-    <th class="{TABLE_HEAD_CELL} text-secondary">Total</th>
+    <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
+    <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')}</th>
     <th class="{TABLE_HEAD_CELL} text-secondary {SORTED_COLUMN}">
       <RisHeader />
     </th>
     {#each RANKING_LIFTS as lift (lift.value)}
-      <th class="{TABLE_HEAD_CELL} text-secondary">{lift.label}</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.movement(lift.label)}</th>
     {/each}
-    <th class="{TABLE_HEAD_CELL} text-secondary">Competition</th>
+    <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competition')}</th>
     {#if showFederation}
-      <th class="{TABLE_HEAD_CELL} text-secondary">Federation</th>
+      <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Federation')}</th>
     {/if}
-    <th class="{TABLE_HEAD_CELL} text-secondary">Date</th>
-    <th class="{TABLE_HEAD_CELL} text-secondary">Sex</th>
-    {#if classed}<th class="{TABLE_HEAD_CELL} text-secondary">Class</th>{/if}
+    <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Date')}</th>
+    <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Sex')}</th>
+    {#if classed}<th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>{/if}
   {/snippet}
 
   {#snippet body(rows)}
@@ -68,22 +71,31 @@
               class="shrink-0 [--flag-height:1.25em]"
             />
             <a
-              href={resolve(`athletes/${entry.athlete.slug}`)}
+              href={i18n.href(resolve(`athletes/${entry.athlete.slug}`))}
               class="truncate underline hover:text-secondary">{formatAthleteName(entry.athlete)}</a
             >
           </span>
         </td>
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.total)}</td>
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+          >{formatWeight(entry.total, i18n.locale)}</td
+        >
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
           <RisScore value={entry.ris} source={entry.ris_source} />
         </td>
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.muscleup)}</td>
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.pullup)}</td>
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.dips)}</td>
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.squat)}</td>
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+          >{formatWeight(entry.muscleup, i18n.locale)}</td
+        >
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+          >{formatWeight(entry.pullup, i18n.locale)}</td
+        >
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{formatWeight(entry.dips, i18n.locale)}</td
+        >
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+          >{formatWeight(entry.squat, i18n.locale)}</td
+        >
         <td class="{TABLE_CELL} {CELL.data}">
           <a
-            href={resolve(`competitions/${entry.competition.slug}`)}
+            href={i18n.href(resolve(`competitions/${entry.competition.slug}`))}
             class="{TEXT_CELL.competition} underline hover:text-secondary"
           >
             {entry.competition.name}
@@ -92,7 +104,9 @@
         {#if showFederation}
           <td class="{TABLE_CELL} {CELL.data}" title={entry.federation.name}>
             <a
-              href={resolve('/federations/[slug]', { slug: slugify(entry.federation.name) })}
+              href={i18n.href(
+                resolve('/federations/[slug]', { slug: slugify(entry.federation.name) })
+              )}
               class="{TEXT_CELL.federation} underline hover:text-ink"
             >
               {entry.federation.abbreviation || entry.federation.name}
@@ -100,7 +114,7 @@
           </td>
         {/if}
         <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap">
-          {formatDate(entry.competition.date)}
+          {formatDate(entry.competition.date, i18n.locale)}
         </td>
         <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
         {#if classed}<td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>{/if}

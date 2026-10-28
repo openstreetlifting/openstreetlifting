@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import type { Snippet } from 'svelte';
   import CloseIcon from '#lib/components/icons/CloseIcon.svelte';
+
+  const i18n = useI18n();
 
   let {
     label,
@@ -31,7 +34,7 @@
     type="button"
     popovertarget={panelId}
     popovertargetaction="hide"
-    aria-label="Close information"
+    aria-label={i18n.t('Close information')}
     class="float-right -mt-1 -mr-1 mb-1 ml-3 inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-muted transition-colors hover:bg-surface-hover hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:scale-95"
   >
     <CloseIcon class="h-4 w-4" />

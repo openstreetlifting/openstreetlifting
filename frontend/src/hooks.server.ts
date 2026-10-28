@@ -1,10 +1,37 @@
 import { SpanStatusCode, isSpanContextValid } from '@opentelemetry/api';
 import type { Handle, HandleServerError } from '@sveltejs/kit/hooks';
+import { DEFAULT_LOCALE, negotiateLocale } from '#lib/i18n/locale.js';
+import { redirect } from '@sveltejs/kit';
+import { legacyRedirect, localeHref, pathLocale } from '#lib/i18n/paths.js';
 import { logger } from '#lib/server/logger.js';
 
 export const handle: Handle = async ({ event, resolve }) => {
   const started = performance.now();
-  const response = await resolve(event);
+  const legacy = legacyRedirect(event.url.pathname, event.url.search);
+  if (legacy) {
+    if (event.url.pathname === '/') {
+      event.setHeaders({ Vary: 'Accept-Language' });
+      redirect(
+        307,
+        localeHref(
+          '/' + event.url.search,
+          negotiateLocale(event.request.headers.get('accept-language'))
+        )
+      );
+    }
+    redirect(308, legacy);
+  }
+  event.locals.locale = pathLocale(event.url.pathname) ?? DEFAULT_LOCALE;
+  const response = await resolve(event, {
+    transformPageChunk: ({ html }) => html.replace('%lang%', event.locals.locale),
+  });
+  if (
+    event.isDataRequest ||
+    response.headers.get('content-type')?.includes('text/html') ||
+    event.route.id === '/manifest.webmanifest'
+  ) {
+    response.headers.set('Content-Language', event.locals.locale);
+  }
   event.tracing.root.setAttributes({
     'http.request.method': event.request.method,
     'http.route': event.route.id ?? 'unmatched',

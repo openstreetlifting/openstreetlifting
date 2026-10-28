@@ -1,5 +1,8 @@
 <script lang="ts">
+  import { useI18n } from '#lib/i18n/index.js';
   import { resolve } from '$app/paths';
+
+  const i18n = useI18n();
 
   type BreadcrumbItem = {
     label: string;
@@ -9,10 +12,10 @@
   let { items }: { items: BreadcrumbItem[] } = $props();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- an href carrying a query string is not a literal route
-  const target = (href: string) => resolve(href as any);
+  const target = (href: string) => i18n.href(resolve(href as any));
 </script>
 
-<nav aria-label="Breadcrumb" class="mb-3 sm:mb-5">
+<nav aria-label={i18n.t('Breadcrumb')} class="mb-3 sm:mb-5">
   <ol class="flex flex-wrap items-center gap-1.5 text-xs text-muted sm:gap-2 sm:text-sm">
     {#each items as item, index (index)}
       {#if index > 0}

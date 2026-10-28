@@ -1,3 +1,5 @@
+import { localeHref } from '#lib/i18n/paths.js';
+import type { Locale } from '#lib/i18n/locale.js';
 import type { page } from '$app/state';
 import { PUBLIC_SITE_URL, PUBLIC_ENVIRONMENT } from '$app/env/public';
 
@@ -22,8 +24,14 @@ export const OG_IMAGE = {
   height: 630,
 } as const;
 
-export function absolute(path: string): string {
-  return `${SITE_URL}${path}`;
+export function absolute(path: string, locale?: Locale): string {
+  return `${SITE_URL}${locale ? localeHref(path, locale) : path}`;
+}
+
+export function localizedUrl(canonical: string, locale: Locale): string {
+  const url = new URL(canonical);
+  url.pathname = localeHref(url.pathname, locale);
+  return url.href;
 }
 
 export function pageTitle(title: string): string {

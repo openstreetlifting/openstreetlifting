@@ -48,12 +48,12 @@ it('selects competition points and switches metrics without losing a real zero r
   render(AthleteProgress, { competitions, formats: ['MPDS'], athleteSlug: 'alex-martin' });
   await expect
     .element(page.getByRole('link', { name: 'Second meet' }))
-    .toHaveAttribute('href', '/competitions/second?movement=total&athlete=alex-martin');
+    .toHaveAttribute('href', '/en/competitions/second?movement=total&athlete=alex-martin');
   await expect.element(page.getByRole('tooltip')).not.toBeInTheDocument();
   await page.getByRole('button', { name: /First meet/ }).hover();
   await expect
     .element(page.getByRole('link', { name: 'First meet' }))
-    .toHaveAttribute('href', '/competitions/first?movement=total&athlete=alex-martin');
+    .toHaveAttribute('href', '/en/competitions/first?movement=total&athlete=alex-martin');
   await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('muscleup');
   await page.getByRole('button', { name: /First meet.*0 kg/ }).click();
   await expect
@@ -61,7 +61,7 @@ it('selects competition points and switches metrics without losing a real zero r
     .toHaveAttribute('aria-pressed', 'true');
   await expect
     .element(page.getByRole('tooltip').getByRole('link', { name: 'First meet' }))
-    .toHaveAttribute('href', '/competitions/first?movement=muscleup&athlete=alex-martin');
+    .toHaveAttribute('href', '/en/competitions/first?movement=muscleup&athlete=alex-martin');
   await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('ris');
   await page.getByRole('button', { name: /Second meet/ }).click();
   await expect.element(page.getByText(/Reported RIS/)).toBeVisible();

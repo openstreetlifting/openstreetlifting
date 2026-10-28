@@ -40,6 +40,7 @@ vi.mock('$app/navigation', async () => {
 
 function data(event = ''): PageData {
   return {
+    locale: 'en',
     runningCompetitions: [],
     competitions: ['PD', ''].map((format, i) => ({
       competition_id: String(i),
@@ -138,7 +139,7 @@ it('keeps every movement available with no matches and uses the shared reset sta
   await expect.element(page.getByRole('status')).toMatchTextContent('Oops, no competitions found.');
   await expect
     .element(page.getByRole('link', { name: 'Clear search & filters' }))
-    .toHaveAttribute('href', '/competitions?status=upcoming');
+    .toHaveAttribute('href', '/en/competitions?status=upcoming');
   await page.getByText('Muscle-up, Squat', { exact: true }).click();
   expect(page.getByRole('checkbox').elements()).toHaveLength(4);
   await expect.element(page.getByRole('checkbox', { name: 'Pull-up', exact: true })).toBeEnabled();
