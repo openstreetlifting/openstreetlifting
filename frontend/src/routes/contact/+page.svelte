@@ -11,6 +11,7 @@
   import Seo from '#lib/components/seo.svelte';
   import { absolute, breadcrumbLd } from '#lib/seo/index.js';
   import { Breadcrumb } from '#lib/components/ui/index.js';
+  import Message from '#lib/components/ui/message.svelte';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
 
   const i18n = useI18n();
@@ -26,10 +27,13 @@
   )}
   canonical={absolute('/contact')}
   jsonLd={[
-    breadcrumbLd([
-      { name: i18n.t('Rankings'), path: '/' },
-      { name: i18n.t('Contact'), path: '/contact' },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: i18n.t('Contact'), path: '/contact' },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
@@ -54,19 +58,18 @@
       )}
     </p>
     <p>
-      {i18n.t('To ask about your personal data or request name removal, email')}
-      <a
-        href="mailto:contact@openstreetlifting.org"
-        class="underline underline-offset-4 hover:text-ink">contact@openstreetlifting.org</a
-      >
-
-      {i18n.t('. Keep these requests private. You can read more in the')}
-
-      <a href={resolve('privacy')} class="underline underline-offset-4 hover:text-ink"
-        >{i18n.t('privacy notice')}</a
-      >
-
-      .
+      {#snippet email()}<a
+          href="mailto:contact@openstreetlifting.org"
+          class="underline underline-offset-4 hover:text-ink">contact@openstreetlifting.org</a
+        >{/snippet}
+      {#snippet privacyNotice()}<a
+          href={i18n.href(resolve('privacy'))}
+          class="underline underline-offset-4 hover:text-ink">{i18n.t('privacy notice')}</a
+        >{/snippet}
+      <Message
+        message={'To ask about your personal data or request name removal, email {email}. Keep these requests private. You can read more in the {privacyNotice}.'}
+        values={{ email, privacyNotice }}
+      />
     </p>
   </div>
 

@@ -19,10 +19,10 @@
   <div class="mx-auto max-w-page px-4 py-6 sm:px-6 sm:py-10">
     <div class="flex flex-wrap items-center gap-x-8 gap-y-5">
       <nav aria-label={i18n.t('Footer')} class="flex flex-wrap items-center gap-x-5 gap-y-2">
-        <a href={resolve('')} class={NAV_LINK}>{i18n.t('Rankings')}</a>
-        <a href={resolve('competitions')} class={NAV_LINK}>{i18n.t('Competitions')}</a>
-        <a href={resolve('federations')} class={NAV_LINK}>{i18n.t('Federations')}</a>
-        <a href={resolve('countries')} class={NAV_LINK}>{i18n.t('Countries')}</a>
+        <a href={i18n.href(resolve(''))} class={NAV_LINK}>{i18n.t('Rankings')}</a>
+        <a href={i18n.href(resolve('competitions'))} class={NAV_LINK}>{i18n.t('Competitions')}</a>
+        <a href={i18n.href(resolve('federations'))} class={NAV_LINK}>{i18n.t('Federations')}</a>
+        <a href={i18n.href(resolve('countries'))} class={NAV_LINK}>{i18n.t('Countries')}</a>
         <a
           href="https://docs.openstreetlifting.org/"
           target="_blank"
@@ -30,8 +30,8 @@
           class={NAV_LINK}>{i18n.t('Documentation')}</a
         >
 
-        <a href={resolve('contact')} class={NAV_LINK}>{i18n.t('Contact')}</a>
-        <a href={resolve('privacy')} class={NAV_LINK}>{i18n.t('Privacy')}</a>
+        <a href={i18n.href(resolve('contact'))} class={NAV_LINK}>{i18n.t('Contact')}</a>
+        <a href={i18n.href(resolve('privacy'))} class={NAV_LINK}>{i18n.t('Privacy')}</a>
       </nav>
 
       <div class="flex items-center gap-4 xl:ml-auto">

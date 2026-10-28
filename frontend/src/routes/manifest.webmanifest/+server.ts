@@ -35,16 +35,17 @@ export const GET: RequestHandler = ({ locals }) => {
     JSON.stringify({
       ...manifest,
       lang: i18n.locale,
+      start_url: i18n.href('/'),
       description: i18n.t(SITE_DESCRIPTION),
       shortcuts: PRIMARY_ROUTES.map(({ name, path }) => ({
         name: name === 'RIS' ? name : i18n.t(name),
-        url: path,
+        url: i18n.href(path),
       })),
     }),
     {
       headers: {
         'content-type': 'application/manifest+json',
-        'cache-control': 'private, no-cache',
+        'cache-control': 'public, max-age=3600',
       },
     }
   );

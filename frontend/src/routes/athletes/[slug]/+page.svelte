@@ -138,10 +138,13 @@
     else params.set(key, value);
     const query = params.toString();
 
-    return goto(resolve(`athletes/${athlete.slug}${query ? `?${query}` : ''}${page.url.hash}`), {
-      replace: true,
-      reset: false,
-    });
+    return goto(
+      i18n.href(resolve(`athletes/${athlete.slug}${query ? `?${query}` : ''}${page.url.hash}`)),
+      {
+        replace: true,
+        reset: false,
+      }
+    );
   }
 
   const selectedStanding = $derived(athlete.standing?.[selectedMetric] ?? null);
@@ -201,18 +204,21 @@
   type="profile"
   jsonLd={[
     athleteLd(athlete, seoDescription, i18n.locale),
-    breadcrumbLd([
-      { name: i18n.t('Rankings'), path: '/' },
-      ...(athlete.country
-        ? [
-            {
-              name: countryName(athlete.country, i18n.locale),
-              path: countryPath(athlete.country),
-            },
-          ]
-        : []),
-      { name: athleteName, path: `/athletes/${athlete.slug}` },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        ...(athlete.country
+          ? [
+              {
+                name: countryName(athlete.country, i18n.locale),
+                path: countryPath(athlete.country),
+              },
+            ]
+          : []),
+        { name: athleteName, path: `/athletes/${athlete.slug}` },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
@@ -328,7 +334,7 @@
   )}
     {#if query}
       <a
-        href={resolve(`?${query}`)}
+        href={i18n.href(resolve(`?${query}`))}
         class="group relative isolate block overflow-hidden rounded-xl {CARD_SURFACE} p-3 transition-colors hover:border-stroke-strong hover:bg-surface-hover focus:ring-2 focus:ring-focus focus:outline-none"
       >
         {@render standingContent(country, scope, place, field, missingLabel)}
@@ -399,7 +405,7 @@
             </div>
             <div class={CARD_CAPTION}>
               <a
-                href={resolve(`competitions/${pr.competition_slug}`)}
+                href={i18n.href(resolve(`competitions/${pr.competition_slug}`))}
                 class="underline hover:text-secondary"
               >
                 {pr.competition_name}
@@ -475,7 +481,7 @@
               </td>
               <td class={TABLE_CELL}>
                 <a
-                  href={resolve(`competitions/${competition.competition_slug}`)}
+                  href={i18n.href(resolve(`competitions/${competition.competition_slug}`))}
                   class="{TEXT_CELL.competition} text-ink underline hover:text-secondary focus:ring-2 focus:ring-focus focus:outline-none"
                 >
                   {competition.competition_name}

@@ -327,12 +327,15 @@
   noindex={seo.noindex}
   jsonLd={[
     competitionLd(competition, seoDescription, i18n.locale),
-    breadcrumbLd([
-      { name: i18n.t('Rankings'), path: '/' },
-      { name: i18n.t('Competitions'), path: '/competitions' },
-      { name: competition.federation.name, path: federationHref },
-      { name: competition.name, path: `/competitions/${competition.slug}` },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: i18n.t('Competitions'), path: '/competitions' },
+        { name: competition.federation.name, path: federationHref },
+        { name: competition.name, path: `/competitions/${competition.slug}` },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
@@ -392,7 +395,9 @@
       <dt class="text-muted">{i18n.t('Federation')}</dt>
       <dd class="min-w-0 text-ink">
         <a
-          href={resolve('/federations/[slug]', { slug: slugify(competition.federation.name) })}
+          href={i18n.href(
+            resolve('/federations/[slug]', { slug: slugify(competition.federation.name) })
+          )}
           title={competition.federation.name}
           class="break-words underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
           >{federationLabel}</a
@@ -570,7 +575,7 @@
   {:else if rankings.length === 0 && unplacedOnPage.length === 0 && !busy}
     <RankingsEmpty
       canReset={table.narrowed || pagination.page > 1}
-      resetHref={resolve(`competitions/${competition.slug}`)}
+      resetHref={i18n.href(resolve(`competitions/${competition.slug}`))}
     />
   {:else}
     <Table
@@ -632,7 +637,7 @@
                     class="shrink-0 [--flag-height:1.25em]"
                   />
                   <a
-                    href={resolve(`athletes/${entry.athlete.slug}`)}
+                    href={i18n.href(resolve(`athletes/${entry.athlete.slug}`))}
                     class="truncate underline hover:text-secondary"
                   >
                     {formatAthleteName(entry.athlete)}
@@ -729,7 +734,7 @@
                     class="shrink-0 [--flag-height:1.25em]"
                   />
                   <a
-                    href={resolve(`athletes/${participant.athlete.slug}`)}
+                    href={i18n.href(resolve(`athletes/${participant.athlete.slug}`))}
                     class="truncate underline hover:text-secondary"
                   >
                     {formatAthleteName(participant.athlete)}

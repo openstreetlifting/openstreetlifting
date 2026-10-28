@@ -27,9 +27,9 @@
   const busy = $derived(loading.current);
 
   const TABS = [
-    { status: 'completed', label: i18n.t('Results') },
-    { status: 'live', label: i18n.t('In Progress') },
-    { status: 'upcoming', label: i18n.t('Upcoming') },
+    { status: 'completed', label: 'Results' },
+    { status: 'live', label: 'In Progress' },
+    { status: 'upcoming', label: 'Upcoming' },
   ] as const;
 
   const showsUpcoming = $derived(data.status === 'upcoming');
@@ -73,7 +73,7 @@
     if (next.page && next.page > 1) params.set('page', String(next.page));
 
     const queryString = params.toString();
-    return resolve(queryString ? `/competitions?${queryString}` : '/competitions');
+    return i18n.href(resolve(queryString ? `/competitions?${queryString}` : '/competitions'));
   }
 
   function apply(next: { status?: string; page?: number } = {}, replaceState = false) {
@@ -111,10 +111,13 @@
   canonical={seo.canonical}
   noindex={seo.noindex}
   jsonLd={[
-    breadcrumbLd([
-      { name: i18n.t('Rankings'), path: '/' },
-      { name: i18n.t('Competitions'), path: '/competitions' },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: i18n.t('Competitions'), path: '/competitions' },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
@@ -138,7 +141,7 @@
         {#each data.runningCompetitions as competition (competition.slug)}
           <li class="flex flex-wrap items-center gap-x-6 gap-y-1">
             <a
-              href={resolve(`competitions/${competition.slug}`)}
+              href={i18n.href(resolve(`competitions/${competition.slug}`))}
               class="inline-flex min-h-8 items-center gap-1.5 text-ink underline decoration-stroke-strong underline-offset-4 hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
               >{competition.name}</a
             >
@@ -213,7 +216,7 @@
         class="-mb-px flex items-baseline gap-1.5 border-b-2 pb-2 {CONTROL} transition-colors focus:ring-2 focus:ring-focus focus:outline-none
  {active ? 'border-ink text-ink' : 'border-transparent text-muted hover:text-secondary'}"
       >
-        {tab.label}
+        {i18n.t(tab.label)}
         {#if data.counts[tab.status] !== undefined}
           <span class="{TEXT.micro} {active ? 'text-secondary' : 'text-muted'}">
             {data.counts[tab.status]}
@@ -281,8 +284,10 @@
             ? i18n.t('No competitions are in progress right now.')
             : i18n.t('No competition results in this view yet.')}
       resetHref={canReset
-        ? resolve(
-            data.status === 'completed' ? '/competitions' : `/competitions?status=${data.status}`
+        ? i18n.href(
+            resolve(
+              data.status === 'completed' ? '/competitions' : `/competitions?status=${data.status}`
+            )
           )
         : undefined}
     />

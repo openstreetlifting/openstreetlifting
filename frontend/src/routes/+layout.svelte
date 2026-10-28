@@ -7,10 +7,15 @@
   import '../app.css';
 
   let { data, children }: { data: LayoutData; children: import('svelte').Snippet } = $props();
-  provideI18n(() => data.locale);
+  const i18n = provideI18n(() => data.locale);
+
+  $effect(() => {
+    document.documentElement.lang = data.locale;
+  });
 </script>
 
 <svelte:head>
+  <link rel="manifest" href={i18n.href('/manifest.webmanifest')} />
   {#if umami.enabled}
     <script defer src={umami.scriptUrl} data-website-id={umami.websiteId}></script>
   {/if}

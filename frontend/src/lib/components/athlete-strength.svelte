@@ -171,7 +171,7 @@
                     {i18n.t('percentile')}
                   </p>
                   <p class="mt-1 text-xs text-muted">
-                    {i18n.t('Compared with {count} other {athletes}', {
+                    {i18n.t('Comparison group: {count} {athletes}', {
                       count: i18n.number(lift.field, 0),
                       athletes: i18n.count('athlete', lift.field),
                     })}

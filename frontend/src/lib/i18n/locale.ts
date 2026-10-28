@@ -1,15 +1,27 @@
-export const LOCALES = ['en', 'fr'] as const;
+export const LOCALES = ['en', 'fr', 'de', 'it', 'pl'] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = 'en';
-export const LOCALE_COOKIE = 'osl-language';
+export const LANGUAGE_NAMES: Record<Locale, string> = {
+  en: 'English',
+  fr: 'Français',
+  de: 'Deutsch',
+  it: 'Italiano',
+  pl: 'Polski',
+};
+export const OG_LOCALES: Record<Locale, string> = {
+  en: 'en_GB',
+  fr: 'fr_FR',
+  de: 'de_DE',
+  it: 'it_IT',
+  pl: 'pl_PL',
+};
 
 export function isLocale(value: unknown): value is Locale {
-  return value === 'en' || value === 'fr';
+  return typeof value === 'string' && (LOCALES as readonly string[]).includes(value);
 }
 
-/** A saved choice wins; otherwise negotiate regional tags and quality weights. */
-export function negotiateLocale(cookie: string | undefined, acceptLanguage: string | null): Locale {
-  if (isLocale(cookie)) return cookie;
+/** Negotiate regional tags and quality weights for the unprefixed home page. */
+export function negotiateLocale(acceptLanguage: string | null): Locale {
   const preferences = (acceptLanguage ?? '')
     .split(',')
     .map((entry) => {

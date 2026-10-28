@@ -47,7 +47,7 @@
     </svg>
   {:else if link}
     <a
-      href={resolve('/countries/[code]', { code: countryCode!.toLowerCase() })}
+      href={i18n.href(resolve('/countries/[code]', { code: countryCode!.toLowerCase() }))}
       class="inline-flex shrink-0 rounded-[3px] transition-opacity hover:opacity-75 focus:ring-2 focus:ring-focus focus:outline-none"
     >
       {@render flag()}

@@ -43,11 +43,14 @@
   )}
   canonical={absolute('/federations')}
   jsonLd={[
-    breadcrumbLd([
-      { name: i18n.t('Rankings'), path: '/' },
-      { name: i18n.t('Competitions'), path: '/competitions' },
-      { name: i18n.t('Federations'), path: '/federations' },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: i18n.t('Competitions'), path: '/competitions' },
+        { name: i18n.t('Federations'), path: '/federations' },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
@@ -77,7 +80,7 @@
         <tr class="transition-colors">
           <td class="{TABLE_CELL} {CELL.identity}">
             <a
-              href={resolve('/federations/[slug]', { slug: slugify(federation.name) })}
+              href={i18n.href(resolve('/federations/[slug]', { slug: slugify(federation.name) }))}
               class="underline hover:text-secondary"
             >
               {federation.name}
@@ -86,7 +89,9 @@
           <td class="{TABLE_CELL} {CELL.data}">
             {#if federation.country}
               <a
-                href={resolve('/countries/[code]', { code: federation.country.toLowerCase() })}
+                href={i18n.href(
+                  resolve('/countries/[code]', { code: federation.country.toLowerCase() })
+                )}
                 class="flex items-center gap-2 hover:text-ink"
               >
                 <Flag countryCode={federation.country} class="shrink-0 [--flag-height:1.25em]" />

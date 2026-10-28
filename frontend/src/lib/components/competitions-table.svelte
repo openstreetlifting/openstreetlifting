@@ -57,7 +57,7 @@
       <tr class="transition-colors">
         <td class="{TABLE_CELL} {CELL.identity}">
           <a
-            href={resolve(`competitions/${competition.slug}`)}
+            href={i18n.href(resolve(`competitions/${competition.slug}`))}
             class="{TEXT_CELL.competition} underline hover:text-secondary"
           >
             {competition.name}
@@ -91,7 +91,9 @@
         {#if showFederation}
           <td class="{TABLE_CELL} {CELL.data}" title={competition.federation.name}>
             <a
-              href={resolve('/federations/[slug]', { slug: slugify(competition.federation.name) })}
+              href={i18n.href(
+                resolve('/federations/[slug]', { slug: slugify(competition.federation.name) })
+              )}
               class="{TEXT_CELL.federation} underline hover:text-ink"
             >
               {competition.federation.abbreviation || competition.federation.name}

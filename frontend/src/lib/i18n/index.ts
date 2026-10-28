@@ -1,7 +1,25 @@
 import { getContext, setContext } from 'svelte';
 import { DEFAULT_LOCALE, type Locale } from './locale.js';
-import french from './fr.js';
+import { counts as englishCounts } from './en.js';
+import french, { counts as frenchCounts } from './fr.js';
+import german, { counts as germanCounts } from './de.js';
+import italian, { counts as italianCounts } from './it.js';
+import polish, { counts as polishCounts } from './pl.js';
+import { localeHref } from './paths.js';
+
 import type { Message } from './en.js';
+import type { CountKind, CountMessages } from './types.js';
+import type { ResolvedPathname } from '$app/types';
+
+const translations = { fr: french, de: german, it: italian, pl: polish };
+
+const countMessages: Record<Locale, CountMessages> = {
+  en: englishCounts,
+  fr: frenchCounts,
+  de: germanCounts,
+  it: italianCounts,
+  pl: polishCounts,
+};
 
 // Placeholder names are part of the English message's type, including at call sites.
 export type Placeholders<T extends string> = T extends `${string}{${infer Name}}${infer Rest}`
@@ -27,7 +45,12 @@ export class I18n {
   }
 
   template(message: Message): string {
-    return this.locale === 'fr' ? french[message] : message;
+    return this.locale === 'en' ? message : translations[this.locale][message];
+  }
+
+  href(path: string): ResolvedPathname {
+    // Localized public URLs are handled by the universal reroute hook.
+    return localeHref(path, this.locale) as ResolvedPathname;
   }
 
   number(value: number, digits?: number): string {
@@ -52,23 +75,10 @@ export class I18n {
     }
   }
 
-  count(
-    kind: 'athlete' | 'competition' | 'country' | 'federation' | 'entry',
-    count: number
-  ): string {
-    const plural = new Intl.PluralRules(this.locale).select(count) !== 'one';
-    switch (kind) {
-      case 'athlete':
-        return plural ? this.t('athletes') : this.t('athlete');
-      case 'competition':
-        return plural ? this.t('competitions') : this.t('competition');
-      case 'country':
-        return plural ? this.t('countries') : this.t('country');
-      case 'federation':
-        return plural ? this.t('federations') : this.t('federation');
-      case 'entry':
-        return plural ? this.t('entries') : this.t('entry');
-    }
+  count(kind: CountKind, count: number): string {
+    const category = new Intl.PluralRules(this.locale).select(count);
+    const forms = countMessages[this.locale][kind];
+    return forms[category] ?? forms.other;
   }
 }
 

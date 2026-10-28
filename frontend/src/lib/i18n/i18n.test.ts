@@ -3,6 +3,9 @@ import { I18n } from './index.js';
 import { negotiateLocale } from './locale.js';
 import { messages } from './en.js';
 import french from './fr.js';
+import german from './de.js';
+import italian from './it.js';
+import polish from './pl.js';
 import {
   countryName,
   formatCountdown,
@@ -18,18 +21,17 @@ afterEach(() => vi.useRealTimers());
 
 describe('language negotiation', () => {
   it.each([
-    ['en', 'fr-FR,fr;q=0.9', 'en'],
-    ['fr', 'en-US,en;q=0.9', 'fr'],
-    [undefined, 'fr-CA,fr;q=0.9,en;q=0.8', 'fr'],
-    [undefined, 'de,fr;q=0.8,en;q=0.9', 'en'],
-    ['invalid', 'fr-FR', 'fr'],
-    [undefined, 'fr;q=0,en;q=0.8', 'en'],
-    [undefined, 'fr;q=bad,en;q=0.8', 'en'],
-    [undefined, 'fr;q=2,en;q=0.8', 'en'],
-    [undefined, 'de,*;q=0.5', 'en'],
-    [undefined, null, 'en'],
-  ])('chooses %s / %s as %s', (cookie, header, expected) => {
-    expect(negotiateLocale(cookie, header)).toBe(expected);
+    ['fr-CA,fr;q=0.9,en;q=0.8', 'fr'],
+    ['de,fr;q=0.8,en;q=0.9', 'de'],
+    ['it-IT,it;q=0.9', 'it'],
+    ['pl-PL,pl;q=0.9', 'pl'],
+    ['fr;q=0,en;q=0.8', 'en'],
+    ['fr;q=bad,en;q=0.8', 'en'],
+    ['fr;q=2,en;q=0.8', 'en'],
+    ['es,*;q=0.5', 'en'],
+    [null, 'en'],
+  ])('chooses %s as %s', (header, expected) => {
+    expect(negotiateLocale(header)).toBe(expected);
   });
 });
 
@@ -51,14 +53,33 @@ it('keeps independent locales and interpolates values without interpreting their
   expect(fr.count('competition', 2)).toBe('compétitions');
 });
 
-it('translates every message and preserves its interpolation placeholders', () => {
-  const placeholders = (text: string) =>
-    [...text.matchAll(/\{(\w+)\}/g)].map((match) => match[1]).sort();
-  expect(Object.keys(french).sort()).toEqual([...messages].sort());
-  for (const message of messages) {
-    expect(french[message].trim(), message).not.toBe('');
-    expect(placeholders(french[message]), message).toEqual(placeholders(message));
+it.each(Object.entries({ fr: french, de: german, it: italian, pl: polish }))(
+  'translates every %s message and preserves its interpolation placeholders',
+  (_locale, catalog) => {
+    const placeholders = (text: string) =>
+      [...text.matchAll(/\{([^{}]+)\}/g)].map((match) => match[1]).sort();
+    expect(Object.keys(catalog).sort()).toEqual([...messages].sort());
+    for (const message of messages) {
+      expect(catalog[message].trim(), message).not.toBe('');
+      expect(placeholders(catalog[message]), message).toEqual(placeholders(message));
+    }
+    const removalMessage =
+      'The procedure replaces your name with a numbered label, such as “Redacted Athlete #7”, and removes your original-script name and Instagram link. Once published, the change appears on the website, API, and fresh downloads, and the old named profile is removed.';
+    expect(catalog[removalMessage]).toContain('Redacted Athlete #7');
   }
+);
+
+it('uses Polish number forms for one, few and many', () => {
+  const pl = new I18n(() => 'pl');
+  expect(pl.count('country', 1)).toBe('kraj');
+  expect(pl.count('country', 2)).toBe('kraje');
+  expect(pl.count('country', 5)).toBe('krajów');
+  expect(pl.count('country', 22)).toBe('kraje');
+  expect(pl.count('country', 12)).toBe('krajów');
+  expect(pl.count('country', 1.5)).toBe('kraju');
+  expect(pl.count('athlete', 1)).toBe('zawodnik');
+  expect(pl.count('athlete', 2)).toBe('zawodników');
+  expect(pl.count('athlete', 5)).toBe('zawodników');
 });
 
 it('formats calendar dates in UTC and localizes countries, decimals and countdowns', () => {
@@ -75,4 +96,14 @@ it('formats calendar dates in UTC and localizes countries, decimals and countdow
   expect(formatWeight(null, 'fr')).toBe('-');
   expect(formatScore('100.3', 'fr')).toBe('100,30');
   expect(formatScore(0, 'fr')).toBe('0,00');
+});
+
+it.each([
+  ['en', 'October 27, 2026'],
+  ['fr', '27 octobre 2026'],
+  ['de', '27. Oktober 2026'],
+  ['it', '27 ottobre 2026'],
+  ['pl', '27 października 2026'],
+] as const)('formats a competition date in %s', (locale, expected) => {
+  expect(formatLongDate('2026-10-27', locale)).toBe(expected);
 });

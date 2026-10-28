@@ -8,6 +8,7 @@
   import Seo from '#lib/components/seo.svelte';
   import { absolute, breadcrumbLd } from '#lib/seo/index.js';
   import { Breadcrumb } from '#lib/components/ui/index.js';
+  import Message from '#lib/components/ui/message.svelte';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import type { PageData } from './$types';
 
@@ -27,10 +28,13 @@
   )}
   canonical={absolute('/ris')}
   jsonLd={[
-    breadcrumbLd([
-      { name: i18n.t('Rankings'), path: '/' },
-      { name: 'RIS', path: '/ris' },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: 'RIS', path: '/ris' },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
@@ -45,10 +49,15 @@
       )}
     </p>
     <p class="mt-3 text-base leading-7 text-secondary">
-      {i18n.t('RIS was developed by')}
-      <a href="https://warisradji.com/ris/" class="text-ink underline underline-offset-4"
-        >{i18n.t('Waris Radji and Mathieu Ardoin')}</a
-      >{i18n.t(', using results from leading Streetlifting athletes.')}
+      {#snippet authors()}<a
+          href="https://warisradji.com/ris/"
+          class="text-ink underline underline-offset-4"
+          >{i18n.t('Waris Radji and Mathieu Ardoin')}</a
+        >{/snippet}
+      <Message
+        message={'RIS was developed by {authors}, using results from leading Streetlifting athletes.'}
+        values={{ authors }}
+      />
     </p>
   </header>
 
@@ -129,10 +138,11 @@
     </p>
 
     <p class="mt-3 {TEXT.body} leading-6 text-secondary">
-      {i18n.t('When a score cannot be recalculated, we keep the published value and mark it with')}
-      <span class={REPORTED_MARK}>{REPORTED_GLYPH}</span>{i18n.t(
-        '. These scores may use an older edition.'
-      )}
+      {#snippet mark()}<span class={REPORTED_MARK}>{REPORTED_GLYPH}</span>{/snippet}
+      <Message
+        message={'When a score cannot be recalculated, we keep the published value and mark it with {mark}. These scores may use an older edition.'}
+        values={{ mark }}
+      />
     </p>
   </section>
 </article>

@@ -66,12 +66,15 @@
   canonical={seo.canonical}
   noindex={seo.noindex}
   jsonLd={[
-    federationLd(federation, description),
-    breadcrumbLd([
-      { name: i18n.t('Rankings'), path: '/' },
-      { name: i18n.t('Competitions'), path: '/competitions' },
-      { name: federation.name, path },
-    ]),
+    federationLd(federation, description, i18n.locale),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: i18n.t('Competitions'), path: '/competitions' },
+        { name: federation.name, path },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 

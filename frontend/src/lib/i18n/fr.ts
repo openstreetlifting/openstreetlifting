@@ -1,3 +1,4 @@
+import type { CountMessages } from './types.js';
 import type { Message } from './en.js';
 
 export default {
@@ -13,12 +14,10 @@ export default {
   Privacy: 'Confidentialité',
   Email: 'E-mail',
   'OpenStreetlifting, back to the full rankings': 'OpenStreetlifting, retour au classement général',
-  'Coming soon': 'Bientôt disponible',
   Docs: 'Documentation',
   Language: 'Langue',
   'Open menu': 'Ouvrir le menu',
   'Close menu': 'Fermer le menu',
-  Records: 'Records',
   'Performance over time': 'Évolution des performances',
   Performance: 'Performance',
   Event: 'Format',
@@ -74,10 +73,8 @@ export default {
     'Contactez OpenStreetlifting pour signaler une erreur, transmettre des résultats de compétition ou contribuer aux archives.',
   'Ask a question, flag a mistake, or share competition results. I run OpenStreetlifting on my own, so replies may take a little time.':
     'Posez une question, signalez une erreur ou partagez des résultats de compétition. Je gère OpenStreetlifting seul, les réponses peuvent donc prendre un peu de temps.',
-  'To ask about your personal data or request name removal, email':
-    'Pour toute question sur vos données personnelles ou pour demander le retrait de votre nom, écrivez à',
-  '. Keep these requests private. You can read more in the':
-    '. Gardez ces demandes privées. Pour en savoir plus, consultez la',
+  'To ask about your personal data or request name removal, email {email}. Keep these requests private. You can read more in the {privacyNotice}.':
+    'Pour toute question concernant vos données personnelles ou pour demander la suppression de votre nom, envoyez un e-mail à {email}. Veuillez garder ces demandes confidentielles. Pour en savoir plus, consultez la {privacyNotice}.',
   'privacy notice': 'politique de confidentialité',
   'Join the server': 'Rejoindre le serveur',
   'Streetlifting by country': 'Le streetlifting par pays',
@@ -93,10 +90,8 @@ export default {
   'Last updated:': 'Dernière mise à jour :',
   'OpenStreetlifting collects public competition results into a searchable archive. If you compete, your results may appear here even if you have never used the site.':
     'OpenStreetlifting rassemble les résultats publics de compétitions dans des archives consultables. Si vous participez à des compétitions, vos résultats peuvent y figurer même si vous n’avez jamais utilisé le site.',
-  'To correct your data, remove your Instagram link, or ask to be taken off the site, email':
-    'Pour rectifier vos données, retirer votre lien Instagram ou demander votre retrait du site, écrivez à',
-  '. Please keep privacy requests out of public GitHub issues and Discord messages.':
-    '. Merci de ne pas publier vos demandes relatives à la vie privée dans les tickets GitHub ou les messages Discord publics.',
+  'To correct your data, remove your Instagram link, or ask to be taken off the site, email {email}. Please keep privacy requests out of public GitHub issues and Discord messages.':
+    'Pour corriger vos données, supprimer votre lien Instagram ou demander à être retiré du site, envoyez un e-mail à {email}. Veuillez ne pas publier vos demandes relatives à la confidentialité dans les tickets GitHub publics ni dans les messages Discord.',
   'On this page': 'Sur cette page',
   'Personal data': 'Données personnelles',
   'Legal basis': 'Base légale',
@@ -104,8 +99,8 @@ export default {
   'Removal requests': 'Demandes de retrait',
   'Data retention': 'Conservation des données',
   'Data controller': 'Responsable du traitement',
-  'Adrien Pelfresne is the data controller for OpenStreetlifting. Contact:':
-    'Adrien Pelfresne est le responsable du traitement des données pour OpenStreetlifting. Contact :',
+  'Adrien Pelfresne is the data controller for OpenStreetlifting. Contact: {email}.':
+    'Adrien Pelfresne est le responsable du traitement des données pour OpenStreetlifting. Contact : {email}.',
   'Athlete records come from results published by federations, organisers, competition platforms, and public posts, or supplied by contributors. Competition pages link to sources where available. Records can include:':
     'Les données des athlètes proviennent de résultats publiés par les fédérations, les organisateurs, les plateformes de compétition et les publications publiques, ou transmis par des contributeurs. Les pages des compétitions renvoient aux sources lorsqu’elles sont disponibles. Ces données peuvent comprendre :',
   'Your name, including its original script, sex category, and country.':
@@ -136,9 +131,9 @@ export default {
     'Vous pouvez consulter le site sans compte. Les serveurs reçoivent des informations de connexion, notamment votre adresse IP et des informations sur votre navigateur, pour afficher les pages et protéger le service, sur le fondement de l’intérêt légitime prévu à l’article 6, paragraphe 1, point f).',
   'When enabled, self-hosted Umami measures visits to help me understand how the site is used. It can record pages, referral sources, browser and device details, and approximate location. Its standard tracker uses no cookies.':
     'Lorsqu’il est activé, Umami, auto-hébergé, mesure les visites pour m’aider à comprendre l’utilisation du site. Il peut enregistrer les pages consultées, les sources de trafic, des informations sur le navigateur et l’appareil, ainsi qu’une localisation approximative. Son traceur standard n’utilise pas de cookies.',
-  'Subject to the conditions of the': 'Dans les conditions prévues par le',
+  'Subject to the conditions of the {gdpr}, you have the following rights:':
+    'Sous réserve des dispositions du {gdpr}, vous disposez des droits suivants :',
   GDPR: 'RGPD',
-  ', you have the following rights:': ', vous disposez des droits suivants :',
   'Information about processing and access to your personal data (Articles 12–15).':
     'Information sur le traitement et accès à vos données personnelles (articles 12 à 15).',
   'Rectification of inaccurate or incomplete data (Article 16).':
@@ -160,8 +155,8 @@ export default {
     'Notification d’une violation de données personnelles présentant un risque élevé pour vos droits et libertés (article 34).',
   'Athlete-result publication relies on legitimate interests. You can object to that processing.':
     'La publication des résultats des athlètes repose sur l’intérêt légitime. Vous pouvez vous opposer à ce traitement.',
-  'with your athlete-page link or competition details and the change you are requesting. Requests are handled in accordance with Article 12 of the GDPR.':
-    'avec le lien de votre fiche athlète ou les informations sur la compétition, en précisant la modification demandée. Les demandes sont traitées conformément à l’article 12 du RGPD.',
+  'Write to {email} with your athlete-page link or competition details and the change you are requesting. Requests are handled in accordance with Article 12 of the GDPR.':
+    "Envoyez un e-mail à {email} en indiquant le lien vers votre page d'athlète ou les détails de la compétition, ainsi que la modification que vous demandez. Les demandes sont traitées conformément à l'article 12 du RGPD.",
   'Name removal': 'Retrait du nom',
   'The procedure replaces your name with a numbered label, such as “Redacted Athlete #7”, and removes your original-script name and Instagram link. Once published, the change appears on the website, API, and fresh downloads, and the old named profile is removed.':
     'La procédure remplace votre nom par un libellé numéroté, par exemple « Redacted Athlete #7 », et retire votre nom dans son écriture d’origine ainsi que votre lien Instagram. Une fois publiée, la modification apparaît sur le site, dans l’API et les nouveaux téléchargements ; l’ancienne fiche nominative est retirée.',
@@ -176,19 +171,17 @@ export default {
   'Removal records are kept while needed to prevent your name from being republished through future imports.':
     'Les registres de retrait sont conservés aussi longtemps que nécessaire pour éviter que votre nom soit republié lors de futurs imports.',
   Complaints: 'Réclamations',
-  'You may lodge a complaint with the': 'Vous pouvez déposer une réclamation auprès de la',
+  'You may lodge a complaint with the {cnil} or another competent supervisory authority (Article 77).':
+    "Vous pouvez déposer une réclamation auprès de la {cnil} ou d'une autre autorité de contrôle compétente (article 77).",
   CNIL: 'CNIL',
-  'or another competent supervisory authority (Article 77).':
-    'ou d’une autre autorité de contrôle compétente (article 77).',
   'The Relative Index for Streetlifting': 'Le Relative Index for Streetlifting',
   'Understand RIS, calculate your score, and explore Streetlifting competition results across bodyweights.':
     'Comprenez le RIS, calculez votre score et explorez les résultats de streetlifting selon le poids de corps.',
   'The Relative Index for Streetlifting (RIS) compares competition totals across bodyweights within the same gender category. It uses the combined total of Muscle-up, Pull-up, Dips and Squat.':
     'Le Relative Index for Streetlifting (RIS) compare les totaux de compétition entre différents poids de corps, au sein d’une même catégorie de sexe. Il utilise la somme des performances au muscle-up, à la traction, aux dips et au squat.',
-  'RIS was developed by': 'Le RIS a été développé par',
+  'RIS was developed by {authors}, using results from leading Streetlifting athletes.':
+    'Le RIS a été mis au point par {authors}, à partir des résultats obtenus par des athlètes de haut niveau pratiquant le streetlifting.',
   'Waris Radji and Mathieu Ardoin': 'Waris Radji et Mathieu Ardoin',
-  ', using results from leading Streetlifting athletes.':
-    ', à partir des résultats d’athlètes de haut niveau en streetlifting.',
   'What does a score of 100 mean?': 'Que signifie un score de 100 ?',
   'A RIS of 100 means your total matches the formula’s reference total for your bodyweight and category. A score of 90 means you lifted 90% of that reference; 110 means you lifted 110%.':
     'Un RIS de 100 signifie que votre total correspond au total de référence de la formule pour votre poids de corps et votre catégorie. Un score de 90 signifie que vous avez soulevé 90 % de cette référence ; un score de 110 correspond à 110 %.',
@@ -201,10 +194,8 @@ export default {
     'Pourquoi un score peut différer du résultat publié',
   'The RIS formula changes between editions. OpenStreetlifting uses the current edition wherever possible, including for older competitions, so recalculated scores share the same reference.':
     'La formule RIS évolue d’une édition à l’autre. OpenStreetlifting utilise l’édition actuelle chaque fois que possible, y compris pour les anciennes compétitions, afin que les scores recalculés reposent sur la même référence.',
-  'When a score cannot be recalculated, we keep the published value and mark it with':
-    'Lorsqu’un score ne peut pas être recalculé, nous conservons la valeur publiée et la signalons par',
-  '. These scores may use an older edition.':
-    '. Ces scores peuvent provenir d’une ancienne édition.',
+  'When a score cannot be recalculated, we keep the published value and mark it with {mark}. These scores may use an older edition.':
+    'Lorsqu’un score ne peut pas être recalculé, nous conservons la valeur publiée et l’indiquons par le symbole {mark}. Ces scores peuvent être basés sur une édition antérieure.',
   Breadcrumb: 'Fil d’Ariane',
   'Clear all filters and sorting': 'Réinitialiser les filtres et le tri',
   Clear: 'Effacer',
@@ -234,8 +225,8 @@ export default {
     'Le Relative Index for Streetlifting (RIS) est une méthode de comparaison des athlètes de streetlifting entre catégories de poids, au sein d’un même sexe. Conçu pour les compétitions All4, ce système normalise les performances de force à partir des résultats d’athlètes de haut niveau. Mis à jour chaque année pour suivre l’évolution du niveau, le RIS offre une référence commune aux athlètes, aux entraîneurs et aux organisateurs du monde entier.',
   'We recalculate RIS with the current formula, so scores may differ from published results.':
     'Nous recalculons le RIS avec la formule actuelle ; les scores peuvent donc différer des résultats publiés.',
-  'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked':
-    'Lorsque le poids de corps manque, nous l’estimons à partir du RIS publié lorsque c’est possible. Sinon, nous conservons le score publié, signalé par',
+  'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked {mark}.':
+    'Lorsque le poids de corps manque, nous l’estimons à partir du RIS publié, dans la mesure du possible. Sinon, nous conservons le score publié, signalé par le symbole {mark}.',
   'Learn more on the ris page of OpenStreetlifting':
     'En savoir plus sur la page RIS d’OpenStreetlifting',
   'Calculate your RIS': 'Calculer votre RIS',
@@ -325,8 +316,6 @@ export default {
   'Failed to load rankings': 'Impossible de charger les classements',
   Disqualified: 'Disqualifié',
   'Did not lift': 'N’a pas concouru',
-  'Reported RIS, kept from the source rather than recomputed':
-    'RIS publié, conservé depuis la source sans recalcul',
   athlete: 'athlète',
   athletes: 'athlètes',
   competition: 'compétition',
@@ -350,7 +339,7 @@ export default {
   '{movement}: percentile {percentile}': '{movement} : percentile {percentile}',
   'Lift percentiles compared with other athletes in {category}':
     'Percentiles par mouvement par rapport aux autres athlètes de la catégorie {category}',
-  'Compared with {count} other {athletes}': 'Comparaison avec {count} autres {athletes}',
+  'Comparison group: {count} {athletes}': 'Groupe de comparaison : {count} {athletes}',
   'No dated {movement} results available.': 'Aucun résultat daté disponible : {movement}.',
   'No dated {movement} results available for {format}.':
     'Aucun résultat daté disponible pour {format} : {movement}.',
@@ -361,10 +350,6 @@ export default {
     'Le score calculé dépasse l’objectif de {target} RIS.',
   'The displayed score equals the target of {target} RIS.':
     'Le score affiché atteint l’objectif de {target} RIS.',
-  'At a fixed bodyweight of {bodyweight} kg, {target} RIS corresponds to a total of {total} kg, or {difference} kg more than the entered total.':
-    'À un poids de corps de {bodyweight} kg, {target} RIS correspond à un total de {total} kg, soit {difference} kg de plus que le total saisi.',
-  'At a fixed total of {total} kg, {target} RIS corresponds to {bodyweight} kg bodyweight, or {difference} kg less than the entered bodyweight.':
-    'Avec un total de {total} kg, {target} RIS correspond à un poids de corps de {bodyweight} kg, soit {difference} kg de moins que le poids de corps saisi.',
   'Each point represents a performance in the archive. The curve shows the total needed to reach 100 RIS at each bodyweight, using the {year} edition.':
     'Chaque point représente une performance des archives. La courbe indique le total nécessaire pour atteindre 100 RIS à chaque poids de corps, selon l’édition {year}.',
   'Competition total by bodyweight with the RIS 100 benchmark, {category}, {year} edition':
@@ -414,12 +399,8 @@ export default {
   '{count} lifters ranked on {movements}.':
     '{count} athlètes classés sur les mouvements suivants : {movements}.',
   'Entered in the OpenStreetlifting calendar.': 'Inscrite au calendrier OpenStreetlifting.',
-  'Ranked #{place} of {field} worldwide by RIS.':
-    'Classé nº {place} sur {field} au classement mondial RIS.',
   'OpenStreetlifting is an open, collaborative project building a permanent and traceable archive of all Streetlifting data, freely accessible to everyone.':
     'OpenStreetlifting est un projet ouvert et collaboratif qui construit des archives permanentes et traçables de toutes les données du streetlifting, accessibles gratuitement à tous.',
-  'A language preference cookie remembers your choice for one year. It is only set when you choose a language.':
-    'Un cookie de préférence linguistique mémorise votre choix pendant un an. Il est enregistré uniquement lorsque vous choisissez une langue.',
   Results: 'Résultats',
   'All formats': 'Tous les formats',
   'Competition format: {label}': 'Format de compétition : {label}',
@@ -440,3 +421,26 @@ export default {
     'Avec un total de {total} kg, {target} RIS correspond à {bodyweight}, soit {difference} par rapport au poids de corps saisi.',
   RIS: 'RIS',
 } satisfies Record<Message, string>;
+
+export const counts = {
+  athlete: {
+    one: 'athlète',
+    other: 'athlètes',
+  },
+  competition: {
+    one: 'compétition',
+    other: 'compétitions',
+  },
+  country: {
+    one: 'pays',
+    other: 'pays',
+  },
+  federation: {
+    one: 'fédération',
+    other: 'fédérations',
+  },
+  entry: {
+    one: 'participation',
+    other: 'participations',
+  },
+} satisfies CountMessages;

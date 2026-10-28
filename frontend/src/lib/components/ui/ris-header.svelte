@@ -2,6 +2,7 @@
   import { useI18n } from '#lib/i18n/index.js';
   import { resolve } from '$app/paths';
   import InfoTip from './info-tip.svelte';
+  import Message from './message.svelte';
   import { REPORTED_GLYPH, REPORTED_MARK } from '#lib/constants/table.js';
 
   const i18n = useI18n();
@@ -35,13 +36,15 @@
     </p>
 
     <p class="mb-3">
-      {i18n.t(
-        'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked'
-      )} <span class={REPORTED_MARK}>{REPORTED_GLYPH}</span>.
+      {#snippet mark()}<span class={REPORTED_MARK}>{REPORTED_GLYPH}</span>{/snippet}
+      <Message
+        message={'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked {mark}.'}
+        values={{ mark }}
+      />
     </p>
 
     <p class="text-secondary">
-      <a href={resolve('ris')} class="underline transition-colors hover:text-ink"
+      <a href={i18n.href(resolve('ris'))} class="underline transition-colors hover:text-ink"
         >{i18n.t('Learn more on the ris page of OpenStreetlifting')}</a
       >
     </p>

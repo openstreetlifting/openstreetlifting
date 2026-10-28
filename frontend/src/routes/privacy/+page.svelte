@@ -5,12 +5,17 @@
   import Seo from '#lib/components/seo.svelte';
   import { absolute, breadcrumbLd } from '#lib/seo/index.js';
   import { Breadcrumb } from '#lib/components/ui/index.js';
+  import Message from '#lib/components/ui/message.svelte';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
 
   const i18n = useI18n();
 
   const linkClass = 'text-secondary underline underline-offset-4 transition-colors hover:text-ink';
 </script>
+
+{#snippet email()}<a href="mailto:contact@openstreetlifting.org" class={linkClass}
+    >contact@openstreetlifting.org</a
+  >{/snippet}
 
 <Seo
   title={i18n.t('Privacy policy')}
@@ -19,10 +24,13 @@
   )}
   canonical={absolute('/privacy')}
   jsonLd={[
-    breadcrumbLd([
-      { name: i18n.t('Rankings'), path: '/' },
-      { name: i18n.t('Privacy'), path: '/privacy' },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: i18n.t('Privacy'), path: '/privacy' },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
@@ -43,20 +51,12 @@
       )}
     </p>
     <p class="leading-relaxed text-secondary">
-      {i18n.t(
-        'To correct your data, remove your Instagram link, or ask to be taken off the site, email'
-      )}
-      <a href="mailto:contact@openstreetlifting.org" class={linkClass}
-        >contact@openstreetlifting.org</a
-      >{i18n.t('. Please keep privacy requests out of public GitHub issues and Discord messages.')}
+      <Message
+        message={'To correct your data, remove your Instagram link, or ask to be taken off the site, email {email}. Please keep privacy requests out of public GitHub issues and Discord messages.'}
+        values={{ email }}
+      />
     </p>
   </header>
-
-  <p class="mb-6 leading-relaxed text-secondary">
-    {i18n.t(
-      'A language preference cookie remembers your choice for one year. It is only set when you choose a language.'
-    )}
-  </p>
 
   <nav aria-label={i18n.t('On this page')} class="mb-12 border-y border-stroke py-5">
     <ul class="flex flex-wrap gap-x-6 gap-y-3 text-sm">
@@ -72,10 +72,10 @@
     <section aria-labelledby="controller">
       <h2 id="controller" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Data controller')}</h2>
       <p>
-        {i18n.t('Adrien Pelfresne is the data controller for OpenStreetlifting. Contact:')}
-        <a href="mailto:contact@openstreetlifting.org" class={linkClass}
-          >contact@openstreetlifting.org</a
-        >.
+        <Message
+          message={'Adrien Pelfresne is the data controller for OpenStreetlifting. Contact: {email}.'}
+          values={{ email }}
+        />
       </p>
     </section>
 
@@ -154,13 +154,20 @@
     <section aria-labelledby="your-rights">
       <h2 id="your-rights" class="mb-4 {TEXT.heading} text-ink">{i18n.t('GDPR rights')}</h2>
       <p class="mb-5">
-        {i18n.t('Subject to the conditions of the')}
-        <a
-          href={i18n.locale === 'fr'
-            ? 'https://eur-lex.europa.eu/eli/reg/2016/679/oj/fra'
-            : 'https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng'}
-          class={linkClass}>{i18n.t('GDPR')}</a
-        >{i18n.t(', you have the following rights:')}
+        {#snippet gdpr()}<a
+            href="https://eur-lex.europa.eu/eli/reg/2016/679/oj/{{
+              en: 'eng',
+              fr: 'fra',
+              de: 'deu',
+              it: 'ita',
+              pl: 'pol',
+            }[i18n.locale]}"
+            class={linkClass}>{i18n.t('GDPR')}</a
+          >{/snippet}
+        <Message
+          message={'Subject to the conditions of the {gdpr}, you have the following rights:'}
+          values={{ gdpr }}
+        />
       </p>
       <ul class="list-disc space-y-3 pl-5">
         <li>
@@ -208,13 +215,10 @@
     <section aria-labelledby="removal">
       <h2 id="removal" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Removal requests')}</h2>
       <p class="mb-4">
-        {i18n.t('Email')}
-        <a href="mailto:contact@openstreetlifting.org" class={linkClass}
-          >contact@openstreetlifting.org</a
-        >
-        {i18n.t(
-          'with your athlete-page link or competition details and the change you are requesting. Requests are handled in accordance with Article 12 of the GDPR.'
-        )}
+        <Message
+          message={'Write to {email} with your athlete-page link or competition details and the change you are requesting. Requests are handled in accordance with Article 12 of the GDPR.'}
+          values={{ email }}
+        />
       </p>
       <h3 class="mb-3 {TEXT.subheading} text-ink">{i18n.t('Name removal')}</h3>
       <p class="mb-4">
@@ -256,9 +260,13 @@
     <section aria-labelledby="complaints">
       <h2 id="complaints" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Complaints')}</h2>
       <p>
-        {i18n.t('You may lodge a complaint with the')}
-        <a href="https://www.cnil.fr/fr/plaintes" class={linkClass}>{i18n.t('CNIL')}</a>
-        {i18n.t('or another competent supervisory authority (Article 77).')}
+        {#snippet cnil()}<a href="https://www.cnil.fr/fr/plaintes" class={linkClass}
+            >{i18n.t('CNIL')}</a
+          >{/snippet}
+        <Message
+          message={'You may lodge a complaint with the {cnil} or another competent supervisory authority (Article 77).'}
+          values={{ cnil }}
+        />
       </p>
     </section>
   </div>

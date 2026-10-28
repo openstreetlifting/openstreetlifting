@@ -20,7 +20,7 @@ it('plots all four comparisons, including a real zero percentile, and shows peer
   await expect.element(page.getByRole('tooltip')).toMatchTextContent('Muscle-up · 0 kg');
   await expect
     .element(page.getByRole('tooltip'))
-    .toMatchTextContent('Compared with 10 other athletes');
+    .toMatchTextContent('Comparison group: 10 athletes');
 });
 
 it('does not turn an unscored lift into a zero point', async () => {

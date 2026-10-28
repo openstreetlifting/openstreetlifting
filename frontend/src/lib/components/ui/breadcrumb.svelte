@@ -12,7 +12,7 @@
   let { items }: { items: BreadcrumbItem[] } = $props();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- an href carrying a query string is not a literal route
-  const target = (href: string) => resolve(href as any);
+  const target = (href: string) => i18n.href(resolve(href as any));
 </script>
 
 <nav aria-label={i18n.t('Breadcrumb')} class="mb-3 sm:mb-5">

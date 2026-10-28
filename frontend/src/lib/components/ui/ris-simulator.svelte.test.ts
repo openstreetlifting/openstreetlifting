@@ -117,19 +117,51 @@ it('does not show scenarios for blank or invalid inputs', async () => {
   await expect.element(screen.getByRole('status', { name: 'RIS:' })).not.toBeInTheDocument();
 });
 
-it('runs the calculator in French with decimal comma input and localized results', async () => {
-  const screen = await render(RisSimulator, {
-    props: { edition },
-    context: new Map([[I18N_CONTEXT, new I18n(() => 'fr')]]),
-  });
-  await screen.getByRole('textbox', { name: 'Poids de corps', exact: true }).fill('80,0');
-  await screen.getByRole('textbox', { name: 'Total soulevé', exact: true }).fill('500');
-  await expect.element(screen.getByRole('status', { name: 'RIS:' })).toHaveTextContent('100,35');
-  await screen.getByRole('textbox', { name: 'RIS cible' }).fill('110');
-  await expect.element(screen.getByText('48,1 kg de plus', { exact: true })).toBeVisible();
-  await expect.element(screen.getByText('8,5 kg de moins', { exact: true })).toBeVisible();
-  await screen.getByRole('button', { name: 'Femmes', exact: true }).click();
-  await expect
-    .element(screen.getByRole('button', { name: 'Femmes', exact: true }))
-    .toHaveAttribute('aria-pressed', 'true');
-});
+it.each([
+  [
+    'fr',
+    'Poids de corps',
+    'Total soulevé',
+    'RIS cible',
+    '48,1 kg de plus',
+    '8,5 kg de moins',
+    'Femmes',
+  ],
+  ['de', 'Körpergewicht', 'Total', 'Ziel-RIS', '48,1 kg mehr', '8,5 kg weniger', 'Frauen'],
+  [
+    'it',
+    'Peso corporeo',
+    'Totale sollevato',
+    'RIS obiettivo',
+    '48,1 kg in più',
+    '8,5 kg in meno',
+    'Donne',
+  ],
+  [
+    'pl',
+    'Masa ciała',
+    'Suma w bojach',
+    'Docelowy RIS',
+    '48,1 kg więcej',
+    '8,5 kg mniej',
+    'Kobiety',
+  ],
+] as const)(
+  'runs the calculator in %s with decimal comma input and localized results',
+  async (locale, bodyweight, total, target, more, less, women) => {
+    const screen = await render(RisSimulator, {
+      props: { edition },
+      context: new Map([[I18N_CONTEXT, new I18n(() => locale)]]),
+    });
+    await screen.getByRole('textbox', { name: bodyweight, exact: true }).fill('80,0');
+    await screen.getByRole('textbox', { name: total, exact: true }).fill('500');
+    await expect.element(screen.getByRole('status', { name: 'RIS:' })).toHaveTextContent('100,35');
+    await screen.getByRole('textbox', { name: target }).fill('110');
+    await expect.element(screen.getByText(more, { exact: true })).toBeVisible();
+    await expect.element(screen.getByText(less, { exact: true })).toBeVisible();
+    await screen.getByRole('button', { name: women, exact: true }).click();
+    await expect
+      .element(screen.getByRole('button', { name: women, exact: true }))
+      .toHaveAttribute('aria-pressed', 'true');
+  }
+);

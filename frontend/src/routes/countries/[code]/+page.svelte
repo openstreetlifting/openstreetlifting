@@ -60,10 +60,13 @@
   canonical={seo.canonical}
   noindex={seo.noindex}
   jsonLd={[
-    breadcrumbLd([
-      { name: i18n.t('Rankings'), path: '/' },
-      { name, path },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name, path },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
@@ -87,7 +90,7 @@
             {#each data.federations as federation (federation)}
               <li class="min-w-0">
                 <a
-                  href={resolve('/federations/[slug]', { slug: slugify(federation) })}
+                  href={i18n.href(resolve('/federations/[slug]', { slug: slugify(federation) }))}
                   class="break-words text-ink underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
                   >{federation}</a
                 >

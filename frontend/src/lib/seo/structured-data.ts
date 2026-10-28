@@ -36,9 +36,9 @@ export function websiteLd(locale: Locale = 'en'): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    '@id': `${SITE_URL}/#website`,
+    '@id': `${absolute('/', locale)}#website`,
     name: SITE_NAME,
-    url: SITE_URL,
+    url: absolute('/', locale),
     description: new I18n(() => locale).t(SITE_DESCRIPTION),
     inLanguage: locale,
     publisher: organization(locale),
@@ -46,14 +46,17 @@ export function websiteLd(locale: Locale = 'en'): JsonLd {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/?q={search_term_string}`,
+        urlTemplate: `${absolute('/', locale)}?q={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
   };
 }
 
-export function breadcrumbLd(trail: { name: string; path?: string }[]): JsonLd {
+export function breadcrumbLd(
+  trail: { name: string; path?: string }[],
+  locale: Locale = 'en'
+): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -61,7 +64,7 @@ export function breadcrumbLd(trail: { name: string; path?: string }[]): JsonLd {
       '@type': 'ListItem',
       position: index + 1,
       name: crumb.name,
-      ...(crumb.path ? { item: absolute(crumb.path) } : {}),
+      ...(crumb.path ? { item: absolute(crumb.path, locale) } : {}),
     })),
   };
 }
@@ -85,7 +88,7 @@ export function competitionLd(
     '@context': 'https://schema.org',
     '@type': 'SportsEvent',
     name: competitionSeoName(competition),
-    url: absolute(`/competitions/${competition.slug}`),
+    url: absolute(`/competitions/${competition.slug}`, locale),
     description,
     image: OG_IMAGE.url,
     ...(competition.start_date ? { startDate: competition.start_date } : {}),
@@ -120,7 +123,8 @@ export function competitionLd(
 
 export function federationLd(
   federation: { name: string; abbreviation: string | null; country: string | null },
-  description: string
+  description: string,
+  locale: Locale = 'en'
 ): JsonLd {
   return {
     '@context': 'https://schema.org',
@@ -129,7 +133,7 @@ export function federationLd(
     ...(federation.abbreviation && federation.abbreviation !== federation.name
       ? { alternateName: federation.abbreviation }
       : {}),
-    url: absolute(federationPath(federation.name)),
+    url: absolute(federationPath(federation.name), locale),
     description,
     sport: 'Streetlifting',
     ...(federation.country
@@ -148,7 +152,7 @@ export function athleteLd(
   description: string,
   locale: Locale = 'en'
 ): JsonLd {
-  const url = absolute(`/athletes/${athlete.slug}`);
+  const url = absolute(`/athletes/${athlete.slug}`, locale);
 
   return {
     '@context': 'https://schema.org',

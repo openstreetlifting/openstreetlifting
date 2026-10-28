@@ -33,10 +33,13 @@
   )}
   canonical={absolute('/countries')}
   jsonLd={[
-    breadcrumbLd([
-      { name: i18n.t('Rankings'), path: '/' },
-      { name: i18n.t('Countries'), path: '/countries' },
-    ]),
+    breadcrumbLd(
+      [
+        { name: i18n.t('Rankings'), path: '/' },
+        { name: i18n.t('Countries'), path: '/countries' },
+      ],
+      i18n.locale
+    ),
   ]}
 />
 
@@ -61,7 +64,7 @@
         <tr class="transition-colors">
           <td class="{TABLE_CELL} {CELL.identity}">
             <a
-              href={resolve('/countries/[code]', { code: country.code.toLowerCase() })}
+              href={i18n.href(resolve('/countries/[code]', { code: country.code.toLowerCase() }))}
               class="flex items-center gap-2 hover:text-secondary"
             >
               <Flag countryCode={country.code} class="shrink-0 [--flag-height:1.25em]" />
@@ -75,7 +78,7 @@
             {#each country.federations as name, index (name)}
               <span class="whitespace-nowrap"
                 >{index > 0 ? ', ' : ''}<a
-                  href={resolve('/federations/[slug]', { slug: slugify(name) })}
+                  href={i18n.href(resolve('/federations/[slug]', { slug: slugify(name) }))}
                   class="underline hover:text-ink">{name}</a
                 ></span
               >

@@ -298,13 +298,15 @@
           class="flex flex-col gap-1 py-3 first:pt-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
         >
           <a
-            href={resolve('/athletes/[slug]', { slug: performance.athlete_slug })}
+            href={i18n.href(resolve('/athletes/[slug]', { slug: performance.athlete_slug }))}
             class="text-sm font-medium text-ink underline decoration-stroke-strong underline-offset-4 hover:text-ink"
             >{performance.athlete_name}</a
           >
           <div class="text-xs leading-6 text-muted sm:text-right">
             <a
-              href={resolve('/competitions/[slug]', { slug: performance.competition_slug })}
+              href={i18n.href(
+                resolve('/competitions/[slug]', { slug: performance.competition_slug })
+              )}
               class="text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
               >{performance.competition_name}</a
             >

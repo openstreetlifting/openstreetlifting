@@ -1,14 +1,16 @@
 import { expect, it, vi } from 'vitest';
 import { handle } from './hooks.server';
+import { LOCALES } from '#lib/i18n/locale.js';
 
 vi.mock('#lib/server/logger.js', () => ({ logger: { debug: vi.fn(), error: vi.fn() } }));
 
-it('uses the negotiated locale for SSR HTML and data, with private response caching', async () => {
-  const event = {
-    cookies: { get: () => undefined },
-    request: new Request('https://openstreetlifting.org/contact', {
-      headers: { 'Accept-Language': 'fr-CA,fr;q=0.9' },
+function request(path: string, acceptLanguage = 'en') {
+  return {
+    url: new URL(`https://openstreetlifting.org${path}`),
+    request: new Request(`https://openstreetlifting.org${path}`, {
+      headers: { 'Accept-Language': acceptLanguage },
     }),
+    setHeaders: vi.fn(),
     locals: {},
     route: { id: '/contact' },
     isDataRequest: false,
@@ -19,6 +21,10 @@ it('uses the negotiated locale for SSR HTML and data, with private response cach
       },
     },
   };
+}
+
+it.each(LOCALES)('uses the %s URL for SSR regardless of browser language', async (locale) => {
+  const event = request(`/${locale}/contact`, 'fr');
   const resolve = vi.fn(
     async (_event, options) =>
       new Response(options.transformPageChunk({ html: '<html lang="%lang%">', done: true }), {
@@ -26,9 +32,25 @@ it('uses the negotiated locale for SSR HTML and data, with private response cach
       })
   );
   const response = await handle({ event, resolve } as unknown as Parameters<typeof handle>[0]);
-  expect(event.locals).toEqual({ locale: 'fr' });
-  expect(await response.text()).toBe('<html lang="fr">');
-  expect(response.headers.get('content-language')).toBe('fr');
-  expect(response.headers.get('vary')).toBe('Accept-Encoding, Accept-Language, Cookie');
-  expect(response.headers.get('cache-control')).toBe('private, no-cache');
+  expect(event.locals).toEqual({ locale });
+  expect(await response.text()).toBe(`<html lang="${locale}">`);
+  expect(response.headers.get('content-language')).toBe(locale);
+  expect(response.headers.get('vary')).toBe('Accept-Encoding');
+});
+
+it('preserves legacy page links with a permanent English redirect', async () => {
+  await expect(
+    handle({
+      event: request('/competitions?q=open&page=2'),
+      resolve: vi.fn(),
+    } as unknown as Parameters<typeof handle>[0])
+  ).rejects.toMatchObject({ status: 308, location: '/en/competitions?q=open&page=2' });
+});
+
+it('negotiates only the unprefixed home page using a temporary redirect', async () => {
+  const event = request('/?q=alex', 'pl-PL,pl;q=0.9,en;q=0.8');
+  await expect(
+    handle({ event, resolve: vi.fn() } as unknown as Parameters<typeof handle>[0])
+  ).rejects.toMatchObject({ status: 307, location: '/pl?q=alex' });
+  expect(event.setHeaders).toHaveBeenCalledWith({ Vary: 'Accept-Language' });
 });

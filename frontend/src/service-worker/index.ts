@@ -1,3 +1,4 @@
+import { pathLocale } from '../lib/i18n/paths.js';
 import { version } from '$app/env';
 import { immutable, assets } from '$app/manifest';
 import { asset } from '$app/paths';
@@ -46,6 +47,20 @@ async function cacheFirst(request: Request): Promise<Response> {
   return response;
 }
 
+async function networkFirst(request: Request): Promise<Response> {
+  const cache = await open();
+  try {
+    const response = await fetch(request);
+    if (response.ok) cache.put(request, response.clone());
+    return response;
+  } catch (err) {
+    const locale = pathLocale(new URL(request.url).pathname);
+    const hit = (await cache.match(request)) ?? (locale && (await cache.match(`/${locale}`)));
+    if (hit) return hit;
+    throw err;
+  }
+}
+
 worker.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -58,5 +73,7 @@ worker.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Documents depend on the language cookie; only static assets belong in this cache.
+  if (request.mode === 'navigate' && pathLocale(url.pathname)) {
+    event.respondWith(networkFirst(request));
+  }
 });

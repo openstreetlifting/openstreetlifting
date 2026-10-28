@@ -69,7 +69,7 @@
   function competitionLink(slug: string) {
     const query = new SvelteURLSearchParams({ movement: metric });
     if (athleteSlug) query.set('athlete', athleteSlug);
-    return resolve(`competitions/${slug}?${query}`);
+    return i18n.href(resolve(`competitions/${slug}?${query}`));
   }
 
   function valueLabel(value: number): string {

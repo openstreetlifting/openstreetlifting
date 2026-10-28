@@ -172,7 +172,10 @@
       </div>
     </Card>
   {:else if rankings.length === 0 && !busy}
-    <RankingsEmpty canReset={table.narrowed || pagination.page > 1} resetHref={resolve('')} />
+    <RankingsEmpty
+      canReset={table.narrowed || pagination.page > 1}
+      resetHref={i18n.href(resolve(''))}
+    />
   {:else}
     <Table
       rows={rankings}
@@ -223,7 +226,7 @@
                     class="shrink-0 [--flag-height:1.25em]"
                   />
                   <a
-                    href={resolve(`athletes/${entry.athlete.slug}`)}
+                    href={i18n.href(resolve(`athletes/${entry.athlete.slug}`))}
                     class="truncate underline hover:text-secondary"
                   >
                     {formatAthleteName(entry.athlete)}
@@ -265,7 +268,7 @@
             >
             <td class="{TABLE_CELL} {CELL.data}">
               <a
-                href={resolve(`competitions/${entry.competition.slug}`)}
+                href={i18n.href(resolve(`competitions/${entry.competition.slug}`))}
                 class="{TEXT_CELL.competition} underline hover:text-secondary"
               >
                 {entry.competition.name}
@@ -273,7 +276,9 @@
             </td>
             <td class="{TABLE_CELL} {CELL.data}" title={entry.federation.name}>
               <a
-                href={resolve('/federations/[slug]', { slug: slugify(entry.federation.name) })}
+                href={i18n.href(
+                  resolve('/federations/[slug]', { slug: slugify(entry.federation.name) })
+                )}
                 class="{TEXT_CELL.federation} underline hover:text-ink"
               >
                 {entry.federation.abbreviation || entry.federation.name}

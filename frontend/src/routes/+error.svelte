@@ -47,9 +47,11 @@
     </p>
   {/if}
   <div class="mt-8 flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
-    <Button href={resolve('')} class="min-h-11 text-sm">{i18n.t('Back to rankings')}</Button>
+    <Button href={i18n.href(resolve(''))} class="min-h-11 text-sm"
+      >{i18n.t('Back to rankings')}</Button
+    >
 
-    <Button href={resolve('contact')} variant="outline" class="min-h-11 text-sm text-ink"
+    <Button href={i18n.href(resolve('contact'))} variant="outline" class="min-h-11 text-sm text-ink"
       >{i18n.t('Get in touch')}</Button
     >
   </div>

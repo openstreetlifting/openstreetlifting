@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { LOCALES, OG_LOCALES } from '#lib/i18n/locale.js';
   import { useI18n } from '#lib/i18n/index.js';
   import {
     INDEXABLE,
@@ -6,6 +7,7 @@
     SITE_NAME,
     jsonLdScript,
     pageTitle,
+    localizedUrl,
     type JsonLd,
   } from '#lib/seo/index.js';
 
@@ -29,6 +31,7 @@
     jsonLd = [],
   }: Props = $props();
 
+  const localizedCanonical = $derived(localizedUrl(canonical, i18n.locale));
   const fullTitle = $derived(pageTitle(title));
   const indexable = $derived(INDEXABLE && !noindex);
   const blocks = $derived(jsonLd.map(jsonLdScript));
@@ -37,17 +40,21 @@
 <svelte:head>
   <title>{fullTitle}</title>
   <meta name="description" content={description} />
-  <link rel="canonical" href={canonical} />
+  <link rel="canonical" href={localizedCanonical} />
+  {#each LOCALES as locale (locale)}
+    <link rel="alternate" hreflang={locale} href={localizedUrl(canonical, locale)} />
+  {/each}
+  <link rel="alternate" hreflang="x-default" href={localizedUrl(canonical, 'en')} />
   {#if !indexable}
     <meta name="robots" content="noindex, follow" />
   {/if}
 
   <meta property="og:type" content={type} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:locale" content={i18n.locale === 'fr' ? 'fr_FR' : 'en_GB'} />
+  <meta property="og:locale" content={OG_LOCALES[i18n.locale]} />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
-  <meta property="og:url" content={canonical} />
+  <meta property="og:url" content={localizedCanonical} />
   <meta property="og:image" content={OG_IMAGE.url} />
   <meta property="og:image:width" content={String(OG_IMAGE.width)} />
   <meta property="og:image:height" content={String(OG_IMAGE.height)} />

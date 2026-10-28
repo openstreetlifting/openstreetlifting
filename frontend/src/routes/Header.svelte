@@ -5,6 +5,7 @@
   import { afterNavigate } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { GitHubIcon, InstagramIcon, MenuIcon, CloseIcon } from '#lib/components/icons/index.js';
+  import { stripLocale } from '#lib/i18n/paths.js';
   import { NAV_LINK } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
@@ -18,7 +19,8 @@
   });
 
   function isActive(path: string): boolean {
-    return path === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(path);
+    const pathname = stripLocale(page.url.pathname);
+    return path === '/' ? pathname === '/' : pathname.startsWith(path);
   }
 </script>
 
@@ -33,7 +35,7 @@
     class="mx-auto flex max-w-page flex-wrap items-center justify-between px-4 py-3 sm:px-6 sm:py-4"
   >
     <a
-      href={resolve('')}
+      href={i18n.href(resolve(''))}
       title={i18n.t('OpenStreetlifting, back to the full rankings')}
       class="opacity-90 transition-opacity hover:opacity-100"
     >
@@ -55,19 +57,6 @@
       {/if}
     </button>
 
-    <!-- Records and FAQ are announced but muted until the routes exist. -->
-    {#snippet comingSoon(label: string)}
-      <li>
-        <span
-          class="{NAV_LINK} cursor-not-allowed text-muted hover:text-muted"
-          aria-disabled="true"
-          title={i18n.t('Coming soon')}
-        >
-          {label}
-        </span>
-      </li>
-    {/snippet}
-
     <ul
       id="primary-nav"
       class="{menuOpen
@@ -76,7 +65,7 @@
     >
       <li>
         <a
-          href={resolve('')}
+          href={i18n.href(resolve(''))}
           class={NAV_LINK}
           class:text-ink={isActive('/')}
           class:text-secondary={!isActive('/')}
@@ -87,7 +76,7 @@
       </li>
       <li>
         <a
-          href={resolve('competitions')}
+          href={i18n.href(resolve('competitions'))}
           class={NAV_LINK}
           class:text-ink={isActive('/competitions')}
           class:text-secondary={!isActive('/competitions')}
@@ -98,15 +87,13 @@
       </li>
       <li>
         <a
-          href={resolve('ris')}
+          href={i18n.href(resolve('ris'))}
           class={NAV_LINK}
           class:text-ink={isActive('/ris')}
           class:text-secondary={!isActive('/ris')}
           aria-current={isActive('/ris') ? 'page' : undefined}>RIS</a
         >
       </li>
-      {@render comingSoon(i18n.t('Records'))}
-      {@render comingSoon('FAQ')}
       <li>
         <a
           href="https://docs.openstreetlifting.org/"
@@ -119,7 +106,7 @@
       </li>
       <li>
         <a
-          href={resolve('contact')}
+          href={i18n.href(resolve('contact'))}
           class={NAV_LINK}
           class:text-ink={isActive('/contact')}
           class:text-secondary={!isActive('/contact')}

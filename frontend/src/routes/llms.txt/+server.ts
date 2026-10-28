@@ -21,13 +21,13 @@ Results cover the muscle-up, pull-up, dips and squat attempts contested at each 
 
 ## Pages
 
-- [Rankings](${absolute('/')}): athletes ranked by RIS, total or a single lift, filterable by country, federation, year, sex and class
-- [Competitions](${absolute('/competitions')}): every competition in the archive with full results, plus upcoming meets
-- [Federations](${absolute('/federations')}): each federation's competitions and athletes, at /federations/<slug>
-- [Countries](${absolute('/countries')}): competitions held in a country and its athletes, at /countries/<iso code>
-- [RIS](${absolute('/ris')}): how the Relative Index for Streetlifting compares totals across bodyweights, with a calculator
+- [Rankings](${absolute('/', 'en')}): athletes ranked by RIS, total or a single lift, filterable by country, federation, year, sex and class
+- [Competitions](${absolute('/competitions', 'en')}): every competition in the archive with full results, plus upcoming meets
+- [Federations](${absolute('/federations', 'en')}): each federation's competitions and athletes, at /federations/<slug>
+- [Countries](${absolute('/countries', 'en')}): competitions held in a country and its athletes, at /countries/<iso code>
+- [RIS](${absolute('/ris', 'en')}): how the Relative Index for Streetlifting compares totals across bodyweights, with a calculator
 
-Athlete pages live at /athletes/<slug> and competition pages at /competitions/<slug>.
+Pages use /en, /fr, /de, /it, or /pl prefixes. Athlete pages live at /en/athletes/<slug> and competition pages at /en/competitions/<slug>.
 
 ## Data
 
