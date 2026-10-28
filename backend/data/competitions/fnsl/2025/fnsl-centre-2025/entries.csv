@@ -1,6 +1,6 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Martin,Do Thanh Nguyen,,,63.7,74.35,295,competed,,2024,,,,20,,,,50,,,,80,,,,145
-M,66,Tristan,Gautier,,,65.5,81.73,332.5,competed,,2024,,,,12.5,,,,52.5,,,,90,,,,177.5
+M,66,Tristan,Gautier,,FR,65.5,81.73,332.5,competed,,2024,,,,12.5,,,,52.5,,,,90,,,,177.5
 M,66,Nicolas,Huy,,,66,86.05,352.5,competed,,2024,,,,20,,,,65,,,,87.5,,,,180
 M,66,Anderson,Kouadio,,,63.45,94.21,372.5,competed,,2024,,,,27.5,,,,72.5,,,,107.5,,,,165
 M,66,Ronan,Pouillot,,,66,91.23,373.75,competed,,2024,,,,25,,,,76.25,,,,105,,,,167.5
