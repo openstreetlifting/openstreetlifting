@@ -1,5 +1,6 @@
 <script lang="ts">
   import { provideI18n } from '#lib/i18n/index.js';
+  import { provideWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import type { LayoutData } from './$types';
   import Header from './Header.svelte';
   import Footer from './Footer.svelte';
@@ -8,6 +9,7 @@
 
   let { data, children }: { data: LayoutData; children: import('svelte').Snippet } = $props();
   const i18n = provideI18n(() => data.locale);
+  provideWeightUnit(() => data.weightUnit);
 
   $effect(() => {
     document.documentElement.lang = data.locale;

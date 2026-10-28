@@ -3,6 +3,42 @@ import { render } from 'vitest-browser-svelte';
 import { I18N_CONTEXT, I18n } from '#lib/i18n/index.js';
 import RisSimulator from './ris-simulator.svelte';
 import type { RisFormula } from '#lib/types/ris.js';
+import { WEIGHT_UNIT_CONTEXT, WeightPreference } from '#lib/state/weight-unit.svelte.js';
+
+it('converts calculator inputs and targets without changing RIS or accumulating rounding drift', async () => {
+  const weights = new WeightPreference();
+  const screen = await render(RisSimulator, {
+    props: { edition },
+    context: new Map([[WEIGHT_UNIT_CONTEXT, weights]]),
+  });
+  const bodyweight = screen.getByRole('textbox', { name: 'Bodyweight', exact: true });
+  const total = screen.getByRole('textbox', { name: 'Total lifted', exact: true });
+  await bodyweight.fill('80');
+  await total.fill('500');
+  await screen.getByRole('textbox', { name: 'Target RIS' }).fill('110');
+  for (let index = 0; index < 3; index++) {
+    weights.unit = 'lb';
+    await expect.element(bodyweight).toHaveValue('176.37');
+    await expect.element(total).toHaveValue('1102.311');
+    await expect.element(screen.getByRole('status', { name: 'RIS:' })).toHaveTextContent('100.35');
+    await expect.element(screen.getByText('106.0 lb more', { exact: true })).toBeVisible();
+    weights.unit = 'kg';
+    await expect.element(bodyweight).toHaveValue('80');
+    await expect.element(total).toHaveValue('500');
+    await expect.element(screen.getByText('48.1 kg more', { exact: true })).toBeVisible();
+  }
+  weights.unit = 'lb';
+  await bodyweight.fill('176.37');
+  await total.fill('1102.31');
+  await expect.element(screen.getByRole('status', { name: 'RIS:' })).toHaveTextContent('100.35');
+  await bodyweight.fill('485.02');
+  await expect.element(bodyweight).toHaveAttribute('aria-invalid', 'false');
+  await bodyweight.fill('500');
+  await expect.element(bodyweight).toHaveAttribute('aria-invalid', 'true');
+  await expect
+    .element(screen.getByText('Enter a number between 66.14 and 485.02 lb.'))
+    .toBeVisible();
+});
 
 const constants = {
   a: 335.5625,

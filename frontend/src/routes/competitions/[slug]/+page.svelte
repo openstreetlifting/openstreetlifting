@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
+  import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import type { PageData } from './$types';
   import {
     RankingsEmpty,
@@ -30,7 +31,6 @@
     countryName,
     slugify,
     federationPath,
-    formatWeight,
     formatAthleteName,
   } from '#lib/utils/index.js';
   import {
@@ -68,6 +68,7 @@
   } from '#lib/seo/index.js';
 
   const i18n = useI18n();
+  const weights = useWeightUnit();
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
@@ -460,7 +461,7 @@
                 {#each group.classes as weightClass, i (weightClass)}
                   <li class="inline-flex items-baseline gap-2 whitespace-nowrap tabular-nums">
                     {#if i > 0}<span aria-hidden="true" class="text-muted">·</span>{/if}
-                    {weightClass || i18n.t('No weight classes')}
+                    {weights.category(weightClass, i18n.locale) || i18n.t('No weight classes')}
                   </li>
                 {/each}
               </ul>
@@ -531,7 +532,7 @@
         >
           <option value={null}>{i18n.t('All Classes')}</option>
           {#each data.classes as classOption (classOption)}
-            <option value={classOption}>{classOption}</option>
+            <option value={classOption}>{weights.category(classOption, i18n.locale)}</option>
           {/each}
         </select>
       {/if}
@@ -595,7 +596,9 @@
           >{i18n.t('Rank')}</th
         >
         <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}">{i18n.t('Total')}</th>
+        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}"
+          >{i18n.t('Total')} ({weights.unit})</th
+        >
         {#if risColumn}
           <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
             <RisHeader />
@@ -657,7 +660,7 @@
                 {/if}
               </span>
             </td>
-            <td class="{TABLE_CELL} {CELL.counted}">{formatWeight(entry.total, i18n.locale)}</td>
+            <td class="{TABLE_CELL} {CELL.counted}">{weights.format(entry.total, i18n.locale)}</td>
             {#if risColumn}
               <td class="{TABLE_CELL} {CELL.counted}">
                 <RisScore value={entry.ris} source={entry.ris_source} />
@@ -675,16 +678,17 @@
                           ? CELL.discounted
                           : CELL.data}"
                         title={attempt
-                          ? i18n.t('Attempt {slot}: {weight} kg, {result}', {
+                          ? i18n.t('Attempt {slot}: {weight} {unit}, {result}', {
+                              unit: weights.unit,
                               slot,
-                              weight: formatWeight(attempt.weight, i18n.locale),
+                              weight: weights.format(attempt.weight, i18n.locale),
                               result: attempt.is_successful
                                 ? i18n.t('good lift')
                                 : i18n.t('no lift'),
                             })
                           : i18n.t('Attempt {slot} not recorded', { slot })}
                       >
-                        {attempt ? formatWeight(attempt.weight, i18n.locale) : ''}
+                        {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
                       </span>
                     {/each}
                   {:else}
@@ -706,7 +710,7 @@
                         })}>{NO_RESULT}</span
                       >
                     {:else}
-                      {formatWeight(cell.best, i18n.locale)}
+                      {weights.format(cell.best, i18n.locale)}
                     {/if}
                   </span>
                 </span>
@@ -714,7 +718,9 @@
             {/each}
             <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
             {#if classed}
-              <td class="{TABLE_CELL} {CELL.data}">{entry.category}</td>
+              <td class="{TABLE_CELL} {CELL.data}"
+                >{weights.category(entry.category, i18n.locale)}</td
+              >
             {/if}
           </tr>
         {/each}
@@ -756,7 +762,7 @@
             </td>
             <td class="{TABLE_CELL} {CELL.counted}">
               {participant.status === 'competed'
-                ? formatWeight(participant.total, i18n.locale)
+                ? weights.format(participant.total, i18n.locale)
                 : NO_RESULT}
             </td>
             {#if risColumn}
@@ -780,7 +786,7 @@
                           ? CELL.discounted
                           : CELL.data}"
                       >
-                        {attempt ? formatWeight(attempt.weight, i18n.locale) : ''}
+                        {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
                       </span>
                     {/each}
                   {:else}
@@ -794,7 +800,7 @@
                     {:else if cell.kind === 'bombed'}
                       <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
                     {:else}
-                      {formatWeight(cell.best, i18n.locale)}
+                      {weights.format(cell.best, i18n.locale)}
                     {/if}
                   </span>
                 </span>
@@ -802,7 +808,9 @@
             {/each}
             <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
             {#if classed}
-              <td class="{TABLE_CELL} {CELL.data}">{category.category.weight_class}</td>
+              <td class="{TABLE_CELL} {CELL.data}"
+                >{weights.category(category.category.weight_class, i18n.locale)}</td
+              >
             {/if}
           </tr>
         {/each}

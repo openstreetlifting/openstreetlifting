@@ -35,7 +35,7 @@ it.each(LOCALES)('uses the %s URL for SSR regardless of browser language', async
   expect(event.locals).toEqual({ locale });
   expect(await response.text()).toBe(`<html lang="${locale}">`);
   expect(response.headers.get('content-language')).toBe(locale);
-  expect(response.headers.get('vary')).toBe('Accept-Encoding');
+  expect(response.headers.get('vary')).toBe('Accept-Encoding, Cookie');
 });
 
 it('preserves legacy page links with a permanent English redirect', async () => {

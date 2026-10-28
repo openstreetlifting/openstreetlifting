@@ -1,14 +1,15 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
+  import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import InfoTip from '#lib/components/ui/info-tip.svelte';
   import type { StrengthProfile } from '#lib/types/athlete.js';
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
   import { Tooltip } from 'layerchart';
   import { scalePoint } from 'd3-scale';
   import { CHART, TEXT } from '#lib/constants/typography.js';
-  import { formatWeight } from '#lib/utils/format.js';
 
   const i18n = useI18n();
+  const weights = useWeightUnit();
 
   let { profile }: { profile: StrengthProfile | null | undefined } = $props();
   let chartWidth = $state<number>();
@@ -31,7 +32,7 @@
     {#if profile}
       <InfoTip label={i18n.t('About Strength profile')}>
         <p class="font-medium text-ink">{i18n.t('Strength profile')}</p>
-        <p class="mt-2">{profile.category} {i18n.t('· All time')}</p>
+        <p class="mt-2">{weights.category(profile.category, i18n.locale)} {i18n.t('· All time')}</p>
         <p class="mt-3">
           {i18n.t(
             'Compares each best lift with other athletes’ bests. Percentile is the percentage of peers below that result, counting ties as half.'
@@ -70,7 +71,7 @@
               center
               role="group"
               aria-label={i18n.t('Lift percentiles compared with other athletes in {category}', {
-                category: profile.category,
+                category: weights.category(profile.category, i18n.locale),
               })}
             >
               <Axis
@@ -164,7 +165,8 @@
               {#snippet children({ data: lift })}
                 <div role="tooltip">
                   <p class="text-sm font-medium">
-                    {i18n.movement(lift.movement_name)} · {formatWeight(lift.value, i18n.locale)} kg
+                    {i18n.movement(lift.movement_name)} · {weights.format(lift.value, i18n.locale)}
+                    {weights.unit}
                   </p>
                   <p class="mt-1 font-mono text-lg font-bold">
                     {percent.format(lift.percentile)}

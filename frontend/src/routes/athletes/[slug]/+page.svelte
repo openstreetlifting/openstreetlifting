@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
+  import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import { MAIN_RANKING_PAGE_SIZE } from '#lib/constants/pagination.js';
   import type { PageData } from './$types';
   import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
@@ -29,13 +30,7 @@
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
-  import {
-    formatDate,
-    formatWeight,
-    formatAthleteName,
-    countryName,
-    countryPath,
-  } from '#lib/utils/index.js';
+  import { formatDate, formatAthleteName, countryName, countryPath } from '#lib/utils/index.js';
   import Seo from '#lib/components/seo.svelte';
   import AthleteProgress from '#lib/components/athlete-progress.svelte';
   import AthleteStrength from '#lib/components/athlete-strength.svelte';
@@ -52,6 +47,7 @@
   import { FIELD, TEXT } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
+  const weights = useWeightUnit();
 
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
@@ -172,7 +168,7 @@
     athlete.personal_records
       .map(
         (record) =>
-          `${i18n.movement(record.movement_name).toLowerCase()} ${formatWeight(record.max_weight, i18n.locale)} kg`
+          `${i18n.movement(record.movement_name).toLowerCase()} ${weights.format(record.max_weight, i18n.locale)} ${weights.unit}`
       )
       .join(', ')
   );
@@ -280,7 +276,7 @@
       <dd class="text-ink">{genderLabel}</dd>
       {#if latestWeightClass}
         <dt class="text-muted">{i18n.t('Weight class')}</dt>
-        <dd class="text-ink">{latestWeightClass} kg</dd>
+        <dd class="text-ink">{weights.category(latestWeightClass + ' kg', i18n.locale)}</dd>
       {/if}
     </dl>
   </header>
@@ -318,7 +314,9 @@
       </div>
       {#if selectedStanding?.class}
         <div class="mt-1 {CARD_CAPTION}">
-          {i18n.t('in category {category}', { category: selectedStanding.class })}
+          {i18n.t('in category {category}', {
+            category: weights.category(selectedStanding.class, i18n.locale),
+          })}
         </div>
       {/if}
     </div>
@@ -399,9 +397,9 @@
             <div class={CARD_LABEL}>{i18n.movement(pr.movement_name)}</div>
             <div class="mt-0.5 flex items-baseline gap-1.5">
               <span class="font-mono text-xl sm:text-2xl {CELL.counted}"
-                >{formatWeight(pr.max_weight, i18n.locale)}</span
+                >{weights.format(pr.max_weight, i18n.locale)}</span
               >
-              <span class="text-xs text-muted">kg</span>
+              <span class="text-xs text-muted">{weights.unit}</span>
             </div>
             <div class={CARD_CAPTION}>
               <a
@@ -445,7 +443,7 @@
             >{i18n.t('Rank')}</th
           >
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competition')}</th>
-          <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')}</th>
+          <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')} ({weights.unit})</th>
           <th class="{TABLE_HEAD_CELL} text-secondary"><RisHeader /></th>
           {#each contested as lift (lift.key)}
             <th class="{TABLE_HEAD_CELL} text-secondary">
@@ -489,7 +487,7 @@
               </td>
 
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{formatWeight(competition.total, i18n.locale)}</td
+                >{weights.format(competition.total, i18n.locale)}</td
               >
 
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
@@ -508,16 +506,17 @@
                             ? CELL.discounted
                             : CELL.data}"
                           title={attempt
-                            ? i18n.t('Attempt {slot}: {weight} kg, {result}', {
+                            ? i18n.t('Attempt {slot}: {weight} {unit}, {result}', {
+                                unit: weights.unit,
                                 slot,
-                                weight: formatWeight(attempt.weight, i18n.locale),
+                                weight: weights.format(attempt.weight, i18n.locale),
                                 result: attempt.is_successful
                                   ? i18n.t('good lift')
                                   : i18n.t('no lift'),
                               })
                             : i18n.t('Attempt {slot} not recorded', { slot })}
                         >
-                          {attempt ? formatWeight(attempt.weight, i18n.locale) : ''}
+                          {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
                         </span>
                       {/each}
                     {:else}
@@ -537,7 +536,7 @@
                           })}>{NO_RESULT}</span
                         >
                       {:else}
-                        {formatWeight(cell.best, i18n.locale)}
+                        {weights.format(cell.best, i18n.locale)}
                       {/if}
                     </span>
                   </span>
@@ -547,7 +546,7 @@
                 {formatDate(competition.competition_date, i18n.locale)}
               </td>
               <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap">
-                {competition.category_name}
+                {weights.category(competition.category_name, i18n.locale)}
               </td>
               {#if showsDivision}
                 <td class="{TABLE_CELL} {CELL.data}">{competition.division || NO_VALUE}</td>

@@ -1,12 +1,15 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
+  import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import Message from './message.svelte';
   import RisCategory from './ris-category.svelte';
   import { FIELD, TEXT } from '#lib/constants/typography.js';
   import type { RisFormula } from '#lib/types/ris.js';
   import { benchmarkTotal, bodyweightForRis, calculateRis } from '#lib/utils/ris.js';
+  import { displayWeight, kilograms, type WeightUnit } from '#lib/utils/weight-unit.js';
 
   const i18n = useI18n();
+  const weights = useWeightUnit();
 
   let {
     edition,
@@ -21,18 +24,53 @@
     { key: 'bodyweight', label: 'Bodyweight', min: 30, max: 220, step: 0.1 },
     { key: 'total', label: 'Total lifted', min: 0, max: 1000, step: 0.25 },
   ] as const;
-  let fields = $state({ bodyweight: '', total: '', target: '' });
-  const values = $derived({
-    bodyweight: parseWeight(fields.bodyweight),
-    total: parseWeight(fields.total),
+  type WeightField = { text: string; unit: WeightUnit };
+  type Control = (typeof controls)[number];
+  let fields = $state<Record<Control['key'], WeightField>>({
+    bodyweight: { text: '', unit: 'kg' },
+    total: { text: '', unit: 'kg' },
   });
-  const target = $derived(parseWeight(fields.target));
+  let targetField = $state('');
+  const values = $derived({
+    bodyweight: fieldKilograms(controls[0]),
+    total: fieldKilograms(controls[1]),
+  });
+  const target = $derived(parseWeight(targetField));
 
   function parseWeight(value: string): number | undefined {
     const normalized = value.trim().replace(',', '.');
     if (!/^\d+(\.\d*)?$/.test(normalized)) return undefined;
     const number = Number(normalized);
     return Number.isFinite(number) ? number : undefined;
+  }
+
+  function displayBound(value: number, unit: WeightUnit): number {
+    return Number(displayWeight(value, unit).toFixed(2));
+  }
+
+  function fieldKilograms(control: Control): number | undefined {
+    const field = fields[control.key];
+    const value = parseWeight(field.text);
+    if (
+      value === undefined ||
+      value < displayBound(control.min, field.unit) ||
+      value > displayBound(control.max, field.unit)
+    )
+      return undefined;
+    // Rounded display boundaries still represent the exact supported kg limits.
+    return Math.min(control.max, Math.max(control.min, kilograms(value, field.unit)));
+  }
+
+  function displayField(control: Control): string {
+    const field = fields[control.key];
+    const value = parseWeight(field.text);
+    if (field.unit === weights.unit || value === undefined) return field.text;
+    return String(Number(displayWeight(kilograms(value, field.unit), weights.unit).toFixed(3)));
+  }
+
+  function setField(control: Control, text: string): void {
+    // Retain the original input and unit so repeated switches do not round the calculation.
+    fields[control.key] = { text, unit: weights.unit };
   }
 
   const constants = $derived(edition.constants[sex]);
@@ -77,9 +115,7 @@
     </div>
     {#each controls as control (control.key)}
       {@const value = values[control.key]}
-      {@const invalid =
-        fields[control.key] !== '' &&
-        (value === undefined || value < control.min || value > control.max)}
+      {@const invalid = fields[control.key].text !== '' && value === undefined}
       <div>
         <div class="mb-3">
           <label for="{id}-{control.key}" class="mb-2 block text-sm font-medium text-ink"
@@ -93,22 +129,23 @@
               placeholder={control.key === 'bodyweight'
                 ? i18n.t('Bodyweight')
                 : i18n.t('MPDS total')}
-              bind:value={fields[control.key]}
+              bind:value={() => displayField(control), (text) => setField(control, text)}
               aria-invalid={invalid}
               aria-describedby={invalid ? `${id}-${control.key}-error` : undefined}
               class="{FIELD} h-12 w-full border-stroke-strong bg-surface px-3 pr-10 text-base text-ink placeholder:text-sm placeholder:text-secondary focus:border-secondary"
             />
             <span
               class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-secondary"
-              >kg</span
+              >{weights.unit}</span
             >
           </div>
         </div>
         {#if invalid}
           <p id="{id}-{control.key}-error" class="text-xs text-secondary">
-            {i18n.t('Enter a number between {min} and {max} kg.', {
-              min: control.min,
-              max: control.max,
+            {i18n.t('Enter a number between {min} and {max} {unit}.', {
+              unit: weights.unit,
+              min: weights.format(control.min, i18n.locale),
+              max: weights.format(control.max, i18n.locale),
             })}
           </p>
         {/if}
@@ -116,19 +153,19 @@
           <input
             type="range"
             aria-label={i18n.t('{label} slider', { label: i18n.t(control.label) })}
-            aria-valuetext="{i18n.number(value)} kg"
-            min={control.min}
-            max={control.max}
-            step={control.step}
-            value={values[control.key]}
+            aria-valuetext="{weights.format(value, i18n.locale)} {weights.unit}"
+            min={displayBound(control.min, weights.unit)}
+            max={displayBound(control.max, weights.unit)}
+            step={weights.value(control.step)}
+            value={weights.value(value)}
             oninput={(event) => {
-              fields[control.key] = event.currentTarget.value;
+              setField(control, event.currentTarget.value);
             }}
             class="ris-slider block h-6 w-full cursor-pointer accent-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-muted"
           />
           <div class="mt-1 flex justify-between text-xs text-muted" aria-hidden="true">
-            <span>{control.min.toLocaleString(i18n.locale)} kg</span>
-            <span>{control.max.toLocaleString(i18n.locale)} kg</span>
+            <span>{weights.format(control.min, i18n.locale)} {weights.unit}</span>
+            <span>{weights.format(control.max, i18n.locale)} {weights.unit}</span>
           </div>
         {/if}
       </div>
@@ -156,7 +193,7 @@
           type="text"
           inputmode="decimal"
           placeholder={i18n.t('Target')}
-          bind:value={fields.target}
+          bind:value={targetField}
           class="{FIELD} w-24 border-stroke-strong px-3 py-2 text-base font-mono"
         />
         <span class="text-sm text-secondary">RIS</span>
@@ -177,17 +214,19 @@
         <div class="space-y-4 text-sm leading-6 text-secondary">
           <p>
             {#snippet total()}<strong class="font-medium text-ink"
-                >{i18n.number(scenario.total, 1)} kg</strong
+                >{weights.format(scenario.total, i18n.locale, 1)} {weights.unit}</strong
               >{/snippet}
             {#snippet difference()}<strong class="font-medium text-ink"
-                >{i18n.t('{difference} kg more', {
-                  difference: i18n.number(scenario.total - performance.total, 1),
+                >{i18n.t('{difference} {unit} more', {
+                  unit: weights.unit,
+                  difference: weights.format(scenario.total - performance.total, i18n.locale, 1),
                 })}</strong
               >{/snippet}
             <Message
-              message={'At a fixed bodyweight of {bodyweight} kg, {target} RIS corresponds to a total of {total}, or {difference} than the entered total.'}
+              message={'At a fixed bodyweight of {bodyweight} {unit}, {target} RIS corresponds to a total of {total}, or {difference} than the entered total.'}
               values={{
-                bodyweight: i18n.number(performance.bodyweight),
+                unit: weights.unit,
+                bodyweight: weights.format(performance.bodyweight, i18n.locale),
                 target: i18n.number(target!),
                 total,
                 difference,
@@ -199,19 +238,26 @@
               {#if scenario.bodyweight.value >= 30 && scenario.bodyweight.value <= 220}
                 {@const calculatedWeight = scenario.bodyweight.value}
                 {#snippet bodyweight()}<strong class="font-medium text-ink"
-                    >{i18n.t('{bodyweight} kg bodyweight', {
-                      bodyweight: i18n.number(calculatedWeight, 1),
+                    >{i18n.t('{bodyweight} {unit} bodyweight', {
+                      unit: weights.unit,
+                      bodyweight: weights.format(calculatedWeight, i18n.locale, 1),
                     })}</strong
                   >{/snippet}
                 {#snippet difference()}<strong class="font-medium text-ink"
-                    >{i18n.t('{difference} kg less', {
-                      difference: i18n.number(performance.bodyweight - calculatedWeight, 1),
+                    >{i18n.t('{difference} {unit} less', {
+                      unit: weights.unit,
+                      difference: weights.format(
+                        performance.bodyweight - calculatedWeight,
+                        i18n.locale,
+                        1
+                      ),
                     })}</strong
                   >{/snippet}
                 <Message
-                  message={'At a fixed total of {total} kg, {target} RIS corresponds to {bodyweight}, or {difference} than the entered bodyweight.'}
+                  message={'At a fixed total of {total} {unit}, {target} RIS corresponds to {bodyweight}, or {difference} than the entered bodyweight.'}
                   values={{
-                    total: i18n.number(performance.total),
+                    unit: weights.unit,
+                    total: weights.format(performance.total, i18n.locale),
                     target: i18n.number(target!),
                     bodyweight,
                     difference,
@@ -219,7 +265,12 @@
                 />
               {:else}
                 {i18n.t(
-                  'At the entered total, the bodyweight corresponding to this target lies outside the calculator’s 30–220 kg input range.'
+                  'At the entered total, the bodyweight corresponding to this target lies outside the calculator’s {min}–{max} {unit} input range.',
+                  {
+                    min: weights.format(30, i18n.locale),
+                    max: weights.format(220, i18n.locale),
+                    unit: weights.unit,
+                  }
                 )}
               {/if}
             {:else if scenario.bodyweight.kind === 'already-met'}

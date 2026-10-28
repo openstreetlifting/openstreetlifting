@@ -3,6 +3,7 @@ import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AthleteProgress from './athlete-progress.svelte';
 import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
+import { WEIGHT_UNIT_CONTEXT, WeightPreference } from '#lib/state/weight-unit.svelte.js';
 
 vi.mock('$app/paths', () => ({
   resolve: (path: string, params?: Record<string, string>) =>
@@ -43,6 +44,23 @@ const competitions: AthleteCompetitionSummary[] = [
     lifts: [{ movement_name: 'Muscle-up', best_weight: '10', attempts: [] }],
   },
 ];
+
+it('converts the performance chart and tooltips while keeping RIS and source results unchanged', async () => {
+  const weights = new WeightPreference(() => 'lb');
+  const original = structuredClone(competitions);
+  render(AthleteProgress, {
+    props: { competitions, formats: ['MPDS'] },
+    context: new Map([[WEIGHT_UNIT_CONTEXT, weights]]),
+  });
+  await expect.element(page.getByText('992.08 lb', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: /First meet.*881.85 lb/ }).click();
+  await expect.element(page.getByRole('tooltip')).toMatchTextContent('881.85 lb');
+  await expect.element(page.getByRole('tooltip')).toMatchTextContent('Men -176.37 lb');
+  await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('ris');
+  await page.getByRole('button', { name: /Second meet/ }).click();
+  await expect.element(page.getByRole('tooltip')).toMatchTextContent('98.00');
+  expect(competitions).toEqual(original);
+});
 
 it('selects competition points and switches metrics without losing a real zero result', async () => {
   render(AthleteProgress, { competitions, formats: ['MPDS'], athleteSlug: 'alex-martin' });

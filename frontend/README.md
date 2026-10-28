@@ -4,7 +4,8 @@ The website presents Streetlifting results, rankings, and athlete records. For l
 
 ## Results
 
-- Weights are in kilograms. Zero is a valid result; `-` means missing data.
+- Weights default to kilograms; visitors can choose pounds in the header. The choice is remembered for one year. Zero is a valid result; `-` means missing data.
+- Unit conversion changes presentation only. Measurements and weight-class boundaries remain defined in kilograms; rankings and RIS scores stay the same.
 - Competition formats can include different combinations of movements. Compare results within the same format and sex category.
 - Competition dates keep their calendar day across time zones.
 - Upcoming competitions appear before results are available. Results from ongoing competitions may be partial.
