@@ -369,6 +369,7 @@ export interface components {
       lifter_count: number | null;
       movements?: components['schemas']['MovementInfo'][];
       name: string;
+      previous_editions?: components['schemas']['PreviousEdition'][];
       region: string | null;
       scoring: components['schemas']['Scoring'] | null;
       slug: string;
@@ -470,6 +471,7 @@ export interface components {
         lifter_count: number | null;
         movements?: components['schemas']['MovementInfo'][];
         name: string;
+        previous_editions?: components['schemas']['PreviousEdition'][];
         region: string | null;
         scoring: components['schemas']['Scoring'] | null;
         slug: string;
@@ -527,6 +529,11 @@ export interface components {
       date: string | null;
       max_weight: string;
       movement_name: components['schemas']['Movement'];
+    };
+    PreviousEdition: {
+      name: string;
+      slug: string;
+      start_date: string;
     };
     RankedGender: 'M' | 'F' | 'MX';
     RankingAthlete: {

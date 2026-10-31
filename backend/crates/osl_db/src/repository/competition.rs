@@ -6,7 +6,7 @@ use crate::error::{Result, StorageError};
 use crate::params::{CompetitionFilter, Page};
 use crate::projections::competition::{
     AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem,
-    CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail,
+    CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail, PreviousEdition,
 };
 use crate::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
@@ -22,6 +22,22 @@ impl<'a> CompetitionRepository<'a> {
     #[must_use]
     pub const fn new(pool: &'a PgPool) -> Self {
         Self { pool }
+    }
+
+    #[tracing::instrument(name = "repository.competition.previous_editions", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn previous_editions(&self, slug: &str) -> Result<Vec<PreviousEdition>> {
+        Ok(sqlx::query_as(
+            "SELECT previous.slug, previous.name, previous.start_date
+             FROM competitions current
+             JOIN competitions previous ON previous.series = current.series
+             WHERE current.slug = $1
+               AND previous.start_date < current.start_date
+               AND previous.status = 'completed'
+             ORDER BY previous.start_date DESC, previous.slug",
+        )
+        .bind(slug)
+        .fetch_all(self.pool)
+        .await?)
     }
 
     #[tracing::instrument(name = "repository.competition.list", skip_all, fields(db.system.name = "postgresql"))]

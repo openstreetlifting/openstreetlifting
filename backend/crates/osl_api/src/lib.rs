@@ -67,6 +67,7 @@ impl AppState {
     components(
         schemas(
             crate::competition::dto::CompetitionResponse,
+            crate::competition::dto::PreviousEdition,
             crate::competition::dto::CategoryDetail,
             crate::competition::dto::ParticipantDetail,
             crate::competition::dto::LiftDetail,

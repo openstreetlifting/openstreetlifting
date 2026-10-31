@@ -32,6 +32,7 @@ sources = ["https://final-rep.com/world-championship/"]
 
 [competition]
 name = "Worlds"
+series = "finalrep-worlds"
 start_date = "2023-09-30"
 end_date = "2023-10-01"
 city = "Cologne"
@@ -47,6 +48,7 @@ name = "FinalRep"
 | Field                     | What to enter                                                    |
 | ------------------------- | ---------------------------------------------------------------- |
 | `competition.name`        | The competition's name.                                          |
+| `competition.series`      | Optional stable identifier shared by editions; see [Previous editions](#previous-editions). |
 | `competition.start_date`  | The first day, as `YYYY-MM-DD`.                                  |
 | `competition.end_date`    | The last day; defaults to `start_date` when omitted.        |
 | `competition.venue`       | The venue name, if known; omit it when unknown.                  |
@@ -62,6 +64,22 @@ name = "FinalRep"
 The names, start date and competition country are required. Omit `end_date` for
 a one-day competition. `prepare` removes an end date equal to the start date;
 it preserves a later end date. Optional fields can be left out.
+
+### Previous editions
+
+Give editions of the same competition the same `competition.series`, for example
+`finalrep-worlds`. Use lowercase ASCII letters and digits separated by single
+hyphens. Prefix the identifier with the organizer or federation to keep it unique
+across OSL, and omit years and edition numbers. Keep it stable when an edition
+changes name, venue or organizer. Give separate contests, such as All4 and
+Classic championships, separate identifiers.
+
+Competition pages link to completed editions in the same series with an earlier
+start date, newest first. The API exposes them with
+`GET /api/v1/competitions/{slug}?include=previous_editions`. An unassigned series
+or the first edition returns an empty list. Names and slugs do not establish a
+relationship automatically. Re-import the files after adding or correcting a
+series; removing the field removes that edition from the series.
 
 ### Event
 

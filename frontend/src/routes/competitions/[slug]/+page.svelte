@@ -443,6 +443,29 @@
       {/if}
     </dl>
 
+    {#if competition.previous_editions.length > 0}
+      <nav aria-labelledby="previous-editions-heading" class="sm:col-span-2">
+        <h2 id="previous-editions-heading" class="mb-2 text-xs font-medium text-secondary">
+          {i18n.t('Previous editions')}
+        </h2>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          {#each competition.previous_editions as edition (edition.slug)}
+            <li>
+              <a
+                href={i18n.href(resolve('/competitions/[slug]', { slug: edition.slug }))}
+                class="text-ink underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
+              >
+                {edition.name}
+                <time datetime={edition.start_date} class="text-secondary">
+                  · {formatLongDate(edition.start_date, i18n.locale)}
+                </time>
+              </a>
+            </li>
+          {/each}
+        </ul>
+      </nav>
+    {/if}
+
     {#if published && classed}
       <section aria-labelledby="weight-classes-heading" class="sm:col-span-2">
         <h2 id="weight-classes-heading" class="mb-2 text-xs font-medium text-secondary">

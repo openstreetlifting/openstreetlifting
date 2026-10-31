@@ -31,6 +31,7 @@ impl CanonicalFormat {
 #[derive(Debug, Clone)]
 pub struct CompetitionData {
     pub name: String,
+    pub series: Option<String>,
     pub slug: String,
     pub federation: FederationData,
     pub start_date: NaiveDate,

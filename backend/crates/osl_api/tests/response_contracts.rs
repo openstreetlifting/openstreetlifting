@@ -141,14 +141,16 @@ fn omits_unrequested_competition_sections() {
     for field in ["city", "venue", "country", "event_code", "lifter_count"] {
         assert_eq!(body.get(field), Some(&Value::Null), "{field}");
     }
-    for field in ["federation", "movements", "categories"] {
+    for field in ["federation", "movements", "categories", "previous_editions"] {
         assert!(!body.as_object().unwrap().contains_key(field), "{field}");
     }
     response.movements = Some(Vec::new());
     response.categories = Some(Vec::new());
+    response.previous_editions = Some(Vec::new());
     let body = serde_json::to_value(response).unwrap();
     assert_eq!(body["movements"], json!([]));
     assert_eq!(body["categories"], json!([]));
+    assert_eq!(body["previous_editions"], json!([]));
     let category = CategoryInfo {
         name: "Men -80kg".into(),
         division: None,
@@ -235,7 +237,10 @@ fn requires_fields_except_conditional_sections() {
                         | "strength_profile"
                 ),
                 "CompetitionResponse" => {
-                    matches!(field.as_str(), "federation" | "movements" | "categories")
+                    matches!(
+                        field.as_str(),
+                        "federation" | "movements" | "categories" | "previous_editions"
+                    )
                 }
                 _ => false,
             };

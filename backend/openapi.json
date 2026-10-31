@@ -343,6 +343,7 @@
           {
             "name": "include",
             "in": "query",
+            "description": "Comma-separated sections: `federation`, `results`, `movements`, `previous_editions`.",
             "required": false,
             "schema": {
               "$ref": "#/components/schemas/Include"
@@ -1308,6 +1309,13 @@
           "name": {
             "type": "string"
           },
+          "previous_editions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreviousEdition"
+            },
+            "description": "Earlier completed editions in the same explicit series, newest first."
+          },
           "region": {
             "type": [
               "string",
@@ -1868,6 +1876,13 @@
                 "name": {
                   "type": "string"
                 },
+                "previous_editions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PreviousEdition"
+                  },
+                  "description": "Earlier completed editions in the same explicit series, newest first."
+                },
                 "region": {
                   "type": [
                     "string",
@@ -2179,6 +2194,26 @@
           },
           "movement_name": {
             "$ref": "#/components/schemas/Movement"
+          }
+        }
+      },
+      "PreviousEdition": {
+        "type": "object",
+        "required": [
+          "slug",
+          "name",
+          "start_date"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date"
           }
         }
       },
