@@ -7,6 +7,8 @@ use rust_decimal::Decimal;
 use std::collections::{HashMap, HashSet};
 use tracing::warn;
 
+const SERIES_SEPARATOR: char = '-';
+
 pub struct CanonicalValidator;
 
 impl CanonicalValidator {
@@ -66,7 +68,7 @@ impl CanonicalValidator {
                 .push("Competition slug is required".to_string());
         }
         if let Some(series) = &canonical.competition.series
-            && series.split('-').any(|part| {
+            && series.split(SERIES_SEPARATOR).any(|part| {
                 part.is_empty()
                     || !part
                         .bytes()

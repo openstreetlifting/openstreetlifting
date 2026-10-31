@@ -343,7 +343,6 @@
           {
             "name": "include",
             "in": "query",
-            "description": "Sections: `federation`, `results`, `movements`, `editions`.",
             "required": false,
             "schema": {
               "$ref": "#/components/schemas/Include"
@@ -1297,8 +1296,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CompetitionEdition"
-            },
-            "description": "Available editions in the same series, including the current edition, oldest first."
+            }
           },
           "end_date": {
             "type": [
@@ -1864,8 +1862,7 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/CompetitionEdition"
-                  },
-                  "description": "Available editions in the same series, including the current edition, oldest first."
+                  }
                 },
                 "end_date": {
                   "type": [

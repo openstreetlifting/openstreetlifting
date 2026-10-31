@@ -47,7 +47,6 @@ pub struct CompetitionResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub categories: Option<Vec<CategoryDetail>>,
-    /// Available editions in the same series, including the current edition, oldest first.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub editions: Option<Vec<CompetitionEdition>>,

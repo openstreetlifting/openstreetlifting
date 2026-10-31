@@ -33,7 +33,6 @@ async fn seed(pool: &PgPool) {
     .fetch_one(pool)
     .await
     .unwrap();
-    // Names and locations do not define a series, and editions need not be annual.
     for (slug, series, date, status) in [
         ("current", Some("worlds"), "2026-10-01", "upcoming"),
         ("renamed", Some("worlds"), "2025-05-01", "completed"),
@@ -67,7 +66,6 @@ async fn seed(pool: &PgPool) {
         .await
         .unwrap();
     }
-    // A new organizer can take over a series without breaking its history.
     sqlx::query("INSERT INTO federations (name) VALUES ('Previous organizer')")
         .execute(pool)
         .await
