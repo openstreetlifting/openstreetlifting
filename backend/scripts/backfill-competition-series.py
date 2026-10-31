@@ -74,8 +74,13 @@ SERIES = {
         "v-max-weighted-chin-up-nationals-2020", "vi-max-weighted-chin-up-nationals-2021",
         "vii-max-weighted-chin-up-nationals-2022", "viii-max-weighted-chin-up-nationals-2023",
     ],
-    "streetlifting-polska-lomza-street-power": annual("lomza-street-power-{year}", (2018, 2019, 2021, 2024)) + [
+    # Łomża has separate pull-up, muscle-up and Classic contests.
+    "streetlifting-polska-lomza-street-power-pull-up": ["lomza-street-power-2018",
         "lomza-street-power-viii-2025", "lomza-street-power-ix-2026",
+    ],
+    "streetlifting-polska-lomza-street-power-classic": annual("lomza-street-power-{year}", (2019, 2021)),
+    "streetlifting-polska-lomza-street-power-muscle-up": [
+        "lomza-street-power-2024", "lomza-street-power-viii-2025-muscleup",
     ],
     "streetlifting-polska-glogow-nationals": annual("nationals-streetlifting-glogow-{year}", (2018, 2019, 2020, 2021, 2022)),
     "streetlifting-polska-na-wygodzie": annual("street-lifting-na-wygodzie-{year}", (2025, 2026)),
@@ -121,6 +126,7 @@ def plan(root):
     for series, slugs in sorted(SERIES.items()):
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", series):
             raise ValueError(f"Invalid series identifier: {series}")
+        known_format = None
         for slug in slugs:
             if slug in assigned:
                 raise ValueError(f"Competition assigned more than once: {slug}")
@@ -128,6 +134,11 @@ def plan(root):
             path = files[slug]
             text = path.read_text(encoding="utf-8")
             metadata = tomllib.loads(text)
+            event = metadata.get("event")
+            if event is not None:
+                if known_format is not None and event != known_format:
+                    raise ValueError(f"{series}: backfill mixes contest formats {known_format} and {event} ({slug})")
+                known_format = event
             existing = metadata["competition"].get("series")
             if existing == series:
                 continue

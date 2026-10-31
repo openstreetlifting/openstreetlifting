@@ -7,6 +7,7 @@ use osl_api::{AppState, app};
 use osl_db::Database;
 use serde_json::{Value, json};
 use sqlx::PgPool;
+use std::{collections::HashMap, path::Path};
 use tower::ServiceExt;
 use uuid::Uuid;
 
@@ -126,4 +127,173 @@ async fn handles_absent_series_and_keeps_the_section_opt_in(pool: PgPool) {
         get(&pool, "?include=previous_editions").await.0,
         StatusCode::BAD_REQUEST
     );
+}
+
+async fn seed_archive(pool: &PgPool) {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../data/competitions");
+    let mut directories = Vec::new();
+    osl_importer::canonical::store::collect_competitions(&root, &mut directories).unwrap();
+    let mut federations = HashMap::new();
+    for directory in directories {
+        let competition = osl_importer::canonical::store::read(&directory)
+            .unwrap()
+            .competition;
+        let federation = if let Some(id) = federations.get(&competition.federation.name) {
+            *id
+        } else {
+            let id: Uuid = sqlx::query_scalar(
+                "INSERT INTO federations (name) VALUES ($1) RETURNING federation_id",
+            )
+            .bind(&competition.federation.name)
+            .fetch_one(pool)
+            .await
+            .unwrap();
+            federations.insert(competition.federation.name.clone(), id);
+            id
+        };
+        sqlx::query(
+            "INSERT INTO competitions (slug, name, federation_id, series, start_date, end_date, status)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)",
+        )
+        .bind(competition.slug)
+        .bind(competition.name)
+        .bind(federation)
+        .bind(competition.series)
+        .bind(competition.start_date)
+        .bind(competition.end_date)
+        .bind(competition.status.unwrap_or(osl_domain::CompetitionStatus::Completed).as_str())
+        .execute(pool)
+        .await
+        .unwrap();
+    }
+}
+
+async fn assert_history(pool: &PgPool, slug: &str, expected: &[&str]) {
+    let (status, body) = get(pool, &format!("/{slug}?include=previous_editions")).await;
+    assert_eq!(status, StatusCode::OK, "{slug}");
+    let slugs: Vec<_> = body["previous_editions"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|edition| edition["slug"].as_str().unwrap())
+        .collect();
+    assert_eq!(slugs, expected, "{slug}");
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn archive_keeps_championships_within_a_federation_separate(pool: PgPool) {
+    seed_archive(&pool).await;
+    assert_history(&pool, "euros-2026", &["euros-2024"]).await;
+    assert_history(&pool, "worlds-2025", &["worlds-2023"]).await;
+    assert_history(&pool, "german-open-2025", &["german-open-2024"]).await;
+    assert_history(&pool, "portugal-open-2026", &["portuguese-open-2025"]).await;
+    assert_history(&pool, "ace-cup-2026", &["ace-cup-2025"]).await;
+    assert_history(&pool, "fnsl-elite-2027", &["fnsl-elite-2026"]).await;
+    assert_history(
+        &pool,
+        "fnsl-interregionale-centre-2027",
+        &["fnsl-interregionale-centre-2026"],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "dcsv-german-championship-2026",
+        &[
+            "dcsv-german-championship-2024",
+            "dcsv-german-championship-2023",
+            "dcsv-german-championship-2022",
+        ],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "australian-national-finals-2026",
+        &["australian-national-finals-2025"],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "australian-open-2026-event-4",
+        &[
+            "australian-open-2026-event-3",
+            "australian-open-2026-event-2",
+            "australian-open-2025-event-1",
+        ],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "usastreetlifting-nationals-3-2026",
+        &[
+            "usastreetlifting-national-championships-2025",
+            "usastreetlifting-national-championships-2024",
+        ],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "bodystrong-uk-ire-nationals-2026",
+        &[
+            "bodystrong-uk-ire-nationals-2025",
+            "bodystrong-uk-nationals-2024",
+        ],
+    )
+    .await;
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn archive_keeps_contests_at_the_same_meet_separate(pool: PgPool) {
+    seed_archive(&pool).await;
+    assert_history(
+        &pool,
+        "aesl-gods-battles-all4-2025",
+        &[
+            "aesl-gods-battles-all4-2024",
+            "aesl-gods-battles-all4-2023",
+            "aesl-gods-battles-all4-2022",
+            "aesl-gods-battles-all4-2021",
+        ],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "aesl-gods-battles-classic-2025",
+        &[
+            "aesl-gods-battles-classic-2024",
+            "aesl-gods-battles-classic-2023",
+            "aesl-gods-battles-classic-2022",
+            "aesl-gods-battles-classic-2021",
+        ],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "nationals-streetlifting-glogow-2022-single-pullup",
+        &["nationals-streetlifting-glogow-2021-single-pullup"],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "iii-turniej-lipka-krajenska-2024-m",
+        &["ii-turniej-lipka-krajenska-2023-m"],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "lomza-street-power-ix-2026",
+        &["lomza-street-power-viii-2025", "lomza-street-power-2018"],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "lomza-street-power-viii-2025-muscleup",
+        &["lomza-street-power-2024"],
+    )
+    .await;
+    assert_history(
+        &pool,
+        "lomza-street-power-2021",
+        &["lomza-street-power-2019"],
+    )
+    .await;
 }

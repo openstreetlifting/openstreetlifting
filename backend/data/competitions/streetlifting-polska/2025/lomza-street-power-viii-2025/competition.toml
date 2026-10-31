@@ -6,7 +6,7 @@ sources = [
 
 [competition]
 name = "Łomża Street Power VIII"
-series = "streetlifting-polska-lomza-street-power"
+series = "streetlifting-polska-lomza-street-power-pull-up"
 start_date = "2025-08-31"
 city = "Łomża"
 country = "PL"
