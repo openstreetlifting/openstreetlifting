@@ -344,6 +344,11 @@ export interface components {
       last_name: string;
       slug: string;
     };
+    CompetitionEdition: {
+      name: string;
+      slug: string;
+      start_date: string;
+    };
     CompetitionFederation: {
       abbreviation: string | null;
       country: string | null;
@@ -362,6 +367,7 @@ export interface components {
       competition_id: string;
       country: string | null;
       created_at: string;
+      editions?: components['schemas']['CompetitionEdition'][];
       end_date: string | null;
       event_code: string | null;
       federation?: components['schemas']['CompetitionFederation'];
@@ -369,7 +375,6 @@ export interface components {
       lifter_count: number | null;
       movements?: components['schemas']['MovementInfo'][];
       name: string;
-      previous_editions?: components['schemas']['PreviousEdition'][];
       region: string | null;
       scoring: components['schemas']['Scoring'] | null;
       slug: string;
@@ -464,6 +469,7 @@ export interface components {
         competition_id: string;
         country: string | null;
         created_at: string;
+        editions?: components['schemas']['CompetitionEdition'][];
         end_date: string | null;
         event_code: string | null;
         federation?: components['schemas']['CompetitionFederation'];
@@ -471,7 +477,6 @@ export interface components {
         lifter_count: number | null;
         movements?: components['schemas']['MovementInfo'][];
         name: string;
-        previous_editions?: components['schemas']['PreviousEdition'][];
         region: string | null;
         scoring: components['schemas']['Scoring'] | null;
         slug: string;
@@ -529,11 +534,6 @@ export interface components {
       date: string | null;
       max_weight: string;
       movement_name: components['schemas']['Movement'];
-    };
-    PreviousEdition: {
-      name: string;
-      slug: string;
-      start_date: string;
     };
     RankedGender: 'M' | 'F' | 'MX';
     RankingAthlete: {

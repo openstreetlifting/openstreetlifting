@@ -14,7 +14,7 @@ use crate::shared::dto::{Direction, PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
 const LIST_INCLUDES: &[&str] = &["federation", "movements"];
-const DETAIL_INCLUDES: &[&str] = &["federation", "results", "movements", "previous_editions"];
+const DETAIL_INCLUDES: &[&str] = &["federation", "results", "movements", "editions"];
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct CompetitionListQuery {
@@ -55,7 +55,7 @@ impl CompetitionListQuery {
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct CompetitionQuery {
-    /// Comma-separated sections: `federation`, `results`, `movements`, `previous_editions`.
+    /// Sections: `federation`, `results`, `movements`, `editions`.
     #[serde(default)]
     pub include: Include,
 }
@@ -151,9 +151,9 @@ pub async fn get_competition(
         CompetitionResponse::from(repo.find_by_slug(&slug).await?)
     };
 
-    if query.include.has("previous_editions") {
-        response.previous_editions = Some(
-            repo.previous_editions(&slug)
+    if query.include.has("editions") {
+        response.editions = Some(
+            repo.editions(&slug)
                 .await?
                 .into_iter()
                 .map(Into::into)

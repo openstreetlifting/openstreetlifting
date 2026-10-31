@@ -16,7 +16,7 @@ export type Competition = Omit<CompetitionResponse, 'federation' | 'movements'> 
 };
 export type CompetitionDetail = Competition & {
   categories: CategoryDetail[];
-  previous_editions: Schemas['PreviousEdition'][];
+  editions: Schemas['CompetitionEdition'][];
 };
 export type CompetitionFilters = Omit<
   NonNullable<paths['/api/v1/competitions']['get']['parameters']['query']>,

@@ -7,15 +7,15 @@ vi.mock('#lib/server/config.js', () => ({
 
 afterEach(() => vi.unstubAllGlobals());
 
-it('requests previous editions with competition details and preserves their order', async () => {
+it('requests editions with competition details and preserves their order', async () => {
   const competition = {
     slug: 'current',
     federation: { name: 'Organizer' },
     movements: [],
     categories: [],
-    previous_editions: [
-      { slug: 'renamed-2025', name: 'Renamed edition', start_date: '2025-06-01' },
+    editions: [
       { slug: 'original-2023', name: 'Original edition', start_date: '2023-06-01' },
+      { slug: 'renamed-2025', name: 'Renamed edition', start_date: '2025-06-01' },
     ],
   };
   const fetch = vi.fn().mockResolvedValue(Response.json(competition));
@@ -24,10 +24,10 @@ it('requests previous editions with competition details and preserves their orde
   expect(await competitionsService.getById('current')).toEqual(competition);
   const url = new URL((fetch.mock.calls[0][0] as Request).url);
   expect(url.pathname).toBe('/api/v1/competitions/current');
-  expect(url.searchParams.get('include')).toBe('federation,results,movements,previous_editions');
+  expect(url.searchParams.get('include')).toBe('federation,results,movements,editions');
 });
 
-it('accepts an empty previous-editions list for a first edition', async () => {
+it('accepts an empty editions list for an unassigned competition', async () => {
   vi.stubGlobal(
     'fetch',
     vi.fn().mockResolvedValue(
@@ -35,9 +35,9 @@ it('accepts an empty previous-editions list for a first edition', async () => {
         federation: { name: 'Organizer' },
         movements: [],
         categories: [],
-        previous_editions: [],
+        editions: [],
       })
     )
   );
-  expect((await competitionsService.getById('first')).previous_editions).toEqual([]);
+  expect((await competitionsService.getById('first')).editions).toEqual([]);
 });

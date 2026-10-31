@@ -343,7 +343,7 @@
           {
             "name": "include",
             "in": "query",
-            "description": "Comma-separated sections: `federation`, `results`, `movements`, `previous_editions`.",
+            "description": "Sections: `federation`, `results`, `movements`, `editions`.",
             "required": false,
             "schema": {
               "$ref": "#/components/schemas/Include"
@@ -1169,6 +1169,26 @@
           }
         }
       },
+      "CompetitionEdition": {
+        "type": "object",
+        "required": [
+          "slug",
+          "name",
+          "start_date"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
       "CompetitionFederation": {
         "type": "object",
         "required": [
@@ -1273,6 +1293,13 @@
             "type": "string",
             "format": "date-time"
           },
+          "editions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompetitionEdition"
+            },
+            "description": "Available editions in the same series, including the current edition, oldest first."
+          },
           "end_date": {
             "type": [
               "string",
@@ -1308,13 +1335,6 @@
           },
           "name": {
             "type": "string"
-          },
-          "previous_editions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PreviousEdition"
-            },
-            "description": "Earlier completed editions in the same explicit series, newest first."
           },
           "region": {
             "type": [
@@ -1840,6 +1860,13 @@
                   "type": "string",
                   "format": "date-time"
                 },
+                "editions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompetitionEdition"
+                  },
+                  "description": "Available editions in the same series, including the current edition, oldest first."
+                },
                 "end_date": {
                   "type": [
                     "string",
@@ -1875,13 +1902,6 @@
                 },
                 "name": {
                   "type": "string"
-                },
-                "previous_editions": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PreviousEdition"
-                  },
-                  "description": "Earlier completed editions in the same explicit series, newest first."
                 },
                 "region": {
                   "type": [
@@ -2194,26 +2214,6 @@
           },
           "movement_name": {
             "$ref": "#/components/schemas/Movement"
-          }
-        }
-      },
-      "PreviousEdition": {
-        "type": "object",
-        "required": [
-          "slug",
-          "name",
-          "start_date"
-        ],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "slug": {
-            "type": "string"
-          },
-          "start_date": {
-            "type": "string",
-            "format": "date"
           }
         }
       },

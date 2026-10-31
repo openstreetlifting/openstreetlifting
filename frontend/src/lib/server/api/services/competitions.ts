@@ -29,17 +29,17 @@ export const competitionsService = {
         apiClient.GET('/api/v1/competitions/{slug}', {
           params: {
             path: { slug },
-            query: { include: 'federation,results,movements,previous_editions' },
+            query: { include: 'federation,results,movements,editions' },
           },
         })
       )
     );
     if (!competition.categories) throw new Error('Requested competition results are missing');
-    if (!competition.previous_editions) throw new Error('Requested previous editions are missing');
+    if (!competition.editions) throw new Error('Requested competition editions are missing');
     return {
       ...competition,
       categories: competition.categories,
-      previous_editions: competition.previous_editions,
+      editions: competition.editions,
     };
   },
 

@@ -5,8 +5,8 @@ use uuid::Uuid;
 use crate::error::{Result, StorageError};
 use crate::params::{CompetitionFilter, Page};
 use crate::projections::competition::{
-    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem,
-    CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail, PreviousEdition,
+    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionEdition,
+    CompetitionListItem, CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail,
 };
 use crate::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
@@ -24,16 +24,16 @@ impl<'a> CompetitionRepository<'a> {
         Self { pool }
     }
 
-    #[tracing::instrument(name = "repository.competition.previous_editions", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn previous_editions(&self, slug: &str) -> Result<Vec<PreviousEdition>> {
+    #[tracing::instrument(name = "repository.competition.editions", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn editions(&self, slug: &str) -> Result<Vec<CompetitionEdition>> {
         Ok(sqlx::query_as(
-            "SELECT previous.slug, previous.name, previous.start_date
+            "SELECT edition.slug, edition.name, edition.start_date
              FROM competitions current
-             JOIN competitions previous ON previous.series = current.series
+             JOIN competitions edition ON edition.series = current.series
              WHERE current.slug = $1
-               AND previous.start_date < current.start_date
-               AND previous.status = 'completed'
-             ORDER BY previous.start_date DESC, previous.slug",
+               AND (edition.competition_id = current.competition_id
+                    OR edition.status IN ('completed', 'live', 'upcoming'))
+             ORDER BY edition.start_date, edition.slug",
         )
         .bind(slug)
         .fetch_all(self.pool)

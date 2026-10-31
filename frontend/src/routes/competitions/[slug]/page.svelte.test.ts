@@ -56,13 +56,14 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
           ? []
           : [
               {
-                category: { name: 'Men', gender: 'M', weight_class: '', division: null },
+                category: { name: 'Men -80kg', gender: 'M', weight_class: '-80kg', division: null },
                 participants: [],
               },
             ],
-      previous_editions: [
-        { slug: 'previous-2025', name: 'Previous edition', start_date: '2025-01-01' },
+      editions: [
         { slug: 'original-2023', name: 'Original name', start_date: '2023-06-15' },
+        { slug: 'previous-2025', name: 'Previous edition', start_date: '2025-01-01' },
+        { slug: 'current', name: 'Current edition', start_date: '2026-11-01' },
       ],
     },
     ris: 'not-contested',
@@ -74,31 +75,95 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
 }
 
 it.each(['upcoming', 'completed'] as const)(
-  'links previous editions on a %s page with localized dates and clean URLs',
+  'links previous editions on a %s page with compact years and clean URLs',
   async (status) => {
     render(CompetitionPage, {
       props: { data: data(status) },
       context: new Map([[I18N_CONTEXT, new I18n(() => 'fr')]]),
     });
-    const nav = page.getByRole('navigation', { name: 'Éditions précédentes' });
+    const nav = page.getByRole('navigation', { name: 'Éditions' });
     await expect.element(nav).toBeVisible();
     const links = nav.getByRole('link').elements();
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
-      '/fr/competitions/previous-2025',
       '/fr/competitions/original-2023',
+      '/fr/competitions/previous-2025',
     ]);
+    await expect.element(nav.getByRole('link').first()).toHaveTextContent('2023');
     await expect
       .element(nav.getByRole('link').first())
-      .toHaveTextContent('Previous edition · 1 janvier 2025');
+      .toHaveAccessibleName('2023 · Original name');
+    await expect
+      .element(nav.getByRole('link').first())
+      .toHaveAttribute('title', 'Original name · 15 juin 2023');
   }
 );
 
-it('omits the section for a competition with no previous editions', async () => {
-  const first = data();
-  first.competition.previous_editions = [];
-  render(CompetitionPage, { data: first });
-  expect(page.getByRole('navigation', { name: 'Previous editions' }).elements()).toHaveLength(0);
-  await expect
-    .element(page.getByRole('heading', { name: /Current edition/, level: 1 }))
-    .toBeVisible();
+it('adds localized short dates when previous editions share a year', async () => {
+  const repeated = data();
+  repeated.competition.editions = [
+    { slug: 'original', name: 'Original edition', start_date: '2023-06-15' },
+    { slug: 'spring', name: 'Revolutions', start_date: '2025-03-29' },
+    { slug: 'autumn', name: 'Resurrections', start_date: '2025-10-18' },
+    { slug: 'current', name: 'Current edition', start_date: '2026-11-01' },
+  ];
+  render(CompetitionPage, {
+    props: { data: repeated },
+    context: new Map([[I18N_CONTEXT, new I18n(() => 'fr')]]),
+  });
+  const links = page.getByRole('navigation', { name: 'Éditions' }).getByRole('link');
+  expect(links.elements().map((link) => link.textContent?.trim())).toEqual([
+    '2023',
+    '2025 · 29 mars',
+    '2025 · 18 oct.',
+  ]);
 });
+
+it('distinguishes a previous edition in the current year and updates after navigation', async () => {
+  const current = data();
+  current.competition.start_date = '2025-10-18';
+  current.competition.end_date = '2025-10-18';
+  current.competition.editions[2].start_date = '2025-10-18';
+  const screen = await render(CompetitionPage, { data: current });
+  const links = page.getByRole('navigation', { name: 'Editions' }).getByRole('link');
+  await expect.element(links.last()).toHaveTextContent('2025 · 1 Jan');
+  const earlier = data();
+  earlier.competition.start_date = '2025-01-01';
+  earlier.competition.end_date = '2025-01-01';
+  earlier.competition.editions = [
+    { slug: 'original-2023', name: 'Original name', start_date: '2023-06-15' },
+    { slug: 'current', name: 'Current edition', start_date: '2025-01-01' },
+  ];
+  await screen.rerender({ data: earlier });
+  expect(links.elements()).toHaveLength(1);
+  await expect.element(links.first()).toHaveTextContent('2023');
+  await expect.element(links.first()).toHaveAttribute('href', '/en/competitions/original-2023');
+});
+
+it('links later editions and marks the current edition without a link', async () => {
+  const earlier = data('completed');
+  earlier.competition.slug = 'previous-2025';
+  earlier.competition.name = 'Previous edition';
+  earlier.competition.start_date = '2025-01-01';
+  earlier.competition.end_date = '2025-01-01';
+  render(CompetitionPage, { data: earlier });
+  const nav = page.getByRole('navigation', { name: 'Editions' });
+  const next = nav.getByRole('link', { name: '2026 · Current edition' });
+  await expect.element(next).toHaveAttribute('href', '/en/competitions/current');
+  expect(nav.element().querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('2025');
+  expect(nav.getByRole('link').elements()).toHaveLength(2);
+});
+
+it.each([false, true])(
+  'omits the section with no other editions (assigned: %s)',
+  async (assigned) => {
+    const first = data();
+    first.competition.editions = assigned
+      ? [{ slug: 'current', name: 'Current edition', start_date: '2026-11-01' }]
+      : [];
+    render(CompetitionPage, { data: first });
+    expect(page.getByRole('navigation', { name: 'Editions' }).elements()).toHaveLength(0);
+    await expect
+      .element(page.getByRole('heading', { name: /Current edition/, level: 1 }))
+      .toBeVisible();
+  }
+);

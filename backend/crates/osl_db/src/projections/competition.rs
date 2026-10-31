@@ -33,7 +33,7 @@ pub struct CompetitionDetail {
 }
 
 #[derive(Debug, FromRow)]
-pub struct PreviousEdition {
+pub struct CompetitionEdition {
     pub slug: String,
     pub name: String,
     pub start_date: chrono::NaiveDate,

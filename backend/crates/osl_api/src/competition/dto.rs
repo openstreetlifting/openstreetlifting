@@ -47,23 +47,23 @@ pub struct CompetitionResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub categories: Option<Vec<CategoryDetail>>,
-    /// Earlier completed editions in the same explicit series, newest first.
+    /// Available editions in the same series, including the current edition, oldest first.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
-    pub previous_editions: Option<Vec<PreviousEdition>>,
+    pub editions: Option<Vec<CompetitionEdition>>,
     #[schema(required = true)]
     pub lifter_count: Option<i64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct PreviousEdition {
+pub struct CompetitionEdition {
     pub slug: String,
     pub name: String,
     pub start_date: NaiveDate,
 }
 
-impl From<osl_db::projections::competition::PreviousEdition> for PreviousEdition {
-    fn from(edition: osl_db::projections::competition::PreviousEdition) -> Self {
+impl From<osl_db::projections::competition::CompetitionEdition> for CompetitionEdition {
+    fn from(edition: osl_db::projections::competition::CompetitionEdition) -> Self {
         Self {
             slug: edition.slug,
             name: edition.name,
@@ -173,7 +173,7 @@ impl From<CompetitionRow> for CompetitionResponse {
             movements: None,
             event_code: None,
             categories: None,
-            previous_editions: None,
+            editions: None,
             lifter_count: None,
         }
     }

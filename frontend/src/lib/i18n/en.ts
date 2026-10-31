@@ -6,7 +6,7 @@ export const messages = [
   'Footer',
   'Rankings',
   'Competitions',
-  'Previous editions',
+  'Editions',
   'Federations',
   'Countries',
   'Documentation',

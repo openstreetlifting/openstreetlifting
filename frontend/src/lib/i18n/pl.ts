@@ -7,7 +7,7 @@ export default {
   Footer: 'Stopka',
   Rankings: 'Rankingi',
   Competitions: 'Zawody',
-  'Previous editions': 'Poprzednie edycje',
+  Editions: 'Edycje',
   Federations: 'Federacje',
   Countries: 'Kraje',
   Documentation: 'Dokumentacja',
