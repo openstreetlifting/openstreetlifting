@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.57.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.57.1...v0.57.2) (2026-10-31)
+
+
+### Bug Fixes
+
+* **data:** correct confirmed athlete names and countries ([#872](https://github.com/openstreetlifting/openstreetlifting/issues/872)) ([5d28fd9](https://github.com/openstreetlifting/openstreetlifting/commit/5d28fd92272928dba47454860c5070cba915f477))
+* **ris:** recover bodyweights despite zero scores ([#874](https://github.com/openstreetlifting/openstreetlifting/issues/874)) ([855a9e7](https://github.com/openstreetlifting/openstreetlifting/commit/855a9e7d814edd628eb937cfeb8db06672ec92dc))
+
 ## [0.57.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.57.0...v0.57.1) (2026-10-28)
 
 
