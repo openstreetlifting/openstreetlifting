@@ -2,6 +2,8 @@ event = "MPDS"
 sources = [
     "FinalRep app, /events-api/v1/events/{id}/statistics",
     "https://final-rep.com/event-calendar/",
+    "https://streetliftingitalia.it/wp-content/uploads/2025/04/risultatiMASCHILI-italia-open-25.pdf",
+    "https://streetlifting-italia.it/gare-2025",
 ]
 
 [competition]
