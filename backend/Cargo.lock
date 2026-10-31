@@ -1655,7 +1655,7 @@ dependencies = [
 
 [[package]]
 name = "osl_api"
-version = "0.57.2"
+version = "0.58.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -1687,7 +1687,7 @@ dependencies = [
 
 [[package]]
 name = "osl_db"
-version = "0.57.2"
+version = "0.58.0"
 dependencies = [
  "chrono",
  "metrics",
@@ -1702,7 +1702,7 @@ dependencies = [
 
 [[package]]
 name = "osl_domain"
-version = "0.57.2"
+version = "0.58.0"
 dependencies = [
  "rust_decimal",
  "serde",
@@ -1715,7 +1715,7 @@ dependencies = [
 
 [[package]]
 name = "osl_importer"
-version = "0.57.2"
+version = "0.58.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1739,7 +1739,7 @@ dependencies = [
 
 [[package]]
 name = "osl_telemetry"
-version = "0.57.2"
+version = "0.58.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2071,7 +2071,7 @@ dependencies = [
 
 [[package]]
 name = "recover-bodyweight"
-version = "0.57.2"
+version = "0.58.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -3160,9 +3160,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-properties"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7df058c713841ad818f1dc5d3fd88063241cc61f49f5fbea4b951e8cf5a8d71d"
+checksum = "993ad287eb20e8ba755312801cfe1413e0f25d604075863acaddca10b04c1833"
 
 [[package]]
 name = "untrusted"
