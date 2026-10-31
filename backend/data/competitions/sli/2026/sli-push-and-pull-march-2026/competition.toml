@@ -2,6 +2,11 @@ event = "PD"
 sources = [
     "https://cdtqddvbrdknehebkdnh.supabase.co/storage/v1/object/public/media/risultati/1788884347326-8g3fdn.pdf",
     "https://streetlifting-italia.it/gare-2026",
+    "https://streetlifting-italia.it/record",
+    "https://cdtqddvbrdknehebkdnh.supabase.co/storage/v1/object/public/media/record/1789117774935-dgksf7.pdf",
+    "https://cdtqddvbrdknehebkdnh.supabase.co/storage/v1/object/public/media/record/1789117782813-3kncb5.pdf",
+    "https://cdtqddvbrdknehebkdnh.supabase.co/storage/v1/object/public/media/record/1789117806745-jwfzj3.pdf",
+    "https://cdtqddvbrdknehebkdnh.supabase.co/storage/v1/object/public/media/record/1789117813317-hwqeih.pdf",
 ]
 
 [competition]
