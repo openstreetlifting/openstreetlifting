@@ -218,6 +218,25 @@
     })
   );
 
+  const editions = $derived.by(() => {
+    const shortDate = new Intl.DateTimeFormat(i18n.locale === 'en' ? 'en-GB' : i18n.locale, {
+      day: 'numeric',
+      month: 'short',
+      timeZone: 'UTC',
+    });
+    // The API orders editions chronologically, so matching years are adjacent.
+    return competition.editions.map((edition, index, editions) => {
+      const year = edition.start_date.slice(0, 4);
+      const sharesYear =
+        editions[index - 1]?.start_date.startsWith(year) ||
+        editions[index + 1]?.start_date.startsWith(year);
+      const label = sharesYear
+        ? `${year} · ${shortDate.format(new Date(edition.start_date))}`
+        : year;
+      return { ...edition, label };
+    });
+  });
+
   const location = $derived(formatLocation(competition.city, competition.region));
 
   // Use the complete results, not the filtered ranking facets. A class can
@@ -442,6 +461,37 @@
         <dd class="text-ink">{i18n.t('No weight classes')}</dd>
       {/if}
     </dl>
+
+    {#if editions.length > 1}
+      <nav aria-labelledby="editions-heading" class="sm:col-span-2">
+        <h2 id="editions-heading" class="text-xs font-medium text-secondary">
+          {i18n.t('Editions')}
+        </h2>
+        <ul class="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+          {#each editions as edition (edition.slug)}
+            <li>
+              {#if edition.slug === competition.slug}
+                <span
+                  aria-current="page"
+                  class="inline-flex min-h-9 items-center font-medium text-ink"
+                >
+                  <time datetime={edition.start_date}>{edition.label}</time>
+                </span>
+              {:else}
+                <a
+                  href={i18n.href(resolve('/competitions/[slug]', { slug: edition.slug }))}
+                  aria-label={`${edition.label} · ${edition.name}`}
+                  title={`${edition.name} · ${formatLongDate(edition.start_date, i18n.locale)}`}
+                  class="inline-flex min-h-9 items-center rounded-sm text-secondary underline decoration-stroke-strong underline-offset-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none"
+                >
+                  <time datetime={edition.start_date}>{edition.label}</time>
+                </a>
+              {/if}
+            </li>
+          {/each}
+        </ul>
+      </nav>
+    {/if}
 
     {#if published && classed}
       <section aria-labelledby="weight-classes-heading" class="sm:col-span-2">

@@ -23,6 +23,8 @@ pub struct CompetitionFile {
 #[serde(deny_unknown_fields)]
 pub struct CompetitionSection {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub series: Option<String>,
     pub start_date: NaiveDate,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub end_date: Option<NaiveDate>,
@@ -50,6 +52,7 @@ impl CompetitionSection {
     pub fn into_data(self, slug: String, federation: FederationData) -> CompetitionData {
         CompetitionData {
             name: self.name,
+            series: self.series,
             slug,
             federation,
             start_date: self.start_date,
@@ -67,6 +70,7 @@ impl CompetitionSection {
     pub fn from_data(competition: &CompetitionData) -> Self {
         Self {
             name: competition.name.clone(),
+            series: competition.series.clone(),
             start_date: competition.start_date,
             end_date: (competition.end_date != competition.start_date)
                 .then_some(competition.end_date),
@@ -104,6 +108,20 @@ country = "FR"
     fn parses_valid_files() {
         let parsed: CompetitionFile = toml::from_str(COMPETITION).unwrap();
         assert_eq!(parsed.competition.city.as_deref(), Some("Sevran"));
+        assert_eq!(parsed.competition.series, None);
+    }
+
+    #[test]
+    fn preserves_series_when_formatting_metadata() {
+        let text = COMPETITION.replace(
+            "name = \"Elite\"",
+            "name = \"Elite\"\nseries = \"fnsl-elite\"",
+        );
+        let file: CompetitionFile = toml::from_str(&text).unwrap();
+        let data = file.competition.into_data("elite".into(), file.federation);
+        assert_eq!(data.series.as_deref(), Some("fnsl-elite"));
+        let output = toml::to_string(&CompetitionSection::from_data(&data)).unwrap();
+        assert!(output.contains("series = \"fnsl-elite\""));
     }
 
     #[test]

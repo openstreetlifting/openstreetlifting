@@ -3,6 +3,7 @@ sources = ["https://www.streetliftings.fr/fnsl-sud-est-2025-resultats/"]
 
 [competition]
 name = "Interrégionale Sud-Est"
+series = "fnsl-interregionale-sud-est"
 start_date = "2025-03-01"
 end_date = "2025-03-02"
 city = "Épagny Metz-Tessy"

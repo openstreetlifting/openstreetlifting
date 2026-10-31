@@ -3,6 +3,7 @@ sources = ["https://docs.google.com/spreadsheets/d/1-g_jhz1FAbhCpRHGXrOY1A47VWC0
 
 [competition]
 name = "Street Lifting na Wygodzie"
+series = "streetlifting-polska-na-wygodzie"
 start_date = "2025-09-13"
 city = "Rembertów"
 country = "PL"

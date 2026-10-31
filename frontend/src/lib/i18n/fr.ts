@@ -7,6 +7,7 @@ export default {
   Footer: 'Pied de page',
   Rankings: 'Classements',
   Competitions: 'Compétitions',
+  Editions: 'Éditions',
   Federations: 'Fédérations',
   Countries: 'Pays',
   Documentation: 'Documentation',

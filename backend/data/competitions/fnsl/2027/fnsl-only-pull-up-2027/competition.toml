@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
 
 [competition]
 name = "Only Pull Up"
+series = "fnsl-pull-up-only"
 start_date = "2027-12-11"
 end_date = "2027-12-12"
 country = "FR"

@@ -3,6 +3,7 @@ sources = ["FNSL Élite 2026 results images used for the original import (https:
 
 [competition]
 name = "Élite"
+series = "fnsl-elite"
 start_date = "2026-05-15"
 end_date = "2026-05-17"
 city = "Sevran"

@@ -2,6 +2,7 @@ sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
 
 [competition]
 name = "Interrégionale Nord-Est"
+series = "fnsl-interregionale-nord-est"
 start_date = "2027-05-22"
 end_date = "2027-05-23"
 city = "Mulhouse"

@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Streetlifting Nordic"
+series = "streetlifting-nordic"
 start_date = "2024-11-30"
 city = "Nacka"
 region = "Stockholm County"

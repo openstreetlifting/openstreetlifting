@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Campeonato de España II All4"
+series = "aesl-spanish-nationals-all4"
 start_date = "2022-07-09"
 city = "Madrid"
 country = "ES"

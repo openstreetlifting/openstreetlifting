@@ -47,8 +47,28 @@ pub struct CompetitionResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub categories: Option<Vec<CategoryDetail>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
+    pub editions: Option<Vec<CompetitionEdition>>,
     #[schema(required = true)]
     pub lifter_count: Option<i64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct CompetitionEdition {
+    pub slug: String,
+    pub name: String,
+    pub start_date: NaiveDate,
+}
+
+impl From<osl_db::projections::competition::CompetitionEdition> for CompetitionEdition {
+    fn from(edition: osl_db::projections::competition::CompetitionEdition) -> Self {
+        Self {
+            slug: edition.slug,
+            name: edition.name,
+            start_date: edition.start_date,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -152,6 +172,7 @@ impl From<CompetitionRow> for CompetitionResponse {
             movements: None,
             event_code: None,
             categories: None,
+            editions: None,
             lifter_count: None,
         }
     }

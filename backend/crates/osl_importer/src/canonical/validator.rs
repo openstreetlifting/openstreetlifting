@@ -7,6 +7,8 @@ use rust_decimal::Decimal;
 use std::collections::{HashMap, HashSet};
 use tracing::warn;
 
+const SERIES_SEPARATOR: char = '-';
+
 pub struct CanonicalValidator;
 
 impl CanonicalValidator {
@@ -64,6 +66,18 @@ impl CanonicalValidator {
             report
                 .errors
                 .push("Competition slug is required".to_string());
+        }
+        if let Some(series) = &canonical.competition.series
+            && series.split(SERIES_SEPARATOR).any(|part| {
+                part.is_empty()
+                    || !part
+                        .bytes()
+                        .all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit())
+            })
+        {
+            report.errors.push(
+                "Competition series must contain lowercase ASCII letters or digits separated by single hyphens".into(),
+            );
         }
         if canonical.competition.end_date < canonical.competition.start_date {
             report
@@ -472,6 +486,7 @@ mod tests {
             sources: vec!["Synthetic test results".into()],
             competition: CompetitionData {
                 name: "Test Open".to_string(),
+                series: None,
                 slug: "test-open".to_string(),
                 federation: FederationData {
                     name: "Test Federation".to_string(),
@@ -549,6 +564,27 @@ mod tests {
     #[test]
     fn accepts_valid_announcements() {
         assert!(CanonicalValidator::validate(&announced()).is_ok());
+    }
+
+    #[test]
+    fn validates_explicit_series_identifiers() {
+        let mut canonical = announced();
+        canonical.competition.series = Some("organizer-championships-all4".into());
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
+        for invalid in [
+            "",
+            " ",
+            "Worlds",
+            "worlds 2025",
+            "-worlds",
+            "worlds-",
+            "worlds--all4",
+            "élite",
+        ] {
+            canonical.competition.series = Some(invalid.into());
+            let error = CanonicalValidator::validate(&canonical).unwrap_err();
+            assert!(error.to_string().contains("series"), "{invalid}: {error}");
+        }
     }
 
     #[test]

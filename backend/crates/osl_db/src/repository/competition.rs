@@ -5,8 +5,8 @@ use uuid::Uuid;
 use crate::error::{Result, StorageError};
 use crate::params::{CompetitionFilter, Page};
 use crate::projections::competition::{
-    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem,
-    CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail,
+    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionEdition,
+    CompetitionListItem, CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail,
 };
 use crate::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
@@ -22,6 +22,22 @@ impl<'a> CompetitionRepository<'a> {
     #[must_use]
     pub const fn new(pool: &'a PgPool) -> Self {
         Self { pool }
+    }
+
+    #[tracing::instrument(name = "repository.competition.editions", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn editions(&self, slug: &str) -> Result<Vec<CompetitionEdition>> {
+        Ok(sqlx::query_as(
+            "SELECT edition.slug, edition.name, edition.start_date
+             FROM competitions current
+             JOIN competitions edition ON edition.series = current.series
+             WHERE current.slug = $1
+               AND (edition.competition_id = current.competition_id
+                    OR edition.status IN ('completed', 'live', 'upcoming'))
+             ORDER BY edition.start_date, edition.slug",
+        )
+        .bind(slug)
+        .fetch_all(self.pool)
+        .await?)
     }
 
     #[tracing::instrument(name = "repository.competition.list", skip_all, fields(db.system.name = "postgresql"))]

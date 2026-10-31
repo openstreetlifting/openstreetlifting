@@ -3,6 +3,7 @@ sources = ["osl_raw_data/fnsl/grand-ouest/2023/inter-régional-grand-ouest"]
 
 [competition]
 name = "Interrégionale Grand Ouest"
+series = "fnsl-interregionale-grand-ouest"
 start_date = "2023-05-13"
 country = "FR"
 status = "completed"

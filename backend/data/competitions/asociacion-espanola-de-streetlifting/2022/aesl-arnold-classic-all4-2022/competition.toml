@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Arnold Classic All4"
+series = "aesl-arnold-classic-all4"
 start_date = "2022-09-17"
 city = "Sevilla"
 country = "ES"

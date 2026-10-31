@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/DDm_kHlo7f_/"]
 
 [competition]
 name = "Dips Only"
+series = "fnsl-dips-only"
 start_date = "2024-12-15"
 city = "La Courneuve"
 venue = "On Air Fitness La Courneuve"

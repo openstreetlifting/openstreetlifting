@@ -3,6 +3,7 @@ sources = ["https://docs.google.com/spreadsheets/d/1KtIFduz0gjleSfQgpbJIwsHm6ifZ
 
 [competition]
 name = "Łomża Street Power"
+series = "streetlifting-polska-lomza-street-power-classic"
 start_date = "2019-09-01"
 city = "Łomża"
 country = "PL"

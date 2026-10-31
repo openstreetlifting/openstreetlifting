@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/DDca6OzIWnD/"]
 
 [competition]
 name = "Pull Only"
+series = "fnsl-pull-up-only"
 start_date = "2024-12-08"
 city = "La Courneuve"
 venue = "On Air La Courneuve"

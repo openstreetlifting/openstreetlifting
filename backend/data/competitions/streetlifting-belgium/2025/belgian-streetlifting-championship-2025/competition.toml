@@ -3,6 +3,7 @@ sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
 
 [competition]
 name = "Belgian Streetlifting Championship"
+series = "streetlifting-belgium-championship"
 start_date = "2025-06-07"
 end_date = "2025-06-08"
 country = "BE"

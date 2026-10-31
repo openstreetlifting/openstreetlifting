@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Łomża Street Power IV"
+series = "streetlifting-polska-lomza-street-power-classic"
 start_date = "2021-09-12"
 city = "Łomża"
 country = "PL"

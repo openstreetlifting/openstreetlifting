@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/DS43mM9DDPo/"]
 
 [competition]
 name = "Muscle Up Only"
+series = "fnsl-muscle-up-only"
 start_date = "2025-12-06"
 city = "Villepinte"
 venue = "Fitness Park Villepinte"

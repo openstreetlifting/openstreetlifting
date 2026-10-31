@@ -32,6 +32,13 @@ pub struct CompetitionDetail {
     pub categories: Vec<CategoryParticipants>,
 }
 
+#[derive(Debug, FromRow)]
+pub struct CompetitionEdition {
+    pub slug: String,
+    pub name: String,
+    pub start_date: chrono::NaiveDate,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Contest {
     pub weight_class_id: Option<Uuid>,

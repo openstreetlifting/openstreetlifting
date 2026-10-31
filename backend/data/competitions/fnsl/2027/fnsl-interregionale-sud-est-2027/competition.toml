@@ -2,6 +2,7 @@ sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
 
 [competition]
 name = "Interrégionale Sud-Est"
+series = "fnsl-interregionale-sud-est"
 start_date = "2027-05-01"
 end_date = "2027-05-02"
 city = "Lyon"

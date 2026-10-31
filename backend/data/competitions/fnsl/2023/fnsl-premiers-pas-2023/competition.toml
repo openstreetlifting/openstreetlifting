@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/Cq_NUKBrTuZ/"]
 
 [competition]
 name = "Premiers Pas"
+series = "fnsl-premiers-pas"
 start_date = "2023-03-18"
 end_date = "2023-03-19"
 city = "La Courneuve"

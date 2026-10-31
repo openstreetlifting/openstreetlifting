@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Ragnarok Battles IV Classic"
+series = "aesl-ragnarok-battles-classic"
 start_date = "2025-03-22"
 country = "ES"
 status = "completed"

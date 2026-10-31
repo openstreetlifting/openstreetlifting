@@ -3,6 +3,7 @@ sources = ["https://docs.google.com/spreadsheets/d/1KtIFduz0gjleSfQgpbJIwsHm6ifZ
 
 [competition]
 name = "III Turniej Kalisteniczny"
+series = "streetlifting-polska-lipka-krajenska-muscle-up"
 start_date = "2024-07-13"
 city = "Lipka Krajeńska"
 country = "PL"

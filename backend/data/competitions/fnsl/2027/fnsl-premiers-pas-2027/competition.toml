@@ -2,6 +2,7 @@ sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
 
 [competition]
 name = "Premiers Pas"
+series = "fnsl-premiers-pas"
 start_date = "2027-03-20"
 end_date = "2027-03-21"
 country = "FR"

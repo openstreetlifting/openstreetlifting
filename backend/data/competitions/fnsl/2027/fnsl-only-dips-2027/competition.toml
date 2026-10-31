@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
 
 [competition]
 name = "Only Dips"
+series = "fnsl-dips-only"
 start_date = "2027-12-11"
 end_date = "2027-12-12"
 country = "FR"

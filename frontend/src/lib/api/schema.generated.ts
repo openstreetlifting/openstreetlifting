@@ -344,6 +344,11 @@ export interface components {
       last_name: string;
       slug: string;
     };
+    CompetitionEdition: {
+      name: string;
+      slug: string;
+      start_date: string;
+    };
     CompetitionFederation: {
       abbreviation: string | null;
       country: string | null;
@@ -362,6 +367,7 @@ export interface components {
       competition_id: string;
       country: string | null;
       created_at: string;
+      editions?: components['schemas']['CompetitionEdition'][];
       end_date: string | null;
       event_code: string | null;
       federation?: components['schemas']['CompetitionFederation'];
@@ -463,6 +469,7 @@ export interface components {
         competition_id: string;
         country: string | null;
         created_at: string;
+        editions?: components['schemas']['CompetitionEdition'][];
         end_date: string | null;
         event_code: string | null;
         federation?: components['schemas']['CompetitionFederation'];

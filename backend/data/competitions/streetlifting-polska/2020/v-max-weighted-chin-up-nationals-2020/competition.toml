@@ -3,6 +3,7 @@ sources = ["https://docs.google.com/spreadsheets/d/1-g_jhz1FAbhCpRHGXrOY1A47VWC0
 
 [competition]
 name = "Max Weighted Chin-Up Nationals V"
+series = "streetlifting-polska-max-weighted-nationals"
 start_date = "2020-10-10"
 city = "Sochaczew"
 country = "PL"

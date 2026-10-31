@@ -22,6 +22,7 @@ pub fn competition(slug: &str, categories: Vec<CategoryData>) -> CanonicalFormat
         sources: vec!["Synthetic test results".into()],
         competition: CompetitionData {
             name: slug.to_string(),
+            series: None,
             slug: slug.to_string(),
             federation: FederationData {
                 name: "Test Federation".to_string(),

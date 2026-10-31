@@ -1168,6 +1168,26 @@
           }
         }
       },
+      "CompetitionEdition": {
+        "type": "object",
+        "required": [
+          "slug",
+          "name",
+          "start_date"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
       "CompetitionFederation": {
         "type": "object",
         "required": [
@@ -1271,6 +1291,12 @@
           "created_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "editions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompetitionEdition"
+            }
           },
           "end_date": {
             "type": [
@@ -1831,6 +1857,12 @@
                 "created_at": {
                   "type": "string",
                   "format": "date-time"
+                },
+                "editions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompetitionEdition"
+                  }
                 },
                 "end_date": {
                   "type": [

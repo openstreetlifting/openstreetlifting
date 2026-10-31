@@ -27,12 +27,20 @@ export const competitionsService = {
     const competition = withDetails(
       await apiData(
         apiClient.GET('/api/v1/competitions/{slug}', {
-          params: { path: { slug }, query: { include: 'federation,results,movements' } },
+          params: {
+            path: { slug },
+            query: { include: 'federation,results,movements,editions' },
+          },
         })
       )
     );
     if (!competition.categories) throw new Error('Requested competition results are missing');
-    return { ...competition, categories: competition.categories };
+    if (!competition.editions) throw new Error('Requested competition editions are missing');
+    return {
+      ...competition,
+      categories: competition.categories,
+      editions: competition.editions,
+    };
   },
 
   async getFacets() {

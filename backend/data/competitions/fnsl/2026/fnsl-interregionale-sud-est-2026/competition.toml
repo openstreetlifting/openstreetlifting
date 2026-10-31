@@ -3,6 +3,7 @@ sources = ["FNSL Sud-Est 2026.xlsx"]
 
 [competition]
 name = "Interrégionale Sud-Est"
+series = "fnsl-interregionale-sud-est"
 start_date = "2026-04-11"
 end_date = "2026-04-12"
 country = "FR"

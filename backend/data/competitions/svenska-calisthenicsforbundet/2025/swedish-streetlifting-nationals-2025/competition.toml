@@ -3,6 +3,7 @@ sources = ["https://drive.google.com/file/d/1ClocT8STg2H8qZ8vYAaZgop7OvsecbYm/vi
 
 [competition]
 name = "Swedish Streetlifting Nationals"
+series = "svenska-calisthenicsforbundet-nationals"
 start_date = "2025-08-16"
 end_date = "2025-08-17"
 city = "Stockholm"

@@ -3,6 +3,7 @@ sources = ["https://docs.google.com/spreadsheets/d/1-g_jhz1FAbhCpRHGXrOY1A47VWC0
 
 [competition]
 name = "Max Weighted Pull-Up Nationals I"
+series = "streetlifting-polska-max-weighted-nationals"
 start_date = "2016-09-25"
 city = "Sochaczew"
 country = "PL"

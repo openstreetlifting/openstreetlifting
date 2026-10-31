@@ -2,6 +2,7 @@ sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
 
 [competition]
 name = "Interrégionale Grand Ouest"
+series = "fnsl-interregionale-grand-ouest"
 start_date = "2027-05-08"
 end_date = "2027-05-09"
 city = "Nantes"

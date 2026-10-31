@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Pull Only"
+series = "fnsl-pull-up-only"
 start_date = "2022-11-19"
 city = "La Courneuve"
 venue = "On Air La Courneuve"

@@ -14,7 +14,8 @@ use crate::shared::dto::{Direction, PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
 const LIST_INCLUDES: &[&str] = &["federation", "movements"];
-const DETAIL_INCLUDES: &[&str] = &["federation", "results", "movements"];
+const DETAIL_INCLUDES: &[&str] = &["federation", "results", "movements", "editions"];
+const DETAILED_QUERY_INCLUDES: &[&str] = &["federation", "results", "movements"];
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct CompetitionListQuery {
@@ -140,16 +141,28 @@ pub async fn get_competition(
 
     let repo = CompetitionRepository::new(state.db.pool());
 
-    if DETAIL_INCLUDES.iter().any(|name| query.include.has(name)) {
+    let mut response = if DETAILED_QUERY_INCLUDES
+        .iter()
+        .any(|name| query.include.has(name))
+    {
         let detail = repo.find_by_slug_detailed(&slug).await?;
-        return Ok(Json(CompetitionResponse::from_detail(
-            detail,
-            &query.include,
-        )));
+        CompetitionResponse::from_detail(detail, &query.include)
+    } else {
+        CompetitionResponse::from(repo.find_by_slug(&slug).await?)
+    };
+
+    if !query.include.has("editions") {
+        return Ok(Json(response));
     }
 
-    let competition = repo.find_by_slug(&slug).await?;
-    Ok(Json(CompetitionResponse::from(competition)))
+    response.editions = Some(
+        repo.editions(&slug)
+            .await?
+            .into_iter()
+            .map(Into::into)
+            .collect(),
+    );
+    Ok(Json(response))
 }
 
 #[utoipa::path(

@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Czech Weighted Workout Battle"
+series = "raw-workout-cwwb"
 start_date = "2017-10-21"
 city = "Ostrava"
 venue = "Performance Power Center"

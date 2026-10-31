@@ -2,6 +2,7 @@ sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
 
 [competition]
 name = "Régionale Hauts-de-France"
+series = "fnsl-regionale-hauts-de-france"
 start_date = "2027-02-06"
 end_date = "2027-02-07"
 city = "Lille"

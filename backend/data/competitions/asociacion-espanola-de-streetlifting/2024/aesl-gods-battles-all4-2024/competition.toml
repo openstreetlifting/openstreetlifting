@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Gods Battles IV All4"
+series = "aesl-gods-battles-all4"
 start_date = "2024-11-23"
 country = "ES"
 status = "completed"
