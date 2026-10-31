@@ -221,6 +221,13 @@ fn recover(canonical: &mut CanonicalFormat, edition: Edition) -> Outcome {
                 *outcome.ineligible.entry("no published RIS").or_default() += 1;
                 continue;
             };
+            if ris <= Decimal::ZERO {
+                *outcome
+                    .ineligible
+                    .entry("published RIS is not positive")
+                    .or_default() += 1;
+                continue;
+            }
 
             let gender = athlete.gender;
             let bodyweight = athlete.complete_total().and_then(|total| {

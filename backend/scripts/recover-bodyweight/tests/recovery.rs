@@ -118,6 +118,51 @@ fn withholds_recoveries_when_rejections_exceed_threshold() {
 }
 
 #[test]
+fn zero_scores_do_not_withhold_valid_recoveries() {
+    let mut rows = String::new();
+    for letter in 'A'..='Q' {
+        rows.push_str(&VALID.replace("Xavier", &format!("Scored {letter}")));
+    }
+    for letter in 'A'..='M' {
+        rows.push_str(
+            &VALID
+                .replace("Xavier", &format!("Unscored {letter}"))
+                .replace("113.43", "0"),
+        );
+    }
+    let fixture = Fixture::new(&rows);
+    let original_csv = std::fs::read(fixture.0.join("entries.csv")).unwrap();
+    let preview = fixture.run(true);
+    assert!(preview.contains("Recoverable bodyweights: 17"), "{preview}");
+    assert!(
+        preview.contains("rejected: 0; withheld: 0; ineligible: 13"),
+        "{preview}"
+    );
+    assert_eq!(
+        std::fs::read(fixture.0.join("entries.csv")).unwrap(),
+        original_csv
+    );
+
+    let output = fixture.run(false);
+    assert!(output.contains("Recovered bodyweights: 17"), "{output}");
+    let canonical = store::read(&fixture.0).unwrap();
+    osl_importer::canonical::validator::CanonicalValidator::validate(&canonical).unwrap();
+    let athletes = &canonical.categories[0].athletes;
+    assert_eq!(athletes.len(), 30);
+    for athlete in athletes {
+        if athlete.reported_ris.unwrap().is_zero() {
+            assert!(athlete.bodyweight.is_none());
+            assert!(athlete.bodyweight_source.is_none());
+            assert!(athlete.reported_ris_edition.is_none());
+        } else {
+            assert_eq!(athlete.bodyweight.unwrap().to_string(), "91.7");
+            assert_eq!(athlete.bodyweight_source, Some(BodyweightSource::Recovered));
+            assert_eq!(athlete.reported_ris_edition, Some(Edition::V2024));
+        }
+    }
+}
+
+#[test]
 fn allows_twenty_percent_rejections() {
     let mut rows = String::new();
     for name in ["Anna", "Ben", "Chris", "Dan"] {
