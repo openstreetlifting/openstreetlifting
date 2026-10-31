@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Dips Only"
+series = "fnsl-dips-only"
 start_date = "2022-10-22"
 city = "La Courneuve"
 venue = "On Air La Courneuve"

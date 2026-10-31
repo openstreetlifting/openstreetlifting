@@ -91,3 +91,13 @@ After changing API types or routes, [sync the contract and frontend types](../fr
 To change data, edit competition files under `data/competitions`, validate them, then import them. Each competition has a `competition.toml` and, once results are available, an `entries.csv`. The API serves this data without authentication and exposes no write endpoints.
 
 See the [data contribution guide](docs/src/CONTRIBUTING_DATA.md) for the format and review process.
+
+### Initial competition-series backfill
+
+The one-off OPE-450 backfill uses an explicit mapping of known editions. From the
+repository root, run `python3 backend/scripts/backfill-competition-series.py` to
+preview missing assignments, add `--write` to apply them, or use `--check` to
+verify that they are present. It requires Python 3.11 or later and stops on
+conflicting assignments before writing any files. Run the normal preparation
+check and competition import afterward. For future editions, set `series`
+directly in `competition.toml`; see [Previous editions](docs/src/DATA_REFERENCE.md#previous-editions).

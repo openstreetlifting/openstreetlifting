@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "German Open"
+series = "finalrep-german-open"
 start_date = "2025-06-14"
 end_date = "2025-06-15"
 country = "DE"

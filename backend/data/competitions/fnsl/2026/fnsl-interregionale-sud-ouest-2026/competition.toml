@@ -3,6 +3,7 @@ sources = ["(Sud-Ouest) Inter-Régionale - Ath_Pesée.pdf"]
 
 [competition]
 name = "Interrégionale Sud-Ouest"
+series = "fnsl-interregionale-sud-ouest"
 start_date = "2026-04-26"
 country = "FR"
 status = "completed"

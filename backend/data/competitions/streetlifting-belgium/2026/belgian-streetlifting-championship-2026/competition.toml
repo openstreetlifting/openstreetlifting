@@ -2,6 +2,7 @@ sources = ["https://www.instagram.com/p/DZ0BlyAsppv/"]
 
 [competition]
 name = "Belgian Streetlifting Championship"
+series = "streetlifting-belgium-championship"
 start_date = "2026-11-14"
 end_date = "2026-11-15"
 city = "Auderghem"

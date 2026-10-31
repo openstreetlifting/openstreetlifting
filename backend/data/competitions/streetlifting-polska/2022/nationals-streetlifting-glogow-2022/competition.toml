@@ -3,6 +3,7 @@ sources = ["https://docs.google.com/spreadsheets/d/1KtIFduz0gjleSfQgpbJIwsHm6ifZ
 
 [competition]
 name = "Polish StreetLifting Nationals Głogów"
+series = "streetlifting-polska-glogow-nationals"
 start_date = "2022-06-18"
 city = "Głogów"
 country = "PL"

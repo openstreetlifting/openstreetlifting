@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/DAEXspQMDze/"]
 
 [competition]
 name = "Łomża Street Power VII"
+series = "streetlifting-polska-lomza-street-power"
 start_date = "2024-09-08"
 city = "Łomża"
 country = "PL"

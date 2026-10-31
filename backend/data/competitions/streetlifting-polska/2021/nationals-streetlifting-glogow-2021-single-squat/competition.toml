@@ -3,6 +3,7 @@ sources = ["https://docs.google.com/spreadsheets/d/1KtIFduz0gjleSfQgpbJIwsHm6ifZ
 
 [competition]
 name = "Polish StreetLifting Nationals Głogów - Single Lift (squat)"
+series = "streetlifting-polska-glogow-nationals-squat"
 start_date = "2021-06-26"
 city = "Głogów"
 country = "PL"

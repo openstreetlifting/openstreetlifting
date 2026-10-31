@@ -5,6 +5,7 @@ sources = [
 
 [competition]
 name = "Streetlifting Nordic"
+series = "streetlifting-nordic"
 start_date = "2026-11-14"
 end_date = "2026-11-15"
 city = "Nacka"

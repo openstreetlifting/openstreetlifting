@@ -3,6 +3,7 @@ sources = ["https://docs.google.com/spreadsheets/d/1KtIFduz0gjleSfQgpbJIwsHm6ifZ
 
 [competition]
 name = "Turniej Kalisteniczny II Dips"
+series = "streetlifting-polska-lipka-krajenska-dips"
 start_date = "2023-07-15"
 city = "Lipka Krajeńska"
 country = "PL"

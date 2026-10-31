@@ -3,6 +3,7 @@ sources = ["FNSL CNSL 2024 official results spreadsheet supplied by the federati
 
 [competition]
 name = "CNSL"
+series = "fnsl-cnsl"
 start_date = "2024-06-23"
 country = "FR"
 status = "completed"

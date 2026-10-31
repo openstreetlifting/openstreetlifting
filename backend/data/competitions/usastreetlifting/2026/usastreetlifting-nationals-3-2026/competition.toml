@@ -3,6 +3,7 @@ sources = ["https://usastreetlifting.org/"]
 
 [competition]
 name = "Nationals 3"
+series = "usastreetlifting-national-championships"
 start_date = "2026-05-16"
 end_date = "2026-05-17"
 region = "Colorado"

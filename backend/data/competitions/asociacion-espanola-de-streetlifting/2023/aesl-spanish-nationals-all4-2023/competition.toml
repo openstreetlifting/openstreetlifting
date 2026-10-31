@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Campeonato de España III All4"
+series = "aesl-spanish-nationals-all4"
 start_date = "2023-06-18"
 city = "Castellón"
 country = "ES"

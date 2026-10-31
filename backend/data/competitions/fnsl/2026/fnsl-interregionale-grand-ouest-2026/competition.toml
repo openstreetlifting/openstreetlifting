@@ -3,6 +3,7 @@ sources = ["FNSL Grand-Ouest 2026.xlsx"]
 
 [competition]
 name = "Interrégionale Grand Ouest"
+series = "fnsl-interregionale-grand-ouest"
 start_date = "2026-04-11"
 end_date = "2026-04-12"
 country = "FR"

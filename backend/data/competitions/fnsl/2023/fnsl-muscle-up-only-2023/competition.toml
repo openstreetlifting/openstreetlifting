@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/CyiGjN7Lfs5/"]
 
 [competition]
 name = "Muscle Up Only"
+series = "fnsl-muscle-up-only"
 start_date = "2023-10-07"
 end_date = "2023-10-08"
 city = "La Courneuve"

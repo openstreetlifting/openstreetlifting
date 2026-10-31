@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Deutsche Meisterschaft Weighted Calisthenics"
+series = "dcsv-german-championship"
 start_date = "2026-09-26"
 end_date = "2026-09-27"
 city = "Wetzlar"

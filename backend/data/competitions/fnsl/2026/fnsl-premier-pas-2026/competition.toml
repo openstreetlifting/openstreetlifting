@@ -3,6 +3,7 @@ sources = ["FNSL Premiers Pas 2026.xlsx"]
 
 [competition]
 name = "Premier Pas"
+series = "fnsl-premiers-pas"
 start_date = "2026-04-04"
 end_date = "2026-04-05"
 country = "FR"

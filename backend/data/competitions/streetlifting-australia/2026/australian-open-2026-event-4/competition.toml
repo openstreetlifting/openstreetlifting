@@ -8,6 +8,7 @@ sources = [
 
 [competition]
 name = "Australian Open Event 4"
+series = "streetlifting-australia-open"
 start_date = "2026-07-06"
 city = "Brisbane"
 region = "Queensland"

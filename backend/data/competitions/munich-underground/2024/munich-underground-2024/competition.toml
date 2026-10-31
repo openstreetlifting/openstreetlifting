@@ -3,6 +3,7 @@ sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
 
 [competition]
 name = "Underground Munich"
+series = "munich-underground"
 start_date = "2024-07-13"
 city = "Munich"
 region = "Bayern"

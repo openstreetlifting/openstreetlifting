@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Campeonato de España II Classic"
+series = "aesl-spanish-nationals-classic"
 start_date = "2022-07-09"
 city = "Madrid"
 country = "ES"

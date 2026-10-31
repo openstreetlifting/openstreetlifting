@@ -3,6 +3,7 @@ sources = ["https://docs.google.com/spreadsheets/d/1-g_jhz1FAbhCpRHGXrOY1A47VWC0
 
 [competition]
 name = "Łomża Street Power IX"
+series = "streetlifting-polska-lomza-street-power"
 start_date = "2026-09-06"
 city = "Łomża"
 country = "PL"

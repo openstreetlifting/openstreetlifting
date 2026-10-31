@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Campeonato de España V All4"
+series = "aesl-spanish-nationals-all4"
 start_date = "2025-06-21"
 country = "ES"
 status = "completed"

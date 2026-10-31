@@ -3,6 +3,7 @@ sources = ["https://usastreetlifting.org/"]
 
 [competition]
 name = "National Championships"
+series = "usastreetlifting-national-championships"
 start_date = "2024-05-18"
 region = "Maryland"
 country = "US"

@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/DXrfkbMCIJ8/"]
 
 [competition]
 name = "Interrégionale Nord-Est"
+series = "fnsl-interregionale-nord-est"
 start_date = "2026-04-18"
 end_date = "2026-04-19"
 city = "Mulhouse"

@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Ace Cup"
+series = "ace-squad-ace-cup"
 start_date = "2026-05-23"
 end_date = "2026-05-24"
 city = "Montgeron"

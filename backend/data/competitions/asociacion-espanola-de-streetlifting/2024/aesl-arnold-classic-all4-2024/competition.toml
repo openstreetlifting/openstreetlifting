@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Arnold Classic All4"
+series = "aesl-arnold-classic-all4"
 start_date = "2024-10-12"
 country = "ES"
 status = "completed"

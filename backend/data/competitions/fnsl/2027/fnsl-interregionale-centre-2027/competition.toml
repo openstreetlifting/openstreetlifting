@@ -2,6 +2,7 @@ sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
 
 [competition]
 name = "Interrégionale Centre"
+series = "fnsl-interregionale-centre"
 start_date = "2027-05-15"
 end_date = "2027-05-16"
 city = "Tremblay"

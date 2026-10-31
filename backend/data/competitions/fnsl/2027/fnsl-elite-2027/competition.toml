@@ -2,6 +2,7 @@ sources = ["https://www.instagram.com/p/DcJod-CDvVk/"]
 
 [competition]
 name = "Élite"
+series = "fnsl-elite"
 start_date = "2027-06-12"
 end_date = "2027-06-13"
 country = "FR"

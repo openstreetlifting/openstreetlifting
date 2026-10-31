@@ -7,6 +7,7 @@ sources = [
 
 [competition]
 name = "Australian National Finals"
+series = "streetlifting-australia-national-finals"
 start_date = "2025-09-21"
 city = "Sydney"
 region = "New South Wales"

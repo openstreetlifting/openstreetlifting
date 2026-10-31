@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Australian Open Event 1"
+series = "streetlifting-australia-open"
 start_date = "2025-11-23"
 city = "Perth"
 region = "Western Australia"

@@ -8,6 +8,7 @@ sources = [
 
 [competition]
 name = "Campeonato de España I Classic"
+series = "aesl-spanish-nationals-classic"
 start_date = "2021-07-17"
 end_date = "2021-07-18"
 city = "Benicàssim"

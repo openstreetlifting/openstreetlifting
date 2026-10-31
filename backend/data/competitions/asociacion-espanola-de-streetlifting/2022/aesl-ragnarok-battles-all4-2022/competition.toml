@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Ragnarok Battles I All4"
+series = "aesl-ragnarok-battles-all4"
 start_date = "2022-03-20"
 country = "ES"
 status = "completed"

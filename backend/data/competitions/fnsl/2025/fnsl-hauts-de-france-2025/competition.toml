@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Régionale Hauts-de-France"
+series = "fnsl-regionale-hauts-de-france"
 start_date = "2025-03-01"
 end_date = "2025-03-02"
 city = "Roubaix"

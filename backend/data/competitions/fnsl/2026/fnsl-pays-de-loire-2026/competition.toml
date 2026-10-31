@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Régionale Pays de la Loire"
+series = "fnsl-regionale-pays-de-la-loire"
 start_date = "2026-02-01"
 city = "Saint-Saturnin"
 venue = "CF Astera"

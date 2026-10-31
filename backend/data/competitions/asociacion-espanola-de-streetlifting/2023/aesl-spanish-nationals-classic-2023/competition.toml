@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Campeonato de España III Classic"
+series = "aesl-spanish-nationals-classic"
 start_date = "2023-06-18"
 city = "Castellón"
 country = "ES"

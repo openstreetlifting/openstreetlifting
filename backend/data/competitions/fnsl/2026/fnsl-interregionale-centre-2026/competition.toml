@@ -3,6 +3,7 @@ sources = ["FNSL Centre 2026.xlsx"]
 
 [competition]
 name = "Interrégionale Centre"
+series = "fnsl-interregionale-centre"
 start_date = "2026-04-11"
 end_date = "2026-04-12"
 country = "FR"

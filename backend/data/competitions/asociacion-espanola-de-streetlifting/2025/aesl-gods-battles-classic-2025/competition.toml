@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Gods Battles V Classic"
+series = "aesl-gods-battles-classic"
 start_date = "2025-11-15"
 country = "ES"
 status = "completed"

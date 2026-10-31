@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/CzPee3Yo-oh/"]
 
 [competition]
 name = "Dips Only"
+series = "fnsl-dips-only"
 start_date = "2023-11-04"
 end_date = "2023-11-05"
 city = "La Courneuve"

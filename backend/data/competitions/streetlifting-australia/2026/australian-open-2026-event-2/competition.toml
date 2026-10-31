@@ -8,6 +8,7 @@ sources = [
 
 [competition]
 name = "Australian Open Event 2"
+series = "streetlifting-australia-open"
 start_date = "2026-03-21"
 end_date = "2026-03-22"
 city = "Melbourne"

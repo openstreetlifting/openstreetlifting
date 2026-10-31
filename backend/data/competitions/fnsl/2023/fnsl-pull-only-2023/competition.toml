@@ -3,6 +3,7 @@ sources = ["https://www.instagram.com/p/Cy_AV09I80i/"]
 
 [competition]
 name = "Pull Only"
+series = "fnsl-pull-up-only"
 start_date = "2023-10-28"
 end_date = "2023-10-29"
 city = "La Courneuve"

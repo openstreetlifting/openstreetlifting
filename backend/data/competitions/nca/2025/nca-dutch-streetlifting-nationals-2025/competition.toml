@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Dutch Streetlifting Nationals"
+series = "nca-dutch-nationals"
 start_date = "2025-03-22"
 end_date = "2025-03-23"
 country = "NL"
