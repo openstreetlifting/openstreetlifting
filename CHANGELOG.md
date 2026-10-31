@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.58.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.57.2...v0.58.0) (2026-10-31)
+
+
+### Features
+
+* **competitions:** link competition editions ([#875](https://github.com/openstreetlifting/openstreetlifting/issues/875)) ([d653c99](https://github.com/openstreetlifting/openstreetlifting/commit/d653c9923ea3f55161190489a39f1276763fc932))
+
+
+### Bug Fixes
+
+* **data:** fill German nationals 2026 athlete countries ([#876](https://github.com/openstreetlifting/openstreetlifting/issues/876)) ([1bfca92](https://github.com/openstreetlifting/openstreetlifting/commit/1bfca920f2daa268ecd3b898a4cf9c10b6c01f9b))
+
 ## [0.57.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.57.1...v0.57.2) (2026-10-31)
 
 
