@@ -1,6 +1,6 @@
 services:
   collector:
-    image: otel/opentelemetry-collector-contrib:0.163.2
+    image: otel/opentelemetry-collector-contrib:0.164.0
     command: ["--config=/etc/otelcol/config.yaml"]
     environment:
       OSL_METRICS_TARGET: host.docker.internal:9090
