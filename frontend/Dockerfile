@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:24-alpine AS deps
+FROM node:26-alpine AS deps
 RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS prod-deps
 RUN pnpm prune --prod --ignore-scripts
 
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
@@ -22,7 +22,7 @@ COPY . .
 ENV NODE_ENV=production
 RUN pnpm build
 
-FROM node:24-alpine AS runner
+FROM node:26-alpine AS runner
 WORKDIR /app
 
 ARG GIT_SHA=""

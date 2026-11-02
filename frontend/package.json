@@ -34,7 +34,7 @@
     "@types/d3-scale": "^4.0.9",
     "@types/d3-shape": "^3.2.0",
     "@types/d3-time": "^3.0.4",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.6",
     "@vitest/browser-playwright": "^5.0.5",
     "clsx": "^2.1.1",
     "eslint": "^10.14.0",
