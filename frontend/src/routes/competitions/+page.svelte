@@ -4,11 +4,10 @@
   import SelectField from '#lib/components/ui/select-field.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import type { PageData } from './$types';
-  import { ResultState, Breadcrumb, FilterBar, SearchEmpty } from '#lib/components/ui/index.js';
+  import { ResultState, FilterBar, SearchEmpty } from '#lib/components/ui/index.js';
   import CompetitionsTable from '#lib/components/competitions-table.svelte';
   import CompetitionFormatFilter from '#lib/components/competition-format-filter.svelte';
   import { resolve } from '$app/paths';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { afterNavigate, refreshAll } from '$app/navigation';
   import { ListingSearch } from '#lib/state/listing-search.svelte.js';
@@ -19,7 +18,7 @@
   import { TEXT, CONTROL } from '#lib/constants/typography.js';
   import { EDGE_TO_EDGE } from '#lib/constants/table.js';
   import Seo from '#lib/components/seo.svelte';
-  import { breadcrumbLd, listingSeo } from '#lib/seo/index.js';
+  import { listingSeo } from '#lib/seo/index.js';
 
   const i18n = useI18n();
 
@@ -112,22 +111,9 @@
   {description}
   canonical={seo.canonical}
   noindex={seo.noindex}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        { name: i18n.t('Competitions'), path: '/competitions' },
-      ],
-      i18n.locale
-    ),
-  ]}
 />
 
 <div class={LAYOUT.page}>
-  <Breadcrumb
-    items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Competitions') }]}
-  />
-
   <h1 class="sr-only">{i18n.t('Streetlifting competitions')}</h1>
 
   {#if data.runningCompetitions.length > 0}
@@ -273,8 +259,7 @@
       <ResultState
         embedded
         kind="error"
-        title={i18n.t('Failed to load competitions')}
-        description={i18n.t('Results could not be loaded. Please try again in a moment.')}
+        title={i18n.t('Couldn’t load competitions')}
         retry={refreshAll}
       />
     {:else if competitions.length === 0 && !busy}

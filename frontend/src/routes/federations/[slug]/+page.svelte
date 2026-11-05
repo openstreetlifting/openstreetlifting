@@ -7,7 +7,6 @@
   import RankingList from '#lib/components/ranking-list.svelte';
   import Seo from '#lib/components/seo.svelte';
   import { page as currentPage, navigating } from '$app/state';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { breadcrumbLd, federationLd, listingSeo } from '#lib/seo/index.js';
   import { federationPath } from '#lib/utils/index.js';
@@ -69,7 +68,6 @@
     federationLd(federation, description, i18n.locale),
     breadcrumbLd(
       [
-        { name: i18n.t('Rankings'), path: '/' },
         { name: i18n.t('Competitions'), path: '/competitions' },
         { name: federation.name, path },
       ],
@@ -80,11 +78,7 @@
 
 <div class={LAYOUT.page}>
   <Breadcrumb
-    items={[
-      { label: i18n.t('Rankings'), href: rankingsHref() },
-      { label: i18n.t('Competitions'), href: '/competitions' },
-      { label: federation.name },
-    ]}
+    items={[{ label: i18n.t('Competitions'), href: '/competitions' }, { label: federation.name }]}
   />
 
   <header class="mb-section border-b border-stroke pb-4">

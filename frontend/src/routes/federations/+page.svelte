@@ -3,18 +3,10 @@
   import { useI18n } from '#lib/i18n/index.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
-  import {
-    Breadcrumb,
-    Flag,
-    Table,
-    TABLE_CELL,
-    TABLE_HEAD_CELL,
-    Text,
-  } from '#lib/components/ui/index.js';
+  import { Flag, Table, TABLE_CELL, TABLE_HEAD_CELL, Text } from '#lib/components/ui/index.js';
   import Seo from '#lib/components/seo.svelte';
   import { resolve } from '$app/paths';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
-  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
+  import { absolute } from '#lib/seo/index.js';
   import { countryName } from '#lib/utils/index.js';
   import { CELL, FIGURE, NO_VALUE } from '#lib/constants/table.js';
 
@@ -43,27 +35,9 @@
     }
   )}
   canonical={absolute('/federations')}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        { name: i18n.t('Competitions'), path: '/competitions' },
-        { name: i18n.t('Federations'), path: '/federations' },
-      ],
-      i18n.locale
-    ),
-  ]}
 />
 
 <div class={LAYOUT.page}>
-  <Breadcrumb
-    items={[
-      { label: i18n.t('Rankings'), href: rankingsHref() },
-      { label: i18n.t('Competitions'), href: '/competitions' },
-      { label: i18n.t('Federations') },
-    ]}
-  />
-
   <Text as="h1" variant="title" class="mb-section text-ink">{i18n.t('Federations')}</Text>
 
   <Table rows={federations} itemName="federation" pageParam="page">

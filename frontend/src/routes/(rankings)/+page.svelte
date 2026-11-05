@@ -175,8 +175,7 @@
       <ResultState
         embedded
         kind="error"
-        title={i18n.t('Failed to load rankings')}
-        description={i18n.t('Results could not be loaded. Please try again in a moment.')}
+        title={i18n.t('Couldn’t load rankings')}
         retry={refreshAll}
       />
     {:else if rankings.length === 0 && !busy}

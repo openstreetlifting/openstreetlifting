@@ -6,7 +6,7 @@ import ResultState from './result-state.svelte';
 it('prevents duplicate retries while a request is pending and enables retry afterward', async () => {
   let finish!: () => void;
   const retry = vi.fn(() => new Promise<void>((resolve) => (finish = resolve)));
-  render(ResultState, { title: 'Failed to load rankings', kind: 'error', retry });
+  render(ResultState, { title: 'Couldn’t load rankings', kind: 'error', retry });
   await page.getByRole('button', { name: 'Try again', exact: true }).click();
   await expect.element(page.getByRole('button', { name: 'Retrying…' })).toBeDisabled();
   expect(retry).toHaveBeenCalledTimes(1);
@@ -16,8 +16,8 @@ it('prevents duplicate retries while a request is pending and enables retry afte
 
 it('keeps a failed retry recoverable without losing the error message', async () => {
   const retry = vi.fn().mockRejectedValue(new Error('Network unavailable'));
-  render(ResultState, { title: 'Failed to load rankings', kind: 'error', retry });
+  render(ResultState, { title: 'Couldn’t load rankings', kind: 'error', retry });
   await page.getByRole('button', { name: 'Try again', exact: true }).click();
-  await expect.element(page.getByRole('alert')).toHaveTextContent('Failed to load rankings');
+  await expect.element(page.getByRole('alert')).toHaveTextContent('Couldn’t load rankings');
   await expect.element(page.getByRole('button', { name: 'Try again', exact: true })).toBeEnabled();
 });

@@ -43,33 +43,33 @@
     : `${EDGE_TO_EDGE} rounded-panel border border-stroke-strong`} flex min-h-72 items-center bg-surface-subtle px-6 py-8 sm:min-h-80 sm:px-8 sm:py-12"
   aria-busy={retrying}
 >
-  <div class="mx-auto w-full max-w-md">
-    <div
-      class="mb-4 flex size-9 items-center justify-center border border-stroke-strong font-mono text-subtitle text-secondary"
-      aria-hidden="true"
-    >
-      {#if kind === 'error'}!{:else}<SearchIcon class="size-4" />{/if}
-    </div>
-    <div role={kind === 'error' ? 'alert' : 'status'} aria-atomic="true">
-      <h2 class="font-mono text-subtitle font-semibold text-balance text-ink sm:text-heading">
-        {title}
-      </h2>
-      {#if description}<p
-          class="mt-3 max-w-[42ch] text-body leading-relaxed text-pretty text-secondary"
+  <div class="mx-auto flex w-full max-w-md flex-col items-center text-center">
+    <div class="flex items-start justify-center gap-3">
+      <span
+        class="flex size-control shrink-0 items-center justify-center border border-stroke-strong font-mono text-subtitle text-secondary"
+        aria-hidden="true"
+      >
+        {#if kind === 'error'}!{:else}<SearchIcon class="size-4" />{/if}
+      </span>
+      <div class="min-w-0" role={kind === 'error' ? 'alert' : 'status'} aria-atomic="true">
+        <h2
+          class="font-mono text-subtitle leading-8 font-semibold text-balance text-ink sm:text-heading sm:leading-8"
         >
-          {description}
-        </p>{/if}
+          {title}
+        </h2>
+        {#if description}<p
+            class="mx-auto mt-3 max-w-[42ch] text-body leading-relaxed text-pretty text-secondary"
+          >
+            {description}
+          </p>{/if}
+      </div>
     </div>
     {#if retry}
-      <Button
-        onclick={tryAgain}
-        disabled={retrying}
-        class="mt-6 min-h-11 w-full text-meta sm:w-auto"
-      >
+      <Button size="control" onclick={tryAgain} disabled={retrying} class="mt-6 w-full sm:w-auto">
         {retrying ? i18n.t('Retrying…') : i18n.t('Try again')}
       </Button>
     {:else if resetHref}
-      <Button href={resetHref} class="mt-6 min-h-11 w-full text-meta sm:w-auto">
+      <Button size="control" href={resetHref} class="mt-6 w-full sm:w-auto">
         {i18n.t('Clear search & filters')}
       </Button>
     {/if}

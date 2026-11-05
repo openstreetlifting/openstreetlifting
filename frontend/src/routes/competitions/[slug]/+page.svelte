@@ -30,7 +30,6 @@
     Text,
   } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { page, navigating } from '$app/state';
   import { afterNavigate } from '$app/navigation';
@@ -405,7 +404,6 @@
     competitionLd(competition, seoDescription, i18n.locale),
     breadcrumbLd(
       [
-        { name: i18n.t('Rankings'), path: '/' },
         { name: i18n.t('Competitions'), path: '/competitions' },
         { name: competition.federation.name, path: federationHref },
         { name: competition.name, path: `/competitions/${competition.slug}` },
@@ -434,7 +432,6 @@
 <div class={LAYOUT.page}>
   <Breadcrumb
     items={[
-      { label: i18n.t('Rankings'), href: rankingsHref() },
       { label: i18n.t('Competitions'), href: '/competitions' },
       { label: competition.federation.name, href: federationHref },
       { label: competition.name },
