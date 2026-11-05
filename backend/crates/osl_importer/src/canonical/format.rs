@@ -12,7 +12,8 @@ pub fn prepare(canonical: &mut CanonicalFormat) -> crate::Result<()> {
             }
         }
     }
-    super::validator::CanonicalValidator::validate(canonical)?.log_warnings();
+    super::validator::CanonicalValidator::validate(canonical)?
+        .log_warnings(&canonical.competition.slug);
     normalize(canonical);
     Ok(())
 }

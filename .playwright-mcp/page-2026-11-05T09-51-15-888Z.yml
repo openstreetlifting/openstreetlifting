@@ -1,0 +1,2723 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - navigation [ref=e5]:
+      - link [ref=e6] [cursor=pointer]:
+        - /url: ./
+        - img "OpenStreetlifting" [ref=e7]
+      - list [ref=e8]:
+        - listitem [ref=e9]:
+          - link "Rankings" [ref=e10] [cursor=pointer]:
+            - /url: ./
+        - listitem [ref=e11]:
+          - link "Competitions" [ref=e12] [cursor=pointer]:
+            - /url: ./competitions
+        - listitem [ref=e13]:
+          - link "RIS" [ref=e14] [cursor=pointer]:
+            - /url: ./ris
+        - listitem [ref=e15]:
+          - link "Docs" [ref=e16] [cursor=pointer]:
+            - /url: https://docs.openstreetlifting.org/
+        - listitem [ref=e17]:
+          - link "Contact" [ref=e18] [cursor=pointer]:
+            - /url: ./contact
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]: Language
+          - combobox "Language" [ref=e24] [cursor=pointer]:
+            - option "English" [selected]
+            - option "Français"
+            - option "Deutsch"
+            - option "Italiano"
+            - option "Polski"
+          - generic [ref=e25]: Weight unit
+          - combobox "Weight unit" [ref=e27] [cursor=pointer]:
+            - option "kg" [selected]
+            - option "lb"
+        - generic [ref=e28]:
+          - link "GitHub" [ref=e29] [cursor=pointer]:
+            - /url: https://github.com/openstreetlifting/openstreetlifting
+          - link "Instagram" [ref=e32] [cursor=pointer]:
+            - /url: https://www.instagram.com/openstreetlifting
+  - main [ref=e35]:
+    - generic [ref=e36]:
+      - heading "Streetlifting rankings" [level=1] [ref=e37]
+      - region "Streetlifting rankings" [ref=e38]:
+        - generic [ref=e39]:
+          - generic [ref=e42]:
+            - generic [ref=e43]: Search an athlete
+            - textbox "Search an athlete" [ref=e44]
+          - generic [ref=e45]:
+            - generic [ref=e46]:
+              - generic [ref=e47]: Sort by
+              - combobox "Sort by" [ref=e49] [cursor=pointer]:
+                - option "Total"
+                - option "RIS" [selected]
+                - option "Muscle Up"
+                - option "Pull Up"
+                - option "Dips"
+                - option "Squat"
+            - generic [ref=e50]:
+              - generic [ref=e51]: Sex
+              - combobox "Sex" [ref=e53] [cursor=pointer]:
+                - option "All Sex" [selected]
+                - option "Men"
+                - option "Women"
+          - generic [ref=e54]:
+            - generic [ref=e55]:
+              - generic [ref=e56]: Country
+              - combobox "Country" [ref=e58] [cursor=pointer]:
+                - option "All Countries" [selected]
+                - option "Angola"
+                - option "Argentina"
+                - option "Austria"
+                - option "Australia"
+                - option "Aruba"
+                - option "Azerbaijan"
+                - option "Bosnia & Herzegovina"
+                - option "Belgium"
+                - option "Bulgaria"
+                - option "Brazil"
+                - option "Canada"
+                - option "Switzerland"
+                - option "Chile"
+                - option "Cameroon"
+                - option "Colombia"
+                - option "Costa Rica"
+                - option "Cyprus"
+                - option "Czechia"
+                - option "Germany"
+                - option "Denmark"
+                - option "Algeria"
+                - option "Egypt"
+                - option "Spain"
+                - option "Finland"
+                - option "France"
+                - option "United Kingdom"
+                - option "Greece"
+                - option "Guinea-Bissau"
+                - option "Hong Kong SAR China"
+                - option "Croatia"
+                - option "Hungary"
+                - option "Indonesia"
+                - option "Ireland"
+                - option "India"
+                - option "Iceland"
+                - option "Italy"
+                - option "Jordan"
+                - option "South Korea"
+                - option "Kuwait"
+                - option "Lebanon"
+                - option "Lithuania"
+                - option "Latvia"
+                - option "Morocco"
+                - option "North Macedonia"
+                - option "Malta"
+                - option "Mexico"
+                - option "Malaysia"
+                - option "New Caledonia"
+                - option "Netherlands"
+                - option "Norway"
+                - option "New Zealand"
+                - option "Peru"
+                - option "Philippines"
+                - option "Poland"
+                - option "Portugal"
+                - option "Romania"
+                - option "Serbia"
+                - option "Russia"
+                - option "Saudi Arabia"
+                - option "Sweden"
+                - option "Singapore"
+                - option "Slovenia"
+                - option "Slovakia"
+                - option "San Marino"
+                - option "Syria"
+                - option "Thailand"
+                - option "Tunisia"
+                - option "Türkiye"
+                - option "Taiwan"
+                - option "Ukraine"
+                - option "United States"
+                - option "Uruguay"
+                - option "Venezuela"
+                - option "Vietnam"
+                - option "Zimbabwe"
+            - generic [ref=e59]:
+              - generic [ref=e60]: Federation
+              - combobox "Federation" [ref=e62] [cursor=pointer]:
+                - option "All Federations" [selected]
+                - option "4Lift"
+                - option "Ace Squad"
+                - option "ASEMEPO"
+                - option "Asociación Española de Streetlifting"
+                - option "Bodystrong"
+                - option "Brasil Streetlifting"
+                - option "Calisthenics Canada"
+                - option "Crucible Barbell"
+                - option "DCSV"
+                - option "EVOLVE"
+                - option "FinalRep"
+                - option "FNSL"
+                - option "ICSA"
+                - option "Indonesia Underground"
+                - option "King of the Jungle"
+                - option "Munich Underground"
+                - option "NCA"
+                - option "PH Streetlifting"
+                - option "Rage War"
+                - option "Raw Workout"
+                - option "Serbian Streetlifting Federation"
+                - option "Singapore Streetlifting Federation"
+                - option "SLI"
+                - option "Streetlifting Australia"
+                - option "Streetlifting Belgium"
+                - option "Streetlifting Nordic"
+                - option "StreetLifting Polska"
+                - option "Streetlifting Suomi"
+                - option "Street Workout Slovenija"
+                - option "Svenska Calisthenicsförbundet"
+                - option "USAStreetlifting"
+            - generic [ref=e63]:
+              - generic [ref=e64]: Year
+              - combobox "Year" [ref=e66] [cursor=pointer]:
+                - option "All Years" [selected]
+                - option "2027"
+                - option "2026"
+                - option "2025"
+                - option "2024"
+                - option "2023"
+                - option "2022"
+                - option "2021"
+                - option "2020"
+                - option "2019"
+                - option "2018"
+                - option "2017"
+                - option "2016"
+                - option "2015"
+            - generic [ref=e67]:
+              - generic [ref=e68]: Class
+              - combobox "Class" [ref=e70] [cursor=pointer]:
+                - option "All Classes" [selected]
+                - option "-47kg"
+                - option "-52kg"
+                - option "-55kg"
+                - option "-56kg"
+                - option "-57kg"
+                - option "+57kg"
+                - option "-59kg"
+                - option "-60kg"
+                - option "+60kg"
+                - option "-62.5kg"
+                - option "+62.5kg"
+                - option "-63kg"
+                - option "+63kg"
+                - option "-64kg"
+                - option "+64kg"
+                - option "-66kg"
+                - option "+66kg"
+                - option "-70kg"
+                - option "+70kg"
+                - option "-72.5kg"
+                - option "-73kg"
+                - option "+73kg"
+                - option "-75kg"
+                - option "+75kg"
+                - option "-77.5kg"
+                - option "-80kg"
+                - option "+80kg"
+                - option "-82.5kg"
+                - option "+82.5kg"
+                - option "-85kg"
+                - option "+85kg"
+                - option "-87kg"
+                - option "+87kg"
+                - option "-90kg"
+                - option "+90kg"
+                - option "-92.5kg"
+                - option "+92.5kg"
+                - option "-94kg"
+                - option "+94kg"
+                - option "-100kg"
+                - option "-101kg"
+                - option "+101kg"
+                - option "-104kg"
+                - option "+104kg"
+                - option "-105kg"
+        - generic [ref=e71]:
+          - generic [ref=e73]:
+            - generic [ref=e74]: 2,208 athletes
+            - navigation "Pagination" [ref=e75]:
+              - link "Previous page" [disabled]:
+                - generic: Previous
+              - generic [ref=e76]:
+                - link "1" [disabled]
+                - link "2" [ref=e77] [cursor=pointer]:
+                  - /url: ./?page=2
+                - generic [ref=e78]: …
+                - link "23" [ref=e79] [cursor=pointer]:
+                  - /url: ./?page=23
+              - link "Next page" [ref=e80] [cursor=pointer]:
+                - /url: ./?page=2
+                - generic [ref=e81]: Next
+          - table [ref=e85]:
+            - rowgroup [ref=e86]:
+              - row [ref=e87]:
+                - columnheader "Rank" [ref=e88]
+                - columnheader "Athlete" [ref=e89]
+                - columnheader "Total (kg)" [ref=e90]
+                - columnheader [ref=e91]:
+                  - generic [ref=e92]:
+                    - text: RIS
+                    - button "What a RIS score is and where it came from" [ref=e93] [cursor=pointer]: "?"
+                - columnheader "Muscle Up" [ref=e94]
+                - columnheader "Pull Up" [ref=e95]
+                - columnheader "Dips" [ref=e96]
+                - columnheader "Squat" [ref=e97]
+                - columnheader "Competition" [ref=e98]
+                - columnheader "Federation" [ref=e99]
+                - columnheader "Date" [ref=e100]
+                - columnheader "Sex" [ref=e101]
+                - columnheader "Class" [ref=e102]
+            - rowgroup [ref=e103]:
+              - row [ref=e104]:
+                - cell "1" [ref=e105]
+                - cell [ref=e106]:
+                  - generic [ref=e108]:
+                    - link [ref=e109] [cursor=pointer]:
+                      - /url: ./countries/de
+                      - img "Germany" [ref=e110]
+                    - link "Sarah Anyamele" [ref=e111] [cursor=pointer]:
+                      - /url: ./athletes/sarah-anyamele
+                - cell "337.5" [ref=e112]
+                - cell "119.79" [ref=e113]
+                - cell "27.5" [ref=e114]
+                - cell "45" [ref=e115]
+                - cell "85" [ref=e116]
+                - cell "180" [ref=e117]
+                - cell [ref=e118]:
+                  - link "Worlds" [ref=e119] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e120]:
+                  - link "FinalRep" [ref=e121] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e122]
+                - cell "F" [ref=e123]
+                - cell "+70kg" [ref=e124]
+              - row [ref=e125]:
+                - cell "2" [ref=e126]
+                - cell [ref=e127]:
+                  - generic [ref=e129]:
+                    - link [ref=e130] [cursor=pointer]:
+                      - /url: ./countries/ru
+                      - img "Russia" [ref=e131]
+                    - link "Mathew Zlat" [ref=e132] [cursor=pointer]:
+                      - /url: ./athletes/mathew-zlat
+                - cell "635" [ref=e133]
+                - cell "116.23" [ref=e134]
+                - cell "37.5" [ref=e135]
+                - cell "120" [ref=e136]
+                - cell "190" [ref=e137]
+                - cell "287.5" [ref=e138]
+                - cell [ref=e139]:
+                  - link "Euros" [ref=e140] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e141]:
+                  - link "FinalRep" [ref=e142] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e143]
+                - cell "M" [ref=e144]
+                - cell "-101kg" [ref=e145]
+              - row [ref=e146]:
+                - cell "3" [ref=e147]
+                - cell [ref=e148]:
+                  - generic [ref=e150]:
+                    - link [ref=e151] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e152]
+                    - link "Xavier Enrique Macias Montano" [ref=e153] [cursor=pointer]:
+                      - /url: ./athletes/xavier-enrique-macias-montano
+                - cell "620.25" [ref=e154]
+                - cell "116.09" [ref=e155]
+                - cell "41.25" [ref=e156]
+                - cell "112.5" [ref=e157]
+                - cell "160" [ref=e158]
+                - cell "306.5" [ref=e159]
+                - cell [ref=e160]:
+                  - link "Italian Open" [ref=e161] [cursor=pointer]:
+                    - /url: ./competitions/sli-italian-open-2025
+                - cell [ref=e162]:
+                  - link "SLI" [ref=e163] [cursor=pointer]:
+                    - /url: ./federations/sli
+                - cell "15/03/2025" [ref=e164]
+                - cell "M" [ref=e165]
+                - cell "-94kg" [ref=e166]
+              - row [ref=e167]:
+                - cell "4" [ref=e168]
+                - cell [ref=e169]:
+                  - generic [ref=e171]:
+                    - link [ref=e172] [cursor=pointer]:
+                      - /url: ./countries/mx
+                      - img "Mexico" [ref=e173]
+                    - link "Elder Paredes" [ref=e174] [cursor=pointer]:
+                      - /url: ./athletes/elder-paredes
+                - cell "520" [ref=e175]
+                - cell "115.39" [ref=e176]
+                - cell "35" [ref=e177]
+                - cell "90" [ref=e178]
+                - cell "150" [ref=e179]
+                - cell "245" [ref=e180]
+                - cell [ref=e181]:
+                  - link "Mexico Open" [ref=e182] [cursor=pointer]:
+                    - /url: ./competitions/mexico-open-2026
+                - cell [ref=e183]:
+                  - link "ASEMEPO" [ref=e184] [cursor=pointer]:
+                    - /url: ./federations/asemepo
+                - cell "30/05/2026" [ref=e185]
+                - cell "M" [ref=e186]
+                - cell "-73kg" [ref=e187]
+              - row [ref=e188]:
+                - cell "5" [ref=e189]
+                - cell [ref=e190]:
+                  - generic [ref=e192]:
+                    - link [ref=e193] [cursor=pointer]:
+                      - /url: ./countries/gb
+                      - img "United Kingdom" [ref=e194]
+                    - link "Martha Lubczynskyj" [ref=e195] [cursor=pointer]:
+                      - /url: ./athletes/martha-lubczynskyj
+                - cell "305.75" [ref=e196]
+                - cell "115.18" [ref=e197]
+                - cell "32" [ref=e198]
+                - cell "61.25" [ref=e199]
+                - cell "72.5" [ref=e200]
+                - cell "140" [ref=e201]
+                - cell [ref=e202]:
+                  - link "Euros" [ref=e203] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e204]:
+                  - link "FinalRep" [ref=e205] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e206]
+                - cell "F" [ref=e207]
+                - cell "-57kg" [ref=e208]
+              - row [ref=e209]:
+                - cell "6" [ref=e210]
+                - cell [ref=e211]:
+                  - generic [ref=e213]:
+                    - link [ref=e214] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e215]
+                    - link "Aubin Chevillard" [ref=e216] [cursor=pointer]:
+                      - /url: ./athletes/aubin-chevillard
+                - cell "526.75" [ref=e217]
+                - cell "114.46" [ref=e218]
+                - cell "46.25" [ref=e219]
+                - cell "108" [ref=e220]
+                - cell "157.5" [ref=e221]
+                - cell "215" [ref=e222]
+                - cell [ref=e223]:
+                  - link "Euros" [ref=e224] [cursor=pointer]:
+                    - /url: ./competitions/euros-2024
+                - cell [ref=e225]:
+                  - link "FinalRep" [ref=e226] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/11/2024" [ref=e227]
+                - cell "M" [ref=e228]
+                - cell "-73kg" [ref=e229]
+              - row [ref=e230]:
+                - cell "7" [ref=e231]
+                - cell [ref=e232]:
+                  - generic [ref=e234]:
+                    - link [ref=e235] [cursor=pointer]:
+                      - /url: ./countries/nl
+                      - img "Netherlands" [ref=e236]
+                    - link "Lynn Narings" [ref=e237] [cursor=pointer]:
+                      - /url: ./athletes/lynn-narings
+                - cell "318" [ref=e238]
+                - cell "114.03" [ref=e239]
+                - cell "25.25" [ref=e240]
+                - cell "47.5" [ref=e241]
+                - cell "85.25" [ref=e242]
+                - cell "160" [ref=e243]
+                - cell [ref=e244]:
+                  - link "Euros" [ref=e245] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e246]:
+                  - link "FinalRep" [ref=e247] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e248]
+                - cell "F" [ref=e249]
+                - cell "-63kg" [ref=e250]
+              - row [ref=e251]:
+                - cell "8" [ref=e252]
+                - cell [ref=e253]:
+                  - generic [ref=e255]:
+                    - link [ref=e256] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e257]
+                    - link "Lylia Ammour" [ref=e258] [cursor=pointer]:
+                      - /url: ./athletes/lylia-ammour
+                - cell "305" [ref=e259]
+                - cell "113.66" [ref=e260]
+                - cell "27.5" [ref=e261]
+                - cell "55" [ref=e262]
+                - cell "77.5" [ref=e263]
+                - cell "145" [ref=e264]
+                - cell [ref=e265]:
+                  - link "Élite" [ref=e266] [cursor=pointer]:
+                    - /url: ./competitions/fnsl-elite-2026
+                - cell [ref=e267]:
+                  - link "FNSL" [ref=e268] [cursor=pointer]:
+                    - /url: ./federations/fnsl
+                - cell "15/05/2026" [ref=e269]
+                - cell "F" [ref=e270]
+                - cell "-57kg" [ref=e271]
+              - row [ref=e272]:
+                - cell "9" [ref=e273]
+                - cell [ref=e274]:
+                  - generic [ref=e276]:
+                    - link [ref=e277] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e278]
+                    - link "Walid Boulaghzalate" [ref=e279] [cursor=pointer]:
+                      - /url: ./athletes/walid-boulaghzalate
+                - cell "473.75" [ref=e280]
+                - cell "113.25" [ref=e281]
+                - cell "40" [ref=e282]
+                - cell "83.75" [ref=e283]
+                - cell "135" [ref=e284]
+                - cell "215" [ref=e285]
+                - cell [ref=e286]:
+                  - link "Euros" [ref=e287] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e288]:
+                  - link "FinalRep" [ref=e289] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e290]
+                - cell "M" [ref=e291]
+                - cell "-66kg" [ref=e292]
+              - row [ref=e293]:
+                - cell "10" [ref=e294]
+                - cell [ref=e295]:
+                  - generic [ref=e297]:
+                    - link [ref=e298] [cursor=pointer]:
+                      - /url: ./countries/es
+                      - img "Spain" [ref=e299]
+                    - link "Pere Coll i Fernandez" [ref=e300] [cursor=pointer]:
+                      - /url: ./athletes/pere-coll-i-fernandez
+                - cell "584.25" [ref=e301]
+                - cell "112.22" [ref=e302]
+                - cell "53" [ref=e303]
+                - cell "116.25" [ref=e304]
+                - cell "182.5" [ref=e305]
+                - cell "232.5" [ref=e306]
+                - cell [ref=e307]:
+                  - link "Euros" [ref=e308] [cursor=pointer]:
+                    - /url: ./competitions/euros-2024
+                - cell [ref=e309]:
+                  - link "FinalRep" [ref=e310] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/11/2024" [ref=e311]
+                - cell "M" [ref=e312]
+                - cell "-87kg" [ref=e313]
+              - row [ref=e314]:
+                - cell "11" [ref=e315]
+                - cell [ref=e316]:
+                  - generic [ref=e318]:
+                    - link [ref=e319] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e320]
+                    - link "Ludivine Compain" [ref=e321] [cursor=pointer]:
+                      - /url: ./athletes/ludivine-compain
+                - cell "261.25" [ref=e322]
+                - cell "111.13" [ref=e323]
+                - cell "20" [ref=e324]
+                - cell "38.75" [ref=e325]
+                - cell "67.5" [ref=e326]
+                - cell "135" [ref=e327]
+                - cell [ref=e328]:
+                  - link "Euros" [ref=e329] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e330]:
+                  - link "FinalRep" [ref=e331] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e332]
+                - cell "F" [ref=e333]
+                - cell "-52kg" [ref=e334]
+              - row [ref=e335]:
+                - cell "12" [ref=e336]
+                - cell [ref=e337]:
+                  - generic [ref=e339]:
+                    - link [ref=e340] [cursor=pointer]:
+                      - /url: ./countries/ro
+                      - img "Romania" [ref=e341]
+                    - link "Lucian Stanut" [ref=e342] [cursor=pointer]:
+                      - /url: ./athletes/lucian-stanut
+                - cell "571.25" [ref=e343]
+                - cell "109.92" [ref=e344]
+                - cell "45" [ref=e345]
+                - cell "98.75" [ref=e346]
+                - cell "147.5" [ref=e347]
+                - cell "280" [ref=e348]
+                - cell [ref=e349]:
+                  - link "Euros" [ref=e350] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e351]:
+                  - link "FinalRep" [ref=e352] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e353]
+                - cell "M" [ref=e354]
+                - cell "-87kg" [ref=e355]
+              - row [ref=e356]:
+                - cell "13" [ref=e357]
+                - cell [ref=e358]:
+                  - generic [ref=e360]:
+                    - link [ref=e361] [cursor=pointer]:
+                      - /url: ./countries/gb
+                      - img "United Kingdom" [ref=e362]
+                    - link "Gianna Webbe" [ref=e363] [cursor=pointer]:
+                      - /url: ./athletes/gianna-webbe
+                - cell "305" [ref=e364]
+                - cell "109.70" [ref=e365]
+                - cell "17.5" [ref=e366]
+                - cell "60" [ref=e367]
+                - cell "87.5" [ref=e368]
+                - cell "140" [ref=e369]
+                - cell [ref=e370]:
+                  - link "Euros" [ref=e371] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e372]:
+                  - link "FinalRep" [ref=e373] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e374]
+                - cell "F" [ref=e375]
+                - cell "-63kg" [ref=e376]
+              - row [ref=e377]:
+                - cell "14" [ref=e378]
+                - cell [ref=e379]:
+                  - generic [ref=e381]:
+                    - link [ref=e382] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e383]
+                    - link "Tony D'Agostino" [ref=e384] [cursor=pointer]:
+                      - /url: ./athletes/tony-dagostino
+                - cell "561.25" [ref=e385]
+                - cell "109.56" [ref=e386]
+                - cell "33.75" [ref=e387]
+                - cell "95" [ref=e388]
+                - cell "130" [ref=e389]
+                - cell "302.5" [ref=e390]
+                - cell [ref=e391]:
+                  - link "Euros" [ref=e392] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e393]:
+                  - link "FinalRep" [ref=e394] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e395]
+                - cell "M" [ref=e396]
+                - cell "-87kg" [ref=e397]
+              - row [ref=e398]:
+                - cell "15" [ref=e399]
+                - cell [ref=e400]:
+                  - generic [ref=e402]:
+                    - link [ref=e403] [cursor=pointer]:
+                      - /url: ./countries/pt
+                      - img "Portugal" [ref=e404]
+                    - link "Henrique Nascimento" [ref=e405] [cursor=pointer]:
+                      - /url: ./athletes/henrique-nascimento
+                - cell "487.5" [ref=e406]
+                - cell "109.14" [ref=e407]
+                - cell "40" [ref=e408]
+                - cell "100" [ref=e409]
+                - cell "140" [ref=e410]
+                - cell "207.5" [ref=e411]
+                - cell [ref=e412]:
+                  - link "Euros" [ref=e413] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e414]:
+                  - link "FinalRep" [ref=e415] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e416]
+                - cell "M" [ref=e417]
+                - cell "-73kg" [ref=e418]
+              - row [ref=e419]:
+                - cell "16" [ref=e420]
+                - cell [ref=e421]:
+                  - generic [ref=e423]:
+                    - link [ref=e424] [cursor=pointer]:
+                      - /url: ./countries/cl
+                      - img "Chile" [ref=e425]
+                    - link "Benjamín Ibáñez" [ref=e426] [cursor=pointer]:
+                      - /url: ./athletes/benjamin-ibanez
+                - cell "502.5" [ref=e427]
+                - cell "109.12" [ref=e428]
+                - cell "42.5" [ref=e429]
+                - cell "100" [ref=e430]
+                - cell "150" [ref=e431]
+                - cell "210" [ref=e432]
+                - cell [ref=e433]:
+                  - link "Santiago Street Lifting Open" [ref=e434] [cursor=pointer]:
+                    - /url: ./competitions/santiago-street-lifting-open-2025
+                - cell [ref=e435]:
+                  - link "FinalRep" [ref=e436] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "15/03/2025" [ref=e437]
+                - cell "M" [ref=e438]
+                - cell "-73kg" [ref=e439]
+              - row [ref=e440]:
+                - cell "17" [ref=e441]
+                - cell [ref=e442]:
+                  - generic [ref=e444]:
+                    - link [ref=e445] [cursor=pointer]:
+                      - /url: ./countries/nl
+                      - img "Netherlands" [ref=e446]
+                    - link "Nadine Hettinga" [ref=e447] [cursor=pointer]:
+                      - /url: ./athletes/nadine-hettinga
+                - cell "291.25" [ref=e448]
+                - cell "109.10" [ref=e449]
+                - cell "22.5" [ref=e450]
+                - cell "55" [ref=e451]
+                - cell "81.25" [ref=e452]
+                - cell "132.5" [ref=e453]
+                - cell [ref=e454]:
+                  - link "Worlds" [ref=e455] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e456]:
+                  - link "FinalRep" [ref=e457] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e458]
+                - cell "F" [ref=e459]
+                - cell "-57kg" [ref=e460]
+              - row [ref=e461]:
+                - cell "18" [ref=e462]
+                - cell [ref=e463]:
+                  - generic [ref=e465]:
+                    - link [ref=e466] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e467]
+                    - link "Johan Sanon" [ref=e468] [cursor=pointer]:
+                      - /url: ./athletes/johan-sanon
+                - cell "501.75" [ref=e469]
+                - cell "108.63" [ref=e470]
+                - cell "33.75" [ref=e471]
+                - cell "90" [ref=e472]
+                - cell "158" [ref=e473]
+                - cell "220" [ref=e474]
+                - cell [ref=e475]:
+                  - link "Worlds" [ref=e476] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e477]:
+                  - link "FinalRep" [ref=e478] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e479]
+                - cell "M" [ref=e480]
+                - cell "-73kg" [ref=e481]
+              - row [ref=e482]:
+                - cell "19" [ref=e483]
+                - cell [ref=e484]:
+                  - generic [ref=e486]:
+                    - link [ref=e487] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e488]
+                    - link "Julien Capdeville" [ref=e489] [cursor=pointer]:
+                      - /url: ./athletes/julien-capdeville
+                - cell "458.5" [ref=e490]
+                - cell "108.49" [ref=e491]
+                - cell "31.25" [ref=e492]
+                - cell "76.25" [ref=e493]
+                - cell "143.5" [ref=e494]
+                - cell "207.5" [ref=e495]
+                - cell [ref=e496]:
+                  - link "Euros" [ref=e497] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e498]:
+                  - link "FinalRep" [ref=e499] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e500]
+                - cell "M" [ref=e501]
+                - cell "-66kg" [ref=e502]
+              - row [ref=e503]:
+                - cell "20" [ref=e504]
+                - cell [ref=e505]:
+                  - generic [ref=e507]:
+                    - link [ref=e508] [cursor=pointer]:
+                      - /url: ./countries/nl
+                      - img "Netherlands" [ref=e509]
+                    - link "Jurvin Valdez" [ref=e510] [cursor=pointer]:
+                      - /url: ./athletes/jurvin-valdez
+                - cell "491.25" [ref=e511]
+                - cell "108.33" [ref=e512]
+                - cell "41.25" [ref=e513]
+                - cell "85" [ref=e514]
+                - cell "145" [ref=e515]
+                - cell "220" [ref=e516]
+                - cell [ref=e517]:
+                  - link "Euros" [ref=e518] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e519]:
+                  - link "FinalRep" [ref=e520] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e521]
+                - cell "M" [ref=e522]
+                - cell "-73kg" [ref=e523]
+              - row [ref=e524]:
+                - cell "21" [ref=e525]
+                - cell [ref=e526]:
+                  - generic [ref=e528]:
+                    - link [ref=e529] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e530]
+                    - link "Julie Brion" [ref=e531] [cursor=pointer]:
+                      - /url: ./athletes/julie-brion
+                - cell "287.5" [ref=e532]
+                - cell "108.30" [ref=e533]
+                - cell "15" [ref=e534]
+                - cell "35" [ref=e535]
+                - cell "82.5" [ref=e536]
+                - cell "155" [ref=e537]
+                - cell [ref=e538]:
+                  - link "Euros" [ref=e539] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e540]:
+                  - link "FinalRep" [ref=e541] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e542]
+                - cell "F" [ref=e543]
+                - cell "-57kg" [ref=e544]
+              - row [ref=e545]:
+                - cell "22" [ref=e546]
+                - cell [ref=e547]:
+                  - generic [ref=e549]:
+                    - link [ref=e550] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e551]
+                    - link "Raul Teslevici" [ref=e552] [cursor=pointer]:
+                      - /url: ./athletes/raul-teslevici
+                - cell "518.75" [ref=e553]
+                - cell "108.28" [ref=e554]
+                - cell "40" [ref=e555]
+                - cell "101.25" [ref=e556]
+                - cell "142.5" [ref=e557]
+                - cell "235" [ref=e558]
+                - cell [ref=e559]:
+                  - link "Worlds" [ref=e560] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e561]:
+                  - link "FinalRep" [ref=e562] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e563]
+                - cell "M" [ref=e564]
+                - cell "-80kg" [ref=e565]
+              - row [ref=e566]:
+                - cell "23" [ref=e567]
+                - cell [ref=e568]:
+                  - generic [ref=e570]:
+                    - link [ref=e571] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e572]
+                    - link "Agathe Casanova" [ref=e573] [cursor=pointer]:
+                      - /url: ./athletes/agathe-casanova
+                - cell "248.75" [ref=e574]
+                - cell "108.26" [ref=e575]
+                - cell "15" [ref=e576]
+                - cell "35" [ref=e577]
+                - cell "66.25" [ref=e578]
+                - cell "132.5" [ref=e579]
+                - cell [ref=e580]:
+                  - link "Euros" [ref=e581] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e582]:
+                  - link "FinalRep" [ref=e583] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e584]
+                - cell "F" [ref=e585]
+                - cell "-52kg" [ref=e586]
+              - row [ref=e587]:
+                - cell "24" [ref=e588]
+                - cell [ref=e589]:
+                  - generic [ref=e591]:
+                    - link [ref=e592] [cursor=pointer]:
+                      - /url: ./countries/pt
+                      - img "Portugal" [ref=e593]
+                    - link "Lionel Da Silva" [ref=e594] [cursor=pointer]:
+                      - /url: ./athletes/lionel-da-silva
+                - cell "493.75" [ref=e595]
+                - cell "108.08" [ref=e596]
+                - cell "45" [ref=e597]
+                - cell "91.25" [ref=e598]
+                - cell "137.5" [ref=e599]
+                - cell "220" [ref=e600]
+                - cell [ref=e601]:
+                  - link "Élite" [ref=e602] [cursor=pointer]:
+                    - /url: ./competitions/fnsl-elite-2026
+                - cell [ref=e603]:
+                  - link "FNSL" [ref=e604] [cursor=pointer]:
+                    - /url: ./federations/fnsl
+                - cell "15/05/2026" [ref=e605]
+                - cell "M" [ref=e606]
+                - cell "-73kg" [ref=e607]
+              - row [ref=e608]:
+                - cell "25" [ref=e609]
+                - cell [ref=e610]:
+                  - generic [ref=e612]:
+                    - link [ref=e613] [cursor=pointer]:
+                      - /url: ./countries/de
+                      - img "Germany" [ref=e614]
+                    - link "Meike Pohl" [ref=e615] [cursor=pointer]:
+                      - /url: ./athletes/meike-pohl
+                - cell "295.25" [ref=e616]
+                - cell "107.94" [ref=e617]
+                - cell "15" [ref=e618]
+                - cell "41.25" [ref=e619]
+                - cell "72.5" [ref=e620]
+                - cell "166.5" [ref=e621]
+                - cell [ref=e622]:
+                  - link "Euros" [ref=e623] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e624]:
+                  - link "FinalRep" [ref=e625] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e626]
+                - cell "F" [ref=e627]
+                - cell "-63kg" [ref=e628]
+              - row [ref=e629]:
+                - cell "26" [ref=e630]
+                - cell [ref=e631]:
+                  - generic [ref=e633]:
+                    - link [ref=e634] [cursor=pointer]:
+                      - /url: ./countries/pl
+                      - img "Poland" [ref=e635]
+                    - link "Mateusz Koślak" [ref=e636] [cursor=pointer]:
+                      - /url: ./athletes/mateusz-koslak
+                - cell "453.75" [ref=e637]
+                - cell "107.91" [ref=e638]
+                - cell "25" [ref=e639]
+                - cell "101.25" [ref=e640]
+                - cell "140" [ref=e641]
+                - cell "187.5" [ref=e642]
+                - cell [ref=e643]:
+                  - link "Euros" [ref=e644] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e645]:
+                  - link "FinalRep" [ref=e646] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e647]
+                - cell "M" [ref=e648]
+                - cell "-66kg" [ref=e649]
+              - row [ref=e650]:
+                - cell "27" [ref=e651]
+                - cell [ref=e652]:
+                  - generic [ref=e654]:
+                    - link [ref=e655] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e656]
+                    - link "Maxime Poitevin" [ref=e657] [cursor=pointer]:
+                      - /url: ./athletes/maxime-poitevin
+                - cell "517.5" [ref=e658]
+                - cell "107.11" [ref=e659]
+                - cell "26.25" [ref=e660]
+                - cell "96.25" [ref=e661]
+                - cell "150" [ref=e662]
+                - cell "245" [ref=e663]
+                - cell [ref=e664]:
+                  - link "Élite" [ref=e665] [cursor=pointer]:
+                    - /url: ./competitions/fnsl-elite-2026
+                - cell [ref=e666]:
+                  - link "FNSL" [ref=e667] [cursor=pointer]:
+                    - /url: ./federations/fnsl
+                - cell "15/05/2026" [ref=e668]
+                - cell "M" [ref=e669]
+                - cell "-80kg" [ref=e670]
+              - row [ref=e671]:
+                - cell "28" [ref=e672]
+                - cell [ref=e673]:
+                  - generic [ref=e675]:
+                    - link [ref=e676] [cursor=pointer]:
+                      - /url: ./countries/nl
+                      - img "Netherlands" [ref=e677]
+                    - link "Daniël Wassenaar" [ref=e678] [cursor=pointer]:
+                      - /url: ./athletes/daniel-wassenaar
+                - cell "522.75" [ref=e679]
+                - cell "107.10" [ref=e680]
+                - cell "34" [ref=e681]
+                - cell "100.25" [ref=e682]
+                - cell "163" [ref=e683]
+                - cell "225.5" [ref=e684]
+                - cell [ref=e685]:
+                  - link "Dutch Streetlifting Nationals" [ref=e686] [cursor=pointer]:
+                    - /url: ./competitions/nca-dutch-streetlifting-nationals-2026
+                - cell [ref=e687]:
+                  - link "NCA" [ref=e688] [cursor=pointer]:
+                    - /url: ./federations/nca
+                - cell "03/04/2026" [ref=e689]
+                - cell "M" [ref=e690]
+                - cell "-80kg" [ref=e691]
+              - row [ref=e692]:
+                - cell "29" [ref=e693]
+                - cell [ref=e694]:
+                  - generic [ref=e696]:
+                    - link [ref=e697] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e698]
+                    - link "Dylan Heurteux" [ref=e699] [cursor=pointer]:
+                      - /url: ./athletes/dylan-heurteux
+                - cell "575" [ref=e700]
+                - cell "107.02" [ref=e701]
+                - cell "47.5" [ref=e702]
+                - cell "107.5" [ref=e703]
+                - cell "180" [ref=e704]
+                - cell "240" [ref=e705]
+                - cell [ref=e706]:
+                  - link "Élite" [ref=e707] [cursor=pointer]:
+                    - /url: ./competitions/fnsl-elite-2026
+                - cell [ref=e708]:
+                  - link "FNSL" [ref=e709] [cursor=pointer]:
+                    - /url: ./federations/fnsl
+                - cell "15/05/2026" [ref=e710]
+                - cell "M" [ref=e711]
+                - cell "-94kg" [ref=e712]
+              - row [ref=e713]:
+                - cell "30" [ref=e714]
+                - cell [ref=e715]:
+                  - generic [ref=e717]:
+                    - link [ref=e718] [cursor=pointer]:
+                      - /url: ./countries/es
+                      - img "Spain" [ref=e719]
+                    - link "Anaïs Lozano Rojas" [ref=e720] [cursor=pointer]:
+                      - /url: ./athletes/anais-lozano-rojas
+                - cell "258.75" [ref=e721]
+                - cell "106.75" [ref=e722]
+                - cell "17.5" [ref=e723]
+                - cell "33.75" [ref=e724]
+                - cell "62.5" [ref=e725]
+                - cell "145" [ref=e726]
+                - cell [ref=e727]:
+                  - link "German Open" [ref=e728] [cursor=pointer]:
+                    - /url: ./competitions/german-open-2025
+                - cell [ref=e729]:
+                  - link "FinalRep" [ref=e730] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "14/06/2025" [ref=e731]
+                - cell "F" [ref=e732]
+                - cell "-52kg" [ref=e733]
+              - row [ref=e734]:
+                - cell "31" [ref=e735]
+                - cell [ref=e736]:
+                  - generic [ref=e738]:
+                    - link [ref=e739] [cursor=pointer]:
+                      - /url: ./countries/lb
+                      - img "Lebanon" [ref=e740]
+                    - link "Marc Nassif" [ref=e741] [cursor=pointer]:
+                      - /url: ./athletes/marc-nassif
+                - cell "585" [ref=e742]
+                - cell "106.74" [ref=e743]
+                - cell "35" [ref=e744]
+                - cell "107.5" [ref=e745]
+                - cell "172.5" [ref=e746]
+                - cell "270" [ref=e747]
+                - cell [ref=e748]:
+                  - link "San Marino Open" [ref=e749] [cursor=pointer]:
+                    - /url: ./competitions/san-marino-open-2026
+                - cell [ref=e750]:
+                  - link "EVOLVE" [ref=e751] [cursor=pointer]:
+                    - /url: ./federations/evolve
+                - cell "23/05/2026" [ref=e752]
+                - cell "M" [ref=e753]
+                - cell "+101kg" [ref=e754]
+              - row [ref=e755]:
+                - cell "32" [ref=e756]
+                - cell [ref=e757]:
+                  - generic [ref=e759]:
+                    - link [ref=e760] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e761]
+                    - link "Kevin Gogo" [ref=e762] [cursor=pointer]:
+                      - /url: ./athletes/kevin-gogo
+                - cell "570" [ref=e763]
+                - cell "106.31" [ref=e764]
+                - cell "36.25" [ref=e765]
+                - cell "91.25" [ref=e766]
+                - cell "180" [ref=e767]
+                - cell "262.5" [ref=e768]
+                - cell [ref=e769]:
+                  - link "Euros" [ref=e770] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e771]:
+                  - link "FinalRep" [ref=e772] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e773]
+                - cell "M" [ref=e774]
+                - cell "-94kg" [ref=e775]
+              - row [ref=e776]:
+                - cell "33" [ref=e777]
+                - cell [ref=e778]:
+                  - generic [ref=e780]:
+                    - link [ref=e781] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e782]
+                    - link "Théo Goutte-Toquet" [ref=e783] [cursor=pointer]:
+                      - /url: ./athletes/theo-goutte-toquet
+                - cell "570.25" [ref=e784]
+                - cell "106.17" [ref=e785]
+                - cell "25" [ref=e786]
+                - cell "97.5" [ref=e787]
+                - cell "190.25" [ref=e788]
+                - cell "257.5" [ref=e789]
+                - cell [ref=e790]:
+                  - link "Euros" [ref=e791] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e792]:
+                  - link "FinalRep" [ref=e793] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e794]
+                - cell "M" [ref=e795]
+                - cell "-94kg" [ref=e796]
+              - row [ref=e797]:
+                - cell "34" [ref=e798]
+                - cell [ref=e799]:
+                  - generic [ref=e801]:
+                    - link [ref=e802] [cursor=pointer]:
+                      - /url: ./countries/es
+                      - img "Spain" [ref=e803]
+                    - link "Marc Altarriba Coronado" [ref=e804] [cursor=pointer]:
+                      - /url: ./athletes/marc-altarriba-coronado
+                - cell "547.5" [ref=e805]
+                - cell "105.87" [ref=e806]
+                - cell "30" [ref=e807]
+                - cell "82.5" [ref=e808]
+                - cell "170" [ref=e809]
+                - cell "265" [ref=e810]
+                - cell [ref=e811]:
+                  - link "Worlds" [ref=e812] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e813]:
+                  - link "FinalRep" [ref=e814] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e815]
+                - cell "M" [ref=e816]
+                - cell "-87kg" [ref=e817]
+              - row [ref=e818]:
+                - cell "35" [ref=e819]
+                - cell [ref=e820]:
+                  - generic [ref=e822]:
+                    - link [ref=e823] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e824]
+                    - link "Florent Geschlecht" [ref=e825] [cursor=pointer]:
+                      - /url: ./athletes/florent-geschlecht
+                - cell "449" [ref=e826]
+                - cell "105.83" [ref=e827]
+                - cell "36.5" [ref=e828]
+                - cell "95" [ref=e829]
+                - cell "127.5" [ref=e830]
+                - cell "190" [ref=e831]
+                - cell [ref=e832]:
+                  - link "Élite" [ref=e833] [cursor=pointer]:
+                    - /url: ./competitions/fnsl-elite-2026
+                - cell [ref=e834]:
+                  - link "FNSL" [ref=e835] [cursor=pointer]:
+                    - /url: ./federations/fnsl
+                - cell "15/05/2026" [ref=e836]
+                - cell "M" [ref=e837]
+                - cell "-66kg" [ref=e838]
+              - row [ref=e839]:
+                - cell "36" [ref=e840]
+                - cell [ref=e841]:
+                  - generic [ref=e843]:
+                    - link [ref=e844] [cursor=pointer]:
+                      - /url: ./countries/tn
+                      - img "Tunisia" [ref=e845]
+                    - link "Youssef Bouida" [ref=e846] [cursor=pointer]:
+                      - /url: ./athletes/youssef-bouida
+                - cell "448" [ref=e847]
+                - cell "105.59" [ref=e848]
+                - cell "43" [ref=e849]
+                - cell "100" [ref=e850]
+                - cell "117.5" [ref=e851]
+                - cell "187.5" [ref=e852]
+                - cell [ref=e853]:
+                  - link "Worlds" [ref=e854] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e855]:
+                  - link "FinalRep" [ref=e856] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e857]
+                - cell "M" [ref=e858]
+                - cell "-66kg" [ref=e859]
+              - row [ref=e860]:
+                - cell "37" [ref=e861]
+                - cell [ref=e862]:
+                  - generic [ref=e864]:
+                    - link [ref=e865] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e866]
+                    - link "Yohann Capdeville" [ref=e867] [cursor=pointer]:
+                      - /url: ./athletes/yohann-capdeville
+                - cell "485" [ref=e868]
+                - cell "105.52" [ref=e869]
+                - cell "35" [ref=e870]
+                - cell "85" [ref=e871]
+                - cell "150" [ref=e872]
+                - cell "215" [ref=e873]
+                - cell [ref=e874]:
+                  - link "Ace Cup" [ref=e875] [cursor=pointer]:
+                    - /url: ./competitions/ace-cup-2026
+                - cell [ref=e876]:
+                  - link "Ace Squad" [ref=e877] [cursor=pointer]:
+                    - /url: ./federations/ace-squad
+                - cell "23/05/2026" [ref=e878]
+                - cell "M" [ref=e879]
+                - cell "-73kg" [ref=e880]
+              - row [ref=e881]:
+                - cell "38" [ref=e882]
+                - cell [ref=e883]:
+                  - generic [ref=e885]:
+                    - link [ref=e886] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e887]
+                    - link "François Li" [ref=e888] [cursor=pointer]:
+                      - /url: ./athletes/francois-li
+                - cell "483.75" [ref=e889]
+                - cell "105.24" [ref=e890]
+                - cell "33.75" [ref=e891]
+                - cell "92.5" [ref=e892]
+                - cell "152.5" [ref=e893]
+                - cell "205" [ref=e894]
+                - cell [ref=e895]:
+                  - link "Euros" [ref=e896] [cursor=pointer]:
+                    - /url: ./competitions/euros-2024
+                - cell [ref=e897]:
+                  - link "FinalRep" [ref=e898] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/11/2024" [ref=e899]
+                - cell "M" [ref=e900]
+                - cell "-73kg" [ref=e901]
+              - row [ref=e902]:
+                - cell "39" [ref=e903]
+                - cell [ref=e904]:
+                  - generic [ref=e906]:
+                    - link [ref=e907] [cursor=pointer]:
+                      - /url: ./countries/cz
+                      - img "Czechia" [ref=e908]
+                    - link "Kateřina Procházková" [ref=e909] [cursor=pointer]:
+                      - /url: ./athletes/katerina-prochazkova
+                - cell "250" [ref=e910]
+                - cell "105.23" [ref=e911]
+                - cell "2.5" [ref=e912]
+                - cell "40" [ref=e913]
+                - cell "42.5" [ref=e914]
+                - cell "165" [ref=e915]
+                - cell [ref=e916]:
+                  - link "Final Rep - Czechia Underground" [ref=e917] [cursor=pointer]:
+                    - /url: ./competitions/czechia-underground-2025
+                - cell [ref=e918]:
+                  - link "FinalRep" [ref=e919] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "13/12/2025" [ref=e920]
+                - cell "F" [ref=e921]
+                - cell "-" [ref=e922]
+              - row [ref=e923]:
+                - cell "40" [ref=e924]
+                - cell [ref=e925]:
+                  - generic [ref=e927]:
+                    - link [ref=e928] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e929]
+                    - link "Domenico Nicolosi" [ref=e930] [cursor=pointer]:
+                      - /url: ./athletes/domenico-nicolosi
+                - cell "550.5" [ref=e931]
+                - cell "105.17" [ref=e932]
+                - cell "45" [ref=e933]
+                - cell "120.5" [ref=e934]
+                - cell "157.5" [ref=e935]
+                - cell "227.5" [ref=e936]
+                - cell [ref=e937]:
+                  - link "Italian National" [ref=e938] [cursor=pointer]:
+                    - /url: ./competitions/sli-italian-national-2026
+                - cell [ref=e939]:
+                  - link "SLI" [ref=e940] [cursor=pointer]:
+                    - /url: ./federations/sli
+                - cell "18/04/2026" [ref=e941]
+                - cell "M" [ref=e942]
+                - cell "-87kg" [ref=e943]
+              - row [ref=e944]:
+                - cell "41" [ref=e945]
+                - cell [ref=e946]:
+                  - generic [ref=e948]:
+                    - link [ref=e949] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e950]
+                    - link "Lorenzo Mazzi" [ref=e951] [cursor=pointer]:
+                      - /url: ./athletes/lorenzo-mazzi
+                - cell "484.25" [ref=e952]
+                - cell "104.97" [ref=e953]
+                - cell "25" [ref=e954]
+                - cell "82.5" [ref=e955]
+                - cell "133.75" [ref=e956]
+                - cell "243" [ref=e957]
+                - cell [ref=e958]:
+                  - link "Euros" [ref=e959] [cursor=pointer]:
+                    - /url: ./competitions/euros-2024
+                - cell [ref=e960]:
+                  - link "FinalRep" [ref=e961] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/11/2024" [ref=e962]
+                - cell "M" [ref=e963]
+                - cell "-73kg" [ref=e964]
+              - row [ref=e965]:
+                - cell "42" [ref=e966]
+                - cell [ref=e967]:
+                  - generic [ref=e969]:
+                    - link [ref=e970] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e971]
+                    - link "Mattia Martinelli" [ref=e972] [cursor=pointer]:
+                      - /url: ./athletes/mattia-martinelli
+                - cell "518" [ref=e973]
+                - cell "104.96" [ref=e974]
+                - cell "40.5" [ref=e975]
+                - cell "95" [ref=e976]
+                - cell "140" [ref=e977]
+                - cell "242.5" [ref=e978]
+                - cell [ref=e979]:
+                  - link "Italian National" [ref=e980] [cursor=pointer]:
+                    - /url: ./competitions/sli-italian-national-2026
+                - cell [ref=e981]:
+                  - link "SLI" [ref=e982] [cursor=pointer]:
+                    - /url: ./federations/sli
+                - cell "18/04/2026" [ref=e983]
+                - cell "M" [ref=e984]
+                - cell "-80kg" [ref=e985]
+              - row [ref=e986]:
+                - cell "43" [ref=e987]
+                - cell [ref=e988]:
+                  - generic [ref=e990]:
+                    - link [ref=e991] [cursor=pointer]:
+                      - /url: ./countries/pl
+                      - img "Poland" [ref=e992]
+                    - link "Bartlomiej Orchowski" [ref=e993] [cursor=pointer]:
+                      - /url: ./athletes/bartlomiej-orchowski
+                - cell "520" [ref=e994]
+                - cell "104.93" [ref=e995]
+                - cell "45" [ref=e996]
+                - cell "95" [ref=e997]
+                - cell "160" [ref=e998]
+                - cell "220" [ref=e999]
+                - cell [ref=e1000]:
+                  - link "Euros" [ref=e1001] [cursor=pointer]:
+                    - /url: ./competitions/euros-2024
+                - cell [ref=e1002]:
+                  - link "FinalRep" [ref=e1003] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/11/2024" [ref=e1004]
+                - cell "M" [ref=e1005]
+                - cell "-80kg" [ref=e1006]
+              - row [ref=e1007]:
+                - cell "44" [ref=e1008]
+                - cell [ref=e1009]:
+                  - generic [ref=e1011]:
+                    - link [ref=e1012] [cursor=pointer]:
+                      - /url: ./countries/es
+                      - img "Spain" [ref=e1013]
+                    - link "Jesús Toscano Gómez" [ref=e1014] [cursor=pointer]:
+                      - /url: ./athletes/jesus-toscano-gomez
+                - cell "482.5" [ref=e1015]
+                - cell "104.72" [ref=e1016]
+                - cell "35" [ref=e1017]
+                - cell "82.5" [ref=e1018]
+                - cell "140" [ref=e1019]
+                - cell "225" [ref=e1020]
+                - cell [ref=e1021]:
+                  - link "UK & IRE Nationals" [ref=e1022] [cursor=pointer]:
+                    - /url: ./competitions/bodystrong-uk-ire-nationals-2025
+                - cell [ref=e1023]:
+                  - link "Bodystrong" [ref=e1024] [cursor=pointer]:
+                    - /url: ./federations/bodystrong
+                - cell "14/06/2025" [ref=e1025]
+                - cell "M" [ref=e1026]
+                - cell "-73kg" [ref=e1027]
+              - row [ref=e1028]:
+                - cell "45" [ref=e1029]
+                - cell [ref=e1030]:
+                  - generic [ref=e1032]:
+                    - link [ref=e1033] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1034]
+                    - link "Leonardo Giliberto" [ref=e1035] [cursor=pointer]:
+                      - /url: ./athletes/leonardo-giliberto
+                - cell "571.25" [ref=e1036]
+                - cell "104.67" [ref=e1037]
+                - cell "25" [ref=e1038]
+                - cell "93.75" [ref=e1039]
+                - cell "157.5" [ref=e1040]
+                - cell "295" [ref=e1041]
+                - cell [ref=e1042]:
+                  - link "Euros" [ref=e1043] [cursor=pointer]:
+                    - /url: ./competitions/euros-2024
+                - cell [ref=e1044]:
+                  - link "FinalRep" [ref=e1045] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/11/2024" [ref=e1046]
+                - cell "M" [ref=e1047]
+                - cell "+94kg" [ref=e1048]
+              - row [ref=e1049]:
+                - cell "46" [ref=e1050]
+                - cell [ref=e1051]:
+                  - generic [ref=e1053]:
+                    - link [ref=e1054] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1055]
+                    - link "Jean-Rodrigue Perlé" [ref=e1056] [cursor=pointer]:
+                      - /url: ./athletes/jean-rodrigue-perle
+                - cell "516.25" [ref=e1057]
+                - cell "104.65" [ref=e1058]
+                - cell "41.25" [ref=e1059]
+                - cell "105" [ref=e1060]
+                - cell "145" [ref=e1061]
+                - cell "225" [ref=e1062]
+                - cell [ref=e1063]:
+                  - link "Élite" [ref=e1064] [cursor=pointer]:
+                    - /url: ./competitions/fnsl-elite-2026
+                - cell [ref=e1065]:
+                  - link "FNSL" [ref=e1066] [cursor=pointer]:
+                    - /url: ./federations/fnsl
+                - cell "15/05/2026" [ref=e1067]
+                - cell "M" [ref=e1068]
+                - cell "-80kg" [ref=e1069]
+              - row [ref=e1070]:
+                - cell "47" [ref=e1071]
+                - cell [ref=e1072]:
+                  - generic [ref=e1074]:
+                    - link [ref=e1075] [cursor=pointer]:
+                      - /url: ./countries/de
+                      - img "Germany" [ref=e1076]
+                    - link "Christina Fröhlich" [ref=e1077] [cursor=pointer]:
+                      - /url: ./athletes/christina-frohlich
+                - cell "293.75" [ref=e1078]
+                - cell "104.45" [ref=e1079]
+                - cell "21.25" [ref=e1080]
+                - cell "55" [ref=e1081]
+                - cell "75" [ref=e1082]
+                - cell "142.5" [ref=e1083]
+                - cell [ref=e1084]:
+                  - link "DACH Cup" [ref=e1085] [cursor=pointer]:
+                    - /url: ./competitions/dach-cup-2026
+                - cell [ref=e1086]:
+                  - link "FinalRep" [ref=e1087] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "06/06/2026" [ref=e1088]
+                - cell "F" [ref=e1089]
+                - cell "-70kg" [ref=e1090]
+              - row [ref=e1091]:
+                - cell "48" [ref=e1092]
+                - cell [ref=e1093]:
+                  - generic [ref=e1095]:
+                    - link [ref=e1096] [cursor=pointer]:
+                      - /url: ./countries/gb
+                      - img "United Kingdom" [ref=e1097]
+                    - link "Faye Butler" [ref=e1098] [cursor=pointer]:
+                      - /url: ./athletes/faye-butler
+                - cell "286.5" [ref=e1099]
+                - cell "104.43" [ref=e1100]
+                - cell "16.25" [ref=e1101]
+                - cell "46.25" [ref=e1102]
+                - cell "84" [ref=e1103]
+                - cell "140" [ref=e1104]
+                - cell [ref=e1105]:
+                  - link "Worlds" [ref=e1106] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e1107]:
+                  - link "FinalRep" [ref=e1108] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e1109]
+                - cell "F" [ref=e1110]
+                - cell "-63kg" [ref=e1111]
+              - row [ref=e1112]:
+                - cell "49" [ref=e1113]
+                - cell [ref=e1114]:
+                  - generic [ref=e1116]:
+                    - link [ref=e1117] [cursor=pointer]:
+                      - /url: ./countries/de
+                      - img "Germany" [ref=e1118]
+                    - link "Tonio Zeidler" [ref=e1119] [cursor=pointer]:
+                      - /url: ./athletes/tonio-zeidler
+                - cell "577.5" [ref=e1120]
+                - cell "104.43" [ref=e1121]
+                - cell "15" [ref=e1122]
+                - cell "90" [ref=e1123]
+                - cell "187.5" [ref=e1124]
+                - cell "285" [ref=e1125]
+                - cell [ref=e1126]:
+                  - link "Worlds" [ref=e1127] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e1128]:
+                  - link "FinalRep" [ref=e1129] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e1130]
+                - cell "M" [ref=e1131]
+                - cell "+101kg" [ref=e1132]
+              - row [ref=e1133]:
+                - cell "50" [ref=e1134]
+                - cell [ref=e1135]:
+                  - generic [ref=e1137]:
+                    - link [ref=e1138] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1139]
+                    - link "Becaye Sane" [ref=e1140] [cursor=pointer]:
+                      - /url: ./athletes/becaye-sane
+                - cell "540" [ref=e1141]
+                - cell "104.36" [ref=e1142]
+                - cell "50" [ref=e1143]
+                - cell "102.5" [ref=e1144]
+                - cell "147.5" [ref=e1145]
+                - cell "240" [ref=e1146]
+                - cell [ref=e1147]:
+                  - link "Euros" [ref=e1148] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1149]:
+                  - link "FinalRep" [ref=e1150] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1151]
+                - cell "M" [ref=e1152]
+                - cell "-87kg" [ref=e1153]
+              - row [ref=e1154]:
+                - cell "51" [ref=e1155]
+                - cell [ref=e1156]:
+                  - generic [ref=e1158]:
+                    - link [ref=e1159] [cursor=pointer]:
+                      - /url: ./countries/my
+                      - img "Malaysia" [ref=e1160]
+                    - link "Hakim Azahar" [ref=e1161] [cursor=pointer]:
+                      - /url: ./athletes/hakim-azahar
+                - cell "415" [ref=e1162]
+                - cell "104.24" [ref=e1163]
+                - cell "32.5" [ref=e1164]
+                - cell "70" [ref=e1165]
+                - cell "142.5" [ref=e1166]
+                - cell "170" [ref=e1167]
+                - cell [ref=e1168]:
+                  - link "Singapore Open" [ref=e1169] [cursor=pointer]:
+                    - /url: ./competitions/singapore-open-2026
+                - cell [ref=e1170]:
+                  - link "Singapore Streetlifting Federation" [ref=e1171] [cursor=pointer]:
+                    - /url: ./federations/singapore-streetlifting-federation
+                - cell "11/04/2026" [ref=e1172]
+                - cell "M" [ref=e1173]
+                - cell "-66kg" [ref=e1174]
+              - row [ref=e1175]:
+                - cell "52" [ref=e1176]
+                - cell [ref=e1177]:
+                  - generic [ref=e1179]:
+                    - link [ref=e1180] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1181]
+                    - link "Valerio Tabarin" [ref=e1182] [cursor=pointer]:
+                      - /url: ./athletes/valerio-tabarin
+                - cell "541.25" [ref=e1183]
+                - cell "104.18" [ref=e1184]
+                - cell "37.5" [ref=e1185]
+                - cell "93.75" [ref=e1186]
+                - cell "157.5" [ref=e1187]
+                - cell "252.5" [ref=e1188]
+                - cell [ref=e1189]:
+                  - link "Italian National" [ref=e1190] [cursor=pointer]:
+                    - /url: ./competitions/sli-italian-national-2026
+                - cell [ref=e1191]:
+                  - link "SLI" [ref=e1192] [cursor=pointer]:
+                    - /url: ./federations/sli
+                - cell "18/04/2026" [ref=e1193]
+                - cell "M" [ref=e1194]
+                - cell "-87kg" [ref=e1195]
+              - row [ref=e1196]:
+                - cell "53" [ref=e1197]
+                - cell [ref=e1198]:
+                  - generic [ref=e1200]:
+                    - link [ref=e1201] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1202]
+                    - link "Michael" [ref=e1203] [cursor=pointer]:
+                      - /url: ./athletes/michael
+                - cell "519" [ref=e1204]
+                - cell "104.16" [ref=e1205]
+                - cell "30" [ref=e1206]
+                - cell "87.5" [ref=e1207]
+                - cell "130" [ref=e1208]
+                - cell "271.5" [ref=e1209]
+                - cell [ref=e1210]:
+                  - link "Italian National" [ref=e1211] [cursor=pointer]:
+                    - /url: ./competitions/sli-italian-national-2026
+                - cell [ref=e1212]:
+                  - link "SLI" [ref=e1213] [cursor=pointer]:
+                    - /url: ./federations/sli
+                - cell "18/04/2026" [ref=e1214]
+                - cell "M" [ref=e1215]
+                - cell "-80kg" [ref=e1216]
+              - row [ref=e1217]:
+                - cell "54" [ref=e1218]
+                - cell [ref=e1219]:
+                  - generic [ref=e1221]:
+                    - link [ref=e1222] [cursor=pointer]:
+                      - /url: ./countries/lb
+                      - img "Lebanon" [ref=e1223]
+                    - link "Ali Shaaben" [ref=e1224] [cursor=pointer]:
+                      - /url: ./athletes/ali-shaaben
+                - cell "478.75" [ref=e1225]
+                - cell "104.16" [ref=e1226]
+                - cell "42.5" [ref=e1227]
+                - cell "100" [ref=e1228]
+                - cell "161.25" [ref=e1229]
+                - cell "175" [ref=e1230]
+                - cell [ref=e1231]:
+                  - link "DACH Cup" [ref=e1232] [cursor=pointer]:
+                    - /url: ./competitions/dach-cup-2026
+                - cell [ref=e1233]:
+                  - link "FinalRep" [ref=e1234] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "06/06/2026" [ref=e1235]
+                - cell "M" [ref=e1236]
+                - cell "-73kg" [ref=e1237]
+              - row [ref=e1238]:
+                - cell "55" [ref=e1239]
+                - cell [ref=e1240]:
+                  - generic [ref=e1242]:
+                    - link [ref=e1243] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1244]
+                    - link "Florence Wong" [ref=e1245] [cursor=pointer]:
+                      - /url: ./athletes/florence-wong
+                - cell "292.5" [ref=e1246]
+                - cell "104.03" [ref=e1247]
+                - cell "12.5" [ref=e1248]
+                - cell "55" [ref=e1249]
+                - cell "70" [ref=e1250]
+                - cell "155" [ref=e1251]
+                - cell [ref=e1252]:
+                  - link "Worlds" [ref=e1253] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e1254]:
+                  - link "FinalRep" [ref=e1255] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e1256]
+                - cell "F" [ref=e1257]
+                - cell "-70kg" [ref=e1258]
+              - row [ref=e1259]:
+                - cell "56" [ref=e1260]
+                - cell [ref=e1261]:
+                  - generic [ref=e1263]:
+                    - link [ref=e1264] [cursor=pointer]:
+                      - /url: ./countries/es
+                      - img "Spain" [ref=e1265]
+                    - link "Pablo Reveriego Sansón" [ref=e1266] [cursor=pointer]:
+                      - /url: ./athletes/pablo-reveriego-sanson
+                - cell "477.5" [ref=e1267]
+                - cell "103.88" [ref=e1268]
+                - cell "27.5" [ref=e1269]
+                - cell "80" [ref=e1270]
+                - cell "140" [ref=e1271]
+                - cell "230" [ref=e1272]
+                - cell [ref=e1273]:
+                  - link "Euros" [ref=e1274] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1275]:
+                  - link "FinalRep" [ref=e1276] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1277]
+                - cell "M" [ref=e1278]
+                - cell "-73kg" [ref=e1279]
+              - row [ref=e1280]:
+                - cell "57" [ref=e1281]
+                - cell [ref=e1282]:
+                  - generic [ref=e1284]:
+                    - link [ref=e1285] [cursor=pointer]:
+                      - /url: ./countries/cz
+                      - img "Czechia" [ref=e1286]
+                    - link "Jan Makula" [ref=e1287] [cursor=pointer]:
+                      - /url: ./athletes/jan-makula
+                - cell "572.5" [ref=e1288]
+                - cell "103.85" [ref=e1289]
+                - cell "20" [ref=e1290]
+                - cell "92.5" [ref=e1291]
+                - cell "150" [ref=e1292]
+                - cell "310" [ref=e1293]
+                - cell [ref=e1294]:
+                  - link "Worlds" [ref=e1295] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2023
+                - cell [ref=e1296]:
+                  - link "FinalRep" [ref=e1297] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "30/09/2023" [ref=e1298]
+                - cell "M" [ref=e1299]
+                - cell "+94kg" [ref=e1300]
+              - row [ref=e1301]:
+                - cell "58" [ref=e1302]
+                - cell [ref=e1303]:
+                  - generic [ref=e1305]:
+                    - link [ref=e1306] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1307]
+                    - link "Myriam Chebira" [ref=e1308] [cursor=pointer]:
+                      - /url: ./athletes/myriam-chebira
+                - cell "291.25" [ref=e1309]
+                - cell "103.60" [ref=e1310]
+                - cell "7.5" [ref=e1311]
+                - cell "46.25" [ref=e1312]
+                - cell "77.5" [ref=e1313]
+                - cell "160" [ref=e1314]
+                - cell [ref=e1315]:
+                  - link "Euros" [ref=e1316] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1317]:
+                  - link "FinalRep" [ref=e1318] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1319]
+                - cell "F" [ref=e1320]
+                - cell "-70kg" [ref=e1321]
+              - row [ref=e1322]:
+                - cell "59" [ref=e1323]
+                - cell [ref=e1324]:
+                  - generic [ref=e1326]:
+                    - link [ref=e1327] [cursor=pointer]:
+                      - /url: ./countries/us
+                      - img "United States" [ref=e1328]
+                    - link "Danae Morgan" [ref=e1329] [cursor=pointer]:
+                      - /url: ./athletes/danae-morgan
+                - cell "291.25" [ref=e1330]
+                - cell "103.55" [ref=e1331]
+                - cell "20" [ref=e1332]
+                - cell "52.5" [ref=e1333]
+                - cell "76.25" [ref=e1334]
+                - cell "142.5" [ref=e1335]
+                - cell [ref=e1336]:
+                  - link "Nationals 3" [ref=e1337] [cursor=pointer]:
+                    - /url: ./competitions/usastreetlifting-nationals-3-2026
+                - cell [ref=e1338]:
+                  - link "USAStreetlifting" [ref=e1339] [cursor=pointer]:
+                    - /url: ./federations/usastreetlifting
+                - cell "16/05/2026" [ref=e1340]
+                - cell "F" [ref=e1341]
+                - cell "-70kg" [ref=e1342]
+              - row [ref=e1343]:
+                - cell "60" [ref=e1344]
+                - cell [ref=e1345]:
+                  - generic [ref=e1347]:
+                    - link [ref=e1348] [cursor=pointer]:
+                      - /url: ./countries/br
+                      - img "Brazil" [ref=e1349]
+                    - link "Carlos Czeszak" [ref=e1350] [cursor=pointer]:
+                      - /url: ./athletes/carlos-czeszak
+                - cell "435" [ref=e1351]
+                - cell "103.46" [ref=e1352]
+                - cell "27.5" [ref=e1353]
+                - cell "77.5" [ref=e1354]
+                - cell "122.5" [ref=e1355]
+                - cell "207.5" [ref=e1356]
+                - cell [ref=e1357]:
+                  - link "Worlds" [ref=e1358] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e1359]:
+                  - link "FinalRep" [ref=e1360] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e1361]
+                - cell "M" [ref=e1362]
+                - cell "-66kg" [ref=e1363]
+              - row [ref=e1364]:
+                - cell "61" [ref=e1365]
+                - cell [ref=e1366]:
+                  - generic [ref=e1368]:
+                    - link [ref=e1369] [cursor=pointer]:
+                      - /url: ./countries/de
+                      - img "Germany" [ref=e1370]
+                    - link "Nana Boison" [ref=e1371] [cursor=pointer]:
+                      - /url: ./athletes/nana-boison
+                - cell "435" [ref=e1372]
+                - cell "103.32" [ref=e1373]
+                - cell "27.5" [ref=e1374]
+                - cell "82.5" [ref=e1375]
+                - cell "120" [ref=e1376]
+                - cell "205" [ref=e1377]
+                - cell [ref=e1378]:
+                  - link "Worlds" [ref=e1379] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2025
+                - cell [ref=e1380]:
+                  - link "FinalRep" [ref=e1381] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "04/10/2025" [ref=e1382]
+                - cell "M" [ref=e1383]
+                - cell "-66kg" [ref=e1384]
+              - row [ref=e1385]:
+                - cell "62" [ref=e1386]
+                - cell [ref=e1387]:
+                  - generic [ref=e1389]:
+                    - link [ref=e1390] [cursor=pointer]:
+                      - /url: ./countries/nl
+                      - img "Netherlands" [ref=e1391]
+                    - link "Tim Engel" [ref=e1392] [cursor=pointer]:
+                      - /url: ./athletes/tim-engel
+                - cell "553.75" [ref=e1393]
+                - cell "103.24" [ref=e1394]
+                - cell "36.25" [ref=e1395]
+                - cell "100" [ref=e1396]
+                - cell "152.5" [ref=e1397]
+                - cell "265" [ref=e1398]
+                - cell [ref=e1399]:
+                  - link "Euros" [ref=e1400] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1401]:
+                  - link "FinalRep" [ref=e1402] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1403]
+                - cell "M" [ref=e1404]
+                - cell "-94kg" [ref=e1405]
+              - row [ref=e1406]:
+                - cell "63" [ref=e1407]
+                - cell [ref=e1408]:
+                  - generic [ref=e1410]:
+                    - link [ref=e1411] [cursor=pointer]:
+                      - /url: ./countries/au
+                      - img "Australia" [ref=e1412]
+                    - link "Liam Nalder" [ref=e1413] [cursor=pointer]:
+                      - /url: ./athletes/liam-nalder
+                - cell "500" [ref=e1414]
+                - cell "103.17" [ref=e1415]
+                - cell "30" [ref=e1416]
+                - cell "87.5" [ref=e1417]
+                - cell "155" [ref=e1418]
+                - cell "227.5" [ref=e1419]
+                - cell [ref=e1420]:
+                  - link "Australian National Finals" [ref=e1421] [cursor=pointer]:
+                    - /url: ./competitions/australian-national-finals-2026
+                - cell [ref=e1422]:
+                  - link "Streetlifting Australia" [ref=e1423] [cursor=pointer]:
+                    - /url: ./federations/streetlifting-australia
+                - cell "12/09/2026" [ref=e1424]
+                - cell "M" [ref=e1425]
+                - cell "-80kg" [ref=e1426]
+              - row [ref=e1427]:
+                - cell "64" [ref=e1428]
+                - cell [ref=e1429]:
+                  - generic [ref=e1431]:
+                    - link [ref=e1432] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1433]
+                    - link "Alessio Ceragioli" [ref=e1434] [cursor=pointer]:
+                      - /url: ./athletes/alessio-ceragioli
+                - cell "471.25" [ref=e1435]
+                - cell "103.15" [ref=e1436]
+                - cell "32.5" [ref=e1437]
+                - cell "82.5" [ref=e1438]
+                - cell "111.25" [ref=e1439]
+                - cell "245" [ref=e1440]
+                - cell [ref=e1441]:
+                  - link "Euros" [ref=e1442] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1443]:
+                  - link "FinalRep" [ref=e1444] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1445]
+                - cell "M" [ref=e1446]
+                - cell "-73kg" [ref=e1447]
+              - row [ref=e1448]:
+                - cell "65" [ref=e1449]
+                - cell [ref=e1450]:
+                  - generic [ref=e1452]:
+                    - link [ref=e1453] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1454]
+                    - link "Enzo Ingrassia" [ref=e1455] [cursor=pointer]:
+                      - /url: ./athletes/enzo-ingrassia
+                - cell "472.5" [ref=e1456]
+                - cell "103.05" [ref=e1457]
+                - cell "32.5" [ref=e1458]
+                - cell "70" [ref=e1459]
+                - cell "130" [ref=e1460]
+                - cell "240" [ref=e1461]
+                - cell [ref=e1462]:
+                  - link "Élite" [ref=e1463] [cursor=pointer]:
+                    - /url: ./competitions/fnsl-elite-2026
+                - cell [ref=e1464]:
+                  - link "FNSL" [ref=e1465] [cursor=pointer]:
+                    - /url: ./federations/fnsl
+                - cell "15/05/2026" [ref=e1466]
+                - cell "M" [ref=e1467]
+                - cell "-73kg" [ref=e1468]
+              - row [ref=e1469]:
+                - cell "66" [ref=e1470]
+                - cell [ref=e1471]:
+                  - generic [ref=e1473]:
+                    - link [ref=e1474] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1475]
+                    - link "Giorgia Galasi" [ref=e1476] [cursor=pointer]:
+                      - /url: ./athletes/giorgia-galasi
+                - cell "288.75" [ref=e1477]
+                - cell "103.04" [ref=e1478]
+                - cell "17.5" [ref=e1479]
+                - cell "51.25" [ref=e1480]
+                - cell "70" [ref=e1481]
+                - cell "150" [ref=e1482]
+                - cell [ref=e1483]:
+                  - link "Euros" [ref=e1484] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1485]:
+                  - link "FinalRep" [ref=e1486] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1487]
+                - cell "F" [ref=e1488]
+                - cell "-70kg" [ref=e1489]
+              - row [ref=e1490]:
+                - cell "67" [ref=e1491]
+                - cell [ref=e1492]:
+                  - generic [ref=e1494]:
+                    - link [ref=e1495] [cursor=pointer]:
+                      - /url: ./countries/pl
+                      - img "Poland" [ref=e1496]
+                    - link "Hubert Chwałek" [ref=e1497] [cursor=pointer]:
+                      - /url: ./athletes/hubert-chwałek
+                - cell "435" [ref=e1498]
+                - cell "102.93" [ref=e1499]
+                - cell "35" [ref=e1500]
+                - cell "82.5" [ref=e1501]
+                - cell "127.5" [ref=e1502]
+                - cell "190" [ref=e1503]
+                - cell [ref=e1504]:
+                  - link "Euros" [ref=e1505] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1506]:
+                  - link "FinalRep" [ref=e1507] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1508]
+                - cell "M" [ref=e1509]
+                - cell "-66kg" [ref=e1510]
+              - row [ref=e1511]:
+                - cell "68" [ref=e1512]
+                - cell [ref=e1513]:
+                  - generic [ref=e1515]:
+                    - link [ref=e1516] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1517]
+                    - link "Guilhemette Miche de Malleray" [ref=e1518] [cursor=pointer]:
+                      - /url: ./athletes/guilhemette-miche-de-malleray
+                - cell "289.5" [ref=e1519]
+                - cell "102.91" [ref=e1520]
+                - cell "12.5" [ref=e1521]
+                - cell "48.75" [ref=e1522]
+                - cell "80.75" [ref=e1523]
+                - cell "147.5" [ref=e1524]
+                - cell [ref=e1525]:
+                  - link "Euros" [ref=e1526] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1527]:
+                  - link "FinalRep" [ref=e1528] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1529]
+                - cell "F" [ref=e1530]
+                - cell "-70kg" [ref=e1531]
+              - row [ref=e1532]:
+                - cell "69" [ref=e1533]
+                - cell [ref=e1534]:
+                  - generic [ref=e1536]:
+                    - link [ref=e1537] [cursor=pointer]:
+                      - /url: ./countries/pl
+                      - img "Poland" [ref=e1538]
+                    - link "Mateusz Zabost" [ref=e1539] [cursor=pointer]:
+                      - /url: ./athletes/mateusz-zabost
+                - cell "492.5" [ref=e1540]
+                - cell "102.80" [ref=e1541]
+                - cell "30" [ref=e1542]
+                - cell "90" [ref=e1543]
+                - cell "152.5" [ref=e1544]
+                - cell "220" [ref=e1545]
+                - cell [ref=e1546]:
+                  - link "Euros" [ref=e1547] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1548]:
+                  - link "FinalRep" [ref=e1549] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1550]
+                - cell "M" [ref=e1551]
+                - cell "-80kg" [ref=e1552]
+              - row [ref=e1553]:
+                - cell "70" [ref=e1554]
+                - cell [ref=e1555]:
+                  - generic [ref=e1557]:
+                    - link [ref=e1558] [cursor=pointer]:
+                      - /url: ./countries/pl
+                      - img "Poland" [ref=e1559]
+                    - link "Ignacy Panz" [ref=e1560] [cursor=pointer]:
+                      - /url: ./athletes/ignacy-panz
+                - cell "548.75" [ref=e1561]
+                - cell "102.79" [ref=e1562]
+                - cell "32.5" [ref=e1563]
+                - cell "101.25" [ref=e1564]
+                - cell "177.5" [ref=e1565]
+                - cell "237.5" [ref=e1566]
+                - cell [ref=e1567]:
+                  - link "Euros" [ref=e1568] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1569]:
+                  - link "FinalRep" [ref=e1570] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1571]
+                - cell "M" [ref=e1572]
+                - cell "-94kg" [ref=e1573]
+              - row [ref=e1574]:
+                - cell "71" [ref=e1575]
+                - cell [ref=e1576]:
+                  - generic [ref=e1578]:
+                    - link [ref=e1579] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1580]
+                    - link "Audrey Morin" [ref=e1581] [cursor=pointer]:
+                      - /url: ./athletes/audrey-morin
+                - cell "238.75" [ref=e1582]
+                - cell "102.72" [ref=e1583]
+                - cell "15" [ref=e1584]
+                - cell "33.75" [ref=e1585]
+                - cell "55" [ref=e1586]
+                - cell "135" [ref=e1587]
+                - cell [ref=e1588]:
+                  - link "Élite" [ref=e1589] [cursor=pointer]:
+                    - /url: ./competitions/fnsl-elite-2026
+                - cell [ref=e1590]:
+                  - link "FNSL" [ref=e1591] [cursor=pointer]:
+                    - /url: ./federations/fnsl
+                - cell "15/05/2026" [ref=e1592]
+                - cell "F" [ref=e1593]
+                - cell "-52kg" [ref=e1594]
+              - row [ref=e1595]:
+                - cell "72" [ref=e1596]
+                - cell [ref=e1597]:
+                  - generic [ref=e1599]:
+                    - link [ref=e1600] [cursor=pointer]:
+                      - /url: ./countries/es
+                      - img "Spain" [ref=e1601]
+                    - link "Daniel Andrades Tocón" [ref=e1602] [cursor=pointer]:
+                      - /url: ./athletes/daniel-andrades-tocon
+                - cell "511.25" [ref=e1603]
+                - cell "102.65" [ref=e1604]
+                - cell "38.75" [ref=e1605]
+                - cell "100" [ref=e1606]
+                - cell "140" [ref=e1607]
+                - cell "232.5" [ref=e1608]
+                - cell [ref=e1609]:
+                  - link "Italian National" [ref=e1610] [cursor=pointer]:
+                    - /url: ./competitions/sli-italian-national-2026
+                - cell [ref=e1611]:
+                  - link "SLI" [ref=e1612] [cursor=pointer]:
+                    - /url: ./federations/sli
+                - cell "18/04/2026" [ref=e1613]
+                - cell "M" [ref=e1614]
+                - cell "-80kg" [ref=e1615]
+              - row [ref=e1616]:
+                - cell "73" [ref=e1617]
+                - cell [ref=e1618]:
+                  - generic [ref=e1620]:
+                    - link [ref=e1621] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1622]
+                    - link "Margaux Sanchez" [ref=e1623] [cursor=pointer]:
+                      - /url: ./athletes/margaux-sanchez
+                - cell "273.75" [ref=e1624]
+                - cell "102.54" [ref=e1625]
+                - cell "21.25" [ref=e1626]
+                - cell "45" [ref=e1627]
+                - cell "72.5" [ref=e1628]
+                - cell "135" [ref=e1629]
+                - cell [ref=e1630]:
+                  - link "CNSL" [ref=e1631] [cursor=pointer]:
+                    - /url: ./competitions/fnsl-cnsl-2025
+                - cell [ref=e1632]:
+                  - link "FNSL" [ref=e1633] [cursor=pointer]:
+                    - /url: ./federations/fnsl
+                - cell "07/06/2025" [ref=e1634]
+                - cell "F" [ref=e1635]
+                - cell "-57kg" [ref=e1636]
+              - row [ref=e1637]:
+                - cell "74" [ref=e1638]
+                - cell [ref=e1639]:
+                  - generic [ref=e1641]:
+                    - link [ref=e1642] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1643]
+                    - link "Lucien Memery" [ref=e1644] [cursor=pointer]:
+                      - /url: ./athletes/lucien-memery
+                - cell "533.75" [ref=e1645]
+                - cell "102.29" [ref=e1646]
+                - cell "33.75" [ref=e1647]
+                - cell "91.25" [ref=e1648]
+                - cell "156.25" [ref=e1649]
+                - cell "252.5" [ref=e1650]
+                - cell [ref=e1651]:
+                  - link "Euros" [ref=e1652] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1653]:
+                  - link "FinalRep" [ref=e1654] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1655]
+                - cell "M" [ref=e1656]
+                - cell "-87kg" [ref=e1657]
+              - row [ref=e1658]:
+                - cell "75" [ref=e1659]
+                - cell [ref=e1660]:
+                  - generic [ref=e1662]:
+                    - link [ref=e1663] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1664]
+                    - link "Sofia Cerdan Bes" [ref=e1665] [cursor=pointer]:
+                      - /url: ./athletes/sofia-cerdan-bes
+                - cell "272.5" [ref=e1666]
+                - cell "102.29" [ref=e1667]
+                - cell "12.5" [ref=e1668]
+                - cell "25" [ref=e1669]
+                - cell "70" [ref=e1670]
+                - cell "165" [ref=e1671]
+                - cell [ref=e1672]:
+                  - link "Dutch Streetlifting Nationals" [ref=e1673] [cursor=pointer]:
+                    - /url: ./competitions/nca-dutch-streetlifting-nationals-2026
+                - cell [ref=e1674]:
+                  - link "NCA" [ref=e1675] [cursor=pointer]:
+                    - /url: ./federations/nca
+                - cell "03/04/2026" [ref=e1676]
+                - cell "F" [ref=e1677]
+                - cell "-57kg" [ref=e1678]
+              - row [ref=e1679]:
+                - cell "76" [ref=e1680]
+                - cell [ref=e1681]:
+                  - generic [ref=e1683]:
+                    - link [ref=e1684] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1685]
+                    - link "Cristiano Bellorini" [ref=e1686] [cursor=pointer]:
+                      - /url: ./athletes/cristiano-bellorini
+                - cell "535" [ref=e1687]
+                - cell "102.27" [ref=e1688]
+                - cell "27.5" [ref=e1689]
+                - cell "75" [ref=e1690]
+                - cell "150" [ref=e1691]
+                - cell "282.5" [ref=e1692]
+                - cell [ref=e1693]:
+                  - link "San Marino Open" [ref=e1694] [cursor=pointer]:
+                    - /url: ./competitions/san-marino-open-2026
+                - cell [ref=e1695]:
+                  - link "EVOLVE" [ref=e1696] [cursor=pointer]:
+                    - /url: ./federations/evolve
+                - cell "23/05/2026" [ref=e1697]
+                - cell "M" [ref=e1698]
+                - cell "-87kg" [ref=e1699]
+              - row [ref=e1700]:
+                - cell "77" [ref=e1701]
+                - cell [ref=e1702]:
+                  - generic [ref=e1704]:
+                    - link [ref=e1705] [cursor=pointer]:
+                      - /url: ./countries/nl
+                      - img "Netherlands" [ref=e1706]
+                    - link "Badreddine van der Stoel" [ref=e1707] [cursor=pointer]:
+                      - /url: ./athletes/badreddine-van-der-stoel
+                - cell "550" [ref=e1708]
+                - cell "102.23" [ref=e1709]
+                - cell "35" [ref=e1710]
+                - cell "92.5" [ref=e1711]
+                - cell "180" [ref=e1712]
+                - cell "242.5" [ref=e1713]
+                - cell [ref=e1714]:
+                  - link "UK & IRE Nationals" [ref=e1715] [cursor=pointer]:
+                    - /url: ./competitions/bodystrong-uk-ire-nationals-2025
+                - cell [ref=e1716]:
+                  - link "Bodystrong" [ref=e1717] [cursor=pointer]:
+                    - /url: ./federations/bodystrong
+                - cell "14/06/2025" [ref=e1718]
+                - cell "M" [ref=e1719]
+                - cell "-94kg" [ref=e1720]
+              - row [ref=e1721]:
+                - cell "78" [ref=e1722]
+                - cell [ref=e1723]:
+                  - generic [ref=e1725]:
+                    - link [ref=e1726] [cursor=pointer]:
+                      - /url: ./countries/pl
+                      - img "Poland" [ref=e1727]
+                    - link "Daniel Lis" [ref=e1728] [cursor=pointer]:
+                      - /url: ./athletes/daniel-lis
+                - cell "547.5" [ref=e1729]
+                - cell "102.20" [ref=e1730]
+                - cell "32.5" [ref=e1731]
+                - cell "82.5" [ref=e1732]
+                - cell "172.5" [ref=e1733]
+                - cell "260" [ref=e1734]
+                - cell [ref=e1735]:
+                  - link "Italian Open" [ref=e1736] [cursor=pointer]:
+                    - /url: ./competitions/sli-italian-open-2025
+                - cell [ref=e1737]:
+                  - link "SLI" [ref=e1738] [cursor=pointer]:
+                    - /url: ./federations/sli
+                - cell "15/03/2025" [ref=e1739]
+                - cell "M" [ref=e1740]
+                - cell "-94kg" [ref=e1741]
+              - row [ref=e1742]:
+                - cell "79" [ref=e1743]
+                - cell [ref=e1744]:
+                  - generic [ref=e1746]:
+                    - link [ref=e1747] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1748]
+                    - link "Enzo Chartier" [ref=e1749] [cursor=pointer]:
+                      - /url: ./athletes/enzo-chartier
+                - cell "530" [ref=e1750]
+                - cell "102.11" [ref=e1751]
+                - cell "27.5" [ref=e1752]
+                - cell "85" [ref=e1753]
+                - cell "155" [ref=e1754]
+                - cell "262.5" [ref=e1755]
+                - cell [ref=e1756]:
+                  - link "Élite" [ref=e1757] [cursor=pointer]:
+                    - /url: ./competitions/fnsl-elite-2026
+                - cell [ref=e1758]:
+                  - link "FNSL" [ref=e1759] [cursor=pointer]:
+                    - /url: ./federations/fnsl
+                - cell "15/05/2026" [ref=e1760]
+                - cell "M" [ref=e1761]
+                - cell "-87kg" [ref=e1762]
+              - row [ref=e1763]:
+                - cell "80" [ref=e1764]
+                - cell [ref=e1765]:
+                  - generic [ref=e1767]:
+                    - link [ref=e1768] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1769]
+                    - link "Ludovic Adigery" [ref=e1770] [cursor=pointer]:
+                      - /url: ./athletes/ludovic-adigery
+                - cell "532.5" [ref=e1771]
+                - cell "102.10" [ref=e1772]
+                - cell "42.5" [ref=e1773]
+                - cell "120" [ref=e1774]
+                - cell "140" [ref=e1775]
+                - cell "230" [ref=e1776]
+                - cell [ref=e1777]:
+                  - link "Worlds" [ref=e1778] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2023
+                - cell [ref=e1779]:
+                  - link "FinalRep" [ref=e1780] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "30/09/2023" [ref=e1781]
+                - cell "M" [ref=e1782]
+                - cell "-87kg" [ref=e1783]
+              - row [ref=e1784]:
+                - cell "81" [ref=e1785]
+                - cell [ref=e1786]:
+                  - generic [ref=e1788]:
+                    - link [ref=e1789] [cursor=pointer]:
+                      - /url: ./countries/gb
+                      - img "United Kingdom" [ref=e1790]
+                    - link "Charlie Cameron" [ref=e1791] [cursor=pointer]:
+                      - /url: ./athletes/charlie-cameron
+                - cell "547.5" [ref=e1792]
+                - cell "102.00" [ref=e1793]
+                - cell "27.5" [ref=e1794]
+                - cell "95" [ref=e1795]
+                - cell "160" [ref=e1796]
+                - cell "265" [ref=e1797]
+                - cell [ref=e1798]:
+                  - link "Euros" [ref=e1799] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1800]:
+                  - link "FinalRep" [ref=e1801] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1802]
+                - cell "M" [ref=e1803]
+                - cell "-94kg" [ref=e1804]
+              - row [ref=e1805]:
+                - cell "82" [ref=e1806]
+                - cell [ref=e1807]:
+                  - generic [ref=e1809]:
+                    - link [ref=e1810] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1811]
+                    - link "Cyril Brau" [ref=e1812] [cursor=pointer]:
+                      - /url: ./athletes/cyril-brau
+                - cell "431.25" [ref=e1813]
+                - cell "101.78" [ref=e1814]
+                - cell "26.25" [ref=e1815]
+                - cell "65" [ref=e1816]
+                - cell "122.5" [ref=e1817]
+                - cell "217.5" [ref=e1818]
+                - cell [ref=e1819]:
+                  - link "Euros" [ref=e1820] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1821]:
+                  - link "FinalRep" [ref=e1822] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1823]
+                - cell "M" [ref=e1824]
+                - cell "-66kg" [ref=e1825]
+              - row [ref=e1826]:
+                - cell "83" [ref=e1827]
+                - cell [ref=e1828]:
+                  - generic [ref=e1830]:
+                    - link [ref=e1831] [cursor=pointer]:
+                      - /url: ./countries/gb
+                      - img "United Kingdom" [ref=e1832]
+                    - link "Shakil Ahmed" [ref=e1833] [cursor=pointer]:
+                      - /url: ./athletes/shakil-ahmed
+                - cell "505" [ref=e1834]
+                - cell "101.72" [ref=e1835]
+                - cell "35" [ref=e1836]
+                - cell "90" [ref=e1837]
+                - cell "155" [ref=e1838]
+                - cell "225" [ref=e1839]
+                - cell [ref=e1840]:
+                  - link "UK Nationals" [ref=e1841] [cursor=pointer]:
+                    - /url: ./competitions/bodystrong-uk-nationals-2024
+                - cell [ref=e1842]:
+                  - link "Bodystrong" [ref=e1843] [cursor=pointer]:
+                    - /url: ./federations/bodystrong
+                - cell "15/06/2024" [ref=e1844]
+                - cell "M" [ref=e1845]
+                - cell "-80kg" [ref=e1846]
+              - row [ref=e1847]:
+                - cell "84" [ref=e1848]
+                - cell [ref=e1849]:
+                  - generic [ref=e1851]:
+                    - link [ref=e1852] [cursor=pointer]:
+                      - /url: ./countries/de
+                      - img "Germany" [ref=e1853]
+                    - link "Timo Wunnenberg" [ref=e1854] [cursor=pointer]:
+                      - /url: ./athletes/timo-wunnenberg
+                - cell "532.75" [ref=e1855]
+                - cell "101.69" [ref=e1856]
+                - cell "30" [ref=e1857]
+                - cell "96.25" [ref=e1858]
+                - cell "135" [ref=e1859]
+                - cell "271.5" [ref=e1860]
+                - cell [ref=e1861]:
+                  - link "Worlds" [ref=e1862] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2023
+                - cell [ref=e1863]:
+                  - link "FinalRep" [ref=e1864] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "30/09/2023" [ref=e1865]
+                - cell "M" [ref=e1866]
+                - cell "-87kg" [ref=e1867]
+              - row [ref=e1868]:
+                - cell "85" [ref=e1869]
+                - cell [ref=e1870]:
+                  - generic [ref=e1872]:
+                    - link [ref=e1873] [cursor=pointer]:
+                      - /url: ./countries/de
+                      - img "Germany" [ref=e1874]
+                    - link "Gesa Bimmermann" [ref=e1875] [cursor=pointer]:
+                      - /url: ./athletes/gesa-bimmermann
+                - cell "286.25" [ref=e1876]
+                - cell "101.59" [ref=e1877]
+                - cell "13.75" [ref=e1878]
+                - cell "35" [ref=e1879]
+                - cell "77.5" [ref=e1880]
+                - cell "160" [ref=e1881]
+                - cell [ref=e1882]:
+                  - link "Euros" [ref=e1883] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1884]:
+                  - link "FinalRep" [ref=e1885] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1886]
+                - cell "F" [ref=e1887]
+                - cell "+70kg" [ref=e1888]
+              - row [ref=e1889]:
+                - cell "86" [ref=e1890]
+                - cell [ref=e1891]:
+                  - generic [ref=e1893]:
+                    - link [ref=e1894] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1895]
+                    - link "Vincenzo Santoro" [ref=e1896] [cursor=pointer]:
+                      - /url: ./athletes/vincenzo-santoro
+                - cell "467.5" [ref=e1897]
+                - cell "101.58" [ref=e1898]
+                - cell "30" [ref=e1899]
+                - cell "92.5" [ref=e1900]
+                - cell "147.5" [ref=e1901]
+                - cell "197.5" [ref=e1902]
+                - cell [ref=e1903]:
+                  - link "Worlds" [ref=e1904] [cursor=pointer]:
+                    - /url: ./competitions/worlds-2023
+                - cell [ref=e1905]:
+                  - link "FinalRep" [ref=e1906] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "30/09/2023" [ref=e1907]
+                - cell "M" [ref=e1908]
+                - cell "-73kg" [ref=e1909]
+              - row [ref=e1910]:
+                - cell "87" [ref=e1911]
+                - cell [ref=e1912]:
+                  - generic [ref=e1914]:
+                    - link [ref=e1915] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1916]
+                    - link "Valerio Naldi" [ref=e1917] [cursor=pointer]:
+                      - /url: ./athletes/valerio-naldi
+                - cell "562.5" [ref=e1918]
+                - cell "101.55" [ref=e1919]
+                - cell "15" [ref=e1920]
+                - cell "92.5" [ref=e1921]
+                - cell "180" [ref=e1922]
+                - cell "275" [ref=e1923]
+                - cell [ref=e1924]:
+                  - link "Italian National" [ref=e1925] [cursor=pointer]:
+                    - /url: ./competitions/sli-italian-national-2026
+                - cell [ref=e1926]:
+                  - link "SLI" [ref=e1927] [cursor=pointer]:
+                    - /url: ./federations/sli
+                - cell "18/04/2026" [ref=e1928]
+                - cell "M" [ref=e1929]
+                - cell "+101kg" [ref=e1930]
+              - row [ref=e1931]:
+                - cell "88" [ref=e1932]
+                - cell [ref=e1933]:
+                  - generic [ref=e1935]:
+                    - link [ref=e1936] [cursor=pointer]:
+                      - /url: ./countries/fr
+                      - img "France" [ref=e1937]
+                    - link "Yanis Hadjarab" [ref=e1938] [cursor=pointer]:
+                      - /url: ./athletes/yanis-hadjarab
+                - cell "468.75" [ref=e1939]
+                - cell "101.43" [ref=e1940]
+                - cell "32.5" [ref=e1941]
+                - cell "86.25" [ref=e1942]
+                - cell "140" [ref=e1943]
+                - cell "210" [ref=e1944]
+                - cell [ref=e1945]:
+                  - link "Portugal Open" [ref=e1946] [cursor=pointer]:
+                    - /url: ./competitions/portugal-open-2026
+                - cell [ref=e1947]:
+                  - link "FinalRep" [ref=e1948] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "31/05/2026" [ref=e1949]
+                - cell "M" [ref=e1950]
+                - cell "-73kg" [ref=e1951]
+              - row [ref=e1952]:
+                - cell "89" [ref=e1953]
+                - cell [ref=e1954]:
+                  - generic [ref=e1956]:
+                    - link [ref=e1957] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1958]
+                    - link "Simone Facchinetti" [ref=e1959] [cursor=pointer]:
+                      - /url: ./athletes/simone-facchinetti
+                - cell "487.5" [ref=e1960]
+                - cell "101.43" [ref=e1961]
+                - cell "25" [ref=e1962]
+                - cell "80" [ref=e1963]
+                - cell "155" [ref=e1964]
+                - cell "227.5" [ref=e1965]
+                - cell [ref=e1966]:
+                  - link "San Marino Open" [ref=e1967] [cursor=pointer]:
+                    - /url: ./competitions/san-marino-open-2026
+                - cell [ref=e1968]:
+                  - link "EVOLVE" [ref=e1969] [cursor=pointer]:
+                    - /url: ./federations/evolve
+                - cell "23/05/2026" [ref=e1970]
+                - cell "M" [ref=e1971]
+                - cell "-80kg" [ref=e1972]
+              - row [ref=e1973]:
+                - cell "90" [ref=e1974]
+                - cell [ref=e1975]:
+                  - generic [ref=e1977]:
+                    - link [ref=e1978] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e1979]
+                    - link "Gianmarco Pironi" [ref=e1980] [cursor=pointer]:
+                      - /url: ./athletes/gianmarco-pironi
+                - cell "426.25" [ref=e1981]
+                - cell "101.37" [ref=e1982]
+                - cell "22.5" [ref=e1983]
+                - cell "71.25" [ref=e1984]
+                - cell "120" [ref=e1985]
+                - cell "212.5" [ref=e1986]
+                - cell [ref=e1987]:
+                  - link "Euros" [ref=e1988] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e1989]:
+                  - link "FinalRep" [ref=e1990] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e1991]
+                - cell "M" [ref=e1992]
+                - cell "-66kg" [ref=e1993]
+              - row [ref=e1994]:
+                - cell "91" [ref=e1995]
+                - cell [ref=e1996]:
+                  - generic [ref=e1998]:
+                    - link [ref=e1999] [cursor=pointer]:
+                      - /url: ./countries/it
+                      - img "Italy" [ref=e2000]
+                    - link "Giulio Torelli" [ref=e2001] [cursor=pointer]:
+                      - /url: ./athletes/giulio-torelli
+                - cell "455" [ref=e2002]
+                - cell "101.35" [ref=e2003]
+                - cell "35" [ref=e2004]
+                - cell "90" [ref=e2005]
+                - cell "130" [ref=e2006]
+                - cell "200" [ref=e2007]
+                - cell [ref=e2008]:
+                  - link "Euros" [ref=e2009] [cursor=pointer]:
+                    - /url: ./competitions/euros-2024
+                - cell [ref=e2010]:
+                  - link "FinalRep" [ref=e2011] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/11/2024" [ref=e2012]
+                - cell "M" [ref=e2013]
+                - cell "-73kg" [ref=e2014]
+              - row [ref=e2015]:
+                - cell "92" [ref=e2016]
+                - cell [ref=e2017]:
+                  - generic [ref=e2019]:
+                    - link [ref=e2020] [cursor=pointer]:
+                      - /url: ./countries/be
+                      - img "Belgium" [ref=e2021]
+                    - link "Sylvain Cerny" [ref=e2022] [cursor=pointer]:
+                      - /url: ./athletes/sylvain-cerny
+                - cell "528.75" [ref=e2023]
+                - cell "101.27" [ref=e2024]
+                - cell "35" [ref=e2025]
+                - cell "86.25" [ref=e2026]
+                - cell "152.5" [ref=e2027]
+                - cell "255" [ref=e2028]
+                - cell [ref=e2029]:
+                  - link "Belgian Streetlifting Championship" [ref=e2030] [cursor=pointer]:
+                    - /url: ./competitions/belgian-streetlifting-championship-2025
+                - cell [ref=e2031]:
+                  - link "Streetlifting Belgium" [ref=e2032] [cursor=pointer]:
+                    - /url: ./federations/streetlifting-belgium
+                - cell "07/06/2025" [ref=e2033]
+                - cell "M" [ref=e2034]
+                - cell "-87kg" [ref=e2035]
+              - row [ref=e2036]:
+                - cell "93" [ref=e2037]
+                - cell [ref=e2038]:
+                  - generic [ref=e2040]:
+                    - link [ref=e2041] [cursor=pointer]:
+                      - /url: ./countries/au
+                      - img "Australia" [ref=e2042]
+                    - link "Nick Raymond" [ref=e2043] [cursor=pointer]:
+                      - /url: ./athletes/nick-raymond
+                - cell "425.25" [ref=e2044]
+                - cell "101.27" [ref=e2045]
+                - cell "28" [ref=e2046]
+                - cell "86.25" [ref=e2047]
+                - cell "125" [ref=e2048]
+                - cell "186" [ref=e2049]
+                - cell [ref=e2050]:
+                  - link "Australian National Finals" [ref=e2051] [cursor=pointer]:
+                    - /url: ./competitions/australian-national-finals-2026
+                - cell [ref=e2052]:
+                  - link "Streetlifting Australia" [ref=e2053] [cursor=pointer]:
+                    - /url: ./federations/streetlifting-australia
+                - cell "12/09/2026" [ref=e2054]
+                - cell "M" [ref=e2055]
+                - cell "-66kg" [ref=e2056]
+              - row [ref=e2057]:
+                - cell "94" [ref=e2058]
+                - cell [ref=e2059]:
+                  - generic [ref=e2061]:
+                    - link [ref=e2062] [cursor=pointer]:
+                      - /url: ./countries/de
+                      - img "Germany" [ref=e2063]
+                    - link "Alexej Kerbs" [ref=e2064] [cursor=pointer]:
+                      - /url: ./athletes/alexej-kerbs
+                - cell "550" [ref=e2065]
+                - cell "101.27" [ref=e2066]
+                - cell "22.5" [ref=e2067]
+                - cell "95" [ref=e2068]
+                - cell "172.5" [ref=e2069]
+                - cell "260" [ref=e2070]
+                - cell [ref=e2071]:
+                  - link "Deutsche Meisterschaft Weighted Calisthenics" [ref=e2072] [cursor=pointer]:
+                    - /url: ./competitions/dcsv-german-championship-2026
+                - cell [ref=e2073]:
+                  - link "DCSV" [ref=e2074] [cursor=pointer]:
+                    - /url: ./federations/dcsv
+                - cell "26/09/2026" [ref=e2075]
+                - cell "M" [ref=e2076]
+                - cell "+94kg" [ref=e2077]
+              - row [ref=e2078]:
+                - cell "95" [ref=e2079]
+                - cell [ref=e2080]:
+                  - generic [ref=e2082]:
+                    - link [ref=e2083] [cursor=pointer]:
+                      - /url: ./countries/au
+                      - img "Australia" [ref=e2084]
+                    - link "Paul Yen" [ref=e2085] [cursor=pointer]:
+                      - /url: ./athletes/paul-yen
+                - cell "487.5" [ref=e2086]
+                - cell "101.22" [ref=e2087]
+                - cell "37.5" [ref=e2088]
+                - cell "95" [ref=e2089]
+                - cell "140" [ref=e2090]
+                - cell "215" [ref=e2091]
+                - cell [ref=e2092]:
+                  - link "Australian National Finals" [ref=e2093] [cursor=pointer]:
+                    - /url: ./competitions/australian-national-finals-2025
+                - cell [ref=e2094]:
+                  - link "Streetlifting Australia" [ref=e2095] [cursor=pointer]:
+                    - /url: ./federations/streetlifting-australia
+                - cell "21/09/2025" [ref=e2096]
+                - cell "M" [ref=e2097]
+                - cell "-80kg" [ref=e2098]
+              - row [ref=e2099]:
+                - cell "96" [ref=e2100]
+                - cell [ref=e2101]:
+                  - generic [ref=e2103]:
+                    - link [ref=e2104] [cursor=pointer]:
+                      - /url: ./countries/de
+                      - img "Germany" [ref=e2105]
+                    - link "Paula Riechmann" [ref=e2106] [cursor=pointer]:
+                      - /url: ./athletes/paula-riechmann
+                - cell "257.5" [ref=e2107]
+                - cell "101.14" [ref=e2108]
+                - cell "20" [ref=e2109]
+                - cell "40" [ref=e2110]
+                - cell "65" [ref=e2111]
+                - cell "132.5" [ref=e2112]
+                - cell [ref=e2113]:
+                  - link "Deutsche Meisterschaft Weighted Calisthenics" [ref=e2114] [cursor=pointer]:
+                    - /url: ./competitions/dcsv-german-championship-2026
+                - cell [ref=e2115]:
+                  - link "DCSV" [ref=e2116] [cursor=pointer]:
+                    - /url: ./federations/dcsv
+                - cell "26/09/2026" [ref=e2117]
+                - cell "F" [ref=e2118]
+                - cell "-57kg" [ref=e2119]
+              - row [ref=e2120]:
+                - cell "97" [ref=e2121]
+                - cell [ref=e2122]:
+                  - generic [ref=e2124]:
+                    - link [ref=e2125] [cursor=pointer]:
+                      - /url: ./countries/cl
+                      - img "Chile" [ref=e2126]
+                    - link "Camila Valenzuela Zavala" [ref=e2127] [cursor=pointer]:
+                      - /url: ./athletes/camila-valenzuela-zavala
+                - cell "261.25" [ref=e2128]
+                - cell "101.14" [ref=e2129]
+                - cell "11.25" [ref=e2130]
+                - cell "35" [ref=e2131]
+                - cell "62.5" [ref=e2132]
+                - cell "152.5" [ref=e2133]
+                - cell [ref=e2134]:
+                  - link "Chilean Open" [ref=e2135] [cursor=pointer]:
+                    - /url: ./competitions/chilean-open-2026
+                - cell [ref=e2136]:
+                  - link "FinalRep" [ref=e2137] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "25/07/2026" [ref=e2138]
+                - cell "F" [ref=e2139]
+                - cell "-57kg" [ref=e2140]
+              - row [ref=e2141]:
+                - cell "98" [ref=e2142]
+                - cell [ref=e2143]:
+                  - generic [ref=e2145]:
+                    - link [ref=e2146] [cursor=pointer]:
+                      - /url: ./countries/br
+                      - img "Brazil" [ref=e2147]
+                    - link "Daniel Corbalan Cruz" [ref=e2148] [cursor=pointer]:
+                      - /url: ./athletes/daniel-corbalan-cruz
+                - cell "408.75" [ref=e2149]
+                - cell "101.10" [ref=e2150]
+                - cell "32.5" [ref=e2151]
+                - cell "73.75" [ref=e2152]
+                - cell "107.5" [ref=e2153]
+                - cell "195" [ref=e2154]
+                - cell [ref=e2155]:
+                  - link "Santiago Street Lifting Open" [ref=e2156] [cursor=pointer]:
+                    - /url: ./competitions/santiago-street-lifting-open-2025
+                - cell [ref=e2157]:
+                  - link "FinalRep" [ref=e2158] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "15/03/2025" [ref=e2159]
+                - cell "M" [ref=e2160]
+                - cell "-66kg" [ref=e2161]
+              - row [ref=e2162]:
+                - cell "99" [ref=e2163]
+                - cell [ref=e2164]:
+                  - generic [ref=e2166]:
+                    - link [ref=e2167] [cursor=pointer]:
+                      - /url: ./countries/gb
+                      - img "United Kingdom" [ref=e2168]
+                    - link "Cindy Ha" [ref=e2169] [cursor=pointer]:
+                      - /url: ./athletes/cindy-ha
+                - cell "245" [ref=e2170]
+                - cell "101.08" [ref=e2171]
+                - cell "10" [ref=e2172]
+                - cell "35" [ref=e2173]
+                - cell "60" [ref=e2174]
+                - cell "140" [ref=e2175]
+                - cell [ref=e2176]:
+                  - link "Euros" [ref=e2177] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e2178]:
+                  - link "FinalRep" [ref=e2179] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e2180]
+                - cell "F" [ref=e2181]
+                - cell "-52kg" [ref=e2182]
+              - row [ref=e2183]:
+                - cell "100" [ref=e2184]
+                - cell [ref=e2185]:
+                  - generic [ref=e2187]:
+                    - link [ref=e2188] [cursor=pointer]:
+                      - /url: ./countries/es
+                      - img "Spain" [ref=e2189]
+                    - link "Miguel Tirado Martínez" [ref=e2190] [cursor=pointer]:
+                      - /url: ./athletes/miguel-tirado-martinez
+                - cell "546.25" [ref=e2191]
+                - cell "101.06" [ref=e2192]
+                - cell "47.5" [ref=e2193]
+                - cell "113.75" [ref=e2194]
+                - cell "145" [ref=e2195]
+                - cell "240" [ref=e2196]
+                - cell [ref=e2197]:
+                  - link "Euros" [ref=e2198] [cursor=pointer]:
+                    - /url: ./competitions/euros-2026
+                - cell [ref=e2199]:
+                  - link "FinalRep" [ref=e2200] [cursor=pointer]:
+                    - /url: ./federations/finalrep
+                - cell "02/10/2026" [ref=e2201]
+                - cell "M" [ref=e2202]
+                - cell "-101kg" [ref=e2203]
+          - generic [ref=e2205]:
+            - generic [ref=e2206]: 2,208 athletes
+            - navigation "Pagination" [ref=e2207]:
+              - link "Previous page" [disabled]:
+                - generic: Previous
+              - generic [ref=e2208]:
+                - link "1" [disabled]
+                - link "2" [ref=e2209] [cursor=pointer]:
+                  - /url: ./?page=2
+                - generic [ref=e2210]: …
+                - link "23" [ref=e2211] [cursor=pointer]:
+                  - /url: ./?page=23
+              - link "Next page" [ref=e2212] [cursor=pointer]:
+                - /url: ./?page=2
+                - generic [ref=e2213]: Next
+  - contentinfo [ref=e2216]:
+    - generic [ref=e2218]:
+      - navigation "Footer" [ref=e2219]:
+        - link "Rankings" [ref=e2220] [cursor=pointer]:
+          - /url: ./
+        - link "Competitions" [ref=e2221] [cursor=pointer]:
+          - /url: ./competitions
+        - link "Federations" [ref=e2222] [cursor=pointer]:
+          - /url: ./federations
+        - link "Countries" [ref=e2223] [cursor=pointer]:
+          - /url: ./countries
+        - link "Documentation" [ref=e2224] [cursor=pointer]:
+          - /url: https://docs.openstreetlifting.org/
+        - link "Contact" [ref=e2225] [cursor=pointer]:
+          - /url: ./contact
+        - link "Privacy" [ref=e2226] [cursor=pointer]:
+          - /url: ./privacy
+      - generic [ref=e2227]:
+        - generic [ref=e2228]: dev
+        - link "GitHub" [ref=e2229] [cursor=pointer]:
+          - /url: https://github.com/openstreetlifting
+        - link "Instagram" [ref=e2232] [cursor=pointer]:
+          - /url: https://www.instagram.com/openstreetlifting
+        - link "Discord" [ref=e2235] [cursor=pointer]:
+          - /url: https://discord.gg/MR9z7AnT
+        - link "Email" [ref=e2238] [cursor=pointer]:
+          - /url: mailto:contact@openstreetlifting.org
