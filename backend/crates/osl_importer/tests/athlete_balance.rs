@@ -16,7 +16,9 @@ async fn balance(pool: &PgPool) -> Vec<AthleteBalanceRow> {
 }
 
 fn lift(rows: &[AthleteBalanceRow], movement: Movement) -> &AthleteBalanceRow {
-    rows.iter().find(|row| row.movement_name == movement).unwrap()
+    rows.iter()
+        .find(|row| row.movement_name == movement)
+        .unwrap()
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

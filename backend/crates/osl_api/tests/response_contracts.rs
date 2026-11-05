@@ -1,8 +1,6 @@
 use osl_api::{
     ApiDoc,
-    athlete::dto::{
-        AthleteResponse, AthleteStanding, LiftBalance, MetricStanding, StandingPlace,
-    },
+    athlete::dto::{AthleteResponse, AthleteStanding, LiftBalance, MetricStanding, StandingPlace},
     competition::dto::{CategoryInfo, CompetitionResponse},
     ranking::dto::{AthleteInfo, CompetitionInfo, FederationInfo, GlobalRankingEntry},
     ris::dto::ComputeRisRequest,

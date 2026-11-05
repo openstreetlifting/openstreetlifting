@@ -12,12 +12,7 @@ use super::dto::{AthleteResponse, AthleteStanding, LiftBalance};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
-const ATHLETE_INCLUDES: &[&str] = &[
-    "competitions",
-    "records",
-    "standing",
-    "lift_balance",
-];
+const ATHLETE_INCLUDES: &[&str] = &["competitions", "records", "standing", "lift_balance"];
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct AthleteQuery {
