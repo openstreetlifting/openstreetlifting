@@ -90,9 +90,23 @@
     class="flex min-h-14 items-center justify-between gap-2 bg-surface-subtle px-2 py-1 sm:px-4 sm:py-2"
     data-table-pagination={position}
   >
-    <span class="min-w-0 font-mono text-[0.625rem] text-muted sm:text-xs">
+    <span
+      class="min-w-0 font-mono text-[0.625rem] text-muted sm:text-xs"
+      role={position === 'top' ? 'status' : undefined}
+      aria-live={position === 'top' ? 'polite' : undefined}
+      aria-atomic={position === 'top' ? true : undefined}
+      aria-busy={position === 'top' ? busy : undefined}
+    >
       {i18n.number(totalItems, 0)}
       {countLabel}
+      {#if position === 'top'}
+        <span class="sr-only">
+          {i18n.t('Page {page} of {pages}.', {
+            page: i18n.number(page, 0),
+            pages: i18n.number(totalPages, 0),
+          })}
+        </span>
+      {/if}
     </span>
     <Pagination
       {page}
