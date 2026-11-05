@@ -7,6 +7,7 @@
   import type { RisFormula } from '#lib/types/ris.js';
   import { benchmarkTotal, bodyweightForRis, calculateRis } from '#lib/utils/ris.js';
   import { displayWeight, kilograms, type WeightUnit } from '#lib/utils/weight-unit.js';
+  import type { RisFields } from '#lib/utils/ris-scenario.js';
 
   const i18n = useI18n();
   const weights = useWeightUnit();
@@ -14,9 +15,16 @@
   let {
     edition,
     sex = $bindable('men'),
+    fields = $bindable<RisFields>({
+      bodyweight: { text: '', unit: 'kg' },
+      total: { text: '', unit: 'kg' },
+    }),
+    targetField = $bindable(''),
   }: {
     edition: RisFormula;
     sex?: 'men' | 'women';
+    fields?: RisFields;
+    targetField?: string;
   } = $props();
 
   const id = $props.id();
@@ -24,13 +32,7 @@
     { key: 'bodyweight', label: 'Bodyweight', min: 30, max: 220, step: 0.1 },
     { key: 'total', label: 'Total lifted', min: 0, max: 1000, step: 0.25 },
   ] as const;
-  type WeightField = { text: string; unit: WeightUnit };
   type Control = (typeof controls)[number];
-  let fields = $state<Record<Control['key'], WeightField>>({
-    bodyweight: { text: '', unit: 'kg' },
-    total: { text: '', unit: 'kg' },
-  });
-  let targetField = $state('');
   const values = $derived({
     bodyweight: fieldKilograms(controls[0]),
     total: fieldKilograms(controls[1]),
@@ -70,7 +72,7 @@
 
   function setField(control: Control, text: string): void {
     // Retain the original input and unit so repeated switches do not round the calculation.
-    fields[control.key] = { text, unit: weights.unit };
+    fields = { ...fields, [control.key]: { text, unit: weights.unit } };
   }
 
   const constants = $derived(edition.constants[sex]);

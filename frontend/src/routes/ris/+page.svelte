@@ -11,6 +11,9 @@
   import Message from '#lib/components/ui/message.svelte';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import type { PageData } from './$types';
+  import { page } from '$app/state';
+  import { goto } from '$app/navigation';
+  import { readRisScenario, writeRisScenario, type RisScenario } from '#lib/utils/ris-scenario.js';
 
   const i18n = useI18n();
 
@@ -18,7 +21,19 @@
 
   const current = $derived(data.editions.find((edition) => edition.is_current));
 
-  let sex = $state<'men' | 'women'>('men');
+  const scenarioUrl = $derived(page.shallow?.url ?? page.url);
+  const scenario = $derived(readRisScenario(scenarioUrl.searchParams));
+
+  function updateScenario(next: RisScenario) {
+    const url = writeRisScenario(scenarioUrl, next);
+    // The calculator is local; changing it does not need another distribution request.
+    return goto(i18n.href(`${url.pathname}${url.search}${url.hash}`), {
+      shallow: true,
+      replace: true,
+      reset: false,
+      state: page.state,
+    });
+  }
 </script>
 
 <Seo
@@ -62,7 +77,12 @@
   </header>
 
   {#if current}
-    <RisSimulator edition={current} bind:sex />
+    <RisSimulator
+      edition={current}
+      bind:sex={() => scenario.sex, (sex) => updateScenario({ ...scenario, sex })}
+      bind:fields={() => scenario.fields, (fields) => updateScenario({ ...scenario, fields })}
+      bind:targetField={() => scenario.target, (target) => updateScenario({ ...scenario, target })}
+    />
   {/if}
 
   <section aria-labelledby="interpretation-heading" class="mb-10 sm:mb-12">
@@ -97,33 +117,23 @@
           {i18n.t('Select a point to see the athlete, competition and score.')}
         </p>
       </div>
-      <div class="mb-6"><RisCategory bind:sex /></div>
-
-      <!-- Keep both datasets rendered: switching only changes visibility, not thousands of points.
-           Grid overlap preserves dimensions for the inactive chart's responsive measurements. -->
-      <div class="grid">
-        {#each ['men', 'women'] as const as category (category)}
-          <div
-            class="min-w-0 [grid-area:1/1]"
-            class:invisible={sex !== category}
-            inert={sex !== category}
-            aria-hidden={sex !== category}
-          >
-            <RisCurve
-              constants={current.constants[category]}
-              points={data.distribution[category]}
-              active={sex === category}
-              label={i18n.t(
-                'Competition total by bodyweight with the RIS 100 benchmark, {category}, {year} edition',
-                {
-                  category: category === 'men' ? i18n.t('Men') : i18n.t('Women'),
-                  year: current.year,
-                }
-              )}
-            />
-          </div>
-        {/each}
+      <div class="mb-6">
+        <RisCategory bind:sex={() => scenario.sex, (sex) => updateScenario({ ...scenario, sex })} />
       </div>
+
+      {#key scenario.sex}
+        <RisCurve
+          constants={current.constants[scenario.sex]}
+          points={data.distribution[scenario.sex]}
+          label={i18n.t(
+            'Competition total by bodyweight with the RIS 100 benchmark, {category}, {year} edition',
+            {
+              category: scenario.sex === 'men' ? i18n.t('Men') : i18n.t('Women'),
+              year: current.year,
+            }
+          )}
+        />
+      {/key}
     </section>
   {/if}
 

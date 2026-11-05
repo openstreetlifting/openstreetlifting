@@ -14,10 +14,9 @@
   value={i18n.locale}
   onchange={(event) => {
     const locale = event.currentTarget.value;
+    const url = page.shallow?.url ?? page.url;
     if (isLocale(locale))
-      window.location.assign(
-        localeHref(`${page.url.pathname}${page.url.search}${page.url.hash}`, locale)
-      );
+      window.location.assign(localeHref(`${url.pathname}${url.search}${url.hash}`, locale));
   }}
   class="w-auto px-2 py-1 text-xs sm:h-8 sm:min-h-8"
 >

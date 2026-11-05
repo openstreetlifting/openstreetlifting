@@ -97,7 +97,7 @@
     }
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      select(context?.tooltip.data ?? null);
+      select((keyboardIndex >= 0 ? points[keyboardIndex] : context?.tooltip.data) ?? null);
       return;
     }
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key) || !points.length) {
