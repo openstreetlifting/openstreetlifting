@@ -304,12 +304,12 @@ export interface components {
       gender: components['schemas']['Gender'];
       instagram_handle: string | null;
       last_name: string;
+      lift_balance?: components['schemas']['LiftBalance'] | null;
       native_name: string | null;
       personal_records?: components['schemas']['PersonalRecord'][];
       profile_picture_url: string | null;
       slug: string;
       standing?: components['schemas']['AthleteStanding'] | null;
-      strength_profile?: components['schemas']['StrengthProfile'] | null;
       total_competitions?: number;
     };
     AthleteStanding: {
@@ -425,10 +425,26 @@ export interface components {
       total: number | null;
     };
     Include: string;
+    LiftBalance: {
+      category: string;
+      competition_date: string;
+      competition_name: string;
+      competition_slug: string;
+      field: number;
+      lifts: components['schemas']['LiftShare'][];
+      total: string;
+    };
     LiftDetail: {
       attempts: components['schemas']['AttemptInfo'][];
       best_weight: string | null;
       movement_name: components['schemas']['Movement'];
+    };
+    LiftShare: {
+      class_share: number | null;
+      class_spread: number | null;
+      movement_name: components['schemas']['Movement'];
+      share: number;
+      value: string;
     };
     MetricStanding: {
       class: string | null;
@@ -452,12 +468,12 @@ export interface components {
         gender: components['schemas']['Gender'];
         instagram_handle: string | null;
         last_name: string;
+        lift_balance?: components['schemas']['LiftBalance'] | null;
         native_name: string | null;
         personal_records?: components['schemas']['PersonalRecord'][];
         profile_picture_url: string | null;
         slug: string;
         standing?: components['schemas']['AthleteStanding'] | null;
-        strength_profile?: components['schemas']['StrengthProfile'] | null;
         total_competitions?: number;
       }[];
       pagination: components['schemas']['PaginationMeta'];
@@ -579,16 +595,6 @@ export interface components {
     StandingPlace: {
       field: number;
       place: number;
-    };
-    StrengthComparison: {
-      field: number;
-      movement_name: components['schemas']['Movement'];
-      percentile: number | null;
-      value: string | null;
-    };
-    StrengthProfile: {
-      category: string;
-      lifts: components['schemas']['StrengthComparison'][];
     };
   };
   responses: never;

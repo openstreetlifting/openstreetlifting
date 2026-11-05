@@ -7,7 +7,7 @@ use uuid::Uuid;
 use crate::error::{Result, StorageError};
 use crate::params::Page;
 use crate::projections::athlete::{
-    AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, AthleteStrengthRow, PersonalRecordRow,
+    AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
 };
 use crate::rows::athlete::AthleteRow;
 
@@ -110,8 +110,8 @@ impl<'a> AthleteRepository<'a> {
         self.get_detailed_athlete(athlete).await
     }
 
-    #[tracing::instrument(name = "repository.athlete.strength_profile", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn strength_profile(&self, athlete_id: Uuid) -> Result<Vec<AthleteStrengthRow>> {
+    #[tracing::instrument(name = "repository.athlete.lift_balance", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn lift_balance(&self, athlete_id: Uuid) -> Result<Vec<AthleteBalanceRow>> {
         let rows = sqlx::query!(
             r#"
             WITH latest_category AS (
@@ -123,39 +123,51 @@ impl<'a> AthleteRepository<'a> {
                 WHERE cp.athlete_id = $1 AND cp.status = 'competed'
                 ORDER BY c.start_date DESC, c.competition_id DESC, cp.participant_id DESC
                 LIMIT 1
-            ), eligible AS (
-                SELECT cp.participant_id, cp.athlete_id
+            ), complete AS (
+                SELECT cp.participant_id, cp.athlete_id, c.name AS competition_name,
+                       c.slug AS competition_slug, c.start_date, SUM(l.max_weight) AS total
                 FROM competition_participants cp
                 JOIN latest_category category ON category.weight_class_id = cp.weight_class_id
                 JOIN athletes a ON a.athlete_id = cp.athlete_id AND a.gender = category.gender
-                WHERE cp.status = 'competed'
-            ), bests AS (
-                SELECT cp.athlete_id, l.movement_name, MAX(l.max_weight) AS value
-                FROM eligible cp
+                JOIN competitions c ON c.competition_id = cp.competition_id
                 JOIN lifts l ON l.participant_id = cp.participant_id
-                WHERE l.max_weight IS NOT NULL
-                GROUP BY cp.athlete_id, l.movement_name
-            ), standings AS (
-                SELECT m.name AS movement_name, target.value,
-                       COUNT(other.athlete_id) AS field,
-                       (100.0 * AVG(CASE
-                           WHEN target.value IS NULL THEN NULL
-                           WHEN other.value < target.value THEN 1.0
-                           WHEN other.value = target.value THEN 0.5
-                           ELSE 0.0 END) FILTER (WHERE other.athlete_id IS NOT NULL))::double precision AS percentile
-                FROM movements m
-                LEFT JOIN bests target ON target.athlete_id = $1 AND target.movement_name = m.name
-                LEFT JOIN bests other ON other.athlete_id <> $1 AND other.movement_name = m.name
-                GROUP BY m.name, target.value
+                WHERE cp.status = 'competed'
+                  AND l.movement_name IN ('Muscle-up', 'Pull-up', 'Dips', 'Squat')
+                  AND l.max_weight > 0
+                GROUP BY cp.participant_id, cp.athlete_id, c.name, c.slug, c.start_date
+                HAVING COUNT(*) = 4
+            ), best AS (
+                SELECT DISTINCT ON (athlete_id) *
+                FROM complete
+                ORDER BY athlete_id, total DESC, start_date DESC
+            ), shares AS (
+                SELECT b.athlete_id, l.movement_name, l.max_weight AS value,
+                       (100 * l.max_weight / b.total)::double precision AS share
+                FROM best b
+                JOIN lifts l ON l.participant_id = b.participant_id
+                WHERE l.movement_name IN ('Muscle-up', 'Pull-up', 'Dips', 'Squat')
+            ), peers AS (
+                SELECT s.movement_name, COUNT(*) AS field, AVG(s.share) AS class_share,
+                       STDDEV_SAMP(s.share) AS class_spread
+                FROM shares s
+                WHERE s.athlete_id <> $1
+                GROUP BY s.movement_name
             )
             SELECT category.gender AS "category_gender: Gender",
                    category.min_kg AS weight_class_min, category.max_kg AS weight_class_max,
-                   m.name AS "movement_name: Movement", standing.value AS "value?",
-                   standing.field AS "field!", standing.percentile AS "percentile?"
-            FROM latest_category category
-            CROSS JOIN movements m
-            JOIN standings standing ON standing.movement_name = m.name
-            WHERE m.name IN ('Muscle-up', 'Pull-up', 'Dips', 'Squat')
+                   s.movement_name AS "movement_name!: Movement", s.value AS "value!",
+                   s.share AS "share!", b.total AS "total!",
+                   b.competition_name AS "competition_name!",
+                   b.competition_slug AS "competition_slug!",
+                   b.start_date AS "competition_date!",
+                   COALESCE(p.field, 0) AS "field!",
+                   p.class_share AS "class_share?", p.class_spread AS "class_spread?"
+            FROM shares s
+            JOIN best b ON b.athlete_id = s.athlete_id
+            CROSS JOIN latest_category category
+            LEFT JOIN peers p ON p.movement_name = s.movement_name
+            JOIN movements m ON m.name = s.movement_name
+            WHERE s.athlete_id = $1
             ORDER BY m.display_order
             "#,
             athlete_id
@@ -165,14 +177,20 @@ impl<'a> AthleteRepository<'a> {
 
         Ok(rows
             .into_iter()
-            .map(|row| AthleteStrengthRow {
+            .map(|row| AthleteBalanceRow {
                 category_gender: row.category_gender,
                 weight_class_min: row.weight_class_min,
                 weight_class_max: row.weight_class_max,
                 movement_name: row.movement_name,
                 value: row.value,
-                percentile: row.percentile,
+                share: row.share,
+                total: row.total,
+                competition_name: row.competition_name,
+                competition_slug: row.competition_slug,
+                competition_date: row.competition_date,
                 field: row.field,
+                class_share: row.class_share,
+                class_spread: row.class_spread,
             })
             .collect())
     }

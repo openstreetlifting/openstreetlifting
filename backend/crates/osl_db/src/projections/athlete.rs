@@ -52,12 +52,18 @@ pub struct AthleteDetail {
 }
 
 #[derive(Debug)]
-pub struct AthleteStrengthRow {
+pub struct AthleteBalanceRow {
     pub category_gender: Gender,
     pub weight_class_min: Option<Decimal>,
     pub weight_class_max: Option<Decimal>,
     pub movement_name: Movement,
-    pub value: Option<Decimal>,
-    pub percentile: Option<f64>,
+    pub value: Decimal,
+    pub share: f64,
+    pub total: Decimal,
+    pub competition_name: String,
+    pub competition_slug: String,
+    pub competition_date: chrono::NaiveDate,
     pub field: i64,
+    pub class_share: Option<f64>,
+    pub class_spread: Option<f64>,
 }

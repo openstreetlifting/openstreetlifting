@@ -8,11 +8,16 @@ use osl_db::repository::athlete::AthleteRepository;
 use osl_db::repository::ranking::RankingRepository;
 use serde::Deserialize;
 
-use super::dto::{AthleteResponse, AthleteStanding, StrengthProfile};
+use super::dto::{AthleteResponse, AthleteStanding, LiftBalance};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
-const ATHLETE_INCLUDES: &[&str] = &["competitions", "records", "standing", "strength_profile"];
+const ATHLETE_INCLUDES: &[&str] = &[
+    "competitions",
+    "records",
+    "standing",
+    "lift_balance",
+];
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct AthleteQuery {
@@ -79,7 +84,7 @@ pub async fn get_athlete(
         let athlete = repo.find_by_slug(&slug).await?;
         let athlete_id = athlete.athlete_id;
         let rankings = RankingRepository::new(state.db.pool());
-        let (detail, metric_standings, strength_profile) = tokio::try_join!(
+        let (detail, metric_standings, lift_balance) = tokio::try_join!(
             repo.get_detailed_athlete(athlete),
             async {
                 if query.include.has("standing") {
@@ -89,8 +94,8 @@ pub async fn get_athlete(
                 }
             },
             async {
-                if query.include.has("strength_profile") {
-                    repo.strength_profile(athlete_id).await
+                if query.include.has("lift_balance") {
+                    repo.lift_balance(athlete_id).await
                 } else {
                     Ok(Vec::new())
                 }
@@ -102,10 +107,10 @@ pub async fn get_athlete(
             .include
             .has("standing")
             .then(|| AthleteStanding::from_rows(metric_standings));
-        response.strength_profile = query
+        response.lift_balance = query
             .include
-            .has("strength_profile")
-            .then(|| StrengthProfile::from_rows(strength_profile));
+            .has("lift_balance")
+            .then(|| LiftBalance::from_rows(lift_balance));
 
         return Ok(Json(response));
     }

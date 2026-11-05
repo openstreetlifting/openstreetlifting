@@ -30,20 +30,30 @@ export default {
     'Na razie jeden wynik. Trend pojawi się po kolejnych zawodach.',
   'RIS scores are shown as recorded; formula editions and reported scores may differ.':
     'Wyniki RIS są wyświetlane zgodnie z zapisem; wersje wzoru i opublikowane wartości mogą się różnić.',
-  'Strength profile': 'Profil siłowy',
-  'About Strength profile': 'O profilu siłowym',
-  '· All time': '· Wszystkie lata',
-  'Compares each best lift with other athletes’ bests. Percentile is the percentage of peers below that result, counting ties as half.':
-    'Porównuje rekord w każdym boju z rekordami innych zawodników. Percentyl to odsetek zawodników z niższym wynikiem. Remisujących uwzględniamy w połowie.',
-  'Peer counts vary by lift.': 'Liczba porównywanych zawodników zależy od boju.',
-  percentile: 'percentyl',
-  'Lift percentiles': 'Percentyle poszczególnych bojów',
-  'Not enough data': 'Za mało danych',
-  'Limited comparison: fewer than five peers for some lifts.':
-    'Ograniczone porównanie: w niektórych bojach jest mniej niż pięciu zawodników do porównania.',
-  'Not enough data to score all four lifts.': 'Za mało danych, aby ocenić wszystkie cztery boje.',
-  'A completed competition is needed to establish a comparison category.':
-    'Do ustalenia kategorii porównawczej potrzebny jest start w zakończonych zawodach.',
+  'Lift balance': 'Balans bojów',
+  'About lift balance': 'O balansie bojów',
+  'How this athlete’s best total is split across the four lifts, compared with others in their weight class.':
+    'Jak najlepszy wynik łączny tego zawodnika rozkłada się na cztery boje w porównaniu z innymi w jego kategorii wagowej.',
+  'Further out means that lift takes a bigger share of the total than usual, not that it is better.':
+    'Dalej od środka oznacza, że ten bój stanowi większą część wyniku niż zwykle, a nie że jest lepszy.',
+  'Lift balance compared with other athletes in {category}':
+    'Balans bojów w porównaniu z innymi zawodnikami w {category}',
+  'Lift shares of best total': 'Udział bojów w najlepszym wyniku',
+  'Athlete: {share} of total': 'Zawodnik: {share} totalu',
+  'Reference: {share} of total': 'Odniesienie: {share} totalu',
+  'Reference ({class})': 'Odniesienie ({class})',
+  Reference: 'Odniesienie',
+  'Reference: {count} {athletes} in {category}':
+    'Odniesienie: {count} {athletes} w kategorii {category}',
+  '{movement}: {share} of total, reference {average}':
+    '{movement}: {share} totalu, odniesienie {average}',
+  'of total · reference {average}': 'totalu · odniesienie {average}',
+  'of total': 'totalu',
+  'Based on {total} {unit} at {competition}': 'Na podstawie {total} {unit} na {competition}',
+  'Too few athletes in this weight class to compare.':
+    'Za mało zawodników w tej kategorii wagowej, aby porównać.',
+  'A completed competition with all four lifts is needed to show lift balance.':
+    'Do pokazania balansu potrzebne są ukończone zawody ze wszystkimi czterema bojami.',
   'Match these movements exactly': 'Wybierz dokładny zestaw bojów',
   'Clear movements': 'Wyczyść wybór bojów',
   'Clear selection': 'Wyczyść wybór',
@@ -344,10 +354,6 @@ export default {
   'No successful {movement}': 'Brak zaliczonego podejścia: {movement}',
   "{category}'s weight classes": 'Kategorie wagowe: {category}',
   '{label} over time': '{label} w czasie',
-  '{movement}: percentile {percentile}': '{movement}: percentyl {percentile}',
-  'Lift percentiles compared with other athletes in {category}':
-    'Percentyle bojów na tle innych zawodników w kategorii {category}',
-  'Comparison group: {count} {athletes}': 'Grupa porównawcza: {count} {athletes}',
   'No dated {movement} results available.': '{movement}: brak wyników z datą.',
   'No dated {movement} results available for {format}.':
     '{movement}: brak wyników z datą dla formatu {format}.',
