@@ -1,4 +1,8 @@
 <script lang="ts">
+  import { LAYOUT } from '#lib/constants/layout.js';
+  import Button from '#lib/components/ui/button.svelte';
+  import Notice from '#lib/components/ui/notice.svelte';
+  import SelectField from '#lib/components/ui/select-field.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import type { PageData } from './$types';
@@ -57,7 +61,7 @@
   import { GENDERS, asRankingMetric, type AthleteStatus } from '#lib/types/enums.js';
   import { hasRankingResult, weightClasses } from '#lib/utils/competition-results.js';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
-  import { FIELD, TEXT } from '#lib/constants/typography.js';
+  import { TEXT } from '#lib/constants/typography.js';
   import Seo from '#lib/components/seo.svelte';
   import {
     breadcrumbLd,
@@ -359,7 +363,7 @@
   ]}
 />
 
-<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
+<div class={LAYOUT.page}>
   <Breadcrumb
     items={[
       { label: i18n.t('Rankings'), href: rankingsHref() },
@@ -522,25 +526,21 @@
     {/if}
 
     {#if editPath}
-      <a
+      <Button
+        variant="outline"
         href={`https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/data/competitions/${editPath}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex min-h-11 items-center gap-2 justify-self-start rounded-md border border-stroke px-3 py-2 text-sm font-medium text-secondary transition-colors hover:border-stroke-strong hover:bg-surface-hover hover:text-ink focus:ring-2 focus:ring-focus focus:outline-none sm:col-start-2 sm:row-start-1 sm:self-start sm:justify-self-end"
+        class="min-h-11 gap-2 justify-self-start px-3 text-xs text-secondary hover:text-ink sm:col-start-2 sm:row-start-1 sm:self-start sm:justify-self-end"
       >
         <GitHubIcon class="h-4 w-4" />
         {i18n.t('Edit competition on GitHub')}
-      </a>
+      </Button>
     {/if}
   </header>
 
   {#if competition.status === 'live'}
-    <section
-      aria-labelledby="progress-heading"
-      class="mb-6 rounded-lg border border-stroke-strong bg-surface-subtle px-4 py-3"
-    >
-      <h2 id="progress-heading" class="text-sm font-medium text-ink">{i18n.t('In Progress')}</h2>
-    </section>
+    <Notice title={i18n.t('In Progress')} live />
   {/if}
 
   {#if published}
@@ -552,54 +552,51 @@
       onClear={() => table.clearFilters()}
       clearable={table.narrowed}
     >
-      <select
+      <SelectField
+        label={i18n.t('Country')}
         bind:value={table.countryFilter}
         onchange={() => table.handleFilterChange()}
-        class="w-full {FIELD} px-3 py-2 sm:w-auto"
       >
         <option value={null}>{i18n.t('All Countries')}</option>
         {#each data.countries as countryOption (countryOption)}
           <option value={countryOption}>{countryName(countryOption, i18n.locale)}</option>
         {/each}
-      </select>
-      <select
+      </SelectField>
+      <SelectField
+        label={i18n.t('Sex')}
         bind:value={table.genderFilter}
         onchange={() => {
           table.categoryFilter = null;
           table.handleFilterChange();
         }}
-        class="w-full {FIELD} px-3 py-2 sm:w-auto"
       >
         {#each genders as gender (gender.label)}
           <option value={gender.value}>{i18n.t(gender.label)}</option>
         {/each}
-      </select>
+      </SelectField>
       {#if classed}
-        <select
+        <SelectField
+          label={i18n.t('Class')}
           bind:value={table.categoryFilter}
           onchange={() => table.handleFilterChange()}
-          class="w-full {FIELD} px-3 py-2 sm:w-auto"
         >
           <option value={null}>{i18n.t('All Classes')}</option>
           {#each data.classes as classOption (classOption)}
             <option value={classOption}>{weights.category(classOption, i18n.locale)}</option>
           {/each}
-        </select>
+        </SelectField>
       {/if}
 
-      <div class="flex w-full items-center gap-2 sm:w-auto">
-        <label for="sort-by" class="text-sm text-muted">{i18n.t('Sort by')}</label>
-        <select
-          id="sort-by"
-          bind:value={table.movementFilter}
-          onchange={() => table.handleFilterChange()}
-          class="flex-1 {FIELD} px-3 py-2 sm:flex-none"
-        >
-          {#each sorts as sort (sort.value)}
-            <option value={sort.value}>{i18n.t(sort.label)}</option>
-          {/each}
-        </select>
-      </div>
+      <SelectField
+        id="sort-by"
+        label={i18n.t('Sort by')}
+        bind:value={table.movementFilter}
+        onchange={() => table.handleFilterChange()}
+      >
+        {#each sorts as sort (sort.value)}
+          <option value={sort.value}>{i18n.t(sort.label)}</option>
+        {/each}
+      </SelectField>
     </FilterBar>
   {/if}
 

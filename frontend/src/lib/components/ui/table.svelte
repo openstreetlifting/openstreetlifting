@@ -1,12 +1,15 @@
 <script module lang="ts">
-  export const TABLE_HEAD_CELL = 'px-1.5 py-1 text-left align-middle font-medium sm:px-3 sm:py-2';
+  export const TABLE_HEAD_CELL =
+    'px-1.5 py-2 text-left align-middle font-mono text-[0.625rem] font-medium sm:px-3 sm:text-[0.6875rem]';
   export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-2';
   export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
-  export const FROZEN_HEAD_CELL = 'sticky z-10 bg-surface';
+  export const FROZEN_HEAD_CELL = 'sticky z-10 bg-table-head';
   export const FROZEN_EDGE = 'border-r border-stroke sm:border-r-0';
-  export const FROZEN_RANK = 'w-10 min-w-10 text-right sm:w-14 sm:min-w-14 left-0';
-  export const ATHLETE_COLUMN = 'w-44 min-w-44 pl-1 sm:w-56 sm:min-w-56 sm:pl-3';
-  export const ATHLETE_CONTENT = 'max-w-[10.5rem] sm:max-w-[12.5rem]';
+  export const FROZEN_RANK =
+    'w-10 min-w-10 max-w-10 text-right sm:w-14 sm:min-w-14 sm:max-w-14 left-0';
+  export const ATHLETE_COLUMN = 'w-44 min-w-44 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
+  export const ATHLETE_CONTENT = 'max-w-[10.25rem] sm:max-w-[14.5rem]';
+  export const FROZEN_ATHLETE = 'left-10 border-r border-stroke-strong sm:left-14';
 </script>
 
 <script lang="ts" generics="Row">
@@ -29,6 +32,7 @@
     pagination,
     pageParam = 'table_page',
     busy = false,
+    embedded = false,
   }: {
     head: Snippet;
     body: Snippet<[Row[]]>;
@@ -37,6 +41,8 @@
     pagination?: TablePagination;
     pageParam?: string;
     busy?: boolean;
+    /** A parent results frame supplies the outer border and page gutters. */
+    embedded?: boolean;
   } = $props();
 
   const totalItems = $derived(pagination?.total_items ?? rows.length);
@@ -65,14 +71,13 @@
 </script>
 
 {#snippet paginationBar(position: string)}
-  <div class="flex flex-wrap items-center justify-between gap-3" data-table-pagination={position}>
-    <span class="text-xs text-muted">
-      {i18n.t('Page {page} of {pages} · {count} {items}', {
-        page: i18n.number(page, 0),
-        pages: i18n.number(totalPages, 0),
-        count: i18n.number(totalItems, 0),
-        items: countLabel,
-      })}
+  <div
+    class="flex min-h-14 items-center justify-between gap-2 bg-surface-subtle px-2 py-1 sm:px-4 sm:py-2"
+    data-table-pagination={position}
+  >
+    <span class="min-w-0 font-mono text-[0.625rem] text-muted sm:text-xs">
+      {i18n.number(totalItems, 0)}
+      {countLabel}
     </span>
     <Pagination
       {page}
@@ -84,22 +89,26 @@
   </div>
 {/snippet}
 
-<div class="mb-3">{@render paginationBar('top')}</div>
+<div
+  class={embedded ? 'min-w-0' : `min-w-0 rounded-panel border border-stroke-strong ${EDGE_TO_EDGE}`}
+>
+  <div class="border-b border-stroke">{@render paginationBar('top')}</div>
 
-<div class="osl-table overflow-x-auto {EDGE_TO_EDGE}">
-  <table class="w-full text-[0.7rem] whitespace-nowrap sm:text-xs" aria-busy={busy}>
-    <thead class="sticky top-0 z-20">
-      <tr class="border-b border-stroke bg-surface">
-        {@render head()}
-      </tr>
-    </thead>
-    <tbody>
-      {@render body(visibleRows)}
-    </tbody>
-  </table>
+  <div class="osl-table overflow-x-auto">
+    <table class="w-full text-xs leading-4 whitespace-nowrap" aria-busy={busy}>
+      <thead class="sticky top-0 z-20">
+        <tr class="border-b border-stroke-strong bg-table-head">
+          {@render head()}
+        </tr>
+      </thead>
+      <tbody>
+        {@render body(visibleRows)}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="border-t border-stroke">{@render paginationBar('bottom')}</div>
 </div>
-
-<div class="mt-3">{@render paginationBar('bottom')}</div>
 
 <style>
   .osl-table :global(tbody) {
@@ -126,5 +135,15 @@
 
   .osl-table :global(tbody tr[data-focused]) {
     --row-bg: var(--table-row-focus);
+  }
+
+  .osl-table :global(tbody tr:last-child) {
+    border-bottom: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .osl-table :global(tbody) {
+      transition: none;
+    }
   }
 </style>

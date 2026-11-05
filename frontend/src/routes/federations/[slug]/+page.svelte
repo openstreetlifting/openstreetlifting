@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { LAYOUT } from '#lib/constants/layout.js';
   import { useI18n } from '#lib/i18n/index.js';
   import type { PageData } from './$types';
   import { Breadcrumb, Flag } from '#lib/components/ui/index.js';
@@ -78,7 +79,7 @@
   ]}
 />
 
-<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
+<div class={LAYOUT.page}>
   <Breadcrumb
     items={[
       { label: i18n.t('Rankings'), href: rankingsHref() },
@@ -133,7 +134,7 @@
   {/if}
 
   {#if data.upcoming.length > 0}
-    <section class="mt-8 sm:mt-12">
+    <section class={LAYOUT.section}>
       <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Upcoming')}</h2>
       <CompetitionsTable competitions={data.upcoming} upcoming showFederation={false} />
     </section>

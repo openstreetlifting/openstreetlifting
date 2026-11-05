@@ -63,6 +63,7 @@ export default {
   'All Countries': 'Alle Länder',
   'All Federations': 'Alle Verbände',
   'All Years': 'Alle Jahre',
+  Year: 'Jahr',
   'All Classes': 'Alle Klassen',
   'Sort by': 'Sortieren nach',
   'Streetlifting competition results': 'Ergebnisse von Streetlifting-Wettkämpfen',
@@ -201,6 +202,10 @@ export default {
   'Clear all filters and sorting': 'Alle Filter und die Sortierung zurücksetzen',
   Clear: 'Zurücksetzen',
   Filters: 'Filter',
+  'Results could not be loaded. Please try again in a moment.':
+    'Die Ergebnisse konnten nicht geladen werden. Bitte versuchen Sie es gleich erneut.',
+  'Try again': 'Erneut versuchen',
+  'Retrying…': 'Wird erneut versucht…',
   'Close information': 'Informationen schließen',
   Pagination: 'Seitennavigation',
   'Previous page': 'Vorherige Seite',

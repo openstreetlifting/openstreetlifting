@@ -8,6 +8,7 @@
   import '../app.css';
 
   let { data, children }: { data: LayoutData; children: import('svelte').Snippet } = $props();
+  const dev = import.meta.env.DEV;
   const i18n = provideI18n(() => data.locale);
   provideWeightUnit();
 
@@ -23,7 +24,7 @@
   {/if}
 </svelte:head>
 
-<div class="flex min-h-screen flex-col bg-canvas">
+<div class="flex min-h-dvh flex-col bg-canvas">
   <Header />
   <!-- min-w-0 because a flex item defaults to min-width:auto, which refuses to
        shrink below its content. Without it a table wider than the screen widens
@@ -34,3 +35,9 @@
   </main>
   <Footer />
 </div>
+
+{#if dev}
+  {#await import('#lib/components/dev/typeface-preview.svelte') then { default: TypefacePreview }}
+    <TypefacePreview />
+  {/await}
+{/if}
