@@ -203,7 +203,6 @@
         <label for="{id}-target" class="text-sm text-secondary">{i18n.t('Target score')}</label>
         <input
           id="{id}-target"
-          aria-label={i18n.t('Target RIS')}
           type="text"
           inputmode="decimal"
           placeholder={i18n.t('Target')}
