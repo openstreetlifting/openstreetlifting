@@ -46,7 +46,7 @@
     type="button"
     onclick={onClear}
     aria-label={i18n.t('Clear all filters and sorting')}
-    class="h-11 shrink-0 gap-1.5 px-3 text-xs text-secondary hover:text-ink sm:h-8"
+    class="h-11 shrink-0 gap-1.5 px-3 text-meta text-secondary hover:text-ink sm:h-8"
   >
     <CloseIcon class="h-3 w-3" />
     {i18n.t('Clear')}
@@ -71,11 +71,11 @@
       onclick={() => (open = !open)}
       aria-expanded={open}
       aria-controls={panelId}
-      class="h-11 shrink-0 gap-1.5 px-3 text-xs text-secondary sm:hidden"
+      class="h-11 shrink-0 gap-1.5 px-3 text-meta text-secondary sm:hidden"
     >
       {i18n.t('Filters')}
       {#if activeCount > 0}
-        <span class="bg-action px-1 text-[0.65rem] font-semibold text-on-action">
+        <span class="bg-action px-1 text-micro font-semibold text-on-action">
           {activeCount}
         </span>
       {/if}

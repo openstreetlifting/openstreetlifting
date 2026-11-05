@@ -30,6 +30,6 @@
 <MetricCard {heading} {href} {background} {flagBackground} footer={children}>
   {#if place !== undefined && field !== undefined}
     <span class={TEXT.cardFigure}>#{i18n.number(place, 0)}</span>
-    <span class="font-mono text-xs text-secondary">/ {i18n.number(field, 0)}</span>
-  {:else}<span class="text-sm text-secondary">{missingLabel}</span>{/if}
+    <span class="font-mono text-meta text-secondary">/ {i18n.number(field, 0)}</span>
+  {:else}<span class="text-body text-secondary">{missingLabel}</span>{/if}
 </MetricCard>

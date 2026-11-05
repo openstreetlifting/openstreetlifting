@@ -131,7 +131,7 @@
 
   {#if data.runningCompetitions.length > 0}
     <Notice title={i18n.t('Hey! Those competitions are currently running')} live>
-      <ul class="mt-2 space-y-2 text-sm">
+      <ul class="mt-2 space-y-2 text-body">
         {#each data.runningCompetitions as competition (competition.slug)}
           <li class="flex flex-wrap items-center gap-x-6 gap-y-1">
             <a

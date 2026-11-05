@@ -388,7 +388,7 @@
     </h1>
 
     <dl
-      class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:col-span-2 sm:grid-cols-[7rem_minmax(0,1fr)]"
+      class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:col-span-2 sm:grid-cols-[7rem_minmax(0,1fr)]"
     >
       {#if competition.start_date}
         <dt class="text-muted">{i18n.t('Date')}</dt>
@@ -468,10 +468,10 @@
 
     {#if editions.length > 1}
       <nav aria-labelledby="editions-heading" class="sm:col-span-2">
-        <h2 id="editions-heading" class="text-xs font-medium text-secondary">
+        <h2 id="editions-heading" class="text-meta font-medium text-secondary">
           {i18n.t('Editions')}
         </h2>
-        <ul class="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+        <ul class="flex flex-wrap gap-x-5 gap-y-1 text-body">
           {#each editions as edition (edition.slug)}
             <li>
               {#if edition.slug === competition.slug}
@@ -499,11 +499,11 @@
 
     {#if published && classed}
       <section aria-labelledby="weight-classes-heading" class="sm:col-span-2">
-        <h2 id="weight-classes-heading" class="mb-2 text-xs font-medium text-secondary">
+        <h2 id="weight-classes-heading" class="mb-2 text-meta font-medium text-secondary">
           {i18n.t('Weight classes')}
         </h2>
         <dl
-          class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
+          class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]"
         >
           {#each representedClasses as group (group.gender)}
             <dt class="text-muted">{group.label}</dt>
@@ -531,7 +531,7 @@
         href={`https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/data/competitions/${editPath}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="min-h-11 gap-2 justify-self-start px-3 text-xs text-secondary hover:text-ink sm:col-start-2 sm:row-start-1 sm:self-start sm:justify-self-end"
+        class="min-h-11 gap-2 justify-self-start px-3 text-meta text-secondary hover:text-ink sm:col-start-2 sm:row-start-1 sm:self-start sm:justify-self-end"
       >
         <GitHubIcon class="h-4 w-4" />
         {i18n.t('Edit competition on GitHub')}
@@ -603,13 +603,13 @@
   {#if !published}
     <div class="border-l-2 border-stroke-strong py-1 pl-5">
       {#if competition.status === 'live'}
-        <p class="text-lg text-ink">{i18n.t('Results are not available yet.')}</p>
-        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-secondary">
+        <p class="text-subtitle text-ink">{i18n.t('Results are not available yet.')}</p>
+        <p class="mt-2 max-w-2xl text-body leading-relaxed text-secondary">
           {i18n.t('Results will appear here once they are published.')}
         </p>
       {:else}
-        <p class="text-lg text-ink">{i18n.t('This competition has not been lifted yet.')}</p>
-        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-secondary">
+        <p class="text-subtitle text-ink">{i18n.t('This competition has not been lifted yet.')}</p>
+        <p class="mt-2 max-w-2xl text-body leading-relaxed text-secondary">
           {i18n.t(
             '{competition} is scheduled for {date}. Results will appear here once published.',
             {
@@ -655,7 +655,7 @@
         {#each contested as lift (lift.key)}
           <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
             {i18n.t(lift.label)}
-            <span class="{ATTEMPT_ROW} mt-1 text-[0.6rem] font-normal text-muted">
+            <span class="{ATTEMPT_ROW} mt-1 text-micro font-normal text-muted">
               <span class="text-right">1</span>
               <span class="text-right">2</span>
               <span class="text-right">3</span>
@@ -696,7 +696,7 @@
                 </span>
                 {#if participant && participant.status !== 'competed'}
                   <span
-                    class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
+                    class="shrink-0 text-micro font-medium tracking-wide uppercase {STATUS_FLAG}"
                     title={athleteStatusTitle(
                       participant.status,
                       participant.status_reason,
@@ -796,7 +796,7 @@
                 </span>
                 {#if participant.status !== 'competed'}
                   <span
-                    class="shrink-0 text-[0.65rem] font-medium tracking-wide uppercase {STATUS_FLAG}"
+                    class="shrink-0 text-micro font-medium tracking-wide uppercase {STATUS_FLAG}"
                     title={athleteStatusTitle(
                       participant.status,
                       participant.status_reason,

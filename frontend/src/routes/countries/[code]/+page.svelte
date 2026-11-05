@@ -81,7 +81,7 @@
     </h1>
     {#if data.federations.length > 0}
       <dl
-        class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
+        class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]"
       >
         <dt class="text-muted">
           {data.federations.length === 1 ? i18n.t('Federation') : i18n.t('Federations')}
