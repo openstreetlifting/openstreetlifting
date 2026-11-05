@@ -1,2 +1,0 @@
-[    3820ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://turbopuffer.com/:0
-[   10983ms] [WARNING] The resource https://px.ads.linkedin.com/collect/?pid=8553810&fmt=gif was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://turbopuffer.com/:0
