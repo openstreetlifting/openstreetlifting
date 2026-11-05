@@ -34,7 +34,7 @@ Named values carry layout rhythm and already adapt at the `sm` breakpoint, so th
 | `icon`                   | input padding that clears an icon        |
 | `control`                | height of fields, buttons and page links |
 
-Inside a component, use the numeric scale in `scripts/check-spacing.mjs`. That check covers padding, margin and gap. Size every field, button, pagination link and segmented control with `h-control` (36px on phones, 32px from `sm`) so they line up; keep `size-11` for icon-only buttons such as the menu and social links.
+Inside a component, use the numeric scale in `scripts/check-spacing.mjs`. That check covers padding, margin and gap. Size every field, button, pagination link and segmented control with `h-control` (32px) so they line up; keep `size-11` for icon-only buttons such as the menu and social links.
 
 ## Components
 
@@ -43,6 +43,8 @@ Exported from `#lib/components/ui/index.js`:
 - `Text`: a role-based text element, with `as` for the tag.
 - `Stack`: a vertical flow, with `gap` limited to the scale and the `tile`, `section` and `chapter` names.
 - `Panel`: a bordered surface with `panel` padding.
+
+`Table` draws the divider after frozen columns from its `frozenColumns` prop, so frozen cells need no border of their own.
 
 ## Gotchas
 

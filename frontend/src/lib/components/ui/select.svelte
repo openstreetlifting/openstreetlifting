@@ -27,7 +27,7 @@
     bind:value
     class={cn(
       FIELD,
-      'peer min-w-0 w-full cursor-pointer appearance-none py-2 pl-3',
+      'peer min-w-0 w-full cursor-pointer appearance-none py-2 pl-3 text-micro',
       className,
       'py-1.5 pr-icon'
     )}

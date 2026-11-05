@@ -48,6 +48,7 @@ export const TEXT_CELL = {
  * a column can be read straight down to compare lifts.
  */
 export const ATTEMPT_ROW = 'grid grid-cols-[2.5rem_2.5rem_2.5rem_2.9rem] gap-x-1.5 items-baseline';
+export const BEST_ROW = 'grid grid-cols-[2.9rem] items-baseline';
 
 /**
  * A measured value, the kind read down a column and compared against the rows

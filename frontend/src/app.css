@@ -32,7 +32,7 @@
   --spacing-section: 1.5rem;
   --spacing-chapter: 2.5rem;
   --spacing-icon: 2.25rem;
-  --spacing-control: 2.25rem;
+  --spacing-control: 2rem;
   --font-sans: 'Inter Variable', sans-serif;
   --container-page: 100rem;
   --container-reading: 56rem;
@@ -98,6 +98,5 @@
     --spacing-tile: 1rem;
     --spacing-section: 2rem;
     --spacing-chapter: 3rem;
-    --spacing-control: 2rem;
   }
 }

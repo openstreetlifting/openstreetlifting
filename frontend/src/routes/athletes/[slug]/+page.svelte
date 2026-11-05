@@ -22,7 +22,6 @@
     TABLE_HEAD_CELL,
     FROZEN_CELL,
     FROZEN_HEAD_CELL,
-    FROZEN_EDGE,
     FROZEN_RANK,
     Text,
   } from '#lib/components/ui/index.js';
@@ -406,8 +405,7 @@
         frozenColumns="rank"
       >
         {#snippet head()}
-          <th
-            class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
+          <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
             >{i18n.t('Rank')}</th
           >
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competition')}</th>
@@ -434,7 +432,7 @@
         {#snippet body(rows)}
           {#each rows as competition (`${competition.competition_id}:${competition.category_name}:${competition.division ?? ''}`)}
             <tr class="transition-colors {competition.status !== 'competed' ? 'opacity-50' : ''}">
-              <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
+              <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
                 {#if competition.status !== 'competed'}
                   <span
                     class={STATUS_FLAG}

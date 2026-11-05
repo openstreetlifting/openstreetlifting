@@ -13,8 +13,8 @@
     TABLE_HEAD_CELL,
     FROZEN_CELL,
     FROZEN_HEAD_CELL,
-    FROZEN_EDGE,
     FROZEN_RANK,
+    FROZEN_ATHLETE,
     ATHLETE_COLUMN,
     ATHLETE_CONTENT,
   } from '#lib/components/ui/index.js';
@@ -37,12 +37,22 @@
   const classed = $derived(entries.some((entry) => Boolean(entry.category)));
 </script>
 
-<Table rows={entries} itemName="athlete" pageParam="page" frozenColumns="rank" {pagination} {busy}>
+<Table
+  rows={entries}
+  itemName="athlete"
+  pageParam="page"
+  frozenColumns="athlete"
+  {pagination}
+  {busy}
+>
   {#snippet head()}
-    <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
+    <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
       >{i18n.t('Rank')}</th
     >
-    <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
+    <th
+      class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} text-secondary"
+      >{i18n.t('Athlete')}</th
+    >
     <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')} ({weights.unit})</th>
     <th class="{TABLE_HEAD_CELL} text-secondary {SORTED_COLUMN}">
       <RisHeader />
@@ -62,10 +72,10 @@
   {#snippet body(rows)}
     {#each rows as entry (entry.rank + entry.athlete.athlete_id)}
       <tr class="transition-colors">
-        <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
+        <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
           {entry.rank}
         </td>
-        <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+        <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} {CELL.identity}">
           <span class="flex min-w-0 items-center gap-2 {ATHLETE_CONTENT}">
             <Flag
               link

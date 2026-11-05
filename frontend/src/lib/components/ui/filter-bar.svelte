@@ -57,7 +57,7 @@
 <div
   class="{embedded
     ? 'border-b border-stroke'
-    : `${EDGE_TO_EDGE} mb-4 rounded-panel border border-stroke-strong sm:mb-6`} grid grid-cols-2 items-end gap-2 bg-surface p-3 sm:gap-3 {primary
+    : `${EDGE_TO_EDGE} mb-4 rounded-panel border border-stroke-strong sm:mb-6`} grid grid-cols-2 items-end gap-2 bg-surface px-3 py-1.5 sm:gap-3 {primary
     ? 'sm:grid-cols-4 xl:grid-cols-8'
     : 'sm:grid-cols-2 xl:grid-cols-6'}"
 >
@@ -86,18 +86,13 @@
     {#if showsClear}<div class="hidden shrink-0 sm:block">{@render clear()}</div>{/if}
   </div>
 
-  {#if primary}
-    <div class="col-span-2 grid min-w-0 grid-cols-2 gap-2 sm:contents">
-      {@render primary()}
-    </div>
-  {/if}
-
   <div
     id={panelId}
     class="{open
       ? 'grid'
-      : 'hidden'} col-span-2 min-w-0 grid-cols-2 items-end gap-2 border-t border-stroke pt-3 sm:contents"
+      : 'hidden'} col-span-2 min-w-0 grid-cols-2 items-end gap-2 border-t border-stroke pt-1.5 sm:contents"
   >
+    {@render primary?.()}
     {@render children()}
     {#if showsClear}
       <div class="col-span-2 sm:hidden">{@render clear()}</div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Stack } from '#lib/components/ui/index.js';
   import { useI18n } from '#lib/i18n/index.js';
   import LanguagePicker from '#lib/components/language-picker.svelte';
   import WeightUnitPicker from '#lib/components/weight-unit-picker.svelte';
@@ -8,7 +7,7 @@
   import { resolve } from '$app/paths';
   import { GitHubIcon, InstagramIcon, MenuIcon, CloseIcon } from '#lib/components/icons/index.js';
   import { stripLocale } from '#lib/i18n/paths.js';
-  import { NAV_LINK } from '#lib/constants/typography.js';
+  import { CONTROL, NAV_LINK } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
 
@@ -25,6 +24,18 @@
     const pathname = stripLocale(page.url.pathname);
     return path === '/' ? pathname === '/' : pathname.startsWith(path);
   }
+
+  const menuLinks = $derived([
+    { path: '', label: i18n.t('Rankings'), active: isActive('/') },
+    { path: 'competitions', label: i18n.t('Competitions'), active: isActive('/competitions') },
+    { path: 'ris', label: 'RIS', active: isActive('/ris') },
+    { path: 'contact', label: i18n.t('Contact'), active: isActive('/contact') },
+  ] as const);
+
+  const MENU_ITEM = 'border-b border-stroke sm:border-r sm:nth-[3n]:border-r-0';
+  const MENU_LINK = `${CONTROL} flex h-control items-center justify-between gap-2 px-gutter transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus`;
+  const SOCIAL =
+    'inline-flex size-control items-center justify-center text-secondary transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-focus lg:h-9 lg:w-5';
 </script>
 
 <svelte:window
@@ -91,7 +102,7 @@
     <a
       href={i18n.href(resolve(''))}
       title={i18n.t('OpenStreetlifting, back to the full rankings')}
-      class="flex min-h-14 min-w-0 items-center justify-self-start py-2 opacity-90 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-focus"
+      class="flex min-h-12 min-w-0 items-center lg:min-h-14 justify-self-start py-2 opacity-90 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-focus"
     >
       <img
         src="/logo_width.svg"
@@ -124,26 +135,47 @@
       id="primary-nav"
       class="{menuOpen
         ? 'flex'
-        : 'hidden'} col-span-2 row-start-2 flex-col gap-3 border-t border-stroke py-3 lg:col-span-1 lg:col-start-3 lg:row-start-1 lg:flex lg:flex-row lg:items-center lg:justify-self-end lg:border-0 lg:py-0"
+        : 'hidden'} col-span-2 row-start-2 -mx-gutter flex-col border-t border-stroke lg:col-span-1 lg:col-start-3 lg:row-start-1 lg:mx-0 lg:flex lg:flex-row lg:items-center lg:justify-self-end lg:border-0"
     >
-      <Stack as="ul" gap={1} class="lg:hidden">
-        {@render primaryLinks()}{@render secondaryLinks()}
-      </Stack>
-      <div class="flex items-center gap-3">
+      <ul class="grid sm:grid-cols-3 lg:hidden">
+        {#each menuLinks as link (link.label)}
+          <li class={MENU_ITEM}>
+            <a
+              href={i18n.href(resolve(link.path))}
+              aria-current={link.active ? 'page' : undefined}
+              class="{MENU_LINK} {link.active
+                ? 'bg-surface-selected text-ink'
+                : 'text-secondary hover:bg-surface hover:text-ink'}">{link.label}</a
+            >
+          </li>
+        {/each}
+        <li class={MENU_ITEM}>
+          <a
+            href="https://docs.openstreetlifting.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="{MENU_LINK} text-secondary hover:bg-surface hover:text-ink"
+            >{i18n.t('Docs')}<span aria-hidden="true" class="text-muted">↗</span></a
+          >
+        </li>
+      </ul>
+      <div
+        class="flex items-center justify-between gap-3 bg-surface-subtle px-gutter py-1.5 lg:justify-start lg:bg-transparent lg:p-0"
+      >
         <div class="flex items-center gap-2"><LanguagePicker /><WeightUnitPicker /></div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1 lg:gap-3">
           <a
             href="https://github.com/openstreetlifting/openstreetlifting"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex h-11 w-11 items-center justify-center text-secondary transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-focus sm:h-9 sm:w-5"
+            class={SOCIAL}
             aria-label="GitHub"><GitHubIcon class="h-5 w-5" /></a
           >
           <a
             href="https://www.instagram.com/openstreetlifting"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex h-11 w-11 items-center justify-center text-secondary transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-focus sm:h-9 sm:w-5"
+            class={SOCIAL}
             aria-label="Instagram"><InstagramIcon class="h-5 w-5" /></a
           >
         </div>

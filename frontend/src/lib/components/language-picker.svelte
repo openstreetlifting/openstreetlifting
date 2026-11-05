@@ -18,7 +18,7 @@
     if (isLocale(locale))
       window.location.assign(localeHref(`${url.pathname}${url.search}${url.hash}`, locale));
   }}
-  class="w-auto px-2 py-1 text-meta sm:h-8 sm:min-h-8"
+  class="w-auto px-2"
 >
   {#each LOCALES as locale (locale)}
     <option value={locale} lang={locale}>{LANGUAGE_NAMES[locale]}</option>

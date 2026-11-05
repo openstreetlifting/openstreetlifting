@@ -19,9 +19,9 @@
     TABLE_HEAD_CELL,
     FROZEN_CELL,
     FROZEN_HEAD_CELL,
-    FROZEN_EDGE,
     FROZEN_RANK,
-    ATHLETE_COLUMN,
+    FROZEN_ATHLETE,
+    ATHLETE_COLUMN_FILL,
     ATHLETE_CONTENT,
     Text,
   } from '#lib/components/ui/index.js';
@@ -40,6 +40,7 @@
   } from '#lib/utils/index.js';
   import {
     ATTEMPT_ROW,
+    BEST_ROW,
     CELL,
     STATUS_FLAG,
     SORTED_COLUMN,
@@ -188,6 +189,16 @@
     return best === null ? { kind: 'bombed' } : { kind: 'best', best };
   }
 
+  const withAttempts = $derived(
+    new Set(
+      competition.categories.flatMap((category) =>
+        category.participants.flatMap((participant) =>
+          participant.lifts.filter((lift) => lift.attempts.length).map((lift) => lift.movement_name)
+        )
+      )
+    )
+  );
+
   function rankedCell(entry: RankingEntry, key: string, code: string, movement: string): LiftCell {
     const best = entry[key as 'muscleup' | 'pullup' | 'dips' | 'squat'];
     return liftCell(participants.get(entry.participant_id), best, code, movement);
@@ -256,7 +267,7 @@
   const place = $derived([competition.venue, location].filter(Boolean).join(', '));
   const DETAILS =
     'grid w-max max-w-full grid-cols-[6rem_minmax(0,1fr)] content-start gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]';
-  const EDITION = `${CONTROL} inline-flex h-control min-w-control shrink-0 items-center justify-center rounded-control border px-2 tabular-nums sm:px-3 transition-colors focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none`;
+  const EDITION = `${CONTROL} inline-flex h-full min-w-control shrink-0 items-center justify-center px-3 tabular-nums transition-colors focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none`;
 
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
@@ -416,15 +427,12 @@
         <dd class="min-w-0">
           <nav aria-labelledby="edition-label">
             <ul
-              class="inline-flex max-w-full gap-1 overflow-x-auto rounded-control border border-stroke p-1"
+              class="inline-flex h-control max-w-full overflow-x-auto rounded-control border border-stroke"
             >
               {#each editions as edition (edition.slug)}
-                <li>
+                <li class="h-full">
                   {#if edition.slug === competition.slug}
-                    <span
-                      aria-current="page"
-                      class="{EDITION} border-stroke-strong bg-surface-selected text-ink"
-                    >
+                    <span aria-current="page" class="{EDITION} bg-surface-selected text-ink">
                       <time datetime={edition.start_date}>{edition.label}</time>
                     </span>
                   {:else}
@@ -432,7 +440,7 @@
                       href={i18n.href(resolve('/competitions/[slug]', { slug: edition.slug }))}
                       aria-label={`${edition.label} · ${edition.name}`}
                       title={`${edition.name} · ${formatLongDate(edition.start_date, i18n.locale)}`}
-                      class="{EDITION} border-transparent text-secondary hover:bg-surface hover:text-ink"
+                      class="{EDITION} text-secondary hover:bg-surface hover:text-ink"
                     >
                       <time datetime={edition.start_date}>{edition.label}</time>
                     </a>
@@ -620,7 +628,9 @@
           onchange={() => table.handleFilterChange()}
         >
           {#each sorts as sort (sort.value)}
-            <option value={sort.value}>{i18n.t(sort.label)}</option>
+            <option value={sort.value}
+              >{i18n.t('Sort by {sort}', { sort: i18n.t(sort.label) })}</option
+            >
           {/each}
         </SelectField>
       </FilterBar>
@@ -634,7 +644,7 @@
         <Table
           embedded
           rows={rankings}
-          frozenColumns="rank"
+          frozenColumns="athlete"
           itemName="athlete"
           {busy}
           pagination={{
@@ -646,11 +656,13 @@
           }}
         >
           {#snippet head()}
-            <th
-              class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
+            <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
               >{i18n.t('Rank')}</th
             >
-            <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
+            <th
+              class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} text-secondary"
+              >{i18n.t('Athlete')}</th
+            >
             <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}"
               >{i18n.t('Total')} ({weights.unit})</th
             >
@@ -660,17 +672,22 @@
               </th>
             {/if}
             {#each contested as lift (lift.key)}
+              {@const attempts = withAttempts.has(lift.movement)}
               <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
                 {i18n.t(lift.label)}
-                <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
-                  <span class="text-right">1</span>
-                  <span class="text-right">2</span>
-                  <span class="text-right">3</span>
-                  <span class="text-right">{i18n.t('Best')}</span>
-                </span>
+                {#if attempts}
+                  <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
+                    <span class="text-right">1</span>
+                    <span class="text-right">2</span>
+                    <span class="text-right">3</span>
+                    <span class="text-right">{i18n.t('Best')}</span>
+                  </span>
+                {/if}
               </th>
             {/each}
-            <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Sex')}</th>
+            <th class="{TABLE_HEAD_CELL} text-secondary">
+              {i18n.t('Sex')}
+            </th>
             {#if classed}
               <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>
             {/if}
@@ -683,10 +700,12 @@
                 class="transition-colors"
                 data-focused={entry.athlete.slug === table.focusedAthlete ? '' : undefined}
               >
-                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
+                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
                   {entry.rank}
                 </td>
-                <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+                <td
+                  class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} {CELL.identity}"
+                >
                   <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                     <span class="flex min-w-0 items-center gap-2">
                       <Flag
@@ -726,7 +745,7 @@
                 {#each contested as lift (lift.key)}
                   {@const cell = rankedCell(entry, lift.key, lift.code, lift.movement)}
                   <td class="{TABLE_CELL} whitespace-nowrap">
-                    <span class={ATTEMPT_ROW}>
+                    <span class={withAttempts.has(lift.movement) ? ATTEMPT_ROW : BEST_ROW}>
                       {#if cell.kind === 'attempts'}
                         {#each [1, 2, 3] as slot (slot)}
                           {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
@@ -748,7 +767,7 @@
                             {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
                           </span>
                         {/each}
-                      {:else}
+                      {:else if withAttempts.has(lift.movement)}
                         <span></span>
                         <span></span>
                         <span></span>
@@ -784,11 +803,11 @@
 
             {#each unplacedOnPage as { category, participant } (participant.athlete.athlete_id)}
               <tr class="transition-colors">
-                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.absent}"
-                  >{NO_VALUE}</td
-                >
+                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.absent}">{NO_VALUE}</td>
 
-                <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+                <td
+                  class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} {CELL.identity}"
+                >
                   <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                     <span class="flex min-w-0 items-center gap-2">
                       <Flag
@@ -834,7 +853,7 @@
                 {#each contested as lift (lift.key)}
                   {@const cell = participantCell(participant, lift.code, lift.movement)}
                   <td class="{TABLE_CELL} whitespace-nowrap">
-                    <span class={ATTEMPT_ROW}>
+                    <span class={withAttempts.has(lift.movement) ? ATTEMPT_ROW : BEST_ROW}>
                       {#if cell.kind === 'attempts'}
                         {#each [1, 2, 3] as slot (slot)}
                           {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
@@ -846,7 +865,7 @@
                             {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
                           </span>
                         {/each}
-                      {:else}
+                      {:else if withAttempts.has(lift.movement)}
                         <span></span>
                         <span></span>
                         <span></span>

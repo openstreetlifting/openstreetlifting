@@ -1,15 +1,15 @@
 <script module lang="ts">
   export const TABLE_HEAD_CELL =
     'px-1.5 py-1 text-left align-middle font-mono text-meta font-medium sm:px-3 sm:py-1.5';
-  export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-2';
+  export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-1.5';
   export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
   export const FROZEN_HEAD_CELL = 'sticky z-10 bg-table-head';
-  export const FROZEN_EDGE = 'border-r border-stroke sm:border-r-0';
   export const FROZEN_RANK =
-    'w-10 min-w-10 max-w-10 text-right sm:w-14 sm:min-w-14 sm:max-w-14 left-0';
-  export const ATHLETE_COLUMN = 'w-44 min-w-44 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
-  export const ATHLETE_CONTENT = 'max-w-[10.25rem] sm:max-w-[14.5rem]';
-  export const FROZEN_ATHLETE = 'left-10 border-r border-stroke-strong sm:left-14';
+    'w-12 min-w-12 max-w-12 text-right sm:w-14 sm:min-w-14 sm:max-w-14 left-0';
+  export const ATHLETE_COLUMN = 'w-36 min-w-36 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
+  export const ATHLETE_COLUMN_FILL = 'w-36 min-w-36 pl-1 sm:w-full sm:min-w-64 sm:pl-3';
+  export const ATHLETE_CONTENT = 'max-w-[8.25rem] sm:max-w-[14.5rem]';
+  export const FROZEN_ATHLETE = 'left-12 sm:left-14';
 </script>
 
 <script lang="ts" generics="Row">
@@ -103,7 +103,7 @@
 
 {#snippet paginationBar(position: string)}
   <div
-    class="flex min-h-14 items-center justify-between gap-2 bg-surface-subtle px-2 py-1 sm:px-4 sm:py-2"
+    class="flex items-center justify-between gap-2 bg-surface-subtle px-3 py-1.5"
     data-table-pagination={position}
   >
     <span
@@ -144,10 +144,11 @@
 
   <div
     onfocusin={revealFocus}
+    data-frozen={frozenColumns}
     class="osl-table overflow-x-auto {frozenColumns === 'athlete'
-      ? 'scroll-ps-56 sm:scroll-ps-80'
+      ? 'scroll-ps-48 sm:scroll-ps-80'
       : frozenColumns === 'rank'
-        ? 'scroll-ps-12 sm:scroll-ps-16'
+        ? 'scroll-ps-14 sm:scroll-ps-16'
         : ''}"
   >
     <table class="w-full text-meta leading-4 whitespace-nowrap" aria-busy={busy}>
@@ -191,6 +192,11 @@
 
   .osl-table :global(tbody tr[data-focused]) {
     --row-bg: var(--table-row-focus);
+  }
+
+  .osl-table[data-frozen='rank'] :global(tr > :first-child),
+  .osl-table[data-frozen='athlete'] :global(tr > :nth-child(2)) {
+    border-right: 1px solid var(--color-stroke-strong);
   }
 
   .osl-table :global(tbody tr:last-child) {
