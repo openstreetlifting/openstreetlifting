@@ -941,6 +941,16 @@
           "last_name": {
             "type": "string"
           },
+          "lift_balance": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/LiftBalance"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "native_name": {
             "type": [
               "string",
@@ -966,16 +976,6 @@
             "oneOf": [
               {
                 "$ref": "#/components/schemas/AthleteStanding"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "strength_profile": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/StrengthProfile"
               },
               {
                 "type": "null"
@@ -1601,6 +1601,47 @@
         "type": "string",
         "description": "Comma-separated list of sections to embed"
       },
+      "LiftBalance": {
+        "type": "object",
+        "required": [
+          "category",
+          "total",
+          "competition_name",
+          "competition_slug",
+          "competition_date",
+          "field",
+          "lifts"
+        ],
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "competition_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "competition_name": {
+            "type": "string"
+          },
+          "competition_slug": {
+            "type": "string"
+          },
+          "field": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Other athletes with a four-lift result in the same sex and weight class."
+          },
+          "lifts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LiftShare"
+            }
+          },
+          "total": {
+            "type": "string"
+          }
+        }
+      },
       "LiftDetail": {
         "type": "object",
         "required": [
@@ -1623,6 +1664,45 @@
           },
           "movement_name": {
             "$ref": "#/components/schemas/Movement"
+          }
+        }
+      },
+      "LiftShare": {
+        "type": "object",
+        "required": [
+          "movement_name",
+          "value",
+          "share",
+          "class_share",
+          "class_spread"
+        ],
+        "properties": {
+          "class_share": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Mean share across the other athletes in the class."
+          },
+          "class_spread": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Sample standard deviation of the share across the other athletes in the class."
+          },
+          "movement_name": {
+            "$ref": "#/components/schemas/Movement"
+          },
+          "share": {
+            "type": "number",
+            "format": "double",
+            "description": "Percentage of the athlete's best total taken by this lift."
+          },
+          "value": {
+            "type": "string"
           }
         }
       },
@@ -1750,6 +1830,16 @@
                 "last_name": {
                   "type": "string"
                 },
+                "lift_balance": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/LiftBalance"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
                 "native_name": {
                   "type": [
                     "string",
@@ -1775,16 +1865,6 @@
                   "oneOf": [
                     {
                       "$ref": "#/components/schemas/AthleteStanding"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                },
-                "strength_profile": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/StrengthProfile"
                     },
                     {
                       "type": "null"
@@ -2427,57 +2507,6 @@
           "place": {
             "type": "integer",
             "format": "int64"
-          }
-        }
-      },
-      "StrengthComparison": {
-        "type": "object",
-        "required": [
-          "movement_name",
-          "value",
-          "percentile",
-          "field"
-        ],
-        "properties": {
-          "field": {
-            "type": "integer",
-            "format": "int64",
-            "description": "Other athletes with a valid best for this lift in the same sex and weight class."
-          },
-          "movement_name": {
-            "$ref": "#/components/schemas/Movement"
-          },
-          "percentile": {
-            "type": [
-              "number",
-              "null"
-            ],
-            "format": "double",
-            "description": "Percentage of other athletes below this result, ties counting as half."
-          },
-          "value": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
-        }
-      },
-      "StrengthProfile": {
-        "type": "object",
-        "required": [
-          "category",
-          "lifts"
-        ],
-        "properties": {
-          "category": {
-            "type": "string"
-          },
-          "lifts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/StrengthComparison"
-            }
           }
         }
       }

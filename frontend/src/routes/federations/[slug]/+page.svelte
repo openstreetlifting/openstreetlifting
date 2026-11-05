@@ -1,16 +1,15 @@
 <script lang="ts">
+  import { LAYOUT } from '#lib/constants/layout.js';
   import { useI18n } from '#lib/i18n/index.js';
   import type { PageData } from './$types';
-  import { Breadcrumb, Flag } from '#lib/components/ui/index.js';
+  import { Breadcrumb, Flag, Text } from '#lib/components/ui/index.js';
   import CompetitionsTable from '#lib/components/competitions-table.svelte';
   import RankingList from '#lib/components/ranking-list.svelte';
   import Seo from '#lib/components/seo.svelte';
   import { page as currentPage, navigating } from '$app/state';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { breadcrumbLd, federationLd, listingSeo } from '#lib/seo/index.js';
   import { federationPath } from '#lib/utils/index.js';
-  import { TEXT } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
 
@@ -69,7 +68,6 @@
     federationLd(federation, description, i18n.locale),
     breadcrumbLd(
       [
-        { name: i18n.t('Rankings'), path: '/' },
         { name: i18n.t('Competitions'), path: '/competitions' },
         { name: federation.name, path },
       ],
@@ -78,17 +76,13 @@
   ]}
 />
 
-<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
+<div class={LAYOUT.page}>
   <Breadcrumb
-    items={[
-      { label: i18n.t('Rankings'), href: rankingsHref() },
-      { label: i18n.t('Competitions'), href: '/competitions' },
-      { label: federation.name },
-    ]}
+    items={[{ label: i18n.t('Competitions'), href: '/competitions' }, { label: federation.name }]}
   />
 
-  <header class="mb-6 border-b border-stroke pb-5">
-    <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
+  <header class="mb-section border-b border-stroke pb-4">
+    <Text as="h1" variant="title" class="flex min-w-0 items-start gap-3 text-ink">
       {#if federation.country}
         <Flag
           countryCode={federation.country}
@@ -97,10 +91,10 @@
         />
       {/if}
       <span class="min-w-0 break-words">{federation.name}</span>
-    </h1>
+    </Text>
     {#if years || federation.countries > 1 || (federation.abbreviation && federation.abbreviation !== federation.name)}
       <dl
-        class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
+        class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]"
       >
         {#if federation.abbreviation && federation.abbreviation !== federation.name}
           <dt class="text-muted">{i18n.t('Abbreviation')}</dt>
@@ -112,7 +106,7 @@
         {/if}
         {#if federation.countries > 1}
           <dt class="text-muted">{i18n.t('Host countries')}</dt>
-          <dd class="text-ink">{federation.countries}</dd>
+          <dd class="text-ink">{i18n.number(federation.countries, 0)}</dd>
         {/if}
       </dl>
     {/if}
@@ -120,21 +114,21 @@
 
   {#if data.results.length > 0}
     <section class="mb-8 sm:mb-12">
-      <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Competitions')}</h2>
+      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Competitions')}</Text>
       <CompetitionsTable competitions={data.results} showFederation={false} />
     </section>
   {/if}
 
   {#if data.rankings.length > 0}
     <section>
-      <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Athletes')}</h2>
+      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Athletes')}</Text>
       <RankingList entries={data.rankings} {pagination} showFederation={false} {busy} />
     </section>
   {/if}
 
   {#if data.upcoming.length > 0}
-    <section class="mt-8 sm:mt-12">
-      <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Upcoming')}</h2>
+    <section class={LAYOUT.section}>
+      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Upcoming')}</Text>
       <CompetitionsTable competitions={data.upcoming} upcoming showFederation={false} />
     </section>
   {/if}

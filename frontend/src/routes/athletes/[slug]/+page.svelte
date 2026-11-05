@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { LAYOUT } from '#lib/constants/layout.js';
+  import Select from '#lib/components/ui/select.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import { MAIN_RANKING_PAGE_SIZE } from '#lib/constants/pagination.js';
@@ -8,7 +10,9 @@
   import type { Gender } from '#lib/types/enums.js';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
   import {
-    Card,
+    MetricCard,
+    RankingCard,
+    ResultState,
     Breadcrumb,
     Flag,
     Table,
@@ -18,22 +22,21 @@
     TABLE_HEAD_CELL,
     FROZEN_CELL,
     FROZEN_HEAD_CELL,
-    FROZEN_EDGE,
     FROZEN_RANK,
+    Text,
   } from '#lib/components/ui/index.js';
   import { ChevronIcon, GlobeIcon, InstagramIcon } from '#lib/components/icons/index.js';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { athleteFilters } from '#lib/utils/athlete-filters.js';
-  import { totalFormats } from '#lib/utils/athlete-progress.js';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
   import { formatDate, formatAthleteName, countryName, countryPath } from '#lib/utils/index.js';
   import Seo from '#lib/components/seo.svelte';
   import AthleteProgress from '#lib/components/athlete-progress.svelte';
-  import AthleteStrength from '#lib/components/athlete-strength.svelte';
+  import AthleteBalance from '#lib/components/athlete-balance.svelte';
   import { absolute, athleteLd, athleteTitle, breadcrumbLd, risStanding } from '#lib/seo/index.js';
   import {
     ATTEMPT_ROW,
@@ -44,7 +47,7 @@
     NO_RESULT,
     TEXT_CELL,
   } from '#lib/constants/table.js';
-  import { FIELD, TEXT } from '#lib/constants/typography.js';
+  import { TEXT } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
   const weights = useWeightUnit();
@@ -104,32 +107,26 @@
   >;
   const genderLabel = $derived(i18n.t(GENDER_LABEL[athlete.gender]));
   const latestCategory = $derived(
-    athlete.strength_profile?.category ??
+    athlete.lift_balance?.category ??
       athlete.competitions.find((competition) => competition.status === 'competed')?.category_name
   );
   const latestWeightClass = $derived(
     latestCategory?.match(/([+-]\d+(?:\.\d+)?)\s*(?:kg)?$/i)?.[1] ?? null
   );
 
-  const CARD_LABEL =
-    'flex items-center gap-1.5 text-xs font-medium tracking-wider text-secondary uppercase';
-  const CARD_FIGURE = 'font-mono text-xl font-semibold text-ink sm:text-2xl';
-  const CARD_CAPTION = 'text-xs text-muted';
-  const CARD_SURFACE = 'border border-stroke bg-surface';
-  const CARD_GRID = 'grid max-w-records grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
-  const RANKING_CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4';
+  const CARD_GRID = 'grid max-w-records grid-cols-2 gap-tile md:grid-cols-4';
+  const RANKING_CARD_GRID = 'grid grid-cols-1 gap-tile sm:grid-cols-2';
 
-  const formats = $derived(totalFormats(athlete.competitions));
-  const filters = $derived(athleteFilters(page.url.searchParams, formats));
+  const filters = $derived(athleteFilters(page.url.searchParams));
   const selectedMetric = $derived(filters.ranking);
 
-  function updateFilter(key: 'ranking' | 'performance' | 'event', value: string) {
+  function updateFilter(key: 'ranking' | 'performance', value: string) {
     const params = new SvelteURLSearchParams(page.url.search);
     const defaults = {
       ranking: 'ris',
       performance: 'total',
-      event: formats[0] ?? 'MPDS',
     };
+    params.delete('event');
     if (value === defaults[key]) params.delete(key);
     else params.set(key, value);
     const query = params.toString();
@@ -218,7 +215,7 @@
   ]}
 />
 
-<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
+<div class={LAYOUT.page}>
   <Breadcrumb
     items={[
       { label: i18n.t('Rankings'), href: rankingsHref() },
@@ -234,9 +231,11 @@
     ]}
   />
 
-  <header class="mb-6 sm:mb-8">
+  <header class="mb-section border-b border-stroke pb-4">
     <div class="flex items-center gap-3">
-      <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
+      <h1
+        class="flex min-w-0 items-start gap-3 font-sans text-title font-semibold tracking-tight text-balance text-ink sm:text-display"
+      >
         {#if athlete.country}
           <Flag
             countryCode={athlete.country}
@@ -262,15 +261,15 @@
     </div>
 
     {#if !athlete.country}
-      <p class="mt-1 text-sm text-secondary">{i18n.t('Country not recorded')}</p>
+      <p class="mt-1 text-body text-secondary">{i18n.t('Country not recorded')}</p>
     {/if}
 
     {#if athlete.native_name}
-      <p class="mt-1 break-words text-base text-secondary">{athlete.native_name}</p>
+      <p class="mt-1 break-words text-lead text-secondary">{athlete.native_name}</p>
     {/if}
 
     <dl
-      class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
+      class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]"
     >
       <dt class="text-muted">{i18n.t('Sex')}</dt>
       <dd class="text-ink">{genderLabel}</dd>
@@ -281,47 +280,6 @@
     </dl>
   </header>
 
-  {#snippet standingContent(
-    country: string | null,
-    scope: string,
-    place: number | undefined,
-    field: number | undefined,
-    missingLabel = i18n.t('Not ranked')
-  )}
-    <div class="ranking-art" class:ranking-flag={country !== null} aria-hidden="true">
-      {#if country}
-        <Flag countryCode={country} background />
-      {:else if scope === i18n.t('Global')}
-        <GlobeIcon class="h-40 w-40 shrink-0 text-secondary" />
-      {/if}
-    </div>
-    <div class="relative">
-      <div class={CARD_LABEL}>
-        <span class="truncate text-secondary">{scope}</span>
-        {#if place !== undefined}
-          <ChevronIcon
-            class="ml-auto h-3 w-3 shrink-0 -rotate-90 text-faint transition-colors group-hover:text-secondary"
-          />
-        {/if}
-      </div>
-      <div class="mt-1 flex items-baseline gap-1.5">
-        {#if place !== undefined && field !== undefined}
-          <span class={CARD_FIGURE}>#{place}</span>
-          <span class="{CARD_CAPTION} {FIGURE}">/ {field}</span>
-        {:else}
-          <span class="text-sm font-medium text-secondary">{missingLabel}</span>
-        {/if}
-      </div>
-      {#if selectedStanding?.class}
-        <div class="mt-1 {CARD_CAPTION}">
-          {i18n.t('in category {category}', {
-            category: weights.category(selectedStanding.class, i18n.locale),
-          })}
-        </div>
-      {/if}
-    </div>
-  {/snippet}
-
   {#snippet standing(
     country: string | null,
     scope: string,
@@ -330,35 +288,41 @@
     query: string | undefined,
     missingLabel = i18n.t('Not ranked')
   )}
-    {#if query}
-      <a
-        href={i18n.href(resolve(`?${query}`))}
-        class="group relative isolate block overflow-hidden rounded-xl {CARD_SURFACE} p-3 transition-colors hover:border-stroke-strong hover:bg-surface-hover focus:ring-2 focus:ring-focus focus:outline-none"
-      >
-        {@render standingContent(country, scope, place, field, missingLabel)}
-      </a>
-    {:else}
-      <div class="relative isolate overflow-hidden rounded-xl {CARD_SURFACE} p-3">
-        {@render standingContent(country, scope, place, field, missingLabel)}
-      </div>
-    {/if}
+    <RankingCard
+      heading={scope}
+      {place}
+      {field}
+      {missingLabel}
+      flagBackground={country !== null}
+      href={query ? i18n.href(resolve(`?${query}`)) : undefined}
+    >
+      {#snippet background()}
+        {#if country}<Flag countryCode={country} background />
+        {:else if scope === i18n.t('Global')}<GlobeIcon class="text-secondary" />{/if}
+      {/snippet}
+      {#if selectedStanding?.class}
+        {i18n.t('in category {category}', {
+          category: weights.category(selectedStanding.class, i18n.locale),
+        })}
+      {/if}
+    </RankingCard>
   {/snippet}
-
   {#if athlete.standing}
-    <div class="mb-6 max-w-summary sm:mb-8">
+    <div class="mb-section max-w-summary">
       <div class="mb-3 flex items-center justify-between gap-3">
-        <h2 class="{TEXT.heading} text-ink">{i18n.t('Ranking')}</h2>
-        <label class="flex items-center gap-2 text-xs text-muted">
+        <Text as="h2" variant="heading" class="text-ink">{i18n.t('Ranking')}</Text>
+        <label class="flex items-center gap-2 text-meta text-muted">
           <span class="sr-only">{i18n.t('Metric')}</span>
-          <select
+          <Select
+            name="ranking"
             value={selectedMetric}
             onchange={(event) => updateFilter('ranking', event.currentTarget.value)}
-            class="{FIELD} px-2.5 py-1.5"
+            class="px-3 py-1.5"
           >
             {#each RANKING_SORTS as metric (metric.value)}
               <option value={metric.value}>{i18n.t(metric.label)}</option>
             {/each}
-          </select>
+          </Select>
         </label>
       </div>
       <div class={RANKING_CARD_GRID}>
@@ -389,57 +353,59 @@
   {/if}
 
   {#if athlete.personal_records.length > 0}
-    <div class="mb-6 sm:mb-8">
-      <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Personal records')}</h2>
+    <div class="mb-section">
+      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Personal records')}</Text>
       <div class={CARD_GRID}>
         {#each athlete.personal_records as pr (pr.movement_name)}
-          <Card class="p-3">
-            <div class={CARD_LABEL}>{i18n.movement(pr.movement_name)}</div>
-            <div class="mt-0.5 flex items-baseline gap-1.5">
-              <span class="font-mono text-xl sm:text-2xl {CELL.counted}"
-                >{weights.format(pr.max_weight, i18n.locale)}</span
+          <MetricCard
+            heading={i18n.movement(pr.movement_name)}
+            meta={pr.date ? formatDate(pr.date, i18n.locale) : undefined}
+            href={i18n.href(resolve(`competitions/${pr.competition_slug}`))}
+          >
+            <span class={TEXT.cardFigure}>{weights.format(pr.max_weight, i18n.locale)}</span>
+            <span class="font-mono text-meta text-secondary">{weights.unit}</span>
+            {#snippet footer()}
+              <span
+                class="mt-1 flex items-center gap-1 border-t border-stroke pt-3 text-secondary transition-colors group-hover:text-ink"
               >
-              <span class="text-xs text-muted">{weights.unit}</span>
-            </div>
-            <div class={CARD_CAPTION}>
-              <a
-                href={i18n.href(resolve(`competitions/${pr.competition_slug}`))}
-                class="underline hover:text-secondary"
-              >
-                {pr.competition_name}
-              </a>
-              {#if pr.date}
-                <span class="mx-1">•</span>
-                {formatDate(pr.date, i18n.locale)}
-              {/if}
-            </div>
-          </Card>
+                <span class="truncate" title={pr.competition_name}>{pr.competition_name}</span>
+                <ChevronIcon class="size-3 shrink-0 -rotate-90" />
+              </span>
+              {#if pr.date}<span class="{TEXT.fieldLabel} mt-1 block lg:hidden"
+                  >{formatDate(pr.date, i18n.locale)}</span
+                >{/if}
+            {/snippet}
+          </MetricCard>
         {/each}
       </div>
     </div>
   {/if}
 
-  <div class="mt-8 grid items-start gap-8 sm:mt-10 sm:gap-10 2xl:grid-cols-2">
-    <AthleteProgress
-      athleteSlug={athlete.slug}
-      competitions={athlete.competitions}
-      {formats}
-      metric={filters.performance}
-      format={filters.event}
-      onMetricChange={(value) => updateFilter('performance', value)}
-      onFormatChange={(value) => updateFilter('event', value)}
-    />
+  <div>
+    <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Performance')}</Text>
+    <div class="grid items-stretch gap-tile lg:auto-rows-fr lg:grid-cols-2">
+      <AthleteProgress
+        athleteSlug={athlete.slug}
+        competitions={athlete.competitions}
+        metric={filters.performance}
+        onMetricChange={(value) => updateFilter('performance', value)}
+      />
 
-    <AthleteStrength profile={athlete.strength_profile} />
+      <AthleteBalance balance={athlete.lift_balance} />
+    </div>
   </div>
 
-  <div class="mt-8 sm:mt-10">
-    <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Competition history')}</h2>
+  <div class={LAYOUT.section}>
+    <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Competition history')}</Text>
     {#if athlete.competitions.length > 0}
-      <Table rows={athlete.competitions} itemName="competition" pageParam="history_page">
+      <Table
+        rows={athlete.competitions}
+        itemName="competition"
+        pageParam="history_page"
+        frozenColumns="rank"
+      >
         {#snippet head()}
-          <th
-            class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
+          <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
             >{i18n.t('Rank')}</th
           >
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competition')}</th>
@@ -448,7 +414,7 @@
           {#each contested as lift (lift.key)}
             <th class="{TABLE_HEAD_CELL} text-secondary">
               {i18n.t(lift.label)}
-              <span class="{ATTEMPT_ROW} mt-1 text-[0.65rem] font-normal text-muted">
+              <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
                 <span class="text-right">1</span>
                 <span class="text-right">2</span>
                 <span class="text-right">3</span>
@@ -466,7 +432,7 @@
         {#snippet body(rows)}
           {#each rows as competition (`${competition.competition_id}:${competition.category_name}:${competition.division ?? ''}`)}
             <tr class="transition-colors {competition.status !== 'competed' ? 'opacity-50' : ''}">
-              <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
+              <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
                 {#if competition.status !== 'competed'}
                   <span
                     class={STATUS_FLAG}
@@ -556,45 +522,7 @@
         {/snippet}
       </Table>
     {:else}
-      <Card class="max-w-summary p-8">
-        <p class="text-center text-secondary">{i18n.t('No competition history available')}</p>
-      </Card>
+      <ResultState title={i18n.t('No competition history available')} />
     {/if}
   </div>
 </div>
-
-<style>
-  .ranking-art {
-    position: absolute;
-    inset: 0 -1rem 0 auto;
-    display: flex;
-    width: 55%;
-    align-items: center;
-    justify-content: flex-end;
-    pointer-events: none;
-    opacity: 0.65;
-    mask-image: linear-gradient(to right, transparent, black 75%);
-  }
-
-  .ranking-art :global(svg) {
-    stroke-width: 0.7;
-  }
-
-  .ranking-flag {
-    inset: -15% -1rem auto auto;
-    width: auto;
-    height: 130%;
-    aspect-ratio: 36 / 26;
-  }
-
-  @media (width < 40rem) {
-    .ranking-flag {
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      aspect-ratio: auto;
-      opacity: 0.2;
-      mask-image: none;
-    }
-  }
-</style>

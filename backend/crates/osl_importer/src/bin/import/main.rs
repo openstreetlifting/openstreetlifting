@@ -52,7 +52,15 @@ async fn run(cli: Cli) -> Result<()> {
         } => {
             let database_url = optional_database_url(cli.database_url.as_deref(), dry_run)?;
             let privacy = import_privacy(&cli.privacy_file, skip_privacy_check)?;
-            handle_competitions(&paths, dry_run, prune, database_url, privacy.as_ref()).await?;
+            handle_competitions(
+                &paths,
+                dry_run,
+                prune,
+                database_url,
+                privacy.as_ref(),
+                cli.verbose,
+            )
+            .await?;
         }
         Commands::Redact {
             name,
@@ -376,14 +384,23 @@ async fn handle_competitions(
     prune: bool,
     database_url: Option<&str>,
     privacy: Option<&PrivacyList>,
+    verbose: bool,
 ) -> Result<()> {
     let competitions = competition_directories(directories)?;
     validate_competition_slugs(&competitions)?;
+    tracing::info!(
+        competitions = competitions.len(),
+        "Competition validation started"
+    );
     let mut prepared = Vec::new();
     let mut failures = 0;
+    let mut warnings = 0;
     for directory in &competitions {
-        match read_competition(directory, privacy) {
-            Ok(canonical) => prepared.push(canonical),
+        match read_competition(directory, privacy, verbose) {
+            Ok((canonical, competition_warnings)) => {
+                warnings += competition_warnings;
+                prepared.push(canonical);
+            }
             Err(error) => {
                 failures += 1;
                 if std::env::var("LOG_FORMAT").as_deref() != Ok("json") {
@@ -402,11 +419,13 @@ async fn handle_competitions(
         "{failures} competition(s) failed validation; nothing was imported"
     );
     CanonicalValidator::validate_countries(&prepared)?;
+    tracing::info!(
+        competitions = prepared.len(),
+        warnings,
+        "Competition validation completed"
+    );
     if dry_run {
-        tracing::info!(
-            competitions = prepared.len(),
-            "Competition files validated; no database changes"
-        );
+        tracing::info!("Dry run completed; no database changes");
         if prune {
             tracing::info!("Dry-run pruning skipped");
         }
@@ -453,12 +472,19 @@ fn report_prune(plan: &SyncPlan) {
 fn read_competition(
     directory: &Path,
     privacy: Option<&PrivacyList>,
-) -> Result<osl_importer::canonical::models::CanonicalFormat> {
+    verbose: bool,
+) -> Result<(osl_importer::canonical::models::CanonicalFormat, usize)> {
     let canonical = store::read(directory)?;
     store::check_location(directory, &canonical)?;
     if let Some(privacy) = privacy {
         privacy::check_competition(&canonical, privacy)?;
     }
-    CanonicalValidator::validate(&canonical)?.log_warnings();
-    Ok(canonical)
+    let report = CanonicalValidator::validate(&canonical)?;
+    report.log_warnings(&canonical.competition.slug);
+    if verbose && std::env::var("LOG_FORMAT").as_deref() != Ok("json") {
+        for warning in &report.warnings {
+            eprintln!("{warning}");
+        }
+    }
+    Ok((canonical, report.warnings.len()))
 }

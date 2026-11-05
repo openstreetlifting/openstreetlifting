@@ -7,7 +7,6 @@ export default {
   Footer: 'Piè di pagina',
   Rankings: 'Classifiche',
   Competitions: 'Gare',
-  Editions: 'Edizioni',
   Federations: 'Federazioni',
   Countries: 'Paesi',
   Documentation: 'Documentazione',
@@ -31,21 +30,43 @@ export default {
     'C’è un solo risultato registrato. Dopo un’altra gara potrai vedere l’andamento.',
   'RIS scores are shown as recorded; formula editions and reported scores may differ.':
     'I punteggi RIS sono mostrati come registrati; le edizioni della formula e i punteggi pubblicati possono differire.',
-  'Strength profile': 'Profilo di forza',
-  'About Strength profile': 'Informazioni sul profilo di forza',
-  '· All time': '· Tutti gli anni',
-  'Compares each best lift with other athletes’ bests. Percentile is the percentage of peers below that result, counting ties as half.':
-    'Confronta il miglior risultato di ogni alzata con quelli degli altri atleti. Il percentile indica la percentuale di atleti con un risultato inferiore; i pari merito contano per metà.',
-  'Peer counts vary by lift.': 'Il numero di atleti a confronto varia in base all’alzata.',
-  percentile: 'percentile',
-  'Lift percentiles': 'Percentili per alzata',
-  'Not enough data': 'Dati insufficienti',
-  'Limited comparison: fewer than five peers for some lifts.':
-    'Confronto limitato: meno di cinque altri atleti per alcune alzate.',
-  'Not enough data to score all four lifts.':
-    'Dati insufficienti per valutare tutte e quattro le alzate.',
-  'A completed competition is needed to establish a comparison category.':
-    'Serve una gara conclusa per stabilire una categoria di confronto.',
+  'Lift balance': 'Equilibrio delle alzate',
+  'About lift balance': 'Informazioni sull’equilibrio delle alzate',
+  'How this athlete’s best total is split across the four lifts, compared with others in their weight class.':
+    'Come il miglior totale di questo atleta si divide tra le quattro alzate, rispetto agli altri della sua categoria.',
+  'Further out means that lift takes a bigger share of the total than usual, not that it is better.':
+    'Più lontano dal centro significa che quell’alzata pesa più del solito sul totale, non che sia migliore.',
+  'Lift balance compared with other athletes in {category}':
+    'Equilibrio delle alzate rispetto agli altri atleti in {category}',
+  'Lift shares of best total': 'Quote delle alzate sul miglior totale',
+  'Total by bodyweight': 'Totale per peso corporeo',
+  'About total by bodyweight': 'Informazioni sul totale per peso corporeo',
+  'Each point is an athlete with a recorded bodyweight. The lines show the total needed for a RIS of 100 at each bodyweight, using the {year} edition.':
+    'Ogni punto è un atleta con peso corporeo registrato. Le linee mostrano il totale necessario per un RIS di 100 a ogni peso corporeo, secondo l’edizione {year}.',
+  'Points above their line scored more than 100 RIS.':
+    'I punti sopra la loro linea superano 100 RIS.',
+  'RIS 100, {sex}': 'RIS 100, {sex}',
+  'Total by bodyweight for {count} athletes, {above} of them above a RIS of 100.':
+    'Totale per peso corporeo di {count} atleti, {above} dei quali sopra RIS 100.',
+  Edition: 'Edizione',
+  'In this competition, RIS is recomputed with the current formula.':
+    'In questa gara il RIS è ricalcolato con la formula attuale.',
+  'In this competition, RIS scores are shown as published.':
+    'In questa gara i punteggi RIS sono mostrati come pubblicati.',
+  'Athlete: {share} of total': 'Atleta: {share} del totale',
+  'Reference: {share} of total': 'Riferimento: {share} del totale',
+  'Reference ({class})': 'Riferimento ({class})',
+  Reference: 'Riferimento',
+  'Reference: {count} {athletes} in {category}': 'Riferimento: {count} {athletes} in {category}',
+  '{movement}: {share} of total, reference {average}':
+    '{movement}: {share} del totale, riferimento {average}',
+  'of total · reference {average}': 'del totale · riferimento {average}',
+  'of total': 'del totale',
+  'Based on {total} {unit} at {competition}': 'In base a {total} {unit} a {competition}',
+  'Too few athletes in this weight class to compare.':
+    'Troppi pochi atleti in questa categoria per un confronto.',
+  'A completed competition with all four lifts is needed to show lift balance.':
+    'Per mostrare l’equilibrio serve una gara completata con tutte e quattro le alzate.',
   'Match these movements exactly': 'Gare con esattamente questi movimenti',
   'Clear movements': 'Cancella la selezione dei movimenti',
   'Clear selection': 'Cancella la selezione',
@@ -64,8 +85,10 @@ export default {
   'All Countries': 'Tutti i Paesi',
   'All Federations': 'Tutte le federazioni',
   'All Years': 'Tutti gli anni',
+  Year: 'Anno',
   'All Classes': 'Tutte le categorie',
   'Sort by': 'Ordina per',
+  'Sort by {sort}': 'Ordina per {sort}',
   'Streetlifting competition results': 'Risultati delle gare di streetlifting',
   'Streetlifting competitions': 'Gare di streetlifting',
   'Hey! Those competitions are currently running': 'Ehi! Queste gare sono in corso',
@@ -202,8 +225,15 @@ export default {
   'Clear all filters and sorting': 'Reimposta tutti i filtri e l’ordinamento',
   Clear: 'Cancella',
   Filters: 'Filtri',
+  'Try again': 'Riprova',
+  'Retrying…': 'Nuovo tentativo…',
   'Close information': 'Chiudi le informazioni',
+  'Skip to main content': 'Vai al contenuto principale',
+  'Competition status': 'Stato delle competizioni',
+  'e.g. {value}…': 'es. {value}…',
   Pagination: 'Paginazione',
+  '{table} pagination (top)': 'Paginazione di {table} (in alto)',
+  '{table} pagination (bottom)': 'Paginazione di {table} (in basso)',
   'Previous page': 'Pagina precedente',
   Previous: 'Precedente',
   'Next page': 'Pagina successiva',
@@ -299,7 +329,6 @@ export default {
   'Country needed for national ranking': 'Serve il Paese per la classifica nazionale',
   'Oops, no athletes found.': 'Ops, nessun atleta trovato.',
   'No athletes to show yet.': 'Non ci sono ancora atleti da mostrare.',
-  'Lighten the filters or try another name.': 'Rimuovi qualche filtro o prova un altro nome.',
   'No ranked results in this view yet.': 'Qui non ci sono ancora risultati in classifica.',
   'Oops, no competitions found.': 'Ops, nessuna gara trovata.',
   'No competitions to show yet.': 'Non ci sono ancora gare da mostrare.',
@@ -314,7 +343,7 @@ export default {
   'Something went wrong': 'Qualcosa è andato storto',
   'We couldn’t load this page.': 'Non siamo riusciti a caricare questa pagina.',
   'Please try again later.': 'Riprova più tardi.',
-  'Failed to load rankings': 'Impossibile caricare le classifiche',
+  'Couldn’t load rankings': 'Impossibile caricare la classifica',
   Disqualified: 'Squalificato',
   'Did not lift': 'Non ha gareggiato',
   athlete: 'atleta',
@@ -337,10 +366,6 @@ export default {
   'No successful {movement}': 'Nessun tentativo valido: {movement}',
   "{category}'s weight classes": 'Categorie di peso: {category}',
   '{label} over time': 'Andamento di {label}',
-  '{movement}: percentile {percentile}': '{movement}: percentile {percentile}',
-  'Lift percentiles compared with other athletes in {category}':
-    'Percentili per alzata rispetto agli altri atleti nella categoria {category}',
-  'Comparison group: {count} {athletes}': 'Gruppo di confronto: {count} {athletes}',
   'No dated {movement} results available.': 'Nessun risultato con data registrata per {movement}.',
   'No dated {movement} results available for {format}.':
     'Nessun risultato con data registrata per {movement} nel formato {format}.',
@@ -406,7 +431,7 @@ export default {
   'Competition format: {label}': 'Formato della gara: {label}',
   'The federation published this RIS score. Bodyweight or total is missing, so we cannot recalculate it.':
     'La federazione ha pubblicato questo punteggio RIS. Manca il peso corporeo o il totale, quindi non possiamo ricalcolarlo.',
-  'Failed to load competitions': 'Impossibile caricare le gare',
+  'Couldn’t load competitions': 'Impossibile caricare le gare',
   to: 'a',
   '#{place} of {field} in {country}': 'n. {place} su {field} — {country}',
   '#{place} of {field} worldwide': 'n. {place} su {field} nel mondo',

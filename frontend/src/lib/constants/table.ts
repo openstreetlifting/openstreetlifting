@@ -36,6 +36,7 @@ export const REPORTED_TITLE =
   'The federation published this RIS score. Bodyweight or total is missing, so we cannot recalculate it.';
 
 export const TEXT_CELL = {
+  resultCompetition: 'block max-w-[7rem] truncate sm:max-w-[12rem]',
   competition: 'block max-w-[9rem] truncate sm:max-w-[16rem]',
   location: 'block max-w-[7rem] truncate sm:max-w-none',
   federation: 'block max-w-[5rem] truncate sm:max-w-none',
@@ -47,6 +48,7 @@ export const TEXT_CELL = {
  * a column can be read straight down to compare lifts.
  */
 export const ATTEMPT_ROW = 'grid grid-cols-[2.5rem_2.5rem_2.5rem_2.9rem] gap-x-1.5 items-baseline';
+export const BEST_ROW = 'grid grid-cols-[2.9rem] items-baseline';
 
 /**
  * A measured value, the kind read down a column and compared against the rows
@@ -63,11 +65,11 @@ export const NO_VALUE = '-';
 export const NO_RESULT = 'N/A';
 
 /** Which column the table is sorted on. A tint, so it stays off the brightness scale. */
-export const SORTED_COLUMN = 'rounded-t bg-surface-selected text-ink';
+export const SORTED_COLUMN = 'bg-surface-selected text-ink';
 
 /**
  * Below sm the data is worth more than the margin, so the table runs to the
  * screen edge. Anything stacked with it takes the same treatment, or the page
  * ends up with two different left edges.
  */
-export const EDGE_TO_EDGE = '-mx-4 sm:mx-0';
+export const EDGE_TO_EDGE = '-mx-gutter sm:mx-0';

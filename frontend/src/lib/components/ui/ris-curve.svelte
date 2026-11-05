@@ -11,6 +11,7 @@
   import { benchmarkTotal, calculateRis } from '#lib/utils/ris.js';
   import { formatLongDate } from '#lib/utils/format.js';
   import { kilograms } from '#lib/utils/weight-unit.js';
+  import { CHART } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
   const weights = useWeightUnit();
@@ -96,7 +97,7 @@
     }
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      select(context?.tooltip.data ?? null);
+      select((keyboardIndex >= 0 ? points[keyboardIndex] : context?.tooltip.data) ?? null);
       return;
     }
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key) || !points.length) {
@@ -127,7 +128,7 @@
 </script>
 
 <figure class="ris-chart m-0" aria-labelledby="{id}-caption">
-  <div class="mb-3 flex items-center justify-between text-xs text-muted">
+  <div class="mb-3 flex items-center justify-between text-meta text-muted">
     <span>{i18n.t('Total, {unit}', { unit: weights.unit })}</span>
     <span class="font-mono">{i18n.t('RIS 100 benchmark')}</span>
   </div>
@@ -153,7 +154,6 @@
       grid={{ x: false, y: true }}
       rule={false}
       clip
-      motion="none"
       tooltipContext={interactive ? { mode: 'quadtree', touchEvents: 'pan-y' } : false}
       highlight={{
         lines: false,
@@ -172,7 +172,7 @@
             .ticks(Math.max(2, Math.floor(chartWidth / 90)))
             .map((value) => kilograms(value, weights.unit)),
           format: (value: number) => weights.format(value, i18n.locale),
-          tickLabelProps: { fontSize: 11, fill: 'var(--color-secondary)' },
+          tickLabelProps: { fontSize: 11, class: CHART.tick },
         },
         yAxis: {
           tickMarks: false,
@@ -182,7 +182,7 @@
             .ticks(5)
             .map((value) => kilograms(value, weights.unit)),
           format: (value: number) => weights.format(value, i18n.locale),
-          tickLabelProps: { fontSize: 11, fill: 'var(--color-secondary)' },
+          tickLabelProps: { fontSize: 11, class: CHART.tick },
         },
       }}
       role="group"
@@ -221,7 +221,7 @@
           portal={false}
           motion="none"
           fadeDuration={0}
-          class="rounded-md border border-stroke-strong bg-canvas px-3 py-2.5 text-xs text-secondary shadow-sm"
+          class="{CHART.tooltip} text-meta text-secondary"
         >
           {#snippet children({ data })}
             <p class="max-w-56 font-medium text-ink">{data.athlete_name}</p>
@@ -250,7 +250,7 @@
       {/snippet}
     </Chart>
   </div>
-  <p class="mt-1 text-right text-xs text-muted">
+  <p class="mt-1 text-right text-meta text-muted">
     {i18n.t('Bodyweight, {unit}', { unit: weights.unit })}
   </p>
   <p id="{id}-instructions" class="sr-only">
@@ -270,7 +270,7 @@
       })}
     {/if}
   </p>
-  <figcaption id="{id}-caption" class="mt-5 text-xs leading-6 text-muted">
+  <figcaption id="{id}-caption" class="mt-4 text-meta leading-6 text-muted">
     <span class="font-medium text-secondary">{i18n.t('Figure 1.')}</span>
     {i18n.t(
       'Competition total by bodyweight for the selected gender category. Each point represents a recorded performance; an athlete may contribute more than one. The solid line denotes the RIS 100 benchmark. Performances above and below it have scores greater and less than 100, respectively.'
@@ -280,9 +280,9 @@
 </figure>
 
 {#if selected && selectedPerformances.length}
-  <section aria-label={i18n.t('Selected performances')} class="mt-5 border-t border-stroke pt-5">
+  <section aria-label={i18n.t('Selected performances')} class="mt-4 border-t border-stroke pt-4">
     <div class="mb-4 flex items-start justify-between gap-4">
-      <div class="flex flex-wrap gap-x-5 gap-y-2 text-xs text-secondary">
+      <div class="flex flex-wrap gap-x-4 gap-y-2 text-meta text-secondary">
         <span
           >{i18n.t('Bodyweight')}
           <span class="font-mono text-ink"
@@ -304,12 +304,12 @@
       <button
         type="button"
         onclick={() => (selected = null)}
-        class="shrink-0 text-xs text-secondary underline underline-offset-4 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-muted"
+        class="shrink-0 text-meta text-secondary underline underline-offset-4 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-muted"
         >{i18n.t('Clear selection')}</button
       >
     </div>
     {#if selectedPerformances.length > 1}
-      <p class="mb-3 text-xs text-muted">
+      <p class="mb-3 text-meta text-muted">
         {i18n.t(
           '{count} performances have the same recorded bodyweight and total and overlap at this point.',
           { count: selectedPerformances.length }
@@ -323,10 +323,10 @@
         >
           <a
             href={i18n.href(resolve('/athletes/[slug]', { slug: performance.athlete_slug }))}
-            class="text-sm font-medium text-ink underline decoration-stroke-strong underline-offset-4 hover:text-ink"
+            class="text-body font-medium text-ink underline decoration-stroke-strong underline-offset-4 hover:text-ink"
             >{performance.athlete_name}</a
           >
-          <div class="text-xs leading-6 text-muted sm:text-right">
+          <div class="text-meta leading-6 text-muted sm:text-right">
             <a
               href={i18n.href(
                 resolve('/competitions/[slug]', { slug: performance.competition_slug })

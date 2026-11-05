@@ -1,12 +1,15 @@
 <script module lang="ts">
-  export const TABLE_HEAD_CELL = 'px-1.5 py-1 text-left align-middle font-medium sm:px-3 sm:py-2';
-  export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-2';
+  export const TABLE_HEAD_CELL =
+    'px-1.5 py-1 text-left align-middle font-mono text-meta font-medium sm:px-3 sm:py-1.5';
+  export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-1.5';
   export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
-  export const FROZEN_HEAD_CELL = 'sticky z-10 bg-surface';
-  export const FROZEN_EDGE = 'border-r border-stroke sm:border-r-0';
-  export const FROZEN_RANK = 'w-10 min-w-10 text-right sm:w-14 sm:min-w-14 left-0';
-  export const ATHLETE_COLUMN = 'w-44 min-w-44 pl-1 sm:w-56 sm:min-w-56 sm:pl-3';
-  export const ATHLETE_CONTENT = 'max-w-[10.5rem] sm:max-w-[12.5rem]';
+  export const FROZEN_HEAD_CELL = 'sticky z-10 bg-table-head';
+  export const FROZEN_RANK =
+    'w-12 min-w-12 max-w-12 text-right sm:w-14 sm:min-w-14 sm:max-w-14 left-0';
+  export const ATHLETE_COLUMN = 'w-36 min-w-36 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
+  export const ATHLETE_COLUMN_FILL = 'w-36 min-w-36 pl-1 sm:w-full sm:min-w-64 sm:pl-3';
+  export const ATHLETE_CONTENT = 'max-w-[8.25rem] sm:max-w-[14.5rem]';
+  export const FROZEN_ATHLETE = 'left-12 sm:left-14';
 </script>
 
 <script lang="ts" generics="Row">
@@ -29,6 +32,9 @@
     pagination,
     pageParam = 'table_page',
     busy = false,
+    embedded = false,
+    frozenColumns,
+    label,
   }: {
     head: Snippet;
     body: Snippet<[Row[]]>;
@@ -37,6 +43,10 @@
     pagination?: TablePagination;
     pageParam?: string;
     busy?: boolean;
+    /** A parent results frame supplies the outer border and page gutters. */
+    embedded?: boolean;
+    frozenColumns?: 'rank' | 'athlete';
+    label?: string;
   } = $props();
 
   const totalItems = $derived(pagination?.total_items ?? rows.length);
@@ -52,6 +62,33 @@
     pagination ? rows : rows.slice((page - 1) * TABLE_PAGE_SIZE, page * TABLE_PAGE_SIZE)
   );
   const countLabel = $derived(i18n.count(itemName, totalItems));
+  const tableLabel = $derived(
+    label ??
+      i18n.t(
+        (
+          {
+            athlete: 'Athletes',
+            competition: 'Competitions',
+            country: 'Countries',
+            federation: 'Federations',
+            entry: 'Entries',
+          } as const
+        )[itemName]
+      )
+  );
+
+  function revealFocus(event: FocusEvent) {
+    const target = event.target;
+    if (!frozenColumns || !(target instanceof HTMLElement)) return;
+    if (target.closest('td, th')?.classList.contains('sticky')) return;
+
+    // Native focus scrolling can leave links behind the frozen columns.
+    requestAnimationFrame(() => {
+      if (document.activeElement === target) {
+        target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    });
+  }
 
   function pageHref(target: number): string {
     if (pagination?.pageHref) return pagination.pageHref(target);
@@ -65,16 +102,32 @@
 </script>
 
 {#snippet paginationBar(position: string)}
-  <div class="flex flex-wrap items-center justify-between gap-3" data-table-pagination={position}>
-    <span class="text-xs text-muted">
-      {i18n.t('Page {page} of {pages} · {count} {items}', {
-        page: i18n.number(page, 0),
-        pages: i18n.number(totalPages, 0),
-        count: i18n.number(totalItems, 0),
-        items: countLabel,
-      })}
+  <div
+    class="flex items-center justify-between gap-2 bg-surface-subtle px-3 py-1.5"
+    data-table-pagination={position}
+  >
+    <span
+      class="min-w-0 font-mono text-micro text-muted sm:text-meta"
+      role={position === 'top' ? 'status' : undefined}
+      aria-live={position === 'top' ? 'polite' : undefined}
+      aria-atomic={position === 'top' ? true : undefined}
+      aria-busy={position === 'top' ? busy : undefined}
+    >
+      {i18n.number(totalItems, 0)}
+      {countLabel}
+      {#if position === 'top'}
+        <span class="sr-only">
+          {i18n.t('Page {page} of {pages}.', {
+            page: i18n.number(page, 0),
+            pages: i18n.number(totalPages, 0),
+          })}
+        </span>
+      {/if}
     </span>
     <Pagination
+      label={position === 'top'
+        ? i18n.t('{table} pagination (top)', { table: tableLabel })
+        : i18n.t('{table} pagination (bottom)', { table: tableLabel })}
       {page}
       {totalPages}
       {pageHref}
@@ -84,22 +137,35 @@
   </div>
 {/snippet}
 
-<div class="mb-3">{@render paginationBar('top')}</div>
+<div
+  class={embedded ? 'min-w-0' : `min-w-0 rounded-panel border border-stroke-strong ${EDGE_TO_EDGE}`}
+>
+  <div class="border-b border-stroke">{@render paginationBar('top')}</div>
 
-<div class="osl-table overflow-x-auto {EDGE_TO_EDGE}">
-  <table class="w-full text-[0.7rem] whitespace-nowrap sm:text-xs" aria-busy={busy}>
-    <thead class="sticky top-0 z-20">
-      <tr class="border-b border-stroke bg-surface">
-        {@render head()}
-      </tr>
-    </thead>
-    <tbody>
-      {@render body(visibleRows)}
-    </tbody>
-  </table>
+  <div
+    onfocusin={revealFocus}
+    data-frozen={frozenColumns}
+    class="osl-table overflow-x-auto {frozenColumns === 'athlete'
+      ? 'scroll-ps-48 sm:scroll-ps-80'
+      : frozenColumns === 'rank'
+        ? 'scroll-ps-14 sm:scroll-ps-16'
+        : ''}"
+  >
+    <table class="w-full text-meta leading-4 whitespace-nowrap" aria-busy={busy}>
+      <caption class="sr-only">{tableLabel}</caption>
+      <thead class="sticky top-0 z-20">
+        <tr class="border-b border-stroke-strong bg-table-head">
+          {@render head()}
+        </tr>
+      </thead>
+      <tbody>
+        {@render body(visibleRows)}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="border-t border-stroke">{@render paginationBar('bottom')}</div>
 </div>
-
-<div class="mt-3">{@render paginationBar('bottom')}</div>
 
 <style>
   .osl-table :global(tbody) {
@@ -126,5 +192,20 @@
 
   .osl-table :global(tbody tr[data-focused]) {
     --row-bg: var(--table-row-focus);
+  }
+
+  .osl-table[data-frozen='rank'] :global(tr > :first-child),
+  .osl-table[data-frozen='athlete'] :global(tr > :nth-child(2)) {
+    border-right: 1px solid var(--color-stroke-strong);
+  }
+
+  .osl-table :global(tbody tr:last-child) {
+    border-bottom: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .osl-table :global(tbody) {
+      transition: none;
+    }
   }
 </style>

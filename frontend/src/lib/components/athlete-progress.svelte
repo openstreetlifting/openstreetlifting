@@ -1,9 +1,11 @@
 <script lang="ts">
+  import ChartPanel from '#lib/components/ui/chart-panel.svelte';
+  import Select from '#lib/components/ui/select.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
-  import { CHART, FIELD, TEXT } from '#lib/constants/typography.js';
+  import { CHART } from '#lib/constants/typography.js';
   import {
     progressPoints,
     type ProgressMetric,
@@ -13,7 +15,7 @@
   import { resolve } from '$app/paths';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
-  import { Tooltip } from 'layerchart';
+  import { Tooltip, type ChartState } from 'layerchart';
   import { scaleUtc, scaleLinear } from 'd3-scale';
   import { utcMonth } from 'd3-time';
 
@@ -21,24 +23,21 @@
   const weights = useWeightUnit();
 
   let chartWidth = $state<number>();
+  let measuredHeight = $state<number>();
+  const chartHeight = $derived(measuredHeight || 288);
 
   let {
     competitions,
-    formats,
     athleteSlug,
     metric = $bindable<ProgressMetric>('total'),
-    format = $bindable('MPDS'),
     onMetricChange,
-    onFormatChange,
   }: {
     competitions: AthleteCompetitionSummary[];
-    formats: string[];
     athleteSlug?: string;
     metric?: ProgressMetric;
-    format?: string;
     onMetricChange?: (metric: ProgressMetric) => void;
-    onFormatChange?: (format: string) => void;
   } = $props();
+  const format = 'MPDS';
   const points = $derived(progressPoints(competitions, metric, format));
   const chartPoints = $derived(
     points.map((point) => ({
@@ -46,6 +45,7 @@
       plotted: metric === 'ris' ? point.value : weights.value(point.value),
     }))
   );
+  let chartContext = $state<ChartState<(typeof chartPoints)[number]>>();
   const label = $derived(i18n.t(RANKING_SORTS.find((option) => option.value === metric)!.label));
 
   const best = $derived(points.length ? Math.max(...points.map((point) => point.value)) : null);
@@ -60,7 +60,6 @@
           metric === 'ris' ? value : weights.value(value)
         )
       )
-      .nice(4)
       .domain()
   );
   const first = $derived(utcMonth.floor(new Date(points[0]?.timestamp ?? 0)));
@@ -95,43 +94,27 @@
   }
 </script>
 
-<section class="min-w-0 max-w-reading" aria-labelledby="progress-heading">
-  <div class="mb-4 flex min-h-8 flex-wrap items-center justify-between gap-3">
-    <h2 id="progress-heading" class="{TEXT.heading} text-ink">{i18n.t('Performance over time')}</h2>
-    <div class="flex flex-wrap items-center gap-3">
-      <label class="flex items-center gap-2 text-xs text-muted">
-        <span class="sr-only">{i18n.t('Performance')}</span>
-        <select
-          bind:value={metric}
-          onchange={(event) => onMetricChange?.(event.currentTarget.value as ProgressMetric)}
-          class="{FIELD} px-2.5 py-1.5"
-        >
-          {#each RANKING_SORTS as option (option.value)}
-            <option value={option.value}>{i18n.t(option.label)}</option>
-          {/each}
-        </select>
-      </label>
-      {#if (metric === 'total' || metric === 'ris') && formats.length > 1}
-        <label class="flex items-center gap-2 text-xs text-muted">
-          {i18n.t('Event')}
-          <select
-            bind:value={format}
-            onchange={(event) => onFormatChange?.(event.currentTarget.value)}
-            class="{FIELD} px-2.5 py-1.5"
-          >
-            {#each formats as option (option)}<option value={option}
-                >{option === 'MPDS' ? i18n.t('All four lifts') : option}</option
-              >{/each}
-          </select>
-        </label>
-      {/if}
-    </div>
-  </div>
+<ChartPanel title={i18n.t('Performance over time')}>
+  {#snippet controls()}
+    <label class="flex items-center gap-2 text-meta text-muted">
+      <span class="sr-only">{i18n.t('Performance')}</span>
+      <Select
+        name="performance"
+        bind:value={metric}
+        onchange={(event) => onMetricChange?.(event.currentTarget.value as ProgressMetric)}
+        class="px-3 py-1.5"
+      >
+        {#each RANKING_SORTS as option (option.value)}
+          <option value={option.value}>{i18n.t(option.label)}</option>
+        {/each}
+      </Select>
+    </label>
+  {/snippet}
 
   {#if points.length && best !== null && bestPoint}
-    <div class="mb-3 flex justify-end 2xl:min-h-12">
-      <p class="text-xs leading-relaxed text-muted">
-        <span class="font-medium uppercase">{i18n.t('Best')}</span>
+    <div class="mb-4 border-b border-stroke pb-3">
+      <p class="text-meta leading-relaxed text-muted">
+        <span class="font-mono font-medium uppercase">{i18n.t('Best')}</span>
         <span class="ml-1 font-mono font-semibold text-ink">{valueLabel(best)}</span>
         {i18n.t('on')}
         {formatLongDate(bestPoint.competition.competition_date, i18n.locale)}
@@ -143,20 +126,36 @@
         >
       </p>
     </div>
-    {#key metric + format + weights.unit}
-      <div class="h-80 w-full" bind:clientWidth={chartWidth}>
+    {#key metric + weights.unit}
+      <div
+        class="min-h-64 w-full flex-1"
+        bind:clientWidth={chartWidth}
+        bind:clientHeight={measuredHeight}
+        onfocusout={(event) => {
+          if (
+            event.relatedTarget instanceof Node &&
+            event.currentTarget.contains(event.relatedTarget)
+          )
+            return;
+          if (chartContext) {
+            chartContext.tooltip.isHoveringTooltipContent = false;
+            chartContext.tooltip.hide();
+          }
+        }}
+      >
         <Chart
+          bind:context={chartContext}
           ssr
           width={chartWidth || 400}
-          class="relative w-full! overflow-hidden [container-type:inline-size]"
-          height={320}
+          class="relative h-full! w-full! overflow-hidden [container-type:inline-size]"
+          height={chartHeight}
           data={chartPoints}
           x="timestamp"
           y="plotted"
           xScale={scaleUtc()}
           {xDomain}
           {yDomain}
-          padding={{ left: 52, right: 28, top: 20, bottom: 52 }}
+          padding={{ left: 56, right: 28, top: 16, bottom: 52 }}
           tooltipContext={{ mode: 'manual' }}
         >
           {#snippet children({ context })}
@@ -182,9 +181,8 @@
                   ),
                 }}
                 format={(date: Date) => monthLabel.format(date)}
-                tickLabelProps={{ class: CHART.tick }}
+                tickLabelProps={{ fontSize: 11, class: CHART.tick }}
                 tickOcclusion
-                grid={{ class: 'stroke-stroke' }}
                 stroke="var(--color-stroke)"
               />
               <Axis
@@ -193,7 +191,7 @@
                 labelProps={{ class: CHART.label }}
                 ticks={4}
                 format={(value: number) => i18n.number(value)}
-                tickLabelProps={{ class: CHART.tick }}
+                tickLabelProps={{ fontSize: 11, class: CHART.tick }}
                 grid={{ class: 'stroke-stroke' }}
                 stroke="var(--color-stroke)"
               />
@@ -262,25 +260,24 @@
                 }
               }}
               classes={{
-                content:
-                  'max-w-64 rounded-lg border border-stroke-strong bg-surface p-3 text-ink shadow-lg shadow-overlay/40',
+                content: CHART.tooltip,
               }}
             >
               {#snippet children({ data: point })}
                 <div role="tooltip" aria-live="polite">
-                  <p class="font-mono text-lg font-bold">{valueLabel(point.value)}</p>
+                  <p class="font-mono text-subtitle font-bold">{valueLabel(point.value)}</p>
                   <a
                     href={competitionLink(point.competition.competition_slug)}
-                    class="mt-1 inline-block text-sm text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
+                    class="mt-1 inline-block text-body text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
                     >{point.competition.competition_name}</a
                   >
-                  <p class="mt-1 text-xs text-muted">
+                  <p class="mt-1 text-meta text-muted">
                     {formatLongDate(point.competition.competition_date, i18n.locale)} · {weights.category(
                       point.competition.category_name,
                       i18n.locale
                     )}{point.competition.division ? ` · ${point.competition.division}` : ''}
                   </p>
-                  {#if metric === 'ris'}<p class="mt-1 text-xs text-muted">
+                  {#if metric === 'ris'}<p class="mt-1 text-meta text-muted">
                       {point.competition.ris_source === 'reported'
                         ? i18n.t('Reported')
                         : point.competition.ris_source === 'computed'
@@ -295,25 +292,23 @@
       </div>
     {/key}
     {#if points.length === 1}
-      <p class="mt-3 text-xs leading-relaxed text-muted">
+      <p class="mt-3 text-meta leading-relaxed text-muted">
         {i18n.t('One result recorded. A trend will appear after another competition.')}
       </p>
     {/if}
     {#if metric === 'ris'}
-      <p class="mt-3 text-xs leading-relaxed text-muted">
+      <p class="mt-3 text-meta leading-relaxed text-muted">
         {i18n.t(
           'RIS scores are shown as recorded; formula editions and reported scores may differ.'
         )}
       </p>
     {/if}
   {:else}
-    <p class="border-y border-stroke py-8 text-sm text-secondary">
-      {metric === 'total' || metric === 'ris'
-        ? i18n.t('No dated {movement} results available for {format}.', {
-            movement: label,
-            format: format === 'MPDS' ? i18n.t('All four lifts') : format,
-          })
-        : i18n.t('No dated {movement} results available.', { movement: label })}
+    <p class="border-y border-stroke py-8 text-body text-secondary">
+      {i18n.t('No dated {movement} results available for {format}.', {
+        movement: label,
+        format,
+      })}
     </p>
   {/if}
-</section>
+</ChartPanel>

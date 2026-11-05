@@ -17,6 +17,7 @@
     showFederation?: boolean;
     busy?: boolean;
     pagination?: TablePagination;
+    embedded?: boolean;
   }
 
   let {
@@ -25,6 +26,7 @@
     showFederation = true,
     busy = false,
     pagination,
+    embedded = false,
   }: Props = $props();
 
   function competitionDates(start: string | null, end: string | null): string {
@@ -35,9 +37,11 @@
 
 <Table
   rows={competitions}
+  label={upcoming ? i18n.t('Upcoming') : i18n.t('Competitions')}
   itemName="competition"
   {pagination}
   {busy}
+  {embedded}
   pageParam={upcoming ? 'upcoming_page' : 'competitions_page'}
 >
   {#snippet head()}

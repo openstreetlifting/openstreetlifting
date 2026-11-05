@@ -1,21 +1,24 @@
 <script lang="ts">
+  import { LAYOUT } from '#lib/constants/layout.js';
+  import Notice from '#lib/components/ui/notice.svelte';
+  import SelectField from '#lib/components/ui/select-field.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import type { PageData } from './$types';
-  import { Card, Breadcrumb, FilterBar, SearchEmpty } from '#lib/components/ui/index.js';
+  import { ResultState, FilterBar, SearchEmpty } from '#lib/components/ui/index.js';
   import CompetitionsTable from '#lib/components/competitions-table.svelte';
   import CompetitionFormatFilter from '#lib/components/competition-format-filter.svelte';
   import { resolve } from '$app/paths';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
-  import { afterNavigate } from '$app/navigation';
+  import { afterNavigate, refreshAll } from '$app/navigation';
   import { ListingSearch } from '#lib/state/listing-search.svelte.js';
   import { untrack } from 'svelte';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
   import { countryName, formatDate, formatLocation } from '#lib/utils/index.js';
-  import { FIELD, TEXT, CONTROL } from '#lib/constants/typography.js';
+  import { TEXT, CONTROL } from '#lib/constants/typography.js';
+  import { EDGE_TO_EDGE } from '#lib/constants/table.js';
   import Seo from '#lib/components/seo.svelte';
-  import { breadcrumbLd, listingSeo } from '#lib/seo/index.js';
+  import { listingSeo } from '#lib/seo/index.js';
 
   const i18n = useI18n();
 
@@ -89,8 +92,6 @@
     return apply();
   }
 
-  const SELECT = `w-full ${FIELD} px-3 py-2 sm:w-auto`;
-
   const seo = $derived(listingSeo(currentPage.url));
 
   const description = $derived(
@@ -110,34 +111,14 @@
   {description}
   canonical={seo.canonical}
   noindex={seo.noindex}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        { name: i18n.t('Competitions'), path: '/competitions' },
-      ],
-      i18n.locale
-    ),
-  ]}
 />
 
-<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
-  <Breadcrumb
-    items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Competitions') }]}
-  />
-
+<div class={LAYOUT.page}>
   <h1 class="sr-only">{i18n.t('Streetlifting competitions')}</h1>
 
   {#if data.runningCompetitions.length > 0}
-    <section
-      aria-labelledby="running-heading"
-      class="mb-6 rounded-lg border border-stroke-strong bg-surface-subtle px-4 py-3"
-    >
-      <h2 id="running-heading" class="flex items-center gap-2 text-sm font-medium text-ink">
-        <span aria-hidden="true" class="size-1.5 shrink-0 rounded-full bg-success"></span>
-        {i18n.t('Hey! Those competitions are currently running')}
-      </h2>
-      <ul class="mt-2 space-y-2 text-sm">
+    <Notice title={i18n.t('Hey! Those competitions are currently running')} live>
+      <ul class="mt-2 space-y-2 text-body">
         {#each data.runningCompetitions as competition (competition.slug)}
           <li class="flex flex-wrap items-center gap-x-6 gap-y-1">
             <a
@@ -204,16 +185,20 @@
           </li>
         {/if}
       </ul>
-    </section>
+    </Notice>
   {/if}
 
-  <nav class="mb-4 flex items-center gap-5 border-b border-stroke">
+  <nav
+    aria-label={i18n.t('Competition status')}
+    class="mb-shell-dense flex items-center gap-4 border-b border-stroke"
+  >
     {#each TABS as tab (tab.status)}
       {@const active = data.status === tab.status}
-      <button
-        onclick={() => apply({ status: tab.status })}
+      <a
+        href={listingHref({ status: tab.status }, search.value)}
+        data-sveltekit-reset={false}
         aria-current={active ? 'page' : undefined}
-        class="-mb-px flex items-baseline gap-1.5 border-b-2 pb-2 {CONTROL} transition-colors focus:ring-2 focus:ring-focus focus:outline-none
+        class="-mb-px flex items-baseline gap-1.5 border-b-2 pb-2 {CONTROL} transition-colors focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none
  {active ? 'border-ink text-ink' : 'border-transparent text-muted hover:text-secondary'}"
       >
         {i18n.t(tab.label)}
@@ -222,84 +207,95 @@
             {data.counts[tab.status]}
           </span>
         {/if}
-      </button>
+      </a>
     {/each}
   </nav>
 
-  <FilterBar
-    bind:search={search.value}
-    placeholder={i18n.t('Search a competition')}
-    onSearch={() => apply({}, true)}
-    activeCount={activeFilters}
-    onClear={clearFilters}
-    clearable={narrowed}
+  <section
+    class="{EDGE_TO_EDGE} min-w-0 rounded-panel border border-stroke-strong"
+    aria-label={i18n.t('Competitions')}
   >
-    <select bind:value={federation} onchange={() => apply()} class={SELECT}>
-      <option value={null}>{i18n.t('All Federations')}</option>
-      {#each data.facets.federations as option (option)}
-        <option value={option}>{option}</option>
-      {/each}
-    </select>
+    <FilterBar
+      embedded
+      bind:search={search.value}
+      placeholder={i18n.t('Search a competition')}
+      onSearch={() => apply({}, true)}
+      activeCount={activeFilters}
+      onClear={clearFilters}
+      clearable={narrowed}
+    >
+      <SelectField label={i18n.t('Federation')} bind:value={federation} onchange={() => apply()}>
+        <option value={null}>{i18n.t('All Federations')}</option>
+        {#each data.facets.federations as option (option)}
+          <option value={option}>{option}</option>
+        {/each}
+      </SelectField>
 
-    <CompetitionFormatFilter
-      formats={data.facets.formats}
-      value={event}
-      onChange={(value) => {
-        event = value;
-        apply();
-      }}
-    />
+      <CompetitionFormatFilter
+        formats={data.facets.formats}
+        value={event}
+        onChange={(value) => {
+          event = value;
+          apply();
+        }}
+      />
 
-    <select bind:value={year} onchange={() => apply()} class={SELECT}>
-      <option value={null}>{i18n.t('All Years')}</option>
-      {#each data.facets.years as option (option)}
-        <option value={option}>{option}</option>
-      {/each}
-    </select>
+      <SelectField label={i18n.t('Year')} bind:value={year} onchange={() => apply()}>
+        <option value={null}>{i18n.t('All Years')}</option>
+        {#each data.facets.years as option (option)}
+          <option value={option}>{option}</option>
+        {/each}
+      </SelectField>
 
-    <select bind:value={country} onchange={() => apply()} class={SELECT}>
-      <option value={null}>{i18n.t('All Countries')}</option>
-      {#each data.facets.countries as option (option)}
-        <option value={option}>{countryName(option, i18n.locale)}</option>
-      {/each}
-    </select>
-  </FilterBar>
+      <SelectField label={i18n.t('Country')} bind:value={country} onchange={() => apply()}>
+        <option value={null}>{i18n.t('All Countries')}</option>
+        {#each data.facets.countries as option (option)}
+          <option value={option}>{countryName(option, i18n.locale)}</option>
+        {/each}
+      </SelectField>
+    </FilterBar>
 
-  {#if data.error}
-    <Card class="max-w-summary p-8">
-      <div class="text-center">
-        <p class="text-danger">{i18n.t('Failed to load competitions')}</p>
-      </div>
-    </Card>
-  {:else if competitions.length === 0 && !busy}
-    <SearchEmpty
-      title={canReset
-        ? i18n.t('Oops, no competitions found.')
-        : i18n.t('No competitions to show yet.')}
-      description={canReset
-        ? i18n.t('Lighten the filters or try another name.')
-        : showsUpcoming
-          ? i18n.t('No competitions are planned yet.')
-          : data.status === 'live'
-            ? i18n.t('No competitions are in progress right now.')
-            : i18n.t('No competition results in this view yet.')}
-      resetHref={canReset
-        ? i18n.href(
-            resolve(
-              data.status === 'completed' ? '/competitions' : `/competitions?status=${data.status}`
+    {#if data.error}
+      <ResultState
+        embedded
+        kind="error"
+        title={i18n.t('Couldn’t load competitions')}
+        retry={refreshAll}
+      />
+    {:else if competitions.length === 0 && !busy}
+      <SearchEmpty
+        embedded
+        title={canReset
+          ? i18n.t('Oops, no competitions found.')
+          : i18n.t('No competitions to show yet.')}
+        description={canReset
+          ? undefined
+          : showsUpcoming
+            ? i18n.t('No competitions are planned yet.')
+            : data.status === 'live'
+              ? i18n.t('No competitions are in progress right now.')
+              : i18n.t('No competition results in this view yet.')}
+        resetHref={canReset
+          ? i18n.href(
+              resolve(
+                data.status === 'completed'
+                  ? '/competitions'
+                  : `/competitions?status=${data.status}`
+              )
             )
-          )
-        : undefined}
-    />
-  {:else}
-    <CompetitionsTable
-      {competitions}
-      upcoming={showsUpcoming}
-      {busy}
-      pagination={{
-        ...pagination,
-        pageHref: (target) => listingHref({ page: target }),
-      }}
-    />
-  {/if}
+          : undefined}
+      />
+    {:else}
+      <CompetitionsTable
+        embedded
+        {competitions}
+        upcoming={showsUpcoming}
+        {busy}
+        pagination={{
+          ...pagination,
+          pageHref: (target) => listingHref({ page: target }),
+        }}
+      />
+    {/if}
+  </section>
 </div>

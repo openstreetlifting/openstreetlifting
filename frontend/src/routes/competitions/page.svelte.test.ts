@@ -2,7 +2,7 @@ import { beforeEach, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import { page as appPage } from '$app/state';
-import { goto } from '$app/navigation';
+import { goto, refreshAll } from '$app/navigation';
 import CompetitionsPage from './+page.svelte';
 import type { PageData } from './$types';
 import { FORMAT_MOVEMENTS } from '#lib/utils/competition-format.js';
@@ -29,6 +29,7 @@ vi.mock('$app/navigation', async () => {
   const { page } = await import('$app/state');
   return {
     beforeNavigate: vi.fn(),
+    refreshAll: vi.fn(async () => {}),
     afterNavigate: (callback: typeof navigation.after) => {
       navigation.after = callback;
     },
@@ -83,7 +84,7 @@ beforeEach(() => {
 
 it('selects an exact format in either click order, preserves filters, and resets pagination', async () => {
   render(CompetitionsPage, { data: data() });
-  await expect.element(page.getByText('Format', { exact: true })).toBeVisible();
+  await expect.element(page.getByRole('table').getByText('Format', { exact: true })).toBeVisible();
   await expect.element(page.getByRole('cell', { name: 'PD', exact: true })).toBeVisible();
   await expect.element(page.getByRole('cell', { name: '—', exact: true })).toBeVisible();
   await page.getByText('All formats', { exact: true }).click();
@@ -113,10 +114,16 @@ it('restores selection on history navigation and retains format in paging and ta
         new URL(link.getAttribute('href')!, location.origin).searchParams.get('event') === 'PD'
     )
   ).toBe(true);
-  await page.getByRole('button', { name: /Upcoming/ }).click();
-  expect(appPage.url.searchParams.get('event')).toBe('PD');
-  expect(appPage.url.searchParams.get('status')).toBe('upcoming');
-  expect(appPage.url.searchParams.has('page')).toBe(false);
+  const upcoming = new URL(
+    page
+      .getByRole('link', { name: /Upcoming/ })
+      .element()
+      .getAttribute('href')!,
+    location.origin
+  );
+  expect(upcoming.searchParams.get('event')).toBe('PD');
+  expect(upcoming.searchParams.get('status')).toBe('upcoming');
+  expect(upcoming.searchParams.has('page')).toBe(false);
   (appPage.url as URL).href = 'http://localhost/competitions?event=MS';
   await screen.rerender({ data: data('MS') });
   navigation.after({ type: 'popstate' });
@@ -151,7 +158,7 @@ it('keeps In Progress selected when switching tabs, paging and clearing filters'
   live.competitions[0].status = 'live';
   render(CompetitionsPage, { data: live });
   await expect
-    .element(page.getByRole('button', { name: /In Progress/ }))
+    .element(page.getByRole('link', { name: /In Progress/ }))
     .toHaveAttribute('aria-current', 'page');
   const links = page.getByRole('link', { name: 'Next page' }).elements();
   expect(links.length).toBeGreaterThan(0);
@@ -161,8 +168,29 @@ it('keeps In Progress selected when switching tabs, paging and clearing filters'
         new URL(link.getAttribute('href')!, location.origin).searchParams.get('status') === 'live'
     )
   ).toBe(true);
-  await page.getByRole('button', { name: /In Progress/ }).click();
-  expect(appPage.url.searchParams.get('status')).toBe('live');
-  expect(appPage.url.searchParams.get('event')).toBe('MPDS');
-  expect(appPage.url.searchParams.has('page')).toBe(false);
+  const inProgress = new URL(
+    page
+      .getByRole('link', { name: /In Progress/ })
+      .element()
+      .getAttribute('href')!,
+    location.origin
+  );
+  expect(inProgress.searchParams.get('status')).toBe('live');
+  expect(inProgress.searchParams.get('event')).toBe('MPDS');
+  expect(inProgress.searchParams.has('page')).toBe(false);
+});
+
+it('retries a failed results request while preserving the selected filters', async () => {
+  const failed: PageData = {
+    ...data(),
+    error: 'Unavailable',
+    competitions: [],
+    runningCompetitions: [],
+    facets: { federations: [], years: [], countries: [], formats: [] },
+  };
+  render(CompetitionsPage, { data: failed });
+  const currentUrl = appPage.url.href;
+  await page.getByRole('button', { name: 'Try again', exact: true }).click();
+  expect(refreshAll).toHaveBeenCalledTimes(1);
+  expect(appPage.url.href).toBe(currentUrl);
 });

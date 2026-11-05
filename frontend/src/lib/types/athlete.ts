@@ -7,10 +7,10 @@ export type AthleteDetail = AthleteSummary &
   Required<
     Pick<
       AthleteSummary,
-      'competitions' | 'personal_records' | 'total_competitions' | 'standing' | 'strength_profile'
+      'competitions' | 'personal_records' | 'total_competitions' | 'standing' | 'lift_balance'
     >
   >;
 export type AthleteStanding = Schemas['AthleteStanding'];
 export type MetricStanding = Schemas['MetricStanding'];
-export type StrengthProfile = Schemas['StrengthProfile'];
+export type LiftBalance = Schemas['LiftBalance'];
 export type AthleteCompetitionSummary = Schemas['AthleteCompetitionSummary'];

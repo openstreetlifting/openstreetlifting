@@ -1,6 +1,8 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
   import { ChevronIcon } from '#lib/components/icons/index.js';
+  import Button from '#lib/components/ui/button.svelte';
+  import { FIELD, OVERLAY_SURFACE } from '#lib/constants/typography.js';
   import {
     FORMAT_MOVEMENTS,
     formatMovements,
@@ -47,68 +49,71 @@
 
 <svelte:window onpointerdown={dismiss} onkeydown={escape} />
 
-<details bind:this={dropdown} class="group relative w-full open:z-30 sm:w-48">
-  <summary
-    aria-label={i18n.t('Competition format: {label}', { label })}
-    class="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-stroke bg-surface px-3 py-2 text-xs text-secondary outline-none hover:border-stroke-strong hover:text-ink focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas group-open:border-stroke-strong group-open:text-ink [&::-webkit-details-marker]:hidden"
-  >
-    <span class="truncate" title={label}>{label}</span>
-    <ChevronIcon class="ml-auto h-3.5 w-3.5 shrink-0 group-open:rotate-180" />
-  </summary>
-  <div
-    class="absolute left-0 mt-1.5 w-full overflow-hidden rounded-lg border border-stroke-strong bg-surface shadow-lg shadow-overlay/20"
-  >
-    <fieldset class="space-y-0.5 p-1">
-      <legend class="sr-only">{i18n.t('Match these movements exactly')}</legend>
-      {#each choices as movement (movement.code)}
-        {@const selected = value.includes(movement.code)}
-        <label
-          class="relative flex min-h-11 cursor-pointer items-center gap-2.5 rounded px-2.5 text-sm text-ink sm:min-h-9 {selected
-            ? 'bg-surface-selected'
-            : 'hover:bg-surface-hover'}"
+<div class="grid min-w-0 gap-1">
+  <span class="sr-only">{i18n.t('Format')}</span>
+  <details bind:this={dropdown} class="group relative min-w-0 w-full open:z-30">
+    <summary
+      aria-label={i18n.t('Competition format: {label}', { label })}
+      class="{FIELD} flex cursor-pointer list-none items-center gap-2 px-3 py-1.5 text-micro group-open:border-focus [&::-webkit-details-marker]:hidden"
+    >
+      <span class="truncate" title={label}>{label}</span>
+      <ChevronIcon class="ml-auto h-3.5 w-3.5 shrink-0 group-open:rotate-180" />
+    </summary>
+    <div class="{OVERLAY_SURFACE} absolute right-0 mt-1.5 w-full min-w-44 overflow-hidden">
+      <fieldset class="space-y-0.5 p-1">
+        <legend class="sr-only">{i18n.t('Match these movements exactly')}</legend>
+        {#each choices as movement (movement.code)}
+          {@const selected = value.includes(movement.code)}
+          <label
+            class="relative flex min-h-control cursor-pointer items-center gap-2 rounded-control px-3 font-mono text-micro text-ink {selected
+              ? 'bg-surface-selected'
+              : 'hover:bg-surface-hover'}"
+          >
+            <input
+              type="checkbox"
+              checked={selected}
+              onchange={(event) =>
+                onChange(
+                  normalizeEvent(
+                    event.currentTarget.checked
+                      ? value + movement.code
+                      : value.replace(movement.code, '')
+                  )
+                )}
+              class="size-4 shrink-0 cursor-pointer appearance-none rounded-control border border-stroke-strong outline-none checked:border-action checked:bg-action focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            />
+            {#if selected}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 16 16"
+                fill="none"
+                class="pointer-events-none absolute left-3 size-3 text-on-action"
+              >
+                <path
+                  d="m3 8 3.25 3.25L13 4.5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            {/if}
+            <span>{i18n.movement(movement.label)}</span>
+          </label>
+        {/each}
+      </fieldset>
+      <div class="border-t border-stroke p-1">
+        <Button
+          variant="ghost"
+          size="control"
+          type="button"
+          aria-label={i18n.t('Clear movements')}
+          disabled={!value}
+          onclick={() => onChange('')}
+          class="w-full justify-start px-3 text-secondary disabled:text-faint"
+          >{i18n.t('Clear selection')}</Button
         >
-          <input
-            type="checkbox"
-            checked={selected}
-            onchange={(event) =>
-              onChange(
-                normalizeEvent(
-                  event.currentTarget.checked
-                    ? value + movement.code
-                    : value.replace(movement.code, '')
-                )
-              )}
-            class="size-4 shrink-0 cursor-pointer appearance-none rounded border border-stroke-strong outline-none checked:border-action checked:bg-action focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
-          />
-          {#if selected}
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 16 16"
-              fill="none"
-              class="pointer-events-none absolute left-3 size-3 text-on-action"
-            >
-              <path
-                d="m3 8 3.25 3.25L13 4.5"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          {/if}
-          <span>{i18n.movement(movement.label)}</span>
-        </label>
-      {/each}
-    </fieldset>
-    <div class="border-t border-stroke p-1">
-      <button
-        type="button"
-        aria-label={i18n.t('Clear movements')}
-        disabled={!value}
-        onclick={() => onChange('')}
-        class="min-h-11 w-full rounded px-2.5 text-left text-xs text-secondary outline-none enabled:cursor-pointer enabled:hover:bg-surface-hover enabled:hover:text-ink enabled:active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-focus disabled:text-faint sm:min-h-8"
-        >{i18n.t('Clear selection')}</button
-      >
+      </div>
     </div>
-  </div>
-</details>
+  </details>
+</div>

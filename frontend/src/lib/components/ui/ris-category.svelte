@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { CONTROL } from '#lib/constants/typography.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { TEXT } from '#lib/constants/typography.js';
 
@@ -11,12 +12,12 @@
 </script>
 
 <fieldset>
-  <legend class="mb-2 {prominent ? 'text-sm font-medium text-ink' : `${TEXT.meta} text-muted`}"
+  <legend class="mb-2 {prominent ? 'text-body font-medium text-ink' : `${TEXT.meta} text-muted`}"
     >{i18n.t('Category')}</legend
   >
   <div
-    class="flex w-fit overflow-hidden rounded-lg border {prominent
-      ? 'h-12 border-stroke-strong'
+    class="flex h-control w-fit overflow-hidden rounded-control border {prominent
+      ? 'border-stroke-strong'
       : 'border-stroke'}"
   >
     {#each [['men', i18n.t('Men')], ['women', i18n.t('Women')]] as const as [value, label] (value)}
@@ -24,7 +25,7 @@
         type="button"
         aria-pressed={sex === value}
         onclick={() => (sex = value)}
-        class="px-4 py-2.5 text-xs font-medium transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-secondary {sex ===
+        class="{CONTROL} inline-flex h-full items-center px-3 transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-secondary {sex ===
         value
           ? 'bg-ink text-canvas'
           : 'bg-canvas text-secondary hover:bg-surface hover:text-ink'}">{label}</button

@@ -67,7 +67,7 @@ The CLI loads `.env` from the working directory or its parents.
 
 - `DATABASE_URL` supplies the PostgreSQL connection URL. Competition imports, Instagram synchronization, and RIS recomputation require it. You can also pass `--database-url`.
 - `OSL_PRIVACY_KEY` creates and verifies suppression records. If the privacy list contains records, use the key that created them.
-- `RUST_LOG` overrides the default log filter. `--verbose` enables debug logging when no filter is set.
+- `RUST_LOG` overrides the default log filter. `--verbose` enables debug logging when no filter is set, and prints each validation warning to stderr. These details can contain athlete names, so they are never printed with `LOG_FORMAT=json`.
 
 To validate files in a fork's CI without the privacy key:
 

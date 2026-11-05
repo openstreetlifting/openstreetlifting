@@ -7,11 +7,12 @@
   import { resolve } from '$app/paths';
   import { GitHubIcon, InstagramIcon, MenuIcon, CloseIcon } from '#lib/components/icons/index.js';
   import { stripLocale } from '#lib/i18n/paths.js';
-  import { NAV_LINK } from '#lib/constants/typography.js';
+  import { CONTROL, NAV_LINK } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
 
   let menuOpen = $state(false);
+  let menuButton: HTMLButtonElement;
 
   afterNavigate(({ shallow }) => {
     if (shallow) return;
@@ -23,121 +24,162 @@
     const pathname = stripLocale(page.url.pathname);
     return path === '/' ? pathname === '/' : pathname.startsWith(path);
   }
+
+  const menuLinks = $derived([
+    { path: '', label: i18n.t('Rankings'), active: isActive('/') },
+    { path: 'competitions', label: i18n.t('Competitions'), active: isActive('/competitions') },
+    { path: 'ris', label: 'RIS', active: isActive('/ris') },
+    { path: 'contact', label: i18n.t('Contact'), active: isActive('/contact') },
+  ] as const);
+
+  const MENU_ITEM = 'border-b border-stroke sm:border-r sm:nth-[3n]:border-r-0';
+  const MENU_LINK = `${CONTROL} flex h-control items-center justify-between gap-2 px-gutter transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus`;
+  const SOCIAL =
+    'inline-flex size-control items-center justify-center text-secondary transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-focus lg:h-9 lg:w-5';
 </script>
 
 <svelte:window
   onkeydown={(event) => {
-    if (event.key === 'Escape') menuOpen = false;
+    if (event.key === 'Escape' && menuOpen) {
+      menuOpen = false;
+      menuButton.focus();
+    }
   }}
 />
 
-<header class="bg-canvas">
+{#snippet primaryLinks()}
+  <li class="min-w-0 flex-1 lg:flex-none">
+    <a
+      href={i18n.href(resolve(''))}
+      class="{NAV_LINK} w-full justify-start border-b-0 border-transparent px-0 lg:justify-center lg:border-b-2"
+      class:border-ink={isActive('/')}
+      class:text-ink={isActive('/')}
+      aria-current={isActive('/') ? 'page' : undefined}>{i18n.t('Rankings')}</a
+    >
+  </li>
+  <li class="min-w-0 flex-1 lg:flex-none">
+    <a
+      href={i18n.href(resolve('competitions'))}
+      class="{NAV_LINK} w-full justify-start border-b-0 border-transparent px-0 lg:justify-center lg:border-b-2"
+      class:border-ink={isActive('/competitions')}
+      class:text-ink={isActive('/competitions')}
+      aria-current={isActive('/competitions') ? 'page' : undefined}>{i18n.t('Competitions')}</a
+    >
+  </li>
+{/snippet}
+
+{#snippet secondaryLinks()}
+  <li>
+    <a
+      href={i18n.href(resolve('ris'))}
+      class={NAV_LINK}
+      class:text-ink={isActive('/ris')}
+      aria-current={isActive('/ris') ? 'page' : undefined}>RIS</a
+    >
+  </li>
+  <li>
+    <a
+      href="https://docs.openstreetlifting.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class={NAV_LINK}>{i18n.t('Docs')}</a
+    >
+  </li>
+  <li>
+    <a
+      href={i18n.href(resolve('contact'))}
+      class={NAV_LINK}
+      class:text-ink={isActive('/contact')}
+      aria-current={isActive('/contact') ? 'page' : undefined}>{i18n.t('Contact')}</a
+    >
+  </li>
+{/snippet}
+
+<header class="border-b border-stroke-strong bg-canvas">
   <nav
-    class="mx-auto flex max-w-page flex-wrap items-center justify-between px-4 py-3 sm:px-6 sm:py-4"
+    class="mx-auto grid max-w-page grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 px-gutter lg:flex lg:gap-6"
   >
     <a
       href={i18n.href(resolve(''))}
       title={i18n.t('OpenStreetlifting, back to the full rankings')}
-      class="opacity-90 transition-opacity hover:opacity-100"
+      class="flex min-h-12 min-w-0 items-center lg:min-h-14 justify-self-start py-2 opacity-90 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-focus"
     >
-      <img src="/logo_width.svg" alt="OpenStreetlifting" class="h-7 w-auto sm:h-8" />
+      <img
+        src="/logo_width.svg"
+        width="3442"
+        height="512"
+        alt="OpenStreetlifting"
+        fetchpriority="high"
+        class="h-6 w-auto max-w-full sm:h-7"
+      />
     </a>
 
     <button
+      bind:this={menuButton}
       type="button"
       onclick={() => (menuOpen = !menuOpen)}
       aria-expanded={menuOpen}
       aria-controls="primary-nav"
       aria-label={menuOpen ? i18n.t('Close menu') : i18n.t('Open menu')}
-      class="rounded-lg p-2 text-secondary transition-colors hover:text-ink focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none lg:hidden"
+      class="flex size-11 items-center justify-center rounded-control text-secondary transition-colors hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
     >
-      {#if menuOpen}
-        <CloseIcon />
-      {:else}
-        <MenuIcon />
-      {/if}
+      {#if menuOpen}<CloseIcon />{:else}<MenuIcon />{/if}
     </button>
 
-    <ul
+    <ul class="hidden items-center gap-6 lg:ml-auto lg:flex">
+      {@render primaryLinks()}
+      {@render secondaryLinks()}
+    </ul>
+
+    <div
       id="primary-nav"
       class="{menuOpen
         ? 'flex'
-        : 'hidden'} w-full flex-col gap-4 pt-4 pb-2 lg:flex lg:w-auto lg:flex-row lg:items-center lg:gap-4 lg:pt-0 lg:pb-0 xl:gap-6"
+        : 'hidden'} col-span-2 row-start-2 -mx-gutter flex-col border-t border-stroke lg:col-span-1 lg:col-start-3 lg:row-start-1 lg:mx-0 lg:flex lg:flex-row lg:items-center lg:justify-self-end lg:border-0"
     >
-      <li>
-        <a
-          href={i18n.href(resolve(''))}
-          class={NAV_LINK}
-          class:text-ink={isActive('/')}
-          class:text-secondary={!isActive('/')}
-          aria-current={isActive('/') ? 'page' : undefined}
-        >
-          {i18n.t('Rankings')}
-        </a>
-      </li>
-      <li>
-        <a
-          href={i18n.href(resolve('competitions'))}
-          class={NAV_LINK}
-          class:text-ink={isActive('/competitions')}
-          class:text-secondary={!isActive('/competitions')}
-          aria-current={isActive('/competitions') ? 'page' : undefined}
-        >
-          {i18n.t('Competitions')}
-        </a>
-      </li>
-      <li>
-        <a
-          href={i18n.href(resolve('ris'))}
-          class={NAV_LINK}
-          class:text-ink={isActive('/ris')}
-          class:text-secondary={!isActive('/ris')}
-          aria-current={isActive('/ris') ? 'page' : undefined}>RIS</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://docs.openstreetlifting.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class={NAV_LINK}
-        >
-          {i18n.t('Docs')}
-        </a>
-      </li>
-      <li>
-        <a
-          href={i18n.href(resolve('contact'))}
-          class={NAV_LINK}
-          class:text-ink={isActive('/contact')}
-          class:text-secondary={!isActive('/contact')}
-          aria-current={isActive('/contact') ? 'page' : undefined}
-        >
-          {i18n.t('Contact')}
-        </a>
-      </li>
-      <li class="flex items-center gap-2"><LanguagePicker /><WeightUnitPicker /></li>
-      <li class="flex items-center gap-3">
-        <a
-          href="https://github.com/openstreetlifting/openstreetlifting"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-secondary transition-colors hover:text-ink"
-          aria-label="GitHub"
-        >
-          <GitHubIcon class="h-5 w-5" />
-        </a>
-        <a
-          href="https://www.instagram.com/openstreetlifting"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-secondary transition-colors hover:text-ink"
-          aria-label="Instagram"
-        >
-          <InstagramIcon class="h-5 w-5" />
-        </a>
-      </li>
-    </ul>
+      <ul class="grid sm:grid-cols-3 lg:hidden">
+        {#each menuLinks as link (link.label)}
+          <li class={MENU_ITEM}>
+            <a
+              href={i18n.href(resolve(link.path))}
+              aria-current={link.active ? 'page' : undefined}
+              class="{MENU_LINK} {link.active
+                ? 'bg-surface-selected text-ink'
+                : 'text-secondary hover:bg-surface hover:text-ink'}">{link.label}</a
+            >
+          </li>
+        {/each}
+        <li class={MENU_ITEM}>
+          <a
+            href="https://docs.openstreetlifting.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="{MENU_LINK} text-secondary hover:bg-surface hover:text-ink"
+            >{i18n.t('Docs')}<span aria-hidden="true" class="text-muted">↗</span></a
+          >
+        </li>
+      </ul>
+      <div
+        class="flex items-center justify-between gap-3 bg-surface-subtle px-gutter py-1.5 lg:justify-start lg:bg-transparent lg:p-0"
+      >
+        <div class="flex items-center gap-2"><LanguagePicker /><WeightUnitPicker /></div>
+        <div class="flex items-center gap-1 lg:gap-3">
+          <a
+            href="https://github.com/openstreetlifting/openstreetlifting"
+            target="_blank"
+            rel="noopener noreferrer"
+            class={SOCIAL}
+            aria-label="GitHub"><GitHubIcon class="h-5 w-5" /></a
+          >
+          <a
+            href="https://www.instagram.com/openstreetlifting"
+            target="_blank"
+            rel="noopener noreferrer"
+            class={SOCIAL}
+            aria-label="Instagram"><InstagramIcon class="h-5 w-5" /></a
+          >
+        </div>
+      </div>
+    </div>
   </nav>
-  <div class="h-px bg-stroke"></div>
 </header>

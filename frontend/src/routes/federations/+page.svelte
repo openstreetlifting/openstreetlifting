@@ -1,21 +1,14 @@
 <script lang="ts">
+  import { LAYOUT } from '#lib/constants/layout.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
-  import {
-    Breadcrumb,
-    Flag,
-    Table,
-    TABLE_CELL,
-    TABLE_HEAD_CELL,
-  } from '#lib/components/ui/index.js';
+  import { Flag, Table, TABLE_CELL, TABLE_HEAD_CELL, Text } from '#lib/components/ui/index.js';
   import Seo from '#lib/components/seo.svelte';
   import { resolve } from '$app/paths';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
-  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
+  import { absolute } from '#lib/seo/index.js';
   import { countryName } from '#lib/utils/index.js';
   import { CELL, FIGURE, NO_VALUE } from '#lib/constants/table.js';
-  import { TEXT } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
 
@@ -42,28 +35,10 @@
     }
   )}
   canonical={absolute('/federations')}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        { name: i18n.t('Competitions'), path: '/competitions' },
-        { name: i18n.t('Federations'), path: '/federations' },
-      ],
-      i18n.locale
-    ),
-  ]}
 />
 
-<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
-  <Breadcrumb
-    items={[
-      { label: i18n.t('Rankings'), href: rankingsHref() },
-      { label: i18n.t('Competitions'), href: '/competitions' },
-      { label: i18n.t('Federations') },
-    ]}
-  />
-
-  <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">{i18n.t('Federations')}</h1>
+<div class={LAYOUT.page}>
+  <Text as="h1" variant="title" class="mb-section text-ink">{i18n.t('Federations')}</Text>
 
   <Table rows={federations} itemName="federation" pageParam="page">
     {#snippet head()}
@@ -101,9 +76,11 @@
               {NO_VALUE}
             {/if}
           </td>
-          <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{federation.competitions}</td>
-          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{federation.entries}</td>
-          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{federation.upcoming}</td>
+          <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+            >{i18n.number(federation.competitions, 0)}</td
+          >
+          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{i18n.number(federation.entries, 0)}</td>
+          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{i18n.number(federation.upcoming, 0)}</td>
           <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap">
             {activeYears(federation.firstYear, federation.lastYear)}
           </td>

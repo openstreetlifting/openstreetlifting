@@ -2,3 +2,5 @@
 REFACTOR.md
 .pnpm-store/
 .telemetry/
+
+.playwright-mcp/

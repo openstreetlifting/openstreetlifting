@@ -48,6 +48,24 @@ function standing(value: string, weightClass?: string): MetricStanding {
   };
 }
 
+function balance(category: string): NonNullable<AthleteDetail['lift_balance']> {
+  return {
+    category,
+    total: '200',
+    competition_name: 'One Meet',
+    competition_slug: 'one-meet',
+    competition_date: '2026-01-01',
+    field: 20,
+    lifts: MOVEMENTS.map((movement_name) => ({
+      movement_name,
+      value: '50',
+      share: 25,
+      class_share: 25,
+      class_spread: 2,
+    })),
+  };
+}
+
 function athlete(): AthleteDetail {
   return {
     athlete_id: 'test-athlete',
@@ -55,7 +73,7 @@ function athlete(): AthleteDetail {
     last_name: 'Martin',
     native_name: null,
     instagram_handle: null,
-    strength_profile: null,
+    lift_balance: null,
     slug: 'alex-martin',
     gender: 'M',
     country: 'FR',
@@ -243,15 +261,7 @@ it('labels athlete metadata and keeps the native name and accessible social link
   const lifter = athlete();
   lifter.native_name = 'Алекс Мартин';
   lifter.instagram_handle = 'alex.martin';
-  lifter.strength_profile = {
-    category: 'Elite Men -80kg',
-    lifts: MOVEMENTS.map((movement_name) => ({
-      movement_name,
-      value: '50',
-      percentile: 50,
-      field: 20,
-    })),
-  };
+  lifter.lift_balance = balance('Elite Men -80kg');
   render(AthletePage, { data: { locale: 'en', athlete: lifter } });
   await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
   const header = page
@@ -266,15 +276,7 @@ it('labels athlete metadata and keeps the native name and accessible social link
 
 it('does not mistake a classless category name for a weight class', async () => {
   const lifter = athlete();
-  lifter.strength_profile = {
-    category: 'Elite Men',
-    lifts: MOVEMENTS.map((movement_name) => ({
-      movement_name,
-      value: '50',
-      percentile: 50,
-      field: 20,
-    })),
-  };
+  lifter.lift_balance = balance('Elite Men');
   render(AthletePage, { data: { locale: 'en', athlete: lifter } });
   await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
   const header = page

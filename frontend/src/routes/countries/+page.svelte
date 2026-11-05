@@ -1,21 +1,14 @@
 <script lang="ts">
+  import { LAYOUT } from '#lib/constants/layout.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
-  import {
-    Breadcrumb,
-    Flag,
-    Table,
-    TABLE_CELL,
-    TABLE_HEAD_CELL,
-  } from '#lib/components/ui/index.js';
+  import { Flag, Table, TABLE_CELL, TABLE_HEAD_CELL, Text } from '#lib/components/ui/index.js';
   import Seo from '#lib/components/seo.svelte';
   import { resolve } from '$app/paths';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
-  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
+  import { absolute } from '#lib/seo/index.js';
   import { countryName } from '#lib/utils/index.js';
   import { CELL, FIGURE, NO_VALUE } from '#lib/constants/table.js';
-  import { TEXT } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
 
@@ -32,23 +25,10 @@
     { countries: i18n.number(countries.length, 0), athletes: i18n.number(athleteCount, 0) }
   )}
   canonical={absolute('/countries')}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        { name: i18n.t('Countries'), path: '/countries' },
-      ],
-      i18n.locale
-    ),
-  ]}
 />
 
-<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
-  <Breadcrumb
-    items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Countries') }]}
-  />
-
-  <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">{i18n.t('Countries')}</h1>
+<div class={LAYOUT.page}>
+  <Text as="h1" variant="title" class="mb-section text-ink">{i18n.t('Countries')}</Text>
 
   <Table rows={countries} itemName="country" pageParam="page">
     {#snippet head()}
@@ -71,9 +51,9 @@
               <span class="underline">{countryName(country.code, i18n.locale)}</span>
             </a>
           </td>
-          <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{country.athletes}</td>
-          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{country.competitions}</td>
-          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{country.upcoming}</td>
+          <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{i18n.number(country.athletes, 0)}</td>
+          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{i18n.number(country.competitions, 0)}</td>
+          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{i18n.number(country.upcoming, 0)}</td>
           <td class="{TABLE_CELL} {CELL.data}">
             {#each country.federations as name, index (name)}
               <span class="whitespace-nowrap"

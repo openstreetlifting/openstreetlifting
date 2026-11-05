@@ -12,3 +12,4 @@ scoring = "total"
 
 [federation]
 name = "StreetLifting Polska"
+country = "PL"
