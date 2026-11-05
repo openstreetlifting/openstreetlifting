@@ -45,7 +45,7 @@
   });
 
   const linkBase =
-    'inline-flex h-11 min-w-11 items-center justify-center rounded-control px-2 font-mono text-meta font-medium sm:h-8 sm:min-w-8 sm:px-3 transition-colors active:bg-surface-selected focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas aria-disabled:pointer-events-none';
+    'inline-flex h-control min-w-control items-center justify-center rounded-control px-2 font-mono text-meta font-medium sm:px-3 transition-colors active:bg-surface-selected focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas aria-disabled:pointer-events-none';
 </script>
 
 <!-- eslint-disable svelte/no-navigation-without-resolve -- pageHref returns URLs resolved by the caller -->

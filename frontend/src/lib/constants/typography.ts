@@ -19,7 +19,7 @@ export const NAV_LINK =
   'inline-flex min-h-11 items-center whitespace-nowrap font-mono text-meta text-secondary transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus';
 
 export const FIELD =
-  'min-h-11 rounded-control border border-stroke bg-canvas font-mono text-meta leading-4 text-ink transition-colors hover:border-stroke-strong focus:border-focus focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none sm:min-h-8';
+  'min-h-control rounded-control border border-stroke bg-canvas font-mono text-meta leading-4 text-ink transition-colors hover:border-stroke-strong focus:border-focus focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none';
 
 export const CHART = {
   tooltip:

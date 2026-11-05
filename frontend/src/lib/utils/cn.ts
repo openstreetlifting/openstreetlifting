@@ -15,6 +15,7 @@ const twMerge = extendTailwindMerge({
         'section',
         'chapter',
         'icon',
+        'control',
       ],
     },
   },

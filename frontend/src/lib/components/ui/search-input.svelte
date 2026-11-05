@@ -80,7 +80,7 @@
       type="button"
       onclick={clear}
       aria-label={i18n.t('Clear search')}
-      class="absolute top-1/2 right-0 flex h-11 w-8 -translate-y-1/2 items-center justify-center text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-focus sm:h-8"
+      class="absolute top-1/2 right-0 flex h-control w-8 -translate-y-1/2 items-center justify-center text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-focus"
     >
       &times;
     </button>

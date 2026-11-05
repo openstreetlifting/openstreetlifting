@@ -7,6 +7,7 @@
 
   let {
     heading,
+    meta,
     href,
     background,
     flagBackground = false,
@@ -14,6 +15,7 @@
     footer,
   }: {
     heading: string;
+    meta?: string;
     href?: ResolvedPathname;
     background?: Snippet;
     flagBackground?: boolean;
@@ -30,7 +32,11 @@
       {@render background()}
     </div>{/if}
   <div class="relative">
-    <Text as="h3" variant="cardLabel">{heading}</Text>
+    <div class="flex items-baseline justify-between gap-3">
+      <Text as="h3" variant="cardLabel">{heading}</Text>
+      {#if meta}<span class="{TEXT.fieldLabel} hidden shrink-0 tabular-nums lg:inline">{meta}</span
+        >{/if}
+    </div>
     <div class="mt-2 flex min-h-8 flex-wrap items-baseline gap-x-2 gap-y-1">
       {@render children()}
     </div>

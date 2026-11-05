@@ -256,7 +256,7 @@
   const place = $derived([competition.venue, location].filter(Boolean).join(', '));
   const DETAILS =
     'grid w-max max-w-full grid-cols-[6rem_minmax(0,1fr)] content-start gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]';
-  const EDITION = `${CONTROL} inline-flex h-11 min-w-11 shrink-0 items-center justify-center rounded-control border px-2 tabular-nums sm:px-3 transition-colors focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none sm:h-8 sm:min-w-8`;
+  const EDITION = `${CONTROL} inline-flex h-control min-w-control shrink-0 items-center justify-center rounded-control border px-2 tabular-nums sm:px-3 transition-colors focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none`;
 
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
@@ -662,7 +662,7 @@
             {#each contested as lift (lift.key)}
               <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
                 {i18n.t(lift.label)}
-                <span class="{ATTEMPT_ROW} mt-1 text-micro font-normal text-muted">
+                <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
                   <span class="text-right">1</span>
                   <span class="text-right">2</span>
                   <span class="text-right">3</span>

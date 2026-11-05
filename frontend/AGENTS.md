@@ -8,8 +8,8 @@ Pick the size by its role:
 
 | Class           | Use for                                  |
 | --------------- | ---------------------------------------- |
-| `text-micro`    | table headers, field labels, chart ticks |
-| `text-meta`     | captions, dates, controls                |
+| `text-micro`    | field labels, chart ticks                |
+| `text-meta`     | captions, dates, controls, table headers |
 | `text-body`     | default reading text                     |
 | `text-lead`     | introductions                            |
 | `text-subtitle` | section titles on phones                 |
@@ -32,8 +32,9 @@ Named values carry layout rhythm and already adapt at the `sm` breakpoint, so th
 | `section`                | gap between sections of a page           |
 | `chapter`                | gap between major blocks of a long page  |
 | `icon`                   | input padding that clears an icon        |
+| `control`                | height of fields, buttons and page links |
 
-Inside a component, use the numeric scale in `scripts/check-spacing.mjs`. That check covers padding, margin and gap; `h-11` and `size-11` sizing stays free so tap targets can hold 44px.
+Inside a component, use the numeric scale in `scripts/check-spacing.mjs`. That check covers padding, margin and gap. Size every field, button, pagination link and segmented control with `h-control` (36px on phones, 32px from `sm`) so they line up; keep `size-11` for icon-only buttons such as the menu and social links.
 
 ## Components
 

@@ -68,11 +68,12 @@
 
     <Button
       variant="outline"
+      size="control"
       type="button"
       onclick={() => (open = !open)}
       aria-expanded={open}
       aria-controls={panelId}
-      class="h-11 shrink-0 gap-1.5 px-3 text-meta text-secondary sm:hidden"
+      class="shrink-0 gap-1.5 text-meta text-secondary sm:hidden"
     >
       {i18n.t('Filters')}
       {#if activeCount > 0}

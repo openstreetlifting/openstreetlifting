@@ -26,7 +26,7 @@
     FROZEN_RANK,
     Text,
   } from '#lib/components/ui/index.js';
-  import { GlobeIcon, InstagramIcon } from '#lib/components/icons/index.js';
+  import { ChevronIcon, GlobeIcon, InstagramIcon } from '#lib/components/icons/index.js';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
@@ -358,16 +358,21 @@
       <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Personal records')}</Text>
       <div class={CARD_GRID}>
         {#each athlete.personal_records as pr (pr.movement_name)}
-          <MetricCard heading={i18n.movement(pr.movement_name)}>
+          <MetricCard
+            heading={i18n.movement(pr.movement_name)}
+            meta={pr.date ? formatDate(pr.date, i18n.locale) : undefined}
+            href={i18n.href(resolve(`competitions/${pr.competition_slug}`))}
+          >
             <span class={TEXT.cardFigure}>{weights.format(pr.max_weight, i18n.locale)}</span>
             <span class="font-mono text-meta text-secondary">{weights.unit}</span>
             {#snippet footer()}
-              <a
-                href={i18n.href(resolve(`competitions/${pr.competition_slug}`))}
-                class="block truncate underline hover:text-ink"
-                title={pr.competition_name}>{pr.competition_name}</a
+              <span
+                class="mt-1 flex items-center gap-1 border-t border-stroke pt-3 text-secondary transition-colors group-hover:text-ink"
               >
-              {#if pr.date}<span class="block font-mono text-micro"
+                <span class="truncate" title={pr.competition_name}>{pr.competition_name}</span>
+                <ChevronIcon class="size-3 shrink-0 -rotate-90" />
+              </span>
+              {#if pr.date}<span class="{TEXT.fieldLabel} mt-1 block lg:hidden"
                   >{formatDate(pr.date, i18n.locale)}</span
                 >{/if}
             {/snippet}
@@ -411,7 +416,7 @@
           {#each contested as lift (lift.key)}
             <th class="{TABLE_HEAD_CELL} text-secondary">
               {i18n.t(lift.label)}
-              <span class="{ATTEMPT_ROW} mt-1 text-micro font-normal text-muted">
+              <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
                 <span class="text-right">1</span>
                 <span class="text-right">2</span>
                 <span class="text-right">3</span>
