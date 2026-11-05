@@ -115,7 +115,7 @@
   );
 
   const CARD_GRID = 'grid max-w-records grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
-  const RANKING_CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4';
+  const RANKING_CARD_GRID = 'grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4';
 
   const filters = $derived(athleteFilters(page.url.searchParams));
   const selectedMetric = $derived(filters.ranking);
@@ -298,9 +298,7 @@
     >
       {#snippet background()}
         {#if country}<Flag countryCode={country} background />
-        {:else if scope === i18n.t('Global')}<GlobeIcon
-            class="h-40 w-40 shrink-0 text-secondary"
-          />{/if}
+        {:else if scope === i18n.t('Global')}<GlobeIcon class="text-secondary" />{/if}
       {/snippet}
       {#if selectedStanding?.class}
         {i18n.t('in category {category}', {
