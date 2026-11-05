@@ -21,7 +21,7 @@ function numeric(value: string | null | undefined): number | null {
   return Number.isFinite(number) ? number : null;
 }
 
-export function totalFormats(competitions: AthleteCompetitionSummary[]): string[] {
+export function progressFormats(competitions: AthleteCompetitionSummary[]): string[] {
   return [
     ...new Set(
       competitions
@@ -29,11 +29,17 @@ export function totalFormats(competitions: AthleteCompetitionSummary[]): string[
           (c) =>
             c.status === 'competed' &&
             c.event &&
-            (numeric(c.total) !== null || numeric(c.ris_score) !== null)
+            (numeric(c.total) !== null ||
+              numeric(c.ris_score) !== null ||
+              c.lifts.some((lift) => numeric(lift.best_weight) !== null))
         )
         .map((c) => c.event!)
     ),
   ].sort((a, b) => (a === 'MPDS' ? -1 : b === 'MPDS' ? 1 : a.localeCompare(b)));
+}
+
+export function defaultProgressFormat(formats: string[]): string {
+  return formats.includes('MPDS') ? 'MPDS' : (formats[0] ?? 'MPDS');
 }
 
 export function progressPoints(
@@ -46,8 +52,8 @@ export function progressPoints(
     if (competition.status !== 'competed' || !competition.competition_date) continue;
     const timestamp = Date.parse(competition.competition_date);
     if (!Number.isFinite(timestamp)) continue;
-    // Totals and RIS describe the same performance only within one event.
-    if ((metric === 'total' || metric === 'ris') && competition.event !== event) continue;
+    // Keep totals, scores and individual lifts within the selected event format.
+    if (competition.event !== event) continue;
     const value = numeric(
       metric === 'total'
         ? competition.total

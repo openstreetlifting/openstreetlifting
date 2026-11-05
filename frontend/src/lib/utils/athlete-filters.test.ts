@@ -24,3 +24,10 @@ it('falls back to Total for a previously shared All view', () => {
     ranking: 'ris',
   });
 });
+
+it('defaults performance to Total in MPDS even when another format is listed first', () => {
+  expect(athleteFilters(new URLSearchParams(), ['PD', 'MPDS'])).toMatchObject({
+    performance: 'total',
+    event: 'MPDS',
+  });
+});

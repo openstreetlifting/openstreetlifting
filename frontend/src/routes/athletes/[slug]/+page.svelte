@@ -30,7 +30,7 @@
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { athleteFilters } from '#lib/utils/athlete-filters.js';
-  import { totalFormats } from '#lib/utils/athlete-progress.js';
+  import { progressFormats, defaultProgressFormat } from '#lib/utils/athlete-progress.js';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
@@ -118,7 +118,7 @@
   const CARD_GRID = 'grid max-w-records grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
   const RANKING_CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4';
 
-  const formats = $derived(totalFormats(athlete.competitions));
+  const formats = $derived(progressFormats(athlete.competitions));
   const filters = $derived(athleteFilters(page.url.searchParams, formats));
   const selectedMetric = $derived(filters.ranking);
 
@@ -127,7 +127,7 @@
     const defaults = {
       ranking: 'ris',
       performance: 'total',
-      event: formats[0] ?? 'MPDS',
+      event: defaultProgressFormat(formats),
     };
     if (value === defaults[key]) params.delete(key);
     else params.set(key, value);

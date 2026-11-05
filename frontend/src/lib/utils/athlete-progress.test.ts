@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
-import { progressPoints, totalFormats } from './athlete-progress';
+import { progressPoints, progressFormats } from './athlete-progress';
 
 function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteCompetitionSummary {
   return {
@@ -39,7 +39,7 @@ describe('athlete progress', () => {
         ris_source: 'reported',
       }),
     ];
-    expect(totalFormats(competitions)).toEqual(['MPDS', 'PD', 'PDS']);
+    expect(progressFormats(competitions)).toEqual(['MPDS', 'PD', 'PDS']);
     expect(progressPoints(competitions, 'ris').map((p) => p.value)).toEqual([100]);
     expect(progressPoints(competitions, 'ris', 'PDS').map((p) => p.value)).toEqual([88.84]);
   });
@@ -49,7 +49,7 @@ describe('athlete progress', () => {
       result({ competition_id: 'meet-2', event: 'PD', total: '200' }),
       result({ competition_id: 'meet-3', event: null, total: '400' }),
     ];
-    expect(totalFormats(competitions)).toEqual(['MPDS', 'PD']);
+    expect(progressFormats(competitions)).toEqual(['MPDS', 'PD']);
     expect(progressPoints(competitions, 'total').map((p) => p.value)).toEqual([300]);
     expect(progressPoints(competitions, 'total', 'PD').map((p) => p.value)).toEqual([200]);
   });
@@ -89,4 +89,20 @@ describe('athlete progress', () => {
     expect(points[1].competition.division).toBe('Junior');
     expect(competitions[0].total).toBe('300');
   });
+});
+
+it('keeps individual-lift trends in the selected format and includes lift-only formats', () => {
+  const competitions = [
+    result({ lifts: [{ movement_name: 'Pull-up', best_weight: '10', attempts: [] }] }),
+    result({
+      competition_id: 'shorter',
+      event: 'PD',
+      total: null,
+      ris_score: null,
+      lifts: [{ movement_name: 'Pull-up', best_weight: '20', attempts: [] }],
+    }),
+  ];
+  expect(progressFormats(competitions)).toEqual(['MPDS', 'PD']);
+  expect(progressPoints(competitions, 'pullup').map((point) => point.value)).toEqual([10]);
+  expect(progressPoints(competitions, 'pullup', 'PD').map((point) => point.value)).toEqual([20]);
 });
