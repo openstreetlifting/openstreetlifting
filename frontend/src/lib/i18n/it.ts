@@ -209,6 +209,8 @@ export default {
   'Retrying…': 'Nuovo tentativo…',
   'Close information': 'Chiudi le informazioni',
   Pagination: 'Paginazione',
+  '{table} pagination (top)': 'Paginazione di {table} (in alto)',
+  '{table} pagination (bottom)': 'Paginazione di {table} (in basso)',
   'Previous page': 'Pagina precedente',
   Previous: 'Precedente',
   'Next page': 'Pagina successiva',

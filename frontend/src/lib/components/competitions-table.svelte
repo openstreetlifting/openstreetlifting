@@ -35,6 +35,7 @@
 
 <Table
   rows={competitions}
+  label={upcoming ? i18n.t('Upcoming') : i18n.t('Competitions')}
   itemName="competition"
   {pagination}
   {busy}

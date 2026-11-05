@@ -206,6 +206,8 @@ export default {
   'Retrying…': 'Ponawianie…',
   'Close information': 'Zamknij informacje',
   Pagination: 'Nawigacja między stronami',
+  '{table} pagination (top)': 'Nawigacja: {table} (góra)',
+  '{table} pagination (bottom)': 'Nawigacja: {table} (dół)',
   'Previous page': 'Poprzednia strona',
   Previous: 'Poprzednia',
   'Next page': 'Następna strona',
