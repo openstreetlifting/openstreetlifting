@@ -186,6 +186,7 @@
     {:else}
       <Table
         embedded
+        frozenColumns="athlete"
         rows={rankings}
         itemName="athlete"
         {busy}

@@ -37,7 +37,7 @@
   const classed = $derived(entries.some((entry) => Boolean(entry.category)));
 </script>
 
-<Table rows={entries} itemName="athlete" pageParam="page" {pagination} {busy}>
+<Table rows={entries} itemName="athlete" pageParam="page" frozenColumns="rank" {pagination} {busy}>
   {#snippet head()}
     <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
       >{i18n.t('Rank')}</th

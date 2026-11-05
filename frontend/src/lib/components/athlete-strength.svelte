@@ -5,7 +5,7 @@
   import InfoTip from '#lib/components/ui/info-tip.svelte';
   import type { StrengthProfile } from '#lib/types/athlete.js';
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
-  import { Tooltip } from 'layerchart';
+  import { Tooltip, type ChartState } from 'layerchart';
   import { scalePoint } from 'd3-scale';
   import { CHART } from '#lib/constants/typography.js';
 
@@ -22,6 +22,7 @@
     ) ?? []
   );
   const scored = $derived(lifts.filter((lift) => lift.percentile !== null));
+  let chartContext = $state<ChartState<(typeof lifts)[number]>>();
   const complete = $derived(scored.length === directions.length);
   const outline = $derived([...lifts, lifts[0]]);
   const percent = $derived(new Intl.NumberFormat(i18n.locale, { maximumFractionDigits: 1 }));
@@ -46,8 +47,23 @@
     <div
       class="grid items-center gap-4 @min-[36rem]:grid-cols-[minmax(0,1fr)_auto] @min-[36rem]:gap-6"
     >
-      <div class="mx-auto h-72 w-full min-w-0 max-w-md" bind:clientWidth={chartWidth}>
+      <div
+        class="mx-auto h-72 w-full min-w-0 max-w-md"
+        bind:clientWidth={chartWidth}
+        onfocusout={(event) => {
+          if (
+            event.relatedTarget instanceof Node &&
+            event.currentTarget.contains(event.relatedTarget)
+          )
+            return;
+          if (chartContext) {
+            chartContext.tooltip.isHoveringTooltipContent = false;
+            chartContext.tooltip.hide();
+          }
+        }}
+      >
         <Chart
+          bind:context={chartContext}
           ssr
           width={chartWidth || 400}
           class="relative w-full! overflow-hidden [container-type:inline-size]"
@@ -162,22 +178,27 @@
               }}
             >
               {#snippet children({ data: lift })}
-                <div role="tooltip">
-                  <p class="text-sm font-medium">
-                    {i18n.movement(lift.movement_name)} · {weights.format(lift.value, i18n.locale)}
-                    {weights.unit}
-                  </p>
-                  <p class="mt-1 font-mono text-lg font-bold">
-                    {percent.format(lift.percentile)}
-                    {i18n.t('percentile')}
-                  </p>
-                  <p class="mt-1 text-xs text-muted">
-                    {i18n.t('Comparison group: {count} {athletes}', {
-                      count: i18n.number(lift.field, 0),
-                      athletes: i18n.count('athlete', lift.field),
-                    })}
-                  </p>
-                </div>
+                {#if lift.percentile !== null}
+                  <div role="tooltip">
+                    <p class="text-sm font-medium">
+                      {i18n.movement(lift.movement_name)} · {weights.format(
+                        lift.value,
+                        i18n.locale
+                      )}
+                      {weights.unit}
+                    </p>
+                    <p class="mt-1 font-mono text-lg font-bold">
+                      {percent.format(lift.percentile)}
+                      {i18n.t('percentile')}
+                    </p>
+                    <p class="mt-1 text-xs text-muted">
+                      {i18n.t('Comparison group: {count} {athletes}', {
+                        count: i18n.number(lift.field, 0),
+                        athletes: i18n.count('athlete', lift.field),
+                      })}
+                    </p>
+                  </div>
+                {/if}
               {/snippet}
             </Tooltip.Root>
           {/snippet}

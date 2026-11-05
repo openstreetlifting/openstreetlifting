@@ -28,8 +28,9 @@ it('renders 50 rows and identical top and bottom navigation before hydration', (
   expect(html.match(/<td>/g)).toHaveLength(50);
   expect(html).toContain('Result 50</td>');
   expect(html).not.toContain('Result 51</td>');
-  expect(html.match(/aria-label="Pagination"/g)).toHaveLength(2);
-  expect(html.match(/Page 1 of 3/g)).toHaveLength(2);
+  expect(html).toContain('aria-label="Entries pagination (top)"');
+  expect(html).toContain('aria-label="Entries pagination (bottom)"');
+  expect(html.match(/Page 1 of 3/g)).toHaveLength(3);
   expect(html.match(/href="\/countries\/fr\?competitions_page=2"/g)).toHaveLength(4);
 });
 
@@ -78,8 +79,8 @@ it('shows one page and a singular label for a one-row table', () => {
   const { body: html } = render(Table<number>, {
     props: { rows: [1], head, body, itemName: 'competition' },
   });
-  expect(html.match(/Page 1 of 1/g)).toHaveLength(2);
-  expect(html.replace(/<!--.*?-->/gs, '').match(/1\s+competition</g)).toHaveLength(2);
+  expect(html.match(/Page 1 of 1/g)).toHaveLength(3);
+  expect(html.replace(/<!--.*?-->/gs, '').match(/1\s+competition/g)).toHaveLength(2);
   expect(html).not.toContain('href=');
 });
 

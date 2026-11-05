@@ -12,6 +12,7 @@
   const i18n = useI18n();
 
   let menuOpen = $state(false);
+  let menuButton: HTMLButtonElement;
 
   afterNavigate(({ shallow }) => {
     if (shallow) return;
@@ -27,7 +28,10 @@
 
 <svelte:window
   onkeydown={(event) => {
-    if (event.key === 'Escape') menuOpen = false;
+    if (event.key === 'Escape' && menuOpen) {
+      menuOpen = false;
+      menuButton.focus();
+    }
   }}
 />
 
@@ -90,6 +94,8 @@
     >
       <img
         src="/logo_width.svg"
+        width="3442"
+        height="512"
         alt="OpenStreetlifting"
         fetchpriority="high"
         class="h-6 w-auto max-w-full sm:h-7"
@@ -97,6 +103,7 @@
     </a>
 
     <button
+      bind:this={menuButton}
       type="button"
       onclick={() => (menuOpen = !menuOpen)}
       aria-expanded={menuOpen}

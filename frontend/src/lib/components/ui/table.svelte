@@ -33,6 +33,8 @@
     pageParam = 'table_page',
     busy = false,
     embedded = false,
+    frozenColumns,
+    label,
   }: {
     head: Snippet;
     body: Snippet<[Row[]]>;
@@ -43,6 +45,8 @@
     busy?: boolean;
     /** A parent results frame supplies the outer border and page gutters. */
     embedded?: boolean;
+    frozenColumns?: 'rank' | 'athlete';
+    label?: string;
   } = $props();
 
   const totalItems = $derived(pagination?.total_items ?? rows.length);
@@ -58,6 +62,33 @@
     pagination ? rows : rows.slice((page - 1) * TABLE_PAGE_SIZE, page * TABLE_PAGE_SIZE)
   );
   const countLabel = $derived(i18n.count(itemName, totalItems));
+  const tableLabel = $derived(
+    label ??
+      i18n.t(
+        (
+          {
+            athlete: 'Athletes',
+            competition: 'Competitions',
+            country: 'Countries',
+            federation: 'Federations',
+            entry: 'Entries',
+          } as const
+        )[itemName]
+      )
+  );
+
+  function revealFocus(event: FocusEvent) {
+    const target = event.target;
+    if (!frozenColumns || !(target instanceof HTMLElement)) return;
+    if (target.closest('td, th')?.classList.contains('sticky')) return;
+
+    // Native focus scrolling can leave links behind the frozen columns.
+    requestAnimationFrame(() => {
+      if (document.activeElement === target) {
+        target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    });
+  }
 
   function pageHref(target: number): string {
     if (pagination?.pageHref) return pagination.pageHref(target);
@@ -75,11 +106,28 @@
     class="flex min-h-14 items-center justify-between gap-2 bg-surface-subtle px-2 py-1 sm:px-4 sm:py-2"
     data-table-pagination={position}
   >
-    <span class="min-w-0 font-mono text-[0.625rem] text-muted sm:text-xs">
+    <span
+      class="min-w-0 font-mono text-[0.625rem] text-muted sm:text-xs"
+      role={position === 'top' ? 'status' : undefined}
+      aria-live={position === 'top' ? 'polite' : undefined}
+      aria-atomic={position === 'top' ? true : undefined}
+      aria-busy={position === 'top' ? busy : undefined}
+    >
       {i18n.number(totalItems, 0)}
       {countLabel}
+      {#if position === 'top'}
+        <span class="sr-only">
+          {i18n.t('Page {page} of {pages}.', {
+            page: i18n.number(page, 0),
+            pages: i18n.number(totalPages, 0),
+          })}
+        </span>
+      {/if}
     </span>
     <Pagination
+      label={position === 'top'
+        ? i18n.t('{table} pagination (top)', { table: tableLabel })
+        : i18n.t('{table} pagination (bottom)', { table: tableLabel })}
       {page}
       {totalPages}
       {pageHref}
@@ -94,8 +142,16 @@
 >
   <div class="border-b border-stroke">{@render paginationBar('top')}</div>
 
-  <div class="osl-table overflow-x-auto">
+  <div
+    onfocusin={revealFocus}
+    class="osl-table overflow-x-auto {frozenColumns === 'athlete'
+      ? 'scroll-ps-56 sm:scroll-ps-80'
+      : frozenColumns === 'rank'
+        ? 'scroll-ps-12 sm:scroll-ps-16'
+        : ''}"
+  >
     <table class="w-full text-xs leading-4 whitespace-nowrap" aria-busy={busy}>
+      <caption class="sr-only">{tableLabel}</caption>
       <thead class="sticky top-0 z-20">
         <tr class="border-b border-stroke-strong bg-table-head">
           {@render head()}
