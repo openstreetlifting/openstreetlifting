@@ -72,9 +72,9 @@
               <span class="underline">{countryName(country.code, i18n.locale)}</span>
             </a>
           </td>
-          <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{country.athletes}</td>
-          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{country.competitions}</td>
-          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{country.upcoming}</td>
+          <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{i18n.number(country.athletes, 0)}</td>
+          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{i18n.number(country.competitions, 0)}</td>
+          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{i18n.number(country.upcoming, 0)}</td>
           <td class="{TABLE_CELL} {CELL.data}">
             {#each country.federations as name, index (name)}
               <span class="whitespace-nowrap"
