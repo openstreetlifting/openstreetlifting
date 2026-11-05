@@ -113,7 +113,7 @@
         {/if}
         {#if federation.countries > 1}
           <dt class="text-muted">{i18n.t('Host countries')}</dt>
-          <dd class="text-ink">{federation.countries}</dd>
+          <dd class="text-ink">{i18n.number(federation.countries, 0)}</dd>
         {/if}
       </dl>
     {/if}
