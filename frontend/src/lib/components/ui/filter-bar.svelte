@@ -86,18 +86,13 @@
     {#if showsClear}<div class="hidden shrink-0 sm:block">{@render clear()}</div>{/if}
   </div>
 
-  {#if primary}
-    <div class="col-span-2 grid min-w-0 grid-cols-2 gap-2 sm:contents">
-      {@render primary()}
-    </div>
-  {/if}
-
   <div
     id={panelId}
     class="{open
       ? 'grid'
       : 'hidden'} col-span-2 min-w-0 grid-cols-2 items-end gap-2 border-t border-stroke pt-3 sm:contents"
   >
+    {@render primary?.()}
     {@render children()}
     {#if showsClear}
       <div class="col-span-2 sm:hidden">{@render clear()}</div>

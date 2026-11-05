@@ -91,7 +91,7 @@
     <a
       href={i18n.href(resolve(''))}
       title={i18n.t('OpenStreetlifting, back to the full rankings')}
-      class="flex min-h-14 min-w-0 items-center justify-self-start py-2 opacity-90 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-focus"
+      class="flex min-h-12 min-w-0 items-center lg:min-h-14 justify-self-start py-2 opacity-90 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-focus"
     >
       <img
         src="/logo_width.svg"

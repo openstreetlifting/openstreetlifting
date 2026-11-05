@@ -5,10 +5,10 @@
   export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
   export const FROZEN_HEAD_CELL = 'sticky z-10 bg-table-head';
   export const FROZEN_RANK =
-    'w-10 min-w-10 max-w-10 text-right sm:w-14 sm:min-w-14 sm:max-w-14 left-0';
-  export const ATHLETE_COLUMN = 'w-44 min-w-44 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
-  export const ATHLETE_CONTENT = 'max-w-[10.25rem] sm:max-w-[14.5rem]';
-  export const FROZEN_ATHLETE = 'left-10 sm:left-14';
+    'w-12 min-w-12 max-w-12 text-right sm:w-14 sm:min-w-14 sm:max-w-14 left-0';
+  export const ATHLETE_COLUMN = 'w-36 min-w-36 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
+  export const ATHLETE_CONTENT = 'max-w-[8.25rem] sm:max-w-[14.5rem]';
+  export const FROZEN_ATHLETE = 'left-12 sm:left-14';
 </script>
 
 <script lang="ts" generics="Row">
@@ -145,9 +145,9 @@
     onfocusin={revealFocus}
     data-frozen={frozenColumns}
     class="osl-table overflow-x-auto {frozenColumns === 'athlete'
-      ? 'scroll-ps-56 sm:scroll-ps-80'
+      ? 'scroll-ps-48 sm:scroll-ps-80'
       : frozenColumns === 'rank'
-        ? 'scroll-ps-12 sm:scroll-ps-16'
+        ? 'scroll-ps-14 sm:scroll-ps-16'
         : ''}"
   >
     <table class="w-full text-meta leading-4 whitespace-nowrap" aria-busy={busy}>

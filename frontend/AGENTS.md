@@ -34,7 +34,7 @@ Named values carry layout rhythm and already adapt at the `sm` breakpoint, so th
 | `icon`                   | input padding that clears an icon        |
 | `control`                | height of fields, buttons and page links |
 
-Inside a component, use the numeric scale in `scripts/check-spacing.mjs`. That check covers padding, margin and gap. Size every field, button, pagination link and segmented control with `h-control` (36px on phones, 32px from `sm`) so they line up; keep `size-11` for icon-only buttons such as the menu and social links.
+Inside a component, use the numeric scale in `scripts/check-spacing.mjs`. That check covers padding, margin and gap. Size every field, button, pagination link and segmented control with `h-control` (32px) so they line up; keep `size-11` for icon-only buttons such as the menu and social links.
 
 ## Components
 
