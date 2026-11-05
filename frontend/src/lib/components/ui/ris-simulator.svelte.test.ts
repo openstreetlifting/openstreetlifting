@@ -15,7 +15,7 @@ it('converts calculator inputs and targets without changing RIS or accumulating 
   const total = screen.getByRole('textbox', { name: 'Total lifted', exact: true });
   await bodyweight.fill('80');
   await total.fill('500');
-  await screen.getByRole('textbox', { name: 'Target RIS' }).fill('110');
+  await screen.getByRole('textbox', { name: 'Target score' }).fill('110');
   for (let index = 0; index < 3; index++) {
     weights.unit = 'lb';
     await expect.element(bodyweight).toHaveValue('176.37');
@@ -57,7 +57,7 @@ async function enterPerformance() {
   const screen = await render(RisSimulator, { edition });
   await screen.getByRole('textbox', { name: 'Bodyweight', exact: true }).fill('80');
   await screen.getByRole('textbox', { name: 'Total lifted', exact: true }).fill('500');
-  await screen.getByRole('textbox', { name: 'Target RIS' }).fill('110');
+  await screen.getByRole('textbox', { name: 'Target score' }).fill('110');
   return screen;
 }
 
@@ -67,7 +67,7 @@ it.each(['Bodyweight', 'Total lifted'])(
     const screen = await render(RisSimulator, { edition });
     const bodyweight = screen.getByRole('textbox', { name: 'Bodyweight', exact: true });
     const total = screen.getByRole('textbox', { name: 'Total lifted', exact: true });
-    const target = screen.getByRole('textbox', { name: 'Target RIS' });
+    const target = screen.getByRole('textbox', { name: 'Target score' });
     await expect.element(bodyweight).toHaveValue('');
     await expect.element(total).toHaveValue('');
     await expect.element(target).not.toBeInTheDocument();
@@ -111,7 +111,7 @@ it('explains the two alternatives for a higher target', async () => {
 
 it('replaces unnecessary changes with confirmation for a lower or equal target', async () => {
   const screen = await enterPerformance();
-  const target = screen.getByRole('textbox', { name: 'Target RIS' });
+  const target = screen.getByRole('textbox', { name: 'Target score' });
   await target.fill('100');
   await expect
     .element(screen.getByText('The calculated score is above the target of 100 RIS.'))
@@ -141,7 +141,7 @@ it('updates the score and explains when bodyweight alone cannot reach the target
 
 it('does not show scenarios for blank or invalid inputs', async () => {
   const screen = await enterPerformance();
-  await screen.getByRole('textbox', { name: 'Target RIS' }).fill('');
+  await screen.getByRole('textbox', { name: 'Target score' }).fill('');
   await expect
     .element(
       screen.getByText(
