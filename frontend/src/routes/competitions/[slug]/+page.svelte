@@ -628,6 +628,7 @@
   {:else}
     <Table
       rows={rankings}
+      frozenColumns="rank"
       itemName="athlete"
       {busy}
       pagination={{
