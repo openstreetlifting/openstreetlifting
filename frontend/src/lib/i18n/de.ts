@@ -209,6 +209,7 @@ export default {
   'Close information': 'Informationen schließen',
   'Skip to main content': 'Zum Hauptinhalt springen',
   'Competition status': 'Wettkampfstatus',
+  'e.g. {value}…': 'z. B. {value}…',
   Pagination: 'Seitennavigation',
   '{table} pagination (top)': 'Seitennavigation für {table} (oben)',
   '{table} pagination (bottom)': 'Seitennavigation für {table} (unten)',

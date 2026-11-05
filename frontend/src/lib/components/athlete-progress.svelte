@@ -104,6 +104,7 @@
     <label class="flex items-center gap-2 text-xs text-muted">
       <span class="sr-only">{i18n.t('Performance')}</span>
       <Select
+        name="performance"
         bind:value={metric}
         onchange={(event) => onMetricChange?.(event.currentTarget.value as ProgressMetric)}
         class="px-2.5 py-1.5"
@@ -117,6 +118,7 @@
       <label class="flex items-center gap-2 text-xs text-muted">
         {i18n.t('Event')}
         <Select
+          name="event"
           bind:value={format}
           onchange={(event) => onFormatChange?.(event.currentTarget.value)}
           class="px-2.5 py-1.5"

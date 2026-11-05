@@ -9,6 +9,9 @@
     value = $bindable(),
     class: className,
     children,
+    id,
+    name = id,
+    autocomplete = 'off',
     ...rest
   }: Omit<HTMLSelectAttributes, 'value' | 'children'> & {
     value?: Value;
@@ -18,6 +21,9 @@
 
 <div class="relative inline-grid min-w-0">
   <select
+    {id}
+    {name}
+    {autocomplete}
     bind:value
     class={cn(
       FIELD,

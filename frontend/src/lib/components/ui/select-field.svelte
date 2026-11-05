@@ -11,6 +11,7 @@
     value = $bindable(),
     class: className,
     id = fieldId,
+    name = label,
     children,
     ...rest
   }: Omit<HTMLSelectAttributes, 'value' | 'children'> & {
@@ -22,5 +23,5 @@
 
 <div class={cn('grid min-w-0 gap-1', className)}>
   <label for={id} class={TEXT.fieldLabel}>{label}</label>
-  <Select {id} bind:value class="w-full" {...rest}>{@render children()}</Select>
+  <Select {id} {name} bind:value class="w-full" {...rest}>{@render children()}</Select>
 </div>

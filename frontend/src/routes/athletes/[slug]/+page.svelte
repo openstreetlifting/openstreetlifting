@@ -318,6 +318,7 @@
         <label class="flex items-center gap-2 text-xs text-muted">
           <span class="sr-only">{i18n.t('Metric')}</span>
           <Select
+            name="ranking"
             value={selectedMetric}
             onchange={(event) => updateFilter('ranking', event.currentTarget.value)}
             class="px-2.5 py-1.5"
