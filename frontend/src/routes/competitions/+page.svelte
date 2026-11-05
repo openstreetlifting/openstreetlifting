@@ -203,7 +203,7 @@
 
   <nav
     aria-label={i18n.t('Competition status')}
-    class="mb-4 flex items-center gap-5 border-b border-stroke"
+    class="mb-4 flex items-center gap-4 border-b border-stroke"
   >
     {#each TABS as tab (tab.status)}
       {@const active = data.status === tab.status}

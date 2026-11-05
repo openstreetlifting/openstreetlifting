@@ -88,7 +88,7 @@
     ]}
   />
 
-  <header class="mb-6 border-b border-stroke pb-5">
+  <header class="mb-6 border-b border-stroke pb-4">
     <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
       {#if federation.country}
         <Flag

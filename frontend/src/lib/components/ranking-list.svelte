@@ -66,7 +66,7 @@
           {entry.rank}
         </td>
         <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
-          <span class="flex min-w-0 items-center gap-2.5 {ATHLETE_CONTENT}">
+          <span class="flex min-w-0 items-center gap-2 {ATHLETE_CONTENT}">
             <Flag
               link
               countryCode={entry.athlete.country}

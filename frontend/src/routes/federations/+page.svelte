@@ -64,7 +64,7 @@
     ]}
   />
 
-  <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">{i18n.t('Federations')}</h1>
+  <h1 class="mb-section {TEXT.title} text-ink">{i18n.t('Federations')}</h1>
 
   <Table rows={federations} itemName="federation" pageParam="page">
     {#snippet head()}

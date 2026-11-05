@@ -34,12 +34,12 @@
   ]}
 />
 
-<div class="mx-auto max-w-reading px-4 py-10 sm:px-6 sm:py-16">
+<div class="mx-auto max-w-reading px-gutter py-12 sm:py-16">
   <Breadcrumb
     items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Privacy') }]}
   />
 
-  <header class="mb-10">
+  <header class="mb-chapter">
     <h1 class="mb-4 {TEXT.title} text-ink">{i18n.t('Privacy policy')}</h1>
     <p class="mb-6 text-body text-muted">
       {i18n.t('Last updated:')}
@@ -58,7 +58,7 @@
     </p>
   </header>
 
-  <nav aria-label={i18n.t('On this page')} class="mb-12 border-y border-stroke py-5">
+  <nav aria-label={i18n.t('On this page')} class="mb-12 border-y border-stroke py-4">
     <ul class="flex flex-wrap gap-x-6 gap-y-3 text-body">
       <li><a href="#data" class={linkClass}>{i18n.t('Personal data')}</a></li>
       <li><a href="#legal-basis" class={linkClass}>{i18n.t('Legal basis')}</a></li>
@@ -86,7 +86,7 @@
           'Athlete records come from results published by federations, organisers, competition platforms, and public posts, or supplied by contributors. Competition pages link to sources where available. Records can include:'
         )}
       </p>
-      <ul class="mb-4 list-disc space-y-2 pl-5">
+      <ul class="mb-4 list-disc space-y-2 pl-4">
         <li>{i18n.t('Your name, including its original script, sex category, and country.')}</li>
         <li>{i18n.t('Competitions entered, dates, locations, divisions, and weight classes.')}</li>
         <li>
@@ -154,7 +154,7 @@
 
     <section aria-labelledby="your-rights">
       <h2 id="your-rights" class="mb-4 {TEXT.heading} text-ink">{i18n.t('GDPR rights')}</h2>
-      <p class="mb-5">
+      <p class="mb-4">
         {#snippet gdpr()}<a
             href="https://eur-lex.europa.eu/eli/reg/2016/679/oj/{{
               en: 'eng',
@@ -170,7 +170,7 @@
           values={{ gdpr }}
         />
       </p>
-      <ul class="list-disc space-y-3 pl-5">
+      <ul class="list-disc space-y-3 pl-4">
         <li>
           {i18n.t(
             'Information about processing and access to your personal data (Articles 12–15).'
@@ -206,7 +206,7 @@
           )}
         </li>
       </ul>
-      <p class="mt-5">
+      <p class="mt-4">
         {i18n.t(
           'Athlete-result publication relies on legitimate interests. You can object to that processing.'
         )}

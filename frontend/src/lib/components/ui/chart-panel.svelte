@@ -15,7 +15,7 @@
   class="@container flex h-full min-w-0 max-w-none flex-col border-stroke-strong bg-surface-subtle"
 >
   <div
-    class="flex min-h-16 flex-wrap items-center justify-between gap-3 border-b border-stroke px-3 py-3 sm:px-4"
+    class="flex min-h-16 flex-wrap items-center justify-between gap-3 border-b border-stroke px-panel py-3"
   >
     <h2 id={headingId} class={TEXT.panelTitle}>{title}</h2>
     {#if controls}<div class="flex flex-wrap items-center gap-2">{@render controls()}</div>{/if}

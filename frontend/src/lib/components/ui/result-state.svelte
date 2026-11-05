@@ -40,12 +40,12 @@
 <div
   class="{embedded
     ? ''
-    : `${EDGE_TO_EDGE} rounded-panel border border-stroke-strong`} flex min-h-72 items-center bg-surface-subtle px-6 py-10 sm:min-h-80 sm:px-10 sm:py-14"
+    : `${EDGE_TO_EDGE} rounded-panel border border-stroke-strong`} flex min-h-72 items-center bg-surface-subtle px-6 py-8 sm:min-h-80 sm:px-8 sm:py-12"
   aria-busy={retrying}
 >
   <div class="mx-auto w-full max-w-md">
     <div
-      class="mb-5 flex size-9 items-center justify-center border border-stroke-strong font-mono text-subtitle text-secondary"
+      class="mb-4 flex size-9 items-center justify-center border border-stroke-strong font-mono text-subtitle text-secondary"
       aria-hidden="true"
     >
       {#if kind === 'error'}!{:else}<SearchIcon class="size-4" />{/if}

@@ -374,7 +374,7 @@
   />
 
   <header
-    class="mb-6 grid grid-cols-1 gap-y-4 border-b border-stroke pb-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-6"
+    class="mb-6 grid grid-cols-1 gap-y-4 border-b border-stroke pb-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-6"
   >
     <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
       {#if competition.country}
@@ -471,7 +471,7 @@
         <h2 id="editions-heading" class="text-meta font-medium text-secondary">
           {i18n.t('Editions')}
         </h2>
-        <ul class="flex flex-wrap gap-x-5 gap-y-1 text-body">
+        <ul class="flex flex-wrap gap-x-4 gap-y-1 text-body">
           {#each editions as edition (edition.slug)}
             <li>
               {#if edition.slug === competition.slug}
@@ -601,7 +601,7 @@
   {/if}
 
   {#if !published}
-    <div class="border-l-2 border-stroke-strong py-1 pl-5">
+    <div class="border-l-2 border-stroke-strong py-1 pl-4">
       {#if competition.status === 'live'}
         <p class="text-subtitle text-ink">{i18n.t('Results are not available yet.')}</p>
         <p class="mt-2 max-w-2xl text-body leading-relaxed text-secondary">
@@ -681,7 +681,7 @@
             </td>
             <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
               <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
-                <span class="flex min-w-0 items-center gap-2.5">
+                <span class="flex min-w-0 items-center gap-2">
                   <Flag
                     link
                     countryCode={entry.athlete.country}
@@ -781,7 +781,7 @@
 
             <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
               <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
-                <span class="flex min-w-0 items-center gap-2.5">
+                <span class="flex min-w-0 items-center gap-2">
                   <Flag
                     link
                     countryCode={participant.athlete.country}

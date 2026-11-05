@@ -270,7 +270,7 @@
       })}
     {/if}
   </p>
-  <figcaption id="{id}-caption" class="mt-5 text-meta leading-6 text-muted">
+  <figcaption id="{id}-caption" class="mt-4 text-meta leading-6 text-muted">
     <span class="font-medium text-secondary">{i18n.t('Figure 1.')}</span>
     {i18n.t(
       'Competition total by bodyweight for the selected gender category. Each point represents a recorded performance; an athlete may contribute more than one. The solid line denotes the RIS 100 benchmark. Performances above and below it have scores greater and less than 100, respectively.'
@@ -280,9 +280,9 @@
 </figure>
 
 {#if selected && selectedPerformances.length}
-  <section aria-label={i18n.t('Selected performances')} class="mt-5 border-t border-stroke pt-5">
+  <section aria-label={i18n.t('Selected performances')} class="mt-4 border-t border-stroke pt-4">
     <div class="mb-4 flex items-start justify-between gap-4">
-      <div class="flex flex-wrap gap-x-5 gap-y-2 text-meta text-secondary">
+      <div class="flex flex-wrap gap-x-4 gap-y-2 text-meta text-secondary">
         <span
           >{i18n.t('Bodyweight')}
           <span class="font-mono text-ink"

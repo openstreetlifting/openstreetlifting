@@ -5,6 +5,17 @@ const twMerge = extendTailwindMerge({
   extend: {
     theme: {
       text: ['micro', 'meta', 'body', 'lead', 'subtitle', 'heading', 'title', 'display'],
+      spacing: [
+        'gutter',
+        'gutter-dense',
+        'shell',
+        'shell-dense',
+        'panel',
+        'tile',
+        'section',
+        'chapter',
+        'icon',
+      ],
     },
   },
 });

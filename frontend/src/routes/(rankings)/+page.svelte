@@ -235,7 +235,7 @@
                 class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} {CELL.identity}"
               >
                 <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
-                  <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex min-w-0 items-center gap-2">
                     <Flag
                       link
                       countryCode={entry.athlete.country}

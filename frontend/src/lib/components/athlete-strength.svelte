@@ -209,7 +209,7 @@
         class="mx-auto grid w-full max-w-xs gap-3 text-body @min-[36rem]:w-auto"
       >
         {#each lifts as lift (lift.movement_name)}
-          <div class="flex items-baseline justify-between gap-5 whitespace-nowrap">
+          <div class="flex items-baseline justify-between gap-4 whitespace-nowrap">
             <dt class="font-mono text-meta text-secondary">{i18n.movement(lift.movement_name)}</dt>
             <dd class="text-right">
               {#if lift.percentile !== null}

@@ -23,6 +23,15 @@
   --text-title--line-height: calc(2 / 1.5);
   --text-display: 1.875rem;
   --text-display--line-height: calc(2.25 / 1.875);
+  --spacing-gutter: 1rem;
+  --spacing-gutter-dense: 0.5rem;
+  --spacing-shell: 1rem;
+  --spacing-shell-dense: 0.75rem;
+  --spacing-panel: 0.75rem;
+  --spacing-tile: 0.75rem;
+  --spacing-section: 1.5rem;
+  --spacing-chapter: 2.5rem;
+  --spacing-icon: 2.25rem;
   --font-sans: 'Inter Variable', sans-serif;
   --container-page: 100rem;
   --container-reading: 56rem;
@@ -78,4 +87,15 @@
   --table-row-alt: var(--color-surface-subtle);
   --table-row-hover: var(--color-surface);
   --table-row-focus: var(--color-surface-selected);
+
+  @variant sm {
+    --spacing-gutter: 1.5rem;
+    --spacing-gutter-dense: 1.5rem;
+    --spacing-shell: 1.5rem;
+    --spacing-shell-dense: 1.5rem;
+    --spacing-panel: 1rem;
+    --spacing-tile: 1rem;
+    --spacing-section: 2rem;
+    --spacing-chapter: 3rem;
+  }
 }

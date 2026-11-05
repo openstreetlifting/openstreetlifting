@@ -74,7 +74,7 @@
 <div class={LAYOUT.page}>
   <Breadcrumb items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: name }]} />
 
-  <header class="mb-6 border-b border-stroke pb-5">
+  <header class="mb-6 border-b border-stroke pb-4">
     <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
       <Flag countryCode={data.code} class="mt-[0.2em] shrink-0 [--flag-height:0.8em]" />
       <span class="min-w-0 break-words">{name}</span>

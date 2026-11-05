@@ -114,8 +114,8 @@
     latestCategory?.match(/([+-]\d+(?:\.\d+)?)\s*(?:kg)?$/i)?.[1] ?? null
   );
 
-  const CARD_GRID = 'grid max-w-records grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
-  const RANKING_CARD_GRID = 'grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4';
+  const CARD_GRID = 'grid max-w-records grid-cols-2 gap-tile md:grid-cols-4';
+  const RANKING_CARD_GRID = 'grid grid-cols-1 gap-tile sm:grid-cols-2';
 
   const filters = $derived(athleteFilters(page.url.searchParams));
   const selectedMetric = $derived(filters.ranking);
@@ -231,7 +231,7 @@
     ]}
   />
 
-  <header class="mb-6 border-b border-stroke pb-5 sm:mb-8">
+  <header class="mb-section border-b border-stroke pb-4">
     <div class="flex items-center gap-3">
       <h1
         class="flex min-w-0 items-start gap-3 font-sans text-title font-semibold tracking-tight text-balance text-ink sm:text-display"
@@ -308,7 +308,7 @@
     </RankingCard>
   {/snippet}
   {#if athlete.standing}
-    <div class="mb-6 max-w-summary sm:mb-8">
+    <div class="mb-section max-w-summary">
       <div class="mb-3 flex items-center justify-between gap-3">
         <h2 class="{TEXT.heading} text-ink">{i18n.t('Ranking')}</h2>
         <label class="flex items-center gap-2 text-meta text-muted">
@@ -317,7 +317,7 @@
             name="ranking"
             value={selectedMetric}
             onchange={(event) => updateFilter('ranking', event.currentTarget.value)}
-            class="px-2.5 py-1.5"
+            class="px-3 py-1.5"
           >
             {#each RANKING_SORTS as metric (metric.value)}
               <option value={metric.value}>{i18n.t(metric.label)}</option>
@@ -353,7 +353,7 @@
   {/if}
 
   {#if athlete.personal_records.length > 0}
-    <div class="mb-6 sm:mb-8">
+    <div class="mb-section">
       <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Personal records')}</h2>
       <div class={CARD_GRID}>
         {#each athlete.personal_records as pr (pr.movement_name)}
@@ -376,7 +376,7 @@
     </div>
   {/if}
 
-  <div class="mt-6 grid items-stretch gap-4 sm:mt-8 lg:auto-rows-fr lg:grid-cols-2">
+  <div class="mt-section grid items-stretch gap-4 lg:auto-rows-fr lg:grid-cols-2">
     <AthleteProgress
       athleteSlug={athlete.slug}
       competitions={athlete.competitions}
