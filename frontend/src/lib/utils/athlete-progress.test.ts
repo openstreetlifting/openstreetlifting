@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
-import { progressPoints, progressFormats } from './athlete-progress';
+import { progressPoints } from './athlete-progress';
 
 function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteCompetitionSummary {
   return {
@@ -39,7 +39,6 @@ describe('athlete progress', () => {
         ris_source: 'reported',
       }),
     ];
-    expect(progressFormats(competitions)).toEqual(['MPDS', 'PD', 'PDS']);
     expect(progressPoints(competitions, 'ris').map((p) => p.value)).toEqual([100]);
     expect(progressPoints(competitions, 'ris', 'PDS').map((p) => p.value)).toEqual([88.84]);
   });
@@ -49,7 +48,6 @@ describe('athlete progress', () => {
       result({ competition_id: 'meet-2', event: 'PD', total: '200' }),
       result({ competition_id: 'meet-3', event: null, total: '400' }),
     ];
-    expect(progressFormats(competitions)).toEqual(['MPDS', 'PD']);
     expect(progressPoints(competitions, 'total').map((p) => p.value)).toEqual([300]);
     expect(progressPoints(competitions, 'total', 'PD').map((p) => p.value)).toEqual([200]);
   });
@@ -91,7 +89,7 @@ describe('athlete progress', () => {
   });
 });
 
-it('keeps individual-lift trends in the selected format and includes lift-only formats', () => {
+it('keeps individual-lift trends in the selected format', () => {
   const competitions = [
     result({ lifts: [{ movement_name: 'Pull-up', best_weight: '10', attempts: [] }] }),
     result({
@@ -102,7 +100,6 @@ it('keeps individual-lift trends in the selected format and includes lift-only f
       lifts: [{ movement_name: 'Pull-up', best_weight: '20', attempts: [] }],
     }),
   ];
-  expect(progressFormats(competitions)).toEqual(['MPDS', 'PD']);
   expect(progressPoints(competitions, 'pullup').map((point) => point.value)).toEqual([10]);
   expect(progressPoints(competitions, 'pullup', 'PD').map((point) => point.value)).toEqual([20]);
 });

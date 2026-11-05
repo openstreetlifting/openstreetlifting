@@ -30,7 +30,6 @@
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { athleteFilters } from '#lib/utils/athlete-filters.js';
-  import { progressFormats, defaultProgressFormat } from '#lib/utils/athlete-progress.js';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
@@ -118,17 +117,16 @@
   const CARD_GRID = 'grid max-w-records grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
   const RANKING_CARD_GRID = 'grid grid-cols-2 gap-3 sm:gap-4';
 
-  const formats = $derived(progressFormats(athlete.competitions));
-  const filters = $derived(athleteFilters(page.url.searchParams, formats));
+  const filters = $derived(athleteFilters(page.url.searchParams));
   const selectedMetric = $derived(filters.ranking);
 
-  function updateFilter(key: 'ranking' | 'performance' | 'event', value: string) {
+  function updateFilter(key: 'ranking' | 'performance', value: string) {
     const params = new SvelteURLSearchParams(page.url.search);
     const defaults = {
       ranking: 'ris',
       performance: 'total',
-      event: defaultProgressFormat(formats),
     };
+    params.delete('event');
     if (value === defaults[key]) params.delete(key);
     else params.set(key, value);
     const query = params.toString();
@@ -380,15 +378,12 @@
     </div>
   {/if}
 
-  <div class="mt-6 grid auto-rows-fr items-stretch gap-4 sm:mt-8 lg:grid-cols-2">
+  <div class="mt-6 grid items-stretch gap-4 sm:mt-8 lg:auto-rows-fr lg:grid-cols-2">
     <AthleteProgress
       athleteSlug={athlete.slug}
       competitions={athlete.competitions}
-      {formats}
       metric={filters.performance}
-      format={filters.event}
       onMetricChange={(value) => updateFilter('performance', value)}
-      onFormatChange={(value) => updateFilter('event', value)}
     />
 
     <AthleteStrength profile={athlete.strength_profile} />

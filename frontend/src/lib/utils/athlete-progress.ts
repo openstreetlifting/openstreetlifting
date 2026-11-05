@@ -21,27 +21,6 @@ function numeric(value: string | null | undefined): number | null {
   return Number.isFinite(number) ? number : null;
 }
 
-export function progressFormats(competitions: AthleteCompetitionSummary[]): string[] {
-  return [
-    ...new Set(
-      competitions
-        .filter(
-          (c) =>
-            c.status === 'competed' &&
-            c.event &&
-            (numeric(c.total) !== null ||
-              numeric(c.ris_score) !== null ||
-              c.lifts.some((lift) => numeric(lift.best_weight) !== null))
-        )
-        .map((c) => c.event!)
-    ),
-  ].sort((a, b) => (a === 'MPDS' ? -1 : b === 'MPDS' ? 1 : a.localeCompare(b)));
-}
-
-export function defaultProgressFormat(formats: string[]): string {
-  return formats.includes('MPDS') ? 'MPDS' : (formats[0] ?? 'MPDS');
-}
-
 export function progressPoints(
   competitions: AthleteCompetitionSummary[],
   metric: ProgressMetric,
