@@ -178,22 +178,27 @@
               }}
             >
               {#snippet children({ data: lift })}
-                <div role="tooltip">
-                  <p class="text-sm font-medium">
-                    {i18n.movement(lift.movement_name)} · {weights.format(lift.value, i18n.locale)}
-                    {weights.unit}
-                  </p>
-                  <p class="mt-1 font-mono text-lg font-bold">
-                    {percent.format(lift.percentile)}
-                    {i18n.t('percentile')}
-                  </p>
-                  <p class="mt-1 text-xs text-muted">
-                    {i18n.t('Comparison group: {count} {athletes}', {
-                      count: i18n.number(lift.field, 0),
-                      athletes: i18n.count('athlete', lift.field),
-                    })}
-                  </p>
-                </div>
+                {#if lift.percentile !== null}
+                  <div role="tooltip">
+                    <p class="text-sm font-medium">
+                      {i18n.movement(lift.movement_name)} · {weights.format(
+                        lift.value,
+                        i18n.locale
+                      )}
+                      {weights.unit}
+                    </p>
+                    <p class="mt-1 font-mono text-lg font-bold">
+                      {percent.format(lift.percentile)}
+                      {i18n.t('percentile')}
+                    </p>
+                    <p class="mt-1 text-xs text-muted">
+                      {i18n.t('Comparison group: {count} {athletes}', {
+                        count: i18n.number(lift.field, 0),
+                        athletes: i18n.count('athlete', lift.field),
+                      })}
+                    </p>
+                  </div>
+                {/if}
               {/snippet}
             </Tooltip.Root>
           {/snippet}
