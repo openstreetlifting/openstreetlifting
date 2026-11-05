@@ -5,11 +5,9 @@ export function rankingMetric(value: string | null, fallback: ProgressMetric): P
   return RANKING_SORTS.find((metric) => metric.value === value)?.value ?? fallback;
 }
 
-export function athleteFilters(params: Pick<URLSearchParams, 'get'>, formats: string[]) {
-  const event = params.get('event');
+export function athleteFilters(params: Pick<URLSearchParams, 'get'>) {
   return {
     ranking: rankingMetric(params.get('ranking'), 'ris'),
     performance: rankingMetric(params.get('performance'), 'total'),
-    event: event && formats.includes(event) ? event : (formats[0] ?? 'MPDS'),
   };
 }

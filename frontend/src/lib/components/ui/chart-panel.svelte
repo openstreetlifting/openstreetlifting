@@ -20,5 +20,5 @@
     <h2 id={headingId} class={TEXT.panelTitle}>{title}</h2>
     {#if controls}<div class="flex flex-wrap items-center gap-2">{@render controls()}</div>{/if}
   </div>
-  <div class="min-w-0 flex-1 {LAYOUT.panel}">{@render children()}</div>
+  <div class="flex min-h-0 min-w-0 flex-1 flex-col {LAYOUT.panel}">{@render children()}</div>
 </Card>
