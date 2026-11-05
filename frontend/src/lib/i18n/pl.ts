@@ -205,6 +205,7 @@ export default {
   'Try again': 'Spróbuj ponownie',
   'Retrying…': 'Ponawianie…',
   'Close information': 'Zamknij informacje',
+  'Skip to main content': 'Przejdź do głównej treści',
   Pagination: 'Nawigacja między stronami',
   '{table} pagination (top)': 'Nawigacja: {table} (góra)',
   '{table} pagination (bottom)': 'Nawigacja: {table} (dół)',

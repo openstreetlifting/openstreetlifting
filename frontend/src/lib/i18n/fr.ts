@@ -207,6 +207,7 @@ export default {
   'Try again': 'Réessayer',
   'Retrying…': 'Nouvelle tentative…',
   'Close information': 'Fermer les informations',
+  'Skip to main content': 'Aller au contenu principal',
   Pagination: 'Pagination',
   '{table} pagination (top)': 'Pagination de {table} (haut)',
   '{table} pagination (bottom)': 'Pagination de {table} (bas)',
