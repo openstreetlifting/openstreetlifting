@@ -121,31 +121,19 @@
         <RisCategory bind:sex={() => scenario.sex, (sex) => updateScenario({ ...scenario, sex })} />
       </div>
 
-      <!-- Keep both datasets rendered: switching only changes visibility, not thousands of points.
-           Grid overlap preserves dimensions for the inactive chart's responsive measurements. -->
-      <div class="grid">
-        {#each ['men', 'women'] as const as category (category)}
-          <div
-            class="min-w-0 [grid-area:1/1]"
-            class:invisible={scenario.sex !== category}
-            inert={scenario.sex !== category}
-            aria-hidden={scenario.sex !== category}
-          >
-            <RisCurve
-              constants={current.constants[category]}
-              points={data.distribution[category]}
-              active={scenario.sex === category}
-              label={i18n.t(
-                'Competition total by bodyweight with the RIS 100 benchmark, {category}, {year} edition',
-                {
-                  category: category === 'men' ? i18n.t('Men') : i18n.t('Women'),
-                  year: current.year,
-                }
-              )}
-            />
-          </div>
-        {/each}
-      </div>
+      {#key scenario.sex}
+        <RisCurve
+          constants={current.constants[scenario.sex]}
+          points={data.distribution[scenario.sex]}
+          label={i18n.t(
+            'Competition total by bodyweight with the RIS 100 benchmark, {category}, {year} edition',
+            {
+              category: scenario.sex === 'men' ? i18n.t('Men') : i18n.t('Women'),
+              year: current.year,
+            }
+          )}
+        />
+      {/key}
     </section>
   {/if}
 
