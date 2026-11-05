@@ -1,19 +1,22 @@
 <script lang="ts">
+  import { LAYOUT } from '#lib/constants/layout.js';
+  import Notice from '#lib/components/ui/notice.svelte';
+  import SelectField from '#lib/components/ui/select-field.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import type { PageData } from './$types';
-  import { Card, Breadcrumb, FilterBar, SearchEmpty } from '#lib/components/ui/index.js';
+  import { ResultState, Breadcrumb, FilterBar, SearchEmpty } from '#lib/components/ui/index.js';
   import CompetitionsTable from '#lib/components/competitions-table.svelte';
   import CompetitionFormatFilter from '#lib/components/competition-format-filter.svelte';
   import { resolve } from '$app/paths';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
-  import { afterNavigate } from '$app/navigation';
+  import { afterNavigate, refreshAll } from '$app/navigation';
   import { ListingSearch } from '#lib/state/listing-search.svelte.js';
   import { untrack } from 'svelte';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
   import { countryName, formatDate, formatLocation } from '#lib/utils/index.js';
-  import { FIELD, TEXT, CONTROL } from '#lib/constants/typography.js';
+  import { TEXT, CONTROL } from '#lib/constants/typography.js';
   import Seo from '#lib/components/seo.svelte';
   import { breadcrumbLd, listingSeo } from '#lib/seo/index.js';
 
@@ -89,8 +92,6 @@
     return apply();
   }
 
-  const SELECT = `w-full ${FIELD} px-3 py-2 sm:w-auto`;
-
   const seo = $derived(listingSeo(currentPage.url));
 
   const description = $derived(
@@ -121,7 +122,7 @@
   ]}
 />
 
-<div class="mx-auto max-w-page px-4 py-4 sm:px-6 sm:py-12">
+<div class={LAYOUT.page}>
   <Breadcrumb
     items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Competitions') }]}
   />
@@ -129,14 +130,7 @@
   <h1 class="sr-only">{i18n.t('Streetlifting competitions')}</h1>
 
   {#if data.runningCompetitions.length > 0}
-    <section
-      aria-labelledby="running-heading"
-      class="mb-6 rounded-lg border border-stroke-strong bg-surface-subtle px-4 py-3"
-    >
-      <h2 id="running-heading" class="flex items-center gap-2 text-sm font-medium text-ink">
-        <span aria-hidden="true" class="size-1.5 shrink-0 rounded-full bg-success"></span>
-        {i18n.t('Hey! Those competitions are currently running')}
-      </h2>
+    <Notice title={i18n.t('Hey! Those competitions are currently running')} live>
       <ul class="mt-2 space-y-2 text-sm">
         {#each data.runningCompetitions as competition (competition.slug)}
           <li class="flex flex-wrap items-center gap-x-6 gap-y-1">
@@ -204,7 +198,7 @@
           </li>
         {/if}
       </ul>
-    </section>
+    </Notice>
   {/if}
 
   <nav class="mb-4 flex items-center gap-5 border-b border-stroke">
@@ -234,12 +228,12 @@
     onClear={clearFilters}
     clearable={narrowed}
   >
-    <select bind:value={federation} onchange={() => apply()} class={SELECT}>
+    <SelectField label={i18n.t('Federation')} bind:value={federation} onchange={() => apply()}>
       <option value={null}>{i18n.t('All Federations')}</option>
       {#each data.facets.federations as option (option)}
         <option value={option}>{option}</option>
       {/each}
-    </select>
+    </SelectField>
 
     <CompetitionFormatFilter
       formats={data.facets.formats}
@@ -250,27 +244,28 @@
       }}
     />
 
-    <select bind:value={year} onchange={() => apply()} class={SELECT}>
+    <SelectField label={i18n.t('Year')} bind:value={year} onchange={() => apply()}>
       <option value={null}>{i18n.t('All Years')}</option>
       {#each data.facets.years as option (option)}
         <option value={option}>{option}</option>
       {/each}
-    </select>
+    </SelectField>
 
-    <select bind:value={country} onchange={() => apply()} class={SELECT}>
+    <SelectField label={i18n.t('Country')} bind:value={country} onchange={() => apply()}>
       <option value={null}>{i18n.t('All Countries')}</option>
       {#each data.facets.countries as option (option)}
         <option value={option}>{countryName(option, i18n.locale)}</option>
       {/each}
-    </select>
+    </SelectField>
   </FilterBar>
 
   {#if data.error}
-    <Card class="max-w-summary p-8">
-      <div class="text-center">
-        <p class="text-danger">{i18n.t('Failed to load competitions')}</p>
-      </div>
-    </Card>
+    <ResultState
+      kind="error"
+      title={i18n.t('Failed to load competitions')}
+      description={i18n.t('Results could not be loaded. Please try again in a moment.')}
+      retry={refreshAll}
+    />
   {:else if competitions.length === 0 && !busy}
     <SearchEmpty
       title={canReset

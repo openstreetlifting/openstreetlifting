@@ -2,7 +2,7 @@ import { beforeEach, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import { page as appPage } from '$app/state';
-import { goto } from '$app/navigation';
+import { goto, refreshAll } from '$app/navigation';
 import CompetitionsPage from './+page.svelte';
 import type { PageData } from './$types';
 import { FORMAT_MOVEMENTS } from '#lib/utils/competition-format.js';
@@ -29,6 +29,7 @@ vi.mock('$app/navigation', async () => {
   const { page } = await import('$app/state');
   return {
     beforeNavigate: vi.fn(),
+    refreshAll: vi.fn(async () => {}),
     afterNavigate: (callback: typeof navigation.after) => {
       navigation.after = callback;
     },
@@ -83,7 +84,7 @@ beforeEach(() => {
 
 it('selects an exact format in either click order, preserves filters, and resets pagination', async () => {
   render(CompetitionsPage, { data: data() });
-  await expect.element(page.getByText('Format', { exact: true })).toBeVisible();
+  await expect.element(page.getByRole('table').getByText('Format', { exact: true })).toBeVisible();
   await expect.element(page.getByRole('cell', { name: 'PD', exact: true })).toBeVisible();
   await expect.element(page.getByRole('cell', { name: '—', exact: true })).toBeVisible();
   await page.getByText('All formats', { exact: true }).click();
@@ -165,4 +166,19 @@ it('keeps In Progress selected when switching tabs, paging and clearing filters'
   expect(appPage.url.searchParams.get('status')).toBe('live');
   expect(appPage.url.searchParams.get('event')).toBe('MPDS');
   expect(appPage.url.searchParams.has('page')).toBe(false);
+});
+
+it('retries a failed results request while preserving the selected filters', async () => {
+  const failed: PageData = {
+    ...data(),
+    error: 'Unavailable',
+    competitions: [],
+    runningCompetitions: [],
+    facets: { federations: [], years: [], countries: [], formats: [] },
+  };
+  render(CompetitionsPage, { data: failed });
+  const currentUrl = appPage.url.href;
+  await page.getByRole('button', { name: 'Try again', exact: true }).click();
+  expect(refreshAll).toHaveBeenCalledTimes(1);
+  expect(appPage.url.href).toBe(currentUrl);
 });

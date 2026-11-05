@@ -99,7 +99,7 @@
         <td class="{TABLE_CELL} {CELL.data}">
           <a
             href={i18n.href(resolve(`competitions/${entry.competition.slug}`))}
-            class="{TEXT_CELL.competition} underline hover:text-secondary"
+            class="{TEXT_CELL.resultCompetition} underline hover:text-secondary"
           >
             {entry.competition.name}
           </a>

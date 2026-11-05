@@ -11,6 +11,7 @@
   import { benchmarkTotal, calculateRis } from '#lib/utils/ris.js';
   import { formatLongDate } from '#lib/utils/format.js';
   import { kilograms } from '#lib/utils/weight-unit.js';
+  import { CHART } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
   const weights = useWeightUnit();
@@ -153,7 +154,6 @@
       grid={{ x: false, y: true }}
       rule={false}
       clip
-      motion="none"
       tooltipContext={interactive ? { mode: 'quadtree', touchEvents: 'pan-y' } : false}
       highlight={{
         lines: false,
@@ -172,7 +172,7 @@
             .ticks(Math.max(2, Math.floor(chartWidth / 90)))
             .map((value) => kilograms(value, weights.unit)),
           format: (value: number) => weights.format(value, i18n.locale),
-          tickLabelProps: { fontSize: 11, fill: 'var(--color-secondary)' },
+          tickLabelProps: { fontSize: 11, class: CHART.tick },
         },
         yAxis: {
           tickMarks: false,
@@ -182,7 +182,7 @@
             .ticks(5)
             .map((value) => kilograms(value, weights.unit)),
           format: (value: number) => weights.format(value, i18n.locale),
-          tickLabelProps: { fontSize: 11, fill: 'var(--color-secondary)' },
+          tickLabelProps: { fontSize: 11, class: CHART.tick },
         },
       }}
       role="group"
@@ -221,7 +221,7 @@
           portal={false}
           motion="none"
           fadeDuration={0}
-          class="rounded-md border border-stroke-strong bg-canvas px-3 py-2.5 text-xs text-secondary shadow-sm"
+          class="{CHART.tooltip} text-xs text-secondary"
         >
           {#snippet children({ data })}
             <p class="max-w-56 font-medium text-ink">{data.athlete_name}</p>

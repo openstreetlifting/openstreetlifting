@@ -36,6 +36,7 @@ export const REPORTED_TITLE =
   'The federation published this RIS score. Bodyweight or total is missing, so we cannot recalculate it.';
 
 export const TEXT_CELL = {
+  resultCompetition: 'block max-w-[7rem] truncate sm:max-w-[12rem]',
   competition: 'block max-w-[9rem] truncate sm:max-w-[16rem]',
   location: 'block max-w-[7rem] truncate sm:max-w-none',
   federation: 'block max-w-[5rem] truncate sm:max-w-none',
@@ -63,7 +64,7 @@ export const NO_VALUE = '-';
 export const NO_RESULT = 'N/A';
 
 /** Which column the table is sorted on. A tint, so it stays off the brightness scale. */
-export const SORTED_COLUMN = 'rounded-t bg-surface-selected text-ink';
+export const SORTED_COLUMN = 'bg-surface-selected text-ink';
 
 /**
  * Below sm the data is worth more than the margin, so the table runs to the
