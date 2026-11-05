@@ -1,9 +1,11 @@
 <script lang="ts">
+  import ChartPanel from '#lib/components/ui/chart-panel.svelte';
+  import Select from '#lib/components/ui/select.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
-  import { CHART, FIELD, TEXT } from '#lib/constants/typography.js';
+  import { CHART } from '#lib/constants/typography.js';
   import {
     progressPoints,
     type ProgressMetric,
@@ -21,6 +23,7 @@
   const weights = useWeightUnit();
 
   let chartWidth = $state<number>();
+  const chartHeight = $derived((chartWidth ?? 400) < 480 ? 264 : 304);
 
   let {
     competitions,
@@ -95,43 +98,40 @@
   }
 </script>
 
-<section class="min-w-0 max-w-reading" aria-labelledby="progress-heading">
-  <div class="mb-4 flex min-h-8 flex-wrap items-center justify-between gap-3">
-    <h2 id="progress-heading" class="{TEXT.heading} text-ink">{i18n.t('Performance over time')}</h2>
-    <div class="flex flex-wrap items-center gap-3">
+<ChartPanel title={i18n.t('Performance over time')}>
+  {#snippet controls()}
+    <label class="flex items-center gap-2 text-xs text-muted">
+      <span class="sr-only">{i18n.t('Performance')}</span>
+      <Select
+        bind:value={metric}
+        onchange={(event) => onMetricChange?.(event.currentTarget.value as ProgressMetric)}
+        class="px-2.5 py-1.5"
+      >
+        {#each RANKING_SORTS as option (option.value)}
+          <option value={option.value}>{i18n.t(option.label)}</option>
+        {/each}
+      </Select>
+    </label>
+    {#if (metric === 'total' || metric === 'ris') && formats.length > 1}
       <label class="flex items-center gap-2 text-xs text-muted">
-        <span class="sr-only">{i18n.t('Performance')}</span>
-        <select
-          bind:value={metric}
-          onchange={(event) => onMetricChange?.(event.currentTarget.value as ProgressMetric)}
-          class="{FIELD} px-2.5 py-1.5"
+        {i18n.t('Event')}
+        <Select
+          bind:value={format}
+          onchange={(event) => onFormatChange?.(event.currentTarget.value)}
+          class="px-2.5 py-1.5"
         >
-          {#each RANKING_SORTS as option (option.value)}
-            <option value={option.value}>{i18n.t(option.label)}</option>
-          {/each}
-        </select>
+          {#each formats as option (option)}<option value={option}
+              >{option === 'MPDS' ? i18n.t('All four lifts') : option}</option
+            >{/each}
+        </Select>
       </label>
-      {#if (metric === 'total' || metric === 'ris') && formats.length > 1}
-        <label class="flex items-center gap-2 text-xs text-muted">
-          {i18n.t('Event')}
-          <select
-            bind:value={format}
-            onchange={(event) => onFormatChange?.(event.currentTarget.value)}
-            class="{FIELD} px-2.5 py-1.5"
-          >
-            {#each formats as option (option)}<option value={option}
-                >{option === 'MPDS' ? i18n.t('All four lifts') : option}</option
-              >{/each}
-          </select>
-        </label>
-      {/if}
-    </div>
-  </div>
+    {/if}
+  {/snippet}
 
   {#if points.length && best !== null && bestPoint}
-    <div class="mb-3 flex justify-end 2xl:min-h-12">
+    <div class="mb-4 border-b border-stroke pb-3">
       <p class="text-xs leading-relaxed text-muted">
-        <span class="font-medium uppercase">{i18n.t('Best')}</span>
+        <span class="font-mono font-medium uppercase">{i18n.t('Best')}</span>
         <span class="ml-1 font-mono font-semibold text-ink">{valueLabel(best)}</span>
         {i18n.t('on')}
         {formatLongDate(bestPoint.competition.competition_date, i18n.locale)}
@@ -144,19 +144,19 @@
       </p>
     </div>
     {#key metric + format + weights.unit}
-      <div class="h-80 w-full" bind:clientWidth={chartWidth}>
+      <div class="w-full" style:height={`${chartHeight}px`} bind:clientWidth={chartWidth}>
         <Chart
           ssr
           width={chartWidth || 400}
           class="relative w-full! overflow-hidden [container-type:inline-size]"
-          height={320}
+          height={chartHeight}
           data={chartPoints}
           x="timestamp"
           y="plotted"
           xScale={scaleUtc()}
           {xDomain}
           {yDomain}
-          padding={{ left: 52, right: 28, top: 20, bottom: 52 }}
+          padding={{ left: 48, right: 16, top: 16, bottom: 44 }}
           tooltipContext={{ mode: 'manual' }}
         >
           {#snippet children({ context })}
@@ -184,7 +184,6 @@
                 format={(date: Date) => monthLabel.format(date)}
                 tickLabelProps={{ class: CHART.tick }}
                 tickOcclusion
-                grid={{ class: 'stroke-stroke' }}
                 stroke="var(--color-stroke)"
               />
               <Axis
@@ -262,8 +261,7 @@
                 }
               }}
               classes={{
-                content:
-                  'max-w-64 rounded-lg border border-stroke-strong bg-surface p-3 text-ink shadow-lg shadow-overlay/40',
+                content: CHART.tooltip,
               }}
             >
               {#snippet children({ data: point })}
@@ -316,4 +314,4 @@
         : i18n.t('No dated {movement} results available.', { movement: label })}
     </p>
   {/if}
-</section>
+</ChartPanel>

@@ -4,7 +4,7 @@
   import SearchInput from './search-input.svelte';
   import { ChevronIcon, CloseIcon } from '#lib/components/icons/index.js';
   import { EDGE_TO_EDGE } from '#lib/constants/table.js';
-  import { CONTROL, FIELD } from '#lib/constants/typography.js';
+  import Button from './button.svelte';
 
   const i18n = useI18n();
 
@@ -16,6 +16,8 @@
     onClear?: () => void;
     clearable?: boolean;
     children: Snippet;
+    primary?: Snippet;
+    embedded?: boolean;
   }
 
   let {
@@ -26,9 +28,12 @@
     onClear,
     clearable,
     children,
+    primary,
+    embedded = false,
   }: Props = $props();
 
   let open = $state(false);
+  const panelId = $props.id();
 
   const showsClear = $derived(
     Boolean(onClear) && (clearable ?? (activeCount > 0 || search.trim().length > 0))
@@ -36,52 +41,64 @@
 </script>
 
 {#snippet clear()}
-  <button
+  <Button
+    variant="outline"
     type="button"
     onclick={onClear}
     aria-label={i18n.t('Clear all filters and sorting')}
-    class="{FIELD} {CONTROL} flex shrink-0 items-center gap-1.5 px-3 py-2 text-secondary hover:border-stroke-strong hover:text-ink"
+    class="h-11 shrink-0 gap-1.5 px-3 text-xs text-secondary hover:text-ink sm:h-8"
   >
     <CloseIcon class="h-3 w-3" />
     {i18n.t('Clear')}
-  </button>
+  </Button>
 {/snippet}
 
 <div
-  class="{EDGE_TO_EDGE} mb-4 flex flex-wrap items-center gap-3 rounded-none border border-x-0 border-stroke bg-surface p-3 sm:mb-6 sm:rounded-lg sm:border-x"
+  class="{embedded
+    ? 'border-b border-stroke'
+    : `${EDGE_TO_EDGE} mb-4 rounded-panel border border-stroke-strong sm:mb-6`} grid grid-cols-2 items-end gap-2 bg-surface p-3 sm:gap-3 {primary
+    ? 'sm:grid-cols-4 xl:grid-cols-8'
+    : 'sm:grid-cols-2 xl:grid-cols-6'}"
 >
-  <div class="flex w-full items-center gap-2 sm:w-64">
+  <div class="col-span-2 flex min-w-0 items-center gap-2">
     <div class="min-w-0 flex-1">
       <SearchInput bind:value={search} {placeholder} {onSearch} />
     </div>
 
-    <button
+    <Button
+      variant="outline"
       type="button"
       onclick={() => (open = !open)}
       aria-expanded={open}
-      aria-controls="filter-panel"
-      class="{FIELD} {CONTROL} flex shrink-0 items-center gap-1.5 px-3 py-2 text-secondary sm:hidden"
+      aria-controls={panelId}
+      class="h-11 shrink-0 gap-1.5 px-3 text-xs text-secondary sm:hidden"
     >
       {i18n.t('Filters')}
       {#if activeCount > 0}
-        <span class="rounded bg-action px-1 text-[0.65rem] font-semibold text-on-action">
+        <span class="bg-action px-1 text-[0.65rem] font-semibold text-on-action">
           {activeCount}
         </span>
       {/if}
-      <ChevronIcon class="h-3.5 w-3.5 transition-transform {open ? 'rotate-180' : ''}" />
-    </button>
-    {#if showsClear}
-      <div class="sm:hidden">{@render clear()}</div>
-    {/if}
+      <ChevronIcon class="h-3.5 w-3.5 {open ? 'rotate-180' : ''}" />
+    </Button>
+    {#if showsClear}<div class="hidden shrink-0 sm:block">{@render clear()}</div>{/if}
   </div>
 
+  {#if primary}
+    <div class="col-span-2 grid min-w-0 grid-cols-2 gap-2 sm:contents">
+      {@render primary()}
+    </div>
+  {/if}
+
   <div
-    id="filter-panel"
-    class="{open ? 'flex' : 'hidden'} w-full flex-wrap items-center gap-3 sm:contents"
+    id={panelId}
+    class="{open
+      ? 'grid'
+      : 'hidden'} col-span-2 min-w-0 grid-cols-2 items-end gap-2 border-t border-stroke pt-3 sm:contents"
   >
     {@render children()}
     {#if showsClear}
-      <div class="hidden sm:ml-auto sm:block">{@render clear()}</div>
+      <div class="col-span-2 sm:hidden">{@render clear()}</div>
     {/if}
   </div>
 </div>

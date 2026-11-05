@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ChartPanel from '#lib/components/ui/chart-panel.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import InfoTip from '#lib/components/ui/info-tip.svelte';
@@ -6,7 +7,7 @@
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
   import { Tooltip } from 'layerchart';
   import { scalePoint } from 'd3-scale';
-  import { CHART, TEXT } from '#lib/constants/typography.js';
+  import { CHART } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
   const weights = useWeightUnit();
@@ -26,9 +27,8 @@
   const percent = $derived(new Intl.NumberFormat(i18n.locale, { maximumFractionDigits: 1 }));
 </script>
 
-<section class="@container min-w-0 max-w-reading" aria-labelledby="strength-heading">
-  <div class="mb-4 flex min-h-8 items-center gap-2">
-    <h2 id="strength-heading" class="{TEXT.heading} text-ink">{i18n.t('Strength profile')}</h2>
+<ChartPanel title={i18n.t('Strength profile')}>
+  {#snippet controls()}
     {#if profile}
       <InfoTip label={i18n.t('About Strength profile')}>
         <p class="font-medium text-ink">{i18n.t('Strength profile')}</p>
@@ -41,12 +41,12 @@
         <p class="mt-3">{i18n.t('Peer counts vary by lift.')}</p>
       </InfoTip>
     {/if}
-  </div>
+  {/snippet}
   {#if profile}
     <div
-      class="grid items-center gap-4 @min-[36rem]:grid-cols-[minmax(0,1fr)_auto] @min-[36rem]:gap-6 2xl:pt-15"
+      class="grid items-center gap-4 @min-[36rem]:grid-cols-[minmax(0,1fr)_auto] @min-[36rem]:gap-6"
     >
-      <div class="mx-auto h-80 w-full min-w-0 max-w-md" bind:clientWidth={chartWidth}>
+      <div class="mx-auto h-72 w-full min-w-0 max-w-md" bind:clientWidth={chartWidth}>
         <Chart
           ssr
           width={chartWidth || 400}
@@ -60,7 +60,7 @@
           yDomain={[0, 100]}
           yRange={({ width, height }) => [0, Math.min(width, height) / 2]}
           radial
-          height={320}
+          height={288}
           padding={{ left: 62, right: 62, top: 38, bottom: 38 }}
           tooltipContext={{ mode: 'manual' }}
         >
@@ -158,8 +158,7 @@
               fadeDuration={0}
               variant="none"
               classes={{
-                content:
-                  'max-w-56 rounded-lg border border-stroke-strong bg-surface p-3 text-ink shadow-lg shadow-overlay/40',
+                content: CHART.tooltip,
               }}
             >
               {#snippet children({ data: lift })}
@@ -190,7 +189,7 @@
       >
         {#each lifts as lift (lift.movement_name)}
           <div class="flex items-baseline justify-between gap-5 whitespace-nowrap">
-            <dt class="text-secondary">{i18n.movement(lift.movement_name)}</dt>
+            <dt class="font-mono text-xs text-secondary">{i18n.movement(lift.movement_name)}</dt>
             <dd class="text-right">
               {#if lift.percentile !== null}
                 <span class="font-mono font-semibold text-ink"
@@ -218,4 +217,4 @@
       {i18n.t('A completed competition is needed to establish a comparison category.')}
     </p>
   {/if}
-</section>
+</ChartPanel>

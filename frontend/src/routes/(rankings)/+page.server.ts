@@ -1,12 +1,9 @@
 import { logger } from '#lib/server/logger.js';
 import { MAIN_RANKING_PAGE_SIZE } from '#lib/constants/pagination.js';
 import { rankingsService } from '#lib/server/api/index.js';
+import { SITE_NAME, SITE_DESCRIPTION } from '#lib/seo/site.js';
 import { asRankedGender, asRankingMetric } from '#lib/types/enums.js';
 import type { PageServerLoad } from './$types';
-
-const title = 'Streetlifting rankings and records';
-const description =
-  'Global Streetlifting rankings from every competition in the archive: muscle up, pull up, dips and squat results, RIS scores and athlete records.';
 
 export const load: PageServerLoad = async ({ url }) => {
   const gender = asRankedGender(url.searchParams.get('gender'));
@@ -35,16 +32,16 @@ export const load: PageServerLoad = async ({ url }) => {
     });
 
     return {
-      title,
-      description,
+      title: SITE_NAME,
+      description: SITE_DESCRIPTION,
       initialRankings: initialData.data,
       pagination: initialData.pagination,
     };
   } catch (error) {
     logger.error({ err: error }, 'Global rankings load failed');
     return {
-      title,
-      description,
+      title: SITE_NAME,
+      description: SITE_DESCRIPTION,
       error: error instanceof Error ? error.message : 'Failed to load rankings',
       initialRankings: [],
       pagination: {
