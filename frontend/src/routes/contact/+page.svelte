@@ -15,7 +15,7 @@
   const i18n = useI18n();
 
   const rowClass =
-    'flex items-center gap-3 py-4 text-sm text-secondary transition-colors hover:text-ink';
+    'flex items-center gap-3 py-4 text-body text-secondary transition-colors hover:text-ink';
 </script>
 
 <Seo
@@ -38,7 +38,7 @@
     class="mx-auto mb-8 h-44 w-44 sm:mb-10 sm:h-60 sm:w-60"
   />
   <h1 class="mb-4 {TEXT.title} text-ink">{i18n.t('Get in touch')}</h1>
-  <div class="mb-10 space-y-4 text-base leading-relaxed text-secondary">
+  <div class="mb-10 space-y-4 text-lead leading-relaxed text-secondary">
     <p>
       {i18n.t(
         'Ask a question, flag a mistake, or share competition results. I run OpenStreetlifting on my own, so replies may take a little time.'

@@ -15,8 +15,9 @@
     "check": "pnpm api:check && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && tsc --noEmit -p src/service-worker",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write .",
-    "lint": "npm run lint:colors && prettier --check . && eslint .",
+    "lint": "npm run lint:colors && npm run lint:type && prettier --check . && eslint .",
     "lint:colors": "node scripts/check-colors.mjs",
+    "lint:type": "node scripts/check-type.mjs",
     "test:unit": "vitest",
     "test": "npm run test:unit -- --run"
   },

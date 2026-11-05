@@ -129,7 +129,7 @@
       {@const invalid = fields[control.key].text !== '' && value === undefined}
       <div>
         <div class="mb-3">
-          <label for="{id}-{control.key}" class="mb-2 block text-sm font-medium text-ink"
+          <label for="{id}-{control.key}" class="mb-2 block text-body font-medium text-ink"
             >{i18n.t(control.label)}</label
           >
           <div class="relative">
@@ -146,17 +146,17 @@
               bind:value={() => displayField(control), (text) => setField(control, text)}
               aria-invalid={invalid}
               aria-describedby={invalid ? `${id}-${control.key}-error` : undefined}
-              class="{FIELD} h-12 w-full border-stroke-strong bg-surface px-3 pr-10 text-base text-ink placeholder:text-sm placeholder:text-secondary focus:border-secondary"
+              class="{FIELD} h-12 w-full border-stroke-strong bg-surface px-3 pr-10 text-lead text-ink placeholder:text-body placeholder:text-secondary focus:border-secondary"
             />
             <span
-              class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-secondary"
+              class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-body text-secondary"
               >{weights.unit}</span
             >
           </div>
         </div>
         <p
           id="{id}-{control.key}-error"
-          class="text-xs text-secondary"
+          class="text-meta text-secondary"
           aria-live="polite"
           aria-atomic="true"
         >
@@ -183,7 +183,7 @@
             }}
             class="ris-slider block h-6 w-full cursor-pointer accent-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-muted"
           />
-          <div class="mt-1 flex justify-between text-xs text-muted" aria-hidden="true">
+          <div class="mt-1 flex justify-between text-meta text-muted" aria-hidden="true">
             <span>{weights.format(control.min, i18n.locale)} {weights.unit}</span>
             <span>{weights.format(control.max, i18n.locale)} {weights.unit}</span>
           </div>
@@ -194,11 +194,11 @@
 
   {#if performance}
     <div class="mt-7 flex flex-wrap items-baseline gap-3 font-normal text-ink">
-      <span id="{id}-score-label" class="text-sm">RIS:</span>
+      <span id="{id}-score-label" class="text-body">RIS:</span>
       <output
         data-ris-live-score
         aria-labelledby="{id}-score-label"
-        class="font-mono text-2xl font-normal"
+        class="font-mono text-title font-normal"
         aria-live="off">{i18n.number(performance.score, 2)}</output
       >
     </div>
@@ -206,7 +206,7 @@
     <section aria-labelledby="{id}-target-heading" class="mt-8 border-y border-stroke py-5">
       <h2 id="{id}-target-heading" class="{TEXT.heading} text-ink">{i18n.t('Target RIS')}</h2>
       <div class="mt-5 mb-5 flex flex-wrap items-center gap-3">
-        <label for="{id}-target" class="text-sm text-secondary">{i18n.t('Target score')}</label>
+        <label for="{id}-target" class="text-body text-secondary">{i18n.t('Target score')}</label>
         <input
           id="{id}-target"
           name="target"
@@ -216,12 +216,12 @@
           inputmode="decimal"
           placeholder={i18n.t('e.g. {value}…', { value: i18n.number(110) })}
           bind:value={targetField}
-          class="{FIELD} w-24 border-stroke-strong px-3 py-2 text-base font-mono"
+          class="{FIELD} w-24 border-stroke-strong px-3 py-2 text-lead font-mono"
         />
-        <span class="text-sm text-secondary">RIS</span>
+        <span class="text-body text-secondary">RIS</span>
       </div>
       {#if targetMet}
-        <p class="text-sm leading-6 text-ink">
+        <p class="text-body leading-6 text-ink">
           {#if displayedScore !== null && target !== undefined && displayedScore > target}
             {i18n.t('The calculated score is above the target of {target} RIS.', {
               target: i18n.number(target!),
@@ -233,7 +233,7 @@
           {/if}
         </p>
       {:else if scenario}
-        <div class="space-y-4 text-sm leading-6 text-secondary">
+        <div class="space-y-4 text-body leading-6 text-secondary">
           <p>
             {#snippet total()}<strong class="font-medium text-ink"
                 >{weights.format(scenario.total, i18n.locale, 1)} {weights.unit}</strong
@@ -307,7 +307,7 @@
           </p>
         </div>
       {:else}
-        <p class="text-xs leading-6 text-secondary">
+        <p class="text-meta leading-6 text-secondary">
           {i18n.t(
             'Enter a positive target score to calculate the corresponding total and bodyweight.'
           )}

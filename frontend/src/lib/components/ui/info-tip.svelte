@@ -21,7 +21,7 @@
   type="button"
   popovertarget={panelId}
   aria-label={label}
-  class="ml-1 inline-flex h-3.5 w-3.5 shrink-0 cursor-pointer items-center justify-center rounded-full border border-stroke-strong align-middle text-[0.6rem] leading-none font-medium text-secondary transition-colors hover:border-focus hover:text-ink"
+  class="ml-1 inline-flex h-3.5 w-3.5 shrink-0 cursor-pointer items-center justify-center rounded-full border border-stroke-strong align-middle text-micro leading-none font-medium text-secondary transition-colors hover:border-focus hover:text-ink"
 >
   ?
 </button>
@@ -29,7 +29,7 @@
 <div
   id={panelId}
   popover="auto"
-  class="{OVERLAY_SURFACE} m-auto max-h-[calc(100dvh-2rem)] w-[min(30rem,calc(100vw-2rem))] overflow-y-auto overscroll-contain whitespace-normal p-5 text-left text-sm leading-relaxed font-normal text-secondary backdrop:bg-overlay/70 sm:p-6"
+  class="{OVERLAY_SURFACE} m-auto max-h-[calc(100dvh-2rem)] w-[min(30rem,calc(100vw-2rem))] overflow-y-auto overscroll-contain whitespace-normal p-5 text-left text-body leading-relaxed font-normal text-secondary backdrop:bg-overlay/70 sm:p-6"
 >
   <button
     type="button"

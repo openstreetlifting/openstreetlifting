@@ -35,7 +35,7 @@
       </nav>
 
       <div class="flex items-center gap-4 xl:ml-auto">
-        <span class="font-mono text-sm text-muted">
+        <span class="font-mono text-body text-muted">
           {#if buildInfo.label}
             {buildInfo.label}
           {/if}

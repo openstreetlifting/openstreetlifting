@@ -180,18 +180,18 @@
               {#snippet children({ data: lift })}
                 {#if lift.percentile !== null}
                   <div role="tooltip">
-                    <p class="text-sm font-medium">
+                    <p class="text-body font-medium">
                       {i18n.movement(lift.movement_name)} · {weights.format(
                         lift.value,
                         i18n.locale
                       )}
                       {weights.unit}
                     </p>
-                    <p class="mt-1 font-mono text-lg font-bold">
+                    <p class="mt-1 font-mono text-subtitle font-bold">
                       {percent.format(lift.percentile)}
                       {i18n.t('percentile')}
                     </p>
-                    <p class="mt-1 text-xs text-muted">
+                    <p class="mt-1 text-meta text-muted">
                       {i18n.t('Comparison group: {count} {athletes}', {
                         count: i18n.number(lift.field, 0),
                         athletes: i18n.count('athlete', lift.field),
@@ -206,17 +206,17 @@
       </div>
       <dl
         aria-label={i18n.t('Lift percentiles')}
-        class="mx-auto grid w-full max-w-xs gap-3 text-sm @min-[36rem]:w-auto"
+        class="mx-auto grid w-full max-w-xs gap-3 text-body @min-[36rem]:w-auto"
       >
         {#each lifts as lift (lift.movement_name)}
           <div class="flex items-baseline justify-between gap-5 whitespace-nowrap">
-            <dt class="font-mono text-xs text-secondary">{i18n.movement(lift.movement_name)}</dt>
+            <dt class="font-mono text-meta text-secondary">{i18n.movement(lift.movement_name)}</dt>
             <dd class="text-right">
               {#if lift.percentile !== null}
                 <span class="font-mono font-semibold text-ink"
                   >{percent.format(lift.percentile)}</span
                 >
-                <span class="text-xs text-muted">{i18n.t('percentile')}</span>
+                <span class="text-meta text-muted">{i18n.t('percentile')}</span>
               {:else}
                 <span class="text-muted" aria-label={i18n.t('Not enough data')}>—</span>
               {/if}
@@ -226,15 +226,15 @@
       </dl>
     </div>
     {#if scored.some((lift) => lift.field < 5)}
-      <p class="mt-3 text-xs text-muted">
+      <p class="mt-3 text-meta text-muted">
         {i18n.t('Limited comparison: fewer than five peers for some lifts.')}
       </p>
     {/if}
     {#if !complete}
-      <p class="mt-3 text-xs text-muted">{i18n.t('Not enough data to score all four lifts.')}</p>
+      <p class="mt-3 text-meta text-muted">{i18n.t('Not enough data to score all four lifts.')}</p>
     {/if}
   {:else}
-    <p class="border-y border-stroke py-8 text-sm text-secondary">
+    <p class="border-y border-stroke py-8 text-body text-secondary">
       {i18n.t('A completed competition is needed to establish a comparison category.')}
     </p>
   {/if}

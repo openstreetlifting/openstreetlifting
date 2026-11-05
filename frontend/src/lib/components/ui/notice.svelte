@@ -14,7 +14,7 @@
 >
   <h2
     id={headingId}
-    class="flex items-center gap-2 font-mono text-xs font-medium leading-5 text-ink sm:text-sm"
+    class="flex items-center gap-2 font-mono text-meta font-medium leading-5 text-ink sm:text-body"
   >
     {#if live}<span aria-hidden="true" class="size-1.5 shrink-0 rounded-full bg-success"
       ></span>{/if}

@@ -101,7 +101,7 @@
     </h1>
     {#if years || federation.countries > 1 || (federation.abbreviation && federation.abbreviation !== federation.name)}
       <dl
-        class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
+        class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]"
       >
         {#if federation.abbreviation && federation.abbreviation !== federation.name}
           <dt class="text-muted">{i18n.t('Abbreviation')}</dt>

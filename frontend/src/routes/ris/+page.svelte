@@ -58,12 +58,12 @@
 
   <header class="mb-10">
     <h1 class="{TEXT.title} text-ink">{i18n.t('The Relative Index for Streetlifting')}</h1>
-    <p class="mt-3 text-base leading-7 text-secondary">
+    <p class="mt-3 text-lead leading-7 text-secondary">
       {i18n.t(
         'The Relative Index for Streetlifting (RIS) compares competition totals across bodyweights within the same gender category. It uses the combined total of Muscle-up, Pull-up, Dips and Squat.'
       )}
     </p>
-    <p class="mt-3 text-base leading-7 text-secondary">
+    <p class="mt-3 text-lead leading-7 text-secondary">
       {#snippet authors()}<a
           href="https://warisradji.com/ris/"
           class="text-ink underline underline-offset-4"

@@ -11,7 +11,7 @@
 </script>
 
 <fieldset>
-  <legend class="mb-2 {prominent ? 'text-sm font-medium text-ink' : `${TEXT.meta} text-muted`}"
+  <legend class="mb-2 {prominent ? 'text-body font-medium text-ink' : `${TEXT.meta} text-muted`}"
     >{i18n.t('Category')}</legend
   >
   <div
@@ -24,7 +24,7 @@
         type="button"
         aria-pressed={sex === value}
         onclick={() => (sex = value)}
-        class="min-h-11 px-4 py-2.5 font-mono text-xs font-medium transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-secondary {sex ===
+        class="min-h-11 px-4 py-2.5 font-mono text-meta font-medium transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-secondary {sex ===
         value
           ? 'bg-ink text-canvas'
           : 'bg-canvas text-secondary hover:bg-surface hover:text-ink'}">{label}</button

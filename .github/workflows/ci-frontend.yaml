@@ -74,6 +74,9 @@ jobs:
       - name: Check shared colors
         working-directory: frontend
         run: pnpm run lint:colors
+      - name: Check font sizes
+        working-directory: frontend
+        run: pnpm run lint:type
       - name: Check API types and Svelte components
         working-directory: frontend
         run: pnpm check

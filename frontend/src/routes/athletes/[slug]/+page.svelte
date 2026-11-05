@@ -234,7 +234,7 @@
   <header class="mb-6 border-b border-stroke pb-5 sm:mb-8">
     <div class="flex items-center gap-3">
       <h1
-        class="flex min-w-0 items-start gap-3 font-sans text-2xl font-semibold tracking-tight text-balance text-ink sm:text-3xl"
+        class="flex min-w-0 items-start gap-3 font-sans text-title font-semibold tracking-tight text-balance text-ink sm:text-display"
       >
         {#if athlete.country}
           <Flag
@@ -261,15 +261,15 @@
     </div>
 
     {#if !athlete.country}
-      <p class="mt-1 text-sm text-secondary">{i18n.t('Country not recorded')}</p>
+      <p class="mt-1 text-body text-secondary">{i18n.t('Country not recorded')}</p>
     {/if}
 
     {#if athlete.native_name}
-      <p class="mt-1 break-words text-base text-secondary">{athlete.native_name}</p>
+      <p class="mt-1 break-words text-lead text-secondary">{athlete.native_name}</p>
     {/if}
 
     <dl
-      class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
+      class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]"
     >
       <dt class="text-muted">{i18n.t('Sex')}</dt>
       <dd class="text-ink">{genderLabel}</dd>
@@ -311,7 +311,7 @@
     <div class="mb-6 max-w-summary sm:mb-8">
       <div class="mb-3 flex items-center justify-between gap-3">
         <h2 class="{TEXT.heading} text-ink">{i18n.t('Ranking')}</h2>
-        <label class="flex items-center gap-2 text-xs text-muted">
+        <label class="flex items-center gap-2 text-meta text-muted">
           <span class="sr-only">{i18n.t('Metric')}</span>
           <Select
             name="ranking"
@@ -359,14 +359,14 @@
         {#each athlete.personal_records as pr (pr.movement_name)}
           <MetricCard heading={i18n.movement(pr.movement_name)}>
             <span class={TEXT.cardFigure}>{weights.format(pr.max_weight, i18n.locale)}</span>
-            <span class="font-mono text-xs text-secondary">{weights.unit}</span>
+            <span class="font-mono text-meta text-secondary">{weights.unit}</span>
             {#snippet footer()}
               <a
                 href={i18n.href(resolve(`competitions/${pr.competition_slug}`))}
                 class="block truncate underline hover:text-ink"
                 title={pr.competition_name}>{pr.competition_name}</a
               >
-              {#if pr.date}<span class="block font-mono text-[0.6875rem]"
+              {#if pr.date}<span class="block font-mono text-micro"
                   >{formatDate(pr.date, i18n.locale)}</span
                 >{/if}
             {/snippet}
@@ -407,7 +407,7 @@
           {#each contested as lift (lift.key)}
             <th class="{TABLE_HEAD_CELL} text-secondary">
               {i18n.t(lift.label)}
-              <span class="{ATTEMPT_ROW} mt-1 text-[0.65rem] font-normal text-muted">
+              <span class="{ATTEMPT_ROW} mt-1 text-micro font-normal text-muted">
                 <span class="text-right">1</span>
                 <span class="text-right">2</span>
                 <span class="text-right">3</span>

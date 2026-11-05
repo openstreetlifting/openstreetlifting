@@ -41,7 +41,7 @@
 
   <header class="mb-10">
     <h1 class="mb-4 {TEXT.title} text-ink">{i18n.t('Privacy policy')}</h1>
-    <p class="mb-6 text-sm text-muted">
+    <p class="mb-6 text-body text-muted">
       {i18n.t('Last updated:')}
       <time datetime="2026-09-16">{formatLongDate('2026-09-16', i18n.locale)}</time>
     </p>
@@ -59,7 +59,7 @@
   </header>
 
   <nav aria-label={i18n.t('On this page')} class="mb-12 border-y border-stroke py-5">
-    <ul class="flex flex-wrap gap-x-6 gap-y-3 text-sm">
+    <ul class="flex flex-wrap gap-x-6 gap-y-3 text-body">
       <li><a href="#data" class={linkClass}>{i18n.t('Personal data')}</a></li>
       <li><a href="#legal-basis" class={linkClass}>{i18n.t('Legal basis')}</a></li>
       <li><a href="#your-rights" class={linkClass}>{i18n.t('GDPR rights')}</a></li>
