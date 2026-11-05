@@ -18,10 +18,11 @@
 <nav aria-label={i18n.t('Breadcrumb')} class="mb-3 sm:mb-5">
   <ol class="flex flex-wrap items-center gap-1.5 text-xs text-muted sm:gap-2 sm:text-sm">
     {#each items as item, index (index)}
-      {#if index > 0}
-        <li>
+      <li class="flex min-w-0 items-center gap-1.5 sm:gap-2">
+        {#if index > 0}
           <svg
-            class="h-3 w-3 sm:h-4 sm:w-4"
+            aria-hidden="true"
+            class="h-3 w-3 shrink-0 sm:h-4 sm:w-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -29,18 +30,19 @@
           >
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
           </svg>
-        </li>
-      {/if}
-      <li>
+        {/if}
         {#if item.href && index < items.length - 1}
           <a
             href={target(item.href)}
-            class="rounded transition-colors hover:text-secondary focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-canvas focus:outline-none"
+            class="rounded transition-colors hover:text-secondary focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none"
           >
             {item.label}
           </a>
         {:else}
-          <span class="text-secondary">{item.label}</span>
+          <span
+            aria-current={index === items.length - 1 ? 'page' : undefined}
+            class="text-secondary">{item.label}</span
+          >
         {/if}
       </li>
     {/each}

@@ -102,9 +102,11 @@
               {NO_VALUE}
             {/if}
           </td>
-          <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">{federation.competitions}</td>
-          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{federation.entries}</td>
-          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{federation.upcoming}</td>
+          <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
+            >{i18n.number(federation.competitions, 0)}</td
+          >
+          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{i18n.number(federation.entries, 0)}</td>
+          <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{i18n.number(federation.upcoming, 0)}</td>
           <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap">
             {activeYears(federation.firstYear, federation.lastYear)}
           </td>

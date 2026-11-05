@@ -9,10 +9,8 @@
   } from '#lib/components/icons/index.js';
   import { TEXT } from '#lib/constants/typography.js';
   import Seo from '#lib/components/seo.svelte';
-  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
-  import { Breadcrumb } from '#lib/components/ui/index.js';
+  import { absolute } from '#lib/seo/index.js';
   import Message from '#lib/components/ui/message.svelte';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
 
   const i18n = useI18n();
 
@@ -26,22 +24,9 @@
     'Get in touch with OpenStreetlifting to report a wrong result, send competition results, or contribute to the archive.'
   )}
   canonical={absolute('/contact')}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        { name: i18n.t('Contact'), path: '/contact' },
-      ],
-      i18n.locale
-    ),
-  ]}
 />
 
 <div class="mx-auto max-w-reading px-4 py-10 sm:px-6 sm:py-16">
-  <Breadcrumb
-    items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Contact') }]}
-  />
-
   <!-- The h1 carries the page, so the plate is decoration and stays out of the
        accessibility tree rather than repeating the name to a screen reader. -->
   <img
