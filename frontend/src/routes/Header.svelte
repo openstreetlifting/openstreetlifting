@@ -12,6 +12,7 @@
   const i18n = useI18n();
 
   let menuOpen = $state(false);
+  let menuButton: HTMLButtonElement;
 
   afterNavigate(({ shallow }) => {
     if (shallow) return;
@@ -27,7 +28,10 @@
 
 <svelte:window
   onkeydown={(event) => {
-    if (event.key === 'Escape') menuOpen = false;
+    if (event.key === 'Escape' && menuOpen) {
+      menuOpen = false;
+      menuButton.focus();
+    }
   }}
 />
 
@@ -97,6 +101,7 @@
     </a>
 
     <button
+      bind:this={menuButton}
       type="button"
       onclick={() => (menuOpen = !menuOpen)}
       aria-expanded={menuOpen}
