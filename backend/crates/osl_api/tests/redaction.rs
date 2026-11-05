@@ -247,19 +247,19 @@ async fn returns_empty_sections_when_requested(pool: PgPool) {
     assert_eq!(body.get("native_name"), Some(&Value::Null));
     assert_eq!(body.get("country"), Some(&Value::Null));
     assert!(body.get("standing").is_none());
-    assert!(body.get("strength_profile").is_none());
+    assert!(body.get("lift_balance").is_none());
     assert!(body.get("competitions").is_none());
     assert!(body.get("personal_records").is_none());
 
     let (status, body) = get(&pool, "/api/v1/athletes/alex-martin?include=standing").await;
     assert_eq!(status, StatusCode::OK);
     assert_eq!(body.get("standing"), Some(&Value::Null));
-    assert!(body.get("strength_profile").is_none());
+    assert!(body.get("lift_balance").is_none());
     assert!(body.get("competitions").is_none());
 
     let (status, body) = get(
         &pool,
-        "/api/v1/athletes/alex-martin?include=competitions,records,standing,strength_profile",
+        "/api/v1/athletes/alex-martin?include=competitions,records,standing,lift_balance",
     )
     .await;
     assert_eq!(status, StatusCode::OK);
@@ -267,7 +267,7 @@ async fn returns_empty_sections_when_requested(pool: PgPool) {
     assert_eq!(body["personal_records"], serde_json::json!([]));
     assert_eq!(body["total_competitions"], 0);
     assert_eq!(body.get("standing"), Some(&Value::Null));
-    assert_eq!(body.get("strength_profile"), Some(&Value::Null));
+    assert_eq!(body.get("lift_balance"), Some(&Value::Null));
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
@@ -279,7 +279,7 @@ async fn preserves_populated_fields_and_nulls(pool: PgPool) {
     .await;
     let (status, body) = get(
         &pool,
-        "/api/v1/athletes/alina-riyaz?include=competitions,records,standing,strength_profile",
+        "/api/v1/athletes/alina-riyaz?include=competitions,records,standing,lift_balance",
     )
     .await;
     assert_eq!(status, StatusCode::OK);
@@ -288,5 +288,5 @@ async fn preserves_populated_fields_and_nulls(pool: PgPool) {
     assert_eq!(body["competitions"][0].get("division"), Some(&Value::Null));
     assert!(body["standing"].is_object());
     assert_eq!(body["standing"]["ris"].get("class"), Some(&Value::Null));
-    assert!(body["strength_profile"].is_object());
+    assert!(body["lift_balance"].is_object());
 }

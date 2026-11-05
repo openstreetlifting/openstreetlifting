@@ -1,0 +1,147 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            WITH latest_category AS (\n                SELECT wc.weight_class_id, a.gender, wc.min_kg, wc.max_kg\n                FROM competition_participants cp\n                JOIN athletes a ON a.athlete_id = cp.athlete_id\n                JOIN competitions c ON c.competition_id = cp.competition_id\n                JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n                WHERE cp.athlete_id = $1 AND cp.status = 'competed'\n                ORDER BY c.start_date DESC, c.competition_id DESC, cp.participant_id DESC\n                LIMIT 1\n            ), complete AS (\n                SELECT cp.participant_id, cp.athlete_id, c.name AS competition_name,\n                       c.slug AS competition_slug, c.start_date, SUM(l.max_weight) AS total\n                FROM competition_participants cp\n                JOIN latest_category category ON category.weight_class_id = cp.weight_class_id\n                JOIN athletes a ON a.athlete_id = cp.athlete_id AND a.gender = category.gender\n                JOIN competitions c ON c.competition_id = cp.competition_id\n                JOIN lifts l ON l.participant_id = cp.participant_id\n                WHERE cp.status = 'competed'\n                  AND l.movement_name IN ('Muscle-up', 'Pull-up', 'Dips', 'Squat')\n                  AND l.max_weight > 0\n                GROUP BY cp.participant_id, cp.athlete_id, c.name, c.slug, c.start_date\n                HAVING COUNT(*) = 4\n            ), best AS (\n                SELECT DISTINCT ON (athlete_id) *\n                FROM complete\n                ORDER BY athlete_id, total DESC, start_date DESC\n            ), shares AS (\n                SELECT b.athlete_id, l.movement_name, l.max_weight AS value,\n                       (100 * l.max_weight / b.total)::double precision AS share\n                FROM best b\n                JOIN lifts l ON l.participant_id = b.participant_id\n                WHERE l.movement_name IN ('Muscle-up', 'Pull-up', 'Dips', 'Squat')\n            ), peers AS (\n                SELECT s.movement_name, COUNT(*) AS field, AVG(s.share) AS class_share,\n                       STDDEV_SAMP(s.share) AS class_spread\n                FROM shares s\n                WHERE s.athlete_id <> $1\n                GROUP BY s.movement_name\n            )\n            SELECT category.gender AS \"category_gender: Gender\",\n                   category.min_kg AS weight_class_min, category.max_kg AS weight_class_max,\n                   s.movement_name AS \"movement_name!: Movement\", s.value AS \"value!\",\n                   s.share AS \"share!\", b.total AS \"total!\",\n                   b.competition_name AS \"competition_name!\",\n                   b.competition_slug AS \"competition_slug!\",\n                   b.start_date AS \"competition_date!\",\n                   COALESCE(p.field, 0) AS \"field!\",\n                   p.class_share AS \"class_share?\", p.class_spread AS \"class_spread?\"\n            FROM shares s\n            JOIN best b ON b.athlete_id = s.athlete_id\n            CROSS JOIN latest_category category\n            LEFT JOIN peers p ON p.movement_name = s.movement_name\n            JOIN movements m ON m.name = s.movement_name\n            WHERE s.athlete_id = $1\n            ORDER BY m.display_order\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "category_gender: Gender",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "gender"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "weight_class_min",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "weight_classes",
+            "name": "min_kg"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "weight_class_max",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "weight_classes",
+            "name": "max_kg"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "movement_name!: Movement",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "lifts",
+            "name": "movement_name"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "value!",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "lifts",
+            "name": "max_weight"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "share!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "total!",
+        "type_info": "Numeric",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "competition_name!",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "competition_slug!",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "slug"
+          }
+        }
+      },
+      {
+        "ordinal": 9,
+        "name": "competition_date!",
+        "type_info": "Date",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "start_date"
+          }
+        }
+      },
+      {
+        "ordinal": 10,
+        "name": "field!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 11,
+        "name": "class_share?",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 12,
+        "name": "class_spread?",
+        "type_info": "Float8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      false,
+      true,
+      null,
+      null,
+      false,
+      false,
+      false,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "ee1ea2b3a02bc3da35cab3db04af82ad15807c92db07a029e03fa45808547ecd"
+}

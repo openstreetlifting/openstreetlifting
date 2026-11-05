@@ -13,7 +13,7 @@ export const athletesService = {
       apiClient.GET('/api/v1/athletes/{slug}', {
         params: {
           path: { slug },
-          query: { include: 'competitions,records,standing,strength_profile' },
+          query: { include: 'competitions,records,standing,lift_balance' },
         },
       })
     );
@@ -23,7 +23,7 @@ export const athletesService = {
       athlete.personal_records === undefined ||
       athlete.total_competitions === undefined ||
       athlete.standing === undefined ||
-      athlete.strength_profile === undefined
+      athlete.lift_balance === undefined
     ) {
       throw new Error('Requested athlete sections are missing');
     }
@@ -34,7 +34,7 @@ export const athletesService = {
       personal_records: athlete.personal_records,
       total_competitions: athlete.total_competitions,
       standing: athlete.standing,
-      strength_profile: athlete.strength_profile,
+      lift_balance: athlete.lift_balance,
     };
   },
 };

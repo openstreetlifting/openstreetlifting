@@ -30,21 +30,29 @@ export default {
     'Un seul résultat enregistré. La progression apparaîtra après une autre compétition.',
   'RIS scores are shown as recorded; formula editions and reported scores may differ.':
     'Les scores RIS sont affichés tels qu’ils ont été enregistrés ; les éditions de la formule et les scores publiés peuvent différer.',
-  'Strength profile': 'Profil de force',
-  'About Strength profile': 'À propos du profil de force',
-  '· All time': '· Toutes périodes',
-  'Compares each best lift with other athletes’ bests. Percentile is the percentage of peers below that result, counting ties as half.':
-    'Compare votre record sur chaque mouvement à ceux des autres athlètes. Le percentile indique le pourcentage d’athlètes en dessous de ce résultat, les ex æquo comptant pour moitié.',
-  'Peer counts vary by lift.': 'Le nombre d’athlètes de référence varie selon le mouvement.',
-  percentile: 'percentile',
-  'Lift percentiles': 'Percentiles par mouvement',
-  'Not enough data': 'Données insuffisantes',
-  'Limited comparison: fewer than five peers for some lifts.':
-    'Comparaison limitée : moins de cinq athlètes de référence pour certains mouvements.',
-  'Not enough data to score all four lifts.':
-    'Les données sont insuffisantes pour évaluer les quatre mouvements.',
-  'A completed competition is needed to establish a comparison category.':
-    'Une compétition terminée est nécessaire pour définir une catégorie de comparaison.',
+  'Lift balance': 'Équilibre des mouvements',
+  'About lift balance': 'À propos de l’équilibre des mouvements',
+  'How this athlete’s best total is split across the four lifts, compared with others in their weight class.':
+    'Comment le meilleur total de cet athlète se répartit entre les quatre mouvements, comparé aux autres de sa catégorie.',
+  'Further out means that lift takes a bigger share of the total than usual, not that it is better.':
+    'Plus loin du centre signifie que ce mouvement pèse plus que d’habitude dans le total, pas qu’il est meilleur.',
+  'Lift balance compared with other athletes in {category}':
+    'Équilibre des mouvements comparé aux autres athlètes en {category}',
+  'Lift shares of best total': 'Part des mouvements dans le meilleur total',
+  'Athlete: {share} of total': 'Athlète : {share} du total',
+  'Reference: {share} of total': 'Référence : {share} du total',
+  'Reference ({class})': 'Référence ({class})',
+  Reference: 'Référence',
+  'Reference: {count} {athletes} in {category}': 'Référence : {count} {athletes} en {category}',
+  '{movement}: {share} of total, reference {average}':
+    '{movement} : {share} du total, référence {average}',
+  'of total · reference {average}': 'du total · référence {average}',
+  'of total': 'du total',
+  'Based on {total} {unit} at {competition}': 'Sur la base de {total} {unit} à {competition}',
+  'Too few athletes in this weight class to compare.':
+    'Trop peu d’athlètes dans cette catégorie pour comparer.',
+  'A completed competition with all four lifts is needed to show lift balance.':
+    'Une compétition terminée avec les quatre mouvements est nécessaire pour afficher l’équilibre.',
   'Match these movements exactly': 'Rechercher exactement ces mouvements',
   'Clear movements': 'Effacer les mouvements',
   'Clear selection': 'Effacer la sélection',
@@ -347,10 +355,6 @@ export default {
   'No successful {movement}': 'Aucun essai validé : {movement}',
   "{category}'s weight classes": 'Catégories de poids : {category}',
   '{label} over time': 'Évolution : {label}',
-  '{movement}: percentile {percentile}': '{movement} : percentile {percentile}',
-  'Lift percentiles compared with other athletes in {category}':
-    'Percentiles par mouvement par rapport aux autres athlètes de la catégorie {category}',
-  'Comparison group: {count} {athletes}': 'Groupe de comparaison : {count} {athletes}',
   'No dated {movement} results available.': 'Aucun résultat daté disponible : {movement}.',
   'No dated {movement} results available for {format}.':
     'Aucun résultat daté disponible pour {format} : {movement}.',

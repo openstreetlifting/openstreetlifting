@@ -1,7 +1,7 @@
 use chrono::NaiveDateTime;
 use osl_db::params::RankingMovement;
 use osl_db::projections::athlete::{
-    AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, AthleteStrengthRow, PersonalRecordRow,
+    AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
 };
 use osl_db::projections::ranking::AthleteMetricStandingRow;
 use osl_db::rows::athlete::AthleteRow;
@@ -41,30 +41,38 @@ pub struct AthleteResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standing: Option<Option<AthleteStanding>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub strength_profile: Option<Option<StrengthProfile>>,
+    pub lift_balance: Option<Option<LiftBalance>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct StrengthProfile {
+pub struct LiftBalance {
     pub category: String,
-    pub lifts: Vec<StrengthComparison>,
+    pub total: rust_decimal::Decimal,
+    pub competition_name: String,
+    pub competition_slug: String,
+    pub competition_date: chrono::NaiveDate,
+    /// Other athletes with a four-lift result in the same sex and weight class.
+    pub field: i64,
+    pub lifts: Vec<LiftShare>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct StrengthComparison {
+pub struct LiftShare {
     pub movement_name: Movement,
+    pub value: rust_decimal::Decimal,
+    /// Percentage of the athlete's best total taken by this lift.
+    pub share: f64,
+    /// Mean share across the other athletes in the class.
     #[schema(required = true)]
-    pub value: Option<rust_decimal::Decimal>,
-    /// Percentage of other athletes below this result, ties counting as half.
+    pub class_share: Option<f64>,
+    /// Sample standard deviation of the share across the other athletes in the class.
     #[schema(required = true)]
-    pub percentile: Option<f64>,
-    /// Other athletes with a valid best for this lift in the same sex and weight class.
-    pub field: i64,
+    pub class_spread: Option<f64>,
 }
 
-impl StrengthProfile {
+impl LiftBalance {
     #[must_use]
-    pub fn from_rows(rows: Vec<AthleteStrengthRow>) -> Option<Self> {
+    pub fn from_rows(rows: Vec<AthleteBalanceRow>) -> Option<Self> {
         let first = rows.first()?;
         Some(Self {
             category: osl_domain::category_label(
@@ -73,13 +81,19 @@ impl StrengthProfile {
                 first.weight_class_min,
                 first.weight_class_max,
             ),
+            total: first.total,
+            competition_name: first.competition_name.clone(),
+            competition_slug: first.competition_slug.clone(),
+            competition_date: first.competition_date,
+            field: first.field,
             lifts: rows
                 .into_iter()
-                .map(|row| StrengthComparison {
+                .map(|row| LiftShare {
                     movement_name: row.movement_name,
                     value: row.value,
-                    percentile: row.percentile,
-                    field: row.field,
+                    share: row.share,
+                    class_share: row.class_share,
+                    class_spread: row.class_spread,
                 })
                 .collect(),
         })
@@ -244,7 +258,7 @@ impl From<AthleteRow> for AthleteResponse {
             personal_records: None,
             total_competitions: None,
             standing: None,
-            strength_profile: None,
+            lift_balance: None,
         }
     }
 }

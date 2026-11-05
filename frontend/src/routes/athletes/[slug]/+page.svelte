@@ -37,7 +37,7 @@
   import { formatDate, formatAthleteName, countryName, countryPath } from '#lib/utils/index.js';
   import Seo from '#lib/components/seo.svelte';
   import AthleteProgress from '#lib/components/athlete-progress.svelte';
-  import AthleteStrength from '#lib/components/athlete-strength.svelte';
+  import AthleteBalance from '#lib/components/athlete-balance.svelte';
   import { absolute, athleteLd, athleteTitle, breadcrumbLd, risStanding } from '#lib/seo/index.js';
   import {
     ATTEMPT_ROW,
@@ -108,7 +108,7 @@
   >;
   const genderLabel = $derived(i18n.t(GENDER_LABEL[athlete.gender]));
   const latestCategory = $derived(
-    athlete.strength_profile?.category ??
+    athlete.lift_balance?.category ??
       athlete.competitions.find((competition) => competition.status === 'competed')?.category_name
   );
   const latestWeightClass = $derived(
@@ -387,7 +387,7 @@
         onMetricChange={(value) => updateFilter('performance', value)}
       />
 
-      <AthleteStrength profile={athlete.strength_profile} />
+      <AthleteBalance balance={athlete.lift_balance} />
     </div>
   </div>
 

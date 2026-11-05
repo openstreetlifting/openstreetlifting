@@ -1,7 +1,7 @@
 use osl_api::{
     ApiDoc,
     athlete::dto::{
-        AthleteResponse, AthleteStanding, MetricStanding, StandingPlace, StrengthProfile,
+        AthleteResponse, AthleteStanding, LiftBalance, MetricStanding, StandingPlace,
     },
     competition::dto::{CategoryInfo, CompetitionResponse},
     ranking::dto::{AthleteInfo, CompetitionInfo, FederationInfo, GlobalRankingEntry},
@@ -71,7 +71,7 @@ fn serializes_missing_athlete_values_as_null() {
         "personal_records",
         "total_competitions",
         "standing",
-        "strength_profile",
+        "lift_balance",
     ] {
         assert!(!body.as_object().unwrap().contains_key(field), "{field}");
     }
@@ -87,16 +87,16 @@ fn serializes_requested_empty_sections() {
         instagram_handle: None,
     };
     let include =
-        serde_json::from_value(json!("competitions,records,standing,strength_profile")).unwrap();
+        serde_json::from_value(json!("competitions,records,standing,lift_balance")).unwrap();
     let mut response = AthleteResponse::from_detail(detail, &include);
     response.standing = Some(None);
-    response.strength_profile = Some(None);
+    response.lift_balance = Some(None);
     let body = serde_json::to_value(response).unwrap();
     assert_eq!(body["competitions"], json!([]));
     assert_eq!(body["personal_records"], json!([]));
     assert_eq!(body["total_competitions"], 0);
     assert_eq!(body.get("standing"), Some(&Value::Null));
-    assert_eq!(body.get("strength_profile"), Some(&Value::Null));
+    assert_eq!(body.get("lift_balance"), Some(&Value::Null));
 }
 
 #[test]
@@ -118,8 +118,13 @@ fn preserves_populated_sections_and_null_metrics() {
         dips: None,
         squat: None,
     }));
-    response.strength_profile = Some(Some(StrengthProfile {
+    response.lift_balance = Some(Some(LiftBalance {
         category: "Men -80kg".into(),
+        total: 400.into(),
+        competition_name: "Test Open".into(),
+        competition_slug: "test-open".into(),
+        competition_date: chrono::NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
+        field: 0,
         lifts: Vec::new(),
     }));
     let body = serde_json::to_value(response).unwrap();
@@ -132,8 +137,8 @@ fn preserves_populated_sections_and_null_metrics() {
     for metric in ["total", "muscleup", "pullup", "dips", "squat"] {
         assert_eq!(body["standing"].get(metric), Some(&Value::Null));
     }
-    assert_eq!(body["strength_profile"]["category"], "Men -80kg");
-    assert_eq!(body["strength_profile"]["lifts"], json!([]));
+    assert_eq!(body["lift_balance"]["category"], "Men -80kg");
+    assert_eq!(body["lift_balance"]["lifts"], json!([]));
 }
 
 #[test]
@@ -236,7 +241,7 @@ fn requires_fields_except_conditional_sections() {
                         | "personal_records"
                         | "total_competitions"
                         | "standing"
-                        | "strength_profile"
+                        | "lift_balance"
                 ),
                 "CompetitionResponse" => COMPETITION_SECTIONS.contains(&field.as_str()),
                 _ => false,
@@ -247,7 +252,7 @@ fn requires_fields_except_conditional_sections() {
             assert_eq!(required, !optional, "{name}.{field}");
         }
     }
-    for field in ["standing", "strength_profile"] {
+    for field in ["standing", "lift_balance"] {
         let property = &schema["components"]["schemas"]["AthleteResponse"]["properties"][field];
         assert!(
             property["oneOf"]
