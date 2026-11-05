@@ -10,9 +10,17 @@
     /** A URL already resolved by the caller with `$app/paths.resolve`. */
     pageHref: (page: number) => string;
     replaceState?: boolean;
+    label?: string;
   }
 
-  let { page, totalPages, disabled = false, pageHref, replaceState = false }: Props = $props();
+  let {
+    page,
+    totalPages,
+    disabled = false,
+    pageHref,
+    replaceState = false,
+    label,
+  }: Props = $props();
 
   const items = $derived.by(() => {
     const result: (number | 'ellipsis')[] = [];
@@ -42,7 +50,7 @@
 
 <!-- eslint-disable svelte/no-navigation-without-resolve -- pageHref returns URLs resolved by the caller -->
 <nav
-  aria-label={i18n.t('Pagination')}
+  aria-label={label ?? i18n.t('Pagination')}
   class="flex shrink-0 items-center justify-center gap-1"
   data-sveltekit-reset={false}
   data-sveltekit-replacestate={replaceState}

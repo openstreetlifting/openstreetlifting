@@ -34,6 +34,7 @@
     busy = false,
     embedded = false,
     frozenColumns,
+    label,
   }: {
     head: Snippet;
     body: Snippet<[Row[]]>;
@@ -45,6 +46,7 @@
     /** A parent results frame supplies the outer border and page gutters. */
     embedded?: boolean;
     frozenColumns?: 'rank' | 'athlete';
+    label?: string;
   } = $props();
 
   const totalItems = $derived(pagination?.total_items ?? rows.length);
@@ -60,6 +62,20 @@
     pagination ? rows : rows.slice((page - 1) * TABLE_PAGE_SIZE, page * TABLE_PAGE_SIZE)
   );
   const countLabel = $derived(i18n.count(itemName, totalItems));
+  const tableLabel = $derived(
+    label ??
+      i18n.t(
+        (
+          {
+            athlete: 'Athletes',
+            competition: 'Competitions',
+            country: 'Countries',
+            federation: 'Federations',
+            entry: 'Entries',
+          } as const
+        )[itemName]
+      )
+  );
 
   function revealFocus(event: FocusEvent) {
     const target = event.target;
@@ -109,6 +125,9 @@
       {/if}
     </span>
     <Pagination
+      label={position === 'top'
+        ? i18n.t('{table} pagination (top)', { table: tableLabel })
+        : i18n.t('{table} pagination (bottom)', { table: tableLabel })}
       {page}
       {totalPages}
       {pageHref}
@@ -132,6 +151,7 @@
         : ''}"
   >
     <table class="w-full text-xs leading-4 whitespace-nowrap" aria-busy={busy}>
+      <caption class="sr-only">{tableLabel}</caption>
       <thead class="sticky top-0 z-20">
         <tr class="border-b border-stroke-strong bg-table-head">
           {@render head()}
