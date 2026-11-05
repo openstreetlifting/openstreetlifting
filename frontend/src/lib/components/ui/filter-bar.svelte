@@ -57,7 +57,7 @@
 <div
   class="{embedded
     ? 'border-b border-stroke'
-    : `${EDGE_TO_EDGE} mb-4 rounded-panel border border-stroke-strong sm:mb-6`} grid grid-cols-2 items-end gap-2 bg-surface px-3 py-2 sm:gap-3 {primary
+    : `${EDGE_TO_EDGE} mb-4 rounded-panel border border-stroke-strong sm:mb-6`} grid grid-cols-2 items-end gap-2 bg-surface px-3 py-1.5 sm:gap-3 {primary
     ? 'sm:grid-cols-4 xl:grid-cols-8'
     : 'sm:grid-cols-2 xl:grid-cols-6'}"
 >
@@ -90,7 +90,7 @@
     id={panelId}
     class="{open
       ? 'grid'
-      : 'hidden'} col-span-2 min-w-0 grid-cols-2 items-end gap-2 border-t border-stroke pt-3 sm:contents"
+      : 'hidden'} col-span-2 min-w-0 grid-cols-2 items-end gap-2 border-t border-stroke pt-1.5 sm:contents"
   >
     {@render primary?.()}
     {@render children()}

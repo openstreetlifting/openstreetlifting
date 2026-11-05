@@ -29,5 +29,6 @@ export {
   FROZEN_RANK,
   FROZEN_ATHLETE,
   ATHLETE_COLUMN,
+  ATHLETE_COLUMN_FILL,
   ATHLETE_CONTENT,
 } from './table.svelte';

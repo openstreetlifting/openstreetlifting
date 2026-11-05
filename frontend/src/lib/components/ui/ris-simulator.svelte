@@ -150,10 +150,10 @@
               bind:value={() => displayField(control), (text) => setField(control, text)}
               aria-invalid={invalid}
               aria-describedby={invalid ? `${id}-${control.key}-error` : undefined}
-              class="{FIELD} h-12 w-full border-stroke-strong bg-surface px-3 pr-12 text-lead text-ink placeholder:text-body placeholder:text-secondary focus:border-secondary"
+              class="{FIELD} w-full border-stroke-strong bg-surface px-3 py-1.5 pr-12 text-ink placeholder:text-secondary focus:border-secondary"
             />
             <span
-              class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-body text-secondary"
+              class="pointer-events-none absolute inset-y-0 right-3 flex items-center font-mono text-meta text-secondary"
               >{weights.unit}</span
             >
           </div>
@@ -222,7 +222,7 @@
           inputmode="decimal"
           placeholder={i18n.t('e.g. {value}…', { value: i18n.number(110) })}
           bind:value={targetField}
-          class="{FIELD} w-24 border-stroke-strong px-3 py-2 text-lead font-mono"
+          class="{FIELD} w-24 border-stroke-strong px-3 py-1.5"
         />
         <span class="text-body text-secondary">RIS</span>
       </div>

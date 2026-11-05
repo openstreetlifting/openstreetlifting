@@ -21,7 +21,7 @@
     FROZEN_HEAD_CELL,
     FROZEN_RANK,
     FROZEN_ATHLETE,
-    ATHLETE_COLUMN,
+    ATHLETE_COLUMN_FILL,
     ATHLETE_CONTENT,
     Text,
   } from '#lib/components/ui/index.js';
@@ -267,7 +267,7 @@
   const place = $derived([competition.venue, location].filter(Boolean).join(', '));
   const DETAILS =
     'grid w-max max-w-full grid-cols-[6rem_minmax(0,1fr)] content-start gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]';
-  const EDITION = `${CONTROL} inline-flex h-control min-w-control shrink-0 items-center justify-center rounded-control border px-2 tabular-nums sm:px-3 transition-colors focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none`;
+  const EDITION = `${CONTROL} inline-flex h-full min-w-control shrink-0 items-center justify-center px-3 tabular-nums transition-colors focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none`;
 
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
@@ -427,15 +427,12 @@
         <dd class="min-w-0">
           <nav aria-labelledby="edition-label">
             <ul
-              class="inline-flex max-w-full gap-1 overflow-x-auto rounded-control border border-stroke p-1"
+              class="inline-flex h-control max-w-full overflow-x-auto rounded-control border border-stroke"
             >
               {#each editions as edition (edition.slug)}
-                <li>
+                <li class="h-full">
                   {#if edition.slug === competition.slug}
-                    <span
-                      aria-current="page"
-                      class="{EDITION} border-stroke-strong bg-surface-selected text-ink"
-                    >
+                    <span aria-current="page" class="{EDITION} bg-surface-selected text-ink">
                       <time datetime={edition.start_date}>{edition.label}</time>
                     </span>
                   {:else}
@@ -443,7 +440,7 @@
                       href={i18n.href(resolve('/competitions/[slug]', { slug: edition.slug }))}
                       aria-label={`${edition.label} · ${edition.name}`}
                       title={`${edition.name} · ${formatLongDate(edition.start_date, i18n.locale)}`}
-                      class="{EDITION} border-transparent text-secondary hover:bg-surface hover:text-ink"
+                      class="{EDITION} text-secondary hover:bg-surface hover:text-ink"
                     >
                       <time datetime={edition.start_date}>{edition.label}</time>
                     </a>
@@ -663,7 +660,7 @@
               >{i18n.t('Rank')}</th
             >
             <th
-              class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} text-secondary"
+              class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} text-secondary"
               >{i18n.t('Athlete')}</th
             >
             <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}"
@@ -678,25 +675,21 @@
               {@const attempts = withAttempts.has(lift.movement)}
               <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
                 {i18n.t(lift.label)}
-                <span
-                  class="{attempts
-                    ? ATTEMPT_ROW
-                    : BEST_ROW} mt-0.5 text-micro font-normal text-muted"
-                >
-                  {#if attempts}
+                {#if attempts}
+                  <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
                     <span class="text-right">1</span>
                     <span class="text-right">2</span>
                     <span class="text-right">3</span>
-                  {/if}
-                  <span class="text-right">{i18n.t('Best')}</span>
-                </span>
+                    <span class="text-right">{i18n.t('Best')}</span>
+                  </span>
+                {/if}
               </th>
             {/each}
-            <th class="{TABLE_HEAD_CELL} text-secondary {classed ? '' : 'w-full'}">
+            <th class="{TABLE_HEAD_CELL} text-secondary">
               {i18n.t('Sex')}
             </th>
             {#if classed}
-              <th class="{TABLE_HEAD_CELL} w-full text-secondary">{i18n.t('Class')}</th>
+              <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>
             {/if}
           {/snippet}
 
@@ -711,7 +704,7 @@
                   {entry.rank}
                 </td>
                 <td
-                  class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} {CELL.identity}"
+                  class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} {CELL.identity}"
                 >
                   <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                     <span class="flex min-w-0 items-center gap-2">
@@ -813,7 +806,7 @@
                 <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.absent}">{NO_VALUE}</td>
 
                 <td
-                  class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} {CELL.identity}"
+                  class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} {CELL.identity}"
                 >
                   <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                     <span class="flex min-w-0 items-center gap-2">

@@ -7,6 +7,7 @@
   export const FROZEN_RANK =
     'w-12 min-w-12 max-w-12 text-right sm:w-14 sm:min-w-14 sm:max-w-14 left-0';
   export const ATHLETE_COLUMN = 'w-36 min-w-36 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
+  export const ATHLETE_COLUMN_FILL = 'w-36 min-w-36 pl-1 sm:w-full sm:min-w-64 sm:pl-3';
   export const ATHLETE_CONTENT = 'max-w-[8.25rem] sm:max-w-[14.5rem]';
   export const FROZEN_ATHLETE = 'left-12 sm:left-14';
 </script>
@@ -102,7 +103,7 @@
 
 {#snippet paginationBar(position: string)}
   <div
-    class="flex items-center justify-between gap-2 bg-surface-subtle px-2 py-1 sm:px-4"
+    class="flex items-center justify-between gap-2 bg-surface-subtle px-3 py-1.5"
     data-table-pagination={position}
   >
     <span
