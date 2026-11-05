@@ -1,6 +1,7 @@
 import { beforeEach, expect, it, vi } from 'vitest';
 import { competitionsService, rankingsService } from '#lib/server/api/index.js';
 import { load } from './+page.server';
+import { ApiError } from '#lib/server/api/client.js';
 
 vi.mock('#lib/server/api/index.js', () => ({
   competitionsService: { getById: vi.fn() },
@@ -27,6 +28,21 @@ beforeEach(() => {
   } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
   vi.mocked(rankingsService.getRankingClasses).mockResolvedValue([]);
   vi.mocked(rankingsService.getRankingCountries).mockResolvedValue([]);
+});
+
+it('keeps a confirmed missing competition as a 404', async () => {
+  vi.mocked(competitionsService.getById).mockRejectedValue(
+    new ApiError(404, 'Not Found', 'Missing')
+  );
+  await expect(load(request(''))).rejects.toMatchObject({ status: 404 });
+});
+
+it.each([
+  new Error('Network unavailable'),
+  new ApiError(500, 'Internal Server Error', 'Unavailable'),
+])('reports temporary lookup failures as unavailable rather than missing', async (failure) => {
+  vi.mocked(competitionsService.getById).mockRejectedValue(failure);
+  await expect(load(request(''))).rejects.toMatchObject({ status: 503 });
 });
 
 it('opens the page containing the requested athlete while retaining the chosen metric', async () => {

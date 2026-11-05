@@ -1,6 +1,7 @@
 import { logger } from '#lib/server/logger.js';
 import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
 import { competitionsService, rankingsService } from '#lib/server/api/index.js';
+import { ApiError } from '#lib/server/api/client.js';
 import { defaultRankingSort, risProvenance } from '#lib/constants/ranking.js';
 import { formatAthleteName } from '#lib/utils/format.js';
 import type { PageServerLoad } from './$types';
@@ -17,8 +18,11 @@ export const load: PageServerLoad = async ({ params, url }) => {
   try {
     competition = await competitionsService.getById(params.slug);
   } catch (err) {
+    if (err instanceof ApiError && err.status === 404) {
+      error(404, 'Competition not found');
+    }
     logger.error({ err }, 'Competition page load failed');
-    throw error(404, 'Competition not found');
+    error(503, 'Competition details are unavailable right now');
   }
 
   const ris = risProvenance(competition);
