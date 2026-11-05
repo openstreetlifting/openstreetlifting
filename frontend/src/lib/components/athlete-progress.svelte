@@ -15,7 +15,7 @@
   import { resolve } from '$app/paths';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
-  import { Tooltip } from 'layerchart';
+  import { Tooltip, type ChartState } from 'layerchart';
   import { scaleUtc, scaleLinear } from 'd3-scale';
   import { utcMonth } from 'd3-time';
 
@@ -49,6 +49,7 @@
       plotted: metric === 'ris' ? point.value : weights.value(point.value),
     }))
   );
+  let chartContext = $state<ChartState<(typeof chartPoints)[number]>>();
   const label = $derived(i18n.t(RANKING_SORTS.find((option) => option.value === metric)!.label));
 
   const best = $derived(points.length ? Math.max(...points.map((point) => point.value)) : null);
@@ -144,8 +145,24 @@
       </p>
     </div>
     {#key metric + format + weights.unit}
-      <div class="w-full" style:height={`${chartHeight}px`} bind:clientWidth={chartWidth}>
+      <div
+        class="w-full"
+        style:height={`${chartHeight}px`}
+        bind:clientWidth={chartWidth}
+        onfocusout={(event) => {
+          if (
+            event.relatedTarget instanceof Node &&
+            event.currentTarget.contains(event.relatedTarget)
+          )
+            return;
+          if (chartContext) {
+            chartContext.tooltip.isHoveringTooltipContent = false;
+            chartContext.tooltip.hide();
+          }
+        }}
+      >
         <Chart
+          bind:context={chartContext}
           ssr
           width={chartWidth || 400}
           class="relative w-full! overflow-hidden [container-type:inline-size]"
