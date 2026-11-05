@@ -46,6 +46,8 @@
        accessibility tree rather than repeating the name to a screen reader. -->
   <img
     src="/logo_plate_full.svg"
+    width="512"
+    height="512"
     alt=""
     aria-hidden="true"
     class="mx-auto mb-8 h-44 w-44 sm:mb-10 sm:h-60 sm:w-60"
