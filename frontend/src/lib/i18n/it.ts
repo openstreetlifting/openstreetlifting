@@ -208,6 +208,7 @@ export default {
   'Try again': 'Riprova',
   'Retrying…': 'Nuovo tentativo…',
   'Close information': 'Chiudi le informazioni',
+  'Skip to main content': 'Vai al contenuto principale',
   Pagination: 'Paginazione',
   '{table} pagination (top)': 'Paginazione di {table} (in alto)',
   '{table} pagination (bottom)': 'Paginazione di {table} (in basso)',
