@@ -94,6 +94,8 @@
     >
       <img
         src="/logo_width.svg"
+        width="3442"
+        height="512"
         alt="OpenStreetlifting"
         fetchpriority="high"
         class="h-6 w-auto max-w-full sm:h-7"
