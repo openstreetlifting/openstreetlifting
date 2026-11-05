@@ -33,6 +33,7 @@
     pageParam = 'table_page',
     busy = false,
     embedded = false,
+    frozenColumns,
   }: {
     head: Snippet;
     body: Snippet<[Row[]]>;
@@ -43,6 +44,7 @@
     busy?: boolean;
     /** A parent results frame supplies the outer border and page gutters. */
     embedded?: boolean;
+    frozenColumns?: 'rank' | 'athlete';
   } = $props();
 
   const totalItems = $derived(pagination?.total_items ?? rows.length);
@@ -58,6 +60,19 @@
     pagination ? rows : rows.slice((page - 1) * TABLE_PAGE_SIZE, page * TABLE_PAGE_SIZE)
   );
   const countLabel = $derived(i18n.count(itemName, totalItems));
+
+  function revealFocus(event: FocusEvent) {
+    const target = event.target;
+    if (!frozenColumns || !(target instanceof HTMLElement)) return;
+    if (target.closest('td, th')?.classList.contains('sticky')) return;
+
+    // Native focus scrolling can leave links behind the frozen columns.
+    requestAnimationFrame(() => {
+      if (document.activeElement === target) {
+        target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    });
+  }
 
   function pageHref(target: number): string {
     if (pagination?.pageHref) return pagination.pageHref(target);
@@ -94,7 +109,14 @@
 >
   <div class="border-b border-stroke">{@render paginationBar('top')}</div>
 
-  <div class="osl-table overflow-x-auto">
+  <div
+    onfocusin={revealFocus}
+    class="osl-table overflow-x-auto {frozenColumns === 'athlete'
+      ? 'scroll-ps-56 sm:scroll-ps-80'
+      : frozenColumns === 'rank'
+        ? 'scroll-ps-12 sm:scroll-ps-16'
+        : ''}"
+  >
     <table class="w-full text-xs leading-4 whitespace-nowrap" aria-busy={busy}>
       <thead class="sticky top-0 z-20">
         <tr class="border-b border-stroke-strong bg-table-head">

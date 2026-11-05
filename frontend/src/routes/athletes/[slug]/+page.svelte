@@ -396,7 +396,12 @@
   <div class={LAYOUT.section}>
     <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Competition history')}</h2>
     {#if athlete.competitions.length > 0}
-      <Table rows={athlete.competitions} itemName="competition" pageParam="history_page">
+      <Table
+        rows={athlete.competitions}
+        itemName="competition"
+        pageParam="history_page"
+        frozenColumns="rank"
+      >
         {#snippet head()}
           <th
             class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
