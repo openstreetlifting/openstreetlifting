@@ -17,6 +17,7 @@
   import { page as currentPage, navigating } from '$app/state';
   import { countryName, formatDate, formatLocation } from '#lib/utils/index.js';
   import { TEXT, CONTROL } from '#lib/constants/typography.js';
+  import { EDGE_TO_EDGE } from '#lib/constants/table.js';
   import Seo from '#lib/components/seo.svelte';
   import { breadcrumbLd, listingSeo } from '#lib/seo/index.js';
 
@@ -203,7 +204,7 @@
 
   <nav
     aria-label={i18n.t('Competition status')}
-    class="mb-4 flex items-center gap-4 border-b border-stroke"
+    class="mb-shell-dense flex items-center gap-4 border-b border-stroke"
   >
     {#each TABS as tab (tab.status)}
       {@const active = data.status === tab.status}
@@ -224,81 +225,92 @@
     {/each}
   </nav>
 
-  <FilterBar
-    bind:search={search.value}
-    placeholder={i18n.t('Search a competition')}
-    onSearch={() => apply({}, true)}
-    activeCount={activeFilters}
-    onClear={clearFilters}
-    clearable={narrowed}
+  <section
+    class="{EDGE_TO_EDGE} min-w-0 rounded-panel border border-stroke-strong"
+    aria-label={i18n.t('Competitions')}
   >
-    <SelectField label={i18n.t('Federation')} bind:value={federation} onchange={() => apply()}>
-      <option value={null}>{i18n.t('All Federations')}</option>
-      {#each data.facets.federations as option (option)}
-        <option value={option}>{option}</option>
-      {/each}
-    </SelectField>
+    <FilterBar
+      embedded
+      bind:search={search.value}
+      placeholder={i18n.t('Search a competition')}
+      onSearch={() => apply({}, true)}
+      activeCount={activeFilters}
+      onClear={clearFilters}
+      clearable={narrowed}
+    >
+      <SelectField label={i18n.t('Federation')} bind:value={federation} onchange={() => apply()}>
+        <option value={null}>{i18n.t('All Federations')}</option>
+        {#each data.facets.federations as option (option)}
+          <option value={option}>{option}</option>
+        {/each}
+      </SelectField>
 
-    <CompetitionFormatFilter
-      formats={data.facets.formats}
-      value={event}
-      onChange={(value) => {
-        event = value;
-        apply();
-      }}
-    />
+      <CompetitionFormatFilter
+        formats={data.facets.formats}
+        value={event}
+        onChange={(value) => {
+          event = value;
+          apply();
+        }}
+      />
 
-    <SelectField label={i18n.t('Year')} bind:value={year} onchange={() => apply()}>
-      <option value={null}>{i18n.t('All Years')}</option>
-      {#each data.facets.years as option (option)}
-        <option value={option}>{option}</option>
-      {/each}
-    </SelectField>
+      <SelectField label={i18n.t('Year')} bind:value={year} onchange={() => apply()}>
+        <option value={null}>{i18n.t('All Years')}</option>
+        {#each data.facets.years as option (option)}
+          <option value={option}>{option}</option>
+        {/each}
+      </SelectField>
 
-    <SelectField label={i18n.t('Country')} bind:value={country} onchange={() => apply()}>
-      <option value={null}>{i18n.t('All Countries')}</option>
-      {#each data.facets.countries as option (option)}
-        <option value={option}>{countryName(option, i18n.locale)}</option>
-      {/each}
-    </SelectField>
-  </FilterBar>
+      <SelectField label={i18n.t('Country')} bind:value={country} onchange={() => apply()}>
+        <option value={null}>{i18n.t('All Countries')}</option>
+        {#each data.facets.countries as option (option)}
+          <option value={option}>{countryName(option, i18n.locale)}</option>
+        {/each}
+      </SelectField>
+    </FilterBar>
 
-  {#if data.error}
-    <ResultState
-      kind="error"
-      title={i18n.t('Failed to load competitions')}
-      description={i18n.t('Results could not be loaded. Please try again in a moment.')}
-      retry={refreshAll}
-    />
-  {:else if competitions.length === 0 && !busy}
-    <SearchEmpty
-      title={canReset
-        ? i18n.t('Oops, no competitions found.')
-        : i18n.t('No competitions to show yet.')}
-      description={canReset
-        ? i18n.t('Lighten the filters or try another name.')
-        : showsUpcoming
-          ? i18n.t('No competitions are planned yet.')
-          : data.status === 'live'
-            ? i18n.t('No competitions are in progress right now.')
-            : i18n.t('No competition results in this view yet.')}
-      resetHref={canReset
-        ? i18n.href(
-            resolve(
-              data.status === 'completed' ? '/competitions' : `/competitions?status=${data.status}`
+    {#if data.error}
+      <ResultState
+        embedded
+        kind="error"
+        title={i18n.t('Failed to load competitions')}
+        description={i18n.t('Results could not be loaded. Please try again in a moment.')}
+        retry={refreshAll}
+      />
+    {:else if competitions.length === 0 && !busy}
+      <SearchEmpty
+        embedded
+        title={canReset
+          ? i18n.t('Oops, no competitions found.')
+          : i18n.t('No competitions to show yet.')}
+        description={canReset
+          ? undefined
+          : showsUpcoming
+            ? i18n.t('No competitions are planned yet.')
+            : data.status === 'live'
+              ? i18n.t('No competitions are in progress right now.')
+              : i18n.t('No competition results in this view yet.')}
+        resetHref={canReset
+          ? i18n.href(
+              resolve(
+                data.status === 'completed'
+                  ? '/competitions'
+                  : `/competitions?status=${data.status}`
+              )
             )
-          )
-        : undefined}
-    />
-  {:else}
-    <CompetitionsTable
-      {competitions}
-      upcoming={showsUpcoming}
-      {busy}
-      pagination={{
-        ...pagination,
-        pageHref: (target) => listingHref({ page: target }),
-      }}
-    />
-  {/if}
+          : undefined}
+      />
+    {:else}
+      <CompetitionsTable
+        embedded
+        {competitions}
+        upcoming={showsUpcoming}
+        {busy}
+        pagination={{
+          ...pagination,
+          pageHref: (target) => listingHref({ page: target }),
+        }}
+      />
+    {/if}
+  </section>
 </div>
