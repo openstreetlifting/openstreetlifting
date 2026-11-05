@@ -3,7 +3,6 @@
   import type { Snippet } from 'svelte';
   import Select from './select.svelte';
   import { cn } from '#lib/utils/index.js';
-  import { TEXT } from '#lib/constants/typography.js';
 
   const fieldId = $props.id();
   let {
@@ -21,7 +20,7 @@
   } = $props();
 </script>
 
-<div class={cn('grid min-w-0 gap-1', className)}>
-  <label for={id} class={TEXT.fieldLabel}>{label}</label>
+<div class={cn('grid min-w-0', className)}>
+  <label for={id} class="sr-only">{label}</label>
   <Select {id} {name} bind:value class="w-full" {...rest}>{@render children()}</Select>
 </div>

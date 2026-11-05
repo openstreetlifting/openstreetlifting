@@ -44,6 +44,8 @@ Exported from `#lib/components/ui/index.js`:
 - `Stack`: a vertical flow, with `gap` limited to the scale and the `tile`, `section` and `chapter` names.
 - `Panel`: a bordered surface with `panel` padding.
 
+`Table` draws the divider after frozen columns from its `frozenColumns` prop, so frozen cells need no border of their own.
+
 ## Gotchas
 
 - A new token goes in both `src/app.css` and `src/lib/utils/cn.ts`. Without the second, `cn()` treats `text-foo` as a color and drops one of the two classes.

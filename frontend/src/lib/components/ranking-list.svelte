@@ -13,7 +13,6 @@
     TABLE_HEAD_CELL,
     FROZEN_CELL,
     FROZEN_HEAD_CELL,
-    FROZEN_EDGE,
     FROZEN_RANK,
     ATHLETE_COLUMN,
     ATHLETE_CONTENT,
@@ -39,7 +38,7 @@
 
 <Table rows={entries} itemName="athlete" pageParam="page" frozenColumns="rank" {pagination} {busy}>
   {#snippet head()}
-    <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
+    <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
       >{i18n.t('Rank')}</th
     >
     <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
@@ -62,7 +61,7 @@
   {#snippet body(rows)}
     {#each rows as entry (entry.rank + entry.athlete.athlete_id)}
       <tr class="transition-colors">
-        <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
+        <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
           {entry.rank}
         </td>
         <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">

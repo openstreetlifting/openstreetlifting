@@ -2,7 +2,7 @@
   import { useI18n } from '#lib/i18n/index.js';
   import { ChevronIcon } from '#lib/components/icons/index.js';
   import Button from '#lib/components/ui/button.svelte';
-  import { FIELD, OVERLAY_SURFACE, TEXT } from '#lib/constants/typography.js';
+  import { FIELD, OVERLAY_SURFACE } from '#lib/constants/typography.js';
   import {
     FORMAT_MOVEMENTS,
     formatMovements,
@@ -50,11 +50,11 @@
 <svelte:window onpointerdown={dismiss} onkeydown={escape} />
 
 <div class="grid min-w-0 gap-1">
-  <span class={TEXT.fieldLabel}>{i18n.t('Format')}</span>
+  <span class="sr-only">{i18n.t('Format')}</span>
   <details bind:this={dropdown} class="group relative min-w-0 w-full open:z-30">
     <summary
       aria-label={i18n.t('Competition format: {label}', { label })}
-      class="{FIELD} flex cursor-pointer list-none items-center gap-2 px-3 py-1.5 group-open:border-focus [&::-webkit-details-marker]:hidden"
+      class="{FIELD} flex cursor-pointer list-none items-center gap-2 px-3 py-1.5 text-micro group-open:border-focus [&::-webkit-details-marker]:hidden"
     >
       <span class="truncate" title={label}>{label}</span>
       <ChevronIcon class="ml-auto h-3.5 w-3.5 shrink-0 group-open:rotate-180" />
@@ -65,7 +65,7 @@
         {#each choices as movement (movement.code)}
           {@const selected = value.includes(movement.code)}
           <label
-            class="relative flex min-h-control cursor-pointer items-center gap-2 rounded-control px-3 font-mono text-meta text-ink {selected
+            class="relative flex min-h-control cursor-pointer items-center gap-2 rounded-control px-3 font-mono text-micro text-ink {selected
               ? 'bg-surface-selected'
               : 'hover:bg-surface-hover'}"
           >

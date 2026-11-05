@@ -19,7 +19,6 @@
     TABLE_HEAD_CELL,
     FROZEN_CELL,
     FROZEN_HEAD_CELL,
-    FROZEN_EDGE,
     FROZEN_RANK,
     ATHLETE_COLUMN,
     ATHLETE_CONTENT,
@@ -620,7 +619,9 @@
           onchange={() => table.handleFilterChange()}
         >
           {#each sorts as sort (sort.value)}
-            <option value={sort.value}>{i18n.t(sort.label)}</option>
+            <option value={sort.value}
+              >{i18n.t('Sort by {sort}', { sort: i18n.t(sort.label) })}</option
+            >
           {/each}
         </SelectField>
       </FilterBar>
@@ -646,8 +647,7 @@
           }}
         >
           {#snippet head()}
-            <th
-              class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
+            <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
               >{i18n.t('Rank')}</th
             >
             <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
@@ -683,7 +683,7 @@
                 class="transition-colors"
                 data-focused={entry.athlete.slug === table.focusedAthlete ? '' : undefined}
               >
-                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
+                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
                   {entry.rank}
                 </td>
                 <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
@@ -784,9 +784,7 @@
 
             {#each unplacedOnPage as { category, participant } (participant.athlete.athlete_id)}
               <tr class="transition-colors">
-                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.absent}"
-                  >{NO_VALUE}</td
-                >
+                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.absent}">{NO_VALUE}</td>
 
                 <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
                   <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">

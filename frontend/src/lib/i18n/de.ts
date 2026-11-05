@@ -78,6 +78,7 @@ export default {
   Year: 'Jahr',
   'All Classes': 'Alle Klassen',
   'Sort by': 'Sortieren nach',
+  'Sort by {sort}': 'Sortieren nach {sort}',
   'Streetlifting competition results': 'Ergebnisse von Streetlifting-Wettkämpfen',
   'Streetlifting competitions': 'Streetlifting-Wettkämpfe',
   'Hey! Those competitions are currently running': 'Hey! Diese Wettkämpfe laufen gerade',
