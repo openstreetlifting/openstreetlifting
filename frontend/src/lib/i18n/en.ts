@@ -151,6 +151,7 @@ export const messages = [
   'Retrying…',
   'Close information',
   'Skip to main content',
+  'Competition status',
   'Pagination',
   '{table} pagination (top)',
   '{table} pagination (bottom)',

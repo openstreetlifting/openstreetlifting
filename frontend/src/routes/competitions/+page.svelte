@@ -201,13 +201,17 @@
     </Notice>
   {/if}
 
-  <nav class="mb-4 flex items-center gap-5 border-b border-stroke">
+  <nav
+    aria-label={i18n.t('Competition status')}
+    class="mb-4 flex items-center gap-5 border-b border-stroke"
+  >
     {#each TABS as tab (tab.status)}
       {@const active = data.status === tab.status}
-      <button
-        onclick={() => apply({ status: tab.status })}
+      <a
+        href={listingHref({ status: tab.status }, search.value)}
+        data-sveltekit-reset={false}
         aria-current={active ? 'page' : undefined}
-        class="-mb-px flex items-baseline gap-1.5 border-b-2 pb-2 {CONTROL} transition-colors focus:ring-2 focus:ring-focus focus:outline-none
+        class="-mb-px flex items-baseline gap-1.5 border-b-2 pb-2 {CONTROL} transition-colors focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none
  {active ? 'border-ink text-ink' : 'border-transparent text-muted hover:text-secondary'}"
       >
         {i18n.t(tab.label)}
@@ -216,7 +220,7 @@
             {data.counts[tab.status]}
           </span>
         {/if}
-      </button>
+      </a>
     {/each}
   </nav>
 
