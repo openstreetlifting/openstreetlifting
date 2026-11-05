@@ -1,6 +1,6 @@
 <script module lang="ts">
   export const TABLE_HEAD_CELL =
-    'px-1.5 py-2 text-left align-middle font-mono text-[0.625rem] font-medium sm:px-3 sm:text-[0.6875rem]';
+    'px-1.5 py-2 text-left align-middle font-mono text-micro font-medium sm:px-3';
   export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-2';
   export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
   export const FROZEN_HEAD_CELL = 'sticky z-10 bg-table-head';
@@ -107,7 +107,7 @@
     data-table-pagination={position}
   >
     <span
-      class="min-w-0 font-mono text-[0.625rem] text-muted sm:text-xs"
+      class="min-w-0 font-mono text-micro text-muted sm:text-meta"
       role={position === 'top' ? 'status' : undefined}
       aria-live={position === 'top' ? 'polite' : undefined}
       aria-atomic={position === 'top' ? true : undefined}
@@ -150,7 +150,7 @@
         ? 'scroll-ps-12 sm:scroll-ps-16'
         : ''}"
   >
-    <table class="w-full text-xs leading-4 whitespace-nowrap" aria-busy={busy}>
+    <table class="w-full text-meta leading-4 whitespace-nowrap" aria-busy={busy}>
       <caption class="sr-only">{tableLabel}</caption>
       <thead class="sticky top-0 z-20">
         <tr class="border-b border-stroke-strong bg-table-head">

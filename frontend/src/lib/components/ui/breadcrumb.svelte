@@ -15,8 +15,8 @@
   const target = (href: string) => i18n.href(resolve(href as any));
 </script>
 
-<nav aria-label={i18n.t('Breadcrumb')} class="mb-3 sm:mb-5">
-  <ol class="flex flex-wrap items-center gap-1.5 text-xs text-muted sm:gap-2 sm:text-sm">
+<nav aria-label={i18n.t('Breadcrumb')} class="mb-3 sm:mb-4">
+  <ol class="flex flex-wrap items-center gap-1.5 text-meta text-muted sm:gap-2 sm:text-body">
     {#each items as item, index (index)}
       <li class="flex min-w-0 items-center gap-1.5 sm:gap-2">
         {#if index > 0}

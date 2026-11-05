@@ -96,13 +96,13 @@
 
 <ChartPanel title={i18n.t('Performance over time')}>
   {#snippet controls()}
-    <label class="flex items-center gap-2 text-xs text-muted">
+    <label class="flex items-center gap-2 text-meta text-muted">
       <span class="sr-only">{i18n.t('Performance')}</span>
       <Select
         name="performance"
         bind:value={metric}
         onchange={(event) => onMetricChange?.(event.currentTarget.value as ProgressMetric)}
-        class="px-2.5 py-1.5"
+        class="px-3 py-1.5"
       >
         {#each RANKING_SORTS as option (option.value)}
           <option value={option.value}>{i18n.t(option.label)}</option>
@@ -113,7 +113,7 @@
 
   {#if points.length && best !== null && bestPoint}
     <div class="mb-4 border-b border-stroke pb-3">
-      <p class="text-xs leading-relaxed text-muted">
+      <p class="text-meta leading-relaxed text-muted">
         <span class="font-mono font-medium uppercase">{i18n.t('Best')}</span>
         <span class="ml-1 font-mono font-semibold text-ink">{valueLabel(best)}</span>
         {i18n.t('on')}
@@ -155,7 +155,7 @@
           xScale={scaleUtc()}
           {xDomain}
           {yDomain}
-          padding={{ left: 56, right: 20, top: 16, bottom: 52 }}
+          padding={{ left: 56, right: 28, top: 16, bottom: 52 }}
           tooltipContext={{ mode: 'manual' }}
         >
           {#snippet children({ context })}
@@ -181,7 +181,7 @@
                   ),
                 }}
                 format={(date: Date) => monthLabel.format(date)}
-                tickLabelProps={{ class: CHART.tick }}
+                tickLabelProps={{ fontSize: 11, class: CHART.tick }}
                 tickOcclusion
                 stroke="var(--color-stroke)"
               />
@@ -191,7 +191,7 @@
                 labelProps={{ class: CHART.label }}
                 ticks={4}
                 format={(value: number) => i18n.number(value)}
-                tickLabelProps={{ class: CHART.tick }}
+                tickLabelProps={{ fontSize: 11, class: CHART.tick }}
                 grid={{ class: 'stroke-stroke' }}
                 stroke="var(--color-stroke)"
               />
@@ -265,19 +265,19 @@
             >
               {#snippet children({ data: point })}
                 <div role="tooltip" aria-live="polite">
-                  <p class="font-mono text-lg font-bold">{valueLabel(point.value)}</p>
+                  <p class="font-mono text-subtitle font-bold">{valueLabel(point.value)}</p>
                   <a
                     href={competitionLink(point.competition.competition_slug)}
-                    class="mt-1 inline-block text-sm text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
+                    class="mt-1 inline-block text-body text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
                     >{point.competition.competition_name}</a
                   >
-                  <p class="mt-1 text-xs text-muted">
+                  <p class="mt-1 text-meta text-muted">
                     {formatLongDate(point.competition.competition_date, i18n.locale)} · {weights.category(
                       point.competition.category_name,
                       i18n.locale
                     )}{point.competition.division ? ` · ${point.competition.division}` : ''}
                   </p>
-                  {#if metric === 'ris'}<p class="mt-1 text-xs text-muted">
+                  {#if metric === 'ris'}<p class="mt-1 text-meta text-muted">
                       {point.competition.ris_source === 'reported'
                         ? i18n.t('Reported')
                         : point.competition.ris_source === 'computed'
@@ -292,19 +292,19 @@
       </div>
     {/key}
     {#if points.length === 1}
-      <p class="mt-3 text-xs leading-relaxed text-muted">
+      <p class="mt-3 text-meta leading-relaxed text-muted">
         {i18n.t('One result recorded. A trend will appear after another competition.')}
       </p>
     {/if}
     {#if metric === 'ris'}
-      <p class="mt-3 text-xs leading-relaxed text-muted">
+      <p class="mt-3 text-meta leading-relaxed text-muted">
         {i18n.t(
           'RIS scores are shown as recorded; formula editions and reported scores may differ.'
         )}
       </p>
     {/if}
   {:else}
-    <p class="border-y border-stroke py-8 text-sm text-secondary">
+    <p class="border-y border-stroke py-8 text-body text-secondary">
       {i18n.t('No dated {movement} results available for {format}.', {
         movement: label,
         format,

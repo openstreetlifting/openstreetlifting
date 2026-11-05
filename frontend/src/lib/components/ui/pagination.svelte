@@ -45,7 +45,7 @@
   });
 
   const linkBase =
-    'inline-flex h-11 min-w-11 items-center justify-center rounded-control px-2 font-mono text-xs font-medium sm:h-8 sm:min-w-8 sm:px-3 transition-colors active:bg-surface-selected focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas aria-disabled:pointer-events-none';
+    'inline-flex h-11 min-w-11 items-center justify-center rounded-control px-2 font-mono text-meta font-medium sm:h-8 sm:min-w-8 sm:px-3 transition-colors active:bg-surface-selected focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas aria-disabled:pointer-events-none';
 </script>
 
 <!-- eslint-disable svelte/no-navigation-without-resolve -- pageHref returns URLs resolved by the caller -->
@@ -67,7 +67,7 @@
     <span class="hidden sm:inline">{i18n.t('Previous')}</span>
   </a>
 
-  <span class="px-1 font-mono text-[0.625rem] whitespace-nowrap text-secondary sm:hidden">
+  <span class="px-1 font-mono text-micro whitespace-nowrap text-secondary sm:hidden">
     {i18n.t('Page {page} of {pages}.', {
       page: i18n.number(page, 0),
       pages: i18n.number(totalPages, 0),
@@ -77,7 +77,7 @@
   <div class="hidden items-center gap-1 sm:flex">
     {#each items as item, index (index)}
       {#if item === 'ellipsis'}
-        <span class="inline-flex h-8 min-w-8 items-center justify-center text-xs text-muted"
+        <span class="inline-flex h-8 min-w-8 items-center justify-center text-meta text-muted"
           >&hellip;</span
         >
       {:else}

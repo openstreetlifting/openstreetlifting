@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { Text } from '#lib/components/ui/index.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import Button from '#lib/components/ui/button.svelte';
-  import { TEXT } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
 
@@ -39,20 +39,22 @@
     height="160"
     class="mb-8 h-32 w-32 sm:h-40 sm:w-40"
   />
-  <p class="mb-3 text-sm font-medium text-secondary">{page.status} · {copy.label}</p>
-  <h1 class="{TEXT.title} text-balance text-ink">{copy.title}</h1>
+  <p class="mb-3 text-body font-medium text-secondary">{page.status} · {copy.label}</p>
+  <Text as="h1" variant="title" class="text-balance text-ink">{copy.title}</Text>
   {#if copy.description}
-    <p class="mt-3 max-w-sm text-sm leading-relaxed text-pretty text-secondary">
+    <p class="mt-3 max-w-sm text-body leading-relaxed text-pretty text-secondary">
       {copy.description}
     </p>
   {/if}
   <div class="mt-8 flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
-    <Button href={i18n.href(resolve(''))} class="min-h-11 text-sm"
+    <Button href={i18n.href(resolve(''))} class="min-h-11 text-body"
       >{i18n.t('Back to rankings')}</Button
     >
 
-    <Button href={i18n.href(resolve('contact'))} variant="outline" class="min-h-11 text-sm text-ink"
-      >{i18n.t('Get in touch')}</Button
+    <Button
+      href={i18n.href(resolve('contact'))}
+      variant="outline"
+      class="min-h-11 text-body text-ink">{i18n.t('Get in touch')}</Button
     >
   </div>
 </div>

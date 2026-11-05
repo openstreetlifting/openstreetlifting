@@ -16,9 +16,9 @@
 </script>
 
 <footer class="border-t border-stroke bg-canvas">
-  <div class="mx-auto max-w-page px-4 py-6 sm:px-6 sm:py-10">
-    <div class="flex flex-wrap items-center gap-x-8 gap-y-5">
-      <nav aria-label={i18n.t('Footer')} class="flex flex-wrap items-center gap-x-5 gap-y-2">
+  <div class="mx-auto max-w-page px-gutter py-6 sm:py-8">
+    <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+      <nav aria-label={i18n.t('Footer')} class="flex flex-wrap items-center gap-x-4 gap-y-2">
         <a href={i18n.href(resolve(''))} class={NAV_LINK}>{i18n.t('Rankings')}</a>
         <a href={i18n.href(resolve('competitions'))} class={NAV_LINK}>{i18n.t('Competitions')}</a>
         <a href={i18n.href(resolve('federations'))} class={NAV_LINK}>{i18n.t('Federations')}</a>
@@ -35,7 +35,7 @@
       </nav>
 
       <div class="flex items-center gap-4 xl:ml-auto">
-        <span class="font-mono text-sm text-muted">
+        <span class="font-mono text-body text-muted">
           {#if buildInfo.label}
             {buildInfo.label}
           {/if}

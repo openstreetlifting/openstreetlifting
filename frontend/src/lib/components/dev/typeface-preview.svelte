@@ -27,21 +27,21 @@
   class="fixed right-3 bottom-3 z-30 max-w-[calc(100vw-1.5rem)] border border-stroke-strong bg-surface text-ink shadow-lg shadow-overlay/30"
 >
   <summary
-    class="min-h-11 cursor-pointer px-3 py-3 font-mono text-[0.625rem] focus-visible:outline-2 focus-visible:outline-focus"
+    class="min-h-11 cursor-pointer px-3 py-3 font-mono text-micro focus-visible:outline-2 focus-visible:outline-focus"
     >Typography preview</summary
   >
   <div class="border-t border-stroke p-3">
-    <label class="grid gap-2 font-sans text-xs text-secondary">
+    <label class="grid gap-2 font-sans text-meta text-secondary">
       Interface and numbers
       <Select
         bind:value={selected}
-        class="min-h-11 border border-stroke-strong bg-canvas px-2 font-sans text-xs text-ink focus-visible:outline-2 focus-visible:outline-focus"
+        class="min-h-11 border border-stroke-strong bg-canvas px-2 font-sans text-meta text-ink focus-visible:outline-2 focus-visible:outline-focus"
       >
         {#each fonts as font (font.family)}
           <option value={font.family}>{font.label}</option>
         {/each}
       </Select>
     </label>
-    <p class="mt-2 font-sans text-xs text-muted">Athlete names keep the same sans serif.</p>
+    <p class="mt-2 font-sans text-meta text-muted">Athlete names keep the same sans serif.</p>
   </div>
 </details>

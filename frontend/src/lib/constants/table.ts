@@ -71,4 +71,4 @@ export const SORTED_COLUMN = 'bg-surface-selected text-ink';
  * screen edge. Anything stacked with it takes the same treatment, or the page
  * ends up with two different left edges.
  */
-export const EDGE_TO_EDGE = '-mx-4 sm:mx-0';
+export const EDGE_TO_EDGE = '-mx-gutter sm:mx-0';

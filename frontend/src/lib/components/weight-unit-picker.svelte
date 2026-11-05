@@ -15,7 +15,7 @@
   onchange={(event) => {
     weights.select(weightUnit(event.currentTarget.value));
   }}
-  class="w-auto px-2 py-1 text-xs sm:h-8 sm:min-h-8"
+  class="w-auto px-2 py-1 text-meta sm:h-8 sm:min-h-8"
 >
   <option value="kg">kg</option>
   <option value="lb">lb</option>

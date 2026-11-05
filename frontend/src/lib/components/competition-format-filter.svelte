@@ -65,7 +65,7 @@
         {#each choices as movement (movement.code)}
           {@const selected = value.includes(movement.code)}
           <label
-            class="relative flex min-h-11 cursor-pointer items-center gap-2.5 rounded-control px-2.5 font-mono text-xs text-ink sm:min-h-8 {selected
+            class="relative flex min-h-11 cursor-pointer items-center gap-2 rounded-control px-3 font-mono text-meta text-ink sm:min-h-8 {selected
               ? 'bg-surface-selected'
               : 'hover:bg-surface-hover'}"
           >
@@ -110,7 +110,7 @@
           aria-label={i18n.t('Clear movements')}
           disabled={!value}
           onclick={() => onChange('')}
-          class="w-full justify-start px-2.5 text-secondary disabled:text-faint"
+          class="w-full justify-start px-3 text-secondary disabled:text-faint"
           >{i18n.t('Clear selection')}</Button
         >
       </div>

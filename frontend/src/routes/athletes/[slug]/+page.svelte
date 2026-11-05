@@ -24,6 +24,7 @@
     FROZEN_HEAD_CELL,
     FROZEN_EDGE,
     FROZEN_RANK,
+    Text,
   } from '#lib/components/ui/index.js';
   import { GlobeIcon, InstagramIcon } from '#lib/components/icons/index.js';
   import { resolve } from '$app/paths';
@@ -114,8 +115,8 @@
     latestCategory?.match(/([+-]\d+(?:\.\d+)?)\s*(?:kg)?$/i)?.[1] ?? null
   );
 
-  const CARD_GRID = 'grid max-w-records grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4';
-  const RANKING_CARD_GRID = 'grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4';
+  const CARD_GRID = 'grid max-w-records grid-cols-2 gap-tile md:grid-cols-4';
+  const RANKING_CARD_GRID = 'grid grid-cols-1 gap-tile sm:grid-cols-2';
 
   const filters = $derived(athleteFilters(page.url.searchParams));
   const selectedMetric = $derived(filters.ranking);
@@ -231,10 +232,10 @@
     ]}
   />
 
-  <header class="mb-6 border-b border-stroke pb-5 sm:mb-8">
+  <header class="mb-section border-b border-stroke pb-4">
     <div class="flex items-center gap-3">
       <h1
-        class="flex min-w-0 items-start gap-3 font-sans text-2xl font-semibold tracking-tight text-balance text-ink sm:text-3xl"
+        class="flex min-w-0 items-start gap-3 font-sans text-title font-semibold tracking-tight text-balance text-ink sm:text-display"
       >
         {#if athlete.country}
           <Flag
@@ -261,15 +262,15 @@
     </div>
 
     {#if !athlete.country}
-      <p class="mt-1 text-sm text-secondary">{i18n.t('Country not recorded')}</p>
+      <p class="mt-1 text-body text-secondary">{i18n.t('Country not recorded')}</p>
     {/if}
 
     {#if athlete.native_name}
-      <p class="mt-1 break-words text-base text-secondary">{athlete.native_name}</p>
+      <p class="mt-1 break-words text-lead text-secondary">{athlete.native_name}</p>
     {/if}
 
     <dl
-      class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]"
+      class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]"
     >
       <dt class="text-muted">{i18n.t('Sex')}</dt>
       <dd class="text-ink">{genderLabel}</dd>
@@ -308,16 +309,16 @@
     </RankingCard>
   {/snippet}
   {#if athlete.standing}
-    <div class="mb-6 max-w-summary sm:mb-8">
+    <div class="mb-section max-w-summary">
       <div class="mb-3 flex items-center justify-between gap-3">
-        <h2 class="{TEXT.heading} text-ink">{i18n.t('Ranking')}</h2>
-        <label class="flex items-center gap-2 text-xs text-muted">
+        <Text as="h2" variant="heading" class="text-ink">{i18n.t('Ranking')}</Text>
+        <label class="flex items-center gap-2 text-meta text-muted">
           <span class="sr-only">{i18n.t('Metric')}</span>
           <Select
             name="ranking"
             value={selectedMetric}
             onchange={(event) => updateFilter('ranking', event.currentTarget.value)}
-            class="px-2.5 py-1.5"
+            class="px-3 py-1.5"
           >
             {#each RANKING_SORTS as metric (metric.value)}
               <option value={metric.value}>{i18n.t(metric.label)}</option>
@@ -353,20 +354,20 @@
   {/if}
 
   {#if athlete.personal_records.length > 0}
-    <div class="mb-6 sm:mb-8">
-      <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Personal records')}</h2>
+    <div class="mb-section">
+      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Personal records')}</Text>
       <div class={CARD_GRID}>
         {#each athlete.personal_records as pr (pr.movement_name)}
           <MetricCard heading={i18n.movement(pr.movement_name)}>
             <span class={TEXT.cardFigure}>{weights.format(pr.max_weight, i18n.locale)}</span>
-            <span class="font-mono text-xs text-secondary">{weights.unit}</span>
+            <span class="font-mono text-meta text-secondary">{weights.unit}</span>
             {#snippet footer()}
               <a
                 href={i18n.href(resolve(`competitions/${pr.competition_slug}`))}
                 class="block truncate underline hover:text-ink"
                 title={pr.competition_name}>{pr.competition_name}</a
               >
-              {#if pr.date}<span class="block font-mono text-[0.6875rem]"
+              {#if pr.date}<span class="block font-mono text-micro"
                   >{formatDate(pr.date, i18n.locale)}</span
                 >{/if}
             {/snippet}
@@ -376,19 +377,22 @@
     </div>
   {/if}
 
-  <div class="mt-6 grid items-stretch gap-4 sm:mt-8 lg:auto-rows-fr lg:grid-cols-2">
-    <AthleteProgress
-      athleteSlug={athlete.slug}
-      competitions={athlete.competitions}
-      metric={filters.performance}
-      onMetricChange={(value) => updateFilter('performance', value)}
-    />
+  <div>
+    <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Performance')}</Text>
+    <div class="grid items-stretch gap-tile lg:auto-rows-fr lg:grid-cols-2">
+      <AthleteProgress
+        athleteSlug={athlete.slug}
+        competitions={athlete.competitions}
+        metric={filters.performance}
+        onMetricChange={(value) => updateFilter('performance', value)}
+      />
 
-    <AthleteStrength profile={athlete.strength_profile} />
+      <AthleteStrength profile={athlete.strength_profile} />
+    </div>
   </div>
 
   <div class={LAYOUT.section}>
-    <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Competition history')}</h2>
+    <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Competition history')}</Text>
     {#if athlete.competitions.length > 0}
       <Table
         rows={athlete.competitions}
@@ -407,7 +411,7 @@
           {#each contested as lift (lift.key)}
             <th class="{TABLE_HEAD_CELL} text-secondary">
               {i18n.t(lift.label)}
-              <span class="{ATTEMPT_ROW} mt-1 text-[0.65rem] font-normal text-muted">
+              <span class="{ATTEMPT_ROW} mt-1 text-micro font-normal text-muted">
                 <span class="text-right">1</span>
                 <span class="text-right">2</span>
                 <span class="text-right">3</span>

@@ -131,7 +131,7 @@
 
   {#if data.runningCompetitions.length > 0}
     <Notice title={i18n.t('Hey! Those competitions are currently running')} live>
-      <ul class="mt-2 space-y-2 text-sm">
+      <ul class="mt-2 space-y-2 text-body">
         {#each data.runningCompetitions as competition (competition.slug)}
           <li class="flex flex-wrap items-center gap-x-6 gap-y-1">
             <a
@@ -203,7 +203,7 @@
 
   <nav
     aria-label={i18n.t('Competition status')}
-    class="mb-4 flex items-center gap-5 border-b border-stroke"
+    class="mb-4 flex items-center gap-4 border-b border-stroke"
   >
     {#each TABS as tab (tab.status)}
       {@const active = data.status === tab.status}
