@@ -2,7 +2,7 @@
   import { LAYOUT } from '#lib/constants/layout.js';
   import { useI18n } from '#lib/i18n/index.js';
   import type { PageData } from './$types';
-  import { Breadcrumb, Flag } from '#lib/components/ui/index.js';
+  import { Breadcrumb, Flag, Text } from '#lib/components/ui/index.js';
   import CompetitionsTable from '#lib/components/competitions-table.svelte';
   import RankingList from '#lib/components/ranking-list.svelte';
   import Seo from '#lib/components/seo.svelte';
@@ -11,7 +11,6 @@
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { breadcrumbLd, federationLd, listingSeo } from '#lib/seo/index.js';
   import { federationPath } from '#lib/utils/index.js';
-  import { TEXT } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
 
@@ -89,7 +88,7 @@
   />
 
   <header class="mb-6 border-b border-stroke pb-4">
-    <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
+    <Text as="h1" variant="title" class="flex min-w-0 items-start gap-3 text-ink">
       {#if federation.country}
         <Flag
           countryCode={federation.country}
@@ -98,7 +97,7 @@
         />
       {/if}
       <span class="min-w-0 break-words">{federation.name}</span>
-    </h1>
+    </Text>
     {#if years || federation.countries > 1 || (federation.abbreviation && federation.abbreviation !== federation.name)}
       <dl
         class="mt-4 grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]"
@@ -121,21 +120,21 @@
 
   {#if data.results.length > 0}
     <section class="mb-8 sm:mb-12">
-      <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Competitions')}</h2>
+      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Competitions')}</Text>
       <CompetitionsTable competitions={data.results} showFederation={false} />
     </section>
   {/if}
 
   {#if data.rankings.length > 0}
     <section>
-      <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Athletes')}</h2>
+      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Athletes')}</Text>
       <RankingList entries={data.rankings} {pagination} showFederation={false} {busy} />
     </section>
   {/if}
 
   {#if data.upcoming.length > 0}
     <section class={LAYOUT.section}>
-      <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Upcoming')}</h2>
+      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Upcoming')}</Text>
       <CompetitionsTable competitions={data.upcoming} upcoming showFederation={false} />
     </section>
   {/if}

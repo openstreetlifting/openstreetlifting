@@ -9,6 +9,7 @@
     Table,
     TABLE_CELL,
     TABLE_HEAD_CELL,
+    Text,
   } from '#lib/components/ui/index.js';
   import Seo from '#lib/components/seo.svelte';
   import { resolve } from '$app/paths';
@@ -16,7 +17,6 @@
   import { absolute, breadcrumbLd } from '#lib/seo/index.js';
   import { countryName } from '#lib/utils/index.js';
   import { CELL, FIGURE, NO_VALUE } from '#lib/constants/table.js';
-  import { TEXT } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
 
@@ -49,7 +49,7 @@
     items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Countries') }]}
   />
 
-  <h1 class="mb-section {TEXT.title} text-ink">{i18n.t('Countries')}</h1>
+  <Text as="h1" variant="title" class="mb-section text-ink">{i18n.t('Countries')}</Text>
 
   <Table rows={countries} itemName="country" pageParam="page">
     {#snippet head()}

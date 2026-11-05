@@ -1,10 +1,9 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
   import { formatLongDate } from '#lib/utils/format.js';
-  import { TEXT } from '#lib/constants/typography.js';
   import Seo from '#lib/components/seo.svelte';
   import { absolute, breadcrumbLd } from '#lib/seo/index.js';
-  import { Breadcrumb } from '#lib/components/ui/index.js';
+  import { Breadcrumb, Text, Stack } from '#lib/components/ui/index.js';
   import Message from '#lib/components/ui/message.svelte';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
 
@@ -40,7 +39,7 @@
   />
 
   <header class="mb-chapter">
-    <h1 class="mb-4 {TEXT.title} text-ink">{i18n.t('Privacy policy')}</h1>
+    <Text as="h1" variant="title" class="mb-4 text-ink">{i18n.t('Privacy policy')}</Text>
     <p class="mb-6 text-body text-muted">
       {i18n.t('Last updated:')}
       <time datetime="2026-09-16">{formatLongDate('2026-09-16', i18n.locale)}</time>
@@ -68,9 +67,11 @@
     </ul>
   </nav>
 
-  <div class="space-y-12 leading-relaxed text-secondary">
+  <Stack gap={12} class="leading-relaxed text-secondary">
     <section aria-labelledby="controller">
-      <h2 id="controller" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Data controller')}</h2>
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="controller"
+        >{i18n.t('Data controller')}</Text
+      >
       <p>
         <Message
           message={'Adrien Pelfresne is the data controller for OpenStreetlifting. Contact: {email}.'}
@@ -80,7 +81,9 @@
     </section>
 
     <section aria-labelledby="data">
-      <h2 id="data" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Personal data')}</h2>
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="data"
+        >{i18n.t('Personal data')}</Text
+      >
       <p class="mb-4">
         {i18n.t(
           'Athlete records come from results published by federations, organisers, competition platforms, and public posts, or supplied by contributors. Competition pages link to sources where available. Records can include:'
@@ -109,7 +112,9 @@
     </section>
 
     <section aria-labelledby="legal-basis">
-      <h2 id="legal-basis" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Legal basis')}</h2>
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="legal-basis"
+        >{i18n.t('Legal basis')}</Text
+      >
       <p class="mb-4">
         {i18n.t(
           'I rely on legitimate interests under Article 6(1)(f) of the GDPR to preserve competition results, connect an athlete’s performances across events, and make the sport’s record accessible. Instagram links help readers find an athlete’s public account.'
@@ -123,7 +128,9 @@
     </section>
 
     <section aria-labelledby="sharing">
-      <h2 id="sharing" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Data sharing')}</h2>
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="sharing"
+        >{i18n.t('Data sharing')}</Text
+      >
       <p class="mb-4">
         {i18n.t(
           'Athlete data is public through the website, API, downloads, and GitHub repository. Search engines can index it, and people worldwide can copy it. The CC0 licence does not affect your data protection rights.'
@@ -138,7 +145,9 @@
     </section>
 
     <section aria-labelledby="visitors">
-      <h2 id="visitors" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Website analytics')}</h2>
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="visitors"
+        >{i18n.t('Website analytics')}</Text
+      >
       <p class="mb-4">{i18n.t('Your weight unit preference is saved in your browser.')}</p>
       <p class="mb-4">
         {i18n.t(
@@ -153,7 +162,9 @@
     </section>
 
     <section aria-labelledby="your-rights">
-      <h2 id="your-rights" class="mb-4 {TEXT.heading} text-ink">{i18n.t('GDPR rights')}</h2>
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="your-rights"
+        >{i18n.t('GDPR rights')}</Text
+      >
       <p class="mb-4">
         {#snippet gdpr()}<a
             href="https://eur-lex.europa.eu/eli/reg/2016/679/oj/{{
@@ -214,14 +225,16 @@
     </section>
 
     <section aria-labelledby="removal">
-      <h2 id="removal" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Removal requests')}</h2>
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="removal"
+        >{i18n.t('Removal requests')}</Text
+      >
       <p class="mb-4">
         <Message
           message={'Write to {email} with your athlete-page link or competition details and the change you are requesting. Requests are handled in accordance with Article 12 of the GDPR.'}
           values={{ email }}
         />
       </p>
-      <h3 class="mb-3 {TEXT.subheading} text-ink">{i18n.t('Name removal')}</h3>
+      <Text as="h3" variant="subheading" class="mb-3 text-ink">{i18n.t('Name removal')}</Text>
       <p class="mb-4">
         {i18n.t(
           'The procedure replaces your name with a numbered label, such as “Redacted Athlete #7”, and removes your original-script name and Instagram link. Once published, the change appears on the website, API, and fresh downloads, and the old named profile is removed.'
@@ -245,7 +258,9 @@
     </section>
 
     <section aria-labelledby="retention">
-      <h2 id="retention" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Data retention')}</h2>
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="retention"
+        >{i18n.t('Data retention')}</Text
+      >
       <p class="mb-4">
         {i18n.t(
           'Competition results have no scheduled expiry: they form the sporting archive. Continued retention remains subject to your GDPR rights.'
@@ -259,7 +274,9 @@
     </section>
 
     <section aria-labelledby="complaints">
-      <h2 id="complaints" class="mb-4 {TEXT.heading} text-ink">{i18n.t('Complaints')}</h2>
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="complaints"
+        >{i18n.t('Complaints')}</Text
+      >
       <p>
         {#snippet cnil()}<a href="https://www.cnil.fr/fr/plaintes" class={linkClass}
             >{i18n.t('CNIL')}</a
@@ -270,5 +287,5 @@
         />
       </p>
     </section>
-  </div>
+  </Stack>
 </div>

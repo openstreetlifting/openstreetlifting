@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { Text } from '#lib/components/ui/index.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import Button from '#lib/components/ui/button.svelte';
-  import { TEXT } from '#lib/constants/typography.js';
 
   const i18n = useI18n();
 
@@ -40,7 +40,7 @@
     class="mb-8 h-32 w-32 sm:h-40 sm:w-40"
   />
   <p class="mb-3 text-body font-medium text-secondary">{page.status} · {copy.label}</p>
-  <h1 class="{TEXT.title} text-balance text-ink">{copy.title}</h1>
+  <Text as="h1" variant="title" class="text-balance text-ink">{copy.title}</Text>
   {#if copy.description}
     <p class="mt-3 max-w-sm text-body leading-relaxed text-pretty text-secondary">
       {copy.description}

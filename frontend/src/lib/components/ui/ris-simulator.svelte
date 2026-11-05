@@ -1,9 +1,11 @@
 <script lang="ts">
+  import Stack from './stack.svelte';
+  import Text from './text.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import Message from './message.svelte';
   import RisCategory from './ris-category.svelte';
-  import { FIELD, TEXT } from '#lib/constants/typography.js';
+  import { FIELD } from '#lib/constants/typography.js';
   import type { RisFormula } from '#lib/types/ris.js';
   import { benchmarkTotal, bodyweightForRis, calculateRis } from '#lib/utils/ris.js';
   import { displayWeight, kilograms, type WeightUnit } from '#lib/utils/weight-unit.js';
@@ -112,13 +114,15 @@
 </script>
 
 <section aria-labelledby="{id}-heading" class="mb-chapter">
-  <h2 id="{id}-heading" class="{TEXT.heading} text-ink">{i18n.t('Calculate your RIS')}</h2>
+  <Text as="h2" variant="heading" class="text-ink" id="{id}-heading"
+    >{i18n.t('Calculate your RIS')}</Text
+  >
   <p class="sr-only" role="status" aria-live="polite" aria-atomic="true">{scoreAnnouncement}</p>
-  <p class="mt-3 {TEXT.body} leading-6 text-secondary">
+  <Text variant="body" class="mt-3 leading-6 text-secondary">
     {i18n.t(
       'Choose your category and enter your bodyweight and MPDS total. Add a target score to explore the corresponding total or bodyweight.'
     )}
-  </p>
+  </Text>
 
   <div class="mt-8 grid items-start gap-6 sm:grid-cols-[auto_1fr_1fr]">
     <div>
@@ -204,7 +208,9 @@
     </div>
 
     <section aria-labelledby="{id}-target-heading" class="mt-8 border-y border-stroke py-4">
-      <h2 id="{id}-target-heading" class="{TEXT.heading} text-ink">{i18n.t('Target RIS')}</h2>
+      <Text as="h2" variant="heading" class="text-ink" id="{id}-target-heading"
+        >{i18n.t('Target RIS')}</Text
+      >
       <div class="mt-4 mb-4 flex flex-wrap items-center gap-3">
         <label for="{id}-target" class="text-body text-secondary">{i18n.t('Target score')}</label>
         <input
@@ -233,7 +239,7 @@
           {/if}
         </p>
       {:else if scenario}
-        <div class="space-y-4 text-body leading-6 text-secondary">
+        <Stack gap={4} class="text-body leading-6 text-secondary">
           <p>
             {#snippet total()}<strong class="font-medium text-ink"
                 >{weights.format(scenario.total, i18n.locale, 1)} {weights.unit}</strong
@@ -305,7 +311,7 @@
               )}
             {/if}
           </p>
-        </div>
+        </Stack>
       {:else}
         <p class="text-meta leading-6 text-secondary">
           {i18n.t(

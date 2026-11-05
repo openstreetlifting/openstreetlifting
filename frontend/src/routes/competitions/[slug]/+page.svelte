@@ -23,6 +23,7 @@
     FROZEN_RANK,
     ATHLETE_COLUMN,
     ATHLETE_CONTENT,
+    Text,
   } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
@@ -61,7 +62,6 @@
   import { GENDERS, asRankingMetric, type AthleteStatus } from '#lib/types/enums.js';
   import { hasRankingResult, weightClasses } from '#lib/utils/competition-results.js';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
-  import { TEXT } from '#lib/constants/typography.js';
   import Seo from '#lib/components/seo.svelte';
   import {
     breadcrumbLd,
@@ -376,7 +376,7 @@
   <header
     class="mb-6 grid grid-cols-1 gap-y-4 border-b border-stroke pb-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-6"
   >
-    <h1 class="{TEXT.title} flex min-w-0 items-start gap-3 text-ink">
+    <Text as="h1" variant="title" class="flex min-w-0 items-start gap-3 text-ink">
       {#if competition.country}
         <Flag
           countryCode={competition.country}
@@ -385,7 +385,7 @@
         />
       {/if}
       <span class="min-w-0 break-words">{competition.name}</span>
-    </h1>
+    </Text>
 
     <dl
       class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:col-span-2 sm:grid-cols-[7rem_minmax(0,1fr)]"
