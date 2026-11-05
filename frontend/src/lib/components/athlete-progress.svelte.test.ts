@@ -94,5 +94,27 @@ it('shows a single result as a milestone and handles a missing metric', async ()
   render(AthleteProgress, { competitions: competitions.slice(0, 1), formats: ['MPDS'] });
   await expect.element(page.getByText(/One result recorded/)).toBeVisible();
   await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('dips');
-  await expect.element(page.getByText('No dated Dips results available.')).toBeVisible();
+  await expect.element(page.getByText('No dated Dips results available for MPDS.')).toBeVisible();
+});
+
+it('keeps the format selector visible and applies it to individual lifts', async () => {
+  const all4 = competitions.map((competition, index) => ({
+    ...competition,
+    lifts: [{ movement_name: 'Pull-up', best_weight: String((index + 1) * 10), attempts: [] }],
+  }));
+  const shorter = {
+    ...competitions[1],
+    competition_id: 'shorter',
+    event: 'PD',
+    lifts: [{ movement_name: 'Pull-up', best_weight: '30', attempts: [] }],
+  };
+  render(AthleteProgress, { competitions: [...all4, shorter], formats: ['MPDS', 'PD'] });
+  await expect
+    .element(page.getByRole('combobox', { name: 'Format', exact: true }))
+    .toHaveValue('MPDS');
+  await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('pullup');
+  await expect.element(page.getByRole('combobox', { name: 'Format', exact: true })).toBeVisible();
+  await expect.element(page.getByText('20 kg', { exact: true })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Format', exact: true }).selectOptions('PD');
+  await expect.element(page.getByText('30 kg', { exact: true })).toBeVisible();
 });

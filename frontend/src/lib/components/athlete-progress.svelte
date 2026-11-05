@@ -114,17 +114,17 @@
         {/each}
       </Select>
     </label>
-    {#if (metric === 'total' || metric === 'ris') && formats.length > 1}
+    {#if formats.length > 0}
       <label class="flex items-center gap-2 text-xs text-muted">
-        {i18n.t('Event')}
+        {i18n.t('Format')}
         <Select
           name="event"
+          disabled={formats.length < 2}
           bind:value={format}
           onchange={(event) => onFormatChange?.(event.currentTarget.value)}
           class="px-2.5 py-1.5"
         >
-          {#each formats as option (option)}<option value={option}
-              >{option === 'MPDS' ? i18n.t('All four lifts') : option}</option
+          {#each formats as option (option)}<option value={option} translate="no">{option}</option
             >{/each}
         </Select>
       </label>
@@ -325,12 +325,10 @@
     {/if}
   {:else}
     <p class="border-y border-stroke py-8 text-sm text-secondary">
-      {metric === 'total' || metric === 'ris'
-        ? i18n.t('No dated {movement} results available for {format}.', {
-            movement: label,
-            format: format === 'MPDS' ? i18n.t('All four lifts') : format,
-          })
-        : i18n.t('No dated {movement} results available.', { movement: label })}
+      {i18n.t('No dated {movement} results available for {format}.', {
+        movement: label,
+        format,
+      })}
     </p>
   {/if}
 </ChartPanel>
