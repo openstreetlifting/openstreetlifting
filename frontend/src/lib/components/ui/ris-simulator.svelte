@@ -99,10 +99,19 @@
   const targetMet = $derived(
     scenario !== null && displayedScore !== null && target !== undefined && displayedScore >= target
   );
+  let scoreAnnouncement = $state('');
+
+  $effect(() => {
+    const message = performance ? `RIS: ${i18n.number(performance.score, 2)}` : '';
+    // Announce the settled score rather than every keystroke or slider step.
+    const timer = setTimeout(() => (scoreAnnouncement = message), 300);
+    return () => clearTimeout(timer);
+  });
 </script>
 
 <section aria-labelledby="{id}-heading" class="mb-10 sm:mb-12">
   <h2 id="{id}-heading" class="{TEXT.heading} text-ink">{i18n.t('Calculate your RIS')}</h2>
+  <p class="sr-only" role="status" aria-live="polite" aria-atomic="true">{scoreAnnouncement}</p>
   <p class="mt-3 {TEXT.body} leading-6 text-secondary">
     {i18n.t(
       'Choose your category and enter your bodyweight and MPDS total. Add a target score to explore the corresponding total or bodyweight.'
@@ -140,15 +149,20 @@
             >
           </div>
         </div>
-        {#if invalid}
-          <p id="{id}-{control.key}-error" class="text-xs text-secondary">
+        <p
+          id="{id}-{control.key}-error"
+          class="text-xs text-secondary"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {#if invalid}
             {i18n.t('Enter a number between {min} and {max} {unit}.', {
               unit: weights.unit,
               min: weights.format(control.min, i18n.locale),
               max: weights.format(control.max, i18n.locale),
             })}
-          </p>
-        {/if}
+          {/if}
+        </p>
         {#if value !== undefined && !invalid}
           <input
             type="range"
