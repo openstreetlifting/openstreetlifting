@@ -1,12 +1,21 @@
 import { logger } from '#lib/server/logger.js';
 import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
-import { competitionsService, rankingsService } from '#lib/server/api/index.js';
+import { competitionsService, rankingsService, risService } from '#lib/server/api/index.js';
 import { ApiError } from '#lib/server/api/client.js';
 import { defaultRankingSort, risProvenance } from '#lib/constants/ranking.js';
 import { formatAthleteName } from '#lib/utils/format.js';
 import type { PageServerLoad } from './$types';
 import { error, redirect } from '@sveltejs/kit';
 import { asRankedGender, asRankingMetric } from '#lib/types/enums.js';
+
+async function currentFormula() {
+  try {
+    const formulas = await risService.getFormulas();
+    return formulas.find((formula) => formula.is_current) ?? null;
+  } catch {
+    return null;
+  }
+}
 
 const noRankings = () => ({
   data: [],
@@ -82,7 +91,8 @@ export const load: PageServerLoad = async ({ params, url }) => {
     }
   }
 
-  const [classes, countries, rankings] = await Promise.all([
+  const [formula, classes, countries, rankings] = await Promise.all([
+    currentFormula(),
     rankingsService.getRankingClasses(gender, competition.competition_id).catch(() => []),
     rankingsService.getRankingCountries(competition.competition_id).catch(() => []),
     rankingsService
@@ -110,5 +120,6 @@ export const load: PageServerLoad = async ({ params, url }) => {
     countries,
     initialRankings: rankings.data,
     pagination: rankings.pagination,
+    formula,
   };
 };
