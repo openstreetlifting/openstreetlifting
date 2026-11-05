@@ -2,10 +2,9 @@
   import { useI18n } from '#lib/i18n/index.js';
   import { formatLongDate } from '#lib/utils/format.js';
   import Seo from '#lib/components/seo.svelte';
-  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
-  import { Breadcrumb, Text, Stack } from '#lib/components/ui/index.js';
+  import { absolute } from '#lib/seo/index.js';
+  import { Text, Stack } from '#lib/components/ui/index.js';
   import Message from '#lib/components/ui/message.svelte';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
 
   const i18n = useI18n();
 
@@ -22,22 +21,9 @@
     'How OpenStreetlifting uses athlete and visitor data, your GDPR rights, and how to ask for a correction or removal.'
   )}
   canonical={absolute('/privacy')}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        { name: i18n.t('Privacy'), path: '/privacy' },
-      ],
-      i18n.locale
-    ),
-  ]}
 />
 
 <div class="mx-auto max-w-reading px-gutter py-12 sm:py-16">
-  <Breadcrumb
-    items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Privacy') }]}
-  />
-
   <header class="mb-chapter">
     <Text as="h1" variant="title" class="mb-4 text-ink">{i18n.t('Privacy policy')}</Text>
     <p class="mb-6 text-body text-muted">

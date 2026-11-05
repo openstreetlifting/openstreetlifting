@@ -5,10 +5,9 @@
   import RisCategory from '#lib/components/ui/ris-category.svelte';
   import RisSimulator from '#lib/components/ui/ris-simulator.svelte';
   import Seo from '#lib/components/seo.svelte';
-  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
-  import { Breadcrumb, Text } from '#lib/components/ui/index.js';
+  import { absolute } from '#lib/seo/index.js';
+  import { Text } from '#lib/components/ui/index.js';
   import Message from '#lib/components/ui/message.svelte';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import type { PageData } from './$types';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
@@ -41,20 +40,9 @@
     'Understand RIS, calculate your score, and explore Streetlifting competition results across bodyweights.'
   )}
   canonical={absolute('/ris')}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        { name: 'RIS', path: '/ris' },
-      ],
-      i18n.locale
-    ),
-  ]}
 />
 
 <article class="mx-auto max-w-reading px-gutter pt-chapter pb-16">
-  <Breadcrumb items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: 'RIS' }]} />
-
   <header class="mb-chapter">
     <Text as="h1" variant="title" class="text-ink"
       >{i18n.t('The Relative Index for Streetlifting')}</Text

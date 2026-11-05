@@ -3,18 +3,10 @@
   import { useI18n } from '#lib/i18n/index.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { PageData } from './$types';
-  import {
-    Breadcrumb,
-    Flag,
-    Table,
-    TABLE_CELL,
-    TABLE_HEAD_CELL,
-    Text,
-  } from '#lib/components/ui/index.js';
+  import { Flag, Table, TABLE_CELL, TABLE_HEAD_CELL, Text } from '#lib/components/ui/index.js';
   import Seo from '#lib/components/seo.svelte';
   import { resolve } from '$app/paths';
-  import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
-  import { absolute, breadcrumbLd } from '#lib/seo/index.js';
+  import { absolute } from '#lib/seo/index.js';
   import { countryName } from '#lib/utils/index.js';
   import { CELL, FIGURE, NO_VALUE } from '#lib/constants/table.js';
 
@@ -33,22 +25,9 @@
     { countries: i18n.number(countries.length, 0), athletes: i18n.number(athleteCount, 0) }
   )}
   canonical={absolute('/countries')}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        { name: i18n.t('Countries'), path: '/countries' },
-      ],
-      i18n.locale
-    ),
-  ]}
 />
 
 <div class={LAYOUT.page}>
-  <Breadcrumb
-    items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Countries') }]}
-  />
-
   <Text as="h1" variant="title" class="mb-section text-ink">{i18n.t('Countries')}</Text>
 
   <Table rows={countries} itemName="country" pageParam="page">

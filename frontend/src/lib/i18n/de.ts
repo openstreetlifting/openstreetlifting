@@ -224,8 +224,6 @@ export default {
   'Clear all filters and sorting': 'Alle Filter und die Sortierung zurücksetzen',
   Clear: 'Zurücksetzen',
   Filters: 'Filter',
-  'Results could not be loaded. Please try again in a moment.':
-    'Die Ergebnisse konnten nicht geladen werden. Bitte versuchen Sie es gleich erneut.',
   'Try again': 'Erneut versuchen',
   'Retrying…': 'Wird erneut versucht…',
   'Close information': 'Informationen schließen',
@@ -346,7 +344,7 @@ export default {
   'Something went wrong': 'Etwas ist schiefgelaufen',
   'We couldn’t load this page.': 'Wir konnten diese Seite nicht laden.',
   'Please try again later.': 'Bitte versuche es später erneut.',
-  'Failed to load rankings': 'Wir konnten die Ranglisten nicht laden',
+  'Couldn’t load rankings': 'Rangliste konnte nicht geladen werden',
   Disqualified: 'Disqualifiziert',
   'Did not lift': 'Nicht angetreten',
   athlete: 'Athlet',
@@ -435,7 +433,7 @@ export default {
   'Competition format: {label}': 'Wettkampfformat: {label}',
   'The federation published this RIS score. Bodyweight or total is missing, so we cannot recalculate it.':
     'Der Verband hat diesen RIS-Wert veröffentlicht. Körpergewicht oder Total fehlen, daher können wir ihn nicht neu berechnen.',
-  'Failed to load competitions': 'Wir konnten die Wettkämpfe nicht laden',
+  'Couldn’t load competitions': 'Wettkämpfe konnten nicht geladen werden',
   to: 'bis',
   '#{place} of {field} in {country}': 'Platz {place} von {field} – {country}',
   '#{place} of {field} worldwide': 'Platz {place} von {field} weltweit',
