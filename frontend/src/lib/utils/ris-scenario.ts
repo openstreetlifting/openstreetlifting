@@ -8,7 +8,7 @@ export interface RisScenario {
   target: string;
 }
 
-export function readRisScenario(params: URLSearchParams): RisScenario {
+export function readRisScenario(params: Pick<URLSearchParams, 'get'>): RisScenario {
   const field = (key: 'bodyweight' | 'total'): RisWeightField => ({
     text: params.get(key) ?? '',
     unit: params.get(`${key}_unit`) === 'lb' ? 'lb' : 'kg',
@@ -20,8 +20,8 @@ export function readRisScenario(params: URLSearchParams): RisScenario {
   };
 }
 
-export function writeRisScenario(url: URL, scenario: RisScenario): URL {
-  const result = new URL(url);
+export function writeRisScenario(url: Pick<URL, 'href'>, scenario: RisScenario): URL {
+  const result = new URL(url.href);
   const set = (key: string, value: string) => {
     if (value) result.searchParams.set(key, value);
     else result.searchParams.delete(key);
