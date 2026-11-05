@@ -6,7 +6,7 @@ use crate::{ImporterError, Result};
 use osl_domain::{Edition, Movement, NativeScript, NormalizedAthleteName};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
-use tracing::debug;
+use tracing::{debug, info};
 use uuid::Uuid;
 
 pub struct CanonicalTransformer<'a> {
@@ -64,10 +64,18 @@ impl<'a> CanonicalTransformer<'a> {
         sqlx::query("SELECT pg_advisory_xact_lock(426, 1)")
             .execute(&mut *tx)
             .await?;
-        for canonical in &competitions {
+        let total = competitions.len();
+        for (index, canonical) in competitions.iter().enumerate() {
+            info!(
+                competition = %canonical.competition.slug,
+                position = index + 1,
+                total,
+                "Competition import started"
+            );
             self.import_competition(canonical, &mut tx).await?;
         }
         let plan = if prune {
+            info!("Pruning started");
             let slugs: Vec<_> = competitions
                 .iter()
                 .map(|canonical| canonical.competition.slug.clone())

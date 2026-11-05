@@ -32,7 +32,7 @@ pub struct Cli {
         short,
         long,
         global = true,
-        help = "Enable debug logging (overridden by RUST_LOG)"
+        help = "Enable debug logging (overridden by RUST_LOG) and print validation warning details"
     )]
     pub verbose: bool,
 }

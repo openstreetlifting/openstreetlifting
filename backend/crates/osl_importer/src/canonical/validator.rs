@@ -461,13 +461,15 @@ pub struct ValidationReport {
 }
 
 impl ValidationReport {
-    pub fn log_warnings(&self) {
-        if !self.warnings.is_empty() {
-            warn!(
-                warnings = self.warnings.len(),
-                "Competition validation warnings recorded"
-            );
+    pub fn log_warnings(&self, competition: &str) {
+        if self.warnings.is_empty() {
+            return;
         }
+        warn!(
+            competition,
+            warnings = self.warnings.len(),
+            "Competition validation warnings recorded"
+        );
     }
 }
 
