@@ -9,7 +9,7 @@
     embedded = false,
   }: {
     title: string;
-    description: string;
+    description?: string;
     resetHref?: ResolvedPathname;
     embedded?: boolean;
   } = $props();

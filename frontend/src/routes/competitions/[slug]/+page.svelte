@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { LAYOUT } from '#lib/constants/layout.js';
+  import { CONTROL } from '#lib/constants/typography.js';
   import Button from '#lib/components/ui/button.svelte';
+  import { LAYOUT } from '#lib/constants/layout.js';
   import Notice from '#lib/components/ui/notice.svelte';
   import SelectField from '#lib/components/ui/select-field.svelte';
   import { useI18n } from '#lib/i18n/index.js';
@@ -14,7 +15,6 @@
     Table,
     RisHeader,
     RisScore,
-    InfoTip,
     TABLE_CELL,
     TABLE_HEAD_CELL,
     FROZEN_CELL,
@@ -45,9 +45,7 @@
     SORTED_COLUMN,
     NO_VALUE,
     NO_RESULT,
-    REPORTED_MARK,
-    REPORTED_GLYPH,
-    REPORTED_TITLE,
+    EDGE_TO_EDGE,
   } from '#lib/constants/table.js';
   import { GitHubIcon } from '#lib/components/icons/index.js';
   import {
@@ -242,6 +240,23 @@
   });
 
   const location = $derived(formatLocation(competition.city, competition.region));
+  const risNote = $derived(
+    data.ris === 'recomputed'
+      ? i18n.t('In this competition, RIS is recomputed with the current formula.')
+      : data.ris === 'reported'
+        ? i18n.t('In this competition, RIS scores are shown as published.')
+        : data.ris === 'not-published'
+          ? competition.movements.length < 4
+            ? i18n.t('Published RIS scores are missing from the source.')
+            : i18n.t(
+                'RIS scores are unavailable because the required bodyweight or total is missing.'
+              )
+          : undefined
+  );
+  const place = $derived([competition.venue, location].filter(Boolean).join(', '));
+  const DETAILS =
+    'grid w-max max-w-full grid-cols-[6rem_minmax(0,1fr)] content-start gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]';
+  const EDITION = `${CONTROL} inline-flex h-11 min-w-11 shrink-0 items-center justify-center rounded-control border px-2 tabular-nums sm:px-3 transition-colors focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none sm:h-8 sm:min-w-8`;
 
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
@@ -363,6 +378,22 @@
   ]}
 />
 
+{#snippet editLink()}
+  {#if editPath}
+    <Button
+      variant="outline"
+      size="control"
+      href={`https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/data/competitions/${editPath}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="shrink-0 gap-2 text-secondary hover:text-ink"
+    >
+      <GitHubIcon class="h-4 w-4" />
+      {i18n.t('Edit competition on GitHub')}
+    </Button>
+  {/if}
+{/snippet}
+
 <div class={LAYOUT.page}>
   <Breadcrumb
     items={[
@@ -373,231 +404,138 @@
     ]}
   />
 
-  <header
-    class="mb-6 grid grid-cols-1 gap-y-4 border-b border-stroke pb-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-6"
-  >
-    <Text as="h1" variant="title" class="flex min-w-0 items-start gap-3 text-ink">
-      {#if competition.country}
-        <Flag
-          countryCode={competition.country}
-          link
-          class="mt-[0.2em] shrink-0 [--flag-height:0.8em]"
-        />
-      {/if}
-      <span class="min-w-0 break-words">{competition.name}</span>
-    </Text>
-
-    <dl
-      class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:col-span-2 sm:grid-cols-[7rem_minmax(0,1fr)]"
-    >
-      {#if competition.start_date}
-        <dt class="text-muted">{i18n.t('Date')}</dt>
-        <dd class="text-ink">
-          <time datetime={competition.start_date}>
-            {competitionDate.format(new Date(competition.start_date))}
-          </time>
-          {#if competition.end_date && competition.end_date !== competition.start_date}
-            <span class="text-muted">–</span>
-            <time datetime={competition.end_date}>
-              {competitionDate.format(new Date(competition.end_date))}
-            </time>
-          {/if}
-        </dd>
-      {/if}
-      {#if competition.venue}
-        <dt class="text-muted">{i18n.t('Venue')}</dt>
-        <dd class="text-ink">{competition.venue}</dd>
-      {/if}
-      {#if location}
-        <dt class="text-muted">{i18n.t('Location')}</dt>
-        <dd class="text-ink">{location}</dd>
-      {/if}
-      <dt class="text-muted">{i18n.t('Format')}</dt>
-      <dd class="text-ink">
-        {formatLabel || (competition.status === 'upcoming' ? i18n.t('Format not announced') : '—')}
-      </dd>
-      <dt class="text-muted">{i18n.t('Federation')}</dt>
-      <dd class="min-w-0 text-ink">
-        <a
-          href={i18n.href(
-            resolve('/federations/[slug]', { slug: slugify(competition.federation.name) })
-          )}
-          title={competition.federation.name}
-          class="break-words underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
-          >{federationLabel}</a
-        >
-      </dd>
-      {#if competition.scoring}
-        <dt class="text-muted">{i18n.t('Scoring')}</dt>
-        <dd class="text-ink">{competition.scoring === 'ris' ? 'RIS' : i18n.t('Total')}</dd>
-      {/if}
-      {#if published}
-        <dt class="text-muted">RIS</dt>
-        <dd class="text-ink">
-          {#if data.ris === 'recomputed'}
-            {i18n.t('Recomputed')}
-          {:else if data.ris === 'reported'}
-            {i18n.t('Reported')}<span
-              class={REPORTED_MARK}
-              title={i18n.t(REPORTED_TITLE)}
-              aria-label={i18n.t(REPORTED_TITLE)}>{REPORTED_GLYPH}</span
-            >
-          {:else if data.ris === 'not-published'}
-            {i18n.t('Unavailable')}
-            <InfoTip label={i18n.t('Why RIS is unavailable')}>
-              {#if competition.movements.length < 4}
-                <p>{i18n.t('Published RIS scores are missing from the source.')}</p>
-              {:else}
-                <p>
-                  {i18n.t(
-                    'RIS scores are unavailable because the required bodyweight or total is missing.'
-                  )}
-                </p>
-              {/if}
-            </InfoTip>
-          {:else}
-            {i18n.t('None')}
-          {/if}
-        </dd>
-      {/if}
-      {#if published && !classed}
-        <dt class="text-muted">{i18n.t('Weight classes')}</dt>
-        <dd class="text-ink">{i18n.t('No weight classes')}</dd>
-      {/if}
-    </dl>
+  <header class="mb-section border-b border-stroke pb-4">
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <Text as="h1" variant="title" class="min-w-0 break-words text-ink">{competition.name}</Text>
+      {#if !published}{@render editLink()}{/if}
+    </div>
 
     {#if editions.length > 1}
-      <nav aria-labelledby="editions-heading" class="sm:col-span-2">
-        <h2 id="editions-heading" class="text-meta font-medium text-secondary">
-          {i18n.t('Editions')}
-        </h2>
-        <ul class="flex flex-wrap gap-x-4 gap-y-1 text-body">
-          {#each editions as edition (edition.slug)}
-            <li>
-              {#if edition.slug === competition.slug}
-                <span
-                  aria-current="page"
-                  class="inline-flex min-h-9 items-center font-medium text-ink"
-                >
-                  <time datetime={edition.start_date}>{edition.label}</time>
-                </span>
-              {:else}
-                <a
-                  href={i18n.href(resolve('/competitions/[slug]', { slug: edition.slug }))}
-                  aria-label={`${edition.label} · ${edition.name}`}
-                  title={`${edition.name} · ${formatLongDate(edition.start_date, i18n.locale)}`}
-                  class="inline-flex min-h-9 items-center rounded-sm text-secondary underline decoration-stroke-strong underline-offset-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none"
-                >
-                  <time datetime={edition.start_date}>{edition.label}</time>
-                </a>
-              {/if}
-            </li>
-          {/each}
-        </ul>
-      </nav>
+      <dl class="{DETAILS} mt-4">
+        <dt id="edition-label" class="self-center text-muted">{i18n.t('Edition')}</dt>
+        <dd class="min-w-0">
+          <nav aria-labelledby="edition-label">
+            <ul
+              class="inline-flex max-w-full gap-1 overflow-x-auto rounded-control border border-stroke p-1"
+            >
+              {#each editions as edition (edition.slug)}
+                <li>
+                  {#if edition.slug === competition.slug}
+                    <span
+                      aria-current="page"
+                      class="{EDITION} border-stroke-strong bg-surface-selected text-ink"
+                    >
+                      <time datetime={edition.start_date}>{edition.label}</time>
+                    </span>
+                  {:else}
+                    <a
+                      href={i18n.href(resolve('/competitions/[slug]', { slug: edition.slug }))}
+                      aria-label={`${edition.label} · ${edition.name}`}
+                      title={`${edition.name} · ${formatLongDate(edition.start_date, i18n.locale)}`}
+                      class="{EDITION} border-transparent text-secondary hover:bg-surface hover:text-ink"
+                    >
+                      <time datetime={edition.start_date}>{edition.label}</time>
+                    </a>
+                  {/if}
+                </li>
+              {/each}
+            </ul>
+          </nav>
+        </dd>
+      </dl>
     {/if}
 
-    {#if published && classed}
-      <section aria-labelledby="weight-classes-heading" class="sm:col-span-2">
-        <h2 id="weight-classes-heading" class="mb-2 text-meta font-medium text-secondary">
-          {i18n.t('Weight classes')}
-        </h2>
-        <dl
-          class="grid grid-cols-[6rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]"
-        >
-          {#each representedClasses as group (group.gender)}
-            <dt class="text-muted">{group.label}</dt>
-            <dd>
-              <ul
-                class="flex flex-wrap gap-x-2 gap-y-1 text-ink"
-                aria-label={i18n.t("{category}'s weight classes", { category: group.label })}
-              >
-                {#each group.classes as weightClass, i (weightClass)}
-                  <li class="inline-flex items-baseline gap-2 whitespace-nowrap tabular-nums">
-                    {#if i > 0}<span aria-hidden="true" class="text-muted">·</span>{/if}
-                    {weights.category(weightClass, i18n.locale) || i18n.t('No weight classes')}
-                  </li>
-                {/each}
-              </ul>
-            </dd>
-          {/each}
-        </dl>
-      </section>
-    {/if}
-
-    {#if editPath}
-      <Button
-        variant="outline"
-        href={`https://github.com/openstreetlifting/openstreetlifting/edit/main/backend/data/competitions/${editPath}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="min-h-11 gap-2 justify-self-start px-3 text-meta text-secondary hover:text-ink sm:col-start-2 sm:row-start-1 sm:self-start sm:justify-self-end"
-      >
-        <GitHubIcon class="h-4 w-4" />
-        {i18n.t('Edit competition on GitHub')}
-      </Button>
-    {/if}
+    <div class="mt-section flex flex-wrap gap-x-chapter gap-y-section">
+      <dl class={DETAILS}>
+        {#if competition.start_date}
+          <dt class="text-muted">{i18n.t('Date')}</dt>
+          <dd class="text-ink">
+            <time datetime={competition.start_date}>
+              {competitionDate.format(new Date(competition.start_date))}
+            </time>
+            {#if competition.end_date && competition.end_date !== competition.start_date}
+              <span class="text-muted">–</span>
+              <time datetime={competition.end_date}>
+                {competitionDate.format(new Date(competition.end_date))}
+              </time>
+            {/if}
+          </dd>
+        {/if}
+        {#if place || competition.country}
+          <dt class="text-muted">{i18n.t('Location')}</dt>
+          <dd class="flex min-w-0 items-start gap-2 text-ink">
+            {#if competition.country}
+              <Flag
+                countryCode={competition.country}
+                link
+                class="mt-[0.3em] shrink-0 [--flag-height:0.9em]"
+              />
+            {/if}
+            <span class="min-w-0"
+              >{place ||
+                (competition.country ? countryName(competition.country, i18n.locale) : '')}</span
+            >
+          </dd>
+        {/if}
+        <dt class="text-muted">{i18n.t('Federation')}</dt>
+        <dd class="flex min-w-0 items-center gap-2 text-ink">
+          {#if competition.federation.country}
+            <Flag
+              countryCode={competition.federation.country}
+              class="shrink-0 [--flag-height:0.9em]"
+            />
+          {/if}
+          <a
+            href={i18n.href(
+              resolve('/federations/[slug]', { slug: slugify(competition.federation.name) })
+            )}
+            title={competition.federation.name}
+            class="min-w-0 break-words underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
+            >{federationLabel}</a
+          >
+        </dd>
+      </dl>
+      <dl class={DETAILS}>
+        <dt class="text-muted">{i18n.t('Format')}</dt>
+        <dd class="text-ink">
+          {formatLabel ||
+            (competition.status === 'upcoming' ? i18n.t('Format not announced') : '—')}
+        </dd>
+        {#if competition.scoring}
+          <dt class="text-muted">{i18n.t('Scoring')}</dt>
+          <dd class="text-ink">{competition.scoring === 'ris' ? 'RIS' : i18n.t('Total')}</dd>
+        {/if}
+        {#if published}
+          <dt class="text-muted">{i18n.t('Weight classes')}</dt>
+          <dd class="grid min-w-0 gap-y-1.5 text-ink">
+            {#if classed}
+              {#each representedClasses as group (group.gender)}
+                <p class="flex flex-col gap-x-2 sm:flex-row">
+                  <span class="shrink-0 text-muted sm:w-14">{group.label}</span>
+                  <span
+                    class="flex min-w-0 flex-wrap gap-x-3 gap-y-1"
+                    role="list"
+                    aria-label={i18n.t("{category}'s weight classes", { category: group.label })}
+                  >
+                    {#each group.classes as weightClass (weightClass)}
+                      <span role="listitem" class="whitespace-nowrap tabular-nums">
+                        {weights.category(weightClass, i18n.locale) || i18n.t('No weight classes')}
+                      </span>
+                    {/each}
+                  </span>
+                </p>
+              {/each}
+            {:else}
+              {i18n.t('No weight classes')}
+            {/if}
+          </dd>
+        {/if}
+      </dl>
+    </div>
   </header>
 
   {#if competition.status === 'live'}
     <Notice title={i18n.t('In Progress')} live />
-  {/if}
-
-  {#if published}
-    <FilterBar
-      bind:search={table.searchFilter}
-      placeholder={i18n.t('Search an athlete')}
-      onSearch={() => table.handleFilterChange()}
-      activeCount={activeFilters}
-      onClear={() => table.clearFilters()}
-      clearable={table.narrowed}
-    >
-      <SelectField
-        label={i18n.t('Country')}
-        bind:value={table.countryFilter}
-        onchange={() => table.handleFilterChange()}
-      >
-        <option value={null}>{i18n.t('All Countries')}</option>
-        {#each data.countries as countryOption (countryOption)}
-          <option value={countryOption}>{countryName(countryOption, i18n.locale)}</option>
-        {/each}
-      </SelectField>
-      <SelectField
-        label={i18n.t('Sex')}
-        bind:value={table.genderFilter}
-        onchange={() => {
-          table.categoryFilter = null;
-          table.handleFilterChange();
-        }}
-      >
-        {#each genders as gender (gender.label)}
-          <option value={gender.value}>{i18n.t(gender.label)}</option>
-        {/each}
-      </SelectField>
-      {#if classed}
-        <SelectField
-          label={i18n.t('Class')}
-          bind:value={table.categoryFilter}
-          onchange={() => table.handleFilterChange()}
-        >
-          <option value={null}>{i18n.t('All Classes')}</option>
-          {#each data.classes as classOption (classOption)}
-            <option value={classOption}>{weights.category(classOption, i18n.locale)}</option>
-          {/each}
-        </SelectField>
-      {/if}
-
-      <SelectField
-        id="sort-by"
-        label={i18n.t('Sort by')}
-        bind:value={table.movementFilter}
-        onchange={() => table.handleFilterChange()}
-      >
-        {#each sorts as sort (sort.value)}
-          <option value={sort.value}>{i18n.t(sort.label)}</option>
-        {/each}
-      </SelectField>
-    </FilterBar>
   {/if}
 
   {#if !published}
@@ -620,249 +558,322 @@
         </p>
       {/if}
     </div>
-  {:else if rankings.length === 0 && unplacedOnPage.length === 0 && !busy}
-    <RankingsEmpty
-      canReset={table.narrowed || pagination.page > 1}
-      resetHref={i18n.href(resolve(`competitions/${competition.slug}`))}
-    />
   {:else}
-    <Table
-      rows={rankings}
-      frozenColumns="rank"
-      itemName="athlete"
-      {busy}
-      pagination={{
-        ...pagination,
-        total_items: fieldSize,
-        total_pages: fieldPages,
-        pageHref: (target) => table.pageHref(target),
-        replaceState: true,
-      }}
+    <div class="mb-shell-dense flex flex-wrap items-center justify-between gap-3">
+      <Text as="h2" variant="heading" id="results-heading" class="text-ink"
+        >{i18n.t('Results')}</Text
+      >
+      {@render editLink()}
+    </div>
+    <section
+      class="{EDGE_TO_EDGE} min-w-0 rounded-panel border border-stroke-strong"
+      aria-labelledby="results-heading"
     >
-      {#snippet head()}
-        <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
-          >{i18n.t('Rank')}</th
+      <FilterBar
+        embedded
+        bind:search={table.searchFilter}
+        placeholder={i18n.t('Search an athlete')}
+        onSearch={() => table.handleFilterChange()}
+        activeCount={activeFilters}
+        onClear={() => table.clearFilters()}
+        clearable={table.narrowed}
+      >
+        <SelectField
+          label={i18n.t('Country')}
+          bind:value={table.countryFilter}
+          onchange={() => table.handleFilterChange()}
         >
-        <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
-        <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}"
-          >{i18n.t('Total')} ({weights.unit})</th
+          <option value={null}>{i18n.t('All Countries')}</option>
+          {#each data.countries as countryOption (countryOption)}
+            <option value={countryOption}>{countryName(countryOption, i18n.locale)}</option>
+          {/each}
+        </SelectField>
+        <SelectField
+          label={i18n.t('Sex')}
+          bind:value={table.genderFilter}
+          onchange={() => {
+            table.categoryFilter = null;
+            table.handleFilterChange();
+          }}
         >
-        {#if risColumn}
-          <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
-            <RisHeader />
-          </th>
-        {/if}
-        {#each contested as lift (lift.key)}
-          <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
-            {i18n.t(lift.label)}
-            <span class="{ATTEMPT_ROW} mt-1 text-micro font-normal text-muted">
-              <span class="text-right">1</span>
-              <span class="text-right">2</span>
-              <span class="text-right">3</span>
-              <span class="text-right">{i18n.t('Best')}</span>
-            </span>
-          </th>
-        {/each}
-        <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Sex')}</th>
+          {#each genders as gender (gender.label)}
+            <option value={gender.value}>{i18n.t(gender.label)}</option>
+          {/each}
+        </SelectField>
         {#if classed}
-          <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>
-        {/if}
-      {/snippet}
-
-      {#snippet body(rows)}
-        {#each rows as entry (entry.participant_id)}
-          {@const participant = participants.get(entry.participant_id)}
-          <tr
-            class="transition-colors"
-            data-focused={entry.athlete.slug === table.focusedAthlete ? '' : undefined}
+          <SelectField
+            label={i18n.t('Class')}
+            bind:value={table.categoryFilter}
+            onchange={() => table.handleFilterChange()}
           >
-            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
-              {entry.rank}
-            </td>
-            <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
-              <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
-                <span class="flex min-w-0 items-center gap-2">
-                  <Flag
-                    link
-                    countryCode={entry.athlete.country}
-                    class="shrink-0 [--flag-height:1.25em]"
-                  />
-                  <a
-                    href={i18n.href(resolve(`athletes/${entry.athlete.slug}`))}
-                    class="truncate underline hover:text-secondary"
-                  >
-                    {formatAthleteName(entry.athlete)}
-                  </a>
-                </span>
-                {#if participant && participant.status !== 'competed'}
-                  <span
-                    class="shrink-0 text-micro font-medium tracking-wide uppercase {STATUS_FLAG}"
-                    title={athleteStatusTitle(
-                      participant.status,
-                      participant.status_reason,
-                      i18n.locale
-                    )}
-                  >
-                    {ATHLETE_STATUS_LABEL[participant.status]}
-                  </span>
-                {/if}
-              </span>
-            </td>
-            <td class="{TABLE_CELL} {CELL.counted}">{weights.format(entry.total, i18n.locale)}</td>
-            {#if risColumn}
-              <td class="{TABLE_CELL} {CELL.counted}">
-                <RisScore value={entry.ris} source={entry.ris_source} />
-              </td>
-            {/if}
-            {#each contested as lift (lift.key)}
-              {@const cell = rankedCell(entry, lift.key, lift.code, lift.movement)}
-              <td class="{TABLE_CELL} whitespace-nowrap">
-                <span class={ATTEMPT_ROW}>
-                  {#if cell.kind === 'attempts'}
-                    {#each [1, 2, 3] as slot (slot)}
-                      {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
-                      <span
-                        class="text-right {attempt && !attempt.is_successful
-                          ? CELL.discounted
-                          : CELL.data}"
-                        title={attempt
-                          ? i18n.t('Attempt {slot}: {weight} {unit}, {result}', {
-                              unit: weights.unit,
-                              slot,
-                              weight: weights.format(attempt.weight, i18n.locale),
-                              result: attempt.is_successful
-                                ? i18n.t('good lift')
-                                : i18n.t('no lift'),
-                            })
-                          : i18n.t('Attempt {slot} not recorded', { slot })}
-                      >
-                        {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
-                      </span>
-                    {/each}
-                  {:else}
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  {/if}
-
-                  <!-- The best sits in its own slot at a fixed offset, so the
-                       column can be read straight down to compare athletes. -->
-                  <span class="text-right {CELL.counted}">
-                    {#if cell.kind === 'absent'}
-                      <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
-                    {:else if cell.kind === 'bombed'}
-                      <span
-                        class="font-normal {CELL.nothing}"
-                        title={i18n.t('No successful {movement}', {
-                          movement: i18n.t(lift.label).toLowerCase(),
-                        })}>{NO_RESULT}</span
-                      >
-                    {:else}
-                      {weights.format(cell.best, i18n.locale)}
-                    {/if}
-                  </span>
-                </span>
-              </td>
+            <option value={null}>{i18n.t('All Classes')}</option>
+            {#each data.classes as classOption (classOption)}
+              <option value={classOption}>{weights.category(classOption, i18n.locale)}</option>
             {/each}
-            <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
-            {#if classed}
-              <td class="{TABLE_CELL} {CELL.data}"
-                >{weights.category(entry.category, i18n.locale)}</td
-              >
-            {/if}
-          </tr>
-        {/each}
+          </SelectField>
+        {/if}
 
-        {#each unplacedOnPage as { category, participant } (participant.athlete.athlete_id)}
-          <tr class="transition-colors">
-            <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.absent}"
-              >{NO_VALUE}</td
+        <SelectField
+          id="sort-by"
+          label={i18n.t('Sort by')}
+          bind:value={table.movementFilter}
+          onchange={() => table.handleFilterChange()}
+        >
+          {#each sorts as sort (sort.value)}
+            <option value={sort.value}>{i18n.t(sort.label)}</option>
+          {/each}
+        </SelectField>
+      </FilterBar>
+      {#if rankings.length === 0 && unplacedOnPage.length === 0 && !busy}
+        <RankingsEmpty
+          embedded
+          canReset={table.narrowed || pagination.page > 1}
+          resetHref={i18n.href(resolve(`competitions/${competition.slug}`))}
+        />
+      {:else}
+        <Table
+          embedded
+          rows={rankings}
+          frozenColumns="rank"
+          itemName="athlete"
+          {busy}
+          pagination={{
+            ...pagination,
+            total_items: fieldSize,
+            total_pages: fieldPages,
+            pageHref: (target) => table.pageHref(target),
+            replaceState: true,
+          }}
+        >
+          {#snippet head()}
+            <th
+              class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} {FROZEN_EDGE} text-secondary"
+              >{i18n.t('Rank')}</th
             >
-
-            <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
-              <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
-                <span class="flex min-w-0 items-center gap-2">
-                  <Flag
-                    link
-                    countryCode={participant.athlete.country}
-                    class="shrink-0 [--flag-height:1.25em]"
-                  />
-                  <a
-                    href={i18n.href(resolve(`athletes/${participant.athlete.slug}`))}
-                    class="truncate underline hover:text-secondary"
-                  >
-                    {formatAthleteName(participant.athlete)}
-                  </a>
-                </span>
-                {#if participant.status !== 'competed'}
-                  <span
-                    class="shrink-0 text-micro font-medium tracking-wide uppercase {STATUS_FLAG}"
-                    title={athleteStatusTitle(
-                      participant.status,
-                      participant.status_reason,
-                      i18n.locale
-                    )}
-                  >
-                    {ATHLETE_STATUS_LABEL[participant.status]}
-                  </span>
-                {/if}
-              </span>
-            </td>
-            <td class="{TABLE_CELL} {CELL.counted}">
-              {participant.status === 'competed'
-                ? weights.format(participant.total, i18n.locale)
-                : NO_RESULT}
-            </td>
+            <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
+            <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}"
+              >{i18n.t('Total')} ({weights.unit})</th
+            >
             {#if risColumn}
-              <td class="{TABLE_CELL} {CELL.counted}">
-                {#if participant.status === 'competed'}
-                  <RisScore value={participant.ris_score} source={participant.ris_source} />
-                {:else}
-                  {NO_RESULT}
-                {/if}
-              </td>
+              <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
+                <RisHeader note={risNote} />
+              </th>
             {/if}
             {#each contested as lift (lift.key)}
-              {@const cell = participantCell(participant, lift.code, lift.movement)}
-              <td class="{TABLE_CELL} whitespace-nowrap">
-                <span class={ATTEMPT_ROW}>
-                  {#if cell.kind === 'attempts'}
-                    {#each [1, 2, 3] as slot (slot)}
-                      {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
-                      <span
-                        class="text-right {attempt && !attempt.is_successful
-                          ? CELL.discounted
-                          : CELL.data}"
+              <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
+                {i18n.t(lift.label)}
+                <span class="{ATTEMPT_ROW} mt-1 text-micro font-normal text-muted">
+                  <span class="text-right">1</span>
+                  <span class="text-right">2</span>
+                  <span class="text-right">3</span>
+                  <span class="text-right">{i18n.t('Best')}</span>
+                </span>
+              </th>
+            {/each}
+            <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Sex')}</th>
+            {#if classed}
+              <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>
+            {/if}
+          {/snippet}
+
+          {#snippet body(rows)}
+            {#each rows as entry (entry.participant_id)}
+              {@const participant = participants.get(entry.participant_id)}
+              <tr
+                class="transition-colors"
+                data-focused={entry.athlete.slug === table.focusedAthlete ? '' : undefined}
+              >
+                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.identity}">
+                  {entry.rank}
+                </td>
+                <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
+                    <span class="flex min-w-0 items-center gap-2">
+                      <Flag
+                        link
+                        countryCode={entry.athlete.country}
+                        class="shrink-0 [--flag-height:1.25em]"
+                      />
+                      <a
+                        href={i18n.href(resolve(`athletes/${entry.athlete.slug}`))}
+                        class="truncate underline hover:text-secondary"
                       >
-                        {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
+                        {formatAthleteName(entry.athlete)}
+                      </a>
+                    </span>
+                    {#if participant && participant.status !== 'competed'}
+                      <span
+                        class="shrink-0 text-micro font-medium tracking-wide uppercase {STATUS_FLAG}"
+                        title={athleteStatusTitle(
+                          participant.status,
+                          participant.status_reason,
+                          i18n.locale
+                        )}
+                      >
+                        {ATHLETE_STATUS_LABEL[participant.status]}
                       </span>
-                    {/each}
-                  {:else}
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  {/if}
-                  <span class="text-right {CELL.counted}">
-                    {#if cell.kind === 'absent'}
-                      <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
-                    {:else if cell.kind === 'bombed'}
-                      <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
-                    {:else}
-                      {weights.format(cell.best, i18n.locale)}
                     {/if}
                   </span>
-                </span>
-              </td>
+                </td>
+                <td class="{TABLE_CELL} {CELL.counted}"
+                  >{weights.format(entry.total, i18n.locale)}</td
+                >
+                {#if risColumn}
+                  <td class="{TABLE_CELL} {CELL.counted}">
+                    <RisScore value={entry.ris} source={entry.ris_source} />
+                  </td>
+                {/if}
+                {#each contested as lift (lift.key)}
+                  {@const cell = rankedCell(entry, lift.key, lift.code, lift.movement)}
+                  <td class="{TABLE_CELL} whitespace-nowrap">
+                    <span class={ATTEMPT_ROW}>
+                      {#if cell.kind === 'attempts'}
+                        {#each [1, 2, 3] as slot (slot)}
+                          {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
+                          <span
+                            class="text-right {attempt && !attempt.is_successful
+                              ? CELL.discounted
+                              : CELL.data}"
+                            title={attempt
+                              ? i18n.t('Attempt {slot}: {weight} {unit}, {result}', {
+                                  unit: weights.unit,
+                                  slot,
+                                  weight: weights.format(attempt.weight, i18n.locale),
+                                  result: attempt.is_successful
+                                    ? i18n.t('good lift')
+                                    : i18n.t('no lift'),
+                                })
+                              : i18n.t('Attempt {slot} not recorded', { slot })}
+                          >
+                            {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
+                          </span>
+                        {/each}
+                      {:else}
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      {/if}
+
+                      <!-- The best sits in its own slot at a fixed offset, so the
+                       column can be read straight down to compare athletes. -->
+                      <span class="text-right {CELL.counted}">
+                        {#if cell.kind === 'absent'}
+                          <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
+                        {:else if cell.kind === 'bombed'}
+                          <span
+                            class="font-normal {CELL.nothing}"
+                            title={i18n.t('No successful {movement}', {
+                              movement: i18n.t(lift.label).toLowerCase(),
+                            })}>{NO_RESULT}</span
+                          >
+                        {:else}
+                          {weights.format(cell.best, i18n.locale)}
+                        {/if}
+                      </span>
+                    </span>
+                  </td>
+                {/each}
+                <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
+                {#if classed}
+                  <td class="{TABLE_CELL} {CELL.data}"
+                    >{weights.category(entry.category, i18n.locale)}</td
+                  >
+                {/if}
+              </tr>
             {/each}
-            <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
-            {#if classed}
-              <td class="{TABLE_CELL} {CELL.data}"
-                >{weights.category(category.category.weight_class, i18n.locale)}</td
-              >
-            {/if}
-          </tr>
-        {/each}
-      {/snippet}
-    </Table>
+
+            {#each unplacedOnPage as { category, participant } (participant.athlete.athlete_id)}
+              <tr class="transition-colors">
+                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {FROZEN_EDGE} {CELL.absent}"
+                  >{NO_VALUE}</td
+                >
+
+                <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
+                    <span class="flex min-w-0 items-center gap-2">
+                      <Flag
+                        link
+                        countryCode={participant.athlete.country}
+                        class="shrink-0 [--flag-height:1.25em]"
+                      />
+                      <a
+                        href={i18n.href(resolve(`athletes/${participant.athlete.slug}`))}
+                        class="truncate underline hover:text-secondary"
+                      >
+                        {formatAthleteName(participant.athlete)}
+                      </a>
+                    </span>
+                    {#if participant.status !== 'competed'}
+                      <span
+                        class="shrink-0 text-micro font-medium tracking-wide uppercase {STATUS_FLAG}"
+                        title={athleteStatusTitle(
+                          participant.status,
+                          participant.status_reason,
+                          i18n.locale
+                        )}
+                      >
+                        {ATHLETE_STATUS_LABEL[participant.status]}
+                      </span>
+                    {/if}
+                  </span>
+                </td>
+                <td class="{TABLE_CELL} {CELL.counted}">
+                  {participant.status === 'competed'
+                    ? weights.format(participant.total, i18n.locale)
+                    : NO_RESULT}
+                </td>
+                {#if risColumn}
+                  <td class="{TABLE_CELL} {CELL.counted}">
+                    {#if participant.status === 'competed'}
+                      <RisScore value={participant.ris_score} source={participant.ris_source} />
+                    {:else}
+                      {NO_RESULT}
+                    {/if}
+                  </td>
+                {/if}
+                {#each contested as lift (lift.key)}
+                  {@const cell = participantCell(participant, lift.code, lift.movement)}
+                  <td class="{TABLE_CELL} whitespace-nowrap">
+                    <span class={ATTEMPT_ROW}>
+                      {#if cell.kind === 'attempts'}
+                        {#each [1, 2, 3] as slot (slot)}
+                          {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
+                          <span
+                            class="text-right {attempt && !attempt.is_successful
+                              ? CELL.discounted
+                              : CELL.data}"
+                          >
+                            {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
+                          </span>
+                        {/each}
+                      {:else}
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      {/if}
+                      <span class="text-right {CELL.counted}">
+                        {#if cell.kind === 'absent'}
+                          <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
+                        {:else if cell.kind === 'bombed'}
+                          <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
+                        {:else}
+                          {weights.format(cell.best, i18n.locale)}
+                        {/if}
+                      </span>
+                    </span>
+                  </td>
+                {/each}
+                <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
+                {#if classed}
+                  <td class="{TABLE_CELL} {CELL.data}"
+                    >{weights.category(category.category.weight_class, i18n.locale)}</td
+                  >
+                {/if}
+              </tr>
+            {/each}
+          {/snippet}
+        </Table>
+      {/if}
+    </section>
   {/if}
 </div>

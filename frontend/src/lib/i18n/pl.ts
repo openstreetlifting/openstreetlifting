@@ -7,7 +7,6 @@ export default {
   Footer: 'Stopka',
   Rankings: 'Rankingi',
   Competitions: 'Zawody',
-  Editions: 'Edycje',
   Federations: 'Federacje',
   Countries: 'Kraje',
   Documentation: 'Dokumentacja',
@@ -39,6 +38,11 @@ export default {
   'Lift balance compared with other athletes in {category}':
     'Balans bojów w porównaniu z innymi zawodnikami w {category}',
   'Lift shares of best total': 'Udział bojów w najlepszym wyniku',
+  Edition: 'Edycja',
+  'In this competition, RIS is recomputed with the current formula.':
+    'W tych zawodach RIS jest przeliczany według aktualnego wzoru.',
+  'In this competition, RIS scores are shown as published.':
+    'W tych zawodach wyniki RIS są pokazane tak, jak je opublikowano.',
   'Athlete: {share} of total': 'Zawodnik: {share} totalu',
   'Reference: {share} of total': 'Odniesienie: {share} totalu',
   'Reference ({class})': 'Odniesienie ({class})',
@@ -316,7 +320,6 @@ export default {
   'Country needed for national ranking': 'Nie podano kraju potrzebnego do rankingu krajowego',
   'Oops, no athletes found.': 'Ups, nie znaleźliśmy zawodników.',
   'No athletes to show yet.': 'Na razie brak zawodników.',
-  'Lighten the filters or try another name.': 'Usuń część filtrów lub zmień wyszukiwanie.',
   'No ranked results in this view yet.': 'Ten ranking jest na razie pusty.',
   'Oops, no competitions found.': 'Ups, nie znaleźliśmy zawodów.',
   'No competitions to show yet.': 'Na razie brak zawodów.',

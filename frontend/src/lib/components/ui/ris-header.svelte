@@ -7,12 +7,15 @@
 
   const i18n = useI18n();
 
+  let { note }: { note?: string } = $props();
+
   const RIS_SOURCE_URL = 'https://warisradji.com/ris/';
 </script>
 
 <span class="inline-flex items-center align-middle whitespace-nowrap">
   RIS
   <InfoTip label={i18n.t('What a RIS score is and where it came from')}>
+    {#if note}<p class="mb-3 border-l-2 border-focus pl-3 text-ink">{note}</p>{/if}
     <p class="mb-3 font-medium text-ink">{i18n.t('What is RIS?')}</p>
 
     <blockquote cite={RIS_SOURCE_URL} class="mb-2 border-l-2 border-stroke-strong pl-3">

@@ -43,10 +43,11 @@
 {#snippet clear()}
   <Button
     variant="outline"
+    size="control"
     type="button"
     onclick={onClear}
     aria-label={i18n.t('Clear all filters and sorting')}
-    class="h-11 shrink-0 gap-1.5 px-3 text-meta text-secondary hover:text-ink sm:h-8"
+    class="shrink-0 gap-1.5 text-meta text-secondary hover:text-ink"
   >
     <CloseIcon class="h-3 w-3" />
     {i18n.t('Clear')}

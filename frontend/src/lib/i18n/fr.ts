@@ -7,7 +7,6 @@ export default {
   Footer: 'Pied de page',
   Rankings: 'Classements',
   Competitions: 'Compétitions',
-  Editions: 'Éditions',
   Federations: 'Fédérations',
   Countries: 'Pays',
   Documentation: 'Documentation',
@@ -39,6 +38,11 @@ export default {
   'Lift balance compared with other athletes in {category}':
     'Équilibre des mouvements comparé aux autres athlètes en {category}',
   'Lift shares of best total': 'Part des mouvements dans le meilleur total',
+  Edition: 'Édition',
+  'In this competition, RIS is recomputed with the current formula.':
+    'Pour cette compétition, le RIS est recalculé avec la formule actuelle.',
+  'In this competition, RIS scores are shown as published.':
+    'Pour cette compétition, les scores RIS sont affichés tels que publiés.',
   'Athlete: {share} of total': 'Athlète : {share} du total',
   'Reference: {share} of total': 'Référence : {share} du total',
   'Reference ({class})': 'Référence ({class})',
@@ -316,7 +320,6 @@ export default {
   'Country needed for national ranking': 'Pays requis pour le classement national',
   'Oops, no athletes found.': 'Aucun athlète trouvé.',
   'No athletes to show yet.': 'Aucun athlète à afficher pour le moment.',
-  'Lighten the filters or try another name.': 'Élargissez les filtres ou essayez un autre nom.',
   'No ranked results in this view yet.': 'Aucun résultat classé dans cette vue pour le moment.',
   'Oops, no competitions found.': 'Aucune compétition trouvée.',
   'No competitions to show yet.': 'Aucune compétition à afficher pour le moment.',
