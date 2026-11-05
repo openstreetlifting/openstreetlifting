@@ -1,4 +1,8 @@
 <script lang="ts">
+  import CompetitionBodyweight, {
+    MIN_POINTS,
+    type BodyweightPoint,
+  } from '#lib/components/competition-bodyweight.svelte';
   import { CONTROL } from '#lib/constants/typography.js';
   import Button from '#lib/components/ui/button.svelte';
   import { LAYOUT } from '#lib/constants/layout.js';
@@ -188,6 +192,28 @@
 
     return best === null ? { kind: 'bombed' } : { kind: 'best', best };
   }
+
+  const bodyweightPoints = $derived(
+    competition.categories.flatMap((category) =>
+      category.category.gender === 'MX'
+        ? []
+        : category.participants.flatMap((participant): BodyweightPoint[] => {
+            const bodyweight = Number(participant.bodyweight);
+            const total = Number(participant.total);
+            return participant.status === 'competed' && bodyweight > 0 && total > 0
+              ? [
+                  {
+                    id: participant.participant_id,
+                    name: formatAthleteName(participant.athlete),
+                    sex: category.category.gender === 'F' ? 'women' : 'men',
+                    bodyweight,
+                    total,
+                  },
+                ]
+              : [];
+          })
+    )
+  );
 
   const withAttempts = $derived(
     new Set(
@@ -894,5 +920,10 @@
         </Table>
       {/if}
     </section>
+    {#if data.formula && bodyweightPoints.length >= MIN_POINTS}
+      <div class="mt-section">
+        <CompetitionBodyweight points={bodyweightPoints} formula={data.formula} />
+      </div>
+    {/if}
   {/if}
 </div>

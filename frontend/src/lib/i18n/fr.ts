@@ -38,6 +38,15 @@ export default {
   'Lift balance compared with other athletes in {category}':
     'Équilibre des mouvements comparé aux autres athlètes en {category}',
   'Lift shares of best total': 'Part des mouvements dans le meilleur total',
+  'Total by bodyweight': 'Total selon le poids de corps',
+  'About total by bodyweight': 'À propos du total selon le poids de corps',
+  'Each point is an athlete with a recorded bodyweight. The lines show the total needed for a RIS of 100 at each bodyweight, using the {year} edition.':
+    'Chaque point est un athlète dont le poids de corps est connu. Les lignes indiquent le total nécessaire pour un RIS de 100 à chaque poids de corps, selon l’édition {year}.',
+  'Points above their line scored more than 100 RIS.':
+    'Les points au-dessus de leur ligne dépassent 100 de RIS.',
+  'RIS 100, {sex}': 'RIS 100, {sex}',
+  'Total by bodyweight for {count} athletes, {above} of them above a RIS of 100.':
+    'Total selon le poids de corps pour {count} athlètes, dont {above} au-dessus de 100 de RIS.',
   Edition: 'Édition',
   'In this competition, RIS is recomputed with the current formula.':
     'Pour cette compétition, le RIS est recalculé avec la formule actuelle.',
