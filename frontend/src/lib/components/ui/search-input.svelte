@@ -57,9 +57,12 @@
   />
   <input
     {id}
+    name="q"
+    autocomplete="off"
+    spellcheck={false}
     type="text"
     bind:value
-    {placeholder}
+    placeholder={`${placeholder.replace(/(?:\.\.\.|…)$/, '')}…`}
     oninput={schedule}
     onkeydown={(event) => event.key === 'Enter' && !event.isComposing && flush()}
     oncompositionstart={() => {

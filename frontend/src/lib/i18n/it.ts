@@ -210,6 +210,7 @@ export default {
   'Close information': 'Chiudi le informazioni',
   'Skip to main content': 'Vai al contenuto principale',
   'Competition status': 'Stato delle competizioni',
+  'e.g. {value}…': 'es. {value}…',
   Pagination: 'Paginazione',
   '{table} pagination (top)': 'Paginazione di {table} (in alto)',
   '{table} pagination (bottom)': 'Paginazione di {table} (in basso)',

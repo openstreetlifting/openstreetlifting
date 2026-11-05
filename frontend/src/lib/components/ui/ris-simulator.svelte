@@ -135,11 +135,14 @@
           <div class="relative">
             <input
               id="{id}-{control.key}"
+              name={control.key}
+              autocomplete="off"
+              spellcheck={false}
               type="text"
               inputmode="decimal"
-              placeholder={control.key === 'bodyweight'
-                ? i18n.t('Bodyweight')
-                : i18n.t('MPDS total')}
+              placeholder={i18n.t('e.g. {value}…', {
+                value: weights.format(control.key === 'bodyweight' ? 80 : 500, i18n.locale),
+              })}
               bind:value={() => displayField(control), (text) => setField(control, text)}
               aria-invalid={invalid}
               aria-describedby={invalid ? `${id}-${control.key}-error` : undefined}
@@ -168,6 +171,7 @@
         {#if value !== undefined && !invalid}
           <input
             type="range"
+            name={`${control.key}_slider`}
             aria-label={i18n.t('{label} slider', { label: i18n.t(control.label) })}
             aria-valuetext="{weights.format(value, i18n.locale)} {weights.unit}"
             min={displayBound(control.min, weights.unit)}
@@ -205,9 +209,12 @@
         <label for="{id}-target" class="text-sm text-secondary">{i18n.t('Target score')}</label>
         <input
           id="{id}-target"
+          name="target"
+          autocomplete="off"
+          spellcheck={false}
           type="text"
           inputmode="decimal"
-          placeholder={i18n.t('Target')}
+          placeholder={i18n.t('e.g. {value}…', { value: i18n.number(110) })}
           bind:value={targetField}
           class="{FIELD} w-24 border-stroke-strong px-3 py-2 text-base font-mono"
         />
