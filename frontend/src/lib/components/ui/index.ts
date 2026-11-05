@@ -1,4 +1,7 @@
 export { default as Card } from './card.svelte';
+export { default as Panel } from './panel.svelte';
+export { default as Stack } from './stack.svelte';
+export { default as Text } from './text.svelte';
 export { default as Select } from './select.svelte';
 export { default as SelectField } from './select-field.svelte';
 export { default as ChartPanel } from './chart-panel.svelte';

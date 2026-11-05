@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Text, Stack } from '#lib/components/ui/index.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { resolve } from '$app/paths';
   import {
@@ -7,7 +8,6 @@
     GitHubIcon,
     DiscordIcon,
   } from '#lib/components/icons/index.js';
-  import { TEXT } from '#lib/constants/typography.js';
   import Seo from '#lib/components/seo.svelte';
   import { absolute } from '#lib/seo/index.js';
   import Message from '#lib/components/ui/message.svelte';
@@ -37,8 +37,8 @@
     aria-hidden="true"
     class="mx-auto mb-8 h-44 w-44 sm:h-60 sm:w-60"
   />
-  <h1 class="mb-4 {TEXT.title} text-ink">{i18n.t('Get in touch')}</h1>
-  <div class="mb-chapter space-y-4 text-lead leading-relaxed text-secondary">
+  <Text as="h1" variant="title" class="mb-4 text-ink">{i18n.t('Get in touch')}</Text>
+  <Stack gap={4} class="mb-chapter text-lead leading-relaxed text-secondary">
     <p>
       {i18n.t(
         'Ask a question, flag a mistake, or share competition results. I run OpenStreetlifting on my own, so replies may take a little time.'
@@ -58,7 +58,7 @@
         values={{ email, privacyNotice }}
       />
     </p>
-  </div>
+  </Stack>
 
   <ul class="divide-y divide-stroke border-y border-stroke">
     <li>

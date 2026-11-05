@@ -24,6 +24,7 @@
     FROZEN_HEAD_CELL,
     FROZEN_EDGE,
     FROZEN_RANK,
+    Text,
   } from '#lib/components/ui/index.js';
   import { GlobeIcon, InstagramIcon } from '#lib/components/icons/index.js';
   import { resolve } from '$app/paths';
@@ -310,7 +311,7 @@
   {#if athlete.standing}
     <div class="mb-section max-w-summary">
       <div class="mb-3 flex items-center justify-between gap-3">
-        <h2 class="{TEXT.heading} text-ink">{i18n.t('Ranking')}</h2>
+        <Text as="h2" variant="heading" class="text-ink">{i18n.t('Ranking')}</Text>
         <label class="flex items-center gap-2 text-meta text-muted">
           <span class="sr-only">{i18n.t('Metric')}</span>
           <Select
@@ -354,7 +355,7 @@
 
   {#if athlete.personal_records.length > 0}
     <div class="mb-section">
-      <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Personal records')}</h2>
+      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Personal records')}</Text>
       <div class={CARD_GRID}>
         {#each athlete.personal_records as pr (pr.movement_name)}
           <MetricCard heading={i18n.movement(pr.movement_name)}>
@@ -376,19 +377,22 @@
     </div>
   {/if}
 
-  <div class="mt-section grid items-stretch gap-4 lg:auto-rows-fr lg:grid-cols-2">
-    <AthleteProgress
-      athleteSlug={athlete.slug}
-      competitions={athlete.competitions}
-      metric={filters.performance}
-      onMetricChange={(value) => updateFilter('performance', value)}
-    />
+  <div>
+    <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Performance')}</Text>
+    <div class="grid items-stretch gap-tile lg:auto-rows-fr lg:grid-cols-2">
+      <AthleteProgress
+        athleteSlug={athlete.slug}
+        competitions={athlete.competitions}
+        metric={filters.performance}
+        onMetricChange={(value) => updateFilter('performance', value)}
+      />
 
-    <AthleteStrength profile={athlete.strength_profile} />
+      <AthleteStrength profile={athlete.strength_profile} />
+    </div>
   </div>
 
   <div class={LAYOUT.section}>
-    <h2 class="mb-3 {TEXT.heading} text-ink">{i18n.t('Competition history')}</h2>
+    <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Competition history')}</Text>
     {#if athlete.competitions.length > 0}
       <Table
         rows={athlete.competitions}

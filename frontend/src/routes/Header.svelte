@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Stack } from '#lib/components/ui/index.js';
   import { useI18n } from '#lib/i18n/index.js';
   import LanguagePicker from '#lib/components/language-picker.svelte';
   import WeightUnitPicker from '#lib/components/weight-unit-picker.svelte';
@@ -125,9 +126,9 @@
         ? 'flex'
         : 'hidden'} col-span-2 row-start-2 flex-col gap-3 border-t border-stroke py-3 lg:col-span-1 lg:col-start-3 lg:row-start-1 lg:flex lg:flex-row lg:items-center lg:justify-self-end lg:border-0 lg:py-0"
     >
-      <ul class="flex flex-col gap-1 lg:hidden">
+      <Stack as="ul" gap={1} class="lg:hidden">
         {@render primaryLinks()}{@render secondaryLinks()}
-      </ul>
+      </Stack>
       <div class="flex items-center gap-3">
         <div class="flex items-center gap-2"><LanguagePicker /><WeightUnitPicker /></div>
         <div class="flex items-center gap-3">
