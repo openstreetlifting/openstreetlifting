@@ -111,7 +111,7 @@
   });
 </script>
 
-<section aria-labelledby="{id}-heading" class="mb-10 sm:mb-12">
+<section aria-labelledby="{id}-heading" class="mb-chapter">
   <h2 id="{id}-heading" class="{TEXT.heading} text-ink">{i18n.t('Calculate your RIS')}</h2>
   <p class="sr-only" role="status" aria-live="polite" aria-atomic="true">{scoreAnnouncement}</p>
   <p class="mt-3 {TEXT.body} leading-6 text-secondary">
@@ -120,7 +120,7 @@
     )}
   </p>
 
-  <div class="mt-7 grid items-start gap-6 sm:grid-cols-[auto_1fr_1fr]">
+  <div class="mt-8 grid items-start gap-6 sm:grid-cols-[auto_1fr_1fr]">
     <div>
       <RisCategory bind:sex prominent />
     </div>
@@ -146,7 +146,7 @@
               bind:value={() => displayField(control), (text) => setField(control, text)}
               aria-invalid={invalid}
               aria-describedby={invalid ? `${id}-${control.key}-error` : undefined}
-              class="{FIELD} h-12 w-full border-stroke-strong bg-surface px-3 pr-10 text-lead text-ink placeholder:text-body placeholder:text-secondary focus:border-secondary"
+              class="{FIELD} h-12 w-full border-stroke-strong bg-surface px-3 pr-12 text-lead text-ink placeholder:text-body placeholder:text-secondary focus:border-secondary"
             />
             <span
               class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-body text-secondary"
@@ -193,7 +193,7 @@
   </div>
 
   {#if performance}
-    <div class="mt-7 flex flex-wrap items-baseline gap-3 font-normal text-ink">
+    <div class="mt-8 flex flex-wrap items-baseline gap-3 font-normal text-ink">
       <span id="{id}-score-label" class="text-body">RIS:</span>
       <output
         data-ris-live-score
@@ -203,9 +203,9 @@
       >
     </div>
 
-    <section aria-labelledby="{id}-target-heading" class="mt-8 border-y border-stroke py-5">
+    <section aria-labelledby="{id}-target-heading" class="mt-8 border-y border-stroke py-4">
       <h2 id="{id}-target-heading" class="{TEXT.heading} text-ink">{i18n.t('Target RIS')}</h2>
-      <div class="mt-5 mb-5 flex flex-wrap items-center gap-3">
+      <div class="mt-4 mb-4 flex flex-wrap items-center gap-3">
         <label for="{id}-target" class="text-body text-secondary">{i18n.t('Target score')}</label>
         <input
           id="{id}-target"

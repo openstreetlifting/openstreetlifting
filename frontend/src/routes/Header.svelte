@@ -85,7 +85,7 @@
 
 <header class="border-b border-stroke-strong bg-canvas">
   <nav
-    class="mx-auto grid max-w-page grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 px-3 sm:px-6 lg:flex lg:gap-6"
+    class="mx-auto grid max-w-page grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 px-gutter lg:flex lg:gap-6"
   >
     <a
       href={i18n.href(resolve(''))}

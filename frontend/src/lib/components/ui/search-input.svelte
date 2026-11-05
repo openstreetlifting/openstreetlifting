@@ -73,7 +73,7 @@
       composing = false;
       schedule();
     }}
-    class="w-full {FIELD} py-1.5 pr-8 pl-9 placeholder:text-muted"
+    class="w-full {FIELD} py-1.5 pr-8 pl-icon placeholder:text-muted"
   />
   {#if value}
     <button

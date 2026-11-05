@@ -102,7 +102,7 @@
         name="performance"
         bind:value={metric}
         onchange={(event) => onMetricChange?.(event.currentTarget.value as ProgressMetric)}
-        class="px-2.5 py-1.5"
+        class="px-3 py-1.5"
       >
         {#each RANKING_SORTS as option (option.value)}
           <option value={option.value}>{i18n.t(option.label)}</option>

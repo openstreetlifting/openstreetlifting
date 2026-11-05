@@ -53,10 +53,10 @@
   ]}
 />
 
-<article class="mx-auto max-w-reading px-4 pt-10 pb-16 sm:px-6 sm:pt-12">
+<article class="mx-auto max-w-reading px-gutter pt-chapter pb-16">
   <Breadcrumb items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: 'RIS' }]} />
 
-  <header class="mb-10">
+  <header class="mb-chapter">
     <h1 class="{TEXT.title} text-ink">{i18n.t('The Relative Index for Streetlifting')}</h1>
     <p class="mt-3 text-lead leading-7 text-secondary">
       {i18n.t(
@@ -85,7 +85,7 @@
     />
   {/if}
 
-  <section aria-labelledby="interpretation-heading" class="mb-10 sm:mb-12">
+  <section aria-labelledby="interpretation-heading" class="mb-chapter">
     <h2 id="interpretation-heading" class="{TEXT.heading} text-ink">
       {i18n.t('What does a score of 100 mean?')}
     </h2>
@@ -102,8 +102,8 @@
   </section>
 
   {#if current}
-    <section aria-labelledby="explore-heading" class="mb-10 sm:mb-12">
-      <div class="mb-7">
+    <section aria-labelledby="explore-heading" class="mb-chapter">
+      <div class="mb-8">
         <h2 id="explore-heading" class="{TEXT.heading} text-ink">
           {i18n.t('Explore competition results')}
         </h2>
@@ -137,7 +137,7 @@
     </section>
   {/if}
 
-  <section aria-labelledby="comparability-heading" class="mb-10 sm:mb-12">
+  <section aria-labelledby="comparability-heading" class="mb-chapter">
     <h2 id="comparability-heading" class="{TEXT.heading} text-ink">
       {i18n.t('Why a score may differ from the published result')}
     </h2>

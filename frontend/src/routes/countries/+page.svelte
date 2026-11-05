@@ -49,7 +49,7 @@
     items={[{ label: i18n.t('Rankings'), href: rankingsHref() }, { label: i18n.t('Countries') }]}
   />
 
-  <h1 class="mb-6 {TEXT.title} text-ink sm:mb-10">{i18n.t('Countries')}</h1>
+  <h1 class="mb-section {TEXT.title} text-ink">{i18n.t('Countries')}</h1>
 
   <Table rows={countries} itemName="country" pageParam="page">
     {#snippet head()}

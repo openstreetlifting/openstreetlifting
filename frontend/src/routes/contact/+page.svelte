@@ -26,7 +26,7 @@
   canonical={absolute('/contact')}
 />
 
-<div class="mx-auto max-w-reading px-4 py-10 sm:px-6 sm:py-16">
+<div class="mx-auto max-w-reading px-gutter py-12 sm:py-16">
   <!-- The h1 carries the page, so the plate is decoration and stays out of the
        accessibility tree rather than repeating the name to a screen reader. -->
   <img
@@ -35,10 +35,10 @@
     height="512"
     alt=""
     aria-hidden="true"
-    class="mx-auto mb-8 h-44 w-44 sm:mb-10 sm:h-60 sm:w-60"
+    class="mx-auto mb-8 h-44 w-44 sm:h-60 sm:w-60"
   />
   <h1 class="mb-4 {TEXT.title} text-ink">{i18n.t('Get in touch')}</h1>
-  <div class="mb-10 space-y-4 text-lead leading-relaxed text-secondary">
+  <div class="mb-chapter space-y-4 text-lead leading-relaxed text-secondary">
     <p>
       {i18n.t(
         'Ask a question, flag a mistake, or share competition results. I run OpenStreetlifting on my own, so replies may take a little time.'
