@@ -13,3 +13,4 @@ status = "completed"
 
 [federation]
 name = "StreetLifting Polska"
+country = "PL"

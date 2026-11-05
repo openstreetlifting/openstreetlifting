@@ -17,3 +17,4 @@ scoring = "ris"
 
 [federation]
 name = "FinalRep"
+country = "DE"
