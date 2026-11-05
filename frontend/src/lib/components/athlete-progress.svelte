@@ -23,25 +23,21 @@
   const weights = useWeightUnit();
 
   let chartWidth = $state<number>();
-  const chartHeight = $derived((chartWidth ?? 400) < 480 ? 264 : 304);
+  let measuredHeight = $state<number>();
+  const chartHeight = $derived(measuredHeight || 288);
 
   let {
     competitions,
-    formats,
     athleteSlug,
     metric = $bindable<ProgressMetric>('total'),
-    format = $bindable('MPDS'),
     onMetricChange,
-    onFormatChange,
   }: {
     competitions: AthleteCompetitionSummary[];
-    formats: string[];
     athleteSlug?: string;
     metric?: ProgressMetric;
-    format?: string;
     onMetricChange?: (metric: ProgressMetric) => void;
-    onFormatChange?: (format: string) => void;
   } = $props();
+  const format = 'MPDS';
   const points = $derived(progressPoints(competitions, metric, format));
   const chartPoints = $derived(
     points.map((point) => ({
@@ -64,7 +60,6 @@
           metric === 'ris' ? value : weights.value(value)
         )
       )
-      .nice(4)
       .domain()
   );
   const first = $derived(utcMonth.floor(new Date(points[0]?.timestamp ?? 0)));
@@ -114,21 +109,6 @@
         {/each}
       </Select>
     </label>
-    {#if formats.length > 0}
-      <label class="flex items-center gap-2 text-xs text-muted">
-        {i18n.t('Format')}
-        <Select
-          name="event"
-          disabled={formats.length < 2}
-          bind:value={format}
-          onchange={(event) => onFormatChange?.(event.currentTarget.value)}
-          class="px-2.5 py-1.5"
-        >
-          {#each formats as option (option)}<option value={option} translate="no">{option}</option
-            >{/each}
-        </Select>
-      </label>
-    {/if}
   {/snippet}
 
   {#if points.length && best !== null && bestPoint}
@@ -146,11 +126,11 @@
         >
       </p>
     </div>
-    {#key metric + format + weights.unit}
+    {#key metric + weights.unit}
       <div
-        class="w-full"
-        style:height={`${chartHeight}px`}
+        class="min-h-64 w-full flex-1"
         bind:clientWidth={chartWidth}
+        bind:clientHeight={measuredHeight}
         onfocusout={(event) => {
           if (
             event.relatedTarget instanceof Node &&
@@ -167,7 +147,7 @@
           bind:context={chartContext}
           ssr
           width={chartWidth || 400}
-          class="relative w-full! overflow-hidden [container-type:inline-size]"
+          class="relative h-full! w-full! overflow-hidden [container-type:inline-size]"
           height={chartHeight}
           data={chartPoints}
           x="timestamp"
@@ -175,7 +155,7 @@
           xScale={scaleUtc()}
           {xDomain}
           {yDomain}
-          padding={{ left: 48, right: 16, top: 16, bottom: 44 }}
+          padding={{ left: 56, right: 20, top: 16, bottom: 52 }}
           tooltipContext={{ mode: 'manual' }}
         >
           {#snippet children({ context })}

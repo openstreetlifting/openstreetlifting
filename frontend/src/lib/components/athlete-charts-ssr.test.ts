@@ -11,7 +11,6 @@ it.each(['kg', 'lb'] as const)(
     const { body } = render(AthleteProgress, {
       context: new Map([[WEIGHT_UNIT_CONTEXT, new WeightPreference(() => unit)]]),
       props: {
-        formats: ['MPDS'],
         competitions: [
           {
             competition_id: 'meet',

@@ -49,7 +49,7 @@ it('converts the performance chart and tooltips while keeping RIS and source res
   const weights = new WeightPreference(() => 'lb');
   const original = structuredClone(competitions);
   render(AthleteProgress, {
-    props: { competitions, formats: ['MPDS'] },
+    props: { competitions },
     context: new Map([[WEIGHT_UNIT_CONTEXT, weights]]),
   });
   await expect.element(page.getByText('992.08 lb', { exact: true })).toBeVisible();
@@ -63,7 +63,7 @@ it('converts the performance chart and tooltips while keeping RIS and source res
 });
 
 it('selects competition points and switches metrics without losing a real zero result', async () => {
-  render(AthleteProgress, { competitions, formats: ['MPDS'], athleteSlug: 'alex-martin' });
+  render(AthleteProgress, { competitions, athleteSlug: 'alex-martin' });
   await expect
     .element(page.getByRole('link', { name: 'Second meet' }))
     .toHaveAttribute('href', '/en/competitions/second?movement=total&athlete=alex-martin');
@@ -91,30 +91,30 @@ it('selects competition points and switches metrics without losing a real zero r
 });
 
 it('shows a single result as a milestone and handles a missing metric', async () => {
-  render(AthleteProgress, { competitions: competitions.slice(0, 1), formats: ['MPDS'] });
+  render(AthleteProgress, { competitions: competitions.slice(0, 1) });
   await expect.element(page.getByText(/One result recorded/)).toBeVisible();
   await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('dips');
   await expect.element(page.getByText('No dated Dips results available for MPDS.')).toBeVisible();
 });
 
-it('keeps the format selector visible and applies it to individual lifts', async () => {
-  const all4 = competitions.map((competition, index) => ({
+it('keeps one metric selector and always plots MPDS results', async () => {
+  const all4: AthleteCompetitionSummary[] = competitions.map((competition, index) => ({
     ...competition,
     lifts: [{ movement_name: 'Pull-up', best_weight: String((index + 1) * 10), attempts: [] }],
   }));
-  const shorter = {
+  const shorter: AthleteCompetitionSummary = {
     ...competitions[1],
     competition_id: 'shorter',
     event: 'PD',
     lifts: [{ movement_name: 'Pull-up', best_weight: '30', attempts: [] }],
   };
-  render(AthleteProgress, { competitions: [...all4, shorter], formats: ['MPDS', 'PD'] });
+  render(AthleteProgress, { competitions: [...all4, shorter] });
+  expect(page.getByRole('combobox').elements()).toHaveLength(1);
+  await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('pullup');
+  expect(page.getByRole('combobox').elements()).toHaveLength(1);
   await expect
     .element(page.getByRole('combobox', { name: 'Format', exact: true }))
-    .toHaveValue('MPDS');
-  await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('pullup');
-  await expect.element(page.getByRole('combobox', { name: 'Format', exact: true })).toBeVisible();
+    .not.toBeInTheDocument();
   await expect.element(page.getByText('20 kg', { exact: true })).toBeVisible();
-  await page.getByRole('combobox', { name: 'Format', exact: true }).selectOptions('PD');
-  await expect.element(page.getByText('30 kg', { exact: true })).toBeVisible();
+  await expect.element(page.getByText('30 kg', { exact: true })).not.toBeInTheDocument();
 });
