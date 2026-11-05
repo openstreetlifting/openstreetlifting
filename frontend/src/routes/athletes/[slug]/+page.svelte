@@ -236,7 +236,7 @@
   <header class="mb-6 border-b border-stroke pb-5 sm:mb-8">
     <div class="flex items-center gap-3">
       <h1
-        class="flex min-w-0 items-start gap-3 font-sans text-2xl font-semibold tracking-tight text-ink sm:text-3xl"
+        class="flex min-w-0 items-start gap-3 font-sans text-2xl font-semibold tracking-tight text-balance text-ink sm:text-3xl"
       >
         {#if athlete.country}
           <Flag
