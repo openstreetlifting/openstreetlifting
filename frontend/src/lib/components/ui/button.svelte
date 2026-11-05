@@ -40,8 +40,8 @@
     default: 'min-h-11 py-2 px-4',
     sm: 'h-9 px-3',
     lg: 'h-11 px-8 text-body',
-    icon: 'h-11 w-11 sm:h-8 sm:w-8',
-    control: 'h-11 px-3 sm:h-8',
+    icon: 'size-control',
+    control: 'h-control px-3',
   };
 
   const classes = $derived(cn(CONTROL, baseStyles, variants[variant], sizes[size], className));

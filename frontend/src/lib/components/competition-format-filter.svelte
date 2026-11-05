@@ -65,7 +65,7 @@
         {#each choices as movement (movement.code)}
           {@const selected = value.includes(movement.code)}
           <label
-            class="relative flex min-h-11 cursor-pointer items-center gap-2 rounded-control px-3 font-mono text-meta text-ink sm:min-h-8 {selected
+            class="relative flex min-h-control cursor-pointer items-center gap-2 rounded-control px-3 font-mono text-meta text-ink {selected
               ? 'bg-surface-selected'
               : 'hover:bg-surface-hover'}"
           >
