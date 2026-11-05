@@ -1,7 +1,7 @@
 <script module lang="ts">
   export const TABLE_HEAD_CELL =
     'px-1.5 py-1 text-left align-middle font-mono text-meta font-medium sm:px-3 sm:py-1.5';
-  export const TABLE_CELL = 'px-1.5 py-1 sm:px-3';
+  export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-1.5';
   export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
   export const FROZEN_HEAD_CELL = 'sticky z-10 bg-table-head';
   export const FROZEN_RANK =

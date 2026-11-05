@@ -20,6 +20,7 @@
     FROZEN_CELL,
     FROZEN_HEAD_CELL,
     FROZEN_RANK,
+    FROZEN_ATHLETE,
     ATHLETE_COLUMN,
     ATHLETE_CONTENT,
     Text,
@@ -39,6 +40,7 @@
   } from '#lib/utils/index.js';
   import {
     ATTEMPT_ROW,
+    BEST_ROW,
     CELL,
     STATUS_FLAG,
     SORTED_COLUMN,
@@ -186,6 +188,16 @@
 
     return best === null ? { kind: 'bombed' } : { kind: 'best', best };
   }
+
+  const withAttempts = $derived(
+    new Set(
+      competition.categories.flatMap((category) =>
+        category.participants.flatMap((participant) =>
+          participant.lifts.filter((lift) => lift.attempts.length).map((lift) => lift.movement_name)
+        )
+      )
+    )
+  );
 
   function rankedCell(entry: RankingEntry, key: string, code: string, movement: string): LiftCell {
     const best = entry[key as 'muscleup' | 'pullup' | 'dips' | 'squat'];
@@ -635,7 +647,7 @@
         <Table
           embedded
           rows={rankings}
-          frozenColumns="rank"
+          frozenColumns="athlete"
           itemName="athlete"
           {busy}
           pagination={{
@@ -650,7 +662,10 @@
             <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
               >{i18n.t('Rank')}</th
             >
-            <th class="{TABLE_HEAD_CELL} {ATHLETE_COLUMN} text-secondary">{i18n.t('Athlete')}</th>
+            <th
+              class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} text-secondary"
+              >{i18n.t('Athlete')}</th
+            >
             <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}"
               >{i18n.t('Total')} ({weights.unit})</th
             >
@@ -660,19 +675,28 @@
               </th>
             {/if}
             {#each contested as lift (lift.key)}
+              {@const attempts = withAttempts.has(lift.movement)}
               <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
                 {i18n.t(lift.label)}
-                <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
-                  <span class="text-right">1</span>
-                  <span class="text-right">2</span>
-                  <span class="text-right">3</span>
+                <span
+                  class="{attempts
+                    ? ATTEMPT_ROW
+                    : BEST_ROW} mt-0.5 text-micro font-normal text-muted"
+                >
+                  {#if attempts}
+                    <span class="text-right">1</span>
+                    <span class="text-right">2</span>
+                    <span class="text-right">3</span>
+                  {/if}
                   <span class="text-right">{i18n.t('Best')}</span>
                 </span>
               </th>
             {/each}
-            <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Sex')}</th>
+            <th class="{TABLE_HEAD_CELL} text-secondary {classed ? '' : 'w-full'}">
+              {i18n.t('Sex')}
+            </th>
             {#if classed}
-              <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>
+              <th class="{TABLE_HEAD_CELL} w-full text-secondary">{i18n.t('Class')}</th>
             {/if}
           {/snippet}
 
@@ -686,7 +710,9 @@
                 <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
                   {entry.rank}
                 </td>
-                <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+                <td
+                  class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} {CELL.identity}"
+                >
                   <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                     <span class="flex min-w-0 items-center gap-2">
                       <Flag
@@ -726,7 +752,7 @@
                 {#each contested as lift (lift.key)}
                   {@const cell = rankedCell(entry, lift.key, lift.code, lift.movement)}
                   <td class="{TABLE_CELL} whitespace-nowrap">
-                    <span class={ATTEMPT_ROW}>
+                    <span class={withAttempts.has(lift.movement) ? ATTEMPT_ROW : BEST_ROW}>
                       {#if cell.kind === 'attempts'}
                         {#each [1, 2, 3] as slot (slot)}
                           {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
@@ -748,7 +774,7 @@
                             {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
                           </span>
                         {/each}
-                      {:else}
+                      {:else if withAttempts.has(lift.movement)}
                         <span></span>
                         <span></span>
                         <span></span>
@@ -786,7 +812,9 @@
               <tr class="transition-colors">
                 <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.absent}">{NO_VALUE}</td>
 
-                <td class="{TABLE_CELL} {ATHLETE_COLUMN} {CELL.identity}">
+                <td
+                  class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} {CELL.identity}"
+                >
                   <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
                     <span class="flex min-w-0 items-center gap-2">
                       <Flag
@@ -832,7 +860,7 @@
                 {#each contested as lift (lift.key)}
                   {@const cell = participantCell(participant, lift.code, lift.movement)}
                   <td class="{TABLE_CELL} whitespace-nowrap">
-                    <span class={ATTEMPT_ROW}>
+                    <span class={withAttempts.has(lift.movement) ? ATTEMPT_ROW : BEST_ROW}>
                       {#if cell.kind === 'attempts'}
                         {#each [1, 2, 3] as slot (slot)}
                           {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
@@ -844,7 +872,7 @@
                             {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
                           </span>
                         {/each}
-                      {:else}
+                      {:else if withAttempts.has(lift.movement)}
                         <span></span>
                         <span></span>
                         <span></span>
