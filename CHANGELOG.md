@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.58.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.58.1...v0.58.2) (2026-11-06)
+
+
+### Bug Fixes
+
+* flaky staging promotion + rank ([#902](https://github.com/openstreetlifting/openstreetlifting/issues/902)) ([b8589c0](https://github.com/openstreetlifting/openstreetlifting/commit/b8589c0ec9b7aeaf8ab0cdfaadcbd9c6be0fab5a))
+
 ## [0.58.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.58.0...v0.58.1) (2026-11-06)
 
 
