@@ -4,11 +4,11 @@
   export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-1.5';
   export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
   export const FROZEN_HEAD_CELL = 'sticky z-10 bg-table-head';
-  export const FROZEN_RANK = 'w-12 min-w-12 max-w-12 sm:w-14 sm:min-w-14 sm:max-w-14 left-0';
+  export const FROZEN_RANK = 'w-11 min-w-11 max-w-11 sm:w-13 sm:min-w-13 sm:max-w-13 left-0';
   export const ATHLETE_COLUMN = 'w-36 min-w-36 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
   export const ATHLETE_COLUMN_FILL = 'w-36 min-w-36 pl-1 sm:w-full sm:min-w-64 sm:pl-3';
   export const ATHLETE_CONTENT = 'max-w-[8.25rem] sm:max-w-[14.5rem]';
-  export const FROZEN_ATHLETE = 'left-12 sm:left-14';
+  export const FROZEN_ATHLETE = 'left-11 sm:left-13';
 </script>
 
 <script lang="ts" generics="Row">
@@ -147,7 +147,7 @@
     class="osl-table overflow-x-auto {frozenColumns === 'athlete'
       ? 'scroll-ps-48 sm:scroll-ps-80'
       : frozenColumns === 'rank'
-        ? 'scroll-ps-14 sm:scroll-ps-16'
+        ? 'scroll-ps-11 sm:scroll-ps-13'
         : ''}"
   >
     <table class="w-full text-meta leading-4 whitespace-nowrap" aria-busy={busy}>
