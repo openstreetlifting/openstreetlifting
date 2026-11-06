@@ -20,11 +20,12 @@ async fn main() -> std::process::ExitCode {
         osl_telemetry::report_startup_failure("osl-api");
         return std::process::ExitCode::FAILURE;
     };
-    if run().await.is_err() {
-        tracing::error!(fatal = true, error.type = "api_runtime", "API process terminated");
-        std::process::ExitCode::FAILURE
-    } else {
-        std::process::ExitCode::SUCCESS
+    match run().await {
+        Ok(()) => std::process::ExitCode::SUCCESS,
+        Err(error) => {
+            tracing::error!(fatal = true, error.type = "api_runtime", error = ?error, "API process terminated");
+            std::process::ExitCode::FAILURE
+        }
     }
 }
 

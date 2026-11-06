@@ -4,11 +4,11 @@
   export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-1.5';
   export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
   export const FROZEN_HEAD_CELL = 'sticky z-10 bg-table-head';
-  export const FROZEN_RANK = 'w-12 min-w-12 max-w-12 sm:w-14 sm:min-w-14 sm:max-w-14 left-0';
+  export const FROZEN_RANK = 'w-8 min-w-8 max-w-8 sm:w-10 sm:min-w-10 sm:max-w-10 left-0';
   export const ATHLETE_COLUMN = 'w-36 min-w-36 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
   export const ATHLETE_COLUMN_FILL = 'w-36 min-w-36 pl-1 sm:w-full sm:min-w-64 sm:pl-3';
   export const ATHLETE_CONTENT = 'max-w-[8.25rem] sm:max-w-[14.5rem]';
-  export const FROZEN_ATHLETE = 'left-12 sm:left-14';
+  export const FROZEN_ATHLETE = 'left-8 sm:left-10';
 </script>
 
 <script lang="ts" generics="Row">
