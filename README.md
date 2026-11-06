@@ -18,7 +18,7 @@ Install Docker, Rust, Node.js 24, pnpm 12, and [sqlx-cli](https://crates.io/crat
 cp backend/.env.example backend/.env
 docker compose up -d --wait postgres
 cd backend
-sqlx migrate run --source crates/osl_db/migrations
+cargo sqlx migrate run --source crates/osl_db/migrations
 cd ../frontend
 pnpm install --frozen-lockfile
 cd ..
