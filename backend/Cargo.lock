@@ -304,9 +304,9 @@ dependencies = [
 
 [[package]]
 name = "brotli-decompressor"
-version = "6.2.0"
+version = "6.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34c6783f42c21c952ad7112b354f0ba2f10760e9decea5b1b60523d6e270faaf"
+checksum = "97d9071e5b45944c5a9c06baf13a7a65ffa2c88c204015967852c90869692c05"
 dependencies = [
  "alloc-no-stdlib",
  "alloc-stdlib",
@@ -332,9 +332,9 @@ checksum = "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04"
 
 [[package]]
 name = "cc"
-version = "1.11.0"
+version = "1.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "375989decec1a0fa424442bed520fa12ede43a48475ce8c7417d2c69b32b5f6b"
+checksum = "4ff2a8126fff0f8c839080d619675a585e61720bb12d2baceae45769fd66f155"
 dependencies = [
  "find-msvc-tools",
  "jobserver",
@@ -714,9 +714,9 @@ checksum = "1c66915cc5391097de7a2b0b972e8505aa33c0df401fd3a6811dbdb32881ba48"
 
 [[package]]
 name = "flate2"
-version = "1.1.10"
+version = "1.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e634e2e0ebac1ee034020da1ca582e17ffe4e0f5e985823721e168928136dcb"
+checksum = "626d4928326b646e70f65ed36fc7cf9f206bdb68a0019ee7c6b4709da4e084c4"
 dependencies = [
  "crc32fast",
  "miniz_oxide",
@@ -1654,7 +1654,7 @@ dependencies = [
 
 [[package]]
 name = "osl_api"
-version = "0.58.2"
+version = "0.59.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -1686,7 +1686,7 @@ dependencies = [
 
 [[package]]
 name = "osl_db"
-version = "0.58.2"
+version = "0.59.0"
 dependencies = [
  "chrono",
  "metrics",
@@ -1701,7 +1701,7 @@ dependencies = [
 
 [[package]]
 name = "osl_domain"
-version = "0.58.2"
+version = "0.59.0"
 dependencies = [
  "rust_decimal",
  "serde",
@@ -1714,7 +1714,7 @@ dependencies = [
 
 [[package]]
 name = "osl_importer"
-version = "0.58.2"
+version = "0.59.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1738,7 +1738,7 @@ dependencies = [
 
 [[package]]
 name = "osl_telemetry"
-version = "0.58.2"
+version = "0.59.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2070,7 +2070,7 @@ dependencies = [
 
 [[package]]
 name = "recover-bodyweight"
-version = "0.58.2"
+version = "0.59.0"
 dependencies = [
  "anyhow",
  "clap",
