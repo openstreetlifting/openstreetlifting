@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 FROM node:26-alpine AS deps
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install -g pnpm@12
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -12,7 +12,7 @@ FROM deps AS prod-deps
 RUN pnpm prune --prod --ignore-scripts
 
 FROM node:26-alpine AS builder
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install -g pnpm@12
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
