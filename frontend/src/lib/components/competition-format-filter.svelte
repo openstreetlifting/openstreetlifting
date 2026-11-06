@@ -57,15 +57,15 @@
       class="{FIELD} flex cursor-pointer list-none items-center gap-2 px-3 py-1.5 text-micro group-open:border-focus [&::-webkit-details-marker]:hidden"
     >
       <span class="truncate" title={label}>{label}</span>
-      <ChevronIcon class="ml-auto h-3.5 w-3.5 shrink-0 group-open:rotate-180" />
+      <ChevronIcon class="ml-auto h-3 w-3 shrink-0 text-secondary group-open:rotate-180" />
     </summary>
-    <div class="{OVERLAY_SURFACE} absolute right-0 mt-1.5 w-full min-w-44 overflow-hidden">
-      <fieldset class="space-y-0.5 p-1">
+    <div class="{OVERLAY_SURFACE} absolute right-0 mt-1 w-full min-w-44 overflow-hidden">
+      <fieldset class="divide-y divide-stroke">
         <legend class="sr-only">{i18n.t('Match these movements exactly')}</legend>
         {#each choices as movement (movement.code)}
           {@const selected = value.includes(movement.code)}
           <label
-            class="relative flex min-h-control cursor-pointer items-center gap-2 rounded-control px-3 font-mono text-micro text-ink {selected
+            class="relative flex h-control cursor-pointer items-center gap-2 px-3 font-mono text-micro text-ink {selected
               ? 'bg-surface-selected'
               : 'hover:bg-surface-hover'}"
           >
@@ -80,14 +80,14 @@
                       : value.replace(movement.code, '')
                   )
                 )}
-              class="size-4 shrink-0 cursor-pointer appearance-none rounded-control border border-stroke-strong outline-none checked:border-action checked:bg-action focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+              class="size-3.5 shrink-0 cursor-pointer appearance-none rounded-control border border-stroke-strong outline-none checked:border-action checked:bg-action focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             />
             {#if selected}
               <svg
                 aria-hidden="true"
                 viewBox="0 0 16 16"
                 fill="none"
-                class="pointer-events-none absolute left-3 size-3 text-on-action"
+                class="pointer-events-none absolute left-3 size-3.5 p-0.5 text-on-action"
               >
                 <path
                   d="m3 8 3.25 3.25L13 4.5"
@@ -102,7 +102,7 @@
           </label>
         {/each}
       </fieldset>
-      <div class="border-t border-stroke p-1">
+      <div class="border-t border-stroke">
         <Button
           variant="ghost"
           size="control"
@@ -110,7 +110,7 @@
           aria-label={i18n.t('Clear movements')}
           disabled={!value}
           onclick={() => onChange('')}
-          class="w-full justify-start px-3 text-secondary disabled:text-faint"
+          class="w-full justify-start px-3 text-micro text-secondary disabled:text-faint"
           >{i18n.t('Clear selection')}</Button
         >
       </div>

@@ -341,7 +341,6 @@ export default {
   'This page has left the platform.': 'Ta strona zeszła już z pomostu.',
   'Something went wrong': 'Coś poszło nie tak',
   'We couldn’t load this page.': 'Nie udało się wczytać tej strony.',
-  'Please try again later.': 'Spróbuj ponownie później.',
   'Couldn’t load rankings': 'Nie udało się wczytać rankingu',
   Disqualified: 'Dyskwalifikacja',
   'Did not lift': 'Brak startu',

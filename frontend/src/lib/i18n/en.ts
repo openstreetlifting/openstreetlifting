@@ -263,7 +263,6 @@ export const messages = [
   'This page has left the platform.',
   'Something went wrong',
   'We couldn’t load this page.',
-  'Please try again later.',
   'Couldn’t load rankings',
   'Disqualified',
   'Did not lift',

@@ -342,7 +342,6 @@ export default {
   'This page has left the platform.': 'Cette page a quitté le plateau.',
   'Something went wrong': 'Une erreur est survenue',
   'We couldn’t load this page.': 'Impossible de charger cette page.',
-  'Please try again later.': 'Veuillez réessayer plus tard.',
   'Couldn’t load rankings': 'Impossible de charger le classement',
   Disqualified: 'Disqualifié',
   'Did not lift': 'N’a pas concouru',
