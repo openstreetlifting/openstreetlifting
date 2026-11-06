@@ -2,13 +2,16 @@
   export const TABLE_HEAD_CELL =
     'px-1.5 py-1 text-left align-middle font-mono text-meta font-medium sm:px-3 sm:py-1.5';
   export const TABLE_CELL = 'px-1.5 py-1 sm:px-3 sm:py-1.5';
-  export const FROZEN_CELL = 'sticky z-10 bg-[var(--row-bg)]';
-  export const FROZEN_HEAD_CELL = 'sticky z-10 bg-table-head';
-  export const FROZEN_RANK = 'w-11 min-w-11 max-w-11 sm:w-13 sm:min-w-13 sm:max-w-13 left-0';
+  // Freezing only helps while the table scrolls sideways, which happens below
+  // sm. From sm the whole table fits, so the cells stay unpinned and the row
+  // background is all the frozen constants carry.
+  export const FROZEN_CELL = 'max-sm:sticky max-sm:z-10 bg-[var(--row-bg)]';
+  export const FROZEN_HEAD_CELL = 'max-sm:sticky max-sm:z-10 bg-table-head';
+  export const FROZEN_RANK = 'w-11 min-w-11 max-w-11 sm:w-13 sm:min-w-13 sm:max-w-13 max-sm:left-0';
   export const ATHLETE_COLUMN = 'w-36 min-w-36 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
   export const ATHLETE_COLUMN_FILL = 'w-36 min-w-36 pl-1 sm:w-full sm:min-w-64 sm:pl-3';
   export const ATHLETE_CONTENT = 'max-w-[8.25rem] sm:max-w-[14.5rem]';
-  export const FROZEN_ATHLETE = 'left-11 sm:left-13';
+  export const FROZEN_ATHLETE = 'max-sm:left-11';
 </script>
 
 <script lang="ts" generics="Row">
@@ -145,9 +148,9 @@
     onfocusin={revealFocus}
     data-frozen={frozenColumns}
     class="osl-table overflow-x-auto {frozenColumns === 'athlete'
-      ? 'scroll-ps-48 sm:scroll-ps-80'
+      ? 'scroll-ps-48 sm:scroll-ps-0'
       : frozenColumns === 'rank'
-        ? 'scroll-ps-11 sm:scroll-ps-13'
+        ? 'scroll-ps-11 sm:scroll-ps-0'
         : ''}"
   >
     <table class="w-full text-meta leading-4 whitespace-nowrap" aria-busy={busy}>
@@ -196,6 +199,14 @@
   .osl-table[data-frozen='rank'] :global(tr > :first-child),
   .osl-table[data-frozen='athlete'] :global(tr > :nth-child(2)) {
     border-right: 1px solid var(--color-stroke-strong);
+  }
+
+  /* Nothing is frozen from sm, so the rule that marks the frozen edge goes. */
+  @media (min-width: 640px) {
+    .osl-table[data-frozen='rank'] :global(tr > :first-child),
+    .osl-table[data-frozen='athlete'] :global(tr > :nth-child(2)) {
+      border-right: 0;
+    }
   }
 
   .osl-table :global(tbody tr:last-child) {
