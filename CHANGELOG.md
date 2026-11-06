@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.59.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.58.2...v0.59.0) (2026-11-06)
+
+
+### Features
+
+* **doc:** use cargo sqlx instead of plain sqlx ([c23c3ab](https://github.com/openstreetlifting/openstreetlifting/commit/c23c3ab595d78dccaefd1106a566033317b863b2))
+
+
+### Bug Fixes
+
+* **database:** add offline sqlx cache again ([ad4a06d](https://github.com/openstreetlifting/openstreetlifting/commit/ad4a06d6e63381adcc72ef1225b5ef0b9e4e55d0))
+
 ## [0.58.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.58.1...v0.58.2) (2026-11-06)
 
 
