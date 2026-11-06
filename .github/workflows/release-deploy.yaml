@@ -64,6 +64,29 @@ jobs:
             echo "semver=${GITHUB_REF_NAME#v}"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Verify staging runs the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          check() {
+            local component=$1 tag=$2
+            local commit="${tag#sha-}"
+            local status
+            if ! status=$(gh api \
+              "repos/${GITHUB_REPOSITORY}/compare/${GITHUB_REF_NAME}...${commit}" \
+              --jq .status 2>&1); then
+              echo "::error::staging ${component} tag '${tag}' is not a commit of ${GITHUB_REPOSITORY}; refusing to promote." >&2
+              exit 1
+            fi
+            if [[ "$status" != "behind" && "$status" != "identical" ]]; then
+              echo "::error::staging ${component} (${tag}) is older than ${GITHUB_REF_NAME}. Deploy it to staging before promoting." >&2
+              exit 1
+            fi
+          }
+          check frontend "${{ steps.tags.outputs.frontend_sha }}"
+          check backend "${{ steps.tags.outputs.backend_sha }}"
+          check importer "${{ steps.tags.outputs.importer_sha }}"
+
       - name: Retag images
         env:
           SEMVER: ${{ steps.tags.outputs.semver }}
