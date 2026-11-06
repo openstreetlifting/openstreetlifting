@@ -343,7 +343,6 @@ export default {
   'This page has left the platform.': 'Diese Seite hat die Plattform verlassen.',
   'Something went wrong': 'Etwas ist schiefgelaufen',
   'We couldn’t load this page.': 'Wir konnten diese Seite nicht laden.',
-  'Please try again later.': 'Bitte versuche es später erneut.',
   'Couldn’t load rankings': 'Rangliste konnte nicht geladen werden',
   Disqualified: 'Disqualifiziert',
   'Did not lift': 'Nicht angetreten',

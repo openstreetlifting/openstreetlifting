@@ -75,6 +75,10 @@
       .length
   );
 
+  const byId = $derived(new Map(points.map((point) => [point.id, point])));
+  const athlete = (data: unknown) =>
+    data && typeof data === 'object' && 'id' in data ? byId.get(String(data.id)) : undefined;
+
   const sexLabel = (sex: 'men' | 'women') => (sex === 'men' ? i18n.t('Men') : i18n.t('Women'));
 </script>
 
@@ -199,27 +203,29 @@
           class="{CHART.tooltip} text-meta text-secondary"
         >
           {#snippet children({ data })}
-            {@const point = data as BodyweightPoint}
-            <p class="max-w-56 font-medium text-ink">{point.name}</p>
-            <dl class="mt-2 grid grid-cols-[1fr_auto] gap-x-6 gap-y-1">
-              <dt>{i18n.t('Bodyweight')}</dt>
-              <dd class="text-right font-mono">
-                {weights.format(point.bodyweight, i18n.locale)}
-                {weights.unit}
-              </dd>
-              <dt>{i18n.t('Total')}</dt>
-              <dd class="text-right font-mono">
-                {weights.format(point.total, i18n.locale)}
-                {weights.unit}
-              </dd>
-              <dt>RIS</dt>
-              <dd class="text-right font-mono text-ink">
-                {i18n.number(
-                  calculateRis(formula.constants[point.sex], point.bodyweight, point.total),
-                  2
-                )}
-              </dd>
-            </dl>
+            {@const point = athlete(data)}
+            {#if point}
+              <p class="max-w-56 font-medium text-ink">{point.name}</p>
+              <dl class="mt-2 grid grid-cols-[1fr_auto] gap-x-6 gap-y-1">
+                <dt>{i18n.t('Bodyweight')}</dt>
+                <dd class="text-right font-mono">
+                  {weights.format(point.bodyweight, i18n.locale)}
+                  {weights.unit}
+                </dd>
+                <dt>{i18n.t('Total')}</dt>
+                <dd class="text-right font-mono">
+                  {weights.format(point.total, i18n.locale)}
+                  {weights.unit}
+                </dd>
+                <dt>RIS</dt>
+                <dd class="text-right font-mono text-ink">
+                  {i18n.number(
+                    calculateRis(formula.constants[point.sex], point.bodyweight, point.total),
+                    2
+                  )}
+                </dd>
+              </dl>
+            {/if}
           {/snippet}
         </Tooltip.Root>
       {/snippet}

@@ -12,13 +12,11 @@
       return {
         label: i18n.t('Page not found'),
         title: i18n.t('This page has left the platform.'),
-        description: '',
       };
     }
     return {
       label: i18n.t('Something went wrong'),
       title: i18n.t('We couldn’t load this page.'),
-      description: i18n.t('Please try again later.'),
     };
   });
 </script>
@@ -39,13 +37,7 @@
     height="160"
     class="mb-8 h-32 w-32 sm:h-40 sm:w-40"
   />
-  <p class="mb-3 text-body font-medium text-secondary">{page.status} · {copy.label}</p>
   <Text as="h1" variant="title" class="text-balance text-ink">{copy.title}</Text>
-  {#if copy.description}
-    <p class="mt-3 max-w-sm text-body leading-relaxed text-pretty text-secondary">
-      {copy.description}
-    </p>
-  {/if}
   <div class="mt-8 flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
     <Button size="control" href={i18n.href(resolve(''))}>{i18n.t('Back to rankings')}</Button>
 
