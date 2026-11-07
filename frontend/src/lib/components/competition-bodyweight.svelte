@@ -58,7 +58,7 @@
       sex,
       line: Array.from({ length: 81 }, (_, index) => {
         const bodyweight = xDomain[0] + ((xDomain[1] - xDomain[0]) * index) / 80;
-        return { bodyweight, total: benchmarkTotal(formula.constants[sex], bodyweight) };
+        return { sex, bodyweight, total: benchmarkTotal(formula.constants[sex], bodyweight) };
       }),
     }))
   );
@@ -78,6 +78,10 @@
   const byId = $derived(new Map(points.map((point) => [point.id, point])));
   const athlete = (data: unknown) =>
     data && typeof data === 'object' && 'id' in data ? byId.get(String(data.id)) : undefined;
+
+  type BenchmarkPoint = (typeof curves)[number]['line'][number];
+  const samples = $derived(new Set<unknown>(curves.flatMap((curve) => curve.line)));
+  const benchmark = (data: unknown) => (samples.has(data) ? (data as BenchmarkPoint) : undefined);
 
   const sexLabel = (sex: 'men' | 'women') => (sex === 'men' ? i18n.t('Men') : i18n.t('Women'));
 </script>
@@ -203,18 +207,24 @@
           class="{CHART.tooltip} text-meta text-secondary"
         >
           {#snippet children({ data })}
-            {@const point = athlete(data)}
+            {@const performance = athlete(data)}
+            {@const point = performance ?? benchmark(data)}
+            {@const digits = performance ? undefined : 2}
             {#if point}
-              <p class="max-w-56 font-medium text-ink">{point.name}</p>
+              <p class="max-w-56 font-medium text-ink">
+                {performance
+                  ? performance.name
+                  : i18n.t('RIS 100, {sex}', { sex: sexLabel(point.sex).toLowerCase() })}
+              </p>
               <dl class="mt-2 grid grid-cols-[1fr_auto] gap-x-6 gap-y-1">
                 <dt>{i18n.t('Bodyweight')}</dt>
                 <dd class="text-right font-mono">
-                  {weights.format(point.bodyweight, i18n.locale)}
+                  {weights.format(point.bodyweight, i18n.locale, digits)}
                   {weights.unit}
                 </dd>
                 <dt>{i18n.t('Total')}</dt>
                 <dd class="text-right font-mono">
-                  {weights.format(point.total, i18n.locale)}
+                  {weights.format(point.total, i18n.locale, digits)}
                   {weights.unit}
                 </dd>
                 <dt>RIS</dt>
