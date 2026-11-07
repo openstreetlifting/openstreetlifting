@@ -24,6 +24,7 @@
     FROZEN_HEAD_CELL,
     FROZEN_RANK,
     Text,
+    RankHeader,
   } from '#lib/components/ui/index.js';
   import { ChevronIcon, GlobeIcon, InstagramIcon } from '#lib/components/icons/index.js';
   import { resolve } from '$app/paths';
@@ -406,7 +407,7 @@
       >
         {#snippet head()}
           <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
-            >{i18n.t('Rank')}</th
+            ><RankHeader /></th
           >
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competition')}</th>
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')} ({weights.unit})</th>

@@ -21,6 +21,7 @@
     FROZEN_ATHLETE,
     ATHLETE_COLUMN,
     ATHLETE_CONTENT,
+    RankHeader,
   } from '#lib/components/ui/index.js';
   import { InstagramIcon } from '#lib/components/icons/index.js';
   import Seo from '#lib/components/seo.svelte';
@@ -199,7 +200,7 @@
       >
         {#snippet head()}
           <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
-            >{i18n.t('Rank')}</th
+            ><RankHeader /></th
           >
           <th
             class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} text-secondary"
