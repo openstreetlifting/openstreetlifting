@@ -1,11 +1,11 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Sergio,Blazquez Sánchez,,,,,310,competed,,,,,15,,,,52.5,,,,102.5,,,,140
 M,66,Ginés,Martínez Pérez,,,,,340,competed,,,,,20,,,,65,,,,92.5,,,,162.5
-M,66,Marc,Morena Herranz,,,,,,disqualified,"Did not attempt dips, squat",,,,7.5,,,,55,,,,,,,,
-M,73,Darío,Blanco González,,,,,,disqualified,Did not attempt pull-up,,,,12.5,,,,,,,,60,,,,105
+M,66,Marc,Morena Herranz,,ES,,,,disqualified,"Did not attempt dips, squat",,,,7.5,,,,55,,,,,,,,
+M,73,Darío,Blanco González,,ES,,,,disqualified,Did not attempt pull-up,,,,12.5,,,,,,,,60,,,,105
 M,73,Joel,Casas Ribas,,,,,332.5,competed,,,,,17.5,,,,55,,,,90,,,,170
-M,73,Pablo Torcuato,García Rodríguez,,,,,255,competed,,,,,15,,,,60,,,,70,,,,110
-M,73,Manuel,Juan Pradas Capilla,,,,,297.5,competed,,,,,25,,,,77.5,,,,80,,,,115
+M,73,Pablo Torcuato,García Rodríguez,,ES,,,255,competed,,,,,15,,,,60,,,,70,,,,110
+M,73,Manuel,Juan Pradas Capilla,,ES,,,297.5,competed,,,,,25,,,,77.5,,,,80,,,,115
 M,73,Carlos,Martínez Manzano,,,,,305,competed,,,,,15,,,,70,,,,65,,,,155
 M,73,Guillermo,Rodríguez Pérez,,,,,,disqualified,Did not attempt squat,,,,0,,,,85,,,,90,,,,
 M,73,Pascual,Vicente Abellán,,,,,267.5,competed,,,,,10,,,,55,,,,82.5,,,,120
