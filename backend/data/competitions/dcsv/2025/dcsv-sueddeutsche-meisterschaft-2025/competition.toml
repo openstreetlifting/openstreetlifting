@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "https://www.dcs-verband.de/dm-weighted-calisthenics/",
+    "User-supplied DCSV Rankings 2022-2026: Wettkampftabelle SDM Weighted Calisthenics 2025.pdf",
+]
+
+[competition]
+name = "Süddeutsche Meisterschaft"
+start_date = "2025-05-24"
+city = "München"
+region = "Bayern"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "DCSV"
+abbreviation = "DCSV"
+country = "DE"
