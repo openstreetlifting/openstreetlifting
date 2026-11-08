@@ -1,0 +1,20 @@
+# Fabian Vorberg: the published 102.5 kg dip best sums to the published
+# 395 kg total. Treat the green 107.5 kg third attempt as failed.
+event = "MPDS"
+sources = [
+    "https://www.dcs-verband.de/dm-weighted-calisthenics/",
+    "User-supplied DCSV Rankings 2022-2026: Wettkampftabelle NDM Weighted Calisthenics 2025.pdf",
+]
+
+[competition]
+name = "Norddeutsche Meisterschaft"
+start_date = "2025-07-12"
+city = "Rostock"
+region = "Mecklenburg-Vorpommern"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "DCSV"
+abbreviation = "DCSV"
+country = "DE"
