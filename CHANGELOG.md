@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.61.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.60.0...v0.61.0) (2026-11-08)
+
+
+### Features
+
+* **data:** import DCSV NDM 2025 ([#914](https://github.com/openstreetlifting/openstreetlifting/issues/914)) ([e612185](https://github.com/openstreetlifting/openstreetlifting/commit/e612185d70064ed711652d0b3b354d8dde54c9dc))
+* **data:** import DCSV WDM 2026 ([#916](https://github.com/openstreetlifting/openstreetlifting/issues/916)) ([59069f7](https://github.com/openstreetlifting/openstreetlifting/commit/59069f78401f983f94641b48d3a46dd65da02610))
+
 ## [0.60.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.59.1...v0.60.0) (2026-11-08)
 
 
