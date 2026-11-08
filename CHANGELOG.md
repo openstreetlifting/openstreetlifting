@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.60.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.59.1...v0.60.0) (2026-11-08)
+
+
+### Features
+
+* add current rivals section on athlete profile ([#909](https://github.com/openstreetlifting/openstreetlifting/issues/909)) ([a3e6d31](https://github.com/openstreetlifting/openstreetlifting/commit/a3e6d31ec76015a6f541c91eedb1d5f817af5d5b))
+* **data:** import DCSV SDM 2025 ([#915](https://github.com/openstreetlifting/openstreetlifting/issues/915)) ([f3addeb](https://github.com/openstreetlifting/openstreetlifting/commit/f3addeb28c45f1c1df342c55b607c60e9e598328))
+
 ## [0.59.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.59.0...v0.59.1) (2026-11-08)
 
 
