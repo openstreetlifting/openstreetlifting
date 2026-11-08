@@ -55,7 +55,6 @@ pub struct AthleteNeighbor {
     #[schema(required = true)]
     pub country: Option<String>,
     pub value: rust_decimal::Decimal,
-    /// Signed kilograms relative to the profile athlete's qualifying total.
     pub gap: rust_decimal::Decimal,
     pub place: i64,
     pub field: i64,

@@ -939,8 +939,7 @@
             "type": "string"
           },
           "gap": {
-            "type": "string",
-            "description": "Signed kilograms relative to the profile athlete's qualifying total."
+            "type": "string"
           },
           "last_name": {
             "type": "string"
