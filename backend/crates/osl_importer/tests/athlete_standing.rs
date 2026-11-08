@@ -277,24 +277,23 @@ async fn counts_all_athletes_in_class(pool: PgPool) {
         ),
     )
     .await;
-    import(
-        &pool,
-        common::competition(
-            "moved-up-heavier",
-            vec![men_80(vec![weighing(
-                lifting(athlete("Moved", "Up"), ["45", "75", "95", "155"]),
-                "80",
-            )])],
-        ),
-    )
-    .await;
+    let mut later = common::competition(
+        "moved-up-heavier",
+        vec![men_80(vec![weighing(
+            lifting(athlete("Moved", "Up"), ["45", "75", "95", "155"]),
+            "80",
+        )])],
+    );
+    later.competition.start_date = chrono::NaiveDate::from_ymd_opt(2026, 2, 1).unwrap();
+    later.competition.end_date = later.competition.start_date;
+    import(&pool, later).await;
 
     let standings = standings(&pool, "Up").await;
     let standing = metric(&standings, RankingMovement::Total);
 
     assert_eq!(
         standing.global_field, 4,
-        "the class of their best total, counting everyone who has lifted in it"
+        "the latest All4 class, counting everyone who has lifted in it"
     );
     assert_eq!(
         standing.global_place, 3,
@@ -365,6 +364,45 @@ async fn matches_leaderboards_when_results_tie(pool: PgPool) {
             }
         }
     }
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn total_uses_best_result_in_latest_all4_category(pool: PgPool) {
+    import(
+        &pool,
+        common::competition(
+            "earlier-light",
+            vec![category(
+                osl_domain::WeightClassSlug::M66,
+                vec![weighing(
+                    lifting(athlete("Moving", "Target"), ["40", "80", "120", "200"]),
+                    "66",
+                )],
+            )],
+        ),
+    )
+    .await;
+    let mut later = common::competition(
+        "later-heavy",
+        vec![men_80(vec![
+            lifting(athlete("Moving", "Target"), ["30", "60", "90", "120"]),
+            lifting(athlete("Ahead", "Rival"), ["40", "60", "90", "120"]),
+        ])],
+    );
+    later.competition.start_date = chrono::NaiveDate::from_ymd_opt(2026, 2, 1).unwrap();
+    later.competition.end_date = later.competition.start_date;
+    import(&pool, later).await;
+
+    let rows = standings(&pool, "Target").await;
+    let total = metric(&rows, RankingMovement::Total);
+    assert_eq!(total.weight_class_max, Some(common::decimal("80")));
+    assert_eq!(total.value, common::decimal("300"));
+    assert_eq!((total.global_place, total.global_field), (2, 2));
+    assert_eq!(
+        metric(&rows, RankingMovement::Pullup).weight_class_max,
+        Some(common::decimal("66")),
+        "other metrics keep their best-result category"
+    );
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

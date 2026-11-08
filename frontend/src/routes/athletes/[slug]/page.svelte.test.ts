@@ -74,6 +74,7 @@ function athlete(): AthleteDetail {
     native_name: null,
     instagram_handle: null,
     lift_balance: null,
+    neighbors: null,
     slug: 'alex-martin',
     gender: 'M',
     country: 'FR',

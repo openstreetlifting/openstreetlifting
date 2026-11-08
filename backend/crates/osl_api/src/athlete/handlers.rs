@@ -8,11 +8,17 @@ use osl_db::repository::athlete::AthleteRepository;
 use osl_db::repository::ranking::RankingRepository;
 use serde::Deserialize;
 
-use super::dto::{AthleteResponse, AthleteStanding, LiftBalance};
+use super::dto::{AthleteNeighborhood, AthleteResponse, AthleteStanding, LiftBalance};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
-const ATHLETE_INCLUDES: &[&str] = &["competitions", "records", "standing", "lift_balance"];
+const ATHLETE_INCLUDES: &[&str] = &[
+    "competitions",
+    "records",
+    "standing",
+    "lift_balance",
+    "neighbors",
+];
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct AthleteQuery {
@@ -79,7 +85,7 @@ pub async fn get_athlete(
         let athlete = repo.find_by_slug(&slug).await?;
         let athlete_id = athlete.athlete_id;
         let rankings = RankingRepository::new(state.db.pool());
-        let (detail, metric_standings, lift_balance) = tokio::try_join!(
+        let (detail, metric_standings, lift_balance, neighbors) = tokio::try_join!(
             repo.get_detailed_athlete(athlete),
             async {
                 if query.include.has("standing") {
@@ -91,6 +97,13 @@ pub async fn get_athlete(
             async {
                 if query.include.has("lift_balance") {
                     repo.lift_balance(athlete_id).await
+                } else {
+                    Ok(Vec::new())
+                }
+            },
+            async {
+                if query.include.has("neighbors") {
+                    rankings.get_athlete_total_neighbors(athlete_id).await
                 } else {
                     Ok(Vec::new())
                 }
@@ -106,6 +119,11 @@ pub async fn get_athlete(
             .include
             .has("lift_balance")
             .then(|| LiftBalance::from_rows(lift_balance));
+
+        response.neighbors = query
+            .include
+            .has("neighbors")
+            .then(|| AthleteNeighborhood::from_rows(neighbors, response.gender));
 
         return Ok(Json(response));
     }

@@ -61,49 +61,57 @@
   const axisLabel = (movement: string) => {
     const gap = lifts.find((lift) => lift.movement_name === movement)?.gap;
     const name = i18n.movement(movement);
-    if (!roomy || gap === null || gap === undefined) return name;
-    return `${name} ${signedPercent.format(gap / 100)}`;
+    if (gap === null || gap === undefined) return name;
+    return `${name}\n${signedPercent.format(gap / 100)}`;
   };
-  const weightClass = $derived(
-    weights
-      .category(balance?.category, i18n.locale)
-      .match(/[+-]\d+(?:[.,]\d+)?\s*(?:kg|lb)?$/i)?.[0] ?? null
-  );
+  const weightClass = $derived(weights.weightClass(balance?.category, i18n.locale));
   const reference = $derived(
-    weightClass ? i18n.t('Reference ({class})', { class: weightClass }) : i18n.t('Reference')
+    weightClass ? i18n.t('{class} class', { class: weightClass }) : i18n.t('Reference')
   );
 </script>
+
+{#snippet shareRow(kind: 'athlete' | 'reference', label: string, value: number)}
+  <span class="flex items-center gap-2 {TEXT.meta} leading-5">
+    <span
+      class="w-3 shrink-0 border-t-2 {kind === 'athlete'
+        ? 'border-chart-athlete'
+        : 'border-dashed border-muted'}"
+      aria-hidden="true"
+    ></span>
+    <span class="min-w-0 truncate text-secondary">{label}</span>
+    <span class="ml-auto shrink-0 whitespace-nowrap"
+      ><span class="font-mono font-medium text-ink tabular-nums">{share(value)}</span>
+      <span class="text-muted">{i18n.t('of total')}</span></span
+    >
+  </span>
+{/snippet}
 
 <ChartPanel title={i18n.t('Lift balance')}>
   {#snippet controls()}
     {#if balance}
       <InfoTip label={i18n.t('About lift balance')}>
-        <p class="font-medium text-ink">{i18n.t('Lift balance')}</p>
-        <p class="mt-3">
-          {i18n.t(
-            'How this athlete’s best total is split across the four lifts, compared with others in their weight class.'
-          )}
-        </p>
-        <p class="mt-3">
-          {i18n.t(
-            'Further out means that lift takes a bigger share of the total than usual, not that it is better.'
-          )}
-        </p>
-        {#if comparable}
-          <p class="mt-3">
-            {i18n.t('Reference: {count} {athletes} in {category}', {
-              count: i18n.number(balance.field, 0),
-              athletes: i18n.count('athlete', balance.field),
-              category: weights.category(balance.category, i18n.locale),
-            })}
-          </p>
-        {/if}
-        <p class="mt-3">
-          {i18n.t('Based on {total} {unit} at {competition}', {
-            total: weights.format(balance.total, i18n.locale),
-            unit: weights.unit,
-            competition: balance.competition_name,
-          })}
+        <p>
+          {#if comparable}
+            {i18n.t(
+              'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.',
+              {
+                total: weights.format(balance.total, i18n.locale),
+                unit: weights.unit,
+                competition: balance.competition_name,
+                count: i18n.number(balance.field, 0),
+                category: weights.category(balance.category, i18n.locale),
+              }
+            )}
+          {:else}
+            {i18n.t(
+              'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}).',
+              {
+                total: weights.format(balance.total, i18n.locale),
+                unit: weights.unit,
+                competition: balance.competition_name,
+              }
+            )}
+          {/if}
         </p>
       </InfoTip>
     {/if}
@@ -279,18 +287,13 @@
       >
         {#each lifts as lift (lift.movement_name)}
           <div class="min-w-0 @min-[36rem]:py-1.5 @min-[36rem]:first:pt-0 @min-[36rem]:last:pb-0">
-            <Text as="dt" variant="fieldLabel">{i18n.movement(lift.movement_name)}</Text>
+            <Text as="dt" variant="fieldLabel" class="mb-1 text-meta font-medium text-secondary"
+              >{i18n.movement(lift.movement_name)}</Text
+            >
             <dd>
               {#if comparable && lift.class_share !== null && lift.gap !== null}
-                <Text as="span" variant="figure" class="block leading-8 tabular-nums">
-                  {signedPercent.format(lift.gap / 100)}
-                </Text>
-                <Text as="span" variant="caption" class="block tabular-nums">
-                  {i18n.t('Athlete: {share} of total', { share: share(lift.share) })}
-                </Text>
-                <Text as="span" variant="caption" class="block tabular-nums">
-                  {i18n.t('Reference: {share} of total', { share: share(lift.class_share) })}
-                </Text>
+                {@render shareRow('athlete', i18n.t('Athlete'), lift.share)}
+                {@render shareRow('reference', reference, lift.class_share)}
               {:else}
                 <Text as="span" variant="figure" class="block leading-8 tabular-nums">
                   {share(lift.share)}

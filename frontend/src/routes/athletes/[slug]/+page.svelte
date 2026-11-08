@@ -38,6 +38,7 @@
   import Seo from '#lib/components/seo.svelte';
   import AthleteProgress from '#lib/components/athlete-progress.svelte';
   import AthleteBalance from '#lib/components/athlete-balance.svelte';
+  import AthleteNeighbors from '#lib/components/athlete-neighbors.svelte';
   import { absolute, athleteLd, athleteTitle, breadcrumbLd, risStanding } from '#lib/seo/index.js';
   import {
     ATTEMPT_ROW,
@@ -108,7 +109,8 @@
   >;
   const genderLabel = $derived(i18n.t(GENDER_LABEL[athlete.gender]));
   const latestCategory = $derived(
-    athlete.lift_balance?.category ??
+    athlete.neighbors?.category ??
+      athlete.lift_balance?.category ??
       athlete.competitions.find((competition) => competition.status === 'competed')?.category_name
   );
   const latestWeightClass = $derived(
@@ -381,6 +383,14 @@
       </div>
     </div>
   {/if}
+
+  {#key athlete.slug}
+    <AthleteNeighbors
+      neighbors={athlete.neighbors}
+      athleteSlug={athlete.slug}
+      country={athlete.country}
+    />
+  {/key}
 
   <div>
     <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Performance')}</Text>

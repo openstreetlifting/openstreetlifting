@@ -23,15 +23,24 @@ it('labels each axis with its difference from the class average', async () => {
   render(AthleteBalance, { balance });
   const chart = page.getByRole('group', { name: /Lift balance compared/ });
   await expect.element(chart).toBeVisible();
-  expect(chart.element().textContent?.replace(/\s+/g, ' ').trim()).toBe(
-    'Muscle-up -1.0% Pull-up 0.0% Squat +1.5% Dips -0.5%'
+  const labels = [...chart.element().querySelectorAll('text')].map((label) =>
+    [...label.querySelectorAll('tspan')].map((line) => line.textContent?.trim()).join(' | ')
   );
-  await expect.element(page.getByText('Reference (-80kg)')).toBeVisible();
+  expect(labels).toEqual(['Muscle-up | -1.0%', 'Pull-up | 0.0%', 'Squat | +1.5%', 'Dips | -0.5%']);
+  await expect.element(page.getByText('-80kg class', { exact: true }).first()).toBeVisible();
   const squat = page.getByRole('definition').nth(2);
+  expect(squat.element().textContent?.replace(/\s+/g, ' ').trim()).toBe(
+    'Athlete 50.0% of total -80kg class 48.5% of total'
+  );
+  await expect.element(page.getByText(/Plots each lift/)).not.toBeVisible();
+  await page.getByRole('button', { name: 'About lift balance' }).click();
   await expect
-    .element(squat)
-    .toHaveTextContent('+1.5% Athlete: 50.0% of total Reference: 48.5% of total');
-  await expect.element(page.getByText(/Based on/)).not.toBeVisible();
+    .element(
+      page.getByText(
+        'Plots each lift as a proportion of the athlete’s best total (400 kg, Euros) against the mean proportion of 12 Men -80kg athletes. Outward deviation indicates emphasis on that lift.'
+      )
+    )
+    .toBeVisible();
 });
 
 it('shows the share and class average on hover', async () => {

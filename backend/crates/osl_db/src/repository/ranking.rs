@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 use crate::error::Result;
 use crate::params::{RankingFilter, RankingMovement};
-use crate::projections::ranking::{AthleteMetricStandingRow, RankingRow};
+use crate::projections::ranking::{AthleteMetricStandingRow, AthleteNeighborRow, RankingRow};
 
 pub struct RankingRepository<'a> {
     pool: &'a PgPool,
@@ -16,6 +16,14 @@ fn escape_like(pattern: &str) -> String {
         .replace('\\', "\\\\")
         .replace('%', "\\%")
         .replace('_', "\\_")
+}
+
+fn same_class(left: &str, right: &str) -> String {
+    format!(
+        "({left}.weight_class_max = {right}.weight_class_max \
+         OR ({left}.weight_class_max IS NULL AND {right}.weight_class_max IS NULL \
+             AND {left}.weight_class_min = {right}.weight_class_min))"
+    )
 }
 
 impl<'a> RankingRepository<'a> {
@@ -225,50 +233,23 @@ impl<'a> RankingRepository<'a> {
         athlete_id: Uuid,
     ) -> Result<Vec<AthleteMetricStandingRow>> {
         let mut query = Self::movement_weights(None);
+        Self::push_latest_total_class(&mut query, athlete_id);
+        Self::push_metric_candidates(&mut query);
         query.push(
             r"
-            metric_candidates AS (
-                SELECT movement_weights.athlete_id,
-                       movement_weights.participant_id,
-                       movement_weights.start_date,
-                       movement_weights.country,
-                       movement_weights.weight_class_id,
-                       movement_weights.weight_class_min,
-                       movement_weights.weight_class_max,
-                       metric.name AS metric,
-                       metric.value
-                FROM movement_weights
-                CROSS JOIN LATERAL ( VALUES
-            ",
-        );
-
-        for (index, movement) in RankingMovement::ALL.into_iter().enumerate() {
-            if index > 0 {
-                query.push(", ");
-            }
-
-            query.push(format!("('{}', ", movement.as_str()));
-
-            // Global total and RIS standings compare the All4 event only.
-            if matches!(movement, RankingMovement::Total | RankingMovement::Ris) {
-                query.push("CASE WHEN event_code = ");
-                query.push_bind(osl_domain::FULL_EVENT);
-                query.push(format!(" THEN {} END)", movement.as_column()));
-            } else {
-                query.push(format!("{})", movement.as_column()));
-            }
-        }
-
-        query.push(
-            r"
-                ) AS metric(name, value)
-                WHERE metric.value IS NOT NULL
-            ),
             mine AS (
                 SELECT DISTINCT ON (metric)
-                    metric, weight_class_id
+                    metric, weight_class_id, gender, weight_class_min, weight_class_max
                 FROM metric_candidates
-                WHERE (metric = 'ris' OR weight_class_id IS NOT NULL) AND athlete_id =
+                WHERE (metric = 'ris' OR weight_class_id IS NOT NULL)
+                  AND (metric <> 'total' OR EXISTS (
+                      SELECT 1 FROM latest_total_class latest WHERE ",
+        );
+        query.push(same_class("metric_candidates", "latest"));
+        query.push(
+            r"
+                  ))
+                  AND athlete_id =
             ",
         );
         query.push_bind(athlete_id);
@@ -281,9 +262,15 @@ impl<'a> RankingRepository<'a> {
                 FROM metric_candidates candidate
                 INNER JOIN mine
                     ON mine.metric = candidate.metric
+                   AND (candidate.metric <> 'total' OR candidate.gender = mine.gender)
                    AND (
                        candidate.metric = 'ris'
-                       OR mine.weight_class_id = candidate.weight_class_id
+                       OR (candidate.metric = 'total' AND ",
+        );
+        query.push(same_class("candidate", "mine"));
+        query.push(
+            r")
+                       OR (candidate.metric <> 'total' AND mine.weight_class_id = candidate.weight_class_id)
                    )
             ),
             ranking_pool AS (
@@ -319,6 +306,159 @@ impl<'a> RankingRepository<'a> {
             query.build_query_as().fetch_all(self.pool).await?;
 
         Ok(standings)
+    }
+
+    fn push_metric_candidates(query: &mut QueryBuilder<Postgres>) {
+        query.push(
+            r"
+            metric_candidates AS (
+                SELECT movement_weights.athlete_id,
+                       movement_weights.participant_id,
+                       movement_weights.start_date,
+                       movement_weights.country,
+                       movement_weights.gender,
+                       movement_weights.weight_class_id,
+                       movement_weights.weight_class_min,
+                       movement_weights.weight_class_max,
+                       metric.name AS metric,
+                       metric.value
+                FROM movement_weights
+                CROSS JOIN LATERAL ( VALUES
+            ",
+        );
+
+        for (index, movement) in RankingMovement::ALL.into_iter().enumerate() {
+            if index > 0 {
+                query.push(", ");
+            }
+
+            query.push(format!("('{}', ", movement.as_str()));
+
+            // Global total and RIS standings compare the All4 event only.
+            if matches!(movement, RankingMovement::Total | RankingMovement::Ris) {
+                query.push("CASE WHEN event_code = ");
+                query.push_bind(osl_domain::FULL_EVENT);
+                query.push(format!(" THEN {} END)", movement.as_column()));
+            } else {
+                query.push(format!("{})", movement.as_column()));
+            }
+        }
+
+        query.push(
+            r"
+                ) AS metric(name, value)
+                WHERE metric.value IS NOT NULL
+            ),
+        ",
+        );
+    }
+
+    fn push_latest_total_class_from(query: &mut QueryBuilder<Postgres>) {
+        query.push(
+            r"
+                FROM competition_participants cp
+                JOIN competitions c USING (competition_id)
+                JOIN athletes a USING (athlete_id)
+                JOIN weight_classes wc USING (weight_class_id)
+                WHERE cp.status = 'competed' AND c.event_code = ",
+        );
+        query.push_bind(osl_domain::FULL_EVENT);
+    }
+
+    fn push_latest_total_class(query: &mut QueryBuilder<Postgres>, athlete_id: Uuid) {
+        query.push(
+            r"
+            latest_total_class AS (
+                SELECT a.gender, wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max",
+        );
+        Self::push_latest_total_class_from(query);
+        query.push(" AND cp.athlete_id = ");
+        query.push_bind(athlete_id);
+        query.push(
+            r"
+                ORDER BY c.start_date DESC NULLS LAST, cp.participant_id
+                LIMIT 1
+            ),
+        ",
+        );
+    }
+
+    fn push_latest_total_classes(query: &mut QueryBuilder<Postgres>) {
+        query.push(
+            r"
+            latest_total_classes AS (
+                SELECT DISTINCT ON (cp.athlete_id)
+                    cp.athlete_id, wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max",
+        );
+        Self::push_latest_total_class_from(query);
+        query.push(
+            r"
+                ORDER BY cp.athlete_id, c.start_date DESC NULLS LAST, cp.participant_id
+            ),
+        ",
+        );
+    }
+
+    /// Closest total on each side among athletes whose latest All4 category matches, including the athlete.
+    pub async fn get_athlete_total_neighbors(
+        &self,
+        athlete_id: Uuid,
+    ) -> Result<Vec<AthleteNeighborRow>> {
+        let mut query = Self::movement_weights(None);
+        Self::push_latest_total_class(&mut query, athlete_id);
+        Self::push_latest_total_classes(&mut query);
+        query.push(
+            r"
+            eligible AS (
+                SELECT mw.* FROM movement_weights mw
+                JOIN latest_total_class latest ON latest.gender = mw.gender AND ",
+        );
+        query.push(same_class("latest", "mw"));
+        query.push(
+            r"
+                JOIN latest_total_classes current ON current.athlete_id = mw.athlete_id AND ",
+        );
+        query.push(same_class("current", "latest"));
+        query.push(" WHERE mw.total IS NOT NULL AND mw.event_code = ");
+        query.push_bind(osl_domain::FULL_EVENT);
+        query.push(
+            r"
+            ),
+            ranking_pool AS (
+                SELECT DISTINCT ON (athlete_id) * FROM eligible
+                ORDER BY athlete_id, total DESC, start_date DESC, participant_id
+            ),
+            placed AS (
+                SELECT *,
+                    ROW_NUMBER() OVER (ORDER BY total DESC, athlete_id) AS global_place,
+                    COUNT(*) OVER () AS global_field,
+                    ROW_NUMBER() OVER (PARTITION BY country ORDER BY total DESC, athlete_id) AS country_place,
+                    COUNT(*) OVER (PARTITION BY country) AS country_field
+                FROM ranking_pool
+            ),
+            target AS (SELECT * FROM placed WHERE athlete_id = ");
+        query.push_bind(athlete_id);
+        query.push(
+            r"),
+            neighbors AS (
+                SELECT p.*, 'global' AS scope, p.global_place AS place,
+                       p.global_field AS field, p.total - t.total AS gap
+                FROM placed p CROSS JOIN target t
+                WHERE p.global_place BETWEEN t.global_place - 1 AND t.global_place + 1
+                UNION ALL
+                SELECT p.*, 'national' AS scope, p.country_place AS place,
+                       p.country_field AS field, p.total - t.total AS gap
+                FROM placed p CROSS JOIN target t
+                WHERE t.country IS NOT NULL AND p.country = t.country
+                  AND p.country_place BETWEEN t.country_place - 1 AND t.country_place + 1
+            )
+            SELECT scope, athlete_id, first_name, last_name, slug, country,
+                   weight_class_min, weight_class_max, total AS value, gap, place, field,
+                   competition_name, competition_slug, start_date AS competition_date
+            FROM neighbors ORDER BY scope, place
+        ",
+        );
+        Ok(query.build_query_as().fetch_all(self.pool).await?)
     }
 
     #[tracing::instrument(name = "repository.ranking.list_distinct_classes", skip_all, fields(db.system.name = "postgresql"))]
