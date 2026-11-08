@@ -295,6 +295,25 @@ export interface components {
       best_weight: string | null;
       movement_name: components['schemas']['Movement'];
     };
+    AthleteNeighbor: {
+      athlete_id: string;
+      competition_date: string | null;
+      competition_name: string;
+      competition_slug: string;
+      country: string | null;
+      field: number;
+      first_name: string;
+      gap: string;
+      last_name: string;
+      place: number;
+      slug: string;
+      value: string;
+    };
+    AthleteNeighborhood: {
+      category: string;
+      global: components['schemas']['AthleteNeighbor'][];
+      national: components['schemas']['AthleteNeighbor'][] | null;
+    };
     AthleteResponse: {
       athlete_id: string;
       competitions?: components['schemas']['AthleteCompetitionSummary'][];
@@ -306,6 +325,7 @@ export interface components {
       last_name: string;
       lift_balance?: components['schemas']['LiftBalance'] | null;
       native_name: string | null;
+      neighbors?: components['schemas']['AthleteNeighborhood'] | null;
       personal_records?: components['schemas']['PersonalRecord'][];
       profile_picture_url: string | null;
       slug: string;
@@ -470,6 +490,7 @@ export interface components {
         last_name: string;
         lift_balance?: components['schemas']['LiftBalance'] | null;
         native_name: string | null;
+        neighbors?: components['schemas']['AthleteNeighborhood'] | null;
         personal_records?: components['schemas']['PersonalRecord'][];
         profile_picture_url: string | null;
         slug: string;

@@ -49,3 +49,23 @@ pub struct AthleteMetricStandingRow {
     pub country_place: i64,
     pub country_field: i64,
 }
+
+#[derive(Debug, FromRow)]
+pub struct AthleteNeighborRow {
+    pub scope: String,
+    pub athlete_id: Uuid,
+    pub first_name: String,
+    pub last_name: String,
+    pub slug: String,
+    pub country: Option<String>,
+    pub weight_class_min: Option<Decimal>,
+    pub weight_class_max: Option<Decimal>,
+    pub value: Decimal,
+    /// Signed difference from the profile athlete's total.
+    pub gap: Decimal,
+    pub place: i64,
+    pub field: i64,
+    pub competition_name: String,
+    pub competition_slug: String,
+    pub competition_date: Option<NaiveDate>,
+}

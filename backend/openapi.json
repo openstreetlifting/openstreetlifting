@@ -891,6 +891,100 @@
           }
         }
       },
+      "AthleteNeighbor": {
+        "type": "object",
+        "required": [
+          "athlete_id",
+          "first_name",
+          "last_name",
+          "slug",
+          "country",
+          "value",
+          "gap",
+          "place",
+          "field",
+          "competition_name",
+          "competition_slug",
+          "competition_date"
+        ],
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "competition_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "competition_name": {
+            "type": "string"
+          },
+          "competition_slug": {
+            "type": "string"
+          },
+          "country": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "field": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "gap": {
+            "type": "string",
+            "description": "Signed kilograms relative to the profile athlete's qualifying total."
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "place": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "AthleteNeighborhood": {
+        "type": "object",
+        "required": [
+          "category",
+          "global",
+          "national"
+        ],
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "global": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AthleteNeighbor"
+            }
+          },
+          "national": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/AthleteNeighbor"
+            }
+          }
+        }
+      },
       "AthleteResponse": {
         "type": "object",
         "required": [
@@ -955,6 +1049,16 @@
             "type": [
               "string",
               "null"
+            ]
+          },
+          "neighbors": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AthleteNeighborhood"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "personal_records": {
@@ -1844,6 +1948,16 @@
                   "type": [
                     "string",
                     "null"
+                  ]
+                },
+                "neighbors": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/AthleteNeighborhood"
+                    },
+                    {
+                      "type": "null"
+                    }
                   ]
                 },
                 "personal_records": {

@@ -2,6 +2,14 @@ import type { Message } from './en.js';
 import type { CountMessages } from './types.js';
 
 export default {
+  'Current rivals': 'Rivali attuali',
+  'Ranking scope': 'Ambito della classifica',
+  'Profile athlete': 'Atleta del profilo',
+  'An All4 total in the latest All4 category is needed to show nearby athletes.':
+    'Serve un totale All4 nella categoria All4 più recente per mostrare gli atleti vicini.',
+  'The only ranked athlete in this category and scope.':
+    'L’unico atleta classificato in questa categoria e in questo ambito.',
+
   'Back to rankings': 'Torna alle classifiche',
   'Get in touch': 'Contattaci',
   Footer: 'Piè di pagina',
@@ -32,10 +40,6 @@ export default {
     'I punteggi RIS sono mostrati come registrati; le edizioni della formula e i punteggi pubblicati possono differire.',
   'Lift balance': 'Equilibrio delle alzate',
   'About lift balance': 'Informazioni sull’equilibrio delle alzate',
-  'How this athlete’s best total is split across the four lifts, compared with others in their weight class.':
-    'Come il miglior totale di questo atleta si divide tra le quattro alzate, rispetto agli altri della sua categoria.',
-  'Further out means that lift takes a bigger share of the total than usual, not that it is better.':
-    'Più lontano dal centro significa che quell’alzata pesa più del solito sul totale, non che sia migliore.',
   'Lift balance compared with other athletes in {category}':
     'Equilibrio delle alzate rispetto agli altri atleti in {category}',
   'Lift shares of best total': 'Quote delle alzate sul miglior totale',
@@ -53,16 +57,16 @@ export default {
     'In questa gara il RIS è ricalcolato con la formula attuale.',
   'In this competition, RIS scores are shown as published.':
     'In questa gara i punteggi RIS sono mostrati come pubblicati.',
-  'Athlete: {share} of total': 'Atleta: {share} del totale',
-  'Reference: {share} of total': 'Riferimento: {share} del totale',
-  'Reference ({class})': 'Riferimento ({class})',
+  'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.':
+    'Rappresenta ogni alzata come proporzione del miglior totale dell’atleta ({total} {unit}, {competition}) rispetto alla proporzione media di {count} atleti in {category}. Uno scostamento verso l’esterno indica un’enfasi su quell’alzata.',
+  'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}).':
+    'Rappresenta ogni alzata come proporzione del miglior totale dell’atleta ({total} {unit}, {competition}).',
+  '{class} class': 'Categoria {class}',
   Reference: 'Riferimento',
-  'Reference: {count} {athletes} in {category}': 'Riferimento: {count} {athletes} in {category}',
   '{movement}: {share} of total, reference {average}':
     '{movement}: {share} del totale, riferimento {average}',
   'of total · reference {average}': 'del totale · riferimento {average}',
   'of total': 'del totale',
-  'Based on {total} {unit} at {competition}': 'In base a {total} {unit} a {competition}',
   'Too few athletes in this weight class to compare.':
     'Troppi pochi atleti in questa categoria per un confronto.',
   'A completed competition with all four lifts is needed to show lift balance.':

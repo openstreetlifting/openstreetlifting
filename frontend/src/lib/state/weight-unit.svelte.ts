@@ -54,6 +54,10 @@ export class WeightPreference {
       (_, prefix, sign, value) => `${prefix}${sign}${this.format(value, locale)} lb`
     );
   }
+
+  weightClass(label: string | null | undefined, locale: Locale): string | null {
+    return this.category(label, locale).match(/[+-]\d+(?:[.,]\d+)?\s*(?:kg|lb)?$/i)?.[0] ?? null;
+  }
 }
 
 export const WEIGHT_UNIT_CONTEXT = Symbol('weight-unit');

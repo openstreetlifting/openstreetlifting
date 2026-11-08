@@ -3,7 +3,7 @@
     MIN_POINTS,
     type BodyweightPoint,
   } from '#lib/components/competition-bodyweight.svelte';
-  import { CONTROL } from '#lib/constants/typography.js';
+  import SegmentedControl from '#lib/components/ui/segmented-control.svelte';
   import Button from '#lib/components/ui/button.svelte';
   import { LAYOUT } from '#lib/constants/layout.js';
   import Notice from '#lib/components/ui/notice.svelte';
@@ -292,8 +292,6 @@
   const place = $derived([competition.venue, location].filter(Boolean).join(', '));
   const DETAILS =
     'grid w-max max-w-full grid-cols-[6rem_minmax(0,1fr)] content-start gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]';
-  const EDITION = `${CONTROL} inline-flex h-full min-w-control shrink-0 items-center justify-center px-3 tabular-nums transition-colors focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none`;
-
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
   const representedClasses = $derived(
@@ -449,28 +447,20 @@
         <dt id="edition-label" class="self-center text-muted">{i18n.t('Edition')}</dt>
         <dd class="min-w-0">
           <nav aria-labelledby="edition-label">
-            <ul
-              class="inline-flex h-control max-w-full overflow-x-auto rounded-control border border-stroke"
+            <SegmentedControl
+              items={editions}
+              key={(edition) => edition.slug}
+              selected={(edition) => edition.slug === competition.slug}
+              href={(edition) => i18n.href(resolve('/competitions/[slug]', { slug: edition.slug }))}
+              attributes={(edition) => ({
+                'aria-label': `${edition.label} · ${edition.name}`,
+                title: `${edition.name} · ${formatLongDate(edition.start_date, i18n.locale)}`,
+              })}
             >
-              {#each editions as edition (edition.slug)}
-                <li class="h-full">
-                  {#if edition.slug === competition.slug}
-                    <span aria-current="page" class="{EDITION} bg-surface-selected text-ink">
-                      <time datetime={edition.start_date}>{edition.label}</time>
-                    </span>
-                  {:else}
-                    <a
-                      href={i18n.href(resolve('/competitions/[slug]', { slug: edition.slug }))}
-                      aria-label={`${edition.label} · ${edition.name}`}
-                      title={`${edition.name} · ${formatLongDate(edition.start_date, i18n.locale)}`}
-                      class="{EDITION} text-secondary hover:bg-surface hover:text-ink"
-                    >
-                      <time datetime={edition.start_date}>{edition.label}</time>
-                    </a>
-                  {/if}
-                </li>
-              {/each}
-            </ul>
+              {#snippet children(edition)}
+                <time datetime={edition.start_date}>{edition.label}</time>
+              {/snippet}
+            </SegmentedControl>
           </nav>
         </dd>
       </dl>
