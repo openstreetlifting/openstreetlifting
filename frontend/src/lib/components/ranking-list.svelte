@@ -17,6 +17,7 @@
     FROZEN_ATHLETE,
     ATHLETE_COLUMN,
     ATHLETE_CONTENT,
+    RankHeader,
   } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
   import { formatAthleteName, formatDate } from '#lib/utils/index.js';
@@ -46,8 +47,7 @@
   {busy}
 >
   {#snippet head()}
-    <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
-      >{i18n.t('Rank')}</th
+    <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"><RankHeader /></th
     >
     <th
       class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} text-secondary"
