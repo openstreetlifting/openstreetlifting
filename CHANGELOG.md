@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.59.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.59.0...v0.59.1) (2026-11-08)
+
+
+### Bug Fixes
+
+* **data:** fill missing nationalities for athletes competing in Spain ([#907](https://github.com/openstreetlifting/openstreetlifting/issues/907)) ([17344cb](https://github.com/openstreetlifting/openstreetlifting/commit/17344cbb46641161172826ce377f6456d9a52b82))
+* **frontend:** show the RIS 100 line value in the competition chart tooltip ([#905](https://github.com/openstreetlifting/openstreetlifting/issues/905)) ([a7186d8](https://github.com/openstreetlifting/openstreetlifting/commit/a7186d80ef620351b3bc74f425e408450bb9d2f9))
+* **frontend:** widen the rank column on phones and shorten its header to # ([#906](https://github.com/openstreetlifting/openstreetlifting/issues/906)) ([c6a624c](https://github.com/openstreetlifting/openstreetlifting/commit/c6a624cc400f4b3142bae53567ecb3e81ba97dc1))
+
 ## [0.59.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.58.2...v0.59.0) (2026-11-06)
 
 
