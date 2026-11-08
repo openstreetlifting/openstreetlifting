@@ -1,0 +1,21 @@
+# The source repeats the -94 kg category with placings restarted for its
+# final three athletes. Keep all source-listed -94 kg athletes together,
+# as confirmed by the contributor; no separate division is established.
+event = "MPDS"
+sources = [
+    "https://www.dcs-verband.de/dm-weighted-calisthenics/",
+    "User-supplied DCSV Rankings 2022-2026: Wettkampftabelle WDM Weighted Calisthenics 2026.pdf",
+]
+
+[competition]
+name = "Westdeutsche Meisterschaft"
+start_date = "2026-05-09"
+city = "Halle (Westfalen)"
+region = "Nordrhein-Westfalen"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "DCSV"
+abbreviation = "DCSV"
+country = "DE"
