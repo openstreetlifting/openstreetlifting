@@ -1,5 +1,3 @@
-# Fabian Vorberg: the published 102.5 kg dip best sums to the published
-# 395 kg total. Treat the green 107.5 kg third attempt as failed.
 event = "MPDS"
 sources = [
     "https://www.dcs-verband.de/dm-weighted-calisthenics/",
