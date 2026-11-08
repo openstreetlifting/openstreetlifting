@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "https://www.dcs-verband.de/dm-weighted-calisthenics/",
+    "User-supplied DCSV Rankings 2022-2026: Ranking_NDM Weighted Calisthenics 2023.pdf",
+]
+
+[competition]
+name = "Norddeutsche Meisterschaft"
+start_date = "2023-05-13"
+city = "Rostock"
+region = "Mecklenburg-Vorpommern"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "DCSV"
+abbreviation = "DCSV"
+country = "DE"
