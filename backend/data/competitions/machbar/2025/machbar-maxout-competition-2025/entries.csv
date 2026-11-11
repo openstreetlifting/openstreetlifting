@@ -1,47 +1,47 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-M,66,Tilman,Ferbar,,,61.05,,260,competed,,,,,15,,,,60,,,,70,,,,115
-M,66,Abdelrahman,Shams,,,65.55,,373.75,competed,,,,,20,,,,66.25,,,,122.5,,,,165
-M,73,Christian,Abels,,,69.45,,335,competed,,,,,10,,,,67.5,,,,95,,,,162.5
-M,73,Jurij,Barach,,,72.5,,315,competed,,,,,12.5,,,,55,,,,85,,,,162.5
-M,73,Rico,Cala,,,71.65,,317.5,competed,,,,,23.75,,,,75,,,,83.75,,,,135
-M,73,Leon,Dingeldein,,,70.75,,245,competed,,,,,2.5,,,,40,,,,77.5,,,,125
-M,73,Stefan,Franke,,,71.75,,235,competed,,,,,5,,,,37.5,,,,57.5,,,,135
-M,73,Urs,Karrer,,,72.05,,253.75,competed,,,,,5,,,,46.25,,,,67.5,,,,135
-M,73,David,Lüdke,,,71.7,,248.75,competed,,,,,2.5,,,,43.75,,,,62.5,,,,140
-M,73,Max-Julius,Manthey,,,72,,321.25,competed,,,,,15,,,,61.25,,,,100,,,,145
-M,73,Tim,Mark,,,70.25,,327.5,competed,,,,,20,,,,62.5,,,,100,,,,145
-M,73,Niklas,Wirthenstätter,,,71.75,,349.25,competed,,,,,15,,,,57.5,,,,91.25,,,,185.5
-M,80,Laurenz,Jung,,,78.25,,222.5,competed,,,,,5,,,,47.5,,,,65,,,,105
-M,80,Jan Vincent,Kanschat,,,74.5,,290,competed,,,,,17.5,,,,67.5,,,,75,,,,130
-M,80,Oliver,Kusch,,,77.45,,270,competed,,,,,5,,,,45,,,,62.5,,,,157.5
-M,80,Armin,Pössinger,,,76.95,,312.5,competed,,,,,12.5,,,,60,,,,90,,,,150
-M,80,Hannes,Seela,,,74,,290,competed,,,,,0,,,,42.5,,,,80,,,,167.5
-M,80,Robin,Sefers,,,76.2,,406.25,competed,,,,,7.5,,,,56.25,,,,117.5,,,,225
-M,80,Maurice,Vandenhirtz,,,78,,266.25,competed,,,,,17.5,,,,57.5,,,,61.25,,,,130
-M,80,Mathias,in Wolde-Lübke,,,78.6,,345,competed,,,,,10,,,,72.5,,,,102.5,,,,160
-M,87,Tony,Bernhagen,,,82.45,,310,competed,,,,,17.5,,,,60,,,,92.5,,,,140
-M,87,Gerrit,Büscher,,,81.2,,343.75,competed,,,,,10,,,,51.25,,,,95,,,,187.5
-M,87,Max,Fortkamp,,,83.55,,295,competed,,,,,12.5,,,,55,,,,87.5,,,,140
-M,87,Julian,Groß,,,83.25,,343.75,competed,,,,,25,,,,63.75,,,,90,,,,165
-M,87,Michael,Hagemeister,,,86.05,,392.5,competed,,,,,10,,,,57.5,,,,125,,,,200
-M,87,Lars,Hölker,,,85.3,,320,competed,,,,,8.75,,,,56.25,,,,75,,,,180
-M,87,Daan,Janssen,,,86.2,,395,competed,,,,,22.5,,,,72.5,,,,112.5,,,,187.5
-M,87,Jakob,Schliemann,,,82.1,,302.5,competed,,,,,15,,,,60,,,,92.5,,,,135
-M,94,David,Gwizdz,,,88.4,,341.25,competed,,,,,17.5,,,,70,,,,103.75,,,,150
-M,94,Ole,Poedtke,,,91.3,,355,competed,,,,,15,,,,70,,,,95,,,,175
-M,94,Niklas,Pohl,,,88.9,,356.25,competed,,,,,10,,,,55,,,,106.25,,,,185
-M,94,Christian,Rose,,,88.15,,307.5,competed,,,,,5,,,,46.25,,,,86.25,,,,170
-M,94,Gerd,Schwabauer,,,92.15,,292.5,competed,,,,,2.5,,,,50,,,,75,,,,165
-M,94+,Tobias,Bekemeier,,,103.05,,,disqualified,,,,,,,,,22.5,,,,70,,,,100
-M,94+,Lennert,Burghardt,,,99.4,,390,competed,,,,,25,,,,80,,,,100,,,,185
-F,52,Stephanie,Karrer,,,48.45,,137.5,competed,,,,,2.5,,,,20,,,,30,,,,85
-F,52,Svenja,Scherner,,,51.35,,202.5,competed,,,,,10,,,,32.5,,,,50,,,,110
-F,57,Paula,Riechmann,,,54,,165,competed,,,,,0,,,,32.5,,,,37.5,,,,95
-F,57,Ina,Weidehoff,,,52.1,,123.75,competed,,,,,0,,,,20,,,,31.25,,,,72.5
-F,63,Rike,Louise Brammer,,,59.75,,143.75,competed,,,,,0,,,,16.25,,,,37.5,,,,90
-F,63,Ana-Maria,Savin,,,61.8,,187.5,competed,,,,,2.5,,,,25,,,,50,,,,110
-F,63,Anne-Christin,Ullrich,,,62.55,,227.5,competed,,,,,12.5,,,,40,,,,55,,,,120
-F,63,Lea,Watzlawek,,,61.45,,178.75,competed,,,,,0,,,,16.25,,,,42.5,,,,120
-F,63,Mie,Yolanda Schrötter,,,60.75,,148.75,competed,,,,,0,,,,18.75,,,,35,,,,95
-F,70,Ina,Becker,,,64.9,,212.75,competed,,,,,15.25,,,,32.5,,,,45,,,,120
-F,70,Vanessa,Breiholz,,,67.25,,181.25,competed,,,,,5,,,,31.25,,,,45,,,,100
+M,66,Tilman,Ferbar,,DE,61.05,,260,competed,,,,,15,,,,60,,,,70,,,,115
+M,66,Abdelrahman,Shams,,DE,65.55,,373.75,competed,,,,,20,,,,66.25,,,,122.5,,,,165
+M,73,Christian,Abels,,DE,69.45,,335,competed,,,,,10,,,,67.5,,,,95,,,,162.5
+M,73,Jurij,Barach,,DE,72.5,,315,competed,,,,,12.5,,,,55,,,,85,,,,162.5
+M,73,Rico,Cala,,DE,71.65,,317.5,competed,,,,,23.75,,,,75,,,,83.75,,,,135
+M,73,Leon,Dingeldein,,DE,70.75,,245,competed,,,,,2.5,,,,40,,,,77.5,,,,125
+M,73,Stefan,Franke,,DE,71.75,,235,competed,,,,,5,,,,37.5,,,,57.5,,,,135
+M,73,Urs,Karrer,,CH,72.05,,253.75,competed,,,,,5,,,,46.25,,,,67.5,,,,135
+M,73,David,Lüdke,,DE,71.7,,248.75,competed,,,,,2.5,,,,43.75,,,,62.5,,,,140
+M,73,Max-Julius,Manthey,,DE,72,,321.25,competed,,,,,15,,,,61.25,,,,100,,,,145
+M,73,Tim,Mark,,DE,70.25,,327.5,competed,,,,,20,,,,62.5,,,,100,,,,145
+M,73,Niklas,Wirthenstätter,,AT,71.75,,349.25,competed,,,,,15,,,,57.5,,,,91.25,,,,185.5
+M,80,Laurenz,Jung,,DE,78.25,,222.5,competed,,,,,5,,,,47.5,,,,65,,,,105
+M,80,Jan Vincent,Kanschat,,DE,74.5,,290,competed,,,,,17.5,,,,67.5,,,,75,,,,130
+M,80,Oliver,Kusch,,DE,77.45,,270,competed,,,,,5,,,,45,,,,62.5,,,,157.5
+M,80,Armin,Pössinger,,DE,76.95,,312.5,competed,,,,,12.5,,,,60,,,,90,,,,150
+M,80,Hannes,Seela,,DE,74,,290,competed,,,,,0,,,,42.5,,,,80,,,,167.5
+M,80,Robin,Sefers,,DE,76.2,,406.25,competed,,,,,7.5,,,,56.25,,,,117.5,,,,225
+M,80,Maurice,Vandenhirtz,,DE,78,,266.25,competed,,,,,17.5,,,,57.5,,,,61.25,,,,130
+M,80,Mathias,in Wolde-Lübke,,DE,78.6,,345,competed,,,,,10,,,,72.5,,,,102.5,,,,160
+M,87,Tony,Bernhagen,,DE,82.45,,310,competed,,,,,17.5,,,,60,,,,92.5,,,,140
+M,87,Gerrit,Büscher,,DE,81.2,,343.75,competed,,,,,10,,,,51.25,,,,95,,,,187.5
+M,87,Max,Fortkamp,,DE,83.55,,295,competed,,,,,12.5,,,,55,,,,87.5,,,,140
+M,87,Julian,Groß,,DE,83.25,,343.75,competed,,,,,25,,,,63.75,,,,90,,,,165
+M,87,Michael,Hagemeister,,DE,86.05,,392.5,competed,,,,,10,,,,57.5,,,,125,,,,200
+M,87,Lars,Hölker,,DE,85.3,,320,competed,,,,,8.75,,,,56.25,,,,75,,,,180
+M,87,Daan,Janssen,,NL,86.2,,395,competed,,,,,22.5,,,,72.5,,,,112.5,,,,187.5
+M,87,Jakob,Schliemann,,DE,82.1,,302.5,competed,,,,,15,,,,60,,,,92.5,,,,135
+M,94,David,Gwizdz,,DE,88.4,,341.25,competed,,,,,17.5,,,,70,,,,103.75,,,,150
+M,94,Ole,Poedtke,,DE,91.3,,355,competed,,,,,15,,,,70,,,,95,,,,175
+M,94,Niklas,Pohl,,DE,88.9,,356.25,competed,,,,,10,,,,55,,,,106.25,,,,185
+M,94,Christian,Rose,,DE,88.15,,307.5,competed,,,,,5,,,,46.25,,,,86.25,,,,170
+M,94,Gerd,Schwabauer,,DE,92.15,,292.5,competed,,,,,2.5,,,,50,,,,75,,,,165
+M,94+,Tobias,Bekemeier,,DE,103.05,,,disqualified,,,,,,,,,22.5,,,,70,,,,100
+M,94+,Lennert,Burghardt,,DE,99.4,,390,competed,,,,,25,,,,80,,,,100,,,,185
+F,52,Stephanie,Karrer,,CH,48.45,,137.5,competed,,,,,2.5,,,,20,,,,30,,,,85
+F,52,Svenja,Scherner,,DE,51.35,,202.5,competed,,,,,10,,,,32.5,,,,50,,,,110
+F,57,Paula,Riechmann,,DE,54,,165,competed,,,,,0,,,,32.5,,,,37.5,,,,95
+F,57,Ina,Weidehoff,,DE,52.1,,123.75,competed,,,,,0,,,,20,,,,31.25,,,,72.5
+F,63,Rike,Louise Brammer,,DE,59.75,,143.75,competed,,,,,0,,,,16.25,,,,37.5,,,,90
+F,63,Ana-Maria,Savin,,DE,61.8,,187.5,competed,,,,,2.5,,,,25,,,,50,,,,110
+F,63,Anne-Christin,Ullrich,,DE,62.55,,227.5,competed,,,,,12.5,,,,40,,,,55,,,,120
+F,63,Lea,Watzlawek,,DE,61.45,,178.75,competed,,,,,0,,,,16.25,,,,42.5,,,,120
+F,63,Mie,Yolanda Schrötter,,DE,60.75,,148.75,competed,,,,,0,,,,18.75,,,,35,,,,95
+F,70,Ina,Becker,,DE,64.9,,212.75,competed,,,,,15.25,,,,32.5,,,,45,,,,120
+F,70,Vanessa,Breiholz,,DE,67.25,,181.25,competed,,,,,5,,,,31.25,,,,45,,,,100
