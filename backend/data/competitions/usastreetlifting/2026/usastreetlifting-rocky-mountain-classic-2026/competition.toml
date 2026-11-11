@@ -1,0 +1,12 @@
+event = "PD"
+sources = ["https://usastreetlifting.org/"]
+
+[competition]
+name = "Rocky Mountain Classic"
+start_date = "2026-10-03"
+country = "US"
+status = "completed"
+
+[federation]
+name = "USAStreetlifting"
+country = "US"
