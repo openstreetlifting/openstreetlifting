@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "https://machbar-maxout.de/",
+    "https://app.weighted-calisthenics.de/#events",
+]
+
+[competition]
+name = "Machbar Maxout Competition"
+series = "machbar-maxout-competition"
+start_date = "2026-11-28"
+city = "Enger"
+venue = "MACHBAR Enger"
+region = "Nordrhein-Westfalen"
+country = "DE"
+status = "upcoming"
+
+[federation]
+name = "MACHBAR"
+country = "DE"
