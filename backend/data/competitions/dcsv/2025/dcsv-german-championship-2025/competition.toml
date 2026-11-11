@@ -1,0 +1,20 @@
+event = "MPDS"
+sources = [
+    "https://www.dcs-verband.de/dm-weighted-calisthenics/",
+    "User-supplied DCSV Rankings 2022-2026: Wettkampftabelle DM Weighted Calisthenics 2025.pdf",
+]
+
+[competition]
+name = "Deutsche Meisterschaft Weighted Calisthenics"
+series = "dcsv-german-championship"
+start_date = "2025-09-27"
+end_date = "2025-09-28"
+city = "Wetzlar"
+region = "Hessen"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "DCSV"
+abbreviation = "DCSV"
+country = "DE"
