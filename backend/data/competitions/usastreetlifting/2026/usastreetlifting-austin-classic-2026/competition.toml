@@ -1,0 +1,14 @@
+event = "PD"
+sources = ["https://usastreetlifting.org/"]
+
+[competition]
+name = "Austin Classic"
+start_date = "2026-09-26"
+city = "Austin"
+region = "Texas"
+country = "US"
+status = "completed"
+
+[federation]
+name = "USAStreetlifting"
+country = "US"
