@@ -2,6 +2,7 @@ event = "MPDS"
 sources = [
     "https://calibase.org/competitions/straight-outta-battle-mistrzostwa-polski-street-lifting-2025-hc4ttwte/",
     "https://docs.google.com/spreadsheets/d/15L0wUByjlEOFnoM1674GEznimA8KZ0NvhK5v25JRwvc/edit?gid=1756673722#gid=1756673722",
+    "https://www.youtube.com/watch?v=JDjpn7-578o",
 ]
 
 [competition]
