@@ -1,0 +1,20 @@
+event = "MPDS"
+sources = [
+    "https://app.weighted-calisthenics.de/#events",
+    "https://weighted-calisthenics.de/wp-json/overallRanking/getRankingData (comp_id=2, qualification=false)",
+    "https://machbar-maxout.de/",
+]
+
+[competition]
+name = "Machbar Maxout Competition"
+series = "machbar-maxout-competition"
+start_date = "2021-09-25"
+city = "Spenge"
+venue = "MACHBAR Spenge"
+region = "Nordrhein-Westfalen"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "MACHBAR"
+country = "DE"
