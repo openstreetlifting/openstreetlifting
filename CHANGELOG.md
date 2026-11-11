@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.62.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.61.0...v0.62.0) (2026-11-11)
+
+
+### Features
+
+* **data:** import Calisthenics Hangout 2021 ([#928](https://github.com/openstreetlifting/openstreetlifting/issues/928)) ([1355d57](https://github.com/openstreetlifting/openstreetlifting/commit/1355d57b6e9fd32b4dbf8a2c0dc13a07a15dfb1a))
+* **data:** import DCSV DM 2025 ([#911](https://github.com/openstreetlifting/openstreetlifting/issues/911)) ([5bb941e](https://github.com/openstreetlifting/openstreetlifting/commit/5bb941ef8d6ab7efae5045b644a9380b60be3a69))
+* **data:** import Machbar Maxout Competition 2021 ([#924](https://github.com/openstreetlifting/openstreetlifting/issues/924)) ([65af697](https://github.com/openstreetlifting/openstreetlifting/commit/65af69793a2f9a364abc1827e608c4abcf1867b8))
+* **data:** import Machbar Maxout Competition 2022 ([#925](https://github.com/openstreetlifting/openstreetlifting/issues/925)) ([6594c81](https://github.com/openstreetlifting/openstreetlifting/commit/6594c81d1c207ff17fd72de04cb5c1a9329e215a))
+* **data:** import Machbar Maxout Competition 2023 ([#926](https://github.com/openstreetlifting/openstreetlifting/issues/926)) ([843c63b](https://github.com/openstreetlifting/openstreetlifting/commit/843c63b7556fe42810b98d5779713198c35c055c))
+* **data:** import Machbar Maxout Competition 2026 ([#930](https://github.com/openstreetlifting/openstreetlifting/issues/930)) ([060e50f](https://github.com/openstreetlifting/openstreetlifting/commit/060e50f9965eca9d88e0ffe80e8edc704ee01f21))
+* **data:** import Machbar Meet Up 2021 ([#927](https://github.com/openstreetlifting/openstreetlifting/issues/927)) ([1292d49](https://github.com/openstreetlifting/openstreetlifting/commit/1292d49a7e4872fb2c05771834cc44e32bfb1948))
+
+
+### Bug Fixes
+
+* **deps:** update frontend dependencies ([#921](https://github.com/openstreetlifting/openstreetlifting/issues/921)) ([d1f9f81](https://github.com/openstreetlifting/openstreetlifting/commit/d1f9f8193d9beb9bfae2039e499c7ece17af1663))
+
 ## [0.61.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.60.0...v0.61.0) (2026-11-08)
 
 
