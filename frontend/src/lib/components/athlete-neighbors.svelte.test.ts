@@ -52,10 +52,8 @@ it('shows totals without gaps and highlights the profile athlete', async () => {
 
 it('puts the category in the heading without an info tooltip', async () => {
   render(AthleteNeighbors, { neighbors, athleteSlug: 'profile', country: 'FR' });
-  await expect.element(page.getByRole('heading', { name: 'Current rivals (-80kg)' })).toBeVisible();
-  expect(page.getByRole('button', { name: 'Current rivals', exact: true }).elements()).toHaveLength(
-    0
-  );
+  await expect.element(page.getByRole('heading', { name: 'Rivals (class: -80kg)' })).toBeVisible();
+  expect(page.getByRole('button', { name: 'Rivals', exact: true }).elements()).toHaveLength(0);
 });
 
 it('switches to the national neighborhood without leaving the profile', async () => {
@@ -98,7 +96,7 @@ it('converts totals and the category with the weight preference', async () => {
   await expect.element(page.getByRole('link', { name: /Robin above/ })).toBeVisible();
   expect(linkText(/Robin above/)).toContain('(892.87 lb)');
   await expect
-    .element(page.getByRole('heading', { name: 'Current rivals (-176.37 lb)' }))
+    .element(page.getByRole('heading', { name: 'Rivals (class: -176.37 lb)' }))
     .toBeVisible();
 });
 

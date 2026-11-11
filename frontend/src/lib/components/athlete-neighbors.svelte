@@ -26,7 +26,9 @@
   const weightClass = $derived(weights.weightClass(neighbors?.category, i18n.locale));
   const signed = (gap: number) =>
     `${gap > 0 ? '+' : '−'}${weights.format(Math.abs(gap), i18n.locale)}`;
-  const BOX = '-mx-2 flex min-w-0 items-baseline gap-1.5 rounded-control px-2 py-0.5';
+  const BOX =
+    '-mx-2 flex w-full min-w-0 items-baseline gap-1.5 rounded-control px-2 py-1.5 @3xl:w-auto @3xl:py-0.5';
+  const NAME = 'min-w-0 flex-1 truncate @3xl:max-w-40 @3xl:flex-none';
 </script>
 
 {#snippet total(row: AthleteNeighbor)}
@@ -35,12 +37,12 @@
   >
 {/snippet}
 
-<section class="mb-section" aria-label={i18n.t('Current rivals')}>
+<section class="@container mb-section" aria-label={i18n.t('Rivals')}>
   <div class="mb-4">
     <Text as="h2" variant="heading" class="text-ink"
       >{weightClass
-        ? `${i18n.t('Current rivals')} (${weightClass})`
-        : i18n.t('Current rivals')}</Text
+        ? i18n.t('Rivals (class: {weightClass})', { weightClass })
+        : i18n.t('Rivals')}</Text
     >
     <SegmentedControl
       class="mt-3"
@@ -69,18 +71,21 @@
     >
   {:else}
     <ol
-      class="flex flex-wrap items-baseline gap-x-4 gap-y-2 text-body"
+      class="flex flex-col-reverse gap-0.5 text-body @3xl:flex-row @3xl:flex-wrap @3xl:items-baseline @3xl:gap-x-4 @3xl:gap-y-2"
       aria-label={i18n.t('Athletes')}
     >
       {#each lineup as row, index (row.athlete_id)}
         {@const isOwn = row.slug === athleteSlug}
         {@const next = lineup[index + 1]}
         {@const gap = Number(row.gap)}
-        <li class="flex min-w-0 items-baseline gap-4" aria-current={isOwn ? 'true' : undefined}>
+        <li
+          class="flex min-w-0 items-baseline @3xl:gap-4"
+          aria-current={isOwn ? 'true' : undefined}
+        >
           {#if isOwn}
             <span class="{BOX} bg-surface-selected">
               <Flag countryCode={row.country} class="shrink-0 self-center [--flag-height:1em]" />
-              <span class="max-w-40 truncate font-semibold text-ink">{formatAthleteName(row)}</span>
+              <span class="{NAME} font-semibold text-ink">{formatAthleteName(row)}</span>
               <span class="sr-only">{i18n.t('Profile athlete')}</span>
               <a
                 class="shrink-0 whitespace-nowrap underline-offset-2 hover:underline"
@@ -94,7 +99,7 @@
               href={i18n.href(resolve('/athletes/[slug]', { slug: row.slug }))}
             >
               <Flag countryCode={row.country} class="shrink-0 self-center [--flag-height:1em]" />
-              <span class="max-w-40 truncate">{formatAthleteName(row)}</span>
+              <span class={NAME}>{formatAthleteName(row)}</span>
               {#if gap === 0}
                 {@render total(row)}
               {:else}
@@ -108,7 +113,7 @@
             </a>
           {/if}
           {#if next}
-            <span class="{FIGURE} text-muted" aria-hidden="true"
+            <span class="{FIGURE} hidden text-muted @3xl:inline" aria-hidden="true"
               >{Number(next.value) === Number(row.value) ? '=' : '<'}</span
             >
           {/if}

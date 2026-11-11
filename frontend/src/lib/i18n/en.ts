@@ -1,7 +1,8 @@
 import type { CountMessages } from './types.js';
 // English source messages are stable translation IDs. Keep complete sentences together.
 export const messages = [
-  'Current rivals',
+  'Rivals',
+  'Rivals (class: {weightClass})',
   'Ranking scope',
   'Profile athlete',
   'An All4 total in the latest All4 category is needed to show nearby athletes.',

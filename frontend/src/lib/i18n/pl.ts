@@ -2,7 +2,8 @@ import type { Message } from './en.js';
 import type { CountMessages } from './types.js';
 
 export default {
-  'Current rivals': 'Obecni rywale',
+  Rivals: 'Rywale',
+  'Rivals (class: {weightClass})': 'Rywale (kategoria: {weightClass})',
   'Ranking scope': 'Zakres rankingu',
   'Profile athlete': 'Zawodnik z tego profilu',
   'An All4 total in the latest All4 category is needed to show nearby athletes.':
