@@ -1,0 +1,14 @@
+event = "PD"
+sources = ["https://docs.google.com/spreadsheets/d/1KtIFduz0gjleSfQgpbJIwsHm6ifZfLbA/edit?gid=710695198#gid=710695198"]
+
+[competition]
+name = "SL Classic Szczecin Zdrofit 2026"
+start_date = "2026-11-08"
+city = "Szczecin"
+country = "PL"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "StreetLifting Polska"
+country = "PL"
