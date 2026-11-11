@@ -1,0 +1,12 @@
+event = "MPDS"
+sources = ["https://app.final-rep.com/#/events/statistics/2otD3H80e1Df1LuLqKUMFNjBYJw"]
+
+[competition]
+name = "Singapore Streetlifting Nationals"
+start_date = "2025-01-24"
+country = "SG"
+status = "completed"
+
+[federation]
+name = "Singapore Streetlifting Federation"
+country = "SG"
