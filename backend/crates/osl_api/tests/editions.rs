@@ -217,6 +217,7 @@ async fn archive_keeps_championships_within_a_federation_separate(pool: PgPool) 
             "dcsv-german-championship-2022",
             "dcsv-german-championship-2023",
             "dcsv-german-championship-2024",
+            "dcsv-german-championship-2025",
             "dcsv-german-championship-2026",
         ],
     )
