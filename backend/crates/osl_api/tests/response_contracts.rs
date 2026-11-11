@@ -70,6 +70,7 @@ fn serializes_missing_athlete_values_as_null() {
         "total_competitions",
         "standing",
         "lift_balance",
+        "neighbors",
     ] {
         assert!(!body.as_object().unwrap().contains_key(field), "{field}");
     }
@@ -240,6 +241,7 @@ fn requires_fields_except_conditional_sections() {
                         | "total_competitions"
                         | "standing"
                         | "lift_balance"
+                        | "neighbors"
                 ),
                 "CompetitionResponse" => COMPETITION_SECTIONS.contains(&field.as_str()),
                 _ => false,
@@ -250,7 +252,7 @@ fn requires_fields_except_conditional_sections() {
             assert_eq!(required, !optional, "{name}.{field}");
         }
     }
-    for field in ["standing", "lift_balance"] {
+    for field in ["standing", "lift_balance", "neighbors"] {
         let property = &schema["components"]["schemas"]["AthleteResponse"]["properties"][field];
         assert!(
             property["oneOf"]

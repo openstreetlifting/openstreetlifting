@@ -2,6 +2,14 @@ import type { Message } from './en.js';
 import type { CountMessages } from './types.js';
 
 export default {
+  'Current rivals': 'Obecni rywale',
+  'Ranking scope': 'Zakres rankingu',
+  'Profile athlete': 'Zawodnik z tego profilu',
+  'An All4 total in the latest All4 category is needed to show nearby athletes.':
+    'Do wyświetlenia sąsiadów potrzebny jest wynik All4 w ostatniej kategorii All4.',
+  'The only ranked athlete in this category and scope.':
+    'Jedyny sklasyfikowany zawodnik w tej kategorii i tym zakresie.',
+
   'Back to rankings': 'Wróć do rankingów',
   'Get in touch': 'Napisz do nas',
   Footer: 'Stopka',
@@ -31,10 +39,6 @@ export default {
     'Wyniki RIS są wyświetlane zgodnie z zapisem; wersje wzoru i opublikowane wartości mogą się różnić.',
   'Lift balance': 'Balans bojów',
   'About lift balance': 'O balansie bojów',
-  'How this athlete’s best total is split across the four lifts, compared with others in their weight class.':
-    'Jak najlepszy wynik łączny tego zawodnika rozkłada się na cztery boje w porównaniu z innymi w jego kategorii wagowej.',
-  'Further out means that lift takes a bigger share of the total than usual, not that it is better.':
-    'Dalej od środka oznacza, że ten bój stanowi większą część wyniku niż zwykle, a nie że jest lepszy.',
   'Lift balance compared with other athletes in {category}':
     'Balans bojów w porównaniu z innymi zawodnikami w {category}',
   'Lift shares of best total': 'Udział bojów w najlepszym wyniku',
@@ -52,17 +56,16 @@ export default {
     'W tych zawodach RIS jest przeliczany według aktualnego wzoru.',
   'In this competition, RIS scores are shown as published.':
     'W tych zawodach wyniki RIS są pokazane tak, jak je opublikowano.',
-  'Athlete: {share} of total': 'Zawodnik: {share} totalu',
-  'Reference: {share} of total': 'Odniesienie: {share} totalu',
-  'Reference ({class})': 'Odniesienie ({class})',
+  'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.':
+    'Przedstawia każdy bój jako udział w najlepszym wyniku łącznym zawodnika ({total} {unit}, {competition}) na tle średniego udziału {count} zawodników w kategorii {category}. Odchylenie na zewnątrz oznacza większy nacisk na ten bój.',
+  'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}).':
+    'Przedstawia każdy bój jako udział w najlepszym wyniku łącznym zawodnika ({total} {unit}, {competition}).',
+  '{class} class': 'Kategoria {class}',
   Reference: 'Odniesienie',
-  'Reference: {count} {athletes} in {category}':
-    'Odniesienie: {count} {athletes} w kategorii {category}',
   '{movement}: {share} of total, reference {average}':
     '{movement}: {share} totalu, odniesienie {average}',
   'of total · reference {average}': 'totalu · odniesienie {average}',
   'of total': 'totalu',
-  'Based on {total} {unit} at {competition}': 'Na podstawie {total} {unit} na {competition}',
   'Too few athletes in this weight class to compare.':
     'Za mało zawodników w tej kategorii wagowej, aby porównać.',
   'A completed competition with all four lifts is needed to show lift balance.':

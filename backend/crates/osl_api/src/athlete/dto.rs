@@ -3,7 +3,7 @@ use osl_db::params::RankingMovement;
 use osl_db::projections::athlete::{
     AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
 };
-use osl_db::projections::ranking::AthleteMetricStandingRow;
+use osl_db::projections::ranking::{AthleteMetricStandingRow, AthleteNeighborRow};
 use osl_db::rows::athlete::AthleteRow;
 use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
 use serde::{Deserialize, Serialize};
@@ -42,6 +42,75 @@ pub struct AthleteResponse {
     pub standing: Option<Option<AthleteStanding>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lift_balance: Option<Option<LiftBalance>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub neighbors: Option<Option<AthleteNeighborhood>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct AthleteNeighbor {
+    pub athlete_id: Uuid,
+    pub first_name: String,
+    pub last_name: String,
+    pub slug: String,
+    #[schema(required = true)]
+    pub country: Option<String>,
+    pub value: rust_decimal::Decimal,
+    pub gap: rust_decimal::Decimal,
+    pub place: i64,
+    pub field: i64,
+    pub competition_name: String,
+    pub competition_slug: String,
+    #[schema(required = true)]
+    pub competition_date: Option<chrono::NaiveDate>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct AthleteNeighborhood {
+    pub category: String,
+    pub global: Vec<AthleteNeighbor>,
+    #[schema(required = true)]
+    pub national: Option<Vec<AthleteNeighbor>>,
+}
+
+impl AthleteNeighborhood {
+    #[must_use]
+    pub fn from_rows(rows: Vec<AthleteNeighborRow>, gender: Gender) -> Option<Self> {
+        let first = rows.first()?;
+        let category = osl_domain::category_label(
+            None,
+            gender,
+            first.weight_class_min,
+            first.weight_class_max,
+        );
+        let mut global = Vec::new();
+        let mut national = Vec::new();
+        for row in rows {
+            let target = if row.scope == "global" {
+                &mut global
+            } else {
+                &mut national
+            };
+            target.push(AthleteNeighbor {
+                athlete_id: row.athlete_id,
+                first_name: row.first_name,
+                last_name: row.last_name,
+                slug: row.slug,
+                country: row.country,
+                value: row.value,
+                gap: row.gap,
+                place: row.place,
+                field: row.field,
+                competition_name: row.competition_name,
+                competition_slug: row.competition_slug,
+                competition_date: row.competition_date,
+            });
+        }
+        Some(Self {
+            category,
+            global,
+            national: (!national.is_empty()).then_some(national),
+        })
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -259,6 +328,7 @@ impl From<AthleteRow> for AthleteResponse {
             total_competitions: None,
             standing: None,
             lift_balance: None,
+            neighbors: None,
         }
     }
 }

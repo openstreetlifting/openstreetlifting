@@ -24,6 +24,7 @@ it('encodes athlete slugs and preserves null values and empty requested sections
     total_competitions: 0,
     standing: null,
     lift_balance: null,
+    neighbors: null,
   } satisfies components['schemas']['AthleteResponse'];
   const fetch = vi.fn().mockResolvedValue(Response.json(athlete));
   vi.stubGlobal('fetch', fetch);
@@ -32,7 +33,9 @@ it('encodes athlete slugs and preserves null values and empty requested sections
   const request = fetch.mock.calls[0][0] as Request;
   const url = new URL(request.url);
   expect(url.pathname).toBe(`/api/v1/athletes/${encodeURIComponent(athlete.slug)}`);
-  expect(url.searchParams.get('include')).toBe('competitions,records,standing,lift_balance');
+  expect(url.searchParams.get('include')).toBe(
+    'competitions,records,standing,lift_balance,neighbors'
+  );
 });
 
 it('keeps unrequested sections absent from athlete listings', async () => {
