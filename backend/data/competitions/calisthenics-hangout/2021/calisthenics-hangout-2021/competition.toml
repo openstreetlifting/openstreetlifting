@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "https://app.weighted-calisthenics.de/#events",
+    "https://weighted-calisthenics.de/wp-json/overallRanking/getRankingData (comp_id=4, qualification=false)",
+]
+
+[competition]
+name = "Calisthenics Hangout"
+start_date = "2021-09-18"
+end_date = "2021-09-19"
+city = "Inning am Ammersee"
+region = "Bayern"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "Calisthenics Hangout"
+country = "DE"

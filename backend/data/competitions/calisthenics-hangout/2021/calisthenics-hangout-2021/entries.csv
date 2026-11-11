@@ -1,0 +1,22 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Julius,Friedrich,,DE,57.7,,188.75,competed,,,,,7.5,,,,45,,,,56.25,,,,80
+M,66,Vladimiros,Mangenakis,,DE,64.3,,300,competed,,,,,20,,,,70,,,,100,,,,110
+M,66,Andreas,Schalk,,DE,65,,185,competed,,,,,0,,,,47.5,,,,47.5,,,,90
+M,73,Guilleume,Laine,,DE,69,,287.5,competed,,,,,15,,,,67.5,,,,85,,,,120
+M,73,Gabriel,Skibitzki,,DE,71.5,,232.5,competed,,,,,5,,,,52.5,,,,65,,,,110
+M,73,Michael,Vogel,,DE,71,,331,competed,,,,,16,,,,65,,,,85,,,,165
+M,80,Harry,Karpenko,,DE,78,,220,competed,,,,,10,,,,60,,,,60,,,,90
+M,80,Fabian,Müller,,DE,79,,280,competed,,,,,15,,,,60,,,,75,,,,130
+M,80,Steven,Richter,,DE,77.8,,251.25,competed,,,,,0,,,,41.25,,,,67.5,,,,142.5
+M,80,Mario,Schmid,,DE,77.4,,240,competed,,,,,0,,,,60,,,,35,,,,145
+M,80,Sebastian,Zweimüller,,DE,79.5,,255,competed,,,,,5,,,,45,,,,70,,,,135
+M,87,Luca,Dautermann,,DE,85.5,,336.25,competed,,,,,12.5,,,,61.25,,,,80,,,,182.5
+M,87,Marcel,Delitz,,DE,84.9,,365,competed,,,,,10,,,,65,,,,110,,,,180
+M,87,Lennard,Peus,,DE,85.5,,301.25,competed,,,,,1.25,,,,50,,,,95,,,,155
+M,94,Marcel,Haselwanter,,DE,88.5,,385,competed,,,,,15,,,,60,,,,100,,,,210
+M,94,Michael,Koch,,DE,87.3,,312.5,competed,,,,,7.5,,,,50,,,,80,,,,175
+M,94,Andre,Matkovski,,DE,93.2,,277.5,competed,,,,,0,,,,57.5,,,,75,,,,145
+M,94,Martin,Sabiraj,,DE,88.5,,287.5,competed,,,,,20,,,,60,,,,77.5,,,,130
+F,52,Yasmin,Nassl,,DE,51.3,,145,competed,,,,,0,,,,25,,,,40,,,,80
+F,70,Lea Lucia,Futterknecht,,DE,69.3,,155,competed,,,,,5,,,,27.5,,,,22.5,,,,100
+F,70,Nadine,Schulz,,DE,65.5,,172.5,competed,,,,,6.25,,,,35,,,,28.75,,,,102.5
