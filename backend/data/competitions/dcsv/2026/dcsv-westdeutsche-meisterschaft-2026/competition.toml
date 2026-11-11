@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Westdeutsche Meisterschaft"
+series = "dcsv-westdeutsche-meisterschaft"
 start_date = "2026-05-09"
 city = "Halle (Westfalen)"
 region = "Nordrhein-Westfalen"

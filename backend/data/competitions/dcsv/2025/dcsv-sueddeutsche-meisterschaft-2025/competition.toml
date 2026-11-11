@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Süddeutsche Meisterschaft"
+series = "dcsv-sueddeutsche-meisterschaft"
 start_date = "2025-05-24"
 city = "München"
 region = "Bayern"

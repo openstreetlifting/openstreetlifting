@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Norddeutsche Meisterschaft"
+series = "dcsv-norddeutsche-meisterschaft"
 start_date = "2024-06-01"
 city = "Rostock"
 region = "Mecklenburg-Vorpommern"
