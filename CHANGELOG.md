@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.63.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.62.0...v0.63.0) (2026-11-11)
+
+
+### Features
+
+* **data:** group DCSV regional championships into series ([#939](https://github.com/openstreetlifting/openstreetlifting/issues/939)) ([1fa91be](https://github.com/openstreetlifting/openstreetlifting/commit/1fa91be41d26a4b92b5df41c654e0451643f1d01))
+* **data:** import Machbar Maxout Competition 2024 ([#937](https://github.com/openstreetlifting/openstreetlifting/issues/937)) ([6adc085](https://github.com/openstreetlifting/openstreetlifting/commit/6adc0855512b09a3492a292c77b75342540e0a3b))
+* **data:** import Machbar Maxout Competition 2025 ([#938](https://github.com/openstreetlifting/openstreetlifting/issues/938)) ([a063fbd](https://github.com/openstreetlifting/openstreetlifting/commit/a063fbd1f8a31e3eeda8632d051cca0ccafb1dd9))
+* **data:** import Singapore Streetlifting Nationals 2025 ([#932](https://github.com/openstreetlifting/openstreetlifting/issues/932)) ([ea60466](https://github.com/openstreetlifting/openstreetlifting/commit/ea60466030ab16face053f8f94f32a6c5576a71a))
+* **data:** import USAStreetlifting Austin Classic 2026 ([#934](https://github.com/openstreetlifting/openstreetlifting/issues/934)) ([4f92255](https://github.com/openstreetlifting/openstreetlifting/commit/4f922551c95dd3e144ee58f169cbd84127e9beb9))
+* **data:** import USAStreetlifting Buckeye Classic 2026 ([#933](https://github.com/openstreetlifting/openstreetlifting/issues/933)) ([0b3d9f1](https://github.com/openstreetlifting/openstreetlifting/commit/0b3d9f1a22b9b8768fca1be29b55c55e981677db))
+* **data:** import USAStreetlifting Fort Worth All4 2026 ([#936](https://github.com/openstreetlifting/openstreetlifting/issues/936)) ([ab43202](https://github.com/openstreetlifting/openstreetlifting/commit/ab43202cbfcccef32f6d6751d0543cc954250d44))
+* **data:** import USAStreetlifting Rocky Mountain Classic 2026 ([#935](https://github.com/openstreetlifting/openstreetlifting/issues/935)) ([4beb3b2](https://github.com/openstreetlifting/openstreetlifting/commit/4beb3b217cbf132c30965a1194231a3925a764ee))
+
 ## [0.62.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.61.0...v0.62.0) (2026-11-11)
 
 
