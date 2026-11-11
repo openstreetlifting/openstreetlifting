@@ -1,0 +1,20 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Nana,Boison,,DE,64.05,,382.5,competed,,,,,25,,,,77.5,,,,95,,,,185
+M,73,Vincent,Pavard,,DE,70,,255,competed,,,,,10,,,,47.5,,,,62.5,,,,135
+M,73,Michael,Poindecker,,DE,71.45,,387.5,competed,,,,,22.5,,,,75,,,,105,,,,185
+M,80,Peter,Buck,,DE,79.4,,436.25,competed,,,,,26.25,,,,72.5,,,,107.5,,,,230
+M,80,Petar,Todorov,,DE,78.2,,363.75,competed,,,,,21.25,,,,60,,,,95,,,,187.5
+M,87,Timo,Wunnenberg,,DE,85.5,,487.5,competed,,,,,25,,,,90,,,,120,,,,252.5
+M,94,Tidjane,Müller,,DE,93.9,,360,competed,,,,,15,,,,70,,,,85,,,,190
+M,94+,Patryk,Dzieniszewski,,DE,97.7,,530,competed,,,,,40,,,,90,,,,145,,,,255
+M,94+,Aidan,Francois-Friis,,DE,104,,452.5,competed,,,,,5,,,,80,,,,112.5,,,,255
+M,94+,Robin,Meineke,,DE,109.9,,501.25,competed,,,,,8.75,,,,90,,,,140,,,,262.5
+M,94+,Johannes,Redmann,,DE,106.3,,410,competed,,,,,15,,,,60,,,,115,,,,220
+M,94+,Tonio,Zeidler,,DE,103.7,,510,competed,,,,,15,,,,85,,,,170,,,,240
+F,57,Yasmin,Nassl,,DE,53.15,,150,competed,,,,,2.5,,,,27.5,,,,40,,,,80
+F,57,Haruna,Wackernagel,,DE,52.7,,188.75,competed,,,,,2.5,,,,32.5,,,,46.25,,,,107.5
+F,63,Jessica,Kallage-Götze,,DE,60,,215,competed,,,,,12.5,,,,32.5,,,,50,,,,120
+F,70,Sarah Chimdi,Anyamele,,DE,68.65,,243.75,competed,,,,,20,,,,41.25,,,,47.5,,,,135
+F,70,Nadine,Schulz,,DE,66.3,,226.25,competed,,,,,13.75,,,,30,,,,50,,,,132.5
+F,70+,Judith,Kleinhansl,,AT,78.8,,218.75,competed,,,,,5,,,,36.25,,,,42.5,,,,135
+F,70+,Delia,Schweizer,,DE,81.85,,241.25,competed,,,,,13.75,,,,40,,,,42.5,,,,145

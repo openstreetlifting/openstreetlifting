@@ -1,0 +1,20 @@
+event = "MPDS"
+sources = [
+    "https://app.weighted-calisthenics.de/#events",
+    "https://weighted-calisthenics.de/wp-json/overallRanking/getRankingData (comp_id=7, qualification=false)",
+]
+
+[competition]
+name = "Worlds"
+series = "finalrep-worlds"
+start_date = "2022-10-01"
+end_date = "2022-10-02"
+city = "Berlin"
+venue = "Golds Gym Berlin"
+region = "Berlin"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "FinalRep"
+country = "DE"
