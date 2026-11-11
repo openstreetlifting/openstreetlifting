@@ -1,0 +1,14 @@
+event = "MPDS"
+sources = ["https://usastreetlifting.org/"]
+
+[competition]
+name = "Fort Worth All4"
+start_date = "2026-10-24"
+city = "Fort Worth"
+region = "Texas"
+country = "US"
+status = "completed"
+
+[federation]
+name = "USAStreetlifting"
+country = "US"
