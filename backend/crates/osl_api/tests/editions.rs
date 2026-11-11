@@ -181,7 +181,12 @@ async fn assert_editions(pool: &PgPool, slug: &str, expected: &[&str]) {
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn archive_keeps_championships_within_a_federation_separate(pool: PgPool) {
     seed_archive(&pool).await;
-    assert_editions(&pool, "worlds-2025", &["worlds-2022", "worlds-2023", "worlds-2025"]).await;
+    assert_editions(
+        &pool,
+        "worlds-2025",
+        &["worlds-2022", "worlds-2023", "worlds-2025"],
+    )
+    .await;
     assert_editions(
         &pool,
         "german-open-2025",
@@ -349,7 +354,12 @@ async fn links_older_and_later_editions_of_the_same_championship(pool: PgPool) {
             ])
         );
     }
-    assert_editions(&pool, "worlds-2023", &["worlds-2022", "worlds-2023", "worlds-2025"]).await;
+    assert_editions(
+        &pool,
+        "worlds-2023",
+        &["worlds-2022", "worlds-2023", "worlds-2025"],
+    )
+    .await;
     assert_editions(
         &pool,
         "belgian-streetlifting-championship-2025",
