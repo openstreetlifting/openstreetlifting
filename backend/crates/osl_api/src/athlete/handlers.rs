@@ -89,7 +89,9 @@ pub async fn get_athlete(
             repo.get_detailed_athlete(athlete),
             async {
                 if query.include.has("standing") {
-                    rankings.get_athlete_metric_standings_stored(athlete_id).await
+                    rankings
+                        .get_athlete_metric_standings_stored(athlete_id)
+                        .await
                 } else {
                     Ok(Vec::new())
                 }
@@ -103,7 +105,9 @@ pub async fn get_athlete(
             },
             async {
                 if query.include.has("neighbors") {
-                    rankings.get_athlete_total_neighbors_stored(athlete_id).await
+                    rankings
+                        .get_athlete_total_neighbors_stored(athlete_id)
+                        .await
                 } else {
                     Ok(Vec::new())
                 }

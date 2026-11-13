@@ -232,10 +232,7 @@ fn push_latest_total_class_from(query: &mut QueryBuilder<Postgres>) {
     query.push_bind(osl_domain::FULL_EVENT);
 }
 
-pub(crate) fn push_latest_total_class(
-    query: &mut QueryBuilder<Postgres>,
-    athlete_id: Uuid,
-) {
+pub(crate) fn push_latest_total_class(query: &mut QueryBuilder<Postgres>, athlete_id: Uuid) {
     query.push(
         r"
             latest_total_class AS (

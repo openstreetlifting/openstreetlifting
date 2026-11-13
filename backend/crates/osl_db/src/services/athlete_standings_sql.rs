@@ -1,9 +1,6 @@
-//! SQL builders for the standings recompute. Both queries start from the
-//! shared `movement_weights` + `metric_candidates` fragments (same source of
-//! truth as the live rankings page) and generalize the single-athlete
-//! standings and neighbors queries to every athlete at once.
-
-use crate::repository::ranking_query::{push_latest_total_classes, push_metric_candidates, same_class};
+use crate::repository::ranking_query::{
+    push_latest_total_classes, push_metric_candidates, same_class,
+};
 use sqlx::{Postgres, QueryBuilder};
 
 /// Appends the metric-candidate pipeline and an INSERT that fills
@@ -14,7 +11,7 @@ pub(super) fn push_metric_pool(query: &mut QueryBuilder<Postgres>) {
     push_latest_total_classes(query);
 
     query.push(
-        r#"
+        r"
             mine AS (
                 SELECT DISTINCT ON (metric, athlete_id)
                     metric, athlete_id, country, gender, value,
@@ -30,11 +27,11 @@ pub(super) fn push_metric_pool(query: &mut QueryBuilder<Postgres>) {
                       SELECT 1 FROM latest_total_classes latest
                       WHERE latest.athlete_id = candidate.athlete_id
                         AND latest.gender = candidate.gender
-                        AND "#,
+                        AND ",
     );
     query.push(same_class("latest", "candidate"));
     query.push(
-        r#"
+        r"
                   ))
                 ORDER BY metric, athlete_id, value DESC, start_date DESC, participant_id
             ),
@@ -78,7 +75,7 @@ pub(super) fn push_metric_pool(query: &mut QueryBuilder<Postgres>) {
             JOIN placed ON placed.metric = mine.metric
                        AND placed.athlete_id = mine.athlete_id
                        AND placed.class_group = mine.class_group
-        "#,
+        ",
     );
 }
 
@@ -88,16 +85,16 @@ pub(super) fn push_metric_pool(query: &mut QueryBuilder<Postgres>) {
 pub(super) fn push_rivals(query: &mut QueryBuilder<Postgres>) {
     push_latest_total_classes(query);
     query.push(
-        r#"
+        r"
             eligible AS (
                 SELECT mw.* FROM movement_weights mw
-                JOIN latest_total_classes latest ON latest.athlete_id = mw.athlete_id AND "#,
+                JOIN latest_total_classes latest ON latest.athlete_id = mw.athlete_id AND ",
     );
     query.push(same_class("latest", "mw"));
     query.push(" WHERE mw.total IS NOT NULL AND mw.event_code = ");
     query.push_bind(osl_domain::FULL_EVENT);
     query.push(
-        r#"
+        r"
             ),
             ranking_pool AS (
                 SELECT DISTINCT ON (athlete_id) * FROM eligible
@@ -137,6 +134,6 @@ pub(super) fn push_rivals(query: &mut QueryBuilder<Postgres>) {
                          AND p.weight_class_max IS NOT DISTINCT FROM target.weight_class_max
                          AND target.country IS NOT NULL AND p.country = target.country
                          AND p.country_place BETWEEN target.country_place - 1 AND target.country_place + 1
-        "#,
+        ",
     );
 }

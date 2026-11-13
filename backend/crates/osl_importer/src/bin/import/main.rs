@@ -273,6 +273,18 @@ async fn handle_recompute_ris(database_url: &str, dry_run: bool) -> Result<()> {
 
     Ok(())
 }
+async fn standings_counts(pool: &sqlx::PgPool) -> Result<(i64, i64)> {
+    let standings: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM athlete_metric_standings")
+        .fetch_one(pool)
+        .await
+        .context("counting rows in athlete_metric_standings")?;
+    let rivals: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM athlete_rivals")
+        .fetch_one(pool)
+        .await
+        .context("counting rows in athlete_rivals")?;
+    Ok((standings, rivals))
+}
+
 
 async fn handle_recompute_standings(database_url: &str, dry_run: bool) -> Result<()> {
     let pool = PgPoolOptions::new()
@@ -281,30 +293,19 @@ async fn handle_recompute_standings(database_url: &str, dry_run: bool) -> Result
         .await
         .context("connecting to the database")?;
 
-    async fn counts(pool: &sqlx::PgPool) -> Result<(i64, i64)> {
-        let standings: i64 =
-            sqlx::query_scalar("SELECT COUNT(*) FROM athlete_metric_standings")
-                .fetch_one(pool)
-                .await
-                .context("counting rows in athlete_metric_standings")?;
-        let rivals: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM athlete_rivals")
-            .fetch_one(pool)
-            .await
-            .context("counting rows in athlete_rivals")?;
-        Ok((standings, rivals))
-    }
-
     if dry_run {
-        let (standings, rivals) = counts(&pool).await?;
+        let (standings, rivals) = standings_counts(&pool).await?;
         tracing::info!(standings, rivals, "Standings recompute preview completed");
         return Ok(());
     }
 
     let mut tx = pool.begin().await.context("starting transaction")?;
     osl_db::services::athlete_standings::refresh(&mut tx).await?;
-    tx.commit().await.context("committing standings recompute")?;
+    tx.commit()
+        .await
+        .context("committing standings recompute")?;
 
-    let (standings, rivals) = counts(&pool).await?;
+    let (standings, rivals) = standings_counts(&pool).await?;
     tracing::info!(standings, rivals, "Athlete standings recomputed");
 
     Ok(())
