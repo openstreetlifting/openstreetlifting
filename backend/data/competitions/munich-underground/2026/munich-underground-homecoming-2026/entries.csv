@@ -1,7 +1,7 @@
 Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,NativeName,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,Tim,Ahrens,,DE,,62.42,326.25,competed,,,5,10,12.5x,10,40,45,48.75,48.75,70,75,80,80,172.5,182.5,187.5,187.5
 M,Aaron,Biebel,,DE,,71.38,380,competed,,,0x,0,5x,0,45,55x,55,55,90,100,110,110,185,200,215,215
-M,Philippe,Blatter,,DE,,53.96,272.5,competed,,,0,2.5,5x,2.5,37.5,45,50,50,67.5,75,82.5x,75,135,145,152.5x,145
+M,Philippe,Blatter,,CH,,53.96,272.5,competed,,,0,2.5,5x,2.5,37.5,45,50,50,67.5,75,82.5x,75,135,145,152.5x,145
 M,Vladyslav,Bryukhan,,DE,,60.58,282.5,competed,,,10,12.5,15,15,47.5x,52.5,57.5,57.5,65,72.5,80,80,105,120,130,130
 M,Alex,Dreindl,,AT,,70.88,325,competed,,,12.5,17.5,20,20,52.5,60x,62.5,62.5,70,80,90,90,130,140,152.5,152.5
 M,Georg,Eilers,,DE,,52.64,275,competed,,,2.5,7.5,15x,7.5,42.5,52.5,60,60,52.5,65,75,75,115,125,132.5,132.5
