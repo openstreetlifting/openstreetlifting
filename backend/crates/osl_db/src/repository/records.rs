@@ -18,59 +18,57 @@ impl<'a> RecordsRepository<'a> {
     pub async fn list(&self, filter: &RecordsFilter) -> Result<Vec<RecordRow>> {
         let mut query = QueryBuilder::<Postgres>::new(
             r"
-            WITH pool AS (
-                SELECT r.movement_name, r.gender, wc.slug AS weight_class, wc.max_kg, wc.min_kg,
-                       r.athlete_id, r.competition_id, r.weight, r.date
+            WITH scoped AS (
+                SELECT r.*, a.first_name, a.last_name, a.slug, a.country,
+                       c.name AS competition_name, c.slug AS competition_slug
                 FROM records r
-                JOIN weight_classes wc ON wc.weight_class_id = r.weight_class_id
-                WHERE wc.slug IS NOT NULL
+                JOIN athletes a ON a.athlete_id = r.athlete_id
+                JOIN competitions c ON c.competition_id = r.competition_id
+                JOIN federations f ON f.federation_id = c.federation_id
+                WHERE TRUE
+            ",
+        );
+        Self::push_scope(&mut query, filter);
+        query.push(
+            r"
+            ),
+            pool AS (
+                SELECT * FROM (
+                    SELECT DISTINCT ON (s.movement_name, s.weight_class_id, s.athlete_id)
+                           s.*, wc.slug AS weight_class, wc.max_kg, wc.min_kg
+                    FROM scoped s
+                    JOIN weight_classes wc ON wc.weight_class_id = s.weight_class_id
+                    WHERE wc.slug IS NOT NULL
+                    ORDER BY s.movement_name, s.weight_class_id, s.athlete_id, s.weight DESC, s.date
+                ) classes
                 UNION ALL
                 SELECT * FROM (
-                    SELECT DISTINCT ON (r.movement_name, r.athlete_id)
-                           r.movement_name, r.gender, NULL::VARCHAR AS weight_class,
-                           NULL::DECIMAL AS max_kg, NULL::DECIMAL AS min_kg,
-                           r.athlete_id, r.competition_id, r.weight, r.date
-                    FROM records r
-                    ORDER BY r.movement_name, r.athlete_id, r.weight DESC, r.date
+                    SELECT DISTINCT ON (s.movement_name, s.athlete_id)
+                           s.*, NULL::VARCHAR AS weight_class,
+                           NULL::DECIMAL AS max_kg, NULL::DECIMAL AS min_kg
+                    FROM scoped s
+                    ORDER BY s.movement_name, s.athlete_id, s.weight DESC, s.date
                 ) open
             ),
             ranked AS (
-                SELECT pool.movement_name, pool.gender, pool.weight_class, pool.max_kg, pool.min_kg,
-                       pool.weight, pool.date,
-                       a.first_name, a.last_name, a.slug, a.country,
-                       c.name AS competition_name, c.slug AS competition_slug,
-                       ROW_NUMBER() OVER (
-                           PARTITION BY pool.movement_name, pool.gender, pool.weight_class
-                           ORDER BY pool.weight DESC, pool.date, a.last_name, a.first_name, a.athlete_id
-                       ) AS rank
+                SELECT *, ROW_NUMBER() OVER (
+                    PARTITION BY movement_name, gender, weight_class
+                    ORDER BY weight DESC, date, last_name, first_name, athlete_id
+                ) AS rank
                 FROM pool
-                JOIN athletes a ON a.athlete_id = pool.athlete_id
-                JOIN competitions c ON c.competition_id = pool.competition_id
                 WHERE TRUE
             ",
         );
 
-        if let Some(movement) = filter.movement {
-            query.push(" AND pool.movement_name = ");
-            query.push_bind(movement.as_str());
-        }
-        if let Some(gender) = filter.gender {
-            query.push(" AND pool.gender = ");
-            query.push_bind(gender.as_str());
-        }
         match &filter.weight_class {
             Some(RecordClass::Open) => {
-                query.push(" AND pool.weight_class IS NULL ");
+                query.push(" AND weight_class IS NULL ");
             }
             Some(RecordClass::Slug(slug)) => {
-                query.push(" AND pool.weight_class = ");
+                query.push(" AND weight_class = ");
                 query.push_bind(slug.clone());
             }
             None => {}
-        }
-        if let Some(country) = &filter.country {
-            query.push(" AND a.country = ");
-            query.push_bind(country.clone());
         }
 
         query.push(
@@ -90,5 +88,37 @@ impl<'a> RecordsRepository<'a> {
         );
 
         Ok(query.build_query_as().fetch_all(self.pool).await?)
+    }
+
+    fn push_scope(query: &mut QueryBuilder<Postgres>, filter: &RecordsFilter) {
+        if let Some(movement) = filter.movement {
+            query.push(" AND r.movement_name = ");
+            query.push_bind(movement.as_str());
+        }
+        if let Some(gender) = filter.gender {
+            query.push(" AND r.gender = ");
+            query.push_bind(gender.as_str());
+        }
+        if let Some(country) = &filter.country {
+            query.push(" AND a.country = ");
+            query.push_bind(country.clone());
+        }
+        if let Some(federation) = &filter.federation {
+            query.push(" AND f.name = ");
+            query.push_bind(federation.clone());
+        }
+        if let Some(year) = filter.year {
+            query.push(" AND EXTRACT(YEAR FROM r.date)::int = ");
+            query.push_bind(year);
+        }
+    }
+
+    #[tracing::instrument(name = "repository.records.list_years", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn list_years(&self) -> Result<Vec<i32>> {
+        Ok(sqlx::query_scalar(
+            "SELECT DISTINCT EXTRACT(YEAR FROM date)::int AS year FROM records ORDER BY year DESC",
+        )
+        .fetch_all(self.pool)
+        .await?)
     }
 }

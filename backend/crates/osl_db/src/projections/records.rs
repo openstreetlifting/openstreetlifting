@@ -1,11 +1,11 @@
 use chrono::NaiveDate;
-use osl_domain::Gender;
+use osl_domain::{Gender, Movement};
 use rust_decimal::Decimal;
 use sqlx::FromRow;
 
 #[derive(Debug, FromRow)]
 pub struct RecordRow {
-    pub movement_name: String,
+    pub movement_name: Movement,
     pub gender: Gender,
     pub weight_class: Option<String>,
     pub rank: i64,

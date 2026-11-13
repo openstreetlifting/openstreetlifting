@@ -123,5 +123,7 @@ pub struct RecordsFilter {
     pub gender: Option<Gender>,
     pub weight_class: Option<RecordClass>,
     pub country: Option<String>,
+    pub federation: Option<String>,
+    pub year: Option<i32>,
     pub limit: i64,
 }

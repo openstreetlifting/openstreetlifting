@@ -20,12 +20,11 @@ const RESULTS: &str = r"
     )
 ";
 
-const BESTS: &str = r"
-    INSERT INTO records (movement_name, gender, weight_class_id, athlete_id, competition_id, weight, date)
-    SELECT DISTINCT ON (movement_name, weight_class_id, athlete_id)
-           movement_name, gender, weight_class_id, athlete_id, competition_id, weight, date
+const RESULTS_INSERT: &str = r"
+    INSERT INTO records
+        (participant_id, movement_name, gender, weight_class_id, athlete_id, competition_id, weight, date)
+    SELECT participant_id, movement_name, gender, weight_class_id, athlete_id, competition_id, weight, date
     FROM results
-    ORDER BY movement_name, weight_class_id, athlete_id, weight DESC, date, participant_id
 ";
 
 const PROGRESSIONS: &str = r"
@@ -58,7 +57,7 @@ pub async fn refresh(tx: &mut Transaction<'_, Postgres>) -> Result<()> {
     sqlx::query("TRUNCATE records, record_progressions")
         .execute(&mut **tx)
         .await?;
-    for statement in [BESTS, PROGRESSIONS] {
+    for statement in [RESULTS_INSERT, PROGRESSIONS] {
         let mut query = QueryBuilder::<Postgres>::new(RESULTS);
         query.push(statement);
         query.build().execute(&mut **tx).await?;

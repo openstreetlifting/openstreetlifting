@@ -35,6 +35,8 @@ const fn filter(weight_class: Option<RecordClass>) -> RecordsFilter {
         gender: Some(Gender::M),
         weight_class,
         country: None,
+        federation: None,
+        year: None,
         limit: 3,
     }
 }
@@ -279,4 +281,48 @@ async fn keeps_each_result_that_raised_the_record(pool: PgPool) {
     .await
     .unwrap();
     assert_eq!(class_steps, 2, "the M-80 class has the same two steps");
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn takes_each_best_within_a_federation_or_year(pool: PgPool) {
+    let mut local = on(
+        "local-2025",
+        "2025-01-01",
+        vec![men_80(vec![
+            muscleup(athlete("Alex", "Strong"), "40"),
+            muscleup(athlete("Ben", "Steady"), "35"),
+        ])],
+    );
+    local.competition.federation.name = "Local Federation".into();
+    import(&pool, local).await;
+    import(
+        &pool,
+        on(
+            "worlds",
+            "2026-01-01",
+            vec![men_80(vec![muscleup(athlete("Alex", "Strong"), "50")])],
+        ),
+    )
+    .await;
+
+    let mut federation = filter(Some(class("M-80")));
+    federation.federation = Some("Local Federation".into());
+    assert_eq!(
+        holders(&records(&pool, &federation).await),
+        vec![("Strong", "40".into()), ("Steady", "35".into())],
+        "the 50 kg lift belongs to another federation"
+    );
+
+    let mut year = filter(Some(RecordClass::Open));
+    year.year = Some(2025);
+    assert_eq!(
+        holders(&records(&pool, &year).await),
+        vec![("Strong", "40".into()), ("Steady", "35".into())],
+        "the 50 kg lift was set in 2026"
+    );
+
+    assert_eq!(
+        holders(&records(&pool, &filter(Some(class("M-80")))).await),
+        vec![("Strong", "50".into()), ("Steady", "35".into())]
+    );
 }
