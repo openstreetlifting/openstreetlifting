@@ -130,6 +130,11 @@ pub enum Commands {
         #[arg(long, help = "Count eligible results without updating scores")]
         dry_run: bool,
     },
+    #[command(about = "Rebuild precomputed athlete standings and rivals from competition data")]
+    RecomputeStandings {
+        #[arg(long, help = "Count current standings rows without recomputing")]
+        dry_run: bool,
+    },
     #[command(about = "Fill missing totals, validate and format competition files")]
     Prepare {
         #[arg(

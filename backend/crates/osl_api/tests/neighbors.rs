@@ -93,3 +93,52 @@ async fn missing_nationality_keeps_global_neighbors_and_null_national(pool: PgPo
     assert_eq!(body["neighbors"]["global"].as_array().unwrap().len(), 1);
     assert_eq!(body["neighbors"]["national"], Value::Null);
 }
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn standing_is_served_from_the_precomputed_table(pool: PgPool) {
+    common::import(
+        &pool,
+        common::competition(
+            "worlds",
+            vec![common::men_80(vec![
+                common::lifting(common::athlete("Alex", "Martin"), ["45", "65", "75", "130"]),
+                common::lifting(common::athlete("Alina", "Riyaz"), ["45", "65", "75", "125"]),
+            ])],
+        ),
+    )
+    .await;
+
+    sqlx::query("UPDATE athlete_metric_standings SET global_place = 7, global_field = 42 WHERE metric = 'total' AND global_place = 1")
+        .execute(&pool)
+        .await
+        .unwrap();
+
+    let (_, body) = get(&pool, "/api/v1/athletes/alex-martin?include=standing").await;
+    let total = &body["standing"]["total"]["global"];
+    assert_eq!(total["place"], 7);
+    assert_eq!(total["field"], 42);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn missing_precomputed_rows_are_omitted(pool: PgPool) {
+    common::import(
+        &pool,
+        common::competition(
+            "worlds",
+            vec![common::men_80(vec![common::lifting(
+                common::athlete("Alex", "Martin"),
+                ["45", "65", "75", "130"],
+            )])],
+        ),
+    )
+    .await;
+
+    sqlx::query("DELETE FROM athlete_metric_standings")
+        .execute(&pool)
+        .await
+        .unwrap();
+
+    let (status, body) = get(&pool, "/api/v1/athletes/alex-martin?include=standing").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body.get("standing"), Some(&Value::Null));
+}
