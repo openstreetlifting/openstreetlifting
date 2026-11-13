@@ -82,6 +82,37 @@ async fn preserves_source_name_spelling(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
+async fn refreshes_stored_spelling_on_reimport(pool: PgPool) {
+    import(
+        &pool,
+        file(
+            "competition-one",
+            vec![athlete("Anne sophie", "Da silva", None)],
+        ),
+    )
+    .await;
+    import(
+        &pool,
+        file(
+            "competition-one",
+            vec![athlete("Anne-Sophie", "da Silva", None)],
+        ),
+    )
+    .await;
+
+    assert_eq!(athlete_count(&pool).await, 1);
+    let (first, last, slug): (String, String, String) =
+        sqlx::query_as("SELECT first_name, last_name, slug FROM athletes")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+    assert_eq!(
+        (first.as_str(), last.as_str(), slug.as_str()),
+        ("Anne-Sophie", "da Silva", "anne-sophie-da-silva")
+    );
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
 async fn keeps_namesakes_distinct_across_imports(pool: PgPool) {
     import(
         &pool,

@@ -544,12 +544,16 @@ impl<'a> CanonicalTransformer<'a> {
                 r#"
                 UPDATE athletes
                 SET native_name = COALESCE($1, native_name),
-                    native_script = COALESCE($2, native_script)
+                    native_script = COALESCE($2, native_script),
+                    first_name = $4,
+                    last_name = $5
                 WHERE athlete_id = $3
                 "#,
                 athlete.native_name,
                 native_script,
-                id
+                id,
+                db_first_name,
+                db_last_name
             )
             .execute(&mut **tx)
             .await?;
