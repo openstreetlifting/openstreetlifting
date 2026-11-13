@@ -1,0 +1,22 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Angel,Aponte,,VE,59.15,80.87,302,competed,,recovered,2024,16,19,22x,19,55,65,68,68,90,100,105x,100,115,130x,130x,115
+M,66,Luis,Calderón,,VE,62.55,78.09,305,competed,,recovered,2024,10,17,20,20,57,60,65x,60,95,100x,100x,95,120,130,140x,130
+M,66,Jesus,Cossio,,,63.45,84.72,335,competed,,recovered,2024,25,27.5x,27.5x,25,65,70x,70x,65,85,92.5,95,95,135x,140,150,150
+M,66,Gionni,González,,VE,,45.69,,disqualified,Bombed the squat,,,10,15,18x,15,50,55x,57.5x,50,100,105,110.05x,105,150x,160x,160x,
+M,66,Gabriel Zaul,Hazim Martínez,,VE,55.6,60.04,215,competed,,recovered,2024,5x,5,7.5x,5,40,42.5x,45,45,65,70,75x,70,90x,90,95,95
+M,66,Mauricio,Padron Blanco,,VE,64.64,62.81,252.5,competed,,recovered,2024,0,5x,5,5,45,50,55,55,62.5,66,72.5,72.5,110,115,120,120
+M,66,Alan Israel,Vasquez Camacho,,VE,,75.01,,disqualified,Bombed the muscle-up,,,10x,10x,12.5x,,40,55x,55x,40,70x,85,95x,85,130x,145,150,150
+M,73,Julio César,Cedeño Arias,,VE,,38.09,,disqualified,Bombed the pull-up,,,1.5,2.5x,2.5x,1.5,25x,40x,50x,,40,47.5,55,55,90,100,108,108
+M,73,Pablo,Da Silva,,VE,71.24,60.26,265,competed,,recovered,2024,5x,5,10,10,60,65,70,70,75,85x,85x,75,110x,110x,110,110
+M,73,Sebastian,Garces Ramirez,,CO,,72.07,,disqualified,Bombed the dips,,,25,27.5x,27.5x,25,80,85,85x,85,120x,120x,120x,,210x,210,215x,210
+M,73,John,Gonzalez,,,70.4,77.59,337.5,competed,,recovered,2024,25,27.5,30x,27.5,70,75,80,80,65,72,80,80,140,150,160x,150
+M,73,Marco,Rodríguez,,VE,71.3,59.99,264,competed,,recovered,2024,5x,7,10x,7,45,50x,50x,45,67x,75,85,85,127x,127,130x,127
+M,73,Jesús,Sanchez,,VE,72.1,72.66,323,competed,,recovered,2024,15x,15,18,18,55,62,65,65,85x,85,90,90,140,145,150,150
+M,80,Lu,Maestre,,VE,74.3,59.81,273,competed,,recovered,2024,25,30x,30x,25,65x,70x,70,70,60x,68,78x,68,110x,110,125x,110
+M,80,Álvaro,Riveros,,,78.4,87.2,415.5,competed,,recovered,2024,25,28,31.5x,28,75x,78,82.5,82.5,115,125x,125x,115,180x,190,200x,190
+M,80,Alan,Ruz,,VE,,78.16,331,competed,,,,5,7.5,10,10,50,56,57.5x,56,80,90,92.5x,90,155,165,175,175
+M,80,Miguel,Vegas,,VE,,49.88,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,52.5,55x,56x,52.5,70,72.5x,72.5,72.5,105,110x,115x,105
+M,80,Christian,Velazquez,,VE,74.49,54.1,247.5,competed,,recovered,2024,7.5,10,12.5,12.5,40,45,50x,45,55x,55,56.5x,55,130x,130,135,135
+M,87,Luis,Maguiña,,,,67.17,,disqualified,Bombed the muscle-up,,,20x,20x,20x,,65,70,80x,70,95,100x,100x,95,170x,170x,170,170
+M,87,Pedro,Mayorca,,,82.96,81.38,402.5,competed,,recovered,2024,20x,22.5,25x,22.5,60,75,82.5x,75,95,105,110x,105,200,207.5x,210x,200
+M,101,Carlos José,Abiad Parra,,VE,94.54,54.93,286.5,competed,,recovered,2024,0x,2.5,5x,2.5,42x,42,44,44,80,85x,85x,80,150,160,170x,160

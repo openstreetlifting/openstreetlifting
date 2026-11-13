@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+    "https://final-rep.com/dsl-2025-becomes-an-international-milestone-for-venezuelan-streetlifting/",
+]
+
+[competition]
+name = "Desafío Street Lifting"
+series = "desafio-street-lifting"
+start_date = "2025-06-01"
+city = "Caracas"
+venue = "Plaza Las Américas"
+country = "VE"
+status = "completed"
+
+[federation]
+name = "FinalRep"
+country = "DE"
