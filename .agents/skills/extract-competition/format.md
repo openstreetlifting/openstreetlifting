@@ -1,10 +1,8 @@
 # Canonical data rules
 
-The parser and validator define the accepted schema. For fields beyond this guide, inspect `backend/crates/osl_importer/src/canonical/{competition,entries,validator}.rs` and the [data contribution guide](../../../backend/docs/src/CONTRIBUTING_DATA.md) before writing them.
+The schema lives in `backend/crates/osl_importer/src/canonical/{competition,entries,validator}.rs` and [CONTRIBUTING_DATA.md](../../../backend/docs/src/CONTRIBUTING_DATA.md); check them for any field not covered here.
 
-## Competition metadata
-
-Use `competition.toml` for metadata. Include at least one source URL, archived file path, or document description identifying the original evidence:
+## competition.toml
 
 ```toml
 event = "MPDS"
@@ -25,107 +23,69 @@ abbreviation = "FNSL"
 country = "FR"
 ```
 
-Competition name, start date, country, federation name, and a nonempty `sources` list are required. Omit `end_date` for a one-day event; it defaults to `start_date`. Set `venue` to the source-listed venue name when available. Omit unknown optional fields. Dates are quoted strings; country codes use ISO 3166-1 alpha-2, and regions use ISO 3166-2 subdivision names. Keep the start year consistent with the directory. Unknown keys, including a version key, are rejected.
+- Required: competition name, start date, country, federation name, `sources`. Omit unknown optional fields and `end_date` for one-day events. Add `venue` when the source names it.
+- Country codes are ISO 3166-1 alpha-2; regions are ISO 3166-2 subdivision names.
+- `name` drops the federation and year (`Dutch Streetlifting Nationals`, `EUROS` from `EUROS 24`) but keeps identifying edition numbers (`Australian Open Event 3`).
+- `event` lists contested movements in `MPDS` order: `MPDS` (All4), `PD` (Classic), also `PDS`, `DS`, `M`. Uncontested movement cells stay empty.
+- RIS: calculated for `MPDS`. A shorter event ranks by published RIS only with `scoring = "ris"` and no weight classes anywhere; see [shorter-event RIS](../../../backend/docs/src/DATA_REFERENCE.md#ris-for-fewer-than-four-lifts).
+- `status`: `draft`, `upcoming`, `live`, `completed`, `cancelled`.
 
-The competition name identifies the meet without repeating its federation or year: `Dutch Streetlifting Nationals`, not `DSN Dutch Streetlifting Nationals 2026`. Keep edition numbers that are part of the identity, such as `Australian Open Event 3`. Remove years even from titles such as `EUROS 24`. The directory slug retains the identifying federation and year.
+**Announcements** get only `competition.toml` with `status = "upcoming"`, and `event` only when stated. Choose the permanent slug now. When results arrive, add `entries.csv` and set `completed`.
 
-OpenStreetLifting covers streetlifting competitions combining muscle-up, pull-up, dips and squat. `MPDS` (all four lifts, sometimes called All4) and `PD` (pull-up and dips, sometimes called Classic) are the main formats. `event` lists the contested movements in `MPDS` order, with each letter appearing at most once; examples also include `PDS`, `DS` and `M`.
+## entries.csv
 
-Any combination of these four movements may have a total across its contested lifts. `MPDS` supports calculated RIS. Shorter events support published RIS ranking only when `scoring = "ris"` and the entire competition has no weight classes. Follow the [shorter-event RIS rules](../../../backend/docs/src/DATA_REFERENCE.md#ris-for-fewer-than-four-lifts); preserve the real event and leave uncontested movements empty.
-
-Competition status is `draft`, `upcoming`, `live`, `completed`, or `cancelled`.
-
-### Announcements
-
-For a scheduled competition without results, write only `competition.toml` with `status = "upcoming"`. Include `event` only when the source states the format. Choose the permanent directory and slug now.
-
-When results arrive, add `entries.csv` in that directory and change the status to `completed`. An upcoming competition cannot have an entries file; a competition without entries must be upcoming.
-
-## Result rows
-
-Write one row per athlete per category in `entries.csv`. The base header is one line:
+One row per athlete per category:
 
 ```csv
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 ```
 
-Add `Division` first only when needed; add `NativeName` only when an athlete has a non-Latin name. Preserve any supported provenance columns already in the file. Let `prepare` set canonical column order.
-
 | Field | Rule |
 | --- | --- |
-| `Sex` | Required athlete sex: `M` or `F` |
-| `CategorySex` | Optional; `MX` for a mixed contest, empty to follow `Sex` |
-| `WeightClassKg` | Omit for a meet without classes; otherwise use a positive bound such as `80` or `101+`, leaving unclassed contest rows empty |
-| `FirstName`, `LastName` | Apply `athletes.md`; last name required, first name optional |
-| `Disambiguation` | Only for distinct people sharing identity fields; positive integer |
-| `Country` | Source-listed two-letter code; leave empty when unknown |
-| `BodyweightKg` | Positive measured bodyweight supplied by the source |
-| `ReportedRis` | Source-reported score, whether or not bodyweight is known |
-| `TotalKg` | Overall total from the source; `prepare` fills it only from a complete event breakdown |
-| `Status` | `competed`, `disqualified`, or `no_show`; empty means competed |
-| `StatusReason` | Source-supported reason for disqualification |
+| `Sex` | `M` or `F`, from the source, never inferred from a name |
+| `CategorySex` | `MX` for a mixed contest; empty follows `Sex` |
+| `WeightClassKg` | Category bound as `80` or `101+`, never `-80` or `+101` |
+| `FirstName`, `LastName`, `Disambiguation`, `NativeName` | See `athletes.md` |
+| `Country` | See [Country](#country) |
+| `BodyweightKg` | Measured bodyweight from the source |
+| `ReportedRis` | Source score, with or without bodyweight; `ReportedRisEdition` only when the formula is established |
+| `TotalKg` | Published total; `prepare` fills it only from a complete breakdown |
+| `Status` | `competed` (or empty), `disqualified`, `no_show` |
+| `StatusReason` | Source reason for a disqualification |
 
-Record both bodyweight and `ReportedRis` when the source supplies both. Leave unknown values empty. Set `ReportedRisEdition` only when the source formula is established. The validator compares scores at two decimal places when the edition, complete All4 total, and M or F formula are known; resolve contradictions against the source before import. Unverifiable scores remain published evidence with a validation warning. Bodyweight recovery is a separate workflow; preserve existing recovery evidence rather than recomputing or replacing it. Use `ReportedRis`; the former `Ris` header is rejected.
+Keep existing provenance columns; `prepare` sets column order.
 
 ### Country
 
-Use the athlete's source-listed country. Keep the `Country` header and leave the cell empty when the source omits it. The host country is not evidence of nationality.
+Use the source-listed country. When the source omits it:
 
-Country is independent of identity. Check existing entries for the same athlete: conflicting known countries block import. Resolve the source conflict and update the affected entries together.
+- **National championship** (a federation's national title event, such as French or German Nationals): default every athlete to the host country. An athlete whose archive country (API `athlete.country` or existing entries) differs keeps that country.
+- **Any other competition**: leave the cell empty. The host country is not nationality.
 
-### Divisions and weight classes
+Conflicting countries for one athlete block import; resolve against the source and update the affected entries together.
 
-Add `Division` only when the competition runs separate contests for the same sex and weight class, such as Elite and Open. Use the source's label consistently and populate every row once the column exists. A meet that is itself one division needs no division column.
+### Categories
 
-Placings are computed within each division. An athlete can enter multiple divisions; global rankings ignore division.
-
-Read the weight-class bound from the source's category, even when an athlete weighs less than its limit. Keep federation-specific classes. Write `80` or `101+`, never `-80` or `+101`; leading signs can be interpreted as spreadsheet formulas.
-
-When the competition has no weight classes, omit `WeightClassKg`. When only some
-contests use classes, keep the column and leave unclassed contest rows empty.
-Preserve the source's contest membership and shared standings. A placeholder such
-as `D/C` does not establish a weight class; resolve its meaning against the source
-before assigning a category.
-
-### Mixed contests
-
-Read athlete sex and contest membership separately. Keep `Sex=M` or `Sex=F` on
-every entry; use `CategorySex=MX` for mixed entries. An omitted or empty
-`CategorySex` follows `Sex`. Confirm missing athlete sex from a source rather
-than inferring it from a name or mixed-category label.
-
-For mixed contests, record `scoring = "total"` or `scoring = "ris"` under
-`[competition]`. This rule applies to all contests in the competition. Establish
-it from the source; if contests use different methods or an unsupported formula,
-report the unsupported format before importing. The [data reference](../../../backend/docs/src/DATA_REFERENCE.md#athlete-sex-and-mixed-contests)
-defines OSL's placing and tie rules.
+- Read the class from the source category, not the bodyweight. Keep federation-specific classes. A placeholder such as `D/C` is not a class; resolve it.
+- No classes anywhere: omit `WeightClassKg`. Classes in some contests only: keep the column, leave unclassed rows empty.
+- `Division` (first column) only for separate contests sharing sex and class, such as Elite and Open; fill it on every row. A meet that is one division needs none. Placings are per division.
+- Mixed contests: real `Sex` on every row, `CategorySex=MX`, and `scoring = "total"` or `"ris"` under `[competition]`, established from the source. Report contests using different or unsupported scoring before importing. Placing rules: [DATA_REFERENCE.md](../../../backend/docs/src/DATA_REFERENCE.md#athlete-sex-and-mixed-contests).
 
 ## Attempts and status
 
 | Cell | Meaning |
 | --- | --- |
-| `100` | Successful lift at 100 kg |
-| `100x` | Failed attempt at 100 kg |
-| `0` | Successful lift with no added weight |
-| `0x` | Failed attempt with no added weight |
+| `100` | Success at 100 kg |
+| `100x` | Failure at 100 kg |
+| `0` / `0x` | Success / failure with no added weight |
 | Empty | Not attempted or unknown |
 
-Crossed-out or red attempts remain in the file with an `x` suffix. Weights are nonnegative. For muscle-ups, pull-ups, and dips, zero can be a real attempt; read the success or failure marking rather than treating it as missing.
+- Red or crossed-out attempts are failures (`x`). A bodyweight-only `0` on M, P, or D is a real attempt.
+- **No-show**: a zero squat with no bodyweight and no real lifts, often zeros everywhere. `Status=no_show`, attempt cells empty, no total or positive RIS. Ask when it could be failed attempts instead.
+- **Bomb-out**: every attempt in a contested movement failed. Keep the attempts, `Status=disqualified`, leave that best and `TotalKg` empty, keep any published RIS.
+- `prepare` derives `Best*` from attempts. Write a best by hand only when the source gives bests without attempts.
+- Record a published `TotalKg` alongside known attempts. A value is a total only when the source or user says so.
 
-A zero used as a nonstarter placeholder is not an attempt. A row showing a zero squat, no bodyweight, and no actual lifts—often zeros across every movement—belongs to `no_show`, with empty attempt cells. Compare it with recorded failed attempts and ask if the distinction remains unclear. A no-show cannot carry a lift, total, or positive RIS. A published zero RIS may stay as source evidence.
+## Bodyweight recovery
 
-When every attempt in a contested movement failed, preserve those attempts and mark the athlete `disqualified`. Leave that movement's best and the overall total empty. Preserve any published RIS as source evidence; the result is unranked. An athlete who attempted lifts is not a no-show. Report conflicting status evidence; the validator rejects a bombed athlete left as competed.
-
-`prepare` derives each `Best*` value from supplied attempts. Fill a best manually only when the source gives a best without an attempt breakdown; keep those attempt cells empty. For movements outside `event`, leave all four cells empty.
-
-### Published totals
-
-For a competed result, record the published `TotalKg` alongside any known attempts or bests. `prepare` fills a missing total only when every event movement has a successful best; it rejects contradictions without replacing the supplied total. Leave unknown totals empty when the breakdown is incomplete. Import requires a stored total for complete breakdowns. Rankings and pages use the stored total; All4 results with bodyweight can also receive calculated RIS. Preserve a published `ReportedRis` even when it cannot be verified.
-
-### Bodyweight recovery
-
-When the user requests bodyweight recovery, use the published total or complete lift breakdown with the recovery tool in `backend/scripts/recover-bodyweight`. Establish the RIS edition from the source or by checking known bodyweight–total–score combinations. Write the recovered estimate to `BodyweightKg` and preserve `ReportedRis`, `ReportedRisEdition`, and `BodyweightSource=recovered`. Describe recovered weights as estimates because published scores are rounded. Keep `competition.toml` sources limited to source references.
-
-## Validation
-
-Resolve parser and validator errors before completing the pass. Do not turn missing evidence into fabricated values to silence warnings. Missing city, missing bodyweight/RIS, rows without lifts, and an athlete entered in multiple classes can be legitimate warnings during extraction.
+Only on request: run `backend/scripts/recover-bodyweight` with the total or full breakdown and an established RIS edition. Write `BodyweightKg` with `BodyweightSource=recovered`, keep `ReportedRis` and `ReportedRisEdition`, and call the results estimates. Preserve existing recovery evidence.

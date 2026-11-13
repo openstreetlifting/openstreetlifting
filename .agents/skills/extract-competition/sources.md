@@ -2,38 +2,28 @@
 
 ## Instagram carousels
 
-If a text fetch fails or returns only the cover, try Playwright with an installed headless browser. Public carousels may render without login. The HTML `og:image` preview can show the cover regardless of `img_index`.
+When a text fetch returns only the cover (`og:image` always shows it), use headless Playwright:
 
-1. Open `?img_index=1`, wait for images, and dismiss the cookie dialog with `Decline optional cookies` and any dismissible signup overlay. If a login wall or challenge blocks access, request the images or another official source.
-2. Capture each slide, advancing with `page.getByRole('button', { name: 'Next', exact: true })`. Verify the visible heading and `img_index` after each transition, including when navigating directly to an index.
-3. Save a screenshot and download the visible image's `currentSrc` through the browser context's request client when accessible. Instagram preloads adjacent slides: select the image inside the carousel viewport. Wait for `complete` and a nonzero `naturalWidth`, then inspect the downloaded image.
-4. Keep captures and a slide-to-file manifest outside the canonical directory. Read the caption and every requested slide. Deduplicate athletes repeated in summary and category tables.
+1. Open `?img_index=1`, click `Decline optional cookies`, and close signup overlays. A login wall means asking the user for the images.
+2. Advance with `getByRole('button', { name: 'Next', exact: true })`, checking the heading and `img_index` after each move.
+3. Instagram preloads neighbours: take the image inside the carousel viewport, wait for `complete` and nonzero `naturalWidth`, then download its `currentSrc` and screenshot it.
+4. Keep captures and a slide-to-file manifest outside the repo. Read the caption and every slide; deduplicate athletes repeated across summary and category tables.
 
-Use the stable Instagram post URL in `competition.toml` sources; CDN image URLs expire. The publication date is not the competition date. Report source discrepancies such as RIS cells repeating totals or a bodyweight exceeding the displayed class.
-
-For totals without lift results, follow [Published totals](format.md#published-totals). Empty rows need status evidence before assigning disqualification or no-show. Record a value as a total only when the source or user identifies it as one.
+Cite the post URL, not CDN URLs, which expire. The post date is not the competition date. Report anomalies such as RIS cells repeating totals or bodyweights above the class.
 
 ## FinalRep screenshots
 
-FinalRep screenshots often cover one weight class per image. Read sex and weight class from the header, such as `Female -52kg` or `Male -94kg`.
+One weight class per image; sex and class come from the header (`Female -52kg`). No bodyweight, so record the RIS and leave bodyweight empty.
 
 | Appearance | Meaning |
 | --- | --- |
-| Green attempt | Successful, superseded by a later attempt |
-| Orange boxed attempt | Counted best for the movement |
-| Red attempt | Failed attempt |
-| All attempts red in one movement, pink row, `Dis` place | Disqualified after bombing the movement |
+| Green | Success, superseded |
+| Orange box | Counted best |
+| Red | Failure |
+| All red in a movement, pink row, `Dis` | Bomb-out |
 
-Inspect small tables at sufficient resolution. Overlapping enlarged views help distinguish quarter-kilogram increments such as `26.25` and `26.75`.
-
-These screenshots typically show attempts, totals, and RIS without bodyweight. Record the supplied RIS and leave bodyweight empty when absent. Ask for the full spelling of truncated names. Leave `Country` empty for a grey globe or missing flag, as described in `format.md`.
-
-Placings can disagree with total order. Reconcile the successful bests with the printed total; the importer computes placing. A `0 kg` squat, especially a row of zeros across all movements with no bodyweight or real attempts, can represent a nonstarter. Use the no-show rules in `format.md` and resolve ambiguous markings before writing attempts.
+Zoom in to tell quarter kilos apart (`26.25` vs `26.75`). A grey globe means unknown country. Ask for truncated names. Printed placings can disagree with totals; reconcile bests against the total, since the importer computes placing.
 
 ## Third-party aggregators
 
-Use official organiser or federation results as extraction sources. Third-party rankings sites, including Official Streetlifting, Streetliftings, and Calibase, can cross-check the extraction but do not replace official evidence.
-
-If only an aggregator is available, ask for official results or offer to draft a request to the organiser. Sending that request requires the user's instruction.
-
-Check for omitted attempts or nationalities, placeholder zero bodyweights and RIS scores, best-only summaries, and failed maxima presented as successful lifts. Inspect the HTML when an aggregator's JSON omits fields. Report disagreements against the official source; keep aggregator-only values out of the canonical files.
+Official Streetlifting, Streetliftings, Calibase and similar sites only cross-check. When nothing official exists, ask the user for official results or offer to draft a request to the organiser, sent only on their say. Watch for missing attempts or countries, placeholder zero bodyweights and RIS, best-only summaries, and failed maxima shown as successes; inspect the HTML when the JSON omits fields.
