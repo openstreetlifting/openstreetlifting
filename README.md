@@ -10,9 +10,6 @@ OpenStreetlifting is an **open**, **collaborative** project building a **permane
 
 If you want to contribute data, or want to learn more about the project, please read the [book](https://docs.openstreetlifting.org)
 
-AI has read-write permissions, read more at [0rwx.com](https://0rwx.com/)
-![./images/AI-W-dark.png]
-
 ## Run locally
 
 If you have Docker, [rustup](https://rustup.rs), Node and pnpm 12.
@@ -48,6 +45,12 @@ Sample attribution text:
 > This page uses data from the OpenStreetlifting project, <https://openstreetlifting.org>
 
 The [Licensing chapter](https://docs.openstreetlifting.org/LICENSING.html) covers third-party material and data contribution terms.
+
+## AI Policy
+
+<img src="./images/AI-W-dark.png" alt="OpenStreetlifting" wdith="64" height="64">
+
+AI has read-write permissions, read more at [0rwx.com](https://0rwx.com/)
 
 ## Releases
 
