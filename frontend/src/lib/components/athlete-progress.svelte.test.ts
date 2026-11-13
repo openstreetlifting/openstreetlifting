@@ -26,7 +26,7 @@ const competitions: AthleteCompetitionSummary[] = [
     ris_source: 'computed',
     status: 'competed',
     event: 'MPDS',
-    lifts: [{ movement_name: 'Muscle-up', best_weight: '0', attempts: [] }],
+    lifts: [{ movement_name: 'Muscle-up', best_weight: '0', record: null, attempts: [] }],
   },
   {
     competition_id: 'second',
@@ -41,7 +41,7 @@ const competitions: AthleteCompetitionSummary[] = [
     ris_source: 'reported',
     status: 'competed',
     event: 'MPDS',
-    lifts: [{ movement_name: 'Muscle-up', best_weight: '10', attempts: [] }],
+    lifts: [{ movement_name: 'Muscle-up', best_weight: '10', record: null, attempts: [] }],
   },
 ];
 
@@ -100,13 +100,20 @@ it('shows a single result as a milestone and handles a missing metric', async ()
 it('keeps one metric selector and always plots MPDS results', async () => {
   const all4: AthleteCompetitionSummary[] = competitions.map((competition, index) => ({
     ...competition,
-    lifts: [{ movement_name: 'Pull-up', best_weight: String((index + 1) * 10), attempts: [] }],
+    lifts: [
+      {
+        movement_name: 'Pull-up',
+        best_weight: String((index + 1) * 10),
+        record: null,
+        attempts: [],
+      },
+    ],
   }));
   const shorter: AthleteCompetitionSummary = {
     ...competitions[1],
     competition_id: 'shorter',
     event: 'PD',
-    lifts: [{ movement_name: 'Pull-up', best_weight: '30', attempts: [] }],
+    lifts: [{ movement_name: 'Pull-up', best_weight: '30', record: null, attempts: [] }],
   };
   render(AthleteProgress, { competitions: [...all4, shorter] });
   expect(page.getByRole('combobox').elements()).toHaveLength(1);

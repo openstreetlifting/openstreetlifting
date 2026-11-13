@@ -73,3 +73,15 @@ export const SORTED_COLUMN = 'bg-surface-selected text-ink';
  * ends up with two different left edges.
  */
 export const EDGE_TO_EDGE = '-mx-gutter sm:mx-0';
+
+export const RECORD_MARK = 'ml-0.5 align-super text-[0.7em] leading-none font-semibold';
+export const RECORD_BADGE =
+  'ml-auto -my-0.5 inline-flex size-9 shrink-0 items-center justify-center self-center rounded-full border-2 font-mono text-meta leading-none font-bold';
+export const RECORD_TONE = {
+  WR: 'text-record-world border-record-world',
+  NR: 'text-record-national border-record-national',
+} as const;
+export const RECORD_TITLE = {
+  WR: 'Current world record in this weight class',
+  NR: 'Current national record in this weight class',
+} as const;

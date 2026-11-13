@@ -204,6 +204,7 @@ fn preserves_zero_and_null_ranking_values() {
             name: "Test federation".into(),
             abbreviation: None,
         },
+        records: Vec::new(),
     };
     let body = serde_json::to_value(response).unwrap();
     for field in [

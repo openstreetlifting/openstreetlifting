@@ -7,7 +7,9 @@ use osl_db::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
     federation::FederationRow,
 };
-use osl_domain::{AthleteStatus, CompetitionStatus, Gender, Movement, RisSource, WeightClass};
+use osl_domain::{
+    AthleteStatus, CompetitionStatus, Gender, Movement, RecordMark, RisSource, WeightClass,
+};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -142,6 +144,9 @@ pub struct LiftDetail {
     pub movement_name: Movement,
     #[schema(required = true)]
     pub best_weight: Option<rust_decimal::Decimal>,
+    /// `WR` or `NR` when this lift is the current world or national record for its weight class.
+    #[schema(required = true)]
+    pub record: Option<RecordMark>,
     pub attempts: Vec<AttemptInfo>,
 }
 
@@ -258,6 +263,7 @@ impl From<DbLiftDetail> for LiftDetail {
         Self {
             movement_name: lift.movement_name,
             best_weight: lift.best_weight,
+            record: lift.record,
             attempts: lift.attempts.into_iter().map(Into::into).collect(),
         }
     }

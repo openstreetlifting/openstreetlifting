@@ -1,4 +1,4 @@
-use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
+use osl_domain::{AthleteStatus, Gender, Movement, RecordMark, RisSource};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
@@ -73,6 +73,7 @@ pub struct ParticipantDetail {
 pub struct LiftDetail {
     pub movement_name: Movement,
     pub best_weight: Option<Decimal>,
+    pub record: Option<RecordMark>,
     pub attempts: Vec<AttemptSummary>,
 }
 

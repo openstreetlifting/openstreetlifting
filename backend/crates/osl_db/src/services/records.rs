@@ -53,8 +53,30 @@ const PROGRESSIONS: &str = r"
     WHERE previous_best IS NULL OR weight > previous_best
 ";
 
+const MARKS: &str = r"
+    WITH ranked AS (
+        SELECT r.participant_id, r.movement_name, r.weight_class_id, a.country,
+               ROW_NUMBER() OVER (
+                   PARTITION BY r.movement_name, r.weight_class_id
+                   ORDER BY r.weight DESC, r.date, a.last_name, a.first_name, a.athlete_id
+               ) AS world_rank,
+               ROW_NUMBER() OVER (
+                   PARTITION BY r.movement_name, r.weight_class_id, a.country
+                   ORDER BY r.weight DESC, r.date, a.last_name, a.first_name, a.athlete_id
+               ) AS national_rank
+        FROM records r
+        JOIN athletes a ON a.athlete_id = r.athlete_id
+        JOIN weight_classes wc ON wc.weight_class_id = r.weight_class_id
+        WHERE wc.slug IS NOT NULL
+    )
+    INSERT INTO record_marks (participant_id, movement_name, mark)
+    SELECT participant_id, movement_name, CASE WHEN world_rank = 1 THEN 'WR' ELSE 'NR' END
+    FROM ranked
+    WHERE world_rank = 1 OR (national_rank = 1 AND country IS NOT NULL)
+";
+
 pub async fn refresh(tx: &mut Transaction<'_, Postgres>) -> Result<()> {
-    sqlx::query("TRUNCATE records, record_progressions")
+    sqlx::query("TRUNCATE records, record_progressions, record_marks")
         .execute(&mut **tx)
         .await?;
     for statement in [RESULTS_INSERT, PROGRESSIONS] {
@@ -62,6 +84,7 @@ pub async fn refresh(tx: &mut Transaction<'_, Postgres>) -> Result<()> {
         query.push(statement);
         query.build().execute(&mut **tx).await?;
     }
+    sqlx::query(MARKS).execute(&mut **tx).await?;
 
     Ok(())
 }

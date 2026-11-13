@@ -32,6 +32,7 @@ text_enum!(
     crate::CompetitionStatus,
     crate::Gender,
     crate::Movement,
+    crate::RecordMark,
     crate::RisSource,
     crate::Scoring,
 );

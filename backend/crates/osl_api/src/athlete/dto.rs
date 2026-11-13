@@ -5,7 +5,7 @@ use osl_db::projections::athlete::{
 };
 use osl_db::projections::ranking::{AthleteMetricStandingRow, AthleteNeighborRow};
 use osl_db::rows::athlete::AthleteRow;
-use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
+use osl_domain::{AthleteStatus, Gender, Movement, RecordMark, RisSource};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -273,6 +273,9 @@ pub struct AthleteLift {
     pub movement_name: Movement,
     #[schema(required = true)]
     pub best_weight: Option<rust_decimal::Decimal>,
+    /// `WR` or `NR` when this lift is the current world or national record for its weight class.
+    #[schema(required = true)]
+    pub record: Option<RecordMark>,
     pub attempts: Vec<AttemptInfo>,
 }
 
@@ -304,6 +307,9 @@ pub struct AthleteCompetitionSummary {
 pub struct PersonalRecord {
     pub movement_name: Movement,
     pub max_weight: rust_decimal::Decimal,
+    /// `WR` or `NR` when this best is the current world or national record for its weight class.
+    #[schema(required = true)]
+    pub record: Option<RecordMark>,
     pub competition_name: String,
     pub competition_slug: String,
     #[schema(required = true)]
@@ -363,6 +369,7 @@ impl From<AthleteLiftRow> for AthleteLift {
         Self {
             movement_name: row.movement_name,
             best_weight: row.best_weight,
+            record: row.record,
             attempts: row.attempts.into_iter().map(AttemptInfo::from).collect(),
         }
     }
@@ -373,6 +380,7 @@ impl From<PersonalRecordRow> for PersonalRecord {
         Self {
             movement_name: row.movement_name,
             max_weight: row.max_weight,
+            record: row.record,
             competition_name: row.competition_name,
             competition_slug: row.competition_slug,
             date: row.date,
