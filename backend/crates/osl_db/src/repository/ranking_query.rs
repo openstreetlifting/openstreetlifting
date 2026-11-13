@@ -87,6 +87,11 @@ pub(crate) fn movement_weights(filter: Option<&RankingFilter>) -> QueryBuilder<P
             query.push_bind(federation);
         }
 
+        if let Some(ref series) = filter.series {
+            query.push(" AND c.series = ");
+            query.push_bind(series);
+        }
+
         match filter.category {
             Some(WeightClass::UpTo(max)) => {
                 query.push(" AND wc.max_kg = ");

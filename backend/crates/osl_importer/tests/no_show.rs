@@ -58,6 +58,7 @@ async fn ranks_only_competed_participants(pool: PgPool) {
             gender: None,
             country: None,
             federation: None,
+            series: None,
             name: None,
             movement: RankingMovement::Total,
             direction: SortDirection::Desc,

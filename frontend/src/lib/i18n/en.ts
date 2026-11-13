@@ -71,6 +71,8 @@ export const messages = [
   'Streetlifting rankings',
   'Search an athlete',
   'All Countries',
+  'Series',
+  'All Series',
   'All Federations',
   'All Years',
   'Year',

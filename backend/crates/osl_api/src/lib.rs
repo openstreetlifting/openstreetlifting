@@ -59,6 +59,7 @@ impl AppState {
         ranking::handler::list_ranking_classes,
         ranking::handler::list_ranking_countries,
         ranking::handler::list_ranking_federations,
+        ranking::handler::list_ranking_series,
         ranking::handler::list_ranking_years,
         records::handler::list_records,
         ris::handlers::list_ris_formulas,

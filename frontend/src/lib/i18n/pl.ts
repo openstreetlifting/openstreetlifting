@@ -87,6 +87,8 @@ export default {
   'Streetlifting rankings': 'Rankingi streetliftingu',
   'Search an athlete': 'Szukaj zawodnika',
   'All Countries': 'Wszystkie kraje',
+  Series: 'Cykl',
+  'All Series': 'Wszystkie cykle',
   'All Federations': 'Wszystkie federacje',
   'All Years': 'Wszystkie lata',
   Year: 'Rok',

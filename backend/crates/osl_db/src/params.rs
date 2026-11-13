@@ -88,6 +88,7 @@ pub struct RankingFilter {
     pub gender: Option<Gender>,
     pub country: Option<String>,
     pub federation: Option<String>,
+    pub series: Option<String>,
     pub name: Option<String>,
     pub movement: RankingMovement,
     pub direction: SortDirection,

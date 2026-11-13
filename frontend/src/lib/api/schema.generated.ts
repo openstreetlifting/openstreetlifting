@@ -191,6 +191,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/rankings/series': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['list_ranking_series'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/rankings/years': {
     parameters: {
       query?: never;
@@ -604,6 +620,11 @@ export interface components {
       name: string;
     };
     RankingMetric: 'muscleup' | 'pullup' | 'dips' | 'squat' | 'total' | 'ris';
+    RankingSeries: {
+      federation: string;
+      name: string;
+      series: string;
+    };
     RecordAthlete: {
       country: string | null;
       first_name: string;
@@ -885,6 +906,7 @@ export interface operations {
         gender?: components['schemas']['RankedGender'] | null;
         country?: string | null;
         federation?: string | null;
+        series?: string | null;
         q?: string | null;
         movement?: components['schemas']['RankingMetric'];
         direction?: components['schemas']['Direction'];
@@ -973,6 +995,25 @@ export interface operations {
         };
         content: {
           'application/json': string[];
+        };
+      };
+    };
+  };
+  list_ranking_series: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['RankingSeries'][];
         };
       };
     };

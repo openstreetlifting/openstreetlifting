@@ -434,6 +434,17 @@
             }
           },
           {
+            "name": "series",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
             "name": "q",
             "in": "query",
             "required": false,
@@ -628,6 +639,29 @@
                   "type": "array",
                   "items": {
                     "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rankings/series": {
+      "get": {
+        "tags": [
+          "rankings"
+        ],
+        "operationId": "list_ranking_series",
+        "responses": {
+          "200": {
+            "description": "Competition series with results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RankingSeries"
                   }
                 }
               }
@@ -2588,6 +2622,25 @@
           "total",
           "ris"
         ]
+      },
+      "RankingSeries": {
+        "type": "object",
+        "required": [
+          "series",
+          "name",
+          "federation"
+        ],
+        "properties": {
+          "federation": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "series": {
+            "type": "string"
+          }
+        }
       },
       "RecordAthlete": {
         "type": "object",

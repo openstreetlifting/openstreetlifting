@@ -323,6 +323,30 @@ impl<'a> RankingRepository<'a> {
         Ok(federations)
     }
 
+    pub async fn list_distinct_series(&self) -> Result<Vec<(String, String, String)>> {
+        // Use the latest edition's name and organizer; only offer series with results.
+        Ok(sqlx::query_as(
+            r"
+            SELECT series, name, federation FROM (
+                SELECT DISTINCT ON (c.series)
+                    c.series, c.name, f.name AS federation
+                FROM competitions c
+                JOIN federations f USING (federation_id)
+                WHERE c.series IS NOT NULL AND EXISTS (
+                    SELECT 1 FROM competition_participants cp
+                    WHERE cp.competition_id = c.competition_id AND cp.status = 'competed'
+                      AND (cp.total IS NOT NULL OR cp.ris_score IS NOT NULL OR EXISTS (
+                          SELECT 1 FROM lifts l WHERE l.participant_id = cp.participant_id
+                      ))
+                )
+                ORDER BY c.series, c.start_date DESC NULLS LAST, c.slug
+            ) available ORDER BY federation, name, series
+            ",
+        )
+        .fetch_all(self.pool)
+        .await?)
+    }
+
     #[tracing::instrument(name = "repository.ranking.list_distinct_years", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
         let years: Vec<i32> = sqlx::query_scalar(

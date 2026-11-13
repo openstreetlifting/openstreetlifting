@@ -9,6 +9,7 @@ export const GET: RequestHandler = async ({ url }) => {
     direction: url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc',
     gender: asRankedGender(url.searchParams.get('gender')),
     country: url.searchParams.get('country') ?? null,
+    series: url.searchParams.get('series') ?? null,
     q: url.searchParams.get('q') ?? null,
     category: url.searchParams.get('category') ?? null,
     year: Number(url.searchParams.get('year')) || null,
