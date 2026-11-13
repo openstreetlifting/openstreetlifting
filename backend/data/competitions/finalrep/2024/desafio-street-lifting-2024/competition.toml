@@ -1,0 +1,21 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+    "https://final-rep.com/?p=4663",
+]
+
+[competition]
+name = "Desafío Street Lifting"
+series = "desafio-street-lifting"
+start_date = "2024-07-13"
+end_date = "2024-07-14"
+city = "Caracas"
+venue = "Plaza Las Américas"
+country = "VE"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "FinalRep"
+country = "DE"
