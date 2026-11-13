@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+    "https://final-rep.com/?p=8189",
+]
+
+[competition]
+name = "ASIAS"
+series = "finalrep-asias"
+start_date = "2026-11-07"
+city = "Singapore"
+country = "SG"
+status = "completed"
+
+[federation]
+name = "FinalRep"
+country = "DE"
