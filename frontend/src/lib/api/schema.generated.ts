@@ -239,6 +239,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/records/years': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['list_record_years'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/ris/calculations': {
     parameters: {
       query?: never;
@@ -1044,6 +1060,8 @@ export interface operations {
         gender?: components['schemas']['RecordGender'] | null;
         weight_class?: string | null;
         country?: string | null;
+        federation?: string | null;
+        year?: number | null;
         limit?: number | null;
       };
       header?: never;
@@ -1065,6 +1083,25 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  list_record_years: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number[];
+        };
       };
     };
   };

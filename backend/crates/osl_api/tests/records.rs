@@ -160,3 +160,34 @@ async fn rejects_invalid_parameters(pool: PgPool) {
         assert_eq!(status, StatusCode::BAD_REQUEST, "{uri}");
     }
 }
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn filters_by_federation_and_year(pool: PgPool) {
+    a_meet(&pool).await;
+
+    let (status, known) = get(
+        &pool,
+        "/api/v1/records?federation=Test%20Federation&year=2026",
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(known.as_array().unwrap().len(), 12);
+
+    for uri in [
+        "/api/v1/records?federation=Elsewhere",
+        "/api/v1/records?year=2020",
+    ] {
+        let (_, body) = get(&pool, uri).await;
+        assert_eq!(body, json!([]), "{uri}");
+    }
+
+    let mut upcoming = common::announcement("next-year");
+    upcoming.competition.start_date = chrono::NaiveDate::from_ymd_opt(2027, 6, 1).unwrap();
+    upcoming.competition.end_date = upcoming.competition.start_date;
+    common::import(&pool, upcoming).await;
+    let (_, years) = get(&pool, "/api/v1/records/years").await;
+    assert_eq!(years, json!([2026]), "an upcoming meet has no lifts yet");
+
+    let (status, _) = get(&pool, "/api/v1/records?year=soon").await;
+    assert_eq!(status, StatusCode::BAD_REQUEST);
+}

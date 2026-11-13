@@ -756,6 +756,31 @@
             }
           },
           {
+            "name": "federation",
+            "in": "query",
+            "description": "A federation name, as listed by `/api/v1/competitions/federations`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "description": "Only lifts from competitions held in this year.",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int32"
+            }
+          },
+          {
             "name": "limit",
             "in": "query",
             "description": "Entries per group, from 1 to 50. Defaults to 3.",
@@ -785,6 +810,30 @@
           },
           "400": {
             "description": "Invalid query parameters"
+          }
+        }
+      }
+    },
+    "/api/v1/records/years": {
+      "get": {
+        "tags": [
+          "records"
+        ],
+        "operationId": "list_record_years",
+        "responses": {
+          "200": {
+            "description": "Years with at least one recorded lift, most recent first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              }
+            }
           }
         }
       }
