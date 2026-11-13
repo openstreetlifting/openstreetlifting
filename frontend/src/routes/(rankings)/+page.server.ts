@@ -13,6 +13,7 @@ export const load: PageServerLoad = async ({ url }) => {
     const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
     const country = url.searchParams.get('country') || null;
     const federation = url.searchParams.get('federation') || null;
+    const series = url.searchParams.get('series') || null;
     const q = url.searchParams.get('q') || null;
     const category = url.searchParams.get('category') || null;
     const year = Number(url.searchParams.get('year')) || null;
@@ -26,6 +27,7 @@ export const load: PageServerLoad = async ({ url }) => {
       gender,
       country,
       federation,
+      series,
       category,
       year,
       q,

@@ -2,7 +2,7 @@ Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Reporte
 M,66,Elian,Alkinani,,SE,,,368,competed,,,,,17.5,,,,70,,,,103,,,,177.5
 M,73,Sean,Gaitan,,SE,,,,disqualified,Did not make weight,,,,,,,,62.5,,,,75,,,,200
 M,73,Johan,Kang,,SE,,,355,competed,,,,,12.5,,,,65,,,,107.5,,,,170
-M,73,Simon,Käreswed,,SE,,,305,competed,,,,,10,,,,57.5,,,,72.5,,,,165
+M,73,Simon,Kåreswed,,SE,,,305,competed,,,,,10,,,,57.5,,,,72.5,,,,165
 M,73,Fredrik,Semskar,,FI,,,,disqualified,Bombed the muscle-up,,,,,,,,72.5,,,,75,,,,150
 M,73,Fabian,Söderson,,SE,,,,disqualified,Bombed the muscle-up and squat,,,,,,,,45,,,,62.5,,,,
 M,80,Wilmer,Gimbringer,,SE,,,301.25,competed,,,,,5,,,,61.25,,,,70,,,,165
@@ -11,7 +11,7 @@ M,80,Peter,Tolstrup,,NO,,,450,competed,,,,,30,,,,80,,,,150,,,,190
 M,80,Harry,Twister,,BA,,,,disqualified,Bombed the squat,,,,25,,,,65,,,,90,,,,
 M,87,Alfred,Ek,,SE,,,308.5,competed,,,,,1,,,,55,,,,85,,,,167.5
 M,87,Zack,Viberg,,SE,,,,disqualified,Bombed the muscle-up,,,,,,,,95,,,,110,,,,155
-M,94,Miles Clarke,Bolin,,SE,,,,disqualified,Bombed the muscle-up,,,,,,,,52.5,,,,95,,,,165
+M,94,Miles,Clarke Bolin,,SE,,,,disqualified,Bombed the muscle-up,,,,,,,,52.5,,,,95,,,,165
 M,94,Albin,Estève Gordan,,SE,,,380,competed,,,,,5,,,,70,,,,110,,,,195
 F,52,Linnea,Stenson,,SE,,,112.5,competed,,,,,7.5,,,,25,,,,25,,,,55
 F,57,Isa,Ahlgren,,SE,,,,disqualified,Bombed the dips,,,,,,,,27.5,,,,,,,,90
@@ -28,4 +28,4 @@ F,63,Ina,Vestin,,SE,,,185,competed,,,,,7.5,,,,32.5,,,,42.5,,,,102.5
 F,70,Camilla,Björkgren,,SE,,,,competed,,,,,,,,,27,,,,37.5,,,,115
 F,70,Sophie,Dehn,,DK,,,,competed,,,,,,,,,35,,,,37.5,,,,110
 F,70,Märta,Paulsson,,SE,,,208.75,competed,,,,,5,,,,35,,,,46.25,,,,122.5
-F,70,Ellen B.,Åkesson,,SE,,,226.25,competed,,,,,5,,,,33.75,,,,27.5,,,,160
+F,70,Ellen B,Åkesson,,SE,,,226.25,competed,,,,,5,,,,33.75,,,,27.5,,,,160

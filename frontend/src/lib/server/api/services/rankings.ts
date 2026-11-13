@@ -3,6 +3,9 @@ import type { RankingFilters } from '#lib/types/ranking.js';
 import type { Gender } from '#lib/types/enums.js';
 
 export const rankingsService = {
+  getRankingSeries() {
+    return apiData(apiClient.GET('/api/v1/rankings/series'));
+  },
   getGlobalRankings(query: RankingFilters) {
     return apiData(apiClient.GET('/api/v1/rankings', { params: { query } }));
   },

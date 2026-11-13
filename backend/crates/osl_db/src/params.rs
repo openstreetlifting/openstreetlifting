@@ -88,6 +88,7 @@ pub struct RankingFilter {
     pub gender: Option<Gender>,
     pub country: Option<String>,
     pub federation: Option<String>,
+    pub series: Option<String>,
     pub name: Option<String>,
     pub movement: RankingMovement,
     pub direction: SortDirection,
@@ -108,4 +109,19 @@ pub struct CompetitionFilter {
     pub year: Option<i32>,
     pub search: Option<String>,
     pub direction: SortDirection,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum RecordClass {
+    Open,
+    Slug(String),
+}
+
+#[derive(Debug, Clone)]
+pub struct RecordsFilter {
+    pub movement: Option<osl_domain::Movement>,
+    pub gender: Option<Gender>,
+    pub weight_class: Option<RecordClass>,
+    pub country: Option<String>,
+    pub limit: i64,
 }

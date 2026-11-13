@@ -15,6 +15,25 @@ const url = (path: string) => new URL(path, 'http://localhost');
 
 beforeEach(() => vi.resetAllMocks());
 
+it('preserves series across paging and filter changes, restores navigation, and clears it', async () => {
+  const table = new RankingsTable({
+    basePath: '/',
+    includeSeries: true,
+    initialUrl: url('/?series=sdm&country=DE&page=3'),
+  });
+  expect(table.seriesFilter).toBe('sdm');
+  expect(table.pageHref(4)).toBe('/?country=DE&series=sdm&page=4');
+  table.seriesFilter = 'wdm';
+  await table.handleFilterChange();
+  expect(goto).toHaveBeenLastCalledWith('/?country=DE&series=wdm', expect.anything());
+  table.syncFromUrl(url('/?series=sdm'), 'popstate');
+  expect(table.seriesFilter).toBe('sdm');
+  expect(table.narrowed).toBe(true);
+  await table.clearFilters();
+  expect(table.seriesFilter).toBeNull();
+  expect(goto).toHaveBeenLastCalledWith('/', expect.anything());
+});
+
 it('keeps newer typing when a slow search completes, then applies the newer query', async () => {
   const search = new ListingSearch(url('/'));
   let finish!: () => void;

@@ -15,6 +15,7 @@ async fn board(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
         gender: None,
         country: None,
         federation: None,
+        series: None,
         name: None,
         movement,
         direction: SortDirection::Desc,
