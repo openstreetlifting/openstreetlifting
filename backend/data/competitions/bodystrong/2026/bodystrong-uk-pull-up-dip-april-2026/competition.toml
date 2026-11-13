@@ -1,0 +1,18 @@
+event = "PD"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Pull Up & Dip April"
+start_date = "2026-04-11"
+city = "Basingstoke"
+region = "England"
+country = "GB"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "Bodystrong"
+country = "GB"
