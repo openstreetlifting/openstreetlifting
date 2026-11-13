@@ -8,7 +8,7 @@ use super::ranking_query::{
     push_ranking_pool, same_class,
 };
 use crate::error::Result;
-use crate::params::RankingFilter;
+use crate::params::{RankingFilter, RankingMovement};
 use crate::projections::ranking::{AthleteMetricStandingRow, AthleteNeighborRow, RankingRow};
 
 pub struct RankingRepository<'a> {
@@ -58,6 +58,9 @@ impl<'a> RankingRepository<'a> {
         query.push(sort_column);
         query.push(" ");
         query.push(filter.direction.as_sql());
+        if filter.movement == RankingMovement::Total {
+            query.push(", bodyweight ASC NULLS LAST");
+        }
         query.push(", athlete_id, participant_id) as rank FROM ranking_pool ) ");
         query.push(" SELECT * FROM ranked_movements ");
         push_name_match(&mut query, filter);

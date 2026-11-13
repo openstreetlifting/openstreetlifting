@@ -152,7 +152,11 @@ pub(crate) fn push_ranking_pool(query: &mut QueryBuilder<Postgres>, filter: &Ran
 
     query.push(" , ranking_pool AS ( SELECT DISTINCT ON (athlete_id) * FROM eligible ORDER BY athlete_id, ");
     query.push(filter.movement.as_column());
-    query.push(" DESC NULLS LAST, start_date DESC, participant_id ) ");
+    query.push(" DESC NULLS LAST");
+    if filter.movement == RankingMovement::Total {
+        query.push(", bodyweight ASC NULLS LAST");
+    }
+    query.push(", start_date DESC, participant_id ) ");
 }
 
 pub(crate) fn push_name_match(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
