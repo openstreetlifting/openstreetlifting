@@ -5,7 +5,7 @@ pages. An athlete can appear here without having visited the site or submitted
 data. The [privacy notice](https://openstreetlifting.org/privacy) identifies the
 controller, explains the purposes of processing, and sets out your GDPR rights.
 
-## What the archive holds
+## What we holds
 
 Results come from federations, organisers, competition platforms, public posts,
 and contributors. They can include names in Latin and original scripts, sex
