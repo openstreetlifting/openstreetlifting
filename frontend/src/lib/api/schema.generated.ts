@@ -223,6 +223,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/records': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['list_records'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/ris/calculations': {
     parameters: {
       query?: never;
@@ -609,6 +625,31 @@ export interface components {
       name: string;
       series: string;
     };
+    RecordAthlete: {
+      country: string | null;
+      first_name: string;
+      last_name: string;
+      slug: string;
+    };
+    RecordCompetition: {
+      name: string;
+      slug: string;
+    };
+    RecordEntry: {
+      athlete: components['schemas']['RecordAthlete'];
+      competition: components['schemas']['RecordCompetition'];
+      date: string;
+      rank: number;
+      weight: string;
+    };
+    RecordGender: 'M' | 'F';
+    RecordGroup: {
+      entries: components['schemas']['RecordEntry'][];
+      gender: components['schemas']['RecordGender'];
+      movement: components['schemas']['RecordMovement'];
+      weight_class: string | null;
+    };
+    RecordMovement: 'muscleup' | 'pullup' | 'dips' | 'squat';
     RisConstants: {
       men: components['schemas']['GenderConstants'];
       women: components['schemas']['GenderConstants'];
@@ -996,6 +1037,37 @@ export interface operations {
       };
     };
   };
+  list_records: {
+    parameters: {
+      query?: {
+        movement?: components['schemas']['RecordMovement'] | null;
+        gender?: components['schemas']['RecordGender'] | null;
+        weight_class?: string | null;
+        country?: string | null;
+        limit?: number | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['RecordGroup'][];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   calculate_ris: {
     parameters: {
       query?: never;
@@ -1122,6 +1194,12 @@ export const rankedGenderValues: ReadonlyArray<
 export const rankingMetricValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RankingMetric']
 > = ['muscleup', 'pullup', 'dips', 'squat', 'total', 'ris'];
+export const recordGenderValues: ReadonlyArray<
+  FlattenedDeepRequired<components>['schemas']['RecordGender']
+> = ['M', 'F'];
+export const recordMovementValues: ReadonlyArray<
+  FlattenedDeepRequired<components>['schemas']['RecordMovement']
+> = ['muscleup', 'pullup', 'dips', 'squat'];
 export const risSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RisSource']
 > = ['computed', 'reported'];

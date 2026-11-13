@@ -308,3 +308,26 @@ it('keeps global rankings and history when country is not recorded', async () =>
     .element(page.getByText('Country needed for national ranking', { exact: true }))
     .toBeVisible();
 });
+
+it('drops the performance section when neither chart has data', async () => {
+  const lifter = athlete();
+  lifter.total_competitions = 1;
+  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
+  expect(page.getByRole('heading', { name: 'Performance', level: 2 }).elements()).toHaveLength(0);
+  expect(
+    page
+      .getByText('A completed competition with all four lifts is needed to show lift balance.')
+      .elements()
+  ).toHaveLength(0);
+});
+
+it('shows lift balance alone after a single competition', async () => {
+  const lifter = athlete();
+  lifter.total_competitions = 1;
+  lifter.lift_balance = balance('Elite Men -80kg');
+  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  await expect.element(page.getByRole('heading', { name: 'Performance', level: 2 })).toBeVisible();
+  await expect.element(page.getByText('Lift balance', { exact: true })).toBeVisible();
+  expect(page.getByText('Performance over time', { exact: true }).elements()).toHaveLength(0);
+});

@@ -86,6 +86,7 @@ impl<'a> CanonicalTransformer<'a> {
             crate::sync::SyncPlan::default()
         };
         osl_db::services::athlete_standings::refresh(&mut tx).await?;
+        osl_db::services::records::refresh(&mut tx).await?;
         tx.commit().await?;
         Ok(plan)
     }
