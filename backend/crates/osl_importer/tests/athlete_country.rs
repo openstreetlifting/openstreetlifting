@@ -301,13 +301,14 @@ async fn preserves_results_and_links_when_merging_athletes(pool: PgPool) {
         .bind(removed).execute(&pool).await.unwrap();
     sqlx::query("INSERT INTO athlete_socials (athlete_id, social_id, handle) SELECT $1, social_id, 'tony' FROM socials WHERE name = 'instagram'")
         .bind(removed).execute(&pool).await.unwrap();
-    sqlx::query("INSERT INTO records (record_type, athlete_id, competition_id, weight_class_id, movement_name, date_set, weight, gender) SELECT 'world', athlete_id, competition_id, weight_class_id, 'Squat', '2026-01-01', 130, 'M' FROM competition_participants WHERE athlete_id = $1")
-        .bind(removed).execute(&pool).await.unwrap();
+    sqlx::query("TRUNCATE records, record_progressions")
+        .execute(&pool)
+        .await
+        .unwrap();
     let snapshot_queries = [
         "SELECT jsonb_agg(to_jsonb(t) - 'athlete_id' - 'country' ORDER BY participant_id)::text FROM competition_participants t",
         "SELECT jsonb_agg(to_jsonb(t) ORDER BY lift_id)::text FROM lifts t",
         "SELECT jsonb_agg(to_jsonb(t) ORDER BY attempt_id)::text FROM attempts t",
-        "SELECT jsonb_agg(to_jsonb(t) - 'athlete_id' ORDER BY record_id)::text FROM records t",
         "SELECT jsonb_agg(to_jsonb(t) - 'athlete_id' ORDER BY athlete_social_id)::text FROM athlete_socials t",
     ];
     let mut snapshots = Vec::new();
@@ -334,7 +335,6 @@ async fn preserves_results_and_links_when_merging_athletes(pool: PgPool) {
     }
     for query in [
         "SELECT DISTINCT athlete_id FROM competition_participants",
-        "SELECT DISTINCT athlete_id FROM records",
         "SELECT DISTINCT athlete_id FROM athlete_socials",
     ] {
         let ids: Vec<Uuid> = sqlx::query_scalar(query).fetch_all(&pool).await.unwrap();

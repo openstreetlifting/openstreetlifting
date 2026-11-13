@@ -300,6 +300,7 @@ async fn handle_recompute_standings(database_url: &str, dry_run: bool) -> Result
 
     let mut tx = pool.begin().await.context("starting transaction")?;
     osl_db::services::athlete_standings::refresh(&mut tx).await?;
+    osl_db::services::records::refresh(&mut tx).await?;
     tx.commit()
         .await
         .context("committing standings recompute")?;

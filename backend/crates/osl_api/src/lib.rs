@@ -22,6 +22,7 @@ pub mod config;
 pub mod error;
 pub mod health;
 pub mod ranking;
+pub mod records;
 pub mod ris;
 pub mod router;
 pub mod shared;
@@ -59,6 +60,7 @@ impl AppState {
         ranking::handler::list_ranking_countries,
         ranking::handler::list_ranking_federations,
         ranking::handler::list_ranking_years,
+        records::handler::list_records,
         ris::handlers::list_ris_formulas,
         ris::handlers::get_current_formula,
         ris::handlers::calculate_ris,
@@ -95,6 +97,12 @@ impl AppState {
             crate::ranking::dto::AthleteInfo,
             crate::ranking::dto::CompetitionInfo,
             crate::ranking::dto::FederationInfo,
+            crate::records::dto::RecordMovement,
+            crate::records::dto::RecordGender,
+            crate::records::dto::RecordGroup,
+            crate::records::dto::RecordEntry,
+            crate::records::dto::RecordAthlete,
+            crate::records::dto::RecordCompetition,
             crate::ris::dto::RisFormulaResponse,
             crate::ris::dto::RisConstants,
             crate::ris::dto::GenderConstants,
@@ -108,6 +116,7 @@ impl AppState {
         (name = "competitions", description = "Competition endpoints"),
         (name = "athletes", description = "Athlete endpoints"),
         (name = "rankings", description = "Ranking endpoints"),
+        (name = "records", description = "Best results in the OpenStreetlifting archive"),
         (name = "ris", description = "RIS formulas and score computation"),
     ),
 )]
