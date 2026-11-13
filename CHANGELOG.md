@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.65.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.64.0...v0.65.0) (2026-11-13)
+
+
+### Features
+
+* **data:** import Bodystrong Ireland Nationals 2024 ([#957](https://github.com/openstreetlifting/openstreetlifting/issues/957)) ([9c3503d](https://github.com/openstreetlifting/openstreetlifting/commit/9c3503dce8e5be439355f98f21f3f8a6994f2401))
+* **data:** import Bodystrong London Regionals 2025 ([#952](https://github.com/openstreetlifting/openstreetlifting/issues/952)) ([85e6a4e](https://github.com/openstreetlifting/openstreetlifting/commit/85e6a4e66a3582a5e328b5a731f3786813838e44))
+* **data:** import Bodystrong Northern Regionals 2025 ([#954](https://github.com/openstreetlifting/openstreetlifting/issues/954)) ([20c02b1](https://github.com/openstreetlifting/openstreetlifting/commit/20c02b14d1d3234aea85f4ac9d604aeaf1502878))
+* **data:** import Bodystrong Southwest Regionals 2025 ([#953](https://github.com/openstreetlifting/openstreetlifting/issues/953)) ([187bd77](https://github.com/openstreetlifting/openstreetlifting/commit/187bd776f7758f5f5bd29df1863b5a6c75a586de))
+* **data:** import Bodystrong UK Pull Up & Dip April 2026 ([#965](https://github.com/openstreetlifting/openstreetlifting/issues/965)) ([63537a4](https://github.com/openstreetlifting/openstreetlifting/commit/63537a4b4a089b96ef5aaa301fc3954d682c0bc2))
+* **data:** import BSLC Qualifiers 2024 ([#960](https://github.com/openstreetlifting/openstreetlifting/issues/960)) ([1eb1bfe](https://github.com/openstreetlifting/openstreetlifting/commit/1eb1bfee487048fe114942c50cad6a29d2b26d79))
+* **data:** import Chennai Underground Evolution 2026 ([#964](https://github.com/openstreetlifting/openstreetlifting/issues/964)) ([c0b9e44](https://github.com/openstreetlifting/openstreetlifting/commit/c0b9e4451d06c27493890a236912bbd887e0c976))
+* **data:** import Costa Rican Open 2025 ([#950](https://github.com/openstreetlifting/openstreetlifting/issues/950)) ([4238be3](https://github.com/openstreetlifting/openstreetlifting/commit/4238be3f9e042df30745a250b1f733b372d0d70c))
+* **data:** import Desafío Street Lifting 2024 ([#947](https://github.com/openstreetlifting/openstreetlifting/issues/947)) ([cf514a1](https://github.com/openstreetlifting/openstreetlifting/commit/cf514a1dbe0509ea2af5bedf3af3bfedbc9ebc01))
+* **data:** import Desafío Street Lifting 2025 ([#948](https://github.com/openstreetlifting/openstreetlifting/issues/948)) ([1efc546](https://github.com/openstreetlifting/openstreetlifting/commit/1efc5468e1e8204441f0d2a1320187d8cc3baae8))
+* **data:** import FinalRep ASIAS 2026 ([#966](https://github.com/openstreetlifting/openstreetlifting/issues/966)) ([a37da13](https://github.com/openstreetlifting/openstreetlifting/commit/a37da138f7202b57f2d0e2ead52310f955b4d78c))
+* **data:** import Guatemalan Open 2026 ([#970](https://github.com/openstreetlifting/openstreetlifting/issues/970)) ([649ca55](https://github.com/openstreetlifting/openstreetlifting/commit/649ca5544eff38280225dc3b0c065ce6014bb699))
+* **data:** import ISC National Streetlifting Championship 2025 ([#961](https://github.com/openstreetlifting/openstreetlifting/issues/961)) ([c0078c9](https://github.com/openstreetlifting/openstreetlifting/commit/c0078c95153e5a17149d6c61d8ee8f689ffbe6ae))
+* **data:** import Lebanon Streetlifting National Championship 2026 (men) ([#968](https://github.com/openstreetlifting/openstreetlifting/issues/968)) ([8ab2ffa](https://github.com/openstreetlifting/openstreetlifting/commit/8ab2ffaebabed5b9c378ea32b8942c4b798501b2))
+* **data:** import Lebanon Streetlifting National Championship 2026 (women) ([#969](https://github.com/openstreetlifting/openstreetlifting/issues/969)) ([f0678ae](https://github.com/openstreetlifting/openstreetlifting/commit/f0678aee25eedadacbb9299b97723654ec255b29))
+* **data:** import Leipzig Underground Cup 2025 ([#956](https://github.com/openstreetlifting/openstreetlifting/issues/956)) ([406ad3c](https://github.com/openstreetlifting/openstreetlifting/commit/406ad3ca2eee1c63c43044b0779082cc126af320))
+* **data:** import SLI Street 4 2025 ([#963](https://github.com/openstreetlifting/openstreetlifting/issues/963)) ([6f01a2b](https://github.com/openstreetlifting/openstreetlifting/commit/6f01a2b9bf6ec460100467b5ed106dcf3447e33f))
+* **data:** import Strength War 2024 ([#959](https://github.com/openstreetlifting/openstreetlifting/issues/959)) ([f5b655e](https://github.com/openstreetlifting/openstreetlifting/commit/f5b655e93522233ebbe03bbbd00a7f96e727ab2e))
+* **data:** import Underground Bonn 2025 ([#962](https://github.com/openstreetlifting/openstreetlifting/issues/962)) ([73c806c](https://github.com/openstreetlifting/openstreetlifting/commit/73c806c72b6d7ec5f8985cccb420a61bdcac3cbf))
+* **data:** import Underground Brasil 2025 ([#955](https://github.com/openstreetlifting/openstreetlifting/issues/955)) ([a321ee1](https://github.com/openstreetlifting/openstreetlifting/commit/a321ee1f01fb0e9275f7122d2d85db8c9bef3bf0))
+* **data:** import Underground Hamburg 2024 ([#958](https://github.com/openstreetlifting/openstreetlifting/issues/958)) ([d8d5980](https://github.com/openstreetlifting/openstreetlifting/commit/d8d5980434c0a38a5f9cd491ddd51858a6e7bb32))
+* **data:** import Underground Lisboa 2025 ([#951](https://github.com/openstreetlifting/openstreetlifting/issues/951)) ([926b19e](https://github.com/openstreetlifting/openstreetlifting/commit/926b19eb4294ef232fe4df1fe1ca251edc448aef))
+* **data:** import Underground Munich Far From Home 2026 ([#967](https://github.com/openstreetlifting/openstreetlifting/issues/967)) ([7888cc6](https://github.com/openstreetlifting/openstreetlifting/commit/7888cc689994453195dd48be5a8c343a3444b43f))
+* **data:** import USC Italy 2025 ([#949](https://github.com/openstreetlifting/openstreetlifting/issues/949)) ([8d86770](https://github.com/openstreetlifting/openstreetlifting/commit/8d86770e3390fba8239a93d1bdeae8268a11bd4e))
+
 ## [0.64.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.63.1...v0.64.0) (2026-11-13)
 
 
