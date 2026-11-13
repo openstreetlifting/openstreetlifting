@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Underground Brasil"
+start_date = "2025-11-22"
+country = "BR"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "FinalRep"
+country = "DE"
