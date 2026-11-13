@@ -1,0 +1,12 @@
+event = "MPDS"
+sources = ["FinalRep app, /events-api/v1/events/{id}/statistics"]
+
+[competition]
+name = "BSLC Qualifiers"
+start_date = "2024-12-14"
+country = "BE"
+status = "completed"
+
+[federation]
+name = "Streetlifting Belgium"
+country = "BE"
