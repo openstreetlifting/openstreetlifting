@@ -29,8 +29,7 @@ cd backend && cargo run -p osl_importer --bin import -- competitions data/compet
 ## Contribute
 
 - [GitHub issues](https://github.com/openstreetlifting/openstreetlifting/issues)
-
-To contribute competition data, follow the [data contribution guide](https://docs.openstreetlifting.org/CONTRIBUTING_DATA.html).
+- [data contribution guide](https://docs.openstreetlifting.org/CONTRIBUTING_DATA.html).
 
 ## Corrections
 
