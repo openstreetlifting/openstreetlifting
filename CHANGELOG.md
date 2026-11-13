@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.68.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.67.2...v0.68.0) (2026-11-13)
+
+
+### Features
+
+* **api:** filter records by federation and year ([#994](https://github.com/openstreetlifting/openstreetlifting/issues/994)) ([decb5d2](https://github.com/openstreetlifting/openstreetlifting/commit/decb5d2f974fd6c62e17739a1431093230026ecb))
+* **frontend:** add the records page ([#996](https://github.com/openstreetlifting/openstreetlifting/issues/996)) ([7d3af0c](https://github.com/openstreetlifting/openstreetlifting/commit/7d3af0c36716fdf70615da22d7b6e5d2f54f141d))
+* **records:** mark current world and national records ([#993](https://github.com/openstreetlifting/openstreetlifting/issues/993)) ([af16292](https://github.com/openstreetlifting/openstreetlifting/commit/af1629243b943bea8bb3a861945a631d5ac07532))
+
 ## [0.67.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.67.1...v0.67.2) (2026-11-13)
 
 
