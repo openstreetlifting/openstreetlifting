@@ -21,7 +21,6 @@ const countMessages: Record<Locale, CountMessages> = {
   pl: polishCounts,
 };
 
-// Placeholder names are part of the English message's type, including at call sites.
 export type Placeholders<T extends string> = T extends `${string}{${infer Name}}${infer Rest}`
   ? Name | Placeholders<Rest>
   : never;
@@ -49,7 +48,6 @@ export class I18n {
   }
 
   href(path: string): ResolvedPathname {
-    // Localized public URLs are handled by the universal reroute hook.
     return localeHref(path, this.locale) as ResolvedPathname;
   }
 
@@ -84,7 +82,6 @@ export class I18n {
 
 export const I18N_CONTEXT = Symbol('i18n');
 
-/** Create one instance per layout, never a shared mutable server-side locale. */
 export function provideI18n(locale: () => Locale): I18n {
   return setContext(I18N_CONTEXT, new I18n(locale));
 }

@@ -388,6 +388,12 @@ export default {
   '{competition} is scheduled for {date}. Results will appear here once published.':
     '{competition}: geplant für {date}. Die Ergebnisse erscheinen hier, sobald sie veröffentlicht sind.',
   'Page {page} of {pages}.': 'Seite {page} von {pages}.',
+  Records: 'Rekorde',
+  Open: 'Offen',
+  'OpenStreetlifting records': 'OpenStreetlifting-Rekorde',
+  '{country} records': 'Rekorde: {country}',
+  '{movement} records': 'Rekorde im {movement}',
+  'No records for this selection yet.': 'Für diese Auswahl gibt es noch keine Rekorde.',
   Results: 'Ergebnisse',
   'All formats': 'Alle Formate',
   'Competition format: {label}': 'Wettkampfformat: {label}',
