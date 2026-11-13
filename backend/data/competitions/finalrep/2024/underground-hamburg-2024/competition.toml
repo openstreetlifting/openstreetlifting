@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Underground Hamburg"
+start_date = "2024-06-29"
+city = "Hamburg"
+country = "DE"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "FinalRep"
+country = "DE"

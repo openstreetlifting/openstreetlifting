@@ -1,0 +1,15 @@
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,Leif,Foltin,,DE,96.98,86.01,451.25,competed,,recovered,2024,0x,0,5x,0,55,61.25,67.5x,61.25,85,100,115,115,225,230x,275,275
+M,Valerian,Henne,,,,31.8,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,20,27.5,35x,27.5,30,37.5,45x,37.5,80,90,100x,90
+M,Georg,Huhn,,DE,71,45.62,200,competed,,recovered,2024,0,2.5x,2.5x,0,45x,50,55,55,35,45,50,50,95x,95,100x,95
+M,Danijel,Pantic,,RS,63.6,64.99,257.5,competed,,recovered,2024,10,12.5x,12.5,12.5,45,52.5x,52.5x,45,80,90,100x,90,90x,110x,110,110
+M,Raphael,Peetz,,DE,,,,disqualified,Bombed the muscle-up and pull-up and dips and squat,,,0x,0x,0x,,0x,0x,0x,,0x,0x,0x,,20x,20x,20x,
+M,Lukas,Schröder,,DE,89.21,66.88,342.5,competed,,recovered,2024,0,2.5,5,5,47.5,55,60x,55,85,92.5,100,100,182.5,192.5x,200x,182.5
+M,Arvid,Schüler,,DE,96.87,61.96,325,competed,,recovered,2024,0,5,10,10,50,57.5,65,65,80,90,100,100,130,140,150,150
+M,Maximilian,Wolter,,DE,,31.45,,disqualified,Bombed the squat,,,5x,5x,5,5,47.5,55,60x,55,82.5,86.25,90,90,160x,160x,160x,
+M,Marcin,Wysocki,,DE,76.8,50.63,237.5,competed,,recovered,2024,10x,12.5x,12.5,12.5,50,56.25x,56.25x,50,60,75,90x,75,100,115x,115x,100
+F,Sabrina,Fleper,,DE,61.61,75.91,180,competed,,recovered,2024,1.25,3x,5,5,17.5x,20,25,25,35,40,42.5,42.5,100,107.5,112.5x,107.5
+F,Friederike,Hoppe,,DE,78.67,102.41,247.5,competed,,recovered,2024,0,1.25x,1.25x,0,25,31.25,40,40,31.25,37.5,41.25x,37.5,152.5,162.5,170,170
+F,Isabella,Rathgeb,,AT,68.45,73.7,177.5,competed,,recovered,2024,0,3.75,6.25,6.25,20,23.75,26.25,26.25,25,32.5,37.5,37.5,85,100,107.5,107.5
+F,Rieke,Wilkens,,DE,59.29,77.99,182.5,competed,,recovered,2024,0,1.25,2.5x,1.25,20,22.5,25,25,40,45,51.25,51.25,95,105,112.5x,105
+F,Nora,Zinnecker,,DE,67.58,59.22,142.5,competed,,recovered,2024,0x,0,1.25x,0,17.5,20,21.25x,20,17.5,23.75,27.5,27.5,85,95,100x,95
