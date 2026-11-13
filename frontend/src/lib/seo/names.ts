@@ -1,6 +1,3 @@
-import { I18n } from '#lib/i18n/index.js';
-import type { Locale } from '#lib/i18n/locale.js';
-import type { AthleteStanding } from '#lib/types/athlete.js';
 import type { Federation } from '#lib/types/competition.js';
 import { countryName } from '#lib/utils/format.js';
 
@@ -26,47 +23,12 @@ export function competitionSeoName(competition: {
   return `${prefix}${name}${suffix}`;
 }
 
-export function competitionTitle(
-  seoName: string,
-  published: boolean,
-  locale: Locale = 'en'
-): string {
+export function competitionTitle(seoName: string, published: boolean): string {
   const sport = mentions(seoName, SPORT) ? '' : ` ${SPORT}`;
-  const i18n = new I18n(() => locale);
-  return published
-    ? i18n.t('{competition} results', { competition: `${seoName}${sport}` })
-    : i18n.t('{competition} competition', { competition: `${seoName}${sport}` });
+  return `${seoName}${sport} ${published ? 'results' : 'competition'}`;
 }
 
-export function athleteTitle(name: string, country: string | null, locale: Locale = 'en'): string {
-  const i18n = new I18n(() => locale);
-  return i18n.t('{athlete} - Streetlifting results', {
-    athlete: country ? `${name}, ${countryName(country, locale)}` : name,
-  });
-}
-
-export function risStanding(
-  standing: Pick<AthleteStanding, 'ris'> | null | undefined,
-  locale: Locale = 'en'
-): string {
-  const ris = standing?.ris;
-  if (!ris) return '';
-
-  const i18n = new I18n(() => locale);
-  const places = [
-    ...(ris.country
-      ? [
-          i18n.t('#{place} of {field} in {country}', {
-            place: ris.country.place,
-            field: i18n.number(ris.country.field, 0),
-            country: countryName(ris.country.code, locale),
-          }),
-        ]
-      : []),
-    i18n.t('#{place} of {field} worldwide', {
-      place: ris.global.place,
-      field: i18n.number(ris.global.field, 0),
-    }),
-  ];
-  return i18n.t('Ranked {places} by RIS.', { places: places.join(i18n.t(' and ')) });
+export function athleteTitle(name: string, country: string | null): string {
+  const athlete = country ? `${name}, ${countryName(country, 'en')}` : name;
+  return `${athlete} - Streetlifting results`;
 }

@@ -1,4 +1,3 @@
-import { LOCALES } from '#lib/i18n/locale.js';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { athletesService, competitionsService, rankingsService } from '#lib/server/api/index.js';
 import { GET as index } from '../sitemap.xml/+server';
@@ -51,23 +50,20 @@ it('splits pages, published competitions and athletes into their own sitemaps', 
 
   expect(await locs('pages')).toEqual(
     expect.arrayContaining([
-      ...LOCALES.map(
-        (locale) => `<loc>https://openstreetlifting.org/${locale}/federations/finalrep</loc>`
-      ),
-      ...LOCALES.map((locale) => `<loc>https://openstreetlifting.org/${locale}/countries/de</loc>`),
-      ...LOCALES.map((locale) => `<loc>https://openstreetlifting.org/${locale}/countries/fr</loc>`),
+      '<loc>https://openstreetlifting.org/en/federations/finalrep</loc>',
+      '<loc>https://openstreetlifting.org/en/countries/de</loc>',
+      '<loc>https://openstreetlifting.org/en/countries/fr</loc>',
     ])
   );
-  expect(await locs('competitions')).toEqual(
-    LOCALES.map(
-      (locale) => `<loc>https://openstreetlifting.org/${locale}/competitions/worlds-2025</loc>`
-    )
-  );
-  expect(await locs('athletes')).toEqual(
-    LOCALES.map(
-      (locale) => `<loc>https://openstreetlifting.org/${locale}/athletes/aubin-chevillard</loc>`
-    )
-  );
+  expect(await locs('competitions')).toEqual([
+    '<loc>https://openstreetlifting.org/en/competitions/worlds-2025</loc>',
+  ]);
+  const body = await (await GET(request('pages'))).text();
+  expect(body).not.toContain('hreflang');
+  expect(body).not.toContain('/fr/');
+  expect(await locs('athletes')).toEqual([
+    '<loc>https://openstreetlifting.org/en/athletes/aubin-chevillard</loc>',
+  ]);
 });
 
 it('answers an unknown section with a 404', async () => {

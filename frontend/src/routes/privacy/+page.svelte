@@ -16,10 +16,8 @@
   >{/snippet}
 
 <Seo
-  title={i18n.t('Privacy policy')}
-  description={i18n.t(
-    'How OpenStreetlifting uses athlete and visitor data, your GDPR rights, and how to ask for a correction or removal.'
-  )}
+  title="Privacy policy"
+  description="How OpenStreetlifting handles your data."
   canonical={absolute('/privacy')}
 />
 

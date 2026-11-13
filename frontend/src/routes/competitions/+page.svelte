@@ -93,22 +93,11 @@
   }
 
   const seo = $derived(listingSeo(currentPage.url));
-
-  const description = $derived(
-    narrowed || data.status !== 'completed'
-      ? i18n.t(
-          'Streetlifting competition results by federation, country and year, with muscle up, pull up, dips and squat standings for every meet in the archive.'
-        )
-      : i18n.t(
-          'Results from {count} Streetlifting competitions worldwide, with muscle up, pull up, dips and squat standings, plus the calendar of upcoming meets.',
-          { count: i18n.number(pagination.total_items, 0) }
-        )
-  );
 </script>
 
 <Seo
-  title={i18n.t('Streetlifting competition results')}
-  {description}
+  title="Streetlifting competition results"
+  description="Streetlifting competition results and upcoming events."
   canonical={seo.canonical}
   noindex={seo.noindex}
 />

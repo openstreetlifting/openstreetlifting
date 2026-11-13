@@ -39,7 +39,7 @@
   import AthleteProgress from '#lib/components/athlete-progress.svelte';
   import AthleteBalance from '#lib/components/athlete-balance.svelte';
   import AthleteNeighbors from '#lib/components/athlete-neighbors.svelte';
-  import { absolute, athleteLd, athleteTitle, breadcrumbLd, risStanding } from '#lib/seo/index.js';
+  import { absolute, athleteLd, athleteTitle, breadcrumbLd } from '#lib/seo/index.js';
   import {
     ATTEMPT_ROW,
     CELL,
@@ -164,57 +164,28 @@
   }
 
   const athleteName = $derived(formatAthleteName(athlete));
-  const seoBests = $derived(
-    athlete.personal_records
-      .map(
-        (record) =>
-          `${i18n.movement(record.movement_name).toLowerCase()} ${weights.format(record.max_weight, i18n.locale)} ${weights.unit}`
-      )
-      .join(', ')
-  );
-
-  const seoDescription = $derived(
-    [
-      athleteName,
-      athlete.native_name ? ` (${athlete.native_name})` : '',
-      athlete.country ? `, ${countryName(athlete.country, i18n.locale)}` : '',
-      '. ',
-      risStanding(athlete.standing, i18n.locale)
-        ? `${risStanding(athlete.standing, i18n.locale)} `
-        : '',
-      i18n.t('Streetlifting results and personal records'),
-      seoBests ? `: ${seoBests}` : '',
-      '. ' +
-        i18n.t('{count} {competitions} in the OpenStreetlifting archive.', {
-          count: i18n.number(athlete.total_competitions, 0),
-          competitions: i18n.count('competition', athlete.total_competitions),
-        }),
-    ].join('')
-  );
+  const seoDescription = $derived(`Streetlifting results and personal records for ${athleteName}.`);
 </script>
 
 <Seo
-  title={athleteTitle(athleteName, athlete.country, i18n.locale)}
+  title={athleteTitle(athleteName, athlete.country)}
   description={seoDescription}
   canonical={absolute(`/athletes/${athlete.slug}`)}
   type="profile"
   jsonLd={[
-    athleteLd(athlete, seoDescription, i18n.locale),
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        ...(athlete.country
-          ? [
-              {
-                name: countryName(athlete.country, i18n.locale),
-                path: countryPath(athlete.country),
-              },
-            ]
-          : []),
-        { name: athleteName, path: `/athletes/${athlete.slug}` },
-      ],
-      i18n.locale
-    ),
+    athleteLd(athlete, seoDescription),
+    breadcrumbLd([
+      { name: 'Rankings', path: '/' },
+      ...(athlete.country
+        ? [
+            {
+              name: countryName(athlete.country, 'en'),
+              path: countryPath(athlete.country),
+            },
+          ]
+        : []),
+      { name: athleteName, path: `/athletes/${athlete.slug}` },
+    ]),
   ]}
 />
 

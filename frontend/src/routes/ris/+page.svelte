@@ -35,10 +35,8 @@
 </script>
 
 <Seo
-  title={i18n.t('The Relative Index for Streetlifting')}
-  description={i18n.t(
-    'Understand RIS, calculate your score, and explore Streetlifting competition results across bodyweights.'
-  )}
+  title="The Relative Index for Streetlifting"
+  description="Learn about RIS and calculate your score."
   canonical={absolute('/ris')}
 />
 

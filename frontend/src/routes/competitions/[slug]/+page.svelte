@@ -352,63 +352,25 @@
 
   const seoName = $derived(competitionSeoName(competition));
   const federationHref = $derived(federationPath(competition.federation.name));
-  const lifterCount = $derived(
-    competition.categories.reduce((total, category) => total + category.participants.length, 0)
-  );
-  const seoWhere = $derived(
-    formatLocation(
-      competition.city,
-      competition.country && countryName(competition.country, i18n.locale)
-    )
-  );
-  const seoMovements = $derived(
-    competition.movements
-      .map((movement) => i18n.movement(movement.movement_name).toLowerCase())
-      .join(', ')
-  );
-
   const seoDescription = $derived(
-    [
-      published
-        ? competition.status === 'live'
-          ? i18n.t('Partial results and standings from {competition}', {
-              competition: competition.name,
-            })
-          : i18n.t('Full results and standings from {competition}', {
-              competition: competition.name,
-            })
-        : i18n.t('{competition}, a {federation} Streetlifting competition', {
-            competition: competition.name,
-            federation: federationLabel,
-          }),
-      competition.start_date ? `, ${formatLongDate(competition.start_date, i18n.locale)}` : '',
-      seoWhere ? `, ${seoWhere}` : '',
-      published
-        ? '. ' +
-          i18n.t('{count} lifters ranked on {movements}.', {
-            count: i18n.number(lifterCount, 0),
-            movements: seoMovements,
-          })
-        : '. ' + i18n.t('Entered in the OpenStreetlifting calendar.'),
-    ].join('')
+    published
+      ? `Streetlifting results from ${seoName}.`
+      : `Streetlifting competition details for ${seoName}.`
   );
 </script>
 
 <Seo
-  title={competitionTitle(seoName, published, i18n.locale)}
+  title={competitionTitle(seoName, published)}
   description={seoDescription}
   canonical={seo.canonical}
   noindex={seo.noindex}
   jsonLd={[
-    competitionLd(competition, seoDescription, i18n.locale),
-    breadcrumbLd(
-      [
-        { name: i18n.t('Competitions'), path: '/competitions' },
-        { name: competition.federation.name, path: federationHref },
-        { name: competition.name, path: `/competitions/${competition.slug}` },
-      ],
-      i18n.locale
-    ),
+    competitionLd(competition, seoDescription),
+    breadcrumbLd([
+      { name: 'Competitions', path: '/competitions' },
+      { name: competition.federation.name, path: federationHref },
+      { name: competition.name, path: `/competitions/${competition.slug}` },
+    ]),
   ]}
 />
 

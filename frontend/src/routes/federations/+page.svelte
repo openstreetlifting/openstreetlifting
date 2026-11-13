@@ -15,9 +15,6 @@
   let { data }: { data: PageData } = $props();
 
   const federations = $derived(data.federations);
-  const competitionCount = $derived(
-    federations.reduce((sum, federation) => sum + federation.competitions, 0)
-  );
 
   function activeYears(first: number | null, last: number | null): string {
     if (first === null || last === null) return NO_VALUE;
@@ -26,14 +23,8 @@
 </script>
 
 <Seo
-  title={i18n.t('Streetlifting federations')}
-  description={i18n.t(
-    '{federations} Streetlifting federations and organisers in the OpenStreetlifting archive, with {competitions} competitions of muscle up, pull up, dips and squat results.',
-    {
-      federations: i18n.number(federations.length, 0),
-      competitions: i18n.number(competitionCount, 0),
-    }
-  )}
+  title="Streetlifting federations"
+  description="Browse Streetlifting federations and their results."
   canonical={absolute('/federations')}
 />
 

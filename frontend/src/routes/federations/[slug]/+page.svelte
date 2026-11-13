@@ -17,7 +17,6 @@
 
   const federation = $derived(data.federation);
   const pagination = $derived(data.pagination);
-  const firstPage = $derived(pagination.page <= 1);
   const loading = slowNavigation(() => navigating.to?.url.pathname === currentPage.url.pathname);
   const busy = $derived(loading.current);
 
@@ -32,31 +31,8 @@
         : `${federation.firstYear} – ${federation.lastYear}`
   );
 
-  const title = $derived(
-    firstPage
-      ? i18n.t('{federation} Streetlifting results and rankings', { federation: federation.name })
-      : i18n.t('{federation} Streetlifting rankings, page {page}', {
-          federation: federation.name,
-          page: pagination.page,
-        })
-  );
-  const description = $derived(
-    i18n.t(
-      '{federation}: {competitions} competitions and {athletes} ranked athletes. Muscle-up, pull-up, dips and squat results.',
-      {
-        federation: federation.name,
-        competitions: i18n.number(federation.competitions, 0),
-        athletes: i18n.number(pagination.total_items, 0),
-      }
-    ) +
-      (firstPage
-        ? ''
-        : ' ' +
-          i18n.t('Page {page} of {pages}.', {
-            page: pagination.page,
-            pages: pagination.total_pages,
-          }))
-  );
+  const title = $derived(`${federation.name} Streetlifting results and rankings`);
+  const description = $derived(`Streetlifting rankings and results from ${federation.name}.`);
 </script>
 
 <Seo
@@ -65,14 +41,11 @@
   canonical={seo.canonical}
   noindex={seo.noindex}
   jsonLd={[
-    federationLd(federation, description, i18n.locale),
-    breadcrumbLd(
-      [
-        { name: i18n.t('Competitions'), path: '/competitions' },
-        { name: federation.name, path },
-      ],
-      i18n.locale
-    ),
+    federationLd(federation, description),
+    breadcrumbLd([
+      { name: 'Competitions', path: '/competitions' },
+      { name: federation.name, path },
+    ]),
   ]}
 />
 

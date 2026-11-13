@@ -18,13 +18,7 @@
     'flex items-center gap-3 py-4 text-body text-secondary transition-colors hover:text-ink';
 </script>
 
-<Seo
-  title={i18n.t('Contact')}
-  description={i18n.t(
-    'Get in touch with OpenStreetlifting to report a wrong result, send competition results, or contribute to the archive.'
-  )}
-  canonical={absolute('/contact')}
-/>
+<Seo title="Contact" description="Contact OpenStreetlifting." canonical={absolute('/contact')} />
 
 <div class="mx-auto max-w-reading px-gutter py-12 sm:py-16">
   <!-- The h1 carries the page, so the plate is decoration and stays out of the

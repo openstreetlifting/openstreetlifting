@@ -82,10 +82,10 @@
 
 <Seo
   title={SITE_NAME}
-  description={i18n.t(SITE_DESCRIPTION)}
+  description={SITE_DESCRIPTION}
   canonical={seo.canonical}
   noindex={seo.noindex}
-  jsonLd={[websiteLd(i18n.locale)]}
+  jsonLd={[websiteLd()]}
 />
 
 <div class={LAYOUT.rankings}>

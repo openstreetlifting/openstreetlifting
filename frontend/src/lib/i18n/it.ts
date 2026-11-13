@@ -99,8 +99,6 @@ export default {
   'Hey! Those competitions are currently running': 'Ehi! Queste gare sono in corso',
   'View all in progress': 'Vedi tutte le gare in corso',
   'Search a competition': 'Cerca una gara',
-  'Get in touch with OpenStreetlifting to report a wrong result, send competition results, or contribute to the archive.':
-    'Contatta OpenStreetlifting per segnalare un risultato errato, inviare risultati di gara o contribuire all’archivio.',
   'Ask a question, flag a mistake, or share competition results. I run OpenStreetlifting on my own, so replies may take a little time.':
     'Fai una domanda, segnala un errore o condividi i risultati di una gara. Gestisco OpenStreetlifting da solo, quindi potrei metterci un po’ a rispondere.',
   'To ask about your personal data or request name removal, email {email}. Keep these requests private. You can read more in the {privacyNotice}.':
@@ -115,8 +113,6 @@ export default {
   Entries: 'Partecipazioni',
   Active: 'Periodo di attività',
   'Privacy policy': 'Informativa sulla privacy',
-  'How OpenStreetlifting uses athlete and visitor data, your GDPR rights, and how to ask for a correction or removal.':
-    'Come OpenStreetlifting usa i dati di atleti e visitatori, i tuoi diritti GDPR e come chiedere una rettifica o una rimozione.',
   'Last updated:': 'Ultimo aggiornamento:',
   'OpenStreetlifting collects public competition results into a searchable archive. If you compete, your results may appear here even if you have never used the site.':
     'OpenStreetlifting raccoglie i risultati pubblici delle gare in un archivio consultabile. Se partecipi alle gare, i tuoi risultati potrebbero comparire qui anche se non hai mai usato il sito.',
@@ -205,8 +201,6 @@ export default {
     'Puoi presentare un reclamo alla {cnil} o a un’altra autorità di controllo competente (articolo 77).',
   CNIL: 'CNIL',
   'The Relative Index for Streetlifting': 'Il Relative Index for Streetlifting',
-  'Understand RIS, calculate your score, and explore Streetlifting competition results across bodyweights.':
-    'Comprendi il RIS, calcola il tuo punteggio ed esplora i risultati delle gare di streetlifting in base al peso corporeo.',
   'The Relative Index for Streetlifting (RIS) compares competition totals across bodyweights within the same gender category. It uses the combined total of Muscle-up, Pull-up, Dips and Squat.':
     'Il Relative Index for Streetlifting (RIS) confronta i totali di gara tra diversi pesi corporei nella stessa categoria di sesso. Usa il totale combinato di muscle-up, trazioni, dip e squat.',
   'RIS was developed by {authors}, using results from leading Streetlifting athletes.':
@@ -389,47 +383,7 @@ export default {
     '{athlete}. Peso corporeo {bodyweight} {unit}, totale {total} {unit}, RIS {score}.',
   '{competition} is scheduled for {date}. Results will appear here once published.':
     '{competition} è in programma per il {date}. I risultati compariranno qui dopo la pubblicazione.',
-  'Streetlifting rankings and records': 'Classifiche e record di streetlifting',
-  'Global Streetlifting rankings from every competition in the archive: muscle up, pull up, dips and squat results, RIS scores and athlete records.':
-    'Classifiche mondiali di streetlifting da ogni gara nell’archivio: risultati di muscle-up, trazioni, dip e squat, punteggi RIS e record degli atleti.',
-  'Streetlifting competition results by federation, country and year, with muscle up, pull up, dips and squat standings for every meet in the archive.':
-    'Risultati delle gare di streetlifting per federazione, Paese e anno, con classifiche di muscle-up, trazioni, dip e squat per ogni gara nell’archivio.',
-  'Results from {count} Streetlifting competitions worldwide, with muscle up, pull up, dips and squat standings, plus the calendar of upcoming meets.':
-    'Risultati di streetlifting nel mondo. Gare in archivio: {count}. Classifiche di muscle-up, trazioni, dip e squat e calendario delle prossime gare.',
-  'Streetlifting results and rankings for {countries} countries, covering {athletes} athletes in the OpenStreetlifting archive.':
-    'Risultati e classifiche di streetlifting nell’archivio OpenStreetlifting. Paesi: {countries}. Atleti: {athletes}.',
-  '{federations} Streetlifting federations and organisers in the OpenStreetlifting archive, with {competitions} competitions of muscle up, pull up, dips and squat results.':
-    'Federazioni e organizzatori di streetlifting nell’archivio OpenStreetlifting: {federations}. Gare: {competitions}. Risultati di muscle-up, trazioni, dip e squat.',
-  'Streetlifting in {country}: results and rankings':
-    'Streetlifting — {country}: risultati e classifiche',
-  'Streetlifting in {country}: rankings, page {page}':
-    'Streetlifting — {country}: classifiche, pagina {page}',
-  'Streetlifting in {country}: {count} ranked {athletes}. Muscle-up, pull-up, dips and squat results.':
-    'Streetlifting — {country}: {count} {athletes} in classifica. Risultati di muscle-up, trazioni, dip e squat.',
-  '{federation} Streetlifting results and rankings':
-    '{federation}: risultati e classifiche di streetlifting',
-  '{federation} Streetlifting rankings, page {page}':
-    '{federation}: classifiche di streetlifting, pagina {page}',
-  '{federation}: {competitions} competitions and {athletes} ranked athletes. Muscle-up, pull-up, dips and squat results.':
-    '{federation}. Gare: {competitions}. Atleti in classifica: {athletes}. Risultati di muscle-up, trazioni, dip e squat.',
   'Page {page} of {pages}.': 'Pagina {page} di {pages}.',
-  'Streetlifting results and personal records': 'Risultati di streetlifting e record personali',
-  '{count} {competitions} in the OpenStreetlifting archive.':
-    '{count} {competitions} nell’archivio OpenStreetlifting.',
-  '{athlete} - Streetlifting results': '{athlete} - Risultati di streetlifting',
-  '{competition} results': '{competition}: risultati',
-  '{competition} competition': '{competition}: gara',
-  'Full results and standings from {competition}':
-    'Risultati completi e classifiche di {competition}',
-  'Partial results and standings from {competition}':
-    'Risultati parziali e classifiche di {competition}',
-  '{competition}, a {federation} Streetlifting competition':
-    '{competition}, una gara di streetlifting organizzata da {federation}',
-  '{count} lifters ranked on {movements}.':
-    'Atleti in classifica: {count}. Risultati: {movements}.',
-  'Entered in the OpenStreetlifting calendar.': 'Inserita nel calendario OpenStreetlifting.',
-  'OpenStreetlifting is an open, collaborative project building a permanent and traceable archive of all Streetlifting data, freely accessible to everyone.':
-    'OpenStreetlifting è un progetto aperto e collaborativo che costruisce un archivio permanente e tracciabile di tutti i dati dello streetlifting, accessibile gratuitamente a tutti.',
   Results: 'Risultati',
   'All formats': 'Tutti i formati',
   'Competition format: {label}': 'Formato della gara: {label}',
@@ -437,10 +391,6 @@ export default {
     'La federazione ha pubblicato questo punteggio RIS. Manca il peso corporeo o il totale, quindi non possiamo ricalcolarlo.',
   'Couldn’t load competitions': 'Impossibile caricare le gare',
   to: 'a',
-  '#{place} of {field} in {country}': 'n. {place} su {field} — {country}',
-  '#{place} of {field} worldwide': 'n. {place} su {field} nel mondo',
-  'Ranked {places} by RIS.': 'Classifica RIS: {places}.',
-  ' and ': ' e ',
   '{difference} {unit} more': '{difference} {unit} in più',
   '{difference} {unit} less': '{difference} {unit} in meno',
   '{bodyweight} {unit} bodyweight': '{bodyweight} {unit} di peso corporeo',

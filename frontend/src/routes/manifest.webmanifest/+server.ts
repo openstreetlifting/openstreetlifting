@@ -36,7 +36,7 @@ export const GET: RequestHandler = ({ locals }) => {
       ...manifest,
       lang: i18n.locale,
       start_url: i18n.href('/'),
-      description: i18n.t(SITE_DESCRIPTION),
+      description: SITE_DESCRIPTION,
       shortcuts: PRIMARY_ROUTES.map(({ name, path }) => ({
         name: name === 'RIS' ? name : i18n.t(name),
         url: i18n.href(path),

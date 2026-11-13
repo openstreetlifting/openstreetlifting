@@ -8,13 +8,6 @@ export const LANGUAGE_NAMES: Record<Locale, string> = {
   it: 'Italiano',
   pl: 'Polski',
 };
-export const OG_LOCALES: Record<Locale, string> = {
-  en: 'en_GB',
-  fr: 'fr_FR',
-  de: 'de_DE',
-  it: 'it_IT',
-  pl: 'pl_PL',
-};
 
 export function isLocale(value: unknown): value is Locale {
   return typeof value === 'string' && (LOCALES as readonly string[]).includes(value);

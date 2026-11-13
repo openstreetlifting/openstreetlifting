@@ -5,8 +5,7 @@ import { PUBLIC_SITE_URL, PUBLIC_ENVIRONMENT } from '$app/env/public';
 
 export const SITE_NAME = 'OpenStreetlifting';
 
-export const SITE_DESCRIPTION =
-  'OpenStreetlifting is an open, collaborative project building a permanent and traceable archive of all Streetlifting data, freely accessible to everyone.';
+export const SITE_DESCRIPTION = 'Streetlifting rankings and competition results.';
 
 // Canonical, Open Graph and sitemap URLs have to be absolute, and a request
 // served behind the ingress cannot tell what the public origin is.
@@ -28,9 +27,9 @@ export function absolute(path: string, locale?: Locale): string {
   return `${SITE_URL}${locale ? localeHref(path, locale) : path}`;
 }
 
-export function localizedUrl(canonical: string, locale: Locale): string {
+export function englishUrl(canonical: string): string {
   const url = new URL(canonical);
-  url.pathname = localeHref(url.pathname, locale);
+  url.pathname = localeHref(url.pathname, 'en');
   return url.href;
 }
 

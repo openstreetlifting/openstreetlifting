@@ -20,37 +20,15 @@
 
   const name = $derived(countryName(data.code, i18n.locale));
   const pagination = $derived(data.pagination);
-  const firstPage = $derived(pagination.page <= 1);
   const loading = slowNavigation(() => navigating.to?.url.pathname === currentPage.url.pathname);
   const busy = $derived(loading.current);
 
   const seo = $derived(listingSeo(currentPage.url));
   const path = $derived(countryPath(data.code));
 
-  const title = $derived(
-    firstPage
-      ? i18n.t('Streetlifting in {country}: results and rankings', { country: name })
-      : i18n.t('Streetlifting in {country}: rankings, page {page}', {
-          country: name,
-          page: pagination.page,
-        })
-  );
+  const title = $derived(`Streetlifting in ${countryName(data.code, 'en')}: results and rankings`);
   const description = $derived(
-    i18n.t(
-      'Streetlifting in {country}: {count} ranked {athletes}. Muscle-up, pull-up, dips and squat results.',
-      {
-        country: name,
-        count: i18n.number(pagination.total_items, 0),
-        athletes: i18n.count('athlete', pagination.total_items),
-      }
-    ) +
-      (firstPage
-        ? ''
-        : ' ' +
-          i18n.t('Page {page} of {pages}.', {
-            page: pagination.page,
-            pages: pagination.total_pages,
-          }))
+    `Streetlifting rankings and results for ${countryName(data.code, 'en')}.`
   );
 </script>
 
@@ -60,13 +38,10 @@
   canonical={seo.canonical}
   noindex={seo.noindex}
   jsonLd={[
-    breadcrumbLd(
-      [
-        { name: i18n.t('Rankings'), path: '/' },
-        { name, path },
-      ],
-      i18n.locale
-    ),
+    breadcrumbLd([
+      { name: 'Rankings', path: '/' },
+      { name: countryName(data.code, 'en'), path },
+    ]),
   ]}
 />
 

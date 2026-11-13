@@ -15,15 +15,11 @@
   let { data }: { data: PageData } = $props();
 
   const countries = $derived(data.countries);
-  const athleteCount = $derived(countries.reduce((sum, country) => sum + country.athletes, 0));
 </script>
 
 <Seo
-  title={i18n.t('Streetlifting by country')}
-  description={i18n.t(
-    'Streetlifting results and rankings for {countries} countries, covering {athletes} athletes in the OpenStreetlifting archive.',
-    { countries: i18n.number(countries.length, 0), athletes: i18n.number(athleteCount, 0) }
-  )}
+  title="Streetlifting by country"
+  description="Browse Streetlifting rankings by country."
   canonical={absolute('/countries')}
 />
 

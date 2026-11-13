@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { athleteTitle, competitionSeoName, competitionTitle, risStanding } from './names';
+import { athleteTitle, competitionSeoName, competitionTitle } from './names';
 
 const meet = (name: string, federation: string, abbreviation: string | null = null) => ({
   name,
@@ -43,28 +43,4 @@ it('adds the country to an athlete title when known', () => {
     'Aubin Chevillard, France - Streetlifting results'
   );
   expect(athleteTitle('Alex Martin', null)).toBe('Alex Martin - Streetlifting results');
-});
-
-it('states the RIS standing in the country and worldwide', () => {
-  const standing = {
-    ris: {
-      class: null,
-      value: '114.46',
-      global: { place: 4, field: 1859 },
-      country: { code: 'FR', place: 1, field: 442 },
-    },
-  };
-  expect(risStanding(standing)).toBe(
-    'Ranked #1 of 442 in France and #4 of 1,859 worldwide by RIS.'
-  );
-  expect(risStanding({ ris: null })).toBe('');
-  expect(risStanding(null)).toBe('');
-});
-
-it('describes the global standing without inventing a country', () => {
-  expect(
-    risStanding({
-      ris: { class: null, value: '114.46', global: { place: 4, field: 1859 }, country: null },
-    })
-  ).toBe('Ranked #4 of 1,859 worldwide by RIS.');
 });
