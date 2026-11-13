@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Costa Rican Open"
+series = "king-of-the-jungle-costa-rican-open"
 start_date = "2026-07-19"
 city = "Cartago"
 region = "Cartago"

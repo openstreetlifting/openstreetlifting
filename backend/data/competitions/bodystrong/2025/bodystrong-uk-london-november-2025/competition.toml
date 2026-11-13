@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "London Regionals"
+series = "bodystrong-london-regionals"
 start_date = "2025-11-09"
 city = "London"
 region = "England"
