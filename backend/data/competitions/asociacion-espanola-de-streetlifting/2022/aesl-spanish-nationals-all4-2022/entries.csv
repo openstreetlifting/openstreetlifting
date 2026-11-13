@@ -1,20 +1,20 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-M,66,Sergio,Blazquez Sánchez,,,,,300,competed,,,,,13.75,,,,51.25,,,,95,,,,140
+M,66,Sergio,Blazquez Sánchez,,ES,,,300,competed,,,,,13.75,,,,51.25,,,,95,,,,140
 M,66,Jose Manuel,Galán Palomino,,ES,,,240,competed,,,,,15,,,,47.5,,,,65,,,,112.5
 M,66,David,López Gil,,ES,,,266.25,competed,,,,,13.75,,,,50,,,,57.5,,,,145
-M,66,Ginés,Martínez Pérez,,,,,332.5,competed,,,,,22.5,,,,65,,,,92.5,,,,152.5
+M,66,Ginés,Martínez Pérez,,ES,,,332.5,competed,,,,,22.5,,,,65,,,,92.5,,,,152.5
 M,73,Santiago,Bermejo Tovar,,ES,,,275,competed,,,,,20,,,,50,,,,65,,,,140
 M,73,Antonio,Galindo Soliva,,ES,,,376.25,competed,,,,,7.5,,,,62.5,,,,116.25,,,,190
-M,73,Daniel,Mármol Tovar,,,,,410,competed,,,,,35,,,,77.5,,,,115,,,,182.5
-M,73,Guillermo,Rodríguez Pérez,,,,,315,competed,,,,,25,,,,80,,,,80,,,,130
-M,80,Jorge,Espejo Fuentes,,,,,366.25,competed,,,,,21.25,,,,70,,,,115,,,,160
-M,80,Carlos,García Picón,,,,,490,competed,,,,,30,,,,82.5,,,,160,,,,217.5
+M,73,Daniel,Mármol Tovar,,ES,,,410,competed,,,,,35,,,,77.5,,,,115,,,,182.5
+M,73,Guillermo,Rodríguez Pérez,,ES,,,315,competed,,,,,25,,,,80,,,,80,,,,130
+M,80,Jorge,Espejo Fuentes,,ES,,,366.25,competed,,,,,21.25,,,,70,,,,115,,,,160
+M,80,Carlos,García Picón,,ES,,,490,competed,,,,,30,,,,82.5,,,,160,,,,217.5
 M,80,Antonio,Millán Martínez,,ES,,,340,competed,,,,,12.5,,,,65,,,,77.5,,,,185
-M,87,Jorge,Cardenal Peralta,,,,,372.5,competed,,,,,22.5,,,,65,,,,110,,,,175
-M,87,Pedro,García Parra,,,,,435,competed,,,,,25,,,,75,,,,125,,,,210
-M,87,Mario,Pérez Iniesta,,,,,345,competed,,,,,10,,,,55,,,,105,,,,175
+M,87,Jorge,Cardenal Peralta,,ES,,,372.5,competed,,,,,22.5,,,,65,,,,110,,,,175
+M,87,Pedro,García Parra,,ES,,,435,competed,,,,,25,,,,75,,,,125,,,,210
+M,87,Mario,Pérez Iniesta,,ES,,,345,competed,,,,,10,,,,55,,,,105,,,,175
 M,87,Joan,Torres Alemany,,ES,,,350,competed,,,,,10,,,,62.5,,,,100,,,,177.5
-M,94,Juan,Tirado Catalán,,,,,370,competed,,,,,15,,,,70,,,,85,,,,200
-F,52,Anaïs,Lozano Rojas,,,,,,competed,,,,,,,,,20,,,,50,,,,
-F,57,Laura,Garcia Bitrian,,,,,210,competed,,,,,17.5,,,,42.5,,,,55,,,,95
+M,94,Juan,Tirado Catalán,,ES,,,370,competed,,,,,15,,,,70,,,,85,,,,200
+F,52,Anaïs,Lozano Rojas,,ES,,,,competed,,,,,,,,,20,,,,50,,,,
+F,57,Laura,Garcia Bitrian,,ES,,,210,competed,,,,,17.5,,,,42.5,,,,55,,,,95
 F,63,Jessica,Martínez,,ES,,,200,competed,,,,,10,,,,37.5,,,,47.5,,,,105
