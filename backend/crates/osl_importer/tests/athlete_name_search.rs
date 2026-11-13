@@ -21,6 +21,7 @@ fn filter(name: Option<&str>) -> RankingFilter {
         gender: None,
         country: None,
         federation: None,
+        series: None,
         name: name.map(str::to_string),
         movement: RankingMovement::Total,
         direction: SortDirection::Desc,

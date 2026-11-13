@@ -148,6 +148,7 @@ async fn excludes_short_events_from_full_event_standings(pool: PgPool) {
         gender: None,
         country: None,
         federation: None,
+        series: None,
         name: None,
         movement: RankingMovement::Ris,
         direction: SortDirection::Desc,

@@ -41,7 +41,12 @@
 
   let { data }: { data: PageData } = $props();
 
-  const table = new RankingsTable({ basePath: '/', includeYear: true, initialUrl: page.url });
+  const table = new RankingsTable({
+    basePath: '/',
+    includeYear: true,
+    includeSeries: true,
+    initialUrl: page.url,
+  });
 
   const rankings = $derived(data.initialRankings);
   const pagination = $derived(data.pagination);
@@ -73,6 +78,7 @@
     [
       table.countryFilter,
       table.federationFilter,
+      table.seriesFilter,
       table.yearFilter,
       table.genderFilter,
       table.categoryFilter,
@@ -97,6 +103,7 @@
   >
     <FilterBar
       embedded
+      wideColumns={9}
       bind:search={table.searchFilter}
       placeholder={i18n.t('Search an athlete')}
       onSearch={() => table.handleFilterChange()}
@@ -148,6 +155,18 @@
         <option value={null}>{i18n.t('All Federations')}</option>
         {#each data.federations as federationOption (federationOption)}
           <option value={federationOption}>{federationOption}</option>
+        {/each}
+      </SelectField>
+      <SelectField
+        label={i18n.t('Series')}
+        bind:value={table.seriesFilter}
+        onchange={() => table.handleFilterChange()}
+      >
+        <option value={null}>{i18n.t('All Series')}</option>
+        {#each data.series as seriesOption (seriesOption.series)}
+          <option value={seriesOption.series}
+            >{seriesOption.federation} · {seriesOption.name}</option
+          >
         {/each}
       </SelectField>
       <SelectField

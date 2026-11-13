@@ -15,6 +15,7 @@ interface RankingsTableConfig {
   basePath: string | (() => string);
   /** Whether this table supports filtering by competition year. */
   includeYear?: boolean;
+  includeSeries?: boolean;
   initialUrl: typeof page.url;
   /** Column sorted before anyone picks one. Not every competition has a RIS to sort on. */
   defaultSort?: string | (() => string);
@@ -37,6 +38,7 @@ export class RankingsTable {
   categoryFilter = $state<string | null>(null);
   countryFilter = $state<string | null>(null);
   federationFilter = $state<string | null>(null);
+  seriesFilter = $state<string | null>(null);
   readonly search: ListingSearch;
   private locale = $state<Locale>();
 
@@ -59,6 +61,7 @@ export class RankingsTable {
   focusedAthlete = $state<string | null>(null);
 
   readonly includeYear: boolean;
+  readonly includeSeries: boolean;
   private readonly readBasePath: () => string;
   private readonly readDefaultSort: () => string;
 
@@ -74,6 +77,7 @@ export class RankingsTable {
     this.readBasePath = reader(config.basePath);
     this.readDefaultSort = reader(config.defaultSort ?? 'ris');
     this.includeYear = config.includeYear ?? false;
+    this.includeSeries = config.includeSeries ?? false;
     this.search = new ListingSearch(config.initialUrl);
 
     this.syncFromUrl(config.initialUrl);
@@ -91,6 +95,7 @@ export class RankingsTable {
     this.categoryFilter = params.get('category') || null;
     this.countryFilter = params.get('country') || null;
     this.federationFilter = params.get('federation') || null;
+    this.seriesFilter = this.includeSeries ? params.get('series') || null : null;
     this.search.sync(url, type);
     this.yearFilter = this.includeYear ? Number(params.get('year')) || null : null;
     this.movementFilter = params.get('movement') || this.defaultSort;
@@ -105,6 +110,7 @@ export class RankingsTable {
       this.categoryFilter ||
       this.countryFilter ||
       this.federationFilter ||
+      this.seriesFilter ||
       this.yearFilter ||
       this.searchQuery ||
       this.focusedAthlete ||
@@ -127,6 +133,7 @@ export class RankingsTable {
     if (this.includeYear && this.yearFilter) params.set('year', String(this.yearFilter));
     if (this.countryFilter) params.set('country', this.countryFilter);
     if (this.federationFilter) params.set('federation', this.federationFilter);
+    if (this.includeSeries && this.seriesFilter) params.set('series', this.seriesFilter);
     if (query.trim()) params.set('q', query.trim());
     if (targetPage > 1) params.set('page', String(targetPage));
 
@@ -150,6 +157,7 @@ export class RankingsTable {
     this.categoryFilter = null;
     this.countryFilter = null;
     this.federationFilter = null;
+    this.seriesFilter = null;
     this.yearFilter = null;
     this.searchFilter = '';
     this.focusedAthlete = null;

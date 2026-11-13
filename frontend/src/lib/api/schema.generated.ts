@@ -191,6 +191,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/rankings/series': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['list_ranking_series'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/rankings/years': {
     parameters: {
       query?: never;
@@ -199,6 +215,22 @@ export interface paths {
       cookie?: never;
     };
     get: operations['list_ranking_years'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/records': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['list_records'];
     put?: never;
     post?: never;
     delete?: never;
@@ -588,6 +620,36 @@ export interface components {
       name: string;
     };
     RankingMetric: 'muscleup' | 'pullup' | 'dips' | 'squat' | 'total' | 'ris';
+    RankingSeries: {
+      federation: string;
+      name: string;
+      series: string;
+    };
+    RecordAthlete: {
+      country: string | null;
+      first_name: string;
+      last_name: string;
+      slug: string;
+    };
+    RecordCompetition: {
+      name: string;
+      slug: string;
+    };
+    RecordEntry: {
+      athlete: components['schemas']['RecordAthlete'];
+      competition: components['schemas']['RecordCompetition'];
+      date: string;
+      rank: number;
+      weight: string;
+    };
+    RecordGender: 'M' | 'F';
+    RecordGroup: {
+      entries: components['schemas']['RecordEntry'][];
+      gender: components['schemas']['RecordGender'];
+      movement: components['schemas']['RecordMovement'];
+      weight_class: string | null;
+    };
+    RecordMovement: 'muscleup' | 'pullup' | 'dips' | 'squat';
     RisConstants: {
       men: components['schemas']['GenderConstants'];
       women: components['schemas']['GenderConstants'];
@@ -844,6 +906,7 @@ export interface operations {
         gender?: components['schemas']['RankedGender'] | null;
         country?: string | null;
         federation?: string | null;
+        series?: string | null;
         q?: string | null;
         movement?: components['schemas']['RankingMetric'];
         direction?: components['schemas']['Direction'];
@@ -936,6 +999,25 @@ export interface operations {
       };
     };
   };
+  list_ranking_series: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['RankingSeries'][];
+        };
+      };
+    };
+  };
   list_ranking_years: {
     parameters: {
       query?: never;
@@ -952,6 +1034,37 @@ export interface operations {
         content: {
           'application/json': number[];
         };
+      };
+    };
+  };
+  list_records: {
+    parameters: {
+      query?: {
+        movement?: components['schemas']['RecordMovement'] | null;
+        gender?: components['schemas']['RecordGender'] | null;
+        weight_class?: string | null;
+        country?: string | null;
+        limit?: number | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['RecordGroup'][];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -1081,6 +1194,12 @@ export const rankedGenderValues: ReadonlyArray<
 export const rankingMetricValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RankingMetric']
 > = ['muscleup', 'pullup', 'dips', 'squat', 'total', 'ris'];
+export const recordGenderValues: ReadonlyArray<
+  FlattenedDeepRequired<components>['schemas']['RecordGender']
+> = ['M', 'F'];
+export const recordMovementValues: ReadonlyArray<
+  FlattenedDeepRequired<components>['schemas']['RecordMovement']
+> = ['muscleup', 'pullup', 'dips', 'squat'];
 export const risSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RisSource']
 > = ['computed', 'reported'];

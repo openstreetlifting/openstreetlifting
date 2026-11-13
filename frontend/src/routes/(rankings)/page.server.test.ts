@@ -30,7 +30,9 @@ beforeEach(() => {
 
 it('requests 100 athletes on the main ranking table while retaining filters', async () => {
   const result = await load({
-    url: new URL('http://localhost/?page=2&gender=F&country=FR'),
+    url: new URL(
+      'http://localhost/?page=2&gender=F&country=FR&series=dcsv-sueddeutsche-meisterschaft'
+    ),
   } as Parameters<typeof load>[0]);
   expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
     expect.objectContaining({
@@ -38,6 +40,7 @@ it('requests 100 athletes on the main ranking table while retaining filters', as
       page_size: 100,
       gender: 'F',
       country: 'FR',
+      series: 'dcsv-sueddeutsche-meisterschaft',
     })
   );
   expect(result).toMatchObject({ pagination: { page_size: 100, total_pages: 3 } });

@@ -6,7 +6,7 @@
     "license": {
       "name": ""
     },
-    "version": "0.65.0"
+    "version": "0.66.0"
   },
   "paths": {
     "/api/v1/athletes": {
@@ -434,6 +434,17 @@
             }
           },
           {
+            "name": "series",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
             "name": "q",
             "in": "query",
             "required": false,
@@ -636,6 +647,29 @@
         }
       }
     },
+    "/api/v1/rankings/series": {
+      "get": {
+        "tags": [
+          "rankings"
+        ],
+        "operationId": "list_ranking_series",
+        "responses": {
+          "200": {
+            "description": "Competition series with results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RankingSeries"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/rankings/years": {
       "get": {
         "tags": [
@@ -656,6 +690,101 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/records": {
+      "get": {
+        "tags": [
+          "records"
+        ],
+        "operationId": "list_records",
+        "parameters": [
+          {
+            "name": "movement",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RecordMovement"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RecordGender"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "name": "weight_class",
+            "in": "query",
+            "description": "A weight class such as `M-73` or `F+70`, or `open` for the best across all classes.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "description": "An ISO 3166-1 alpha-2 country code, such as `FR`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Entries per group, from 1 to 50. Defaults to 3.",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The best results in the OpenStreetlifting archive, grouped by movement, gender and weight class. The open group comes first in each gender.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecordGroup"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters"
           }
         }
       }
@@ -2494,6 +2623,141 @@
           "ris"
         ]
       },
+      "RankingSeries": {
+        "type": "object",
+        "required": [
+          "series",
+          "name",
+          "federation"
+        ],
+        "properties": {
+          "federation": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "series": {
+            "type": "string"
+          }
+        }
+      },
+      "RecordAthlete": {
+        "type": "object",
+        "required": [
+          "first_name",
+          "last_name",
+          "slug",
+          "country"
+        ],
+        "properties": {
+          "country": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        }
+      },
+      "RecordCompetition": {
+        "type": "object",
+        "required": [
+          "name",
+          "slug"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        }
+      },
+      "RecordEntry": {
+        "type": "object",
+        "required": [
+          "rank",
+          "athlete",
+          "weight",
+          "date",
+          "competition"
+        ],
+        "properties": {
+          "athlete": {
+            "$ref": "#/components/schemas/RecordAthlete"
+          },
+          "competition": {
+            "$ref": "#/components/schemas/RecordCompetition"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "rank": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "weight": {
+            "type": "string"
+          }
+        }
+      },
+      "RecordGender": {
+        "type": "string",
+        "enum": [
+          "M",
+          "F"
+        ]
+      },
+      "RecordGroup": {
+        "type": "object",
+        "required": [
+          "movement",
+          "gender",
+          "weight_class",
+          "entries"
+        ],
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecordEntry"
+            }
+          },
+          "gender": {
+            "$ref": "#/components/schemas/RecordGender"
+          },
+          "movement": {
+            "$ref": "#/components/schemas/RecordMovement"
+          },
+          "weight_class": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The weight class, or `null` for the open record."
+          }
+        }
+      },
+      "RecordMovement": {
+        "type": "string",
+        "enum": [
+          "muscleup",
+          "pullup",
+          "dips",
+          "squat"
+        ]
+      },
       "RisConstants": {
         "type": "object",
         "required": [
@@ -2637,6 +2901,10 @@
     {
       "name": "rankings",
       "description": "Ranking endpoints"
+    },
+    {
+      "name": "records",
+      "description": "Best results in the OpenStreetlifting archive"
     },
     {
       "name": "ris",

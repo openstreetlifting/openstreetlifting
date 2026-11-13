@@ -8,7 +8,7 @@ use super::ranking_query::{
     push_ranking_pool, same_class,
 };
 use crate::error::Result;
-use crate::params::RankingFilter;
+use crate::params::{RankingFilter, RankingMovement};
 use crate::projections::ranking::{AthleteMetricStandingRow, AthleteNeighborRow, RankingRow};
 
 pub struct RankingRepository<'a> {
@@ -58,6 +58,9 @@ impl<'a> RankingRepository<'a> {
         query.push(sort_column);
         query.push(" ");
         query.push(filter.direction.as_sql());
+        if filter.movement == RankingMovement::Total {
+            query.push(", bodyweight ASC NULLS LAST");
+        }
         query.push(", athlete_id, participant_id) as rank FROM ranking_pool ) ");
         query.push(" SELECT * FROM ranked_movements ");
         push_name_match(&mut query, filter);
@@ -318,6 +321,30 @@ impl<'a> RankingRepository<'a> {
         .await?;
 
         Ok(federations)
+    }
+
+    pub async fn list_distinct_series(&self) -> Result<Vec<(String, String, String)>> {
+        // Use the latest edition's name and organizer; only offer series with results.
+        Ok(sqlx::query_as(
+            r"
+            SELECT series, name, federation FROM (
+                SELECT DISTINCT ON (c.series)
+                    c.series, c.name, f.name AS federation
+                FROM competitions c
+                JOIN federations f USING (federation_id)
+                WHERE c.series IS NOT NULL AND EXISTS (
+                    SELECT 1 FROM competition_participants cp
+                    WHERE cp.competition_id = c.competition_id AND cp.status = 'competed'
+                      AND (cp.total IS NOT NULL OR cp.ris_score IS NOT NULL OR EXISTS (
+                          SELECT 1 FROM lifts l WHERE l.participant_id = cp.participant_id
+                      ))
+                )
+                ORDER BY c.series, c.start_date DESC NULLS LAST, c.slug
+            ) available ORDER BY federation, name, series
+            ",
+        )
+        .fetch_all(self.pool)
+        .await?)
     }
 
     #[tracing::instrument(name = "repository.ranking.list_distinct_years", skip_all, fields(db.system.name = "postgresql"))]

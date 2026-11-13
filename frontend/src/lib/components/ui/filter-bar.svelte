@@ -18,6 +18,7 @@
     children: Snippet;
     primary?: Snippet;
     embedded?: boolean;
+    wideColumns?: 8 | 9;
   }
 
   let {
@@ -30,6 +31,7 @@
     children,
     primary,
     embedded = false,
+    wideColumns = 8,
   }: Props = $props();
 
   let open = $state(false);
@@ -58,7 +60,7 @@
   class="{embedded
     ? 'border-b border-stroke'
     : `${EDGE_TO_EDGE} mb-4 rounded-panel border border-stroke-strong sm:mb-6`} grid grid-cols-2 items-end gap-2 bg-surface px-3 py-1.5 sm:gap-3 {primary
-    ? 'sm:grid-cols-4 xl:grid-cols-8'
+    ? `sm:grid-cols-4 ${wideColumns === 9 ? 'xl:grid-cols-9' : 'xl:grid-cols-8'}`
     : 'sm:grid-cols-2 xl:grid-cols-6'}"
 >
   <div class="col-span-2 flex min-w-0 items-center gap-2">

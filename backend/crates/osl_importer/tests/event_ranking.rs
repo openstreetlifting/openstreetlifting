@@ -23,6 +23,54 @@ fn competition(slug: &str, movements: &[Movement], athletes: Vec<AthleteData>) -
 
 const ALL_FOUR: &[Movement] = &Movement::ALL;
 
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn breaks_total_ties_by_lower_bodyweight(pool: PgPool) {
+    import(
+        &pool,
+        competition(
+            "tied-totals",
+            ALL_FOUR,
+            vec![
+                common::weighing(four_lift_athlete("Ada", "Heavier", "50"), "79"),
+                common::weighing(four_lift_athlete("Grace", "Lighter", "50"), "75"),
+                common::weighing(four_lift_athlete("Alan", "Highest", "55"), "80"),
+            ],
+        ),
+    )
+    .await;
+
+    let competition_id = sqlx::query_scalar("SELECT competition_id FROM competitions")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+
+    for scope in [None, Some(competition_id)] {
+        for (direction, expected) in [
+            (SortDirection::Desc, vec!["Highest", "Lighter", "Heavier"]),
+            (SortDirection::Asc, vec!["Lighter", "Heavier", "Highest"]),
+        ] {
+            let mut scoped = filter(RankingMovement::Total);
+            scoped.competition_id = scope;
+            scoped.direction = direction;
+            let (rows, total) = RankingRepository::new(&pool)
+                .get_global_ranking(&scoped)
+                .await
+                .unwrap();
+            assert_eq!(total, 3);
+            assert_eq!(
+                rows.iter()
+                    .map(|row| row.last_name.as_str())
+                    .collect::<Vec<_>>(),
+                expected
+            );
+            assert_eq!(
+                rows.iter().map(|row| row.rank).collect::<Vec<_>>(),
+                vec![1, 2, 3]
+            );
+        }
+    }
+}
+
 fn four_lift_athlete(first: &str, last: &str, muscleup: &str) -> AthleteData {
     lifting(common::athlete(first, last), [muscleup, "90", "100", "150"])
 }
@@ -32,6 +80,7 @@ fn filter(movement: RankingMovement) -> RankingFilter {
         gender: None,
         country: None,
         federation: None,
+        series: None,
         name: None,
         movement,
         direction: SortDirection::Desc,
