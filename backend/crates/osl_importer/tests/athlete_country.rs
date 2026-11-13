@@ -160,6 +160,7 @@ async fn preserves_history_when_country_is_unknown(pool: PgPool) {
         gender: None,
         country: None,
         federation: None,
+        series: None,
         name: None,
         movement: RankingMovement::Total,
         direction: SortDirection::Desc,

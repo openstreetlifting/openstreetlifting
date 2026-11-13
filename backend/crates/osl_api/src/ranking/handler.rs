@@ -11,6 +11,28 @@ use crate::shared::dto::{PaginatedResponse, PaginationParams};
 
 #[utoipa::path(
     get,
+    path = "/api/v1/rankings/series",
+    responses((status = 200, description = "Competition series with results", body = Vec<super::dto::RankingSeries>)),
+    tag = "rankings"
+)]
+pub async fn list_ranking_series(
+    State(state): State<AppState>,
+) -> WebResult<Json<Vec<super::dto::RankingSeries>>> {
+    let series = RankingRepository::new(state.db.pool())
+        .list_distinct_series()
+        .await?
+        .into_iter()
+        .map(|(series, name, federation)| super::dto::RankingSeries {
+            series,
+            name,
+            federation,
+        })
+        .collect();
+    Ok(Json(series))
+}
+
+#[utoipa::path(
+    get,
     path = "/api/v1/rankings/classes",
     params(ClassesFilter),
     responses(

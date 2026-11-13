@@ -200,6 +200,7 @@ async fn shares_identity_across_contest_types(pool: PgPool) {
         gender: Some(Gender::Mx),
         country: None,
         federation: None,
+        series: None,
         name: None,
         movement: osl_db::params::RankingMovement::Total,
         direction: osl_db::params::SortDirection::Desc,

@@ -5,12 +5,13 @@ import type { LayoutServerLoad } from './$types';
 // Keep filter options independent of search and pagination reloads.
 export const load: LayoutServerLoad = async ({ url }) => {
   const gender = asRankedGender(url.searchParams.get('gender'));
-  const [classes, years, countries, federations] = await Promise.all([
+  const [classes, years, countries, federations, series] = await Promise.all([
     rankingsService.getRankingClasses(gender).catch(() => []),
     rankingsService.getRankingYears().catch(() => []),
     rankingsService.getRankingCountries().catch(() => []),
     rankingsService.getRankingFederations().catch(() => []),
+    rankingsService.getRankingSeries().catch(() => []),
   ]);
 
-  return { classes, years, countries, federations };
+  return { classes, years, countries, federations, series };
 };

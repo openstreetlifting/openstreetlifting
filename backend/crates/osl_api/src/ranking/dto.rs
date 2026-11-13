@@ -55,6 +55,7 @@ pub struct GlobalRankingFilter {
     pub gender: Option<RankedGender>,
     pub country: Option<String>,
     pub federation: Option<String>,
+    pub series: Option<String>,
     pub q: Option<String>,
     #[serde(default)]
     pub movement: RankingMetric,
@@ -86,6 +87,7 @@ impl GlobalRankingFilter {
             gender: self.gender.map(Into::into),
             country: self.country.clone(),
             federation: self.federation.clone(),
+            series: self.series.clone(),
             name: self
                 .q
                 .as_deref()
@@ -108,6 +110,13 @@ impl GlobalRankingFilter {
             limit: i64::from(self.pagination.limit()),
         }
     }
+}
+
+#[derive(Debug, Serialize, ToSchema)]
+pub struct RankingSeries {
+    pub series: String,
+    pub name: String,
+    pub federation: String,
 }
 
 #[derive(Debug, Serialize, ToSchema)]

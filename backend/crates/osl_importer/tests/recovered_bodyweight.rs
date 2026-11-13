@@ -235,6 +235,7 @@ async fn recomputes_recovered_scores_with_current_edition(pool: PgPool) {
         gender: None,
         country: None,
         federation: None,
+        series: None,
         name: None,
         movement: RankingMovement::Ris,
         direction: SortDirection::Desc,

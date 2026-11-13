@@ -331,6 +331,7 @@ async fn matches_leaderboards_when_results_tie(pool: PgPool) {
                     .then(|| osl_domain::WeightClass::UpTo(common::decimal("80"))),
                 country: country.map(str::to_string),
                 federation: None,
+                series: None,
                 name: None,
                 movement,
                 direction: SortDirection::Desc,
