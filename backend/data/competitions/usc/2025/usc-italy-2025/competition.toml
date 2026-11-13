@@ -1,0 +1,20 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+    "https://final-rep.com/usc25/",
+]
+
+[competition]
+name = "Ultimate Streetlifting Championship"
+start_date = "2025-05-24"
+end_date = "2025-05-25"
+city = "Grumo Nevano"
+venue = "The Strongbox"
+region = "Campania"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "USC"
+country = "IT"
