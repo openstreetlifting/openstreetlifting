@@ -392,6 +392,10 @@ export default {
   '{country} records': 'Record: {country}',
   '{movement} records': 'Record di {movement}',
   'No records for this selection yet.': 'Ancora nessun record per questa selezione.',
+  'Current world record in this weight class':
+    'Record mondiale attuale in questa categoria di peso',
+  'Current national record in this weight class':
+    'Record nazionale attuale in questa categoria di peso',
   Results: 'Risultati',
   'All formats': 'Tutti i formati',
   'Competition format: {label}': 'Formato della gara: {label}',

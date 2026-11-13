@@ -16,7 +16,7 @@ function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteComp
     ris_source: 'computed',
     status: 'competed',
     event: 'MPDS',
-    lifts: [{ movement_name: 'Muscle-up', best_weight: '0', attempts: [] }],
+    lifts: [{ movement_name: 'Muscle-up', best_weight: '0', record: null, attempts: [] }],
     ...overrides,
   };
 }
@@ -58,7 +58,7 @@ describe('athlete progress', () => {
       result({ competition_id: 'meet-2', lifts: [] }),
       result({
         competition_id: 'meet-3',
-        lifts: [{ movement_name: 'Muscle-up', best_weight: null, attempts: [] }],
+        lifts: [{ movement_name: 'Muscle-up', best_weight: null, record: null, attempts: [] }],
       }),
       result({ competition_id: 'meet-4', total: 'NaN' }),
     ];
@@ -91,13 +91,15 @@ describe('athlete progress', () => {
 
 it('keeps individual-lift trends in the selected format', () => {
   const competitions = [
-    result({ lifts: [{ movement_name: 'Pull-up', best_weight: '10', attempts: [] }] }),
+    result({
+      lifts: [{ movement_name: 'Pull-up', best_weight: '10', record: null, attempts: [] }],
+    }),
     result({
       competition_id: 'shorter',
       event: 'PD',
       total: null,
       ris_score: null,
-      lifts: [{ movement_name: 'Pull-up', best_weight: '20', attempts: [] }],
+      lifts: [{ movement_name: 'Pull-up', best_weight: '20', record: null, attempts: [] }],
     }),
   ];
   expect(progressPoints(competitions, 'pullup').map((point) => point.value)).toEqual([10]);

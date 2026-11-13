@@ -342,6 +342,7 @@ export interface components {
       attempts: components['schemas']['AttemptInfo'][];
       best_weight: string | null;
       movement_name: components['schemas']['Movement'];
+      record: components['schemas']['RecordMark'] | null;
     };
     AthleteNeighbor: {
       athlete_id: string;
@@ -487,6 +488,7 @@ export interface components {
       participant_id: string;
       pullup: number | null;
       rank: number;
+      records: components['schemas']['LiftRecord'][];
       ris: number | null;
       ris_source: components['schemas']['RisSource'] | null;
       squat: number | null;
@@ -506,6 +508,11 @@ export interface components {
       attempts: components['schemas']['AttemptInfo'][];
       best_weight: string | null;
       movement_name: components['schemas']['Movement'];
+      record: components['schemas']['RecordMark'] | null;
+    };
+    LiftRecord: {
+      mark: components['schemas']['RecordMark'];
+      movement: components['schemas']['Movement'];
     };
     LiftShare: {
       class_share: number | null;
@@ -584,6 +591,7 @@ export interface components {
         participant_id: string;
         pullup: number | null;
         rank: number;
+        records: components['schemas']['LiftRecord'][];
         ris: number | null;
         ris_source: components['schemas']['RisSource'] | null;
         squat: number | null;
@@ -619,6 +627,7 @@ export interface components {
       date: string | null;
       max_weight: string;
       movement_name: components['schemas']['Movement'];
+      record: components['schemas']['RecordMark'] | null;
     };
     RankedGender: 'M' | 'F' | 'MX';
     RankingAthlete: {
@@ -665,6 +674,7 @@ export interface components {
       movement: components['schemas']['RecordMovement'];
       weight_class: string | null;
     };
+    RecordMark: 'WR' | 'NR';
     RecordMovement: 'muscleup' | 'pullup' | 'dips' | 'squat';
     RisConstants: {
       men: components['schemas']['GenderConstants'];
@@ -1234,6 +1244,9 @@ export const rankingMetricValues: ReadonlyArray<
 export const recordGenderValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RecordGender']
 > = ['M', 'F'];
+export const recordMarkValues: ReadonlyArray<
+  FlattenedDeepRequired<components>['schemas']['RecordMark']
+> = ['WR', 'NR'];
 export const recordMovementValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RecordMovement']
 > = ['muscleup', 'pullup', 'dips', 'squat'];
