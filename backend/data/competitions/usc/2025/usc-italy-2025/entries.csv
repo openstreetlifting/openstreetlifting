@@ -1,0 +1,74 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Samuele,Calanna,,IT,65.2,98.43,398.75,competed,,recovered,2024,20,23.75,25x,23.75,57.5,63.75x,65,65,102.5,112.5x,112.5x,102.5,197.5x,207.5x,207.5,207.5
+M,66,Sergio,Cavagnuolo,,IT,65.65,82.79,337.5,competed,,recovered,2024,7.5,10,15x,10,52.5,57.5,62.5,62.5,75,82.5,90,90,172.5x,172.5,175,175
+M,66,Mattia,Cecchin,,IT,65.2,94.72,383.75,competed,,recovered,2024,25,30,32.5,32.5,72.5,77.5,83.75,83.75,95,102.5,107.5x,102.5,165,172.5x,175x,165
+M,66,Raffaele,Francavilla,,IT,65.2,89.17,361.25,competed,,recovered,2024,7.5x,10,13.75,13.75,55,62.5,70,70,90,100,110x,100,170,177.5,185x,177.5
+M,66,Daniele,Goddi,,IT,65.7,93.45,381.25,competed,,recovered,2024,12.5,17.5,21.25x,17.5,50x,56.25,60x,56.25,95,102.5,107.5x,102.5,200,205,210x,205
+M,66,Martino,Invernizzi,,IT,61.45,66.92,257.5,competed,,recovered,2024,10,13.75x,13.75x,10,47.5,52.5,57.5x,52.5,82.5,90x,92.5x,82.5,95,105,112.5,112.5
+M,66,Mattia,Nistico,,IT,61,84.31,322.5,competed,,recovered,2024,10x,13.75x,16.25,16.25,46.25,51.25,53.75,53.75,57.5,65,70x,65,175,187.5,200x,187.5
+M,66,Pasquale,Valeo,,IT,65.25,101.44,411.25,competed,,recovered,2024,17.5,20,21.25,21.25,63.75,67.5,70,70,112.5x,112.5,115,115,197.5,202.5,205,205
+M,73,Mauro,Borrazzo,,,,,,no_show,,,,,,,,,,,,,,,,,,,
+M,73,Daniele,D'Albenzio,,IT,72.05,74.84,332.5,competed,,recovered,2024,2.5x,2.5,5x,2.5,55,60,65,65,115x,115x,115,115,142.5,150x,150,150
+M,73,Simone,Faraone,,,71.9,71.6,317.5,competed,,recovered,2024,6.25,8.75x,10,10,47.5,52.5,55,55,70,75,82.5,82.5,165x,170,175x,170
+M,73,Vincenzo,Marroccoli,,IT,71.8,87.5,387.5,competed,,recovered,2024,15,20,25x,20,57.5x,62.5,67.5,67.5,95x,105,110x,105,190x,195,200x,195
+M,73,Giovanni,Menta,,IT,72,81.08,360,competed,,recovered,2024,7.5,11.25,15,15,55,60,65,65,85,95,102.5,102.5,160,170x,177.5,177.5
+M,73,Tommaso,Potito,,IT,72.1,85.48,380,competed,,recovered,2024,10,15,17.5,17.5,56.25,61.25,62.5,62.5,101.25,111.25,120,120,180,192.5x,195x,180
+M,73,Riccardo,Redavid,,IT,,59.4,,disqualified,Bombed the dips,,,17.5,22.5,26.25x,22.5,62.5,70,75,75,105x,110x,110x,,145,152.5,160x,152.5
+M,73,Amedeo,Simonelli,,IT,72.95,102.12,458.75,competed,,recovered,2024,17.5,22.5,25,25,72.5,80,83.75,83.75,115,130,137.5x,130,207.5,217.5,220,220
+M,73,Christian,Win,,IT,72.1,96.45,428.75,competed,,recovered,2024,15,20,22.5,22.5,70,76.25,77.5x,76.25,105x,112.5,120,120,205x,210,220x,210
+M,73,Enzo,Zezza,,IT,72.65,102.77,460,competed,,recovered,2024,22.5x,27.5,32.5,32.5,62.5,70,75,75,120,125x,130,130,200,215,222.5,222.5
+M,80,Manuel,Benvenuti,,,78.81,85.72,410,competed,,recovered,2024,25,30x,30x,25,75x,75,80x,75,110,117.5,125,125,175,185,200x,185
+M,80,Arian Alexander,Bonvino,,AR,,,,no_show,,,,,,,,,,,,,,,,,,,
+M,80,Luca,Curreli,,IT,,50.18,,disqualified,Bombed the squat,,,22.5x,30,32.5x,30,85,90x,90x,85,125,135x,141.25x,125,0x,0x,0x,
+M,80,Antonio,D'Amore,,IT,78.15,63.11,300,competed,,recovered,2024,0x,5x,5,5,52.5,57.5x,60x,52.5,72.5,77.5x,80x,72.5,170,182.5x,190x,170
+M,80,Matteo,Del Puppo,,IT,76.36,72.55,338.75,competed,,recovered,2024,8.75,12.5,16.25x,12.5,53.75,58.75,61.25x,58.75,80,87.5x,92.5,92.5,165,172.5,175,175
+M,80,Luca,Di Francesco,,IT,79.55,91.38,440,competed,,recovered,2024,17.5x,21.25,23.75,23.75,70x,73.75,76.25,76.25,105,112.5x,115x,105,235,242.5x,242.5x,235
+M,80,Simone,Facchinetti,,IT,75.55,100.45,465,competed,,recovered,2024,25,27.5,31.25x,27.5,72.5,77.5,81.25x,77.5,145x,145,150x,145,215,222.5x,222.5x,215
+M,80,Stefano,Ferraro,,IT,78.94,74.65,357.5,competed,,recovered,2024,12.5,17.5x,17.5,17.5,60,65x,70,70,80,87.5x,90x,80,190,200x,210x,190
+M,80,Luigi,Goffredo,,IT,76.75,75.72,355,competed,,recovered,2024,7.5,10,15x,10,52.5,57.5,62.5x,57.5,85,95,100x,95,180x,185,192.5,192.5
+M,80,Antonio,Improta,,IT,78.8,83.63,400,competed,,recovered,2024,12.5,17.5,22.5,22.5,60x,65,70x,65,100,110x,110x,100,190,200,212.5,212.5
+M,80,Mattia,Martinelli,,IT,79.3,100.17,481.25,competed,,recovered,2024,30,35,37.5x,35,77.5,83.75,90x,83.75,112.5,127.5,135x,127.5,212.5,225,235,235
+M,80,Lorenzo,Mazzi,,IT,,,,no_show,,,,,,,,,,,,,,,,,,,
+M,80,Rostyslav,Pravosud,,UA,78.94,87.7,420,competed,,recovered,2024,22.5,27.5x,27.5x,22.5,60,72.5,77.5x,72.5,90,100,105,105,200,210,220,220
+M,80,Antonio,Ruffolo,,IT,78.95,76.21,365,competed,,recovered,2024,0x,0x,0,0,57.5,62.5,67.5x,62.5,70,72.5,77.5x,72.5,210,220x,230,230
+M,80,Piero,Russo,,IT,79.55,95.53,460,competed,,recovered,2024,17.5,25,31.25x,25,75x,82.5,90x,82.5,125,137.5,150x,137.5,215,230x,242.5x,215
+M,80,Antonio,Sparaneo,,IT,79.55,97.35,468.75,competed,,recovered,2024,20x,20,25x,20,60,65,67.5x,65,122.5,128.75,132.5x,128.75,240x,255,272.5x,255
+M,87,Guido,Barbarotto,,IT,85.94,101.2,510,competed,,recovered,2024,12.5x,12.5,15,15,65,72.5x,75,75,135,145,150,150,270,280x,280x,270
+M,87,Marco,Campanile,,IT,83.85,80.39,400,competed,,recovered,2024,8.75x,8.75,10,10,60,65,70,70,100,102.5,105x,102.5,212.5,215,217.5,217.5
+M,87,Tony,D'Agostino,,IT,82.75,106.81,527.5,competed,,recovered,2024,22.5x,25,30x,25,85,90,92.5,92.5,117.5,125,127.5x,125,270x,285x,285,285
+M,87,Alex Bilal,Echbiki,,IT,,,,no_show,,,,,,,,,,,,,,,,,,,
+M,87,Enrico,Eliseo,,IT,86.19,64.65,326.25,competed,,recovered,2024,3.75x,3.75,7.5x,3.75,35,42.5,50,50,80,87.5,100x,87.5,185,192.5x,192.5x,185
+M,87,Matteo,Gioia,,IT,86.8,83.45,422.5,competed,,recovered,2024,20,23.75,25,25,75,82.5,86.25x,82.5,105,112.5,117.5,117.5,190,197.5,200x,197.5
+M,87,Jerry,Marroccoli,,IT,85.15,70.27,352.5,competed,,recovered,2024,0x,2.5,5x,2.5,55,62.5x,67.5x,55,80,90,100x,90,190x,195,205,205
+M,87,,Nicolò,,,80.85,58.29,283.75,competed,,recovered,2024,6.75,10,12.5,12.5,50,57.5,62.5x,57.5,63.75,70,73.75,73.75,130,140,150x,140
+M,87,Aisosa,Stefano Ogbodu,,IT,,73.76,,disqualified,Bombed the muscle-up,,,17.5x,20x,25x,,75,85,90x,85,80,95,105,105,170,180x,180,180
+M,94,Alberto,Aprea,,,90.5,73.33,377.5,competed,,recovered,2024,10x,15x,17.5,17.5,60,65,70,70,90x,90,100,100,175,185x,190,190
+M,94,Michele,Cannito,,,,41.38,,disqualified,Bombed the squat,,,12.5,17.5,20x,17.5,57.5,65,70,70,117.5x,125,130x,125,190x,190x,190x,
+M,94,Antonio,De Marzo,,,90.4,66.07,340,competed,,recovered,2024,0,3.75x,3.75x,0,37.5,43.75,50,50,85,93.75,100,100,180,190,200x,190
+M,94,Antonio,Donato,,IT,88.26,95.11,485,competed,,recovered,2024,17.5,23.75,27.5,27.5,70,77.5,81.25,81.25,105,125,141.25,141.25,205,222.5,235,235
+M,94,Umberto,Gaetano,,,88.5,83.74,427.5,competed,,recovered,2024,25x,30,32.5,32.5,80,85,90x,85,110,120,130x,120,190x,190,200x,190
+M,94,Lorenzo,Giussani,,IT,87.2,95.6,485,competed,,recovered,2024,15x,20,22.5x,20,70,75,77.5,77.5,135,142.5,145,145,225,235,242.5,242.5
+M,94,Andrea,Marucci,,,,47.68,,disqualified,Bombed the dips,,,1.25x,1.25x,1.25,1.25,40,45,52.5x,45,87.5x,87.5x,87.5x,,185,192.5,200,200
+M,94,Mauro,Rollo,,IT,92.73,75.65,392.5,competed,,recovered,2024,5,10,15x,10,55,62.5,67.5x,62.5,100,110,120,120,200,210x,212.5x,200
+M,101,Tommaso,Chiaramonte,,IT,98.72,86.52,455.5,competed,,recovered,2024,12.5,17.5,21.75,21.75,70,76.25,80x,76.25,117.5,125x,125x,117.5,230,240,250x,240
+M,101,Nicola,De Giglio,,,94.08,54.71,285,competed,,recovered,2024,0,2.5,5x,2.5,37.5,45,50x,45,55,62.5x,62.5,62.5,175,190x,190x,175
+M,101+,Daniele,Mariani,,IT,103.04,93.89,497.5,competed,,recovered,2024,17.5,22.5,25x,22.5,70,75,80,80,130,140,145,145,250,265x,270x,250
+M,101+,Valerio,Naldi,,IT,105.57,105.4,560,competed,,recovered,2024,17.5,22.5,25,25,105,110x,110x,105,145,160x,170,170,250,260,270x,260
+M,101+,Marc,Nassif,,LB,104.78,104.54,555,competed,,recovered,2024,32.5,37.5,40x,37.5,86.25,95,101.25x,95,140x,157.5x,165,165,257.5,262.5x,262.5x,257.5
+F,52,Nicole,Anania,,IT,51.55,111.13,235,competed,,recovered,2024,10x,10x,10,10,25,30,32.5,32.5,45,50,52.5,52.5,130,135,140,140
+F,52,Beatrice,Dallapè,,IT,,,,no_show,,,,,,,,,,,,,,,,,,,
+F,52,Denise,Lauro,,IT,51.9,107.51,228.75,competed,,recovered,2024,0x,0,5x,0,27.5,32.5,36.25,36.25,47.5,52.5,57.5x,52.5,135x,140,147.5x,140
+F,52,Ilaria,Loi,,IT,45.55,89.75,172.5,competed,,recovered,2024,1.25,3.75,5x,3.75,26.25,31.25,33.75x,31.25,35,40x,40x,35,90,97.5,102.5,102.5
+F,52,Marika,Scotto Rosato,,IT,49.65,97.84,200,competed,,recovered,2024,8.75x,10,11.25x,10,25,27.5,28.75x,27.5,45x,47.5x,47.5,47.5,107.5,112.5,115,115
+F,57,Floriana,Arcaria,,,,63.3,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,15,17.5,20x,17.5,27.5x,27.5,30x,27.5,90,95,100,100
+F,57,Sofia,Cerdan Bes,,IT,56.95,120.54,276.25,competed,,recovered,2024,10,12.5,13.75x,12.5,25,31.25,32.5x,31.25,62.5,70,72.5x,70,155,162.5,170x,162.5
+F,57,Noemi,Cucuzza,,IT,55.5,107.67,242.5,competed,,recovered,2024,2.5,5,6.25x,5,37.5,42.5,45,45,57.5,62.5x,62.5x,57.5,130,135,137.5x,135
+F,57,Domenica,Donato,,IT,54.15,82.04,181.25,competed,,recovered,2024,0x,0,1.25x,0,16.25,22.5,26.25,26.25,35,40,42.5,42.5,95,105,112.5,112.5
+F,63,Giorgia,Galasi,,IT,61.85,112.69,267.5,competed,,recovered,2024,5x,10,15,15,40,45,47.5,47.5,65,70x,70x,65,130,140x,140,140
+F,63,Marta,Galletto,,IT,60.11,93.51,220,competed,,recovered,2024,0,2.5x,2.5x,0,30,35,37.5x,35,55,60x,60,60,120,125,130x,125
+F,63,Chiara,Renda,,IT,,8.46,,disqualified,Bombed the muscle-up and dips and squat,,,0x,0x,0x,,16.25x,20x,20,20,47.5x,51.25x,51.25x,,140x,140x,140x,
+F,63,Silvana,Salicone,,IT,,31.25,,disqualified,Bombed the muscle-up and squat,,,0x,0x,0x,,20,25,26.25x,25,43.75,47.5x,47.5,47.5,130x,130x,130x,
+F,63,Alessia,Scicchitano,,IT,,89.13,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,27.5,32.5,37.5,37.5,40,45,50x,45,120x,127.5x,127.5,127.5
+F,70+,,Anna,,GB,,76.72,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,15,17.5,20,20,35,37.5,40,40,117.5,125,130x,125
+F,70+,Elena,Paradiso,,IT,72.43,112.88,272.5,competed,,recovered,2024,0x,0x,0,0,25,32.5,37.5,37.5,52.5,60,65,65,155,165x,170,170
+F,70+,Venus,Pellizzaro,,IT,,98.44,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,25,30,31.25,31.25,50x,50,61.25,61.25,145,150x,155x,145
