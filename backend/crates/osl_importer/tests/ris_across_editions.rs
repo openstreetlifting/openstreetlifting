@@ -1,7 +1,3 @@
-//! Most of the archive was lifted before RIS existed, and a ranking is only
-//! readable if every score in it came from the same formula. So the competition's date
-//! decides nothing: the current edition scores all of them.
-
 use chrono::NaiveDate;
 use osl_domain::Movement;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};

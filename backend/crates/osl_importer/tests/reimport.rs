@@ -1,6 +1,3 @@
-//! A canonical file is built up over several passes, so importing a corrected
-//! file has to land the correction rather than stop at the row already there.
-
 use chrono::NaiveDate;
 use osl_domain::{CompetitionStatus, Gender, Movement, WeightClassSlug};
 use osl_importer::canonical::models::{CanonicalFormat, CategoryData};
@@ -95,8 +92,6 @@ async fn preserves_status_when_source_omits_it(pool: PgPool) {
     assert_eq!(status, "cancelled");
 }
 
-/// The class is part of what a result is, so correcting it refiles the lifter
-/// rather than editing the class they were in.
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn updates_corrected_weight_classes(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);
@@ -130,8 +125,6 @@ async fn stores_open_class_lower_bounds(pool: PgPool) {
     assert_eq!(classes, vec![(Some(Decimal::from(87)), None)]);
 }
 
-/// A competition running two divisions in one class is two contests, so each keeps its
-/// own winner instead of the second collapsing onto the first.
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn ranks_divisions_separately(pool: PgPool) {
     let mut elite = fixture(Class::Slug(WeightClassSlug::M73), None);
@@ -237,8 +230,6 @@ async fn preserves_reported_scores_when_recomputing(pool: PgPool) {
     assert_eq!(row.ris_source.as_deref(), Some("reported"));
 }
 
-/// Correcting a federation name or a date in the file has to reach the database,
-/// or the file stops being the truth about its own competition the moment one exists.
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn updates_corrected_competition_metadata(pool: PgPool) {
     let transformer = CanonicalTransformer::new(&pool);

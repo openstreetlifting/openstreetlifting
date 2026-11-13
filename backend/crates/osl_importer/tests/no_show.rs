@@ -1,9 +1,3 @@
-//! Someone who entered and never lifted is not the same as someone who lifted
-//! and was ruled out, and a boolean could not tell them apart.
-//!
-//! Both stay out of the rankings. Both stay in the competition, because the
-//! federation's own results list them.
-
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use sqlx::PgPool;

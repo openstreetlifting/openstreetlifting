@@ -10,8 +10,6 @@ use uuid::Uuid;
 
 use crate::identity::AthleteQuery;
 
-/// row of the file.
-/// `Sex`, `Country` and `Disambiguation` are spelled like in `entries.csv`
 #[derive(Debug, serde::Deserialize)]
 struct InstagramRecord {
     #[serde(rename = "Name")]

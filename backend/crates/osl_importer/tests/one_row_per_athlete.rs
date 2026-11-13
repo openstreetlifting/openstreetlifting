@@ -1,10 +1,3 @@
-//! A ranking lists people, so a lifter who has competed three times is one of
-//! them, shown at the competition where they were at their best.
-//!
-//! Which competition that is depends on the column being ranked: a lifter whose
-//! best muscle-up and best total came from different years is a different row on
-//! each board.
-
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use sqlx::PgPool;
@@ -31,8 +24,6 @@ fn filter(movement: RankingMovement, competition_id: Option<Uuid>) -> RankingFil
     }
 }
 
-/// The same lifter twice: a bigger muscle-up in the first year, a bigger
-/// everything-else in the second.
 async fn two_years(pool: &PgPool) {
     import(
         pool,

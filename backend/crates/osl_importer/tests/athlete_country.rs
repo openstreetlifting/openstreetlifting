@@ -202,7 +202,6 @@ async fn preserves_profiles_during_identity_migration(pool: PgPool) {
     }
     sqlx::query("INSERT INTO athlete_socials (athlete_id, social_id, handle) SELECT a.athlete_id, s.social_id, 'tony_fr' FROM athletes a CROSS JOIN socials s WHERE a.country = 'FR' AND s.name = 'instagram'")
         .execute(&pool).await.unwrap();
-    // Restore the former schema around populated profiles and their results.
     sqlx::raw_sql("ALTER TABLE competition_participants DROP COLUMN country;
         ALTER TABLE athletes ALTER COLUMN country SET NOT NULL;
         DROP INDEX athletes_identity_unique;
@@ -359,7 +358,6 @@ async fn preserves_results_and_links_when_merging_athletes(pool: PgPool) {
             .await
             .unwrap();
     assert_eq!(countries, vec!["US"]);
-    // Corrected files must reuse the merged identity on every subsequent import.
     let mut corrected = meet("tony-FR", Some("US"));
     corrected.categories[0].athletes[0].first_name = "Tony".into();
     corrected.categories[0].athletes[0].last_name = "Nguyen".into();

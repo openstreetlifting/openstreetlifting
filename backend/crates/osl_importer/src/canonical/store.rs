@@ -595,7 +595,6 @@ mod tests {
 
     #[test]
     fn rejects_nonpositive_class_bounds() {
-        // `0+` reads as a class open at the bottom, which the database has no row for.
         assert!(parse_weight_class("0+").is_err());
         assert!(parse_weight_class("0").is_err());
         assert!(parse_weight_class("-5").is_err());

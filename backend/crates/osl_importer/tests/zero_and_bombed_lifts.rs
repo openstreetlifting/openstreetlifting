@@ -1,9 +1,3 @@
-//! Two results that look alike in a total and are nothing alike.
-//!
-//! A muscle-up with no added weight is a successful lift worth 0. A movement
-//! where every attempt failed is not a successful lift. A successful zero counts
-//! toward a complete total; a disqualified result has no total.
-
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::Movement;
@@ -41,7 +35,6 @@ async fn best(pool: &PgPool, last_name: &str, movement: &str) -> Option<Decimal>
     .unwrap()
 }
 
-/// Lifted bodyweight and nothing more, then missed twice going up.
 fn bodyweight_lifter() -> AthleteData {
     athlete(
         "Swann",
@@ -58,7 +51,6 @@ fn bodyweight_lifter() -> AthleteData {
     )
 }
 
-/// Made two movements, missed every attempt in the other two.
 fn bomber() -> AthleteData {
     common::disqualified(
         athlete(

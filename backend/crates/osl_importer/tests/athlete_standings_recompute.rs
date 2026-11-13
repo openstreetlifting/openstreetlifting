@@ -1,7 +1,3 @@
-//! Parity between the precomputed standings and rivals tables and the
-//! original per-athlete computed queries. After every recompute, both paths
-//! must agree for every athlete in the database.
-
 use osl_db::repository::ranking::RankingRepository;
 use osl_db::services::athlete_standings;
 use osl_importer::canonical::models::CanonicalFormat;
@@ -35,8 +31,6 @@ fn a_board() -> CanonicalFormat {
     )
 }
 
-/// A second competition where "Second" moves down a class and a newcomer
-/// competes, so class pools and latest-class logic are exercised.
 fn a_later_board() -> CanonicalFormat {
     common::competition(
         "continentals",

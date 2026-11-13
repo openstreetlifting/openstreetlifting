@@ -1,8 +1,3 @@
-//! A disqualified result stays public and counts for nothing.
-//!
-//! It keeps its lifts in the category and takes no place, so the lifters behind
-//! it move up, and no board or personal record ever sees it.
-
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::{
     athlete::AthleteRepository, competition::CompetitionRepository, ranking::RankingRepository,
@@ -38,7 +33,6 @@ async fn board(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
     (rows.into_iter().map(|r| r.last_name).collect(), count)
 }
 
-/// The biggest total of the day, thrown out.
 fn disqualified() -> AthleteData {
     thrown_out(
         lifting(athlete("Dan", "Disqualified"), ["50", "90", "130", "200"]),
@@ -50,7 +44,6 @@ fn clean() -> AthleteData {
     lifting(athlete("Clara", "Clean"), ["30", "80", "120", "180"])
 }
 
-/// Printed as three zeros by the source, which meant he never turned up.
 fn absent() -> AthleteData {
     thrown_out(athlete("Noe", "Absent"), None)
 }

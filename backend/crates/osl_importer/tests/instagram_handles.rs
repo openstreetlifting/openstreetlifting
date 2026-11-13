@@ -1,8 +1,3 @@
-//! A handle is written against a name, but an athlete is a name together with
-//! gender and disambiguation. These pin down what happens when the
-//! two stop lining up: the row is narrowed by the columns that address an
-//! athlete, and until it names exactly one, nothing at all is written.
-
 use std::path::{Path, PathBuf};
 
 use osl_domain::Movement;
@@ -26,7 +21,6 @@ fn file(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
     canonical
 }
 
-/// The file the importer reads, written where a test can throw it away.
 struct HandleFile(PathBuf);
 
 impl HandleFile {
@@ -47,8 +41,6 @@ impl Drop for HandleFile {
     }
 }
 
-/// Every handle in the database with the country of the athlete wearing it,
-/// which is what tells the two people sharing a name apart.
 async fn attached(pool: &PgPool) -> Vec<(String, String)> {
     sqlx::query_as(
         "SELECT a.country, s.handle FROM athlete_socials s
@@ -120,7 +112,6 @@ async fn requires_filters_when_names_are_ambiguous(pool: PgPool) {
     assert!(problem.contains("1 ambiguous"), "{problem}");
     assert!(attached(&pool).await.is_empty(), "nothing was written");
 
-    // The same row, narrowed to the one it meant.
     let narrowed = HandleFile::new(
         "Name,Sex,Country,Disambiguation,Instagram\n\
          Tony Nguyen,,US,,tony_sw\n",

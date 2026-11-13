@@ -1,7 +1,3 @@
-//! Some sources publish only the best lift per movement, never the attempts
-//! behind it. The transformer must store that weight without inventing an
-//! attempt, and totals must still add up.
-
 mod common;
 
 use common::{athlete, best, competition, import, men_80};

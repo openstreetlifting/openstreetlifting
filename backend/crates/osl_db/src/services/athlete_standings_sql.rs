@@ -3,9 +3,6 @@ use crate::repository::ranking_query::{
 };
 use sqlx::{Postgres, QueryBuilder};
 
-/// Appends the metric-candidate pipeline and an INSERT that fills
-/// `athlete_metric_standings` for every athlete. Must be appended right after
-/// `ranking_query::movement_weights(None)`.
 pub(super) fn push_metric_pool(query: &mut QueryBuilder<Postgres>) {
     push_metric_candidates(query);
     push_latest_total_classes(query);
@@ -79,9 +76,6 @@ pub(super) fn push_metric_pool(query: &mut QueryBuilder<Postgres>) {
     );
 }
 
-/// Appends the rivals pipeline and an INSERT that fills `athlete_rivals` for
-/// every athlete. Must be appended right after
-/// `ranking_query::movement_weights(None)`.
 pub(super) fn push_rivals(query: &mut QueryBuilder<Postgres>) {
     push_latest_total_classes(query);
     query.push(

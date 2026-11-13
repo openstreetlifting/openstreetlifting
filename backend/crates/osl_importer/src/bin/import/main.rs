@@ -32,7 +32,6 @@ async fn main() -> std::process::ExitCode {
     match run(cli).await {
         Ok(()) => std::process::ExitCode::SUCCESS,
         Err(error) => {
-            // Interactive command diagnostics are not sent to JSON telemetry.
             if std::env::var("LOG_FORMAT").as_deref() != Ok("json") {
                 eprintln!("{error:#}");
             }
@@ -273,6 +272,7 @@ async fn handle_recompute_ris(database_url: &str, dry_run: bool) -> Result<()> {
 
     Ok(())
 }
+
 async fn standings_counts(pool: &sqlx::PgPool) -> Result<(i64, i64)> {
     let standings: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM athlete_metric_standings")
         .fetch_one(pool)
@@ -284,7 +284,6 @@ async fn standings_counts(pool: &sqlx::PgPool) -> Result<(i64, i64)> {
         .context("counting rows in athlete_rivals")?;
     Ok((standings, rivals))
 }
-
 
 async fn handle_recompute_standings(database_url: &str, dry_run: bool) -> Result<()> {
     let pool = PgPoolOptions::new()

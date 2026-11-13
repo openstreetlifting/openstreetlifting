@@ -107,7 +107,6 @@ mod tests {
     #[test]
     fn recognizes_japanese_when_kana_is_present() {
         assert_eq!(NativeScript::detect("たなか"), Some(NativeScript::Japanese));
-        // Kanji and kana together are still one Japanese name.
         assert_eq!(
             NativeScript::detect("田中さくら"),
             Some(NativeScript::Japanese)

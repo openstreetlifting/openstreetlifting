@@ -152,7 +152,6 @@ impl<'a> RankingRepository<'a> {
         Ok(standings)
     }
 
-    /// Closest total on each side among athletes whose latest All4 category matches, including the athlete.
     pub async fn get_athlete_total_neighbors(
         &self,
         athlete_id: Uuid,

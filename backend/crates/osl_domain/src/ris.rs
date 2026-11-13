@@ -140,8 +140,6 @@ mod tests {
         Decimal::from_f64(value).expect("a test constant is a decimal")
     }
 
-    /// Bodyweight, total and score as the RIS presentation publishes them for
-    /// Final Rep Worlds 2023, which the 2024 edition scored.
     const MEN_WORLDS_2023: [(f64, f64, f64); 15] = [
         (91.7, 586.5, 113.43),
         (85.6, 557.25, 110.79),
@@ -153,8 +151,6 @@ mod tests {
         (79.6, 513.75, 106.65),
         (86.3, 532.5, 105.46),
         (113.2, 562.5, 105.34),
-        // The presentation prints 532.7, the only total in its table that is
-        // not a multiple of 0.25. At 532.75 the published score reproduces.
         (87.1, 532.75, 105.06),
         (72.7, 470.0, 104.94),
         (72.5, 467.5, 104.64),
