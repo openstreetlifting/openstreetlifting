@@ -59,8 +59,8 @@ Keep existing provenance columns; `prepare` sets column order.
 
 Use the source-listed country. When the source omits it:
 
-- **National championship** (a federation's national title event, such as French or German Nationals): default every athlete to the host country. An athlete whose archive country (API `athlete.country` or existing entries) differs keeps that country.
-- **Any other competition**: leave the cell empty. The host country is not nationality.
+- **Domestic competition** (any event of a national federation or organiser in its own country: nationals, regionals, series, qualifiers, local classics such as FNSL Interrégionales, AESL Ragnarok Battles or SLI Street): default every athlete to the host country. An athlete whose archive country (API `athlete.country` or existing entries) differs keeps that country.
+- **International competition** (opens, undergrounds, Euros, Worlds, expo events such as Arnold Classic): leave the cell empty. The host country is not nationality.
 
 Conflicting countries for one athlete block import; resolve against the source and update the affected entries together.
 

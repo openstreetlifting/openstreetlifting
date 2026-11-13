@@ -1,8 +1,8 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
 M,66,Deldinne,Clément,,BE,,,285,competed,,,,15,15,,50,51.25x,50,,80,81.25x,80,,,140,140
-M,66,Sacha,Coppe,,,,,,disqualified,Bombed the muscle-up,,,5x,,,,46.25,46.25,,77.5,78.75x,77.5,,,132.5,132.5
+M,66,Sacha,Coppe,,BE,,,,disqualified,Bombed the muscle-up,,,5x,,,,46.25,46.25,,77.5,78.75x,77.5,,,132.5,132.5
 M,66,Hamza,El Oueriaghli,,BE,,,312.5,competed,,,,10,10,,,60,60,,90,91.25x,90,,152.5,155x,152.5
-M,66,Justin,Grenier,,,,,,disqualified,Bombed the dips,,0,1.25x,0,,31,32.25x,31,,,77.5x,,,110,112.5x,110
+M,66,Justin,Grenier,,BE,,,,disqualified,Bombed the dips,,0,1.25x,0,,31,32.25x,31,,,77.5x,,,110,112.5x,110
 M,66,Flavio,Lenoci,,BE,,,187.5,competed,,,5,6.25x,5,,,37.5,37.5,,35,36.25x,35,,,110,110
 M,66,Anas,Maani,,BE,,,310,competed,,,,15,15,,,52.5,52.5,85,86.25x,,85,,,157.5,157.5
 M,66,Marouane,Mellouki,,BE,,,305,competed,,,,22.5,22.5,,,67.5,67.5,,,90,90,,125,127.5x,125
@@ -14,26 +14,26 @@ M,73,Tristan,Delaval,,BE,,,357.5,competed,,,,15,15,,,60,60,,,102.5,102.5,,,180,1
 M,73,Corentin,Dupont,,BE,,,266.25,competed,,,2.5,3.75x,2.5,42.5,43.75x,,42.5,,,81.25,81.25,,,140,140
 M,73,Killian,Flecheux,,BE,,,338.75,competed,,,12.5,13.75x,12.5,,51.25,52.5x,51.25,,102.5,103.75x,102.5,,172.5,175x,172.5
 M,73,Maxime,Janssens,,BE,,,341.25,competed,,,,18.75,18.75,,65,65x,65,,112.5,113.75x,112.5,,145,147.5x,145
-M,73,,Loris,,,,,347.5,competed,,17.5,18.75x,,17.5,,70,71.25x,70,,105,106.25x,105,,155,157.5x,155
-M,73,Priank,Mohan,,,,,320,competed,,,,12.5,12.5,,55,56.25x,55,90,91.25x,,90,,,162.5,162.5
+M,73,,Loris,,BE,,,347.5,competed,,17.5,18.75x,,17.5,,70,71.25x,70,,105,106.25x,105,,155,157.5x,155
+M,73,Priank,Mohan,,BE,,,320,competed,,,,12.5,12.5,,55,56.25x,55,90,91.25x,,90,,,162.5,162.5
 M,73,Guillaume,Parein,,BE,,,358.75,competed,,,20,21.25x,20,,,76.25,76.25,,,92.5,92.5,,,170,170
-M,73,Leandro,Pitisci,,,,,310,competed,,,5,6.25x,5,,,55,55,,,82.5,82.5,,167.5,170x,167.5
-M,73,Marnix,Van den Bossche,,,,,257.5,competed,,,7.5,8.75x,7.5,,55,56.25x,55,,85,86.25x,85,,,110,110
+M,73,Leandro,Pitisci,,BE,,,310,competed,,,5,6.25x,5,,,55,55,,,82.5,82.5,,167.5,170x,167.5
+M,73,Marnix,Van den Bossche,,BE,,,257.5,competed,,,7.5,8.75x,7.5,,55,56.25x,55,,85,86.25x,85,,,110,110
 M,80,Alexandre,Antropovski,,BE,,,342.5,competed,,10,12.5x,12.5x,10,52.5,58.75,60,60,95,105,110,110,,162.5,165x,162.5
 M,80,Charles,Boucher,,BE,,,415,competed,,16.25,20x,20,20,65,70,73.75x,70,100,110,117.5,117.5,190,202.5,207.5,207.5
-M,80,Timothée,Ducoulombier,,,,,335,competed,,5x,10,15x,10,50,57.5,62.5x,57.5,100x,107.5,112.5,112.5,,155,157.5x,155
+M,80,Timothée,Ducoulombier,,FR,,,335,competed,,5x,10,15x,10,50,57.5,62.5x,57.5,100x,107.5,112.5,112.5,,155,157.5x,155
 M,80,Ayoub,El Aroussi,,BE,,,,disqualified,Bombed the muscle-up,7.5x,7.5x,12.5x,,45,55x,55x,45,65,75x,80x,65,,115,117.5x,115
-M,80,Noé,Foulon,,,,,330,competed,,10,15,20,20,62.5,70,71.25x,70,70,85,90,90,,,150,150
-M,80,Yanis,Fournel,,,,,306.25,competed,,8.75,10,12.5,12.5,46.25,53.75,55x,53.75,62.5,75,82.5x,75,,165,167.5x,165
+M,80,Noé,Foulon,,BE,,,330,competed,,10,15,20,20,62.5,70,71.25x,70,70,85,90,90,,,150,150
+M,80,Yanis,Fournel,,FR,,,306.25,competed,,8.75,10,12.5,12.5,46.25,53.75,55x,53.75,62.5,75,82.5x,75,,165,167.5x,165
 M,80,Rafael,Furtado Matos,,BE,,,381.25,competed,,22.5,26.25,27.5x,26.25,70,76.25,80,80,75,90,100x,90,172.5,180,185,185
-M,80,Lorenzo,Giordani,,,,,370,competed,,17.5,21.25x,22.5,22.5,53.75,60,65,65,95,105,112.5x,105,167.5,172.5,177.5,177.5
+M,80,Lorenzo,Giordani,,FR,,,370,competed,,17.5,21.25x,22.5,22.5,53.75,60,65,65,95,105,112.5x,105,167.5,172.5,177.5,177.5
 M,80,Joan,Giovanelli,,BE,,,330,competed,,13.25x,17.5x,17.5,17.5,42.5,52.5,57.5,57.5,77.5,85,92.5x,85,,,170,170
 M,80,Pierre,Heirbrant,,BE,,,342.5,competed,,12.5,16.25,20x,16.25,50,56.25,60,60,80,92.5,96.25,96.25,150,162.5,170,170
 M,80,,Jetzer,,BE,,,,disqualified,Bombed the squat,0,2.5,5,5,40,45,50x,45,75,82.5,90x,82.5,,,135x,
-M,80,Thomas,Lerho,,,,,368.75,competed,,20,22.5x,23.75,23.75,60,65,67.5x,65,102.5,107.5,110,110,165x,170,172.5x,170
+M,80,Thomas,Lerho,,BE,,,368.75,competed,,20,22.5x,23.75,23.75,60,65,67.5x,65,102.5,107.5,110,110,165x,170,172.5x,170
 M,80,Robin,Maus,,BE,,,300,competed,,10x,10,15x,10,45,52.5,55x,52.5,87.5,95,100x,95,,,142.5,142.5
 M,80,Noé,Melmoux,,BE,,,312.5,competed,,5,7.5x,10x,5,30,40,45,45,65x,75,82.5,82.5,,,180,180
-M,80,Matthieu,Sneiders,,,,,317.5,competed,,2.5x,2.5,5x,2.5,50,55,57.5,57.5,75,82.5,90x,82.5,,,175,175
+M,80,Matthieu,Sneiders,,BE,,,317.5,competed,,2.5x,2.5,5x,2.5,50,55,57.5,57.5,75,82.5,90x,82.5,,,175,175
 M,87,Virgile,Calicis,,BE,,,290,competed,,,5,6.25x,5,,42.5,43.75x,42.5,,,90,90,,152.5,155x,152.5
 M,87,Sylvain,Cerny,,BE,,,466.25,competed,,,30,31.25x,30,,,81.25,81.25,,,125,125,,,230,230
 M,87,Baptiste,Doupagne,,BE,,,260,competed,,,5,6.25x,5,,50,51.25x,50,,72.5,73.75x,72.5,,,132.5,132.5
@@ -43,11 +43,11 @@ M,87,Etienne,Marchal,,BE,,,380,competed,,,15,16.25x,15,,,70,70,,120,121.25x,120,
 M,87,Loris,Marguinio,,BE,,,363.75,competed,,,13.75,15x,13.75,57.5,58.75x,,57.5,,107.5,108.75x,107.5,,,185,185
 M,87,Noa,Préser,,BE,,,360,competed,,,5,6.25x,5,,50,51.25x,50,,,110,110,,,195,195
 M,94,Robin,Pittia,,BE,,,432.5,competed,,5,6.25x,,5,55,56.25x,,55,,,132.5,132.5,,,240,240
-M,94+,Akalai,Mohamed,,,,,365,competed,,,5,6.25x,5,,,65,65,,80,81.25x,80,,,215,215
+M,94+,Akalai,Mohamed,,BE,,,365,competed,,,5,6.25x,5,,,65,65,,80,81.25x,80,,,215,215
 F,63,Lotte,Berghmans,,BE,,,190,competed,,,,,,,,41.25,41.25,,,41.25,41.25,,,107.5,107.5
 F,63,Fagel,Candice,,BE,,,178.75,competed,,,2.5,3.75x,2.5,,26.25,27.5x,26.25,,,35,35,,,115,115
-F,63,Marie,Jacques,,,,,155,competed,,,,,,,,20,20,,27.5,28.75x,27.5,,,107.5,107.5
+F,63,Marie,Jacques,,BE,,,155,competed,,,,,,,,20,20,,27.5,28.75x,27.5,,,107.5,107.5
 F,63,Celia,Lazzari,,BE,,,131.25,competed,,,,,,,11.25,12.5x,11.25,,15,16.25x,15,,,105,105
-F,63,Manon,Vergucht,,,,,208.75,competed,,,6.25,7.5x,6.25,32.5,33.75x,,32.5,,50,51.25x,50,,,120,120
+F,63,Manon,Vergucht,,BE,,,208.75,competed,,,6.25,7.5x,6.25,32.5,33.75x,,32.5,,50,51.25x,50,,,120,120
 F,70,Damarys,Breard,,BE,,,175,competed,,,,,,,,22.5,22.5,,32.5,33.75x,32.5,,,120,120
 F,70,Floriane,Carpentier,,BE,,,137.5,competed,,,,,,,,7.5,7.5,,,15,15,,,115,115
