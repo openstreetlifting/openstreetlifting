@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.64.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.63.1...v0.64.0) (2026-11-13)
+
+
+### Features
+
+* continue doc house keeping ([9ce93f6](https://github.com/openstreetlifting/openstreetlifting/commit/9ce93f6e54f656b9ee2f2feb6d5aba46f27e1b7a))
+* house keeping doc ([2343fea](https://github.com/openstreetlifting/openstreetlifting/commit/2343feac597cfa40c060ab213f90dc6425ce8412))
+
+
+### Bug Fixes
+
+* **backend:** resolve CI compilation and lint failures ([#946](https://github.com/openstreetlifting/openstreetlifting/issues/946)) ([9333390](https://github.com/openstreetlifting/openstreetlifting/commit/933339027f3e384977b9267043918e63b34ec803))
+
 ## [0.63.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.63.0...v0.63.1) (2026-11-11)
 
 
