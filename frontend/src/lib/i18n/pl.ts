@@ -385,7 +385,6 @@ export default {
     '{competition} — planowany termin: {date}. Wyniki pojawią się tutaj po opublikowaniu.',
   'Page {page} of {pages}.': 'Strona {page} z {pages}.',
   Records: 'Rekordy',
-  Open: 'Open',
   'OpenStreetlifting records': 'Rekordy OpenStreetlifting',
   '{country} records': 'Rekordy: {country}',
   '{movement} records': 'Rekordy: {movement}',

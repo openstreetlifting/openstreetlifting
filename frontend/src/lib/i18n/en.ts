@@ -315,7 +315,6 @@ export const messages = [
   'Weight unit',
   'Your weight unit preference is saved in your browser.',
   'Records',
-  'Open',
   'OpenStreetlifting records',
   '{country} records',
   '{movement} records',

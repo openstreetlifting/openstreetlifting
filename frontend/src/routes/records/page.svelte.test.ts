@@ -84,7 +84,7 @@ it('lists each movement in order with the open group first', async () => {
       .elements()
       .map((heading) => heading.textContent?.trim())
   ).toEqual(['Muscle-up', 'Squat']);
-  expect(classLabels('Muscle-up')).toEqual(['Open All Classes', '-57kg']);
+  expect(classLabels('Muscle-up')).toEqual(['All Classes', '-57kg']);
 
   const muscleup = page.getByRole('table', { name: 'Muscle-up records' });
   await expect

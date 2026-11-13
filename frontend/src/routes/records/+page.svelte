@@ -49,7 +49,7 @@
   );
 
   function classLabel(group: RecordGroup): string {
-    if (!group.weight_class) return i18n.t('Open');
+    if (!group.weight_class) return i18n.t('All Classes');
     return weights.category(`${group.weight_class.slice(1)}kg`, i18n.locale);
   }
 
@@ -187,11 +187,6 @@
                             class="{TABLE_CELL} align-top text-left font-mono font-medium text-ink"
                           >
                             {classLabel(group)}
-                            {#if !group.weight_class}
-                              <span class="mt-0.5 block text-micro font-normal text-muted"
-                                >{i18n.t('All Classes')}</span
-                              >
-                            {/if}
                           </th>
                         {/if}
                         <td class="{TABLE_CELL} {FIGURE} text-muted">{entry.rank}</td>
