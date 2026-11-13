@@ -28,6 +28,7 @@
   const menuLinks = $derived([
     { path: '', label: i18n.t('Rankings'), active: isActive('/') },
     { path: 'competitions', label: i18n.t('Competitions'), active: isActive('/competitions') },
+    { path: 'records', label: i18n.t('Records'), active: isActive('/records') },
     { path: 'ris', label: 'RIS', active: isActive('/ris') },
     { path: 'contact', label: i18n.t('Contact'), active: isActive('/contact') },
   ] as const);
@@ -64,6 +65,15 @@
       class:border-ink={isActive('/competitions')}
       class:text-ink={isActive('/competitions')}
       aria-current={isActive('/competitions') ? 'page' : undefined}>{i18n.t('Competitions')}</a
+    >
+  </li>
+  <li class="min-w-0 flex-1 lg:flex-none">
+    <a
+      href={i18n.href(resolve('records'))}
+      class="{NAV_LINK} w-full justify-start border-b-0 border-transparent px-0 lg:justify-center lg:border-b-2"
+      class:border-ink={isActive('/records')}
+      class:text-ink={isActive('/records')}
+      aria-current={isActive('/records') ? 'page' : undefined}>{i18n.t('Records')}</a
     >
   </li>
 {/snippet}
