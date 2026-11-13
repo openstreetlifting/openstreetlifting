@@ -1,0 +1,20 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+    "https://final-rep.com/costaricanopen25/",
+]
+
+[competition]
+name = "Costa Rican Open"
+start_date = "2025-05-24"
+end_date = "2025-05-25"
+city = "Santa Ana"
+venue = "MC Gym Training Center"
+region = "San José"
+country = "CR"
+status = "completed"
+
+[federation]
+name = "King of the Jungle"
+country = "CR"
