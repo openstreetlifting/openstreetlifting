@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+    "https://github.com/openstreetlifting/openstreetlifting/issues/221",
+]
+
+[competition]
+name = "Guatemalan Open"
+start_date = "2026-05-30"
+city = "Guatemala City"
+country = "GT"
+status = "completed"
+
+[federation]
+name = "Silverbacks Academy"
+country = "GT"
