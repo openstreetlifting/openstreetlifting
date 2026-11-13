@@ -6,6 +6,7 @@ sources = [
 
 [competition]
 name = "Underground Bonn"
+series = "finalrep-underground-bonn"
 start_date = "2025-08-23"
 city = "Bonn"
 country = "DE"
