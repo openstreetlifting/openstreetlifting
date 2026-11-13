@@ -7,19 +7,10 @@ send me the results through the [contact page](https://openstreetlifting.org/con
 
 ## Before you start
 
-### What counts as a source
+### What i consider a source
 
-A federation PDF, a scoresheet photo, a competition livestream or a public
-Instagram post can all be useful. The source should identify the competition and
-let us check the results. Prefer official results from the organizer when
-available.
-
-### Check the competition is not already there
-
-Search the [competition archive](https://openstreetlifting.org/competitions) by
-name, federation or year. Check the date and location too, as the name may differ.
-If you find the competition, you can help by correcting mistakes or adding
-missing results.
+A PDF, a scoresheet photo, a competition livestream or a Instagram post can all be useful. The source should identify the competition and
+let me check the results. Please only use official federation material.
 
 ## Adding a competition
 
@@ -32,38 +23,16 @@ The folder contains two files:
 - `competition.toml`: the competition's name, dates, location and source links.
 - `entries.csv`: the athletes and their results.
 
-For example, the [FinalRep Worlds 2023 folder on GitHub](https://github.com/openstreetlifting/openstreetlifting/tree/main/backend/data/competitions/finalrep/2023/worlds-2023)
-contains both files. Open them to see how a competition is stored.
-
-Use an existing competition as an example, replacing its details and results
-with your own. Check the project files for an existing entry before creating a
-new folder. The [Data Reference](./DATA_REFERENCE.md) explains how to fill in each
-file.
+See, for example the [FinalRep Worlds 2023 folder on GitHub](https://github.com/openstreetlifting/openstreetlifting/tree/main/backend/data/competitions/finalrep/2023/worlds-2023)
 
 ### Validate it locally
 
-If you have downloaded the repository and have Rust and Cargo installed, open a
-terminal in the `backend` folder and run:
-
-```sh
-SQLX_OFFLINE=true cargo run -p osl_importer --bin import -- prepare data/competitions/<federation>/<year>/<slug>
-SQLX_OFFLINE=true cargo run -p osl_importer --bin import -- competitions --dry-run
-```
-
-Replace the preparation path with your competition. Preparation fills totals from
-complete lift results and formats its files; the dry run checks the archive without
-writing to the database. The summary should show zero
-failures. Review any warnings and compare your entries with the source as well.
-If you cannot run this check, mention it in your pull request so we can help.
+Refer to Github readme instructions to start the project locally and import the competition
 
 ### Open a pull request
 
 Open a pull request in the
 [project repository](https://github.com/openstreetlifting/openstreetlifting).
-
-Give your pull request a clear title, such as `Add FinalRep Worlds 2023 results`.
-Include the source link, a short description of your changes and anything you
-are unsure about. Mention whether you ran the validation check.
 
 ## Correcting results that are already published
 
@@ -95,5 +64,4 @@ Before submitting files, check that:
 If you get stuck, email
 [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org) or open a
 [GitHub issue](https://github.com/openstreetlifting/openstreetlifting/issues)
-with your question and source. You do not need to prepare the files before asking
-for help. Sharing results is already a contribution.
+with your question and source.
