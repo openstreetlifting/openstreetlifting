@@ -69,19 +69,30 @@ pub fn display_name(first_name: &str, last_name: &str) -> String {
 }
 
 fn fold(name: &str) -> String {
-    let without_accents: String = name
+    let spaced: String = name
+        .to_lowercase()
         .nfd()
         .filter(|c| !unicode_normalization::char::is_combining_mark(*c))
-        .collect();
-
-    let spaced: String = without_accents
-        .to_lowercase()
-        .chars()
+        .flat_map(fold_letter)
         .filter(|c| *c != '\'' && *c != '\u{2019}')
         .map(|c| if c.is_alphanumeric() { c } else { ' ' })
         .collect();
 
     spaced.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+fn fold_letter(c: char) -> Vec<char> {
+    match c {
+        'ł' => vec!['l'],
+        'ø' => vec!['o'],
+        'đ' | 'ð' => vec!['d'],
+        'ı' => vec!['i'],
+        'ß' => vec!['s', 's'],
+        'æ' => vec!['a', 'e'],
+        'œ' => vec!['o', 'e'],
+        'þ' => vec!['t', 'h'],
+        _ => vec![c],
+    }
 }
 
 fn normalize_name_part(name: &str) -> String {
@@ -139,6 +150,27 @@ mod tests {
         assert_eq!(match_name("Lea", "MERANDON"), match_name("Léa", "Mérandon"));
         assert_eq!(match_name("Joao", "Silva"), match_name("João", "Sílva"));
         assert_eq!(match_name("Muller", "X"), match_name("Müller", "X"));
+    }
+
+    #[test]
+    fn folds_letters_without_decomposition() {
+        assert_eq!(
+            match_name("Bartlomiej", "Orchowski"),
+            match_name("Bartłomiej", "Orchowski")
+        );
+        assert_eq!(match_name("PAWEL", "X"), match_name("PAWEŁ", "X"));
+        assert_eq!(
+            match_name("Soren", "Ostergaard"),
+            match_name("Søren", "Østergaard")
+        );
+        assert_eq!(match_name("Dorde", "X"), match_name("Đorđe", "X"));
+        assert_eq!(match_name("Strasse", "X"), match_name("Straße", "X"));
+        assert_eq!(
+            match_name("Aelfred", "Oedipe"),
+            match_name("Ælfred", "Œdipe")
+        );
+        assert_eq!(match_name("Thor", "Yildiz"), match_name("Þor", "Yıldız"));
+        assert_eq!(match_name("Izmir", "X"), match_name("İzmir", "X"));
     }
 
     #[test]
