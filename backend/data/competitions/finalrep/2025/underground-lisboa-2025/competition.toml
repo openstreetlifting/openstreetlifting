@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+    "https://final-rep.com/?p=6173",
+]
+
+[competition]
+name = "Underground Lisboa"
+start_date = "2025-07-20"
+city = "Lisbon"
+country = "PT"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "FinalRep"
+country = "DE"
