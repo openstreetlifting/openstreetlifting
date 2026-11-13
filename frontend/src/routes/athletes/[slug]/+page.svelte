@@ -57,6 +57,8 @@
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
   const showsDivision = $derived(athlete.competitions.some((c) => c.division));
+  const showsProgress = $derived(athlete.total_competitions > 1);
+  const showsBalance = $derived(Boolean(athlete.lift_balance));
 
   const LIFTS = [
     { key: 'muscleup', code: 'M', movement: 'Muscle-up', label: 'Muscle Up' },
@@ -363,19 +365,25 @@
     />
   {/key}
 
-  <div>
-    <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Performance')}</Text>
-    <div class="grid items-stretch gap-tile lg:auto-rows-fr lg:grid-cols-2">
-      <AthleteProgress
-        athleteSlug={athlete.slug}
-        competitions={athlete.competitions}
-        metric={filters.performance}
-        onMetricChange={(value) => updateFilter('performance', value)}
-      />
+  {#if showsProgress || showsBalance}
+    <div>
+      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Performance')}</Text>
+      <div class="grid items-stretch gap-tile lg:auto-rows-fr lg:grid-cols-2">
+        {#if showsProgress}
+          <AthleteProgress
+            athleteSlug={athlete.slug}
+            competitions={athlete.competitions}
+            metric={filters.performance}
+            onMetricChange={(value) => updateFilter('performance', value)}
+          />
+        {/if}
 
-      <AthleteBalance balance={athlete.lift_balance} />
+        {#if showsBalance}
+          <AthleteBalance balance={athlete.lift_balance} />
+        {/if}
+      </div>
     </div>
-  </div>
+  {/if}
 
   <div class={LAYOUT.section}>
     <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Competition history')}</Text>
