@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+    "https://meathchronicle.ie/?p=110099",
+]
+
+[competition]
+name = "Ireland Nationals"
+start_date = "2024-06-23"
+city = "Ashbourne"
+venue = "CrossFit Meath"
+region = "Meath"
+country = "IE"
+status = "completed"
+
+[federation]
+name = "Bodystrong"
+country = "GB"
