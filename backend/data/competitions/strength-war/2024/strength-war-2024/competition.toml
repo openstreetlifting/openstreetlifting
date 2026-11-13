@@ -1,0 +1,20 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://www.lanuovacalabria.it/streetlifting-la-catanzarese-chiara-renda-si-aggiudica-il-titolo-di-campionessa-ditalia",
+    "https://www.soveratoweb.com/nicole-anania-da-catanzaro-agli-europei-di-streetlifting/",
+]
+
+[competition]
+name = "Strength War"
+start_date = "2024-06-22"
+end_date = "2024-06-23"
+city = "Legnano"
+venue = "Hyperlift Arena"
+region = "Lombardia"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "Strength War"
+country = "IT"

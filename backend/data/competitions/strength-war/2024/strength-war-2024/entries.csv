@@ -1,0 +1,21 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Alessio,Ceragioli,,IT,65.3,102.29,415,competed,,recovered,2024,20,25x,25,25,70,75,78.75x,75,90,95,100,100,202.5,210,215,215
+M,66,Domenico,Zezza,,IT,65.1,100.11,405,competed,,recovered,2024,17.5,20,22.5x,20,60x,62.5x,62.5,62.5,105,112.5,115,115,195,207.5,212.5x,207.5
+M,73,Valerio,D'Onofrio,,IT,72.5,96.53,431.25,competed,,recovered,2024,15,20,23.75,23.75,70,75,77.5,77.5,100,110,112.5,112.5,200,210,217.5,217.5
+M,73,Roger,Rivera,,PH,71.5,97.74,431.25,competed,,recovered,2024,20,22.5,25x,22.5,65,71.25,73.75,73.75,110,122.5,130,130,185,197.5,205,205
+M,73,Giulio,Torelli,,IT,72.3,102.66,457.5,competed,,recovered,2024,25x,27.5,32.5,32.5,77.5,82.5,85,85,120,126.25,130,130,200,210,215x,210
+M,80,Cristiano,Bellorini,,IT,78.8,102.19,488.75,competed,,recovered,2024,25,30,32.5,32.5,72.5,76.25,78.75,78.75,107.5,120,125x,120,235,245,257.5,257.5
+M,80,Piero,Russo,,IT,78.21,97.24,462.5,competed,,recovered,2024,20,25x,25,25,75,80,85,85,130,140x,140x,130,210,222.5,232.5x,222.5
+M,80,Antonio,Sparaneo,,IT,79.9,99.9,482.5,competed,,recovered,2024,20x,20,22.5,22.5,57.5,61.25,63.75x,61.25,127.5,131.25x,131.25,131.25,260,267.5,275x,267.5
+M,87,Diego,Corazza,,IT,84.31,95.68,477.5,competed,,recovered,2024,30,35,37.5x,35,85,92.5x,92.5x,85,120,127.5,135x,127.5,220,230x,230,230
+M,87,Amedeo,Pulcini,,IT,85.69,103.58,521.25,competed,,recovered,2024,30x,33.75,36.25,36.25,77.5,85,86.25x,85,130,140,150x,140,245,260,262.5x,260
+M,87,Marco,de Vita,,IT,84.9,93.58,468.75,competed,,recovered,2024,17.5,22.5,25,25,60,71.25,75,75,101.25,117.5,126.25,126.25,205,235,242.5,242.5
+M,94,Alessandro,Busato,,IT,93.51,87.97,457.5,competed,,recovered,2024,10,15,20x,15,62.5,67.5x,70x,62.5,135,142.5,150,150,220,230,240x,230
+M,94,Giovanni,Lategana,,IT,90.99,96.46,497.5,competed,,recovered,2024,20,25,28.75,28.75,62.5,67.5,71.25,71.25,110,117.5,122.5,122.5,250,262.5,275,275
+M,94+,Davide,Molinaro,,CZ,100.17,78.16,412.5,competed,,recovered,2024,10,15x,15x,10,60,65,67.5,67.5,95,105,112.5,112.5,205,215x,222.5,222.5
+M,94+,Valerio,Naldi,,IT,123.38,108.54,581.25,competed,,recovered,2024,1.25,2.5x,2.5x,1.25,80x,80,90,90,170,190x,190,190,270,285,300,300
+F,52,Selly,Ortis,,IT,49,93.99,190,competed,,recovered,2024,1.25x,1.25,2.5,2.5,23.75,27.5,30,30,37.5,42.5,47.5x,42.5,110,115,120x,115
+F,57,Nicole,Anania,,IT,55,96.11,215,competed,,recovered,2024,2.5,5,7.5,7.5,25,30x,30,30,37.5,42.5,45x,42.5,122.5,130,135,135
+F,57,Sofia,Cerdan Bes,,IT,56.3,105.49,240,competed,,recovered,2024,5,7.5x,7.5,7.5,20,25,27.5x,25,55,57.5x,57.5x,55,140x,145,152.5,152.5
+F,57,Martina,de Iturbe,,IT,55.2,77.46,173.75,competed,,recovered,2024,2.5,5x,5,5,22.5,27.5,30,30,40,42.5x,43.75,43.75,80,90,95,95
+F,63,Maria,Stella Aniello,,IT,57.49,75.39,173.75,competed,,recovered,2024,1.25,2.5x,2.5x,1.25,37.5,40,42.5x,40,40,42.5x,45,45,85x,87.5x,87.5,87.5
