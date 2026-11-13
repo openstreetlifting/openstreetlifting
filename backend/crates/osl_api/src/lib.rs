@@ -166,11 +166,12 @@ mod tests {
 
     #[test]
     fn matches_committed_openapi() {
-        let committed = include_str!("../../../openapi.json");
+        let committed: serde_json::Value =
+            serde_json::from_str(include_str!("../../../openapi.json")).unwrap();
 
         assert_eq!(
-            ApiDoc::openapi().to_pretty_json().unwrap(),
-            committed.trim_end(),
+            serde_json::to_value(ApiDoc::openapi()).unwrap(),
+            committed,
             "backend/openapi.json is stale, run from frontend: pnpm api:sync"
         );
     }

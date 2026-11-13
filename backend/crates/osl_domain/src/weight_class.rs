@@ -113,9 +113,7 @@ impl WeightClass {
 
     #[must_use]
     pub fn label(min: Option<Decimal>, max: Option<Decimal>) -> String {
-        Self::of(min, max)
-            .map(|class| class.to_string())
-            .unwrap_or_default()
+        Self::of(min, max).map_or_default(|class| class.to_string())
     }
 }
 

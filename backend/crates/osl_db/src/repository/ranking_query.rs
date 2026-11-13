@@ -1,10 +1,3 @@
-//! Shared SQL fragments for ranking computations.
-//!
-//! One source of truth for the `movement_weights` pipeline: the live global
-//! ranking page, the athlete standings read path, and the import-time
-//! standings recompute all build on these fragments. Keeping them here stops
-//! the three callers from forking into divergent ranking semantics.
-
 use sqlx::{Postgres, QueryBuilder};
 
 use osl_domain::WeightClass;
@@ -27,9 +20,6 @@ pub(crate) fn same_class(left: &str, right: &str) -> String {
     )
 }
 
-/// Aggregates each participant's best lift per movement. With no filter this
-/// scans every competed participant in the database; callers that only need a
-/// subset should always pass a filter.
 pub(crate) fn movement_weights(filter: Option<&RankingFilter>) -> QueryBuilder<Postgres> {
     let mut query = QueryBuilder::new(
         r"
@@ -232,10 +222,7 @@ fn push_latest_total_class_from(query: &mut QueryBuilder<Postgres>) {
     query.push_bind(osl_domain::FULL_EVENT);
 }
 
-pub(crate) fn push_latest_total_class(
-    query: &mut QueryBuilder<Postgres>,
-    athlete_id: Uuid,
-) {
+pub(crate) fn push_latest_total_class(query: &mut QueryBuilder<Postgres>, athlete_id: Uuid) {
     query.push(
         r"
             latest_total_class AS (

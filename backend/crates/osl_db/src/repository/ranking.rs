@@ -3,7 +3,10 @@ use rust_decimal::Decimal;
 use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
-use super::ranking_query::{push_eligible, push_latest_total_class, push_metric_candidates, push_name_match, push_ranking_pool, same_class};
+use super::ranking_query::{
+    push_eligible, push_latest_total_class, push_metric_candidates, push_name_match,
+    push_ranking_pool, same_class,
+};
 use crate::error::Result;
 use crate::params::RankingFilter;
 use crate::projections::ranking::{AthleteMetricStandingRow, AthleteNeighborRow, RankingRow};
@@ -149,7 +152,6 @@ impl<'a> RankingRepository<'a> {
         Ok(standings)
     }
 
-    /// Closest total on each side among athletes whose latest All4 category matches, including the athlete.
     pub async fn get_athlete_total_neighbors(
         &self,
         athlete_id: Uuid,
@@ -216,13 +218,13 @@ impl<'a> RankingRepository<'a> {
         athlete_id: Uuid,
     ) -> Result<Vec<AthleteMetricStandingRow>> {
         let standings: Vec<AthleteMetricStandingRow> = sqlx::query_as(
-            r#"
+            r"
             SELECT metric, value, weight_class_min, weight_class_max,
                    global_place, global_field, country, country_place, country_field
             FROM athlete_metric_standings
             WHERE athlete_id = $1
             ORDER BY metric
-            "#,
+            ",
         )
         .bind(athlete_id)
         .fetch_all(self.pool)
@@ -235,14 +237,14 @@ impl<'a> RankingRepository<'a> {
         athlete_id: Uuid,
     ) -> Result<Vec<AthleteNeighborRow>> {
         let neighbors: Vec<AthleteNeighborRow> = sqlx::query_as(
-            r#"
+            r"
             SELECT scope, neighbor_athlete_id AS athlete_id, first_name, last_name, slug,
                    country, weight_class_min, weight_class_max, value, gap, place, field,
                    competition_name, competition_slug, competition_date
             FROM athlete_rivals
             WHERE profile_athlete_id = $1
             ORDER BY scope, place
-            "#,
+            ",
         )
         .bind(athlete_id)
         .fetch_all(self.pool)

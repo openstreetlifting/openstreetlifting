@@ -1,7 +1,3 @@
-//! Who a result belongs to is decided by the folded name, so the same person
-//! spelled three ways stays one athlete and two people sharing a name stay two.
-//! Both failures used to be silent, which is why they are pinned down here.
-
 use osl_domain::Movement;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use sqlx::PgPool;
@@ -78,7 +74,6 @@ async fn preserves_source_name_spelling(pool: PgPool) {
             .unwrap();
     assert_eq!((first.as_str(), last.as_str()), ("Léa", "Mérandon"));
 
-    // The slug is folded, so the URL carries no accent.
     let slug: String = sqlx::query_scalar("SELECT slug FROM athletes")
         .fetch_one(&pool)
         .await
@@ -102,7 +97,6 @@ async fn keeps_namesakes_distinct_across_imports(pool: PgPool) {
 
     assert_eq!(athlete_count(&pool).await, 2);
 
-    // And they stay apart on a later import that mentions only one of them.
     import(
         &pool,
         file("competition-two", vec![athlete("Tom", "Berthier", Some(2))]),
@@ -165,7 +159,6 @@ async fn rejects_duplicate_identities(pool: PgPool) {
     )
     .await;
 
-    // Bypasses the importer to prove the constraint holds regardless of caller.
     let inserted = sqlx::query(
         "INSERT INTO athletes (first_name, last_name, gender, country, slug, match_key)
          VALUES ('Lea', 'Merandon', 'M', 'FR', 'lea-merandon-2', 'lea merandon')",

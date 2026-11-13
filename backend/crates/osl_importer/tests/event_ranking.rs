@@ -1,8 +1,3 @@
-//! A total is only a total within one event, so a muscle-up-only result must
-//! never be ranked against a four-lift total. A single movement is different:
-//! a muscle-up is a muscle-up whatever else the competition ran, so those boards span
-//! every event.
-
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::Movement;
@@ -20,7 +15,6 @@ fn athlete(first: &str, last: &str, lifts: Vec<(Movement, &str)>) -> AthleteData
     )
 }
 
-/// A competition contesting exactly the movements given.
 fn competition(slug: &str, movements: &[Movement], athletes: Vec<AthleteData>) -> CanonicalFormat {
     let mut canonical = common::competition(slug, vec![men_80(athletes)]);
     canonical.movements = movements.to_vec();
@@ -59,7 +53,6 @@ async fn rank(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
     (rows.into_iter().map(|row| row.last_name).collect(), total)
 }
 
-/// One four-lift competition and one muscle-up-only competition.
 async fn seed_both_events(pool: &PgPool) {
     import(
         pool,
@@ -150,7 +143,6 @@ async fn ranks_single_movements_across_events(pool: PgPool) {
 
     let (names, total) = rank(&pool, RankingMovement::Muscleup).await;
 
-    // The specialist lifted more, so they lead a board they belong on.
     assert_eq!(names, vec!["Specialist", "Fourlift"]);
     assert_eq!(total, 2);
 }
@@ -254,7 +246,6 @@ async fn updates_event_when_movements_are_removed(pool: PgPool) {
     )
     .await;
 
-    // Corrected: the squat never happened.
     import(
         &pool,
         competition(
@@ -283,8 +274,6 @@ async fn updates_event_when_movements_are_removed(pool: PgPool) {
     assert!(names.is_empty(), "and it leaves the four-lift board");
 }
 
-/// A competition's own leaderboard is one event by definition, so it must not be
-/// scoped to the default four-lift event and come back empty.
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn ignores_event_filter_within_competition(pool: PgPool) {
     let classic = &[Movement::PullUp, Movement::Dips];
@@ -308,7 +297,6 @@ async fn ignores_event_filter_within_competition(pool: PgPool) {
             .await
             .unwrap();
 
-    // The filter still carries MPDS, the way the API fills it in when nobody says otherwise.
     let mut scoped = filter(RankingMovement::Total);
     scoped.competition_id = Some(competition_id);
 
@@ -326,7 +314,6 @@ async fn ignores_event_filter_within_competition(pool: PgPool) {
     );
 }
 
-/// The global board keeps its event scope, since a two lift total is not a four lift one.
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn filters_global_totals_by_event(pool: PgPool) {
     import(

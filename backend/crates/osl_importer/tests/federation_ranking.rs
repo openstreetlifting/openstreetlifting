@@ -1,7 +1,3 @@
-//! A ranking narrowed to one federation only counts what that federation ran,
-//! and it numbers the places within that federation rather than carrying the
-//! worldwide ones.
-
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};

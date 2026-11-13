@@ -1,5 +1,3 @@
-//! Redaction rewrites the canonical files, because those are what is published.
-
 mod common;
 
 use std::path::{Path, PathBuf};

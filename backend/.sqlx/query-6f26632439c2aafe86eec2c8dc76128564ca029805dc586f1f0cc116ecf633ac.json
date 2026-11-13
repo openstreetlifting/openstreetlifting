@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT ris_score, ris_source FROM competition_participants",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "ris_score",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "ris_score"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "ris_source",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "ris_source"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true
+    ]
+  },
+  "hash": "6f26632439c2aafe86eec2c8dc76128564ca029805dc586f1f0cc116ecf633ac"
+}

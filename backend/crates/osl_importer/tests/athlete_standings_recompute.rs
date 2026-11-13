@@ -1,7 +1,3 @@
-//! Parity between the precomputed standings and rivals tables and the
-//! original per-athlete computed queries. After every recompute, both paths
-//! must agree for every athlete in the database.
-
 use osl_db::repository::ranking::RankingRepository;
 use osl_db::services::athlete_standings;
 use osl_importer::canonical::models::CanonicalFormat;
@@ -16,29 +12,42 @@ fn a_board() -> CanonicalFormat {
     common::competition(
         "worlds",
         vec![men_80(vec![
-            weighing(lifting(athlete("Best", "French"), ["60", "90", "110", "180"]), "80"),
-            weighing(lifting(athlete("Second", "French"), ["40", "70", "90", "150"]), "80"),
             weighing(
-                from(lifting(athlete("Only", "Italian"), ["50", "80", "100", "160"]), "IT"),
+                lifting(athlete("Best", "French"), ["60", "90", "110", "180"]),
+                "80",
+            ),
+            weighing(
+                lifting(athlete("Second", "French"), ["40", "70", "90", "150"]),
+                "80",
+            ),
+            weighing(
+                from(
+                    lifting(athlete("Only", "Italian"), ["50", "80", "100", "160"]),
+                    "IT",
+                ),
                 "80",
             ),
         ])],
     )
 }
 
-/// A second competition where "Second" moves down a class and a newcomer
-/// competes, so class pools and latest-class logic are exercised.
 fn a_later_board() -> CanonicalFormat {
     common::competition(
         "continentals",
         vec![
             common::category(
                 osl_domain::WeightClassSlug::M80,
-                vec![weighing(lifting(athlete("Newcomer", "Spanish"), ["70", "100", "120", "200"]), "80")],
+                vec![weighing(
+                    lifting(athlete("Newcomer", "Spanish"), ["70", "100", "120", "200"]),
+                    "80",
+                )],
             ),
             common::category(
                 osl_domain::WeightClassSlug::M73,
-                vec![weighing(lifting(athlete("Moved", "Second"), ["55", "85", "105", "165"]), "79")],
+                vec![weighing(
+                    lifting(athlete("Moved", "Second"), ["55", "85", "105", "165"]),
+                    "79",
+                )],
             ),
         ],
     )
@@ -46,7 +55,9 @@ fn a_later_board() -> CanonicalFormat {
 
 async fn recompute(pool: &PgPool) {
     let mut tx = pool.begin().await.expect("transaction should begin");
-    athlete_standings::refresh(&mut tx).await.expect("recompute should succeed");
+    athlete_standings::refresh(&mut tx)
+        .await
+        .expect("recompute should succeed");
     tx.commit().await.expect("recompute should commit");
 }
 
@@ -65,11 +76,11 @@ async fn stored_standings_match_computed(pool: PgPool) {
     let repo = RankingRepository::new(&pool);
     for athlete_id in athlete_ids(&pool).await {
         let stored = sqlx::query(
-            r#"
+            r"
             SELECT metric, value, global_place, global_field, country,
                    country_place, country_field, weight_class_min, weight_class_max
             FROM athlete_metric_standings WHERE athlete_id = $1 ORDER BY metric
-            "#,
+            ",
         )
         .bind(athlete_id)
         .fetch_all(&pool)
@@ -95,11 +106,16 @@ async fn stored_standings_match_computed(pool: PgPool) {
             let country: Option<String> = stored_row.get("country");
             let country_place: i64 = stored_row.get("country_place");
             let country_field: i64 = stored_row.get("country_field");
-            let weight_class_min: Option<rust_decimal::Decimal> = stored_row.get("weight_class_min");
+            let weight_class_min: Option<rust_decimal::Decimal> =
+                stored_row.get("weight_class_min");
             let weight_class_max: Option<rust_decimal::Decimal> =
                 stored_row.get("weight_class_max");
 
-            assert_eq!(metric, computed_row.metric.as_str(), "metric for {athlete_id}");
+            assert_eq!(
+                metric,
+                computed_row.metric.as_str(),
+                "metric for {athlete_id}"
+            );
             assert_eq!(value, computed_row.value, "value for {athlete_id}");
             assert_eq!(
                 global_place, computed_row.global_place,
@@ -119,7 +135,8 @@ async fn stored_standings_match_computed(pool: PgPool) {
                 "country field for {athlete_id}"
             );
             assert_eq!(
-                weight_class_min, computed_row.weight_class_min,
+                (weight_class_min, weight_class_max),
+                (computed_row.weight_class_min, computed_row.weight_class_max),
                 "weight class bounds for {athlete_id}"
             );
         }
@@ -156,7 +173,11 @@ async fn stored_standings_match_computed_after_class_change(pool: PgPool) {
         for ((metric, value, global_place, global_field), computed_row) in
             stored.iter().zip(&computed)
         {
-            assert_eq!(metric, computed_row.metric.as_str(), "metric for {athlete_id}");
+            assert_eq!(
+                metric,
+                computed_row.metric.as_str(),
+                "metric for {athlete_id}"
+            );
             assert_eq!(*value, computed_row.value, "value for {athlete_id}");
             assert_eq!(
                 *global_place, computed_row.global_place,
@@ -179,11 +200,11 @@ async fn stored_rivals_match_computed(pool: PgPool) {
     let repo = RankingRepository::new(&pool);
     for athlete_id in athlete_ids(&pool).await {
         let stored = sqlx::query(
-            r#"
+            r"
             SELECT scope, neighbor_athlete_id, place, field, value, gap
             FROM athlete_rivals WHERE profile_athlete_id = $1
             ORDER BY scope, place
-            "#,
+            ",
         )
         .bind(athlete_id)
         .fetch_all(&pool)
@@ -210,7 +231,10 @@ async fn stored_rivals_match_computed(pool: PgPool) {
             let gap: rust_decimal::Decimal = stored_row.get("gap");
 
             assert_eq!(scope, computed_row.scope, "scope for {athlete_id}");
-            assert_eq!(neighbor, computed_row.athlete_id, "neighbor for {athlete_id}");
+            assert_eq!(
+                neighbor, computed_row.athlete_id,
+                "neighbor for {athlete_id}"
+            );
             assert_eq!(place, computed_row.place, "place for {athlete_id}");
             assert_eq!(field, computed_row.field, "field for {athlete_id}");
             assert_eq!(value, computed_row.value, "value for {athlete_id}");

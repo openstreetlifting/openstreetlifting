@@ -435,14 +435,10 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
             row.extend([
                 athlete.first_name.clone(),
                 athlete.last_name.clone(),
-                athlete
-                    .disambiguation
-                    .map(|d| d.to_string())
-                    .unwrap_or_default(),
+                athlete.disambiguation.map_or_default(|d| d.to_string()),
                 athlete
                     .country
-                    .map(|country| country.as_str().to_owned())
-                    .unwrap_or_default(),
+                    .map_or_default(|country| country.as_str().to_owned()),
                 entries::render_decimal(athlete.bodyweight),
                 entries::render_decimal(athlete.reported_ris),
                 entries::render_decimal(athlete.total),
@@ -457,16 +453,14 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                 row.push(
                     athlete
                         .bodyweight_source()
-                        .map(|source| source.as_str().to_string())
-                        .unwrap_or_default(),
+                        .map_or_default(|source| source.as_str().to_string()),
                 );
             }
             if layout.reported_ris_editions {
                 row.push(
                     athlete
                         .reported_ris_edition
-                        .map(|edition| edition.year().to_string())
-                        .unwrap_or_default(),
+                        .map_or_default(|edition| edition.year().to_string()),
                 );
             }
 
@@ -477,13 +471,12 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                     let cell = lift
                         .and_then(|l| l.attempts.as_ref())
                         .and_then(|attempts| attempts.iter().find(|a| a.attempt_number == number))
-                        .map(|a| {
+                        .map_or_default(|a| {
                             entries::render_attempt(&entries::Attempt {
                                 weight: a.weight,
                                 is_successful: a.is_successful,
                             })
-                        })
-                        .unwrap_or_default();
+                        });
 
                     row.push(cell);
                 }
@@ -602,7 +595,6 @@ mod tests {
 
     #[test]
     fn rejects_nonpositive_class_bounds() {
-        // `0+` reads as a class open at the bottom, which the database has no row for.
         assert!(parse_weight_class("0+").is_err());
         assert!(parse_weight_class("0").is_err());
         assert!(parse_weight_class("-5").is_err());
@@ -627,8 +619,7 @@ mod tests {
                 cells
                     .iter()
                     .find(|(column, _)| column == header)
-                    .map(|(_, value)| (*value).to_string())
-                    .unwrap_or_default()
+                    .map_or_default(|(_, value)| (*value).to_string())
             })
             .collect();
 

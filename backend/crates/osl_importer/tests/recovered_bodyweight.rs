@@ -63,7 +63,6 @@ fn validates_scores_against_source_edition() {
         let report = CanonicalValidator::validate(&canonical).unwrap();
         assert_eq!(report.warnings, [] as [String; 0]);
 
-        // A source may publish only a total, with no lift breakdown.
         let athlete = &mut canonical.categories[0].athletes[0];
         athlete.total = Some(athlete.complete_total().unwrap());
         athlete.lifts.clear();
@@ -206,7 +205,6 @@ async fn recomputes_recovered_scores_with_current_edition(pool: PgPool) {
         .import_to_database(canonical.clone())
         .await
         .unwrap();
-    // Re-importing a computed row must reset the active score and its edition together.
     importer.import_to_database(canonical).await.unwrap();
 
     let expected = osl_domain::ris::compute(

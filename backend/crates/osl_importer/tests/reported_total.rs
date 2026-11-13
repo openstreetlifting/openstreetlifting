@@ -402,7 +402,6 @@ async fn backfills_complete_totals_during_migration(pool: PgPool) {
     )
     .await;
 
-    // Recreate the previous schema and its computed subtotal, then run the migration.
     sqlx::raw_sql("ALTER TABLE competition_participants RENAME COLUMN total TO reported_total;
         ALTER TABLE competition_participants DROP CONSTRAINT total_valid;
         ALTER TABLE competition_participants ADD CONSTRAINT reported_total_valid CHECK (reported_total IS NULL OR (reported_total > 0 AND status = 'competed'));

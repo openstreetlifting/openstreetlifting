@@ -392,8 +392,7 @@ impl CanonicalValidator {
                         athlete
                             .native_name
                             .as_deref()
-                            .map(check_native_name)
-                            .unwrap_or_default(),
+                            .map_or_default(check_native_name),
                     );
 
                 for problem in problems {

@@ -10,8 +10,6 @@ use uuid::Uuid;
 
 use crate::identity::AthleteQuery;
 
-/// row of the file.
-/// `Sex`, `Country` and `Disambiguation` are spelled like in `entries.csv`
 #[derive(Debug, serde::Deserialize)]
 struct InstagramRecord {
     #[serde(rename = "Name")]
@@ -143,8 +141,7 @@ async fn resolve(
     for row in rows {
         let named = by_match_key
             .get(&row.query.match_key)
-            .map(Vec::as_slice)
-            .unwrap_or_default();
+            .map_or_default(Vec::as_slice);
 
         let candidates: Vec<&AthleteIdentity> = named
             .iter()

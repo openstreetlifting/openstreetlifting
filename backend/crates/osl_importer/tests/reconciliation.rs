@@ -1,8 +1,3 @@
-//! A canonical file is the whole truth about its competition. Upserting alone
-//! could never express a correction that removes something, so these tests pin
-//! down what a re-import deletes — and, just as importantly, what it leaves
-//! alone once a row is shared with another competition.
-
 use osl_domain::Movement;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use sqlx::PgPool;
@@ -24,7 +19,6 @@ fn athlete(
     })
 }
 
-/// One category holding whichever athletes the case needs.
 fn file(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
     let mut canonical = common::competition(slug, vec![men_80(athletes)]);
     canonical.movements = vec![Movement::MuscleUp, Movement::PullUp];
@@ -88,11 +82,9 @@ async fn removes_participation_when_athlete_is_dropped(pool: PgPool) {
     import(&pool, file("test-competition", remaining)).await;
 
     assert_eq!(participant_count(&pool).await, 1);
-    // The lift and attempt went with the participant, through the cascade.
     assert_eq!(count(&pool, "SELECT COUNT(*) FROM lifts").await, 1);
     assert_eq!(count(&pool, "SELECT COUNT(*) FROM attempts").await, 1);
 
-    // The athlete is shared reference data and outlives the participation.
     assert!(athlete_exists(&pool, "Hopper").await);
 }
 
@@ -133,7 +125,6 @@ async fn removes_attempts_when_dropped_from_source(pool: PgPool) {
     import(&pool, file("test-competition", three)).await;
     assert_eq!(count(&pool, "SELECT COUNT(*) FROM attempts").await, 3);
 
-    // The third attempt never happened and is corrected away.
     let two = vec![athlete(
         "Ada",
         "Lovelace",
@@ -151,7 +142,6 @@ async fn preserves_other_competitions_when_pruning(pool: PgPool) {
     import(&pool, file("second-competition", two_lifters())).await;
     assert_eq!(participant_count(&pool).await, 4);
 
-    // Grace is dropped from the first competition only.
     let remaining = vec![athlete(
         "Ada",
         "Lovelace",
@@ -195,8 +185,6 @@ async fn removes_movements_when_dropped_from_source(pool: PgPool) {
     );
 }
 
-/// The same two lifters, contesting all four movements so the competition is a full
-/// event and therefore actually gets a RIS.
 fn four_lifts() -> Vec<(Movement, Vec<(&'static str, bool)>)> {
     vec![
         (Movement::MuscleUp, vec![("60", true)]),
@@ -242,7 +230,6 @@ async fn removes_scores_when_participants_are_dropped(pool: PgPool) {
     .await
     .unwrap();
 
-    // Still the full event, so only the dropped lifter changes.
     let remaining = vec![athlete("Ada", "Lovelace", four_lifts())];
     import(&pool, full_event_file("test-competition", remaining)).await;
 

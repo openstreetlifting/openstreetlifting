@@ -1,7 +1,3 @@
-//! Deleting a canonical file has to delete its competition, since the files are
-//! the data. What it must not take with it is the reference data and the
-//! athletes who lifted somewhere else too.
-
 use osl_domain::Movement;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use osl_importer::sync::CompetitionSync;
@@ -26,8 +22,6 @@ fn competition(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
     canonical
 }
 
-/// One competition whose file is still there, one whose file was deleted, and a lifter
-/// who was at both.
 async fn two_meets(pool: &PgPool) {
     import(
         pool,
