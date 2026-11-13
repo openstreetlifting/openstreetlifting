@@ -1,0 +1,38 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Parth,Apte,,IN,63,79.52,312.5,competed,,recovered,2024,15,17.5x,18.75x,15,50,55,56.25,56.25,82.5x,87.5,93.75,93.75,137.5,142.5,147.5,147.5
+M,66,Biki,Boro,,IN,58.4,92.23,341.25,competed,,recovered,2024,30,35x,35,35,75,80,81.25,81.25,100,105,110,110,105,110,115,115
+M,66,Parth,Chamaria,,IN,65.7,100.87,411.5,competed,,recovered,2024,26.25,31.25,32.5x,31.25,70,76.25,81.75,81.75,100,105,110.5x,105,180,185,193.5,193.5
+M,66,Shubham,Choudhary,,IN,,49.37,,disqualified,Bombed the muscle-up,,,5x,5x,5x,,30,36.25,38.75x,36.25,63.75x,63.75x,63.75,63.75,95x,100,110x,100
+M,66,,Ibrahim,,IN,65.8,67.93,277.5,competed,,recovered,2024,5,7.5,10x,7.5,47.5,52.5,55x,52.5,55x,57.5,65x,57.5,150,157.5x,160,160
+M,66,Sujal,Kadam,,IN,,36.72,,disqualified,Bombed the dips,,,5x,5,7.5,7.5,30,37.5,45x,37.5,50x,57.5x,57.5x,,105,110x,112.5x,105
+M,66,Dev,Kaneria,,IN,,49.76,,disqualified,Bombed the muscle-up,,,7.5x,7.5x,7.5x,,40,42.5,45,45,50,55,60x,55,90,100,105,105
+M,66,Sushant,Kharadi,,IN,64.7,80.78,325,competed,,recovered,2024,12.5,17.5,20x,17.5,55x,55,57.5,57.5,72.5,80,83.75x,80,160,170,177.5x,170
+M,66,Harsh,Meghani,,IN,64.7,67.73,272.5,competed,,recovered,2024,5,10,12.5,12.5,40,45,50x,45,65,72.5,76.25x,72.5,137.5,142.5,150x,142.5
+M,66,Puneet,More,,IN,,31.95,,disqualified,Bombed the muscle-up,,,2.5x,2.5x,5x,,20,25x,30x,20,25x,25x,25,25,65,75x,75,75
+M,66,Soham,Nikam,,IN,,34.93,,disqualified,Bombed the muscle-up,,,5x,6.25x,6.25x,,30,40,50x,40,25x,30,37.5x,30,50,55x,55x,50
+M,66,Nitesh,Padale,,IN,43.89,52.86,172.5,competed,,recovered,2024,10,12.5x,15x,10,35,50x,50x,35,40,50,62.5,62.5,40,55,65,65
+M,66,Jayesh,Patole,,IN,,46.23,,disqualified,Bombed the muscle-up,,,5x,5x,5x,,35,40x,42.5x,35,50,60x,62.5x,50,75,85,95x,85
+M,66,Omkar,Satam,,IN,62,83.51,323.75,competed,,recovered,2024,15,20,23.75x,20,52.5,56.25,58.75x,56.25,87.5,92.5,96.25x,92.5,145,152.5,155,155
+M,66,Yash,Sharma,,IN,,,,no_show,,,,,,,,,,,,,,,,,,,
+M,66,Gaurav,Shinde,,IN,,27.64,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,15,16.25x,16.25x,15,20,22.5x,22.5x,20,50,55,62.5,62.5
+M,66,Anurag,Tirthani,,IN,,67.73,,disqualified,Bombed the muscle-up,,,5x,10x,10x,,40,46.25,50x,46.25,72.5,80x,83.75,83.75,130x,135,142.5,142.5
+M,73,Sahil,Anand,,IN,71.75,94.61,418.75,competed,,recovered,2024,18.75,23.75,27.5x,23.75,67.5,73.75,75,75,107.5,113.75,120,120,187.5,197.5,200,200
+M,73,Jash,Bangera,,IN,71.35,94.81,417.5,competed,,recovered,2024,25,30,32.5,32.5,75,80,85,85,110,115,120,120,175,180x,180,180
+M,73,Abhinav,Chauhan,,IN,71.9,70.47,312.5,competed,,recovered,2024,5x,7.5,10,10,51.25,55x,57.5x,51.25,80,87.5x,91.25,91.25,160,170x,177.5x,160
+M,73,Augustine,Fernandes,,IN,72.35,89.14,397.5,competed,,recovered,2024,27.5,32.5,35x,32.5,62.5,70,72.5x,70,100,110,115x,110,170,185,190x,185
+M,73,Neil,Ichhaporia,,IN,72.1,58.77,261.25,competed,,recovered,2024,10x,12.5x,13.75,13.75,45,48.75,51.25,51.25,95,101.25,110x,101.25,90x,92.5,95,95
+M,73,Harsh,Jain,,IN,71.4,90.49,398.75,competed,,recovered,2024,13.75,18.75,21.25,21.25,50x,52.5,56.25,56.25,97.5,106.25x,106.25,106.25,195,205,215,215
+M,73,Manish,Jaiswal,,IN,70.7,67.84,296.25,competed,,recovered,2024,2.5,5,7.5x,5,42.5,46.25,50x,46.25,75,80,85x,80,150,157.5,165,165
+M,73,Amaan,Khan,,IN,69.51,57.87,248.75,competed,,recovered,2024,10,13.75,16.25x,13.75,45,50,52.5x,50,75,80x,85,85,95x,100,110x,100
+M,73,Yugansh,Pawah,,IN,72.6,83.27,372.5,competed,,recovered,2024,15,20x,20x,15,55,63.75,67.5,67.5,95,103.75,110,110,170,180x,180,180
+M,73,Ravi,Roshan Tuddu,,IN,72.5,87.57,391.25,competed,,recovered,2024,21.25,25,27.5x,25,71.25,73.75,76.25,76.25,111.25x,115,122.5x,115,160x,175,182.5x,175
+M,80,Ketan,Jain,,IN,,,,no_show,,,,,,,,,,,,,,,,,,,
+M,80,Aditya,Magoo,,IN,79.45,102.37,492.5,competed,,recovered,2024,31.25,36.25,40,40,75,85.5,90,90,132.5,140x,140,140,207.5,217.5,222.5,222.5
+M,80,Aryan,Magoo,,IN,80,98.01,473.75,competed,,recovered,2024,27.5,30,31.25x,30,66.25x,71.25,73.75,73.75,120,132.5,135,135,215,235,250x,235
+M,80,Iqbal,Sheikh,,IN,79.65,83,400,competed,,recovered,2024,15,20x,20,20,75,78.75x,80x,75,112.5x,118.75,125,125,180,195x,195x,180
+M,94,Nitin,Dubey,,IN,91.25,59.08,305,competed,,recovered,2024,2.5,5,7.5,7.5,50,52.5x,52.5,52.5,72.5x,75x,75,75,160,170,175x,170
+M,101,Parth,Mehta,,IN,,73.02,,disqualified,Bombed the muscle-up,,,1.25x,1.25x,1.25x,,65,71.25x,71.25x,65,110,117.5,125x,117.5,195x,200,210x,200
+F,52,Diksha,Kapoor,,IN,51.4,87.72,185,competed,,recovered,2024,2.5,5x,5x,2.5,27.5,35,40,40,27.5,35,40,40,92.5,100,102.5,102.5
+F,52,Vandana,Mandal,,IN,,81.62,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,20,23.75,25,25,30x,30,36.25,36.25,107.5,112.5,117.5,117.5
+F,57,Karishma,Kadam,,IN,,,,no_show,,,,,,,,,,,,,,,,,,,
+F,63,Shuly,Nadar,,IN,,70.66,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,8.75,12.5,13.75x,12.5,37.5,43.75x,43.75x,37.5,107.5,115x,120,120

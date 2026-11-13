@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+    "https://final-rep.com/indianopen25/",
+]
+
+[competition]
+name = "National Streetlifting Championship"
+start_date = "2025-04-19"
+city = "Mumbai"
+venue = "ISC Malad"
+region = "Maharashtra"
+country = "IN"
+status = "completed"
+
+[federation]
+name = "ISC"
+country = "IN"
