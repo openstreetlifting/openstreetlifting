@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "London Regionals"
+start_date = "2025-11-09"
+city = "London"
+region = "England"
+country = "GB"
+status = "completed"
+
+[federation]
+name = "Bodystrong"
+country = "GB"
