@@ -2,7 +2,6 @@ target
 .env
 rust-toolchain.toml
 docs
-scripts
 openapi.json
 release.toml
 **/*.md
