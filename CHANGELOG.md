@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.66.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.65.0...v0.66.0) (2026-11-13)
+
+
+### Features
+
+* add a little bit of instagram ([4aaa738](https://github.com/openstreetlifting/openstreetlifting/commit/4aaa73866f866c0dbd7ebf3aaa56e3b86441812c))
+* **seo:** simplify metadata to minimal English descriptions ([96b4dc0](https://github.com/openstreetlifting/openstreetlifting/commit/96b4dc0353f50a4c14bb8b1ca120c76fbf34fbe3))
+
+
+### Bug Fixes
+
+* **data:** use one Polish spelling for Orchowski, Burchała, Janosik and Drzymalski ([#974](https://github.com/openstreetlifting/openstreetlifting/issues/974)) ([a6be271](https://github.com/openstreetlifting/openstreetlifting/commit/a6be27186839a3d4c0447727db54c5cfb802a2fe))
+* **docker:** install curl for Swagger UI build downloads ([f31c48f](https://github.com/openstreetlifting/openstreetlifting/commit/f31c48ffe1d5d7116590aa5ed46023d440254ceb))
+* **domain:** fold letters that NFD does not decompose in athlete match keys ([#973](https://github.com/openstreetlifting/openstreetlifting/issues/973)) ([b17bce5](https://github.com/openstreetlifting/openstreetlifting/commit/b17bce5e99f80852410080f62c2a81706607e0c1))
+
 ## [0.65.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.64.0...v0.65.0) (2026-11-13)
 
 
