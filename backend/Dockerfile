@@ -1,4 +1,7 @@
 FROM rust:1.100.0-slim-bookworm AS chef
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl \
+    && rm -rf /var/lib/apt/lists/*
 RUN cargo install cargo-chef --locked --version 0.1.77
 WORKDIR /app
 
