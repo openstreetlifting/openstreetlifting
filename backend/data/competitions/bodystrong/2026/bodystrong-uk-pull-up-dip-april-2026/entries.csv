@@ -2,7 +2,7 @@ Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,S
 M,Mike,Bardell,,,,28.03,120,competed,,,,,,30,40,50,50,50,60,70,70,,,,
 M,Jojo,Blankson,,GB,,16.72,77.5,competed,,,,,,30,35,37.5,37.5,40,45x,46.25x,40,,,,
 M,Sebastian,Brodzinski,,PL,,25.16,135,competed,,,,,,35,40,50,50,75,80,85,85,,,,
-M,,Daniel,,GB,,19.28,91.25,competed,,,,,,37.5,41.25,45,45,35,41.25,46.25,46.25,,,,
+M,,Daniel,1,GB,,19.28,91.25,competed,,,,,,37.5,41.25,45,45,35,41.25,46.25,46.25,,,,
 M,Sebastian,Fernandez,,GB,,37.05,177.5,competed,,,,,,50x,60,70,70,90,100,107.5,107.5,,,,
 M,Heemish,Goomanny,,MU,,23.11,95,competed,,,,,,17.5,22.5,27.5x,22.5,62.5,72.5,77.5x,72.5,,,,
 M,Kwame,Hanson,,GB,,43.54,225,competed,,,,,,70,80,82.5,82.5,125,142.5,145x,142.5,,,,
