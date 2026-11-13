@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Leipzig Underground Cup"
+start_date = "2025-11-22"
+city = "Leipzig"
+region = "Sachsen"
+country = "DE"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "FinalRep"
+country = "DE"
