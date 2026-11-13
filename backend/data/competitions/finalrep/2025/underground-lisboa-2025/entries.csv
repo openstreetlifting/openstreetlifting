@@ -1,0 +1,39 @@
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,Nelson,Amado,,PT,73,57.01,256.25,competed,,recovered,2024,7.5,11.25,13.75x,11.25,50,55,60x,55,58.75,65,70,70,110,120,127.5x,120
+M,Filipe,Braga,,PT,83.8,85.59,425.75,competed,,recovered,2024,20,27.5,33x,27.5,70,75,81.25,81.25,100,110,115,115,190,202,212x,202
+M,Manuel,Campanário,,PT,80.71,65.81,320,competed,,recovered,2024,15,20,22.5,22.5,42.5,48.75,55,55,55,65,72.5,72.5,150,162.5,170,170
+M,Diogo,Chaves,,PT,72.1,68.61,305,competed,,recovered,2024,17.5,20x,20,20,55,60,65x,60,80,85,90x,85,130,140,145x,140
+M,Diogo,Costa,,PT,60.8,68.81,262.5,competed,,recovered,2024,20,25,28.75x,25,52.5,60,62.5,62.5,75,85,90,90,80x,85x,85,85
+M,Nehemia,Daniel,,,,,,no_show,,,,,,,,,,,,,,,,,,,
+M,Tomás,Ferreira,,PT,65.1,68.59,277.5,competed,,recovered,2024,10x,10,15,15,55,57.5,60x,57.5,70,75x,77.5x,70,130,135,140x,135
+M,Guilherme Lucas,Ferreira Moura,,PT,79.8,69.68,336.25,competed,,recovered,2024,17.5,20x,20,20,55,60,66.25,66.25,67.5,80,90x,80,155,170,180x,170
+M,Mauro,Franklim,,PT,65.7,85.55,349,competed,,recovered,2024,12.5,16.25,18.75x,16.25,55,66.25,70x,66.25,66.25,76.5,80x,76.5,170,190,200x,190
+M,Mario,Garcia,,PT,69.8,63.15,272.5,competed,,recovered,2024,10,12.5,15x,12.5,45,50,52.5x,50,75,80,82.5,82.5,115,122.5x,127.5,127.5
+M,Walter,Gomez,,AR,,32.44,,disqualified,Bombed the squat,,,10,15x,15,15,50,55x,56.5x,50,75,80x,80x,75,135x,135x,135x,
+M,Miguel,Guerreiro,,PT,70.8,81.19,355,competed,,recovered,2024,22.5,27.5,30,30,72.5,77.5x,77.5,77.5,102.5,107.5,112.5x,107.5,130,140,145x,140
+M,Davide,Mendes,,PT,,,,no_show,,,,,,,,,,,,,,,,,,,
+M,Rui,Mendes,,,71.41,61.27,270,competed,,recovered,2024,10,12.5x,15x,10,60,62.5x,62.5x,60,70,75,80,80,105,115x,120,120
+M,João,Miguel,,PT,64.9,83.04,335,competed,,recovered,2024,15,20,25,25,50,60,65x,60,75,85,90,90,150,160,165x,160
+M,Stéphane,Monteiro,,PT,89.98,58.88,302.5,competed,,recovered,2024,5,7.5,10x,7.5,42.5,47.5,50,50,65,72.5,80,80,150,160,165,165
+M,Henrique,Nascimento,,PT,70.6,106.4,464,competed,,recovered,2024,32.5,36.5,38,38,90,93.5,96x,93.5,130,135,140,140,180,187.5,192.5,192.5
+M,Diogo,Pacheco,,PT,84.8,86.15,431.25,competed,,recovered,2024,20,23.75,26.25,26.25,65,72.5,77.5x,72.5,115,125,135x,125,190,202.5,207.5,207.5
+M,Alexandre,Padinha,,PT,68.51,73.1,310,competed,,recovered,2024,20,25,30x,25,50,55,60x,55,75,85x,86.25x,75,145,155,160x,155
+M,Benoit,Pataux,,PT,78.3,70.63,336.25,competed,,recovered,2024,15,20,25,25,60,67.5,71.25,71.25,80,85,90,90,130,140,150,150
+M,Marcelo,Queirós,,PT,78.8,78.93,377.5,competed,,recovered,2024,20,22.5x,22.5,22.5,60,65x,65,65,80,90,95x,90,190,200,205x,200
+M,João Rui,Querido Domingos,,PT,68.3,63.85,270,competed,,recovered,2024,5,7.5,12.5x,7.5,42.5,47.5,50x,47.5,70,75,80x,75,130,140,145x,140
+M,Fábio,Silva,,PT,89.01,72.8,372.5,competed,,recovered,2024,12.5,15x,16.25x,12.5,65,67.5x,67.5,67.5,115,120,125,125,155,160,167.5,167.5
+M,Daniel,Sousa,,PT,73,65.18,293,competed,,recovered,2024,2.5x,5,7.5x,5,42.5,50,52.5x,50,77.5,85x,85,85,145,153,160x,153
+M,Alfra,Teixeira,,PT,78.8,78.93,377.5,competed,,recovered,2024,11.25,15,16.5x,15,52.5,60,63.75x,60,105,115,117.5,117.5,185,200x,200x,185
+M,Rafael Rodrigues,da Costa,,PT,70.9,71.38,312.5,competed,,recovered,2024,12.5,15x,15,15,55,57.5,60x,57.5,72.5,77.5,85,85,150,155,160x,155
+M,Rafael,da Silva Rego,,PT,75.4,67.62,312.5,competed,,recovered,2024,10x,12.5,15,15,47.5,50,52.5,52.5,90x,90,100,100,135x,140,145,145
+M,Diogo Agostinho,da Silva Rocha,,PT,65.2,68.5,277.5,competed,,recovered,2024,20,25,27.5,27.5,55,65,70,70,60,70,80x,70,110x,110x,110,110
+F,Joana,Barbosa Viegas,,PT,,62.32,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,12.5,17.5,25x,17.5,20,27.5x,28.75,28.75,92.5,100x,100,100
+F,Marcia Aurélia,Cardoso Pereira da Silva,,PT,,60.28,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,7.5,10,11.25,11.25,12.5,17.5,20,20,85,90,95x,90
+F,Telma,Esteves,,PT,,53.23,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,10,15,17.5x,15,15x,17.5,22.5,22.5,75,82.5,90,90
+F,Margarida,Leitão,,PT,59.31,66.23,155,competed,,recovered,2024,0x,0,1.25x,0,15,20,25x,20,30,35x,35,35,87.5,95,100,100
+F,Carolina,Lucas,,PT,59.8,91.56,215,competed,,recovered,2024,10,15,17.5,17.5,30,35,37.5,37.5,52.5,60,65x,60,92.5,100,105x,100
+F,Mónica,Nascimento,,PT,,52.71,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,10,12.5,15x,12.5,18,25,28.75,28.75,72.5,80,85,85
+F,Solange,Oliveira,,PT,,69.2,,disqualified,Bombed the muscle-up,,,0x,0x,0x,,16.5,25,27.5,27.5,25,32.5,36.5,36.5,80,90,95,95
+F,Joana,Rei,,PT,55.7,59.34,134,competed,,recovered,2024,1.25,2.5,4,4,16.5,20,23.5x,20,22.5,30,33x,30,75,80,85x,80
+F,Filipa,Valente,,PT,56.1,100.24,227.5,competed,,recovered,2024,6.5x,10,16.25x,10,27.5,36.25,42.5,42.5,42.5,51.25,57.5,57.5,100,107.5,117.5,117.5
+F,Martha,da Paz dos Reis Appelt,,PT,60.59,58.28,137.5,competed,,recovered,2024,0,1.25,2.5,2.5,22.5,27.5,31x,27.5,25,30x,32.5,32.5,75,80x,80x,75
