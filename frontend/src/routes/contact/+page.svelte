@@ -21,8 +21,6 @@
 <Seo title="Contact" description="Contact OpenStreetlifting." canonical={absolute('/contact')} />
 
 <div class="mx-auto max-w-reading px-gutter py-12 sm:py-16">
-  <!-- The h1 carries the page, so the plate is decoration and stays out of the
-       accessibility tree rather than repeating the name to a screen reader. -->
   <img
     src="/logo_plate_full.svg"
     width="512"
