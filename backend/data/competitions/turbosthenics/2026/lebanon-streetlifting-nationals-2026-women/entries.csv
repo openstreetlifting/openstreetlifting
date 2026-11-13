@@ -1,0 +1,10 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+F,52,Chloe,Mansour,,LB,,88.52,195,competed,,,,,,25,30,32.5x,30,50,55,60x,55,100x,105,110,110
+F,52,Sara,Wahidi,,LB,,90.91,,disqualified,,,,,,25x,30,35,35,55,62.5,70x,62.5,122.5,127.5,130x,127.5
+F,57,Pascal,Ghayth,,LB,,59.14,156.75,competed,,,,,,12.5,16.75,18.25x,16.75,30,35,40,40,92.5x,97.5x,100,100
+F,57,Clara,Jeanbart,,LB,,69.03,185,competed,,,,,,26.25,30,33.75,33.75,45,51.25,53.75x,51.25,100,107.5x,107.5x,100
+F,57,Elsa,Raidy,,LB,,61.86,157.5,competed,,,,,,20,22.5,25,25,25,32.5,40x,32.5,80,90,100,100
+F,63,Rita,Ajnass,,LB,,82.25,222.5,competed,,,,,,33.75,37.5,42.5,42.5,55,63.75,70,70,105x,110x,110,110
+F,63,Aya,Ibrahim,,LB,,77.24,215,competed,,,,,,32.5,40,43.75x,40,45,52.5,57.5x,52.5,115,122.5,130x,122.5
+F,63,Joanna,Jean El Fata,,LB,,26.35,,disqualified,Bombed the squat,,,,,27.5,32.5,35x,32.5,35x,40,45x,40,135x,140x,140x,
+F,70,Kristy,Farhat,,LB,,60.44,168.75,competed,,,,,,17.5,23.75,28.75,28.75,30,35,40,40,80,90,100,100
