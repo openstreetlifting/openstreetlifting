@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.67.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.67.1...v0.67.2) (2026-11-13)
+
+
+### Bug Fixes
+
+* **data:** record Benjamin Machala as Slovak ([#991](https://github.com/openstreetlifting/openstreetlifting/issues/991)) ([7c4a078](https://github.com/openstreetlifting/openstreetlifting/commit/7c4a078bfb889dc31edbcc41d768c6bd8aea72ca))
+
 ## [0.67.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.67.0...v0.67.1) (2026-11-13)
 
 
