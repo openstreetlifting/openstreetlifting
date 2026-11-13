@@ -1,7 +1,0 @@
-name: production
-variables:
-  - name: baseUrl
-    value: https://api.openstreetlifting.org
-  - secret: true
-    name: token
-    description: ""

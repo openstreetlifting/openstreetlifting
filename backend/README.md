@@ -11,27 +11,11 @@ The backend provides a read-only API and tools to import competition files into 
 
 ## Run locally
 
-Install Rust and Docker. From `backend`:
+Follow [Run locally](../README.md#run-locally) in the root README. The API loads `.env` and runs database migrations on startup. Swagger UI is at <http://localhost:8080/swagger-ui/>.
 
-```sh
-cp .env.example .env
-docker compose -f ../docker-compose.yaml up -d --wait postgres
-cargo sqlx migrate run --source crates/osl_db/migrations
-cargo run -p osl_api
-```
+`.env.example` sets `SQLX_OFFLINE=true`, so builds use the checked-in query metadata in `.sqlx` and compile against an empty database. To check queries against your database while editing SQL, remove that line from `.env`.
 
-The API loads `.env` and runs database migrations on startup. With the example settings, the API is at <http://localhost:8080> and Swagger UI is at <http://localhost:8080/swagger-ui/>.
-
-After pulling schema changes, run the migration command before compiling the API
-or importer. SQLx checks queries against the database during compilation, so new
-columns must already exist. `SQLX_OFFLINE=true` uses the checked-in query metadata
-for compilation; the database still needs the migrations before running imports.
-
-Once the API has started, import competition data in another terminal from `backend`. If the privacy list contains records, set `OSL_PRIVACY_KEY` to the key used to create them; see the [athlete data guide](data/athletes/README.md).
-
-```sh
-cargo run -p osl_importer --bin import -- competitions
-```
+If the privacy list contains records, set `OSL_PRIVACY_KEY` to the key used to create them before importing; see the [athlete data guide](data/athletes/README.md).
 
 See the [importer guide](crates/osl_importer/README.md) for validation, formatting, and other commands.
 

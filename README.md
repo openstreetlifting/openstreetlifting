@@ -8,44 +8,36 @@ OpenStreetlifting is an **open**, **collaborative** project building a **permane
 ![CI Frontend](https://github.com/openstreetlifting/openstreetlifting/actions/workflows/ci-frontend.yaml/badge.svg)
 [![Release](https://img.shields.io/github/v/release/openstreetlifting/openstreetlifting)](https://openstreetlifting.org)
 
-To contribute data, Licensing, or just to learn more about this project, please read the [book](https://docs.openstreetlifting.org)
+If you want to contribute data, or want to learn more about the project, please read the [book](https://docs.openstreetlifting.org)
+
+AI has read-write permissions, read more at [0rwx.com](https://0rwx.com/)
+![./images/AI-W-dark.png]
 
 ## Run locally
 
-Install Docker, Rust, Node.js 24, pnpm 12, and [sqlx-cli](https://crates.io/crates/sqlx-cli). Clone the repository, then prepare the database and frontend from the repository root:
+If you have Docker, [rustup](https://rustup.rs), Node and pnpm 12.
 
 ```sh
-cp backend/.env.example backend/.env
-docker compose up -d --wait postgres
-cd backend
-cargo sqlx migrate run --source crates/osl_db/migrations
-cd ../frontend
-pnpm install --frozen-lockfile
-cd ..
-```
-
-Import the competition files and start both servers:
-
-```sh
-cd backend
-cargo run -p osl_importer --bin import -- competitions
-cd ..
 ./launch_local.sh
 ```
 
-- frontend: `localhost:5173`
-- backend: `localhost:8080`
+## Import data
+
+The database is initially empty. You can import all competitions
+
+```sh
+cd backend && cargo run -p osl_importer --bin import -- competitions data/competitions
+```
 
 ## Contribute
 
-Fork the repository, create a branch from `main`, and open a pull request.
-You can read through [GitHub issues](https://github.com/openstreetlifting/openstreetlifting/issues) to find work to do.
+- [GitHub issues](https://github.com/openstreetlifting/openstreetlifting/issues)
 
 To contribute competition data, follow the [data contribution guide](https://docs.openstreetlifting.org/CONTRIBUTING_DATA.html).
 
 ## Corrections
 
-Report data errors or missing competitions in an issue or pull request. Describe the problem and link to a source. You can also email me at [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org).
+Report data errors or missing competitions in an issue or pull request. Please Describe the problem and link to a source. You can also email me at [contact@openstreetlifting.org](mailto:contact@openstreetlifting.org).
 
 ## Licensing
 

@@ -1,8 +1,4 @@
-FROM rust:1.99.1-slim-bookworm AS chef
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  pkg-config \
-  libssl-dev \
-  && rm -rf /var/lib/apt/lists/*
+FROM rust:1.100.0-slim-bookworm AS chef
 RUN cargo install cargo-chef --locked --version 0.1.77
 WORKDIR /app
 
@@ -12,25 +8,15 @@ RUN cargo chef prepare --recipe-path recipe.json
 
 FROM chef AS builder
 ARG BIN
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  curl \
-  && rm -rf /var/lib/apt/lists/*
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --locked --recipe-path recipe.json --bin "${BIN}"
 COPY . .
 RUN cargo build --release --locked --bin "${BIN}"
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  ca-certificates \
-  libssl3 \
-  && rm -rf /var/lib/apt/lists/*
-RUN useradd --no-create-home -u 1001 appuser
+FROM gcr.io/distroless/cc-debian12:nonroot
 WORKDIR /app
 ARG BIN
-ENV BIN=${BIN}
-COPY --chown=appuser:appuser --from=builder /app/target/release/${BIN} /app/server
-COPY --chown=appuser:appuser --from=builder /app/data /app/data
-USER appuser
+COPY --from=builder /app/target/release/${BIN} /app/server
+COPY --from=builder /app/data /app/data
 EXPOSE 8080
 ENTRYPOINT ["/app/server"]

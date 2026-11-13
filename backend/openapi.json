@@ -11,9 +11,7 @@
   "paths": {
     "/api/v1/athletes": {
       "get": {
-        "tags": [
-          "athletes"
-        ],
+        "tags": ["athletes"],
         "operationId": "list_athletes",
         "parameters": [
           {
@@ -56,9 +54,7 @@
     },
     "/api/v1/athletes/{slug}": {
       "get": {
-        "tags": [
-          "athletes"
-        ],
+        "tags": ["athletes"],
         "operationId": "get_athlete",
         "parameters": [
           {
@@ -101,9 +97,7 @@
     },
     "/api/v1/competitions": {
       "get": {
-        "tags": [
-          "competitions"
-        ],
+        "tags": ["competitions"],
         "operationId": "list_competitions",
         "parameters": [
           {
@@ -154,10 +148,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           {
@@ -165,10 +156,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           {
@@ -176,10 +164,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           {
@@ -187,10 +172,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "integer",
-                "null"
-              ],
+              "type": ["integer", "null"],
               "format": "int32"
             }
           },
@@ -199,10 +181,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           {
@@ -233,9 +212,7 @@
     },
     "/api/v1/competitions/countries": {
       "get": {
-        "tags": [
-          "competitions"
-        ],
+        "tags": ["competitions"],
         "operationId": "list_competition_countries",
         "responses": {
           "200": {
@@ -256,9 +233,7 @@
     },
     "/api/v1/competitions/federations": {
       "get": {
-        "tags": [
-          "competitions"
-        ],
+        "tags": ["competitions"],
         "operationId": "list_competition_federations",
         "responses": {
           "200": {
@@ -279,9 +254,7 @@
     },
     "/api/v1/competitions/formats": {
       "get": {
-        "tags": [
-          "competitions"
-        ],
+        "tags": ["competitions"],
         "operationId": "list_competition_formats",
         "responses": {
           "200": {
@@ -302,9 +275,7 @@
     },
     "/api/v1/competitions/years": {
       "get": {
-        "tags": [
-          "competitions"
-        ],
+        "tags": ["competitions"],
         "operationId": "list_competition_years",
         "responses": {
           "200": {
@@ -326,9 +297,7 @@
     },
     "/api/v1/competitions/{slug}": {
       "get": {
-        "tags": [
-          "competitions"
-        ],
+        "tags": ["competitions"],
         "operationId": "get_competition",
         "parameters": [
           {
@@ -371,9 +340,7 @@
     },
     "/api/v1/rankings": {
       "get": {
-        "tags": [
-          "rankings"
-        ],
+        "tags": ["rankings"],
         "operationId": "get_global_ranking",
         "parameters": [
           {
@@ -416,10 +383,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           {
@@ -427,10 +391,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           {
@@ -438,10 +399,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           {
@@ -465,10 +423,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           {
@@ -476,10 +431,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           {
@@ -487,10 +439,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "integer",
-                "null"
-              ],
+              "type": ["integer", "null"],
               "format": "int32"
             }
           },
@@ -499,10 +448,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ],
+              "type": ["string", "null"],
               "format": "uuid"
             }
           }
@@ -526,9 +472,7 @@
     },
     "/api/v1/rankings/classes": {
       "get": {
-        "tags": [
-          "rankings"
-        ],
+        "tags": ["rankings"],
         "operationId": "list_ranking_classes",
         "parameters": [
           {
@@ -551,10 +495,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ],
+              "type": ["string", "null"],
               "format": "uuid"
             }
           }
@@ -578,9 +519,7 @@
     },
     "/api/v1/rankings/countries": {
       "get": {
-        "tags": [
-          "rankings"
-        ],
+        "tags": ["rankings"],
         "operationId": "list_ranking_countries",
         "parameters": [
           {
@@ -588,10 +527,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ],
+              "type": ["string", "null"],
               "format": "uuid"
             }
           }
@@ -615,9 +551,7 @@
     },
     "/api/v1/rankings/federations": {
       "get": {
-        "tags": [
-          "rankings"
-        ],
+        "tags": ["rankings"],
         "operationId": "list_ranking_federations",
         "responses": {
           "200": {
@@ -638,9 +572,7 @@
     },
     "/api/v1/rankings/years": {
       "get": {
-        "tags": [
-          "rankings"
-        ],
+        "tags": ["rankings"],
         "operationId": "list_ranking_years",
         "responses": {
           "200": {
@@ -662,9 +594,7 @@
     },
     "/api/v1/ris/calculations": {
       "post": {
-        "tags": [
-          "ris"
-        ],
+        "tags": ["ris"],
         "operationId": "calculate_ris",
         "requestBody": {
           "content": {
@@ -695,9 +625,7 @@
     },
     "/api/v1/ris/distribution": {
       "get": {
-        "tags": [
-          "ris"
-        ],
+        "tags": ["ris"],
         "operationId": "get_ris_distribution",
         "responses": {
           "200": {
@@ -715,9 +643,7 @@
     },
     "/api/v1/ris/formulas": {
       "get": {
-        "tags": [
-          "ris"
-        ],
+        "tags": ["ris"],
         "operationId": "list_ris_formulas",
         "parameters": [
           {
@@ -725,10 +651,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "integer",
-                "null"
-              ],
+              "type": ["integer", "null"],
               "format": "int32"
             }
           }
@@ -755,9 +678,7 @@
     },
     "/api/v1/ris/formulas/current": {
       "get": {
-        "tags": [
-          "ris"
-        ],
+        "tags": ["ris"],
         "operationId": "get_current_formula",
         "responses": {
           "200": {
@@ -798,10 +719,7 @@
             "type": "string"
           },
           "competition_date": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "format": "date"
           },
           "competition_id": {
@@ -815,16 +733,10 @@
             "type": "string"
           },
           "division": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "event": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "lifts": {
             "type": "array",
@@ -833,17 +745,11 @@
             }
           },
           "rank": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "type": ["integer", "null"],
             "format": "int32"
           },
           "ris_score": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "ris_source": {
             "oneOf": [
@@ -859,20 +765,13 @@
             "$ref": "#/components/schemas/AthleteStatus"
           },
           "total": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           }
         }
       },
       "AthleteLift": {
         "type": "object",
-        "required": [
-          "movement_name",
-          "best_weight",
-          "attempts"
-        ],
+        "required": ["movement_name", "best_weight", "attempts"],
         "properties": {
           "attempts": {
             "type": "array",
@@ -881,10 +780,7 @@
             }
           },
           "best_weight": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "movement_name": {
             "$ref": "#/components/schemas/Movement"
@@ -913,10 +809,7 @@
             "format": "uuid"
           },
           "competition_date": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "format": "date"
           },
           "competition_name": {
@@ -926,10 +819,7 @@
             "type": "string"
           },
           "country": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "field": {
             "type": "integer",
@@ -958,11 +848,7 @@
       },
       "AthleteNeighborhood": {
         "type": "object",
-        "required": [
-          "category",
-          "global",
-          "national"
-        ],
+        "required": ["category", "global", "national"],
         "properties": {
           "category": {
             "type": "string"
@@ -974,10 +860,7 @@
             }
           },
           "national": {
-            "type": [
-              "array",
-              "null"
-            ],
+            "type": ["array", "null"],
             "items": {
               "$ref": "#/components/schemas/AthleteNeighbor"
             }
@@ -1010,10 +893,7 @@
             }
           },
           "country": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "created_at": {
             "type": "string",
@@ -1026,10 +906,7 @@
             "$ref": "#/components/schemas/Gender"
           },
           "instagram_handle": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "last_name": {
             "type": "string"
@@ -1045,10 +922,7 @@
             ]
           },
           "native_name": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "neighbors": {
             "oneOf": [
@@ -1067,10 +941,7 @@
             }
           },
           "profile_picture_url": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "slug": {
             "type": "string"
@@ -1093,14 +964,7 @@
       },
       "AthleteStanding": {
         "type": "object",
-        "required": [
-          "ris",
-          "total",
-          "muscleup",
-          "pullup",
-          "dips",
-          "squat"
-        ],
+        "required": ["ris", "total", "muscleup", "pullup", "dips", "squat"],
         "properties": {
           "dips": {
             "oneOf": [
@@ -1166,19 +1030,11 @@
       },
       "AthleteStatus": {
         "type": "string",
-        "enum": [
-          "competed",
-          "disqualified",
-          "no_show"
-        ]
+        "enum": ["competed", "disqualified", "no_show"]
       },
       "AttemptInfo": {
         "type": "object",
-        "required": [
-          "attempt_number",
-          "weight",
-          "is_successful"
-        ],
+        "required": ["attempt_number", "weight", "is_successful"],
         "properties": {
           "attempt_number": {
             "type": "integer",
@@ -1194,10 +1050,7 @@
       },
       "CategoryDetail": {
         "type": "object",
-        "required": [
-          "category",
-          "participants"
-        ],
+        "required": ["category", "participants"],
         "properties": {
           "category": {
             "$ref": "#/components/schemas/CategoryInfo"
@@ -1212,18 +1065,10 @@
       },
       "CategoryInfo": {
         "type": "object",
-        "required": [
-          "name",
-          "division",
-          "gender",
-          "weight_class"
-        ],
+        "required": ["name", "division", "gender", "weight_class"],
         "properties": {
           "division": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "gender": {
             "$ref": "#/components/schemas/Gender"
@@ -1252,10 +1097,7 @@
             "format": "uuid"
           },
           "country": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "first_name": {
             "type": "string"
@@ -1273,11 +1115,7 @@
       },
       "CompetitionEdition": {
         "type": "object",
-        "required": [
-          "slug",
-          "name",
-          "start_date"
-        ],
+        "required": ["slug", "name", "start_date"],
         "properties": {
           "name": {
             "type": "string"
@@ -1293,24 +1131,13 @@
       },
       "CompetitionFederation": {
         "type": "object",
-        "required": [
-          "federation_id",
-          "name",
-          "abbreviation",
-          "country"
-        ],
+        "required": ["federation_id", "name", "abbreviation", "country"],
         "properties": {
           "abbreviation": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "country": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "federation_id": {
             "type": "string",
@@ -1323,22 +1150,14 @@
       },
       "CompetitionInfo": {
         "type": "object",
-        "required": [
-          "competition_id",
-          "name",
-          "slug",
-          "date"
-        ],
+        "required": ["competition_id", "name", "slug", "date"],
         "properties": {
           "competition_id": {
             "type": "string",
             "format": "uuid"
           },
           "date": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "format": "date"
           },
           "name": {
@@ -1376,20 +1195,14 @@
             }
           },
           "city": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "competition_id": {
             "type": "string",
             "format": "uuid"
           },
           "country": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "created_at": {
             "type": "string",
@@ -1402,17 +1215,11 @@
             }
           },
           "end_date": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "format": "date"
           },
           "event_code": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "federation": {
             "$ref": "#/components/schemas/CompetitionFederation"
@@ -1422,10 +1229,7 @@
             "format": "uuid"
           },
           "lifter_count": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "type": ["integer", "null"],
             "format": "int64"
           },
           "movements": {
@@ -1438,10 +1242,7 @@
             "type": "string"
           },
           "region": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "scoring": {
             "oneOf": [
@@ -1457,49 +1258,30 @@
             "type": "string"
           },
           "start_date": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "format": "date"
           },
           "status": {
             "$ref": "#/components/schemas/CompetitionStatus"
           },
           "venue": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           }
         }
       },
       "CompetitionStatus": {
         "type": "string",
-        "enum": [
-          "draft",
-          "upcoming",
-          "live",
-          "completed",
-          "cancelled"
-        ]
+        "enum": ["draft", "upcoming", "live", "completed", "cancelled"]
       },
       "ComputeRisRequest": {
         "type": "object",
-        "required": [
-          "bodyweight",
-          "total",
-          "gender"
-        ],
+        "required": ["bodyweight", "total", "gender"],
         "properties": {
           "bodyweight": {
             "type": "string"
           },
           "formula_year": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "type": ["integer", "null"],
             "format": "int32"
           },
           "gender": {
@@ -1512,10 +1294,7 @@
       },
       "ComputeRisResponse": {
         "type": "object",
-        "required": [
-          "ris_score",
-          "formula_year"
-        ],
+        "required": ["ris_score", "formula_year"],
         "properties": {
           "formula_year": {
             "type": "integer",
@@ -1528,11 +1307,7 @@
       },
       "CountryStanding": {
         "type": "object",
-        "required": [
-          "code",
-          "place",
-          "field"
-        ],
+        "required": ["code", "place", "field"],
         "properties": {
           "code": {
             "type": "string"
@@ -1549,28 +1324,15 @@
       },
       "Direction": {
         "type": "string",
-        "enum": [
-          "desc",
-          "asc"
-        ]
+        "enum": ["desc", "asc"]
       },
       "Gender": {
         "type": "string",
-        "enum": [
-          "M",
-          "F",
-          "MX"
-        ]
+        "enum": ["M", "F", "MX"]
       },
       "GenderConstants": {
         "type": "object",
-        "required": [
-          "a",
-          "k",
-          "b",
-          "v",
-          "q"
-        ],
+        "required": ["a", "k", "b", "v", "q"],
         "properties": {
           "a": {
             "type": "number",
@@ -1624,32 +1386,20 @@
             "$ref": "#/components/schemas/CompetitionInfo"
           },
           "dips": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double"
           },
           "division": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "event": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "federation": {
             "$ref": "#/components/schemas/RankingFederation"
           },
           "muscleup": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double"
           },
           "participant_id": {
@@ -1657,10 +1407,7 @@
             "format": "uuid"
           },
           "pullup": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double"
           },
           "rank": {
@@ -1668,10 +1415,7 @@
             "format": "int64"
           },
           "ris": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double"
           },
           "ris_source": {
@@ -1685,17 +1429,11 @@
             ]
           },
           "squat": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double"
           },
           "total": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double"
           }
         }
@@ -1747,11 +1485,7 @@
       },
       "LiftDetail": {
         "type": "object",
-        "required": [
-          "movement_name",
-          "best_weight",
-          "attempts"
-        ],
+        "required": ["movement_name", "best_weight", "attempts"],
         "properties": {
           "attempts": {
             "type": "array",
@@ -1760,10 +1494,7 @@
             }
           },
           "best_weight": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "movement_name": {
             "$ref": "#/components/schemas/Movement"
@@ -1781,18 +1512,12 @@
         ],
         "properties": {
           "class_share": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double",
             "description": "Mean share across the other athletes in the class."
           },
           "class_spread": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double",
             "description": "Sample standard deviation of the share across the other athletes in the class."
           },
@@ -1811,18 +1536,10 @@
       },
       "MetricStanding": {
         "type": "object",
-        "required": [
-          "value",
-          "class",
-          "global",
-          "country"
-        ],
+        "required": ["value", "class", "global", "country"],
         "properties": {
           "class": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "country": {
             "oneOf": [
@@ -1844,29 +1561,17 @@
       },
       "Movement": {
         "type": "string",
-        "enum": [
-          "Muscle-up",
-          "Pull-up",
-          "Dips",
-          "Squat"
-        ]
+        "enum": ["Muscle-up", "Pull-up", "Dips", "Squat"]
       },
       "MovementInfo": {
         "type": "object",
-        "required": [
-          "movement_name",
-          "display_order",
-          "code"
-        ],
+        "required": ["movement_name", "display_order", "code"],
         "properties": {
           "code": {
             "type": "string"
           },
           "display_order": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "type": ["integer", "null"],
             "format": "int32"
           },
           "movement_name": {
@@ -1876,10 +1581,7 @@
       },
       "PaginatedResponse_AthleteResponse": {
         "type": "object",
-        "required": [
-          "data",
-          "pagination"
-        ],
+        "required": ["data", "pagination"],
         "properties": {
           "data": {
             "type": "array",
@@ -1909,10 +1611,7 @@
                   }
                 },
                 "country": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "created_at": {
                   "type": "string",
@@ -1925,10 +1624,7 @@
                   "$ref": "#/components/schemas/Gender"
                 },
                 "instagram_handle": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "last_name": {
                   "type": "string"
@@ -1944,10 +1640,7 @@
                   ]
                 },
                 "native_name": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "neighbors": {
                   "oneOf": [
@@ -1966,10 +1659,7 @@
                   }
                 },
                 "profile_picture_url": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "slug": {
                   "type": "string"
@@ -1998,10 +1688,7 @@
       },
       "PaginatedResponse_CompetitionResponse": {
         "type": "object",
-        "required": [
-          "data",
-          "pagination"
-        ],
+        "required": ["data", "pagination"],
         "properties": {
           "data": {
             "type": "array",
@@ -2032,20 +1719,14 @@
                   }
                 },
                 "city": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "competition_id": {
                   "type": "string",
                   "format": "uuid"
                 },
                 "country": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "created_at": {
                   "type": "string",
@@ -2058,17 +1739,11 @@
                   }
                 },
                 "end_date": {
-                  "type": [
-                    "string",
-                    "null"
-                  ],
+                  "type": ["string", "null"],
                   "format": "date"
                 },
                 "event_code": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "federation": {
                   "$ref": "#/components/schemas/CompetitionFederation"
@@ -2078,10 +1753,7 @@
                   "format": "uuid"
                 },
                 "lifter_count": {
-                  "type": [
-                    "integer",
-                    "null"
-                  ],
+                  "type": ["integer", "null"],
                   "format": "int64"
                 },
                 "movements": {
@@ -2094,10 +1766,7 @@
                   "type": "string"
                 },
                 "region": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "scoring": {
                   "oneOf": [
@@ -2113,20 +1782,14 @@
                   "type": "string"
                 },
                 "start_date": {
-                  "type": [
-                    "string",
-                    "null"
-                  ],
+                  "type": ["string", "null"],
                   "format": "date"
                 },
                 "status": {
                   "$ref": "#/components/schemas/CompetitionStatus"
                 },
                 "venue": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 }
               }
             }
@@ -2138,10 +1801,7 @@
       },
       "PaginatedResponse_GlobalRankingEntry": {
         "type": "object",
-        "required": [
-          "data",
-          "pagination"
-        ],
+        "required": ["data", "pagination"],
         "properties": {
           "data": {
             "type": "array",
@@ -2175,32 +1835,20 @@
                   "$ref": "#/components/schemas/CompetitionInfo"
                 },
                 "dips": {
-                  "type": [
-                    "number",
-                    "null"
-                  ],
+                  "type": ["number", "null"],
                   "format": "double"
                 },
                 "division": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "event": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": ["string", "null"]
                 },
                 "federation": {
                   "$ref": "#/components/schemas/RankingFederation"
                 },
                 "muscleup": {
-                  "type": [
-                    "number",
-                    "null"
-                  ],
+                  "type": ["number", "null"],
                   "format": "double"
                 },
                 "participant_id": {
@@ -2208,10 +1856,7 @@
                   "format": "uuid"
                 },
                 "pullup": {
-                  "type": [
-                    "number",
-                    "null"
-                  ],
+                  "type": ["number", "null"],
                   "format": "double"
                 },
                 "rank": {
@@ -2219,10 +1864,7 @@
                   "format": "int64"
                 },
                 "ris": {
-                  "type": [
-                    "number",
-                    "null"
-                  ],
+                  "type": ["number", "null"],
                   "format": "double"
                 },
                 "ris_source": {
@@ -2236,17 +1878,11 @@
                   ]
                 },
                 "squat": {
-                  "type": [
-                    "number",
-                    "null"
-                  ],
+                  "type": ["number", "null"],
                   "format": "double"
                 },
                 "total": {
-                  "type": [
-                    "number",
-                    "null"
-                  ],
+                  "type": ["number", "null"],
                   "format": "double"
                 }
               }
@@ -2259,12 +1895,7 @@
       },
       "PaginationMeta": {
         "type": "object",
-        "required": [
-          "page",
-          "page_size",
-          "total_items",
-          "total_pages"
-        ],
+        "required": ["page", "page_size", "total_items", "total_pages"],
         "properties": {
           "page": {
             "type": "integer",
@@ -2321,10 +1952,7 @@
             "$ref": "#/components/schemas/CompetitionAthlete"
           },
           "bodyweight": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "lifts": {
             "type": "array",
@@ -2337,17 +1965,11 @@
             "format": "uuid"
           },
           "rank": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "type": ["integer", "null"],
             "format": "int32"
           },
           "ris_score": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "ris_source": {
             "oneOf": [
@@ -2363,16 +1985,10 @@
             "$ref": "#/components/schemas/AthleteStatus"
           },
           "status_reason": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "total": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           }
         }
       },
@@ -2393,10 +2009,7 @@
             "type": "string"
           },
           "date": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "format": "date"
           },
           "max_weight": {
@@ -2409,11 +2022,7 @@
       },
       "RankedGender": {
         "type": "string",
-        "enum": [
-          "M",
-          "F",
-          "MX"
-        ]
+        "enum": ["M", "F", "MX"]
       },
       "RankingAthlete": {
         "type": "object",
@@ -2433,17 +2042,11 @@
             "format": "uuid"
           },
           "bodyweight": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double"
           },
           "country": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "first_name": {
             "type": "string"
@@ -2452,10 +2055,7 @@
             "$ref": "#/components/schemas/Gender"
           },
           "instagram_handle": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "last_name": {
             "type": "string"
@@ -2467,16 +2067,10 @@
       },
       "RankingFederation": {
         "type": "object",
-        "required": [
-          "name",
-          "abbreviation"
-        ],
+        "required": ["name", "abbreviation"],
         "properties": {
           "abbreviation": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "name": {
             "type": "string"
@@ -2485,21 +2079,11 @@
       },
       "RankingMetric": {
         "type": "string",
-        "enum": [
-          "muscleup",
-          "pullup",
-          "dips",
-          "squat",
-          "total",
-          "ris"
-        ]
+        "enum": ["muscleup", "pullup", "dips", "squat", "total", "ris"]
       },
       "RisConstants": {
         "type": "object",
-        "required": [
-          "men",
-          "women"
-        ],
+        "required": ["men", "women"],
         "properties": {
           "men": {
             "$ref": "#/components/schemas/GenderConstants"
@@ -2511,10 +2095,7 @@
       },
       "RisDistributionResponse": {
         "type": "object",
-        "required": [
-          "men",
-          "women"
-        ],
+        "required": ["men", "women"],
         "properties": {
           "men": {
             "type": "array",
@@ -2532,11 +2113,7 @@
       },
       "RisFormulaResponse": {
         "type": "object",
-        "required": [
-          "year",
-          "is_current",
-          "constants"
-        ],
+        "required": ["year", "is_current", "constants"],
         "properties": {
           "constants": {
             "$ref": "#/components/schemas/RisConstants"
@@ -2594,24 +2171,15 @@
       "RisSource": {
         "type": "string",
         "description": "Where a RIS score came from. `computed` was worked out from the athlete's\nbodyweight and total. `reported` preserves the published score when either\ninput is missing.",
-        "enum": [
-          "computed",
-          "reported"
-        ]
+        "enum": ["computed", "reported"]
       },
       "Scoring": {
         "type": "string",
-        "enum": [
-          "total",
-          "ris"
-        ]
+        "enum": ["total", "ris"]
       },
       "StandingPlace": {
         "type": "object",
-        "required": [
-          "place",
-          "field"
-        ],
+        "required": ["place", "field"],
         "properties": {
           "field": {
             "type": "integer",

@@ -10,17 +10,14 @@ for tool in docker cargo pnpm; do
   }
 done
 
-if [ ! -f backend/.env ]; then
-  echo "backend/.env is missing. Run: cp backend/.env.example backend/.env"
-  exit 1
-fi
+[ -f backend/.env ] || cp backend/.env.example backend/.env
 
-docker-compose up -d --wait postgres
+docker compose up -d --wait postgres
+(cd frontend && pnpm install --frozen-lockfile)
 
-if command -v cargo-watch >/dev/null; then
-  backend_cmd=(cargo watch -x "run -p osl_api")
+if command -v watchexec >/dev/null; then
+  backend_cmd=(watchexec -r -w crates -w Cargo.toml -- cargo run -p osl_api)
 else
-  echo "Backend reload is disabled. To enable it, run: cargo install cargo-watch"
   backend_cmd=(cargo run -p osl_api)
 fi
 
