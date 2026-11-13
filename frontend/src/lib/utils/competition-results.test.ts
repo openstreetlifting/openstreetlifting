@@ -61,8 +61,8 @@ it('treats zero as a recorded result and distinguishes it from an unknown or fai
     total: '0',
     ris_score: '0',
     lifts: [
-      { movement_name: 'Muscle-up', best_weight: '0', attempts: [] },
-      { movement_name: 'Pull-up', best_weight: null, attempts: [] },
+      { movement_name: 'Muscle-up', best_weight: '0', record: null, attempts: [] },
+      { movement_name: 'Pull-up', best_weight: null, record: null, attempts: [] },
     ],
   });
   expect(hasRankingResult(athlete, 'muscleup')).toBe(true);

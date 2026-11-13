@@ -1,4 +1,6 @@
 <script lang="ts">
+  import RecordMark from '#lib/components/ui/record-mark.svelte';
+  import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
   import { LAYOUT } from '#lib/constants/layout.js';
   import Select from '#lib/components/ui/select.svelte';
   import { useI18n } from '#lib/i18n/index.js';
@@ -82,8 +84,13 @@
     /** Contested, and every attempt failed, with nothing recorded behind it. */
     | { kind: 'bombed' }
     /** The source published a best with no attempt breakdown behind it. */
-    | { kind: 'best'; best: string }
-    | { kind: 'attempts'; attempts: Attempt[]; best: string | null };
+    | { kind: 'best'; best: string; record: RecordMarkValue | null }
+    | {
+        kind: 'attempts';
+        attempts: Attempt[];
+        best: string | null;
+        record: RecordMarkValue | null;
+      };
 
   function liftCell(competition: AthleteCompetitionSummary, lift: Lift): LiftCell {
     if (!contestedBy(competition, lift)) return { kind: 'absent' };
@@ -91,12 +98,17 @@
     const made = competition.lifts.find((candidate) => candidate.movement_name === lift.movement);
 
     if (made?.attempts.length) {
-      return { kind: 'attempts', attempts: made.attempts, best: made.best_weight };
+      return {
+        kind: 'attempts',
+        attempts: made.attempts,
+        best: made.best_weight,
+        record: made.record,
+      };
     }
 
     return made?.best_weight == null
       ? { kind: 'bombed' }
-      : { kind: 'best', best: made.best_weight };
+      : { kind: 'best', best: made.best_weight, record: made.record };
   }
 
   const contested = $derived(
@@ -340,6 +352,7 @@
           >
             <span class={TEXT.cardFigure}>{weights.format(pr.max_weight, i18n.locale)}</span>
             <span class="font-mono text-meta text-secondary">{weights.unit}</span>
+            <RecordMark badge mark={pr.record} />
             {#snippet footer()}
               <span
                 class="mt-1 flex items-center gap-1 border-t border-stroke pt-3 text-secondary transition-colors group-hover:text-ink"
@@ -492,7 +505,7 @@
                           })}>{NO_RESULT}</span
                         >
                       {:else}
-                        {weights.format(cell.best, i18n.locale)}
+                        {weights.format(cell.best, i18n.locale)}<RecordMark mark={cell.record} />
                       {/if}
                     </span>
                   </span>

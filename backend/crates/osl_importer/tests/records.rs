@@ -326,3 +326,52 @@ async fn takes_each_best_within_a_federation_or_year(pool: PgPool) {
         vec![("Strong", "50".into()), ("Steady", "35".into())]
     );
 }
+
+async fn marks(pool: &PgPool) -> Vec<(String, String, String)> {
+    sqlx::query_as(
+        "SELECT a.last_name, rm.movement_name, rm.mark
+         FROM record_marks rm
+         JOIN competition_participants cp USING (participant_id)
+         JOIN athletes a USING (athlete_id)
+         WHERE rm.movement_name = 'Muscle-up'
+         ORDER BY rm.mark DESC, a.last_name",
+    )
+    .fetch_all(pool)
+    .await
+    .unwrap()
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn marks_current_world_and_national_class_records(pool: PgPool) {
+    import(
+        &pool,
+        on(
+            "first",
+            "2025-01-01",
+            vec![men_80(vec![
+                muscleup(athlete("A", "Pioneer"), "50"),
+                from(muscleup(athlete("B", "Italian"), "45"), "IT"),
+                from(muscleup(athlete("C", "Second"), "40"), "IT"),
+            ])],
+        ),
+    )
+    .await;
+    import(
+        &pool,
+        on(
+            "later",
+            "2026-01-01",
+            vec![men_80(vec![muscleup(athlete("D", "Equal"), "50")])],
+        ),
+    )
+    .await;
+
+    assert_eq!(
+        marks(&pool).await,
+        vec![
+            ("Pioneer".into(), "Muscle-up".into(), "WR".into()),
+            ("Italian".into(), "Muscle-up".into(), "NR".into()),
+        ],
+        "an equal lift later takes neither mark, and the world record holder is not also marked NR"
+    );
+}

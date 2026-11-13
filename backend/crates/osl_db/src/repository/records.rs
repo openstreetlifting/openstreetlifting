@@ -121,4 +121,17 @@ impl<'a> RecordsRepository<'a> {
         .fetch_all(self.pool)
         .await?)
     }
+
+    #[tracing::instrument(name = "repository.records.marks", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn marks(
+        &self,
+        participant_ids: &[uuid::Uuid],
+    ) -> Result<Vec<(uuid::Uuid, osl_domain::Movement, osl_domain::RecordMark)>> {
+        Ok(sqlx::query_as(
+            "SELECT participant_id, movement_name, mark FROM record_marks WHERE participant_id = ANY($1)",
+        )
+        .bind(participant_ids)
+        .fetch_all(self.pool)
+        .await?)
+    }
 }

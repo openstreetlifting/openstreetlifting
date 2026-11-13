@@ -10,9 +10,9 @@ use crate::projections::competition::{
 };
 use crate::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
-    federation::FederationRow, lift::LiftRow,
+    federation::FederationRow,
 };
-use osl_domain::{AthleteStatus, CompetitionStatus, Gender, Movement, RisSource};
+use osl_domain::{AthleteStatus, CompetitionStatus, Gender, Movement, RecordMark, RisSource};
 
 pub struct CompetitionRepository<'a> {
     pool: &'a PgPool,
@@ -375,13 +375,16 @@ impl<'a> CompetitionRepository<'a> {
                 .fetch_one(self.pool)
                 .await?;
 
-                let lifts = sqlx::query_as!(
-                    LiftRow,
-                    r#"SELECT lift_id, participant_id,
-                            movement_name as "movement_name: Movement",
-                            max_weight, updated_at
-                     FROM lifts
-                     WHERE participant_id = $1"#,
+                let lifts = sqlx::query!(
+                    r#"SELECT l.lift_id,
+                            l.movement_name as "movement_name: Movement",
+                            l.max_weight,
+                            rm.mark as "record?: RecordMark"
+                     FROM lifts l
+                     LEFT JOIN record_marks rm
+                         ON rm.participant_id = l.participant_id
+                        AND rm.movement_name = l.movement_name
+                     WHERE l.participant_id = $1"#,
                     participant.participant_id
                 )
                 .fetch_all(self.pool)
@@ -403,6 +406,7 @@ impl<'a> CompetitionRepository<'a> {
                     lift_details.push(LiftDetail {
                         movement_name: lift.movement_name,
                         best_weight: lift.max_weight,
+                        record: lift.record,
                         attempts: attempts
                             .into_iter()
                             .map(|a| AttemptSummary {

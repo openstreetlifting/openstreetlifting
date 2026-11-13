@@ -191,3 +191,53 @@ async fn filters_by_federation_and_year(pool: PgPool) {
     let (status, _) = get(&pool, "/api/v1/records?year=soon").await;
     assert_eq!(status, StatusCode::BAD_REQUEST);
 }
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn marks_current_records_on_rankings_results_and_history(pool: PgPool) {
+    a_meet(&pool).await;
+
+    let (_, rankings) = get(&pool, "/api/v1/rankings?movement=muscleup").await;
+    let leader = &rankings["data"][0];
+    assert_eq!(leader["athlete"]["slug"], "alex-martin");
+    assert!(
+        leader["records"]
+            .as_array()
+            .unwrap()
+            .contains(&json!({ "movement": "Muscle-up", "mark": "WR" }))
+    );
+
+    let (_, competition) = get(&pool, "/api/v1/competitions/worlds?include=results").await;
+    let lifts = competition["categories"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .flat_map(|category| category["participants"].as_array().unwrap())
+        .find(|participant| participant["athlete"]["slug"] == "ben-dupont")
+        .unwrap()["lifts"]
+        .as_array()
+        .unwrap()
+        .clone();
+    let mark = |movement: &str| {
+        lifts
+            .iter()
+            .find(|lift| lift["movement_name"] == movement)
+            .unwrap()["record"]
+            .clone()
+    };
+    assert_eq!(mark("Pull-up"), "WR", "Ben out-pulled Alex in M-80");
+    assert_eq!(
+        mark("Muscle-up"),
+        Value::Null,
+        "Alex holds both muscle-up records"
+    );
+
+    let (_, athlete) = get(&pool, "/api/v1/athletes/hugo-heavy?include=competitions").await;
+    let squat = athlete["competitions"][0]["lifts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|lift| lift["movement_name"] == "Squat")
+        .unwrap()
+        .clone();
+    assert_eq!(squat["record"], "WR");
+}

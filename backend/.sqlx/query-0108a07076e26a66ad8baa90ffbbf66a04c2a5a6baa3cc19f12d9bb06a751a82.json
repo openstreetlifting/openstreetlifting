@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT lift_id, participant_id,\n                            movement_name as \"movement_name: Movement\",\n                            max_weight, updated_at\n                     FROM lifts\n                     WHERE participant_id = $1",
+  "query": "SELECT l.lift_id,\n                            l.movement_name as \"movement_name: Movement\",\n                            l.max_weight,\n                            rm.mark as \"record?: RecordMark\"\n                     FROM lifts l\n                     LEFT JOIN record_marks rm\n                         ON rm.participant_id = l.participant_id\n                        AND rm.movement_name = l.movement_name\n                     WHERE l.participant_id = $1",
   "describe": {
     "columns": [
       {
@@ -16,17 +16,6 @@
       },
       {
         "ordinal": 1,
-        "name": "participant_id",
-        "type_info": "Uuid",
-        "origin": {
-          "Table": {
-            "table": "lifts",
-            "name": "participant_id"
-          }
-        }
-      },
-      {
-        "ordinal": 2,
         "name": "movement_name: Movement",
         "type_info": "Varchar",
         "origin": {
@@ -37,7 +26,7 @@
         }
       },
       {
-        "ordinal": 3,
+        "ordinal": 2,
         "name": "max_weight",
         "type_info": "Numeric",
         "origin": {
@@ -48,13 +37,13 @@
         }
       },
       {
-        "ordinal": 4,
-        "name": "updated_at",
-        "type_info": "Timestamp",
+        "ordinal": 3,
+        "name": "record?: RecordMark",
+        "type_info": "Varchar",
         "origin": {
           "Table": {
-            "table": "lifts",
-            "name": "updated_at"
+            "table": "record_marks",
+            "name": "mark"
           }
         }
       }
@@ -67,10 +56,9 @@
     "nullable": [
       false,
       false,
-      false,
       true,
       true
     ]
   },
-  "hash": "22b94d1e49a9e3d277501c00663de98e3aa9715e773bfb3cee6d58e908e37178"
+  "hash": "0108a07076e26a66ad8baa90ffbbf66a04c2a5a6baa3cc19f12d9bb06a751a82"
 }

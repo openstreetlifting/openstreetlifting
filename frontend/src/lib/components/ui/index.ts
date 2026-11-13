@@ -17,6 +17,7 @@ export { default as SearchInput } from './search-input.svelte';
 export { default as FilterBar } from './filter-bar.svelte';
 export { default as InfoTip } from './info-tip.svelte';
 export { default as RisScore } from './ris-score.svelte';
+export { default as RecordMark } from './record-mark.svelte';
 export { default as RankHeader } from './rank-header.svelte';
 export { default as RisHeader } from './ris-header.svelte';
 export { default as RankingsEmpty } from './rankings-empty.svelte';

@@ -104,6 +104,7 @@ it('converts records and class captions without changing leaderboard filter valu
     {
       movement_name: 'Pull-up',
       max_weight: '90',
+      record: null,
       competition_name: 'Euros',
       competition_slug: 'euros',
       date: '2026-01-01',
@@ -119,6 +120,24 @@ it('converts records and class captions without changing leaderboard filter valu
   await expect.element(global).toMatchTextContent('in category -176.37 lb');
   expect(query(global.element()).get('category')).toBe('-80');
   expect(lifter.personal_records[0].max_weight).toBe('90');
+});
+
+it('marks a personal best that is a current record', async () => {
+  const lifter = athlete();
+  lifter.personal_records = [
+    {
+      movement_name: 'Dips',
+      max_weight: '125',
+      record: 'NR',
+      competition_name: 'Serbian Open',
+      competition_slug: 'serbian-open',
+      date: '2026-05-24',
+    },
+  ];
+  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  await expect
+    .element(page.getByLabelText('Current national record in this weight class'))
+    .toHaveTextContent('NR');
 });
 
 it('defaults both cards to RIS with separate global and country pages', async () => {
@@ -225,9 +244,10 @@ it('renders multiple divisions from the same meet and distinguishes absent, bomb
       {
         movement_name: 'Muscle-up',
         best_weight: '0',
+        record: null,
         attempts: [{ attempt_number: 1, weight: '0', is_successful: true }],
       },
-      { movement_name: 'Pull-up', best_weight: '60', attempts: [] },
+      { movement_name: 'Pull-up', best_weight: '60', record: null, attempts: [] },
     ],
   };
   lifter.competitions = [
@@ -239,9 +259,10 @@ it('renders multiple divisions from the same meet and distinguishes absent, bomb
         {
           movement_name: 'Muscle-up',
           best_weight: null,
+          record: null,
           attempts: [{ attempt_number: 1, weight: '20', is_successful: false }],
         },
-        { movement_name: 'Pull-up', best_weight: '60', attempts: [] },
+        { movement_name: 'Pull-up', best_weight: '60', record: null, attempts: [] },
       ],
     },
   ];
@@ -330,4 +351,34 @@ it('shows lift balance alone after a single competition', async () => {
   await expect.element(page.getByRole('heading', { name: 'Performance', level: 2 })).toBeVisible();
   await expect.element(page.getByText('Lift balance', { exact: true })).toBeVisible();
   expect(page.getByText('Performance over time', { exact: true }).elements()).toHaveLength(0);
+});
+
+it('marks a lift that is a current record', async () => {
+  const lifter = athlete();
+  lifter.total_competitions = 1;
+  lifter.competitions = [
+    {
+      competition_id: 'meet',
+      competition_name: 'One Meet',
+      competition_slug: 'one-meet',
+      competition_date: '2026-01-01',
+      category_name: 'Men -80kg',
+      division: null,
+      rank: 1,
+      total: null,
+      ris_score: null,
+      ris_source: null,
+      status: 'competed',
+      event: 'MP',
+      lifts: [
+        { movement_name: 'Muscle-up', best_weight: '50', record: 'WR', attempts: [] },
+        { movement_name: 'Pull-up', best_weight: '60', record: null, attempts: [] },
+      ],
+    },
+  ];
+  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  await expect
+    .element(page.getByLabelText('Current world record in this weight class'))
+    .toHaveTextContent('WR');
+  expect(page.getByText('NR', { exact: true }).elements()).toHaveLength(0);
 });
