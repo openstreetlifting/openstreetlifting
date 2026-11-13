@@ -1,0 +1,42 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Noah,Abboud,,LB,65,82.47,345,competed,,recovered,2026,15x,20,25x,20,50,60,65x,60,100,110,120,120,120x,130,145,145
+M,66,Ibrahim,AlAli,,LB,64.4,50.58,210,competed,,recovered,2026,5,10,15x,10,35,45x,50,50,45,60,70,70,70,80,95x,80
+M,66,Bahaa,Aley,,LB,64.4,91.23,378.75,competed,,recovered,2026,25,30,35x,30,62.5,70,73.75,73.75,90,100,105,105,155,165,170,170
+M,66,Assaad,Nahhas,,LB,65.7,66.93,282.5,competed,,recovered,2026,15,20x,20x,15,55x,67.5,72.5x,67.5,65,80,87.5x,80,105x,115x,120,120
+M,66,Zein,Narsh,,LB,66.1,78.37,332.5,competed,,recovered,2026,11.25,15,18x,15,50,57.5,62.5,62.5,80,90,95,95,140,150,160,160
+M,66,Karim,Orabi,,LB,65,72.01,301.25,competed,,recovered,2026,16.25x,16.25,20x,16.25,60,65,72.5x,65,82.5,95,100x,95,125,140x,140x,125
+M,66,Moaffaq,Shalati,,SY,66.1,81.61,346.25,competed,,recovered,2026,12.5,15,20,20,72.5,80,81.25,81.25,115,116.25x,117.5,117.5,115,120,127.5,127.5
+M,66,Kamal,Tabet,,LB,66.1,86.62,367.5,competed,,recovered,2026,15,20,21.25x,20,60,67.5,70,70,107.5,117.5,123.75x,117.5,150,160,172.5x,160
+M,73,Abdallah,Abdallah,,LB,72.4,79.68,366.25,competed,,recovered,2026,15,17.5x,17.5,17.5,60,65x,67.5,67.5,100,110,121.25,121.25,140,160,170x,160
+M,73,Mohammad Ali,Al Ashkar,,LB,70.7,66.38,298.75,competed,,recovered,2026,15,20x,20,20,57.5,66.25x,66.25,66.25,75x,82.5,90x,82.5,120,130x,130,130
+M,73,Gebran,Gebran,,LB,71.7,91.61,417.5,competed,,recovered,2026,20,25,27.5,27.5,65,75,80,80,105,110,115x,110,180x,190,200,200
+M,73,Jawad,Maddah,,LB,72.59,74.88,345,competed,,recovered,2026,17.5,22.5x,22.5x,17.5,65,67.5x,67.5,67.5,90,100,110x,100,140x,145,160,160
+M,73,Ihab,Mahmoud,,LB,72.4,89.2,410,competed,,recovered,2026,22.5x,22.5,27.5,27.5,66.25,76.25,80,80,110,120,127.5,127.5,175x,175,185x,175
+M,73,Jeanmarie,Mattar,,LB,71.7,82.56,376.25,competed,,recovered,2026,15,21.25,25x,21.25,48.75,55,60,60,90,100,110x,100,182.5x,195,202.5x,195
+M,73,Ibrahim,Omais,,LB,69.1,72.56,320,competed,,recovered,2026,10x,12.5,17.5x,12.5,55,67.5,70x,67.5,75,90,110,110,115x,130,145x,130
+M,73,Khaldoun,Zahreddine,,LB,66.7,89.46,382.5,competed,,recovered,2026,22.5,27.5,30,30,75,85x,87.5,87.5,115,125x,125,125,140,150x,150x,140
+M,73,Peter,Zalaket,,LB,70.81,59.91,270,competed,,recovered,2026,5x,10,15x,10,40,50,55,55,50,65,72.5x,65,140,160x,170x,140
+M,80,Thaer,Abousaad,,LB,75.11,73.46,348.5,competed,,recovered,2026,12.5,17.5x,17.5,17.5,52.5,60,65x,60,105x,105,108.5,108.5,162.5,170x,180x,162.5
+M,80,Ramez,Alhalabii,,LB,75.9,73.92,353.75,competed,,recovered,2026,12.5,17.5x,17.5x,12.5,50,60,63.75,63.75,87.5,97.5,102.5x,97.5,165,180,190x,180
+M,80,Wissam,Batlouni,,LB,78.6,68.36,336.25,competed,,recovered,2026,5x,5,12.5x,5,45,52.5,56.25,56.25,95x,95x,100,100,160,170,175,175
+M,80,Chadi,Hamdan,,LB,77.1,50.55,245,competed,,recovered,2026,2.5,7.5,10x,7.5,40,47.5,47.5,47.5,60,70,75,75,90,115,130x,115
+M,80,Ali,Hamieh,,LB,78.8,82.18,405,competed,,recovered,2026,15,22.5,30,30,62.5,75,85,85,75,90x,95,95,190x,195,205x,195
+M,80,Hady,N,,LB,73.4,78.14,363.5,competed,,recovered,2026,10,15x,15x,10,55,62.5,66,66,90,100,105x,100,180,187.5,200x,187.5
+M,80,Andrew,Nouwar,,LB,78.19,78.32,383.75,competed,,recovered,2026,1.25x,1.25,8.75x,1.25,52.5,60,67.5,67.5,80,90x,95,95,205,220,241.5x,220
+M,87,Joe,Abouhaidar,,LB,86.79,75.53,395,competed,,recovered,2026,5,10,15,15,60,67.5,73.75x,67.5,100,101.25,107.5,107.5,205x,205,217.5x,205
+M,87,Daniel,Aboul Hosn,,LB,82.39,76.26,387.5,competed,,recovered,2026,17.5,23.75x,25x,17.5,65,77.5,82.5x,77.5,95,110,120x,110,160,170,182.5,182.5
+M,87,Elyan,Alkakhy,,LB,84.7,85.2,440,competed,,recovered,2026,30,35x,35x,30,67.5,75,80.5x,75,122.5,125,130.25x,125,200,210,215x,210
+M,87,Hassan,Barakat,,EG,85.29,70.17,363.75,competed,,recovered,2026,25,30,35x,30,70,80,83.75,83.75,110,120,140x,120,120,130,132.5x,130
+M,87,Ashraf,Dakdouk,,LB,81.6,65.84,332.5,competed,,recovered,2026,10,15,20x,15,50,60,70x,60,80,90,97.5,97.5,150,160,167.5x,160
+M,87,Jad,Debian,,LB,86.09,89.27,465,competed,,recovered,2026,15,20x,20,20,67.5,76.25,80,80,115,125,132.5,132.5,220,232.5,235x,232.5
+M,87,Alain,Kallas,,LB,83.2,78.74,402.5,competed,,recovered,2026,25x,25x,25,25,70,77.5,80x,77.5,110x,110,120,120,180,200x,200x,180
+M,87,Peter,Melhem,,LB,,43.72,,disqualified,Bombed the squat,,,10x,10,20x,10,65,75,81.25,81.25,115,127.5,135,135,215x,217.5x,217.5x,
+M,87,Ghassan,Mustapha,,LB,85,76.58,396.25,competed,,recovered,2026,15,21.25,25x,21.25,60,67.5,72.5x,67.5,105,110,117.5,117.5,190,210x,210x,190
+M,94,Raed,Amasha,,LB,87.4,66.23,347.5,competed,,recovered,2026,10,12.5,15x,12.5,45x,45,50,50,107.5,115x,115,115,170,185x,190x,170
+M,94,Houssam,Btaddini,,LB,89.9,64.83,344.25,competed,,recovered,2026,5x,5,8.75,8.75,52.5x,58.75,63,63,77.5,87.5,92.5x,87.5,175,180,185,185
+M,94,Sultan,Harb,,LB,92.3,74.16,397.5,competed,,recovered,2026,2.5,7.5,11.25x,7.5,50,57.5,60x,57.5,97.5,107.5,108.75x,107.5,212.5,225,227.5x,225
+M,94,Anthony,Nassar,,LB,,19.72,,disqualified,Bombed the muscle-up and squat,,,1.25x,1.25x,1.25x,,37.5,42.5x,42.5x,37.5,67.5,75x,75x,67.5,197.5x,197.5x,197.5x,
+M,94,Majd,Raydan,,LB,,25.5,,disqualified,Bombed the squat,,,1.25,4,10x,4,45,55,62.5x,55,60,75,85x,75,150x,150x,152.5x,
+M,101,Malek,Makarem,,LB,95.31,72.09,390,competed,,recovered,2026,2.5,7.5,11.25x,7.5,57.5,65,67.5,67.5,85,95,105,105,210x,210,230x,210
+M,101,John,Yazbeck,,LB,96.71,64.93,352.5,competed,,recovered,2026,10x,10,15x,10,60,65,70x,65,95,105x,107.5,107.5,160,170,180x,170
+M,101+,Fouad,Hajje,,LB,101.54,60.46,331.25,competed,,recovered,2026,0,1.25,5x,1.25,41.25,48,55,55,75,87.5,95,95,170,180,182.5x,180

@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = [
+    "FinalRep app, /events-api/v1/events/{id}/statistics",
+    "https://final-rep.com/event-calendar/",
+]
+
+[competition]
+name = "Streetlifting National Championship"
+start_date = "2026-10-24"
+country = "LB"
+status = "completed"
+
+[federation]
+name = "Turbosthenics"
+country = "LB"
