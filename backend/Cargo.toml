@@ -9,6 +9,10 @@ members = [
 ]
 resolver = "2"
 
+[profile.dev]
+debug = false
+incremental = false
+
 [workspace.package]
 version = "0.68.2"
 edition = "2024"
