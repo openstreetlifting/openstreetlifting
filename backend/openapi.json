@@ -562,7 +562,7 @@
         "operationId": "list_ranking_countries",
         "responses": {
           "200": {
-            "description": "Distinct countries athletes have competed under, ",
+            "description": "Distinct countries athletes have competed under",
             "content": {
               "application/json": {
                 "schema": {
@@ -716,9 +716,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid query parameters"
           }
         }
       }

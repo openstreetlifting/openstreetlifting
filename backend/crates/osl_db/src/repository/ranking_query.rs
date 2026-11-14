@@ -44,12 +44,19 @@ pub(crate) fn ranked_results(select: &str, by: &Filters<RankingBy>) -> QueryBuil
             INNER JOIN competitions c ON cp.competition_id = c.competition_id
             INNER JOIN federations f ON c.federation_id = f.federation_id
             LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
-            WHERE cp.status = 'competed'
+            WHERE TRUE
+        ",
+    );
+    if !by.any(|by| matches!(by, RankingBy::Competition(_))) {
+        query.push(
+            r"
+              AND cp.status = 'competed'
               AND (cp.total IS NOT NULL OR cp.ris_score IS NOT NULL OR EXISTS (
                   SELECT 1 FROM lifts l WHERE l.participant_id = cp.participant_id
               ))
-        ",
-    );
+            ",
+        );
+    }
     by.push_and(&mut query);
     query
 }

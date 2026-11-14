@@ -15,7 +15,6 @@ interface RankingsTableConfig<S extends FilterSpec> {
    * between two competitions, and a captured value would keep linking to the first.
    */
   basePath: string | (() => string);
-  /** The dropdown filters this table offers. */
   filters: S;
   initialUrl: typeof page.url;
   /** Column sorted before anyone picks one. Not every competition has a RIS to sort on. */

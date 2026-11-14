@@ -212,3 +212,32 @@ async fn filters_classes_by_competition(pool: PgPool) {
         [] as [String; 0]
     );
 }
+
+#[sqlx::test(migrations = "./migrations")]
+async fn lists_unranked_entrants_only_inside_their_competition(pool: PgPool) {
+    let competition = competition(&pool).await;
+    enter(&pool, &competition, "M", Some(73), Some(80), None).await;
+    sqlx::query("UPDATE competition_participants SET status = 'disqualified', total = NULL")
+        .execute(&pool)
+        .await
+        .unwrap();
+
+    let repository = RankingRepository::new(&pool);
+
+    assert_eq!(
+        repository
+            .facets(&[RankingBy::Competition(competition.competition_id)].into())
+            .await
+            .unwrap()
+            .classes,
+        vec!["-80kg"]
+    );
+    assert_eq!(
+        repository
+            .facets(&Filters::default())
+            .await
+            .unwrap()
+            .classes,
+        [] as [String; 0]
+    );
+}

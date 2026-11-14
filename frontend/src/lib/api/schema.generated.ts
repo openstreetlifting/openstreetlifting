@@ -891,12 +891,6 @@ export interface operations {
           'application/json': components['schemas']['RankingFacets'];
         };
       };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
     };
   };
   list_records: {

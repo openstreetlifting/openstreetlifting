@@ -18,7 +18,6 @@ use crate::shared::dto::{PaginatedResponse, PaginationParams};
     params(GlobalRankingFilter),
     responses(
         (status = 200, description = "Values each ranking filter can take given the other filters. Search, sort and paging are ignored.", body = RankingFacets),
-        (status = 400, description = "Invalid query parameters")
     ),
     tag = "rankings"
 )]
@@ -26,8 +25,6 @@ pub async fn get_ranking_facets(
     State(state): State<AppState>,
     Query(filter): Query<GlobalRankingFilter>,
 ) -> WebResult<Json<RankingFacets>> {
-    filter.validate().map_err(WebError::BadRequest)?;
-
     let facets = RankingRepository::new(state.db.pool())
         .facets(&filter.filters())
         .await?;
@@ -39,7 +36,7 @@ pub async fn get_ranking_facets(
     get,
     path = "/api/v1/rankings/countries",
     responses(
-        (status = 200, description = "Distinct countries athletes have competed under, ", body = Vec<String>),
+        (status = 200, description = "Distinct countries athletes have competed under", body = Vec<String>),
     ),
     tag = "rankings"
 )]

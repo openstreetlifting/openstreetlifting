@@ -91,6 +91,7 @@ async fn scopes_options_to_one_competition(pool: PgPool) {
     assert_eq!(rome["countries"], json!(["IT"]));
     assert_eq!(rome["classes"], json!(["-80kg"]));
 
-    let (status, _) = facets(&pool, "?gender=MX").await;
-    assert_eq!(status, StatusCode::BAD_REQUEST);
+    let (status, lenient) = facets(&pool, "?category=nonsense&page=0").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(lenient["countries"], json!(["FR", "IT"]));
 }
