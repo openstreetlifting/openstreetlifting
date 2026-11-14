@@ -184,7 +184,7 @@
                           <th
                             scope="rowgroup"
                             rowspan={group.entries.length}
-                            class="{TABLE_CELL} align-top text-left font-mono font-medium text-ink"
+                            class="{TABLE_CELL} w-px align-top text-left font-mono font-medium whitespace-normal text-ink"
                           >
                             {classLabel(group)}
                           </th>
