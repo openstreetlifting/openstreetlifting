@@ -314,6 +314,13 @@ export const messages = [
   'RIS',
   'Weight unit',
   'Your weight unit preference is saved in your browser.',
+  'Records',
+  'OpenStreetlifting records',
+  '{country} records',
+  '{movement} records',
+  'No records for this selection yet.',
+  'Current world record in this weight class',
+  'Current national record in this weight class',
 ] as const;
 
 export type Message = (typeof messages)[number];

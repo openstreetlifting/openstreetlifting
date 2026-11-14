@@ -1,4 +1,6 @@
 <script lang="ts">
+  import RecordMark from '#lib/components/ui/record-mark.svelte';
+  import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
   import CompetitionBodyweight, {
     MIN_POINTS,
     type BodyweightPoint,
@@ -172,8 +174,13 @@
     /** Contested, and every attempt failed. */
     | { kind: 'bombed' }
     /** The source published a best with no attempt breakdown behind it. */
-    | { kind: 'best'; best: number }
-    | { kind: 'attempts'; attempts: Attempt[]; best: number | null };
+    | { kind: 'best'; best: number; record: RecordMarkValue | null }
+    | {
+        kind: 'attempts';
+        attempts: Attempt[];
+        best: number | null;
+        record: RecordMarkValue | null;
+      };
 
   function liftCell(
     participant: Participant | undefined,
@@ -186,11 +193,12 @@
     const lift = participant?.lifts.find((candidate) => candidate.movement_name === movement);
     if (!lift && best === null) return { kind: 'absent' };
 
+    const record = lift?.record ?? null;
     if (lift?.attempts.length) {
-      return { kind: 'attempts', attempts: lift.attempts, best };
+      return { kind: 'attempts', attempts: lift.attempts, best, record };
     }
 
-    return best === null ? { kind: 'bombed' } : { kind: 'best', best };
+    return best === null ? { kind: 'bombed' } : { kind: 'best', best, record };
   }
 
   const bodyweightPoints = $derived(
@@ -762,7 +770,10 @@
                             })}>{NO_RESULT}</span
                           >
                         {:else}
-                          {weights.format(cell.best, i18n.locale)}
+                          {weights.format(cell.best, i18n.locale)}<RecordMark
+                            worldOnly
+                            mark={cell.record}
+                          />
                         {/if}
                       </span>
                     </span>
@@ -852,7 +863,10 @@
                         {:else if cell.kind === 'bombed'}
                           <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
                         {:else}
-                          {weights.format(cell.best, i18n.locale)}
+                          {weights.format(cell.best, i18n.locale)}<RecordMark
+                            worldOnly
+                            mark={cell.record}
+                          />
                         {/if}
                       </span>
                     </span>

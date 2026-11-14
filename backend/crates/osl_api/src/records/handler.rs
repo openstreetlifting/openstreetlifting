@@ -29,3 +29,17 @@ pub async fn list_records(
 
     Ok(Json(group(rows)))
 }
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/records/years",
+    responses(
+        (status = 200, description = "Years with at least one recorded lift, most recent first", body = Vec<i32>),
+    ),
+    tag = "records"
+)]
+pub async fn list_record_years(State(state): State<AppState>) -> WebResult<Json<Vec<i32>>> {
+    Ok(Json(
+        RecordsRepository::new(state.db.pool()).list_years().await?,
+    ))
+}

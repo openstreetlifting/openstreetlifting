@@ -1,7 +1,7 @@
 {
   "name": "openstreetlifting-frontend",
   "private": true,
-  "version": "0.66.0",
+  "version": "0.68.0",
   "type": "module",
   "scripts": {
     "dev": "pnpm api:generate && vite dev",

@@ -23,6 +23,7 @@ const PAGE_ROOTS = new Set([
   '',
   'rankings',
   'competitions',
+  'records',
   'athletes',
   'countries',
   'federations',

@@ -1,8 +1,8 @@
 Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,BodyweightSource,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-M,66,Sam,Greenhalgh,,,58,46.05,177.5,competed,,recovered,2026,5x,5,7.5x,5,35,40x,40x,35,50,57.5,62.5,62.5,60,70,75,75
+M,66,Sam,Greenhalgh,,GB,58,46.05,177.5,competed,,recovered,2026,5x,5,7.5x,5,35,40x,40x,35,50,57.5,62.5,62.5,60,70,75,75
 M,73,Divyesh,Patel,,IN,,67.29,,disqualified,Bombed the muscle-up,,,12.5x,12.5x,12.5x,,50,55x,55,55,87.5x,92.5x,92.5,92.5,142.5,150,155x,150
 M,73,Matheus,da Silva,,GB,,0,350,competed,,,,20,25x,25x,20,55,65x,65x,55,95,105x,105x,95,165,175,180,180
-M,80,Gabriel,Machin,,,,,,disqualified,Bombed the muscle-up and pull-up and dips and squat,,,0x,0x,0x,,60x,60x,60x,,100x,100x,100x,,200x,200x,200x,
+M,80,Gabriel,Machin,,GB,,,,disqualified,Bombed the muscle-up and pull-up and dips and squat,,,0x,0x,0x,,60x,60x,60x,,100x,100x,100x,,200x,200x,200x,
 M,80,Rafi,McDonald,,GB,,0,260,competed,,,,5,10x,10,10,47.5,52.5,55,55,65,75,80x,75,110x,110,120,120
 M,80,Marcel,Nathaniel,,GB,,0,391.25,competed,,,,15x,17.5,20x,17.5,60,67.5,71.25,71.25,100,115,122.5,122.5,170,172.5x,180,180
 F,57,Lorna,Nolan,,GB,56.39,61.13,162.5,competed,,recovered,2026,7.5x,7.5,10,10,25,30,32.5,32.5,15,25,30,30,80,90,100x,90

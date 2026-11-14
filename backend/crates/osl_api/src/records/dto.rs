@@ -64,6 +64,10 @@ pub struct RecordsQuery {
     pub weight_class: Option<String>,
     /// An ISO 3166-1 alpha-2 country code, such as `FR`.
     pub country: Option<String>,
+    /// A federation name, as listed by `/api/v1/competitions/federations`.
+    pub federation: Option<String>,
+    /// Only lifts from competitions held in this year.
+    pub year: Option<i32>,
     /// Entries per group, from 1 to 50. Defaults to 3.
     pub limit: Option<i64>,
 }
@@ -88,15 +92,19 @@ impl RecordsQuery {
             movement: self.movement.map(Into::into),
             gender: self.gender.map(Into::into),
             weight_class,
-            country: self
-                .country
-                .as_deref()
-                .map(str::trim)
-                .filter(|country| !country.is_empty())
-                .map(str::to_ascii_uppercase),
+            country: non_empty(self.country.as_deref()).map(|country| country.to_ascii_uppercase()),
+            federation: non_empty(self.federation.as_deref()),
+            year: self.year,
             limit,
         })
     }
+}
+
+fn non_empty(value: Option<&str>) -> Option<String> {
+    value
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_string)
 }
 
 #[derive(Debug, Serialize, ToSchema)]
@@ -137,15 +145,12 @@ pub struct RecordCompetition {
 pub fn group(rows: Vec<RecordRow>) -> Vec<RecordGroup> {
     let mut groups: Vec<RecordGroup> = Vec::new();
     for row in rows {
-        let Some(movement) = Movement::from_name(&row.movement_name) else {
-            continue;
-        };
         let gender = match row.gender {
             Gender::M => RecordGender::M,
             Gender::F => RecordGender::F,
             Gender::Mx => continue,
         };
-        let movement = RecordMovement::from(movement);
+        let movement = RecordMovement::from(row.movement_name);
         let entry = RecordEntry {
             rank: row.rank,
             athlete: RecordAthlete {

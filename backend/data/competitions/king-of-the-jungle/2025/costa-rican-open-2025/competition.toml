@@ -7,6 +7,7 @@ sources = [
 
 [competition]
 name = "Costa Rican Open"
+series = "king-of-the-jungle-costa-rican-open"
 start_date = "2025-05-24"
 end_date = "2025-05-25"
 city = "Santa Ana"

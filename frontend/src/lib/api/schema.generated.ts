@@ -239,6 +239,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/records/years': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['list_record_years'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/ris/calculations': {
     parameters: {
       query?: never;
@@ -326,6 +342,7 @@ export interface components {
       attempts: components['schemas']['AttemptInfo'][];
       best_weight: string | null;
       movement_name: components['schemas']['Movement'];
+      record: components['schemas']['RecordMark'] | null;
     };
     AthleteNeighbor: {
       athlete_id: string;
@@ -471,6 +488,7 @@ export interface components {
       participant_id: string;
       pullup: number | null;
       rank: number;
+      records: components['schemas']['LiftRecord'][];
       ris: number | null;
       ris_source: components['schemas']['RisSource'] | null;
       squat: number | null;
@@ -490,6 +508,11 @@ export interface components {
       attempts: components['schemas']['AttemptInfo'][];
       best_weight: string | null;
       movement_name: components['schemas']['Movement'];
+      record: components['schemas']['RecordMark'] | null;
+    };
+    LiftRecord: {
+      mark: components['schemas']['RecordMark'];
+      movement: components['schemas']['Movement'];
     };
     LiftShare: {
       class_share: number | null;
@@ -568,6 +591,7 @@ export interface components {
         participant_id: string;
         pullup: number | null;
         rank: number;
+        records: components['schemas']['LiftRecord'][];
         ris: number | null;
         ris_source: components['schemas']['RisSource'] | null;
         squat: number | null;
@@ -603,6 +627,7 @@ export interface components {
       date: string | null;
       max_weight: string;
       movement_name: components['schemas']['Movement'];
+      record: components['schemas']['RecordMark'] | null;
     };
     RankedGender: 'M' | 'F' | 'MX';
     RankingAthlete: {
@@ -649,6 +674,7 @@ export interface components {
       movement: components['schemas']['RecordMovement'];
       weight_class: string | null;
     };
+    RecordMark: 'WR' | 'NR';
     RecordMovement: 'muscleup' | 'pullup' | 'dips' | 'squat';
     RisConstants: {
       men: components['schemas']['GenderConstants'];
@@ -1044,6 +1070,8 @@ export interface operations {
         gender?: components['schemas']['RecordGender'] | null;
         weight_class?: string | null;
         country?: string | null;
+        federation?: string | null;
+        year?: number | null;
         limit?: number | null;
       };
       header?: never;
@@ -1065,6 +1093,25 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  list_record_years: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': number[];
+        };
       };
     };
   };
@@ -1197,6 +1244,9 @@ export const rankingMetricValues: ReadonlyArray<
 export const recordGenderValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RecordGender']
 > = ['M', 'F'];
+export const recordMarkValues: ReadonlyArray<
+  FlattenedDeepRequired<components>['schemas']['RecordMark']
+> = ['WR', 'NR'];
 export const recordMovementValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RecordMovement']
 > = ['muscleup', 'pullup', 'dips', 'squat'];

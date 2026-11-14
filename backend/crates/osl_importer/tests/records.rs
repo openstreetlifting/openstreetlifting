@@ -35,6 +35,8 @@ const fn filter(weight_class: Option<RecordClass>) -> RecordsFilter {
         gender: Some(Gender::M),
         weight_class,
         country: None,
+        federation: None,
+        year: None,
         limit: 3,
     }
 }
@@ -279,4 +281,97 @@ async fn keeps_each_result_that_raised_the_record(pool: PgPool) {
     .await
     .unwrap();
     assert_eq!(class_steps, 2, "the M-80 class has the same two steps");
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn takes_each_best_within_a_federation_or_year(pool: PgPool) {
+    let mut local = on(
+        "local-2025",
+        "2025-01-01",
+        vec![men_80(vec![
+            muscleup(athlete("Alex", "Strong"), "40"),
+            muscleup(athlete("Ben", "Steady"), "35"),
+        ])],
+    );
+    local.competition.federation.name = "Local Federation".into();
+    import(&pool, local).await;
+    import(
+        &pool,
+        on(
+            "worlds",
+            "2026-01-01",
+            vec![men_80(vec![muscleup(athlete("Alex", "Strong"), "50")])],
+        ),
+    )
+    .await;
+
+    let mut federation = filter(Some(class("M-80")));
+    federation.federation = Some("Local Federation".into());
+    assert_eq!(
+        holders(&records(&pool, &federation).await),
+        vec![("Strong", "40".into()), ("Steady", "35".into())],
+        "the 50 kg lift belongs to another federation"
+    );
+
+    let mut year = filter(Some(RecordClass::Open));
+    year.year = Some(2025);
+    assert_eq!(
+        holders(&records(&pool, &year).await),
+        vec![("Strong", "40".into()), ("Steady", "35".into())],
+        "the 50 kg lift was set in 2026"
+    );
+
+    assert_eq!(
+        holders(&records(&pool, &filter(Some(class("M-80")))).await),
+        vec![("Strong", "50".into()), ("Steady", "35".into())]
+    );
+}
+
+async fn marks(pool: &PgPool) -> Vec<(String, String, String)> {
+    sqlx::query_as(
+        "SELECT a.last_name, rm.movement_name, rm.mark
+         FROM record_marks rm
+         JOIN competition_participants cp USING (participant_id)
+         JOIN athletes a USING (athlete_id)
+         WHERE rm.movement_name = 'Muscle-up'
+         ORDER BY rm.mark DESC, a.last_name",
+    )
+    .fetch_all(pool)
+    .await
+    .unwrap()
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn marks_current_world_and_national_class_records(pool: PgPool) {
+    import(
+        &pool,
+        on(
+            "first",
+            "2025-01-01",
+            vec![men_80(vec![
+                muscleup(athlete("A", "Pioneer"), "50"),
+                from(muscleup(athlete("B", "Italian"), "45"), "IT"),
+                from(muscleup(athlete("C", "Second"), "40"), "IT"),
+            ])],
+        ),
+    )
+    .await;
+    import(
+        &pool,
+        on(
+            "later",
+            "2026-01-01",
+            vec![men_80(vec![muscleup(athlete("D", "Equal"), "50")])],
+        ),
+    )
+    .await;
+
+    assert_eq!(
+        marks(&pool).await,
+        vec![
+            ("Pioneer".into(), "Muscle-up".into(), "WR".into()),
+            ("Italian".into(), "Muscle-up".into(), "NR".into()),
+        ],
+        "an equal lift later takes neither mark, and the world record holder is not also marked NR"
+    );
 }

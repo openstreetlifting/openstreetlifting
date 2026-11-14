@@ -6,7 +6,7 @@
     "license": {
       "name": ""
     },
-    "version": "0.66.0"
+    "version": "0.68.0"
   },
   "paths": {
     "/api/v1/athletes": {
@@ -756,6 +756,31 @@
             }
           },
           {
+            "name": "federation",
+            "in": "query",
+            "description": "A federation name, as listed by `/api/v1/competitions/federations`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "description": "Only lifts from competitions held in this year.",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int32"
+            }
+          },
+          {
             "name": "limit",
             "in": "query",
             "description": "Entries per group, from 1 to 50. Defaults to 3.",
@@ -785,6 +810,30 @@
           },
           "400": {
             "description": "Invalid query parameters"
+          }
+        }
+      }
+    },
+    "/api/v1/records/years": {
+      "get": {
+        "tags": [
+          "records"
+        ],
+        "operationId": "list_record_years",
+        "responses": {
+          "200": {
+            "description": "Years with at least one recorded lift, most recent first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1000,6 +1049,7 @@
         "required": [
           "movement_name",
           "best_weight",
+          "record",
           "attempts"
         ],
         "properties": {
@@ -1017,6 +1067,17 @@
           },
           "movement_name": {
             "$ref": "#/components/schemas/Movement"
+          },
+          "record": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordMark",
+                "description": "`WR` or `NR` when this lift is the current world or national record for its weight class."
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         }
       },
@@ -1740,7 +1801,8 @@
           "squat",
           "event",
           "competition",
-          "federation"
+          "federation",
+          "records"
         ],
         "properties": {
           "athlete": {
@@ -1795,6 +1857,13 @@
           "rank": {
             "type": "integer",
             "format": "int64"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LiftRecord"
+            },
+            "description": "Lifts in this row that are the current world or national record for their weight class."
           },
           "ris": {
             "type": [
@@ -1879,6 +1948,7 @@
         "required": [
           "movement_name",
           "best_weight",
+          "record",
           "attempts"
         ],
         "properties": {
@@ -1895,6 +1965,32 @@
             ]
           },
           "movement_name": {
+            "$ref": "#/components/schemas/Movement"
+          },
+          "record": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordMark",
+                "description": "`WR` or `NR` when this lift is the current world or national record for its weight class."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "LiftRecord": {
+        "type": "object",
+        "required": [
+          "movement",
+          "mark"
+        ],
+        "properties": {
+          "mark": {
+            "$ref": "#/components/schemas/RecordMark"
+          },
+          "movement": {
             "$ref": "#/components/schemas/Movement"
           }
         }
@@ -2291,7 +2387,8 @@
                 "squat",
                 "event",
                 "competition",
-                "federation"
+                "federation",
+                "records"
               ],
               "properties": {
                 "athlete": {
@@ -2346,6 +2443,13 @@
                 "rank": {
                   "type": "integer",
                   "format": "int64"
+                },
+                "records": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LiftRecord"
+                  },
+                  "description": "Lifts in this row that are the current world or national record for their weight class."
                 },
                 "ris": {
                   "type": [
@@ -2510,6 +2614,7 @@
         "required": [
           "movement_name",
           "max_weight",
+          "record",
           "competition_name",
           "competition_slug",
           "date"
@@ -2533,6 +2638,17 @@
           },
           "movement_name": {
             "$ref": "#/components/schemas/Movement"
+          },
+          "record": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordMark",
+                "description": "`WR` or `NR` when this best is the current world or national record for its weight class."
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         }
       },
@@ -2748,6 +2864,13 @@
             "description": "The weight class, or `null` for the open record."
           }
         }
+      },
+      "RecordMark": {
+        "type": "string",
+        "enum": [
+          "WR",
+          "NR"
+        ]
       },
       "RecordMovement": {
         "type": "string",

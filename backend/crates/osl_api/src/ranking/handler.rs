@@ -2,9 +2,14 @@ use axum::{
     Json,
     extract::{Query, State},
 };
-use osl_db::repository::ranking::RankingRepository;
+use std::collections::HashMap;
 
-use super::dto::{ClassesFilter, CountriesFilter, GlobalRankingEntry, GlobalRankingFilter};
+use osl_db::repository::ranking::RankingRepository;
+use osl_db::repository::records::RecordsRepository;
+
+use super::dto::{
+    ClassesFilter, CountriesFilter, GlobalRankingEntry, GlobalRankingFilter, LiftRecord,
+};
 use crate::AppState;
 use crate::error::{WebError, WebResult};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
@@ -122,7 +127,24 @@ pub async fn get_global_ranking(
     let repo = RankingRepository::new(state.db.pool());
     let (rows, total_items) = repo.get_global_ranking(&filter.to_db_filter()).await?;
 
-    let entries: Vec<GlobalRankingEntry> = rows.into_iter().map(GlobalRankingEntry::from).collect();
+    let participant_ids: Vec<_> = rows.iter().map(|row| row.participant_id).collect();
+    let marks = RecordsRepository::new(state.db.pool())
+        .marks(&participant_ids)
+        .await?;
+    let mut records: HashMap<_, Vec<LiftRecord>> = HashMap::new();
+    for (participant_id, movement, mark) in marks {
+        records
+            .entry(participant_id)
+            .or_default()
+            .push(LiftRecord { movement, mark });
+    }
+    let entries: Vec<GlobalRankingEntry> = rows
+        .into_iter()
+        .map(|row| {
+            let records = records.remove(&row.participant_id).unwrap_or_default();
+            GlobalRankingEntry::new(row, records)
+        })
+        .collect();
 
     let response = PaginatedResponse::new(
         entries,

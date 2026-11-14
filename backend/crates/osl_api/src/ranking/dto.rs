@@ -3,7 +3,7 @@ use crate::shared::filters::RankedGender;
 use chrono::NaiveDate;
 use osl_db::params::{RankingFilter, RankingMovement};
 use osl_db::projections::ranking::RankingRow;
-use osl_domain::{Gender, RisSource, WeightClass};
+use osl_domain::{Gender, Movement, RecordMark, RisSource, WeightClass};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
@@ -145,6 +145,14 @@ pub struct GlobalRankingEntry {
     pub event: Option<String>,
     pub competition: CompetitionInfo,
     pub federation: FederationInfo,
+    /// Lifts in this row that are the current world or national record for their weight class.
+    pub records: Vec<LiftRecord>,
+}
+
+#[derive(Debug, Serialize, ToSchema)]
+pub struct LiftRecord {
+    pub movement: Movement,
+    pub mark: RecordMark,
 }
 
 #[derive(Debug, Serialize, ToSchema)]
@@ -180,8 +188,9 @@ pub struct FederationInfo {
     pub abbreviation: Option<String>,
 }
 
-impl From<RankingRow> for GlobalRankingEntry {
-    fn from(row: RankingRow) -> Self {
+impl GlobalRankingEntry {
+    #[must_use]
+    pub fn new(row: RankingRow, records: Vec<LiftRecord>) -> Self {
         Self {
             participant_id: row.participant_id,
             rank: row.rank,
@@ -215,6 +224,7 @@ impl From<RankingRow> for GlobalRankingEntry {
                 name: row.federation_name,
                 abbreviation: row.federation_abbreviation,
             },
+            records,
         }
     }
 }

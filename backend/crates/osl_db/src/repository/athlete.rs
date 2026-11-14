@@ -220,6 +220,7 @@ impl<'a> AthleteRepository<'a> {
                         jsonb_build_object(
                             'movement_name', l.movement_name,
                             'best_weight', l.max_weight::text,
+                            'record', rm.mark,
                             'attempts', COALESCE(
                                 (
                                     SELECT jsonb_agg(
@@ -246,6 +247,8 @@ impl<'a> AthleteRepository<'a> {
             LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
             LEFT JOIN divisions d ON d.division_id = cp.division_id
             LEFT JOIN lifts l ON l.participant_id = cp.participant_id
+            LEFT JOIN record_marks rm
+                ON rm.participant_id = l.participant_id AND rm.movement_name = l.movement_name
             LEFT JOIN movements m ON m.name = l.movement_name
             LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id
             WHERE cp.athlete_id = $1
@@ -291,12 +294,15 @@ impl<'a> AthleteRepository<'a> {
                             .lifts
                             .iter()
                             .find(|lift| lift.movement_name == movement)?;
-                        Some((competition, lift.best_weight?))
+                        Some((competition, lift.best_weight?, lift.record))
                     })
-                    .max_by_key(|(competition, weight)| (*weight, competition.competition_date))
-                    .map(|(competition, max_weight)| PersonalRecordRow {
+                    .max_by_key(|(competition, weight, record)| {
+                        (*weight, competition.competition_date, record.is_some())
+                    })
+                    .map(|(competition, max_weight, record)| PersonalRecordRow {
                         movement_name: movement,
                         max_weight,
+                        record,
                         competition_name: competition.competition_name.clone(),
                         competition_slug: competition.competition_slug.clone(),
                         date: competition.competition_date,

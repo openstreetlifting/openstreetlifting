@@ -4,6 +4,7 @@
 export const PRIMARY_ROUTES = [
   { name: 'Rankings', path: '/' },
   { name: 'Competitions', path: '/competitions' },
+  { name: 'Records', path: '/records' },
   { name: 'RIS', path: '/ris' },
 ] as const;
 

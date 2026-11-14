@@ -1,4 +1,5 @@
 <script lang="ts">
+  import RecordMark from '#lib/components/ui/record-mark.svelte';
   import { LAYOUT } from '#lib/constants/layout.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
@@ -30,6 +31,7 @@
   import { afterNavigate, refreshAll } from '$app/navigation';
   import { formatDate, countryName, formatAthleteName } from '#lib/utils/index.js';
   import { CELL, FIGURE, NO_VALUE, SORTED_COLUMN, TEXT_CELL } from '#lib/constants/table.js';
+  import { recordFor } from '#lib/utils/records.js';
   import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '#lib/constants/ranking.js';
   import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
   import { rememberRankings } from '#lib/state/rankings-return.svelte.js';
@@ -292,16 +294,28 @@
                 <RisScore value={entry.ris} source={entry.ris_source} />
               </td>
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(entry.muscleup, i18n.locale)}</td
+                >{weights.format(entry.muscleup, i18n.locale)}<RecordMark
+                  worldOnly
+                  mark={recordFor(entry.records, 'Muscle-up')}
+                /></td
               >
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(entry.pullup, i18n.locale)}</td
+                >{weights.format(entry.pullup, i18n.locale)}<RecordMark
+                  worldOnly
+                  mark={recordFor(entry.records, 'Pull-up')}
+                /></td
               >
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(entry.dips, i18n.locale)}</td
+                >{weights.format(entry.dips, i18n.locale)}<RecordMark
+                  worldOnly
+                  mark={recordFor(entry.records, 'Dips')}
+                /></td
               >
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(entry.squat, i18n.locale)}</td
+                >{weights.format(entry.squat, i18n.locale)}<RecordMark
+                  worldOnly
+                  mark={recordFor(entry.records, 'Squat')}
+                /></td
               >
               <td class="{TABLE_CELL} {CELL.data}">
                 <a

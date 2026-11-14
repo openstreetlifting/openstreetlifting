@@ -388,6 +388,14 @@ export default {
   '{competition} is scheduled for {date}. Results will appear here once published.':
     '{competition}: geplant für {date}. Die Ergebnisse erscheinen hier, sobald sie veröffentlicht sind.',
   'Page {page} of {pages}.': 'Seite {page} von {pages}.',
+  Records: 'Rekorde',
+  'OpenStreetlifting records': 'OpenStreetlifting-Rekorde',
+  '{country} records': 'Rekorde: {country}',
+  '{movement} records': 'Rekorde im {movement}',
+  'No records for this selection yet.': 'Für diese Auswahl gibt es noch keine Rekorde.',
+  'Current world record in this weight class': 'Aktueller Weltrekord in dieser Gewichtsklasse',
+  'Current national record in this weight class':
+    'Aktueller nationaler Rekord in dieser Gewichtsklasse',
   Results: 'Ergebnisse',
   'All formats': 'Alle Formate',
   'Competition format: {label}': 'Wettkampfformat: {label}',
