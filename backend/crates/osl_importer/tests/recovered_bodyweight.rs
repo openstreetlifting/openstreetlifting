@@ -1,3 +1,4 @@
+use osl_db::filter::Filters;
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_db::services::ris_computation::recompute_all_ris;
@@ -232,17 +233,11 @@ async fn recomputes_recovered_scores_with_current_edition(pool: PgPool) {
     );
 
     let filter = RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: None,
+        by: Filters::default(),
         name: None,
         movement: RankingMovement::Ris,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.into(),
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 10,
     };

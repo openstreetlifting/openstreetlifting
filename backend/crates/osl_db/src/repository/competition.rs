@@ -3,9 +3,10 @@ use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
-use crate::params::{CompetitionFilter, Page};
+use crate::filter::{Filters, Predicate};
+use crate::params::{CompetitionBy, CompetitionFilter, Page};
 use crate::projections::competition::{
-    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionEdition,
+    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionEdition, CompetitionFacets,
     CompetitionListItem, CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail,
 };
 use crate::rows::{
@@ -13,6 +14,20 @@ use crate::rows::{
     federation::FederationRow,
 };
 use osl_domain::{AthleteStatus, CompetitionStatus, Gender, Movement, RecordMark, RisSource};
+
+impl Predicate for CompetitionBy {
+    fn push(&self, query: &mut QueryBuilder<Postgres>) {
+        match self {
+            Self::Status(status) => query.push("c.status = ").push_bind(status.as_str()),
+            Self::Event(event) => query.push("c.event_code = ").push_bind(event.clone()),
+            Self::Federation(federation) => query.push("f.name = ").push_bind(federation.clone()),
+            Self::Country(country) => query.push("c.country = ").push_bind(country.clone()),
+            Self::Year(year) => query
+                .push("EXTRACT(YEAR FROM c.start_date)::int = ")
+                .push_bind(*year),
+        };
+    }
+}
 
 pub struct CompetitionRepository<'a> {
     pool: &'a PgPool,
@@ -87,31 +102,7 @@ impl<'a> CompetitionRepository<'a> {
 
     fn push_filters(query: &mut QueryBuilder<Postgres>, filter: &CompetitionFilter) {
         query.push(" WHERE TRUE ");
-
-        if let Some(event) = &filter.event {
-            query.push(" AND c.event_code = ");
-            query.push_bind(event.clone());
-        }
-
-        if let Some(status) = filter.status {
-            query.push(" AND c.status = ");
-            query.push_bind(status.as_str());
-        }
-
-        if let Some(federation) = &filter.federation {
-            query.push(" AND f.name = ");
-            query.push_bind(federation.clone());
-        }
-
-        if let Some(country) = &filter.country {
-            query.push(" AND c.country = ");
-            query.push_bind(country.clone());
-        }
-
-        if let Some(year) = filter.year {
-            query.push(" AND EXTRACT(YEAR FROM c.start_date) = ");
-            query.push_bind(f64::from(year));
-        }
+        filter.by.push_and(query);
 
         if let Some(search) = &filter.search {
             let pattern = format!("%{search}%");
@@ -172,62 +163,50 @@ impl<'a> CompetitionRepository<'a> {
         Ok((results, total))
     }
 
-    #[tracing::instrument(name = "repository.competition.list_distinct_federations", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
-        let federations: Vec<String> = sqlx::query_scalar(
-            r"
-            SELECT DISTINCT f.name
-            FROM federations f
-            JOIN competitions c ON c.federation_id = f.federation_id
-            ORDER BY f.name
-            ",
-        )
-        .fetch_all(self.pool)
-        .await?;
+    #[tracing::instrument(name = "repository.competition.facets", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn facets(&self, by: &Filters<CompetitionBy>) -> Result<CompetitionFacets> {
+        let mut federations = Self::listed(
+            "SELECT DISTINCT f.name",
+            &by.without(|by| matches!(by, CompetitionBy::Federation(_))),
+        );
+        federations.push(" ORDER BY 1 ");
 
-        Ok(federations)
+        let mut countries = Self::listed(
+            "SELECT DISTINCT c.country",
+            &by.without(|by| matches!(by, CompetitionBy::Country(_))),
+        );
+        countries.push(" AND c.country IS NOT NULL ORDER BY 1 ");
+
+        let mut years = Self::listed(
+            "SELECT DISTINCT EXTRACT(YEAR FROM c.start_date)::int",
+            &by.without(|by| matches!(by, CompetitionBy::Year(_))),
+        );
+        years.push(" AND c.start_date IS NOT NULL ORDER BY 1 DESC ");
+
+        let mut formats = Self::listed(
+            "SELECT DISTINCT c.event_code",
+            &by.without(|by| matches!(by, CompetitionBy::Event(_))),
+        );
+        formats.push(" AND c.event_code IS NOT NULL ORDER BY 1 ");
+
+        Ok(CompetitionFacets {
+            federations: federations
+                .build_query_scalar()
+                .fetch_all(self.pool)
+                .await?,
+            countries: countries.build_query_scalar().fetch_all(self.pool).await?,
+            years: years.build_query_scalar().fetch_all(self.pool).await?,
+            formats: formats.build_query_scalar().fetch_all(self.pool).await?,
+        })
     }
 
-    #[tracing::instrument(name = "repository.competition.list_distinct_years", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
-        let years: Vec<i32> = sqlx::query_scalar(
-            r"
-            SELECT DISTINCT EXTRACT(YEAR FROM start_date)::int as year
-            FROM competitions
-            WHERE start_date IS NOT NULL
-            ORDER BY year DESC
-            ",
-        )
-        .fetch_all(self.pool)
-        .await?;
-
-        Ok(years)
-    }
-
-    #[tracing::instrument(name = "repository.competition.list_distinct_countries", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn list_distinct_countries(&self) -> Result<Vec<String>> {
-        let countries: Vec<String> = sqlx::query_scalar(
-            r"
-            SELECT DISTINCT country
-            FROM competitions
-            WHERE country IS NOT NULL
-            ORDER BY country
-            ",
-        )
-        .fetch_all(self.pool)
-        .await?;
-
-        Ok(countries)
-    }
-
-    #[tracing::instrument(name = "repository.competition.list_distinct_formats", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn list_distinct_formats(&self) -> Result<Vec<String>> {
-        Ok(sqlx::query_scalar(
-            "SELECT DISTINCT event_code FROM competitions
-             WHERE event_code IS NOT NULL ORDER BY event_code",
-        )
-        .fetch_all(self.pool)
-        .await?)
+    fn listed(select: &str, by: &Filters<CompetitionBy>) -> QueryBuilder<Postgres> {
+        let mut query = QueryBuilder::new(select);
+        query.push(
+            " FROM competitions c JOIN federations f ON f.federation_id = c.federation_id WHERE TRUE ",
+        );
+        by.push_and(&mut query);
+        query
     }
 
     #[tracing::instrument(name = "repository.competition.find_by_id", skip_all, fields(db.system.name = "postgresql"))]

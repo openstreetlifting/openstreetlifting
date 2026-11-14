@@ -1,4 +1,5 @@
-use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
+use osl_db::filter::Filters;
+use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::{athlete::AthleteRepository, ranking::RankingRepository};
 use osl_domain::CountryCode;
 use osl_importer::canonical::{
@@ -157,17 +158,11 @@ async fn preserves_history_when_country_is_unknown(pool: PgPool) {
     let (id, slug, _) = identity(&pool).await;
     let repo = RankingRepository::new(&pool);
     let mut filter = RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: None,
+        by: Filters::default(),
         name: None,
         movement: RankingMovement::Total,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.into(),
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 10,
     };
@@ -175,10 +170,10 @@ async fn preserves_history_when_country_is_unknown(pool: PgPool) {
     assert_eq!(count, 1);
     assert_eq!(rows[0].country, None);
     assert_eq!(rows[0].athlete_id, id);
-    filter.country = Some("FR".into());
+    filter.by = [RankingBy::Country("FR".into())].into();
     assert_eq!(repo.get_global_ranking(&filter).await.unwrap().1, 0);
     assert_eq!(
-        repo.list_distinct_countries(None).await.unwrap(),
+        repo.list_distinct_countries().await.unwrap(),
         [] as [String; 0]
     );
     let history = AthleteRepository::new(&pool)

@@ -1,3 +1,5 @@
+use osl_db::filter::Filters;
+use osl_db::params::RankingBy;
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::Gender;
 use rust_decimal::Decimal;
@@ -83,8 +85,8 @@ async fn enter(
     .unwrap();
 
     sqlx::query(
-        "INSERT INTO competition_participants (competition_id, weight_class_id, division_id, athlete_id)
-         VALUES ($1, $2, $3, $4)",
+        "INSERT INTO competition_participants (competition_id, weight_class_id, division_id, athlete_id, status, total)
+         VALUES ($1, $2, $3, $4, 'competed', 100)",
     )
     .bind(competition.competition_id)
     .bind(weight_class_id)
@@ -104,9 +106,10 @@ async fn lists_classes_lightest_first(pool: PgPool) {
     enter(&pool, &competition, "M", Some(73), Some(80), None).await;
 
     let classes = RankingRepository::new(&pool)
-        .list_distinct_classes(Some(Gender::M), None)
+        .facets(&[RankingBy::Sex(Gender::M)].into())
         .await
-        .unwrap();
+        .unwrap()
+        .classes;
 
     assert_eq!(classes, vec!["-66kg", "-80kg", "-101kg", "+101kg"]);
 }
@@ -121,16 +124,18 @@ async fn filters_classes_by_gender(pool: PgPool) {
 
     assert_eq!(
         repository
-            .list_distinct_classes(Some(Gender::F), None)
+            .facets(&[RankingBy::Sex(Gender::F)].into())
             .await
-            .unwrap(),
+            .unwrap()
+            .classes,
         vec!["-70kg"]
     );
     assert_eq!(
         repository
-            .list_distinct_classes(Some(Gender::M), None)
+            .facets(&[RankingBy::Sex(Gender::M)].into())
             .await
-            .unwrap(),
+            .unwrap()
+            .classes,
         vec!["-80kg"]
     );
 }
@@ -142,9 +147,10 @@ async fn deduplicates_classes_across_divisions(pool: PgPool) {
     enter(&pool, &competition, "M", Some(73), Some(80), Some("Open")).await;
 
     let classes = RankingRepository::new(&pool)
-        .list_distinct_classes(None, None)
+        .facets(&Filters::default())
         .await
-        .unwrap();
+        .unwrap()
+        .classes;
 
     assert_eq!(classes, vec!["-80kg"]);
 }
@@ -163,8 +169,8 @@ async fn returns_empty_list_when_classes_are_absent(pool: PgPool) {
     .unwrap();
 
     sqlx::query(
-        "INSERT INTO competition_participants (competition_id, weight_class_id, athlete_id)
-         VALUES ($1, NULL, $2)",
+        "INSERT INTO competition_participants (competition_id, weight_class_id, athlete_id, status, total)
+         VALUES ($1, NULL, $2, 'competed', 100)",
     )
     .bind(competition.competition_id)
     .bind(athlete_id)
@@ -174,9 +180,10 @@ async fn returns_empty_list_when_classes_are_absent(pool: PgPool) {
 
     assert_eq!(
         RankingRepository::new(&pool)
-            .list_distinct_classes(None, Some(competition.competition_id))
+            .facets(&[RankingBy::Competition(competition.competition_id)].into())
             .await
-            .unwrap(),
+            .unwrap()
+            .classes,
         [] as [String; 0]
     );
 }
@@ -190,16 +197,18 @@ async fn filters_classes_by_competition(pool: PgPool) {
 
     assert_eq!(
         repository
-            .list_distinct_classes(None, Some(competition.competition_id))
+            .facets(&[RankingBy::Competition(competition.competition_id)].into())
             .await
-            .unwrap(),
+            .unwrap()
+            .classes,
         vec!["-80kg"]
     );
     assert_eq!(
         repository
-            .list_distinct_classes(None, Some(Uuid::new_v4()))
+            .facets(&[RankingBy::Competition(Uuid::new_v4())].into())
             .await
-            .unwrap(),
+            .unwrap()
+            .classes,
         [] as [String; 0]
     );
 }

@@ -4,7 +4,7 @@ use axum::{
 };
 use osl_db::repository::records::RecordsRepository;
 
-use super::dto::{RecordGroup, RecordsQuery, group};
+use super::dto::{RecordFacets, RecordGroup, RecordsQuery, group};
 use crate::AppState;
 use crate::error::{WebError, WebResult};
 
@@ -32,14 +32,26 @@ pub async fn list_records(
 
 #[utoipa::path(
     get,
-    path = "/api/v1/records/years",
+    path = "/api/v1/records/facets",
+    params(RecordsQuery),
     responses(
-        (status = 200, description = "Years with at least one recorded lift, most recent first", body = Vec<i32>),
+        (status = 200, description = "Values each records filter can take given the other filters", body = RecordFacets),
+        (status = 400, description = "Invalid query parameters")
     ),
     tag = "records"
 )]
-pub async fn list_record_years(State(state): State<AppState>) -> WebResult<Json<Vec<i32>>> {
-    Ok(Json(
-        RecordsRepository::new(state.db.pool()).list_years().await?,
-    ))
+pub async fn get_record_facets(
+    State(state): State<AppState>,
+    Query(query): Query<RecordsQuery>,
+) -> WebResult<Json<RecordFacets>> {
+    let filter = query.to_db_filter().map_err(WebError::BadRequest)?;
+    let facets = RecordsRepository::new(state.db.pool())
+        .facets(&filter.by)
+        .await?;
+
+    Ok(Json(RecordFacets {
+        countries: facets.countries,
+        federations: facets.federations,
+        years: facets.years,
+    }))
 }

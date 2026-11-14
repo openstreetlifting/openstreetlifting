@@ -1,6 +1,7 @@
 import { expect, it, vi } from 'vitest';
 import { render } from 'svelte/server';
 import Pagination from './pagination.svelte';
+import { LEADERBOARD_FILTERS, RANKING_FILTERS } from '#lib/constants/filters.js';
 import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
 
 vi.mock('$app/paths', () => ({
@@ -19,6 +20,7 @@ function links(body: string): URL[] {
 it('exposes the next rankings page in the initial HTML without JavaScript', () => {
   const table = new RankingsTable({
     basePath: '/',
+    filters: RANKING_FILTERS,
     initialUrl: new URL('https://openstreetlifting.org/'),
   });
   const { body } = render(Pagination, {
@@ -36,7 +38,7 @@ it('exposes the next rankings page in the initial HTML without JavaScript', () =
 it('preserves ranking filters in crawlable links and drops the focused athlete', () => {
   const table = new RankingsTable({
     basePath: '/',
-    includeYear: true,
+    filters: RANKING_FILTERS,
     initialUrl: new URL(
       'https://openstreetlifting.org/?page=2&movement=pullup&direction=asc&gender=F&category=-63&year=2025&country=FR&federation=FNSL&q=Alex%20%26%20Sam&athlete=alex'
     ),
@@ -64,6 +66,7 @@ it('preserves ranking filters in crawlable links and drops the focused athlete',
 it('links within the competition and omits a next link on the last page', () => {
   const table = new RankingsTable({
     basePath: '/competitions/worlds',
+    filters: LEADERBOARD_FILTERS,
     defaultSort: 'total',
     initialUrl: new URL('https://openstreetlifting.org/competitions/worlds?page=3&gender=M'),
   });
@@ -88,6 +91,7 @@ it('removes navigation targets while pagination is disabled', () => {
 it('keeps the URL locale when changing a ranking page or its filters', () => {
   const table = new RankingsTable({
     basePath: '/competitions/worlds',
+    filters: LEADERBOARD_FILTERS,
     initialUrl: new URL('https://openstreetlifting.org/pl/competitions/worlds?country=DE'),
   });
   expect(table.pageHref(2)).toBe('/pl/competitions/worlds?country=DE&page=2');

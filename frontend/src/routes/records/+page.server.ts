@@ -1,32 +1,29 @@
 import { logger } from '#lib/server/logger.js';
 import { error } from '@sveltejs/kit';
-import { rankingsService, recordsService } from '#lib/server/api/index.js';
+import { RECORD_FILTERS } from '#lib/constants/filters.js';
+import { recordsService } from '#lib/server/api/index.js';
 import type { RecordGender } from '#lib/types/records.js';
+import { keepSelected, readFilters } from '#lib/utils/filters.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
-  const params = url.searchParams;
-  const gender: RecordGender = params.get('gender') === 'F' ? 'F' : 'M';
-  const country = params.get('country')?.toUpperCase() || null;
-  const federation = params.get('federation') || null;
-  const year = Number(params.get('year')) || null;
+  const gender: RecordGender = url.searchParams.get('gender') === 'F' ? 'F' : 'M';
+  const filters = readFilters(url.searchParams, RECORD_FILTERS);
 
   try {
-    const [groups, countries, federations, years] = await Promise.all([
-      recordsService.getRecords({ gender, country, federation, year }),
-      rankingsService.getRankingCountries(),
-      rankingsService.getRankingFederations(),
-      recordsService.getYears(),
+    const [groups, facets] = await Promise.all([
+      recordsService.getRecords({ gender, ...filters }),
+      recordsService.getFacets({ gender, ...filters }),
     ]);
     return {
       groups,
-      countries,
-      federations,
-      years,
+      facets: keepSelected(facets, {
+        countries: filters.country,
+        federations: filters.federation,
+        years: filters.year,
+      }),
       gender,
-      country,
-      federation,
-      year,
+      filters,
     };
   } catch (err) {
     logger.error({ err }, 'Records load failed');

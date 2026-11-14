@@ -1,3 +1,4 @@
+use osl_db::filter::Filters;
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::{
     athlete::AthleteRepository, competition::CompetitionRepository, ranking::RankingRepository,
@@ -19,17 +20,11 @@ fn source() -> CanonicalFormat {
 
 fn filter(movement: RankingMovement) -> RankingFilter {
     RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: None,
+        by: Filters::default(),
         name: None,
         movement,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.into(),
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 10,
     }

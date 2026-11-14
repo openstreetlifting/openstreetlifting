@@ -2,21 +2,16 @@ import { logger } from '#lib/server/logger.js';
 import { MAIN_RANKING_PAGE_SIZE } from '#lib/constants/pagination.js';
 import { rankingsService } from '#lib/server/api/index.js';
 import { SITE_NAME, SITE_DESCRIPTION } from '#lib/seo/site.js';
-import { asRankedGender, asRankingMetric } from '#lib/types/enums.js';
+import { asRankingMetric } from '#lib/types/enums.js';
+import { RANKING_FILTERS } from '#lib/constants/filters.js';
+import { readFilters } from '#lib/utils/filters.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
-  const gender = asRankedGender(url.searchParams.get('gender'));
-
   try {
     const movement = asRankingMetric(url.searchParams.get('movement')) ?? 'ris';
     const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
-    const country = url.searchParams.get('country') || null;
-    const federation = url.searchParams.get('federation') || null;
-    const series = url.searchParams.get('series') || null;
     const q = url.searchParams.get('q') || null;
-    const category = url.searchParams.get('category') || null;
-    const year = Number(url.searchParams.get('year')) || null;
     const page = Number(url.searchParams.get('page') ?? 1) || 1;
 
     const initialData = await rankingsService.getGlobalRankings({
@@ -24,12 +19,7 @@ export const load: PageServerLoad = async ({ url }) => {
       page_size: MAIN_RANKING_PAGE_SIZE,
       movement,
       direction,
-      gender,
-      country,
-      federation,
-      series,
-      category,
-      year,
+      ...readFilters(url.searchParams, RANKING_FILTERS),
       q,
     });
 

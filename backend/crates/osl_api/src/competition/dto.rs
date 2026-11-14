@@ -340,3 +340,11 @@ impl CompetitionResponse {
         response
     }
 }
+
+#[derive(Debug, Serialize, ToSchema)]
+pub struct CompetitionFacets {
+    pub federations: Vec<String>,
+    pub countries: Vec<String>,
+    pub years: Vec<i32>,
+    pub formats: Vec<String>,
+}

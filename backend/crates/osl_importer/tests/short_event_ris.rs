@@ -1,4 +1,5 @@
-use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
+use osl_db::filter::Filters;
+use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::{competition::CompetitionRepository, ranking::RankingRepository};
 use osl_domain::{AthleteStatus, Gender, Movement, Scoring};
 use osl_importer::canonical::{models::CanonicalFormat, validator::CanonicalValidator};
@@ -145,17 +146,11 @@ async fn excludes_short_events_from_full_event_standings(pool: PgPool) {
     common::import(&pool, underground()).await;
     let repository = RankingRepository::new(&pool);
     let mut filter = RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: None,
+        by: Filters::default(),
         name: None,
         movement: RankingMovement::Ris,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.into(),
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 50,
     };
@@ -174,7 +169,7 @@ async fn excludes_short_events_from_full_event_standings(pool: PgPool) {
             .is_empty()
     );
     filter.event = osl_domain::FULL_EVENT.into();
-    filter.competition_id = Some(shorter[0].competition_id);
+    filter.by = [RankingBy::Competition(shorter[0].competition_id)].into();
     assert_eq!(repository.get_global_ranking(&filter).await.unwrap().1, 2);
 }
 

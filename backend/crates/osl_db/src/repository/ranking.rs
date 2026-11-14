@@ -1,15 +1,18 @@
-use osl_domain::{Gender, WeightClass};
+use osl_domain::WeightClass;
 use rust_decimal::Decimal;
 use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
 use super::ranking_query::{
     push_eligible, push_latest_total_class, push_metric_candidates, push_name_match,
-    push_ranking_pool, same_class,
+    push_ranking_pool, ranked_results, same_class,
 };
 use crate::error::Result;
-use crate::params::{RankingFilter, RankingMovement};
-use crate::projections::ranking::{AthleteMetricStandingRow, AthleteNeighborRow, RankingRow};
+use crate::filter::Filters;
+use crate::params::{RankingBy, RankingFilter, RankingMovement};
+use crate::projections::ranking::{
+    AthleteMetricStandingRow, AthleteNeighborRow, RankingFacets, RankingRow,
+};
 
 pub struct RankingRepository<'a> {
     pool: &'a PgPool,
@@ -259,131 +262,75 @@ impl<'a> RankingRepository<'a> {
         super::ranking_query::movement_weights(filter)
     }
 
-    #[tracing::instrument(name = "repository.ranking.list_distinct_classes", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn list_distinct_classes(
-        &self,
-        gender: Option<Gender>,
-        competition_id: Option<Uuid>,
-    ) -> Result<Vec<String>> {
-        let mut query = QueryBuilder::new(
-            r"
-            SELECT min_kg, max_kg FROM (
-                SELECT DISTINCT wc.min_kg, wc.max_kg
-                FROM competition_participants cp
-                INNER JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
-                INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
-            ",
+    #[tracing::instrument(name = "repository.ranking.facets", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn facets(&self, by: &Filters<RankingBy>) -> Result<RankingFacets> {
+        let mut classes = ranked_results(
+            "SELECT min_kg, max_kg FROM ( SELECT DISTINCT wc.min_kg, wc.max_kg",
+            &by.without(|by| matches!(by, RankingBy::Class(_))),
         );
-
-        if let Some(gender) = gender {
-            query.push(if competition_id.is_some() {
-                " WHERE COALESCE(cp.category_gender, wc.gender, a.gender) = "
-            } else {
-                " WHERE a.gender = "
-            });
-            query.push_bind(gender.as_str());
-        }
-
-        if let Some(competition_id) = competition_id {
-            query.push(if gender.is_some() { " AND " } else { " WHERE " });
-            query.push(" cp.competition_id = ");
-            query.push_bind(competition_id);
-        }
-
-        query.push(" ) t ORDER BY COALESCE(max_kg, min_kg), max_kg NULLS LAST ");
-
+        classes.push(" ) t ORDER BY COALESCE(max_kg, min_kg), max_kg NULLS LAST ");
         let bounds: Vec<(Option<Decimal>, Option<Decimal>)> =
-            query.build_query_as().fetch_all(self.pool).await?;
-
+            classes.build_query_as().fetch_all(self.pool).await?;
         let mut classes: Vec<String> = bounds
             .into_iter()
             .filter_map(|(min, max)| WeightClass::of(min, max))
             .map(|class| class.to_string())
             .collect();
-
         classes.dedup();
 
-        Ok(classes)
-    }
+        let mut countries = ranked_results(
+            "SELECT DISTINCT a.country",
+            &by.without(|by| matches!(by, RankingBy::Country(_))),
+        );
+        countries.push(" AND a.country IS NOT NULL ORDER BY 1 ");
 
-    #[tracing::instrument(name = "repository.ranking.list_distinct_federations", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn list_distinct_federations(&self) -> Result<Vec<String>> {
-        let federations: Vec<String> = sqlx::query_scalar(
-            r"
-            SELECT DISTINCT f.name
-            FROM federations f
-            INNER JOIN competitions c ON c.federation_id = f.federation_id
-            INNER JOIN competition_participants cp ON cp.competition_id = c.competition_id
-            ORDER BY f.name
-            ",
-        )
-        .fetch_all(self.pool)
-        .await?;
+        let mut federations = ranked_results(
+            "SELECT DISTINCT f.name",
+            &by.without(|by| matches!(by, RankingBy::Federation(_))),
+        );
+        federations.push(" ORDER BY 1 ");
 
-        Ok(federations)
-    }
+        let mut series = ranked_results(
+            "SELECT series, name, federation FROM (
+                SELECT DISTINCT ON (c.series) c.series, c.name, f.name AS federation",
+            &by.without(|by| matches!(by, RankingBy::Series(_))),
+        );
+        series.push(
+            " AND c.series IS NOT NULL ORDER BY c.series, c.start_date DESC NULLS LAST, c.slug
+            ) available ORDER BY federation, name, series ",
+        );
 
-    pub async fn list_distinct_series(&self) -> Result<Vec<(String, String, String)>> {
-        // Use the latest edition's name and organizer; only offer series with results.
-        Ok(sqlx::query_as(
-            r"
-            SELECT series, name, federation FROM (
-                SELECT DISTINCT ON (c.series)
-                    c.series, c.name, f.name AS federation
-                FROM competitions c
-                JOIN federations f USING (federation_id)
-                WHERE c.series IS NOT NULL AND EXISTS (
-                    SELECT 1 FROM competition_participants cp
-                    WHERE cp.competition_id = c.competition_id AND cp.status = 'competed'
-                      AND (cp.total IS NOT NULL OR cp.ris_score IS NOT NULL OR EXISTS (
-                          SELECT 1 FROM lifts l WHERE l.participant_id = cp.participant_id
-                      ))
-                )
-                ORDER BY c.series, c.start_date DESC NULLS LAST, c.slug
-            ) available ORDER BY federation, name, series
-            ",
-        )
-        .fetch_all(self.pool)
-        .await?)
-    }
+        let mut years = ranked_results(
+            "SELECT DISTINCT EXTRACT(YEAR FROM c.start_date)::int",
+            &by.without(|by| matches!(by, RankingBy::Year(_))),
+        );
+        years.push(" AND c.start_date IS NOT NULL ORDER BY 1 DESC ");
 
-    #[tracing::instrument(name = "repository.ranking.list_distinct_years", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn list_distinct_years(&self) -> Result<Vec<i32>> {
-        let years: Vec<i32> = sqlx::query_scalar(
-            r"
-            SELECT DISTINCT EXTRACT(YEAR FROM start_date)::int as year
-            FROM competitions
-            ORDER BY year DESC
-            ",
-        )
-        .fetch_all(self.pool)
-        .await?;
-
-        Ok(years)
+        Ok(RankingFacets {
+            classes,
+            countries: countries.build_query_scalar().fetch_all(self.pool).await?,
+            federations: federations
+                .build_query_scalar()
+                .fetch_all(self.pool)
+                .await?,
+            series: series.build_query_as().fetch_all(self.pool).await?,
+            years: years.build_query_scalar().fetch_all(self.pool).await?,
+        })
     }
 
     #[tracing::instrument(name = "repository.ranking.list_distinct_countries", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn list_distinct_countries(
-        &self,
-        competition_id: Option<Uuid>,
-    ) -> Result<Vec<String>> {
-        let mut query = QueryBuilder::new(
+    pub async fn list_distinct_countries(&self) -> Result<Vec<String>> {
+        let countries: Vec<String> = sqlx::query_scalar(
             r"
             SELECT DISTINCT a.country
             FROM athletes a
             INNER JOIN competition_participants cp ON cp.athlete_id = a.athlete_id
             WHERE a.country IS NOT NULL
+            ORDER BY a.country
             ",
-        );
-
-        if let Some(competition_id) = competition_id {
-            query.push(" AND cp.competition_id = ");
-            query.push_bind(competition_id);
-        }
-
-        query.push(" ORDER BY a.country ");
-
-        let countries: Vec<String> = query.build_query_scalar().fetch_all(self.pool).await?;
+        )
+        .fetch_all(self.pool)
+        .await?;
 
         Ok(countries)
     }

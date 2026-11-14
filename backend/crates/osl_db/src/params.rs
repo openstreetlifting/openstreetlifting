@@ -1,5 +1,7 @@
-use osl_domain::{CompetitionStatus, Gender, WeightClass};
+use osl_domain::{CompetitionStatus, Gender, Movement, WeightClass};
 use uuid::Uuid;
+
+use crate::filter::Filters;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Page {
@@ -84,29 +86,47 @@ impl SortDirection {
 }
 
 #[derive(Debug, Clone)]
+pub enum RankingBy {
+    Sex(Gender),
+    CategoryGender(Gender),
+    Country(String),
+    Federation(String),
+    Series(String),
+    Class(WeightClass),
+    Year(i32),
+    Competition(Uuid),
+}
+
+#[derive(Debug, Clone)]
 pub struct RankingFilter {
-    pub gender: Option<Gender>,
-    pub country: Option<String>,
-    pub federation: Option<String>,
-    pub series: Option<String>,
+    pub by: Filters<RankingBy>,
     pub name: Option<String>,
     pub movement: RankingMovement,
     pub direction: SortDirection,
     pub event: String,
-    pub category: Option<WeightClass>,
-    pub year: Option<i32>,
-    pub competition_id: Option<Uuid>,
     pub offset: i64,
     pub limit: i64,
 }
 
+impl RankingFilter {
+    #[must_use]
+    pub fn in_competition(&self) -> bool {
+        self.by.any(|by| matches!(by, RankingBy::Competition(_)))
+    }
+}
+
+#[derive(Debug, Clone)]
+pub enum CompetitionBy {
+    Status(CompetitionStatus),
+    Event(String),
+    Federation(String),
+    Country(String),
+    Year(i32),
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct CompetitionFilter {
-    pub status: Option<CompetitionStatus>,
-    pub event: Option<String>,
-    pub federation: Option<String>,
-    pub country: Option<String>,
-    pub year: Option<i32>,
+    pub by: Filters<CompetitionBy>,
     pub search: Option<String>,
     pub direction: SortDirection,
 }
@@ -118,12 +138,17 @@ pub enum RecordClass {
 }
 
 #[derive(Debug, Clone)]
+pub enum RecordBy {
+    Movement(Movement),
+    Gender(Gender),
+    Country(String),
+    Federation(String),
+    Year(i32),
+}
+
+#[derive(Debug, Clone)]
 pub struct RecordsFilter {
-    pub movement: Option<osl_domain::Movement>,
-    pub gender: Option<Gender>,
+    pub by: Filters<RecordBy>,
     pub weight_class: Option<RecordClass>,
-    pub country: Option<String>,
-    pub federation: Option<String>,
-    pub year: Option<i32>,
     pub limit: i64,
 }

@@ -34,6 +34,7 @@
   import { recordFor } from '#lib/utils/records.js';
   import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '#lib/constants/ranking.js';
   import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
+  import { RANKING_FILTERS } from '#lib/constants/filters.js';
   import { rememberRankings } from '#lib/state/rankings-return.svelte.js';
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { listingSeo, websiteLd, SITE_NAME, SITE_DESCRIPTION } from '#lib/seo/index.js';
@@ -45,8 +46,7 @@
 
   const table = new RankingsTable({
     basePath: '/',
-    includeYear: true,
-    includeSeries: true,
+    filters: RANKING_FILTERS,
     initialUrl: page.url,
   });
 
@@ -74,18 +74,13 @@
     });
   });
 
-  const sorted = (column: string) => (table.movementFilter === column ? SORTED_COLUMN : '');
-
-  const activeFilters = $derived(
-    [
-      table.countryFilter,
-      table.federationFilter,
-      table.seriesFilter,
-      table.yearFilter,
-      table.genderFilter,
-      table.categoryFilter,
-    ].filter(Boolean).length
+  const staleSeries = $derived(
+    data.series.some((option) => option.series === table.filters.values.series)
+      ? null
+      : table.filters.values.series
   );
+
+  const sorted = (column: string) => (table.movementFilter === column ? SORTED_COLUMN : '');
 </script>
 
 <Seo
@@ -109,7 +104,7 @@
       bind:search={table.searchFilter}
       placeholder={i18n.t('Search an athlete')}
       onSearch={() => table.handleFilterChange()}
-      activeCount={activeFilters}
+      activeCount={table.filters.activeCount}
       onClear={() => table.clearFilters()}
       clearable={table.narrowed}
     >
@@ -127,9 +122,9 @@
         </SelectField>
         <SelectField
           label={i18n.t('Sex')}
-          bind:value={table.genderFilter}
+          bind:value={table.filters.values.gender}
           onchange={() => {
-            table.categoryFilter = null;
+            table.filters.values.category = null;
             table.handleFilterChange();
           }}
         >
@@ -141,7 +136,7 @@
 
       <SelectField
         label={i18n.t('Country')}
-        bind:value={table.countryFilter}
+        bind:value={table.filters.values.country}
         onchange={() => table.handleFilterChange()}
       >
         <option value={null}>{i18n.t('All Countries')}</option>
@@ -151,7 +146,7 @@
       </SelectField>
       <SelectField
         label={i18n.t('Federation')}
-        bind:value={table.federationFilter}
+        bind:value={table.filters.values.federation}
         onchange={() => table.handleFilterChange()}
       >
         <option value={null}>{i18n.t('All Federations')}</option>
@@ -161,7 +156,7 @@
       </SelectField>
       <SelectField
         label={i18n.t('Series')}
-        bind:value={table.seriesFilter}
+        bind:value={table.filters.values.series}
         onchange={() => table.handleFilterChange()}
       >
         <option value={null}>{i18n.t('All Series')}</option>
@@ -170,10 +165,11 @@
             >{seriesOption.federation} · {seriesOption.name}</option
           >
         {/each}
+        {#if staleSeries}<option value={staleSeries}>{staleSeries}</option>{/if}
       </SelectField>
       <SelectField
         label={i18n.t('Year')}
-        bind:value={table.yearFilter}
+        bind:value={table.filters.values.year}
         onchange={() => table.handleFilterChange()}
       >
         <option value={null}>{i18n.t('All Years')}</option>
@@ -183,7 +179,7 @@
       </SelectField>
       <SelectField
         label={i18n.t('Class')}
-        bind:value={table.categoryFilter}
+        bind:value={table.filters.values.category}
         onchange={() => table.handleFilterChange()}
       >
         <option value={null}>{i18n.t('All Classes')}</option>

@@ -1,7 +1,8 @@
 use crate::shared::dto::Direction;
 use crate::shared::filters::RankedGender;
 use chrono::NaiveDate;
-use osl_db::params::{RankingFilter, RankingMovement};
+use osl_db::filter::Filters;
+use osl_db::params::{RankingBy, RankingFilter, RankingMovement};
 use osl_db::projections::ranking::RankingRow;
 use osl_domain::{Gender, Movement, RecordMark, RisSource, WeightClass};
 use rust_decimal::Decimal;
@@ -9,18 +10,6 @@ use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
-
-#[derive(Debug, Deserialize, IntoParams)]
-pub struct ClassesFilter {
-    #[serde(default, deserialize_with = "crate::shared::dto::optional_from_str")]
-    pub gender: Option<Gender>,
-    pub competition_id: Option<Uuid>,
-}
-
-#[derive(Debug, Deserialize, IntoParams)]
-pub struct CountriesFilter {
-    pub competition_id: Option<Uuid>,
-}
 
 #[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "lowercase")]
@@ -82,12 +71,36 @@ impl GlobalRankingFilter {
         Ok(())
     }
 
+    pub fn filters(&self) -> Filters<RankingBy> {
+        let gender = self.gender.map(Gender::from).map(|gender| {
+            if self.competition_id.is_some() {
+                RankingBy::CategoryGender(gender)
+            } else {
+                RankingBy::Sex(gender)
+            }
+        });
+        let class = self
+            .category
+            .as_deref()
+            .and_then(|label| WeightClass::from_str(label).ok());
+
+        [
+            gender,
+            self.country.clone().map(RankingBy::Country),
+            self.federation.clone().map(RankingBy::Federation),
+            self.series.clone().map(RankingBy::Series),
+            class.map(RankingBy::Class),
+            self.year.map(RankingBy::Year),
+            self.competition_id.map(RankingBy::Competition),
+        ]
+        .into_iter()
+        .flatten()
+        .collect()
+    }
+
     pub fn to_db_filter(&self) -> RankingFilter {
         RankingFilter {
-            gender: self.gender.map(Into::into),
-            country: self.country.clone(),
-            federation: self.federation.clone(),
-            series: self.series.clone(),
+            by: self.filters(),
             name: self
                 .q
                 .as_deref()
@@ -100,14 +113,37 @@ impl GlobalRankingFilter {
                 .event
                 .clone()
                 .unwrap_or_else(|| osl_domain::FULL_EVENT.to_string()),
-            category: self
-                .category
-                .as_deref()
-                .and_then(|label| WeightClass::from_str(label).ok()),
-            year: self.year,
-            competition_id: self.competition_id,
             offset: self.pagination.offset(),
             limit: i64::from(self.pagination.limit()),
+        }
+    }
+}
+
+#[derive(Debug, Serialize, ToSchema)]
+pub struct RankingFacets {
+    pub classes: Vec<String>,
+    pub countries: Vec<String>,
+    pub federations: Vec<String>,
+    pub series: Vec<RankingSeries>,
+    pub years: Vec<i32>,
+}
+
+impl From<osl_db::projections::ranking::RankingFacets> for RankingFacets {
+    fn from(facets: osl_db::projections::ranking::RankingFacets) -> Self {
+        Self {
+            classes: facets.classes,
+            countries: facets.countries,
+            federations: facets.federations,
+            series: facets
+                .series
+                .into_iter()
+                .map(|option| RankingSeries {
+                    series: option.series,
+                    name: option.name,
+                    federation: option.federation,
+                })
+                .collect(),
+            years: facets.years,
         }
     }
 }

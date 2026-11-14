@@ -1,4 +1,4 @@
-use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
+use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use sqlx::PgPool;
@@ -19,17 +19,14 @@ fn competition(slug: &str, federation: &str, athletes: Vec<AthleteData>) -> Cano
 
 fn filter(federation: Option<&str>) -> RankingFilter {
     RankingFilter {
-        gender: None,
-        country: None,
-        federation: federation.map(str::to_string),
-        series: None,
+        by: federation
+            .map(|name| RankingBy::Federation(name.to_string()))
+            .into_iter()
+            .collect(),
         name: None,
         movement: RankingMovement::Total,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.to_string(),
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 50,
     }
@@ -135,9 +132,10 @@ async fn lists_federations_with_results(pool: PgPool) {
     import(&pool, announced).await;
 
     let mut federations = RankingRepository::new(&pool)
-        .list_distinct_federations()
+        .facets(&filter(Some("FNSL")).by)
         .await
-        .expect("listing should succeed");
+        .expect("listing should succeed")
+        .federations;
     federations.sort();
 
     assert_eq!(federations, vec!["FNSL", "FinalRep"]);

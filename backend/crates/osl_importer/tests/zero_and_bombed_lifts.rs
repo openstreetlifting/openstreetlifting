@@ -1,3 +1,4 @@
+use osl_db::filter::Filters;
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::Movement;
@@ -149,17 +150,11 @@ async fn ranks_successful_zero_weight_lifts(pool: PgPool) {
     .await;
 
     let filter = RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: None,
+        by: Filters::default(),
         name: None,
         movement: RankingMovement::Muscleup,
         event: osl_domain::FULL_EVENT.to_string(),
         direction: SortDirection::Desc,
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 50,
     };
@@ -182,17 +177,11 @@ async fn excludes_bombed_lifts_from_rankings(pool: PgPool) {
     .await;
 
     let filter = RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: None,
+        by: Filters::default(),
         name: None,
         movement: RankingMovement::Dips,
         event: osl_domain::FULL_EVENT.to_string(),
         direction: SortDirection::Desc,
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 50,
     };

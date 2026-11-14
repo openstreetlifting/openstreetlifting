@@ -11,6 +11,8 @@
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { afterNavigate, refreshAll } from '$app/navigation';
   import { ListingSearch } from '#lib/state/listing-search.svelte.js';
+  import { UrlFilters } from '#lib/state/url-filters.svelte.js';
+  import { COMPETITION_FILTERS } from '#lib/constants/filters.js';
   import { untrack } from 'svelte';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { page as currentPage, navigating } from '$app/state';
@@ -38,10 +40,10 @@
   const showsUpcoming = $derived(data.status === 'upcoming');
 
   const search = new ListingSearch(currentPage.url);
-  let federation = $state(untrack(() => data.federation ?? null));
-  let country = $state(untrack(() => data.country ?? null));
-  let year = $state(untrack(() => data.year ?? null));
-  let event = $state(untrack(() => data.event ?? ''));
+  const filters = new UrlFilters(
+    COMPETITION_FILTERS,
+    untrack(() => data.filters)
+  );
 
   // The page outlives a navigation, so a link that drops the query string has to
   // reach the controls as well as the rows.
@@ -49,16 +51,11 @@
     if (shallow) return;
 
     search.sync(currentPage.url, type);
-    federation = data.federation ?? null;
-    country = data.country ?? null;
-    year = data.year ?? null;
-    event = data.event ?? '';
+    filters.sync(data.filters);
   });
 
-  const narrowed = $derived(Boolean(search.value || federation || country || year || event));
+  const narrowed = $derived(Boolean(search.value || filters.activeCount));
   const canReset = $derived(narrowed || pagination.page > 1);
-
-  const activeFilters = $derived([federation, country, year, event].filter(Boolean).length);
 
   // Paging and filtering live in the URL so a page of results can be linked to,
   // and so a filter narrows the whole archive rather than the current page.
@@ -69,10 +66,7 @@
 
     if (target !== 'completed') params.set('status', target);
     if (query.trim()) params.set('q', query.trim());
-    if (federation) params.set('federation', federation);
-    if (country) params.set('country', country);
-    if (year) params.set('year', String(year));
-    if (event) params.set('event', event);
+    filters.writeTo(params);
     if (next.page && next.page > 1) params.set('page', String(next.page));
 
     const queryString = params.toString();
@@ -85,10 +79,7 @@
 
   function clearFilters() {
     search.value = '';
-    federation = null;
-    country = null;
-    year = null;
-    event = '';
+    filters.clear();
     return apply();
   }
 
@@ -209,11 +200,15 @@
       bind:search={search.value}
       placeholder={i18n.t('Search a competition')}
       onSearch={() => apply({}, true)}
-      activeCount={activeFilters}
+      activeCount={filters.activeCount}
       onClear={clearFilters}
       clearable={narrowed}
     >
-      <SelectField label={i18n.t('Federation')} bind:value={federation} onchange={() => apply()}>
+      <SelectField
+        label={i18n.t('Federation')}
+        bind:value={filters.values.federation}
+        onchange={() => apply()}
+      >
         <option value={null}>{i18n.t('All Federations')}</option>
         {#each data.facets.federations as option (option)}
           <option value={option}>{option}</option>
@@ -222,21 +217,25 @@
 
       <CompetitionFormatFilter
         formats={data.facets.formats}
-        value={event}
+        value={filters.values.event ?? ''}
         onChange={(value) => {
-          event = value;
+          filters.values.event = value || null;
           apply();
         }}
       />
 
-      <SelectField label={i18n.t('Year')} bind:value={year} onchange={() => apply()}>
+      <SelectField label={i18n.t('Year')} bind:value={filters.values.year} onchange={() => apply()}>
         <option value={null}>{i18n.t('All Years')}</option>
         {#each data.facets.years as option (option)}
           <option value={option}>{option}</option>
         {/each}
       </SelectField>
 
-      <SelectField label={i18n.t('Country')} bind:value={country} onchange={() => apply()}>
+      <SelectField
+        label={i18n.t('Country')}
+        bind:value={filters.values.country}
+        onchange={() => apply()}
+      >
         <option value={null}>{i18n.t('All Countries')}</option>
         {#each data.facets.countries as option (option)}
           <option value={option}>{countryName(option, i18n.locale)}</option>

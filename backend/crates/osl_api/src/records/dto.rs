@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-use osl_db::params::{RecordClass, RecordsFilter};
+use osl_db::params::{RecordBy, RecordClass, RecordsFilter};
 use osl_db::projections::records::RecordRow;
 use osl_domain::{Gender, Movement, WeightClassSlug};
 use rust_decimal::Decimal;
@@ -64,7 +64,7 @@ pub struct RecordsQuery {
     pub weight_class: Option<String>,
     /// An ISO 3166-1 alpha-2 country code, such as `FR`.
     pub country: Option<String>,
-    /// A federation name, as listed by `/api/v1/competitions/federations`.
+    /// A federation name, as listed by `/api/v1/records/facets`.
     pub federation: Option<String>,
     /// Only lifts from competitions held in this year.
     pub year: Option<i32>,
@@ -88,13 +88,22 @@ impl RecordsQuery {
             }
         };
 
+        let by = [
+            self.movement
+                .map(|movement| RecordBy::Movement(movement.into())),
+            self.gender.map(|gender| RecordBy::Gender(gender.into())),
+            non_empty(self.country.as_deref())
+                .map(|country| RecordBy::Country(country.to_ascii_uppercase())),
+            non_empty(self.federation.as_deref()).map(RecordBy::Federation),
+            self.year.map(RecordBy::Year),
+        ]
+        .into_iter()
+        .flatten()
+        .collect();
+
         Ok(RecordsFilter {
-            movement: self.movement.map(Into::into),
-            gender: self.gender.map(Into::into),
+            by,
             weight_class,
-            country: non_empty(self.country.as_deref()).map(|country| country.to_ascii_uppercase()),
-            federation: non_empty(self.federation.as_deref()),
-            year: self.year,
             limit,
         })
     }
@@ -184,4 +193,11 @@ pub fn group(rows: Vec<RecordRow>) -> Vec<RecordGroup> {
         }
     }
     groups
+}
+
+#[derive(Debug, Serialize, ToSchema)]
+pub struct RecordFacets {
+    pub countries: Vec<String>,
+    pub federations: Vec<String>,
+    pub years: Vec<i32>,
 }

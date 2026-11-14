@@ -150,11 +150,12 @@ impl From<Direction> for SortDirection {
 mod tests {
     use super::{PaginationMeta, PaginationParams};
     use axum::extract::Query;
+    use osl_db::params::RankingBy;
     use osl_domain::{CompetitionStatus, Gender};
     use serde_json::json;
 
     use crate::competition::handlers::CompetitionListQuery;
-    use crate::ranking::dto::{ClassesFilter, GlobalRankingFilter};
+    use crate::ranking::dto::GlobalRankingFilter;
     use crate::ris::dto::ComputeRisRequest;
     use crate::shared::filters::RankedGender;
 
@@ -223,16 +224,6 @@ mod tests {
         )
         .unwrap();
         assert_eq!(query.status, Some(CompetitionStatus::Completed));
-        let query = Query::<ClassesFilter>::try_from_uri(
-            &"/rankings/classes?gender=%20f%20".parse().unwrap(),
-        )
-        .unwrap();
-        assert_eq!(query.gender, Some(Gender::F));
-        let mixed =
-            Query::<ClassesFilter>::try_from_uri(&"/rankings/classes?gender=mx".parse().unwrap())
-                .unwrap();
-        assert_eq!(mixed.gender, Some(Gender::Mx));
-
         for value in [json!({}), json!({"status": null, "gender": null})] {
             assert!(
                 serde_json::from_value::<CompetitionListQuery>(value.clone())
@@ -241,7 +232,7 @@ mod tests {
                     .is_none()
             );
             assert!(
-                serde_json::from_value::<ClassesFilter>(value)
+                serde_json::from_value::<GlobalRankingFilter>(value)
                     .unwrap()
                     .gender
                     .is_none()
@@ -251,12 +242,6 @@ mod tests {
             assert!(
                 Query::<CompetitionListQuery>::try_from_uri(
                     &format!("/competitions?status={raw}").parse().unwrap(),
-                )
-                .is_err()
-            );
-            assert!(
-                Query::<ClassesFilter>::try_from_uri(
-                    &format!("/rankings/classes?gender={raw}").parse().unwrap(),
                 )
                 .is_err()
             );
@@ -275,7 +260,12 @@ mod tests {
             )
             .unwrap();
             assert_eq!(query.gender, Some(expected));
-            assert_eq!(query.to_db_filter().gender, Some(Gender::from(expected)));
+            let gender = Gender::from(expected);
+            assert!(
+                query
+                    .filters()
+                    .any(|by| matches!(by, RankingBy::Sex(sex) if *sex == gender))
+            );
         }
         let mut mixed =
             Query::<GlobalRankingFilter>::try_from_uri(&"/rankings?gender=MX".parse().unwrap())

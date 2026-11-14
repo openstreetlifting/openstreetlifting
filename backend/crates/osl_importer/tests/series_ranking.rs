@@ -1,4 +1,4 @@
-use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
+use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use sqlx::PgPool;
 
@@ -26,17 +26,11 @@ async fn ranks_best_result_within_selected_series_before_search_and_pagination(p
         common::import(&pool, meet).await;
     }
     let mut filter = RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: Some("sdm".into()),
+        by: [RankingBy::Series("sdm".into())].into(),
         name: None,
         movement: RankingMovement::Total,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.into(),
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 1,
     };
@@ -59,24 +53,23 @@ async fn ranks_best_result_within_selected_series_before_search_and_pagination(p
     assert_eq!(rows[0].rank, 2);
 
     filter.name = None;
-    filter.year = Some(2025);
+    filter.by = [RankingBy::Series("sdm".into()), RankingBy::Year(2025)].into();
     let (rows, count) = repo.get_global_ranking(&filter).await.unwrap();
     assert_eq!(count, 1);
     assert_eq!(rows[0].competition_slug, "sdm-old");
 
-    filter.year = None;
-    filter.series = Some("missing".into());
+    filter.by = [RankingBy::Series("missing".into())].into();
     let (rows, count) = repo.get_global_ranking(&filter).await.unwrap();
     assert!(rows.is_empty());
     assert_eq!(count, 0);
 
-    let series = repo.list_distinct_series().await.unwrap();
+    let series = repo.facets(&filter.by).await.unwrap().series;
     assert_eq!(
         series
             .iter()
-            .map(|(id, _, _)| id.as_str())
+            .map(|option| option.series.as_str())
             .collect::<Vec<_>>(),
         vec!["sdm", "wdm"]
     );
-    assert_eq!(series[0].1, "sdm-new");
+    assert_eq!(series[0].name, "sdm-new");
 }

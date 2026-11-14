@@ -3,25 +3,11 @@ import { rankingsService } from '#lib/server/api/index.js';
 import { load } from './+page.server';
 
 vi.mock('#lib/server/api/index.js', () => ({
-  rankingsService: {
-    getGlobalRankings: vi.fn(),
-    getRankingClasses: vi.fn(),
-    getRankingYears: vi.fn(),
-    getRankingCountries: vi.fn(),
-    getRankingFederations: vi.fn(),
-  },
+  rankingsService: { getGlobalRankings: vi.fn(), getFacets: vi.fn() },
 }));
 
 beforeEach(() => {
   vi.resetAllMocks();
-  for (const method of [
-    'getRankingClasses',
-    'getRankingYears',
-    'getRankingCountries',
-    'getRankingFederations',
-  ] as const) {
-    vi.mocked(rankingsService[method]).mockResolvedValue([]);
-  }
   vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
     data: [],
     pagination: { page: 2, page_size: 100, total_items: 201, total_pages: 3 },
@@ -44,8 +30,5 @@ it('requests 100 athletes on the main ranking table while retaining filters', as
     })
   );
   expect(result).toMatchObject({ pagination: { page_size: 100, total_pages: 3 } });
-  expect(rankingsService.getRankingClasses).not.toHaveBeenCalled();
-  expect(rankingsService.getRankingYears).not.toHaveBeenCalled();
-  expect(rankingsService.getRankingCountries).not.toHaveBeenCalled();
-  expect(rankingsService.getRankingFederations).not.toHaveBeenCalled();
+  expect(rankingsService.getFacets).not.toHaveBeenCalled();
 });

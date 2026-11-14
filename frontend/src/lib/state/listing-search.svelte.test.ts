@@ -1,6 +1,7 @@
 import { beforeEach, expect, it, vi } from 'vitest';
 import { goto } from '$app/navigation';
 import { ListingSearch } from './listing-search.svelte';
+import { RANKING_FILTERS } from '#lib/constants/filters.js';
 import { RankingsTable } from './rankings-table.svelte';
 
 vi.mock('$app/navigation', () => ({ goto: vi.fn() }));
@@ -18,19 +19,19 @@ beforeEach(() => vi.resetAllMocks());
 it('preserves series across paging and filter changes, restores navigation, and clears it', async () => {
   const table = new RankingsTable({
     basePath: '/',
-    includeSeries: true,
+    filters: RANKING_FILTERS,
     initialUrl: url('/?series=sdm&country=DE&page=3'),
   });
-  expect(table.seriesFilter).toBe('sdm');
+  expect(table.filters.values.series).toBe('sdm');
   expect(table.pageHref(4)).toBe('/?country=DE&series=sdm&page=4');
-  table.seriesFilter = 'wdm';
+  table.filters.values.series = 'wdm';
   await table.handleFilterChange();
   expect(goto).toHaveBeenLastCalledWith('/?country=DE&series=wdm', expect.anything());
   table.syncFromUrl(url('/?series=sdm'), 'popstate');
-  expect(table.seriesFilter).toBe('sdm');
+  expect(table.filters.values.series).toBe('sdm');
   expect(table.narrowed).toBe(true);
   await table.clearFilters();
-  expect(table.seriesFilter).toBeNull();
+  expect(table.filters.values.series).toBeNull();
   expect(goto).toHaveBeenLastCalledWith('/', expect.anything());
 });
 
@@ -102,7 +103,11 @@ it('restores Back navigation even when it matches an outstanding search', async 
 });
 
 it('pages through the applied results while a new search is still a draft', async () => {
-  const table = new RankingsTable({ basePath: '/', initialUrl: url('/?q=alex&country=FR') });
+  const table = new RankingsTable({
+    basePath: '/',
+    filters: RANKING_FILTERS,
+    initialUrl: url('/?q=alex&country=FR'),
+  });
   table.searchFilter = 'martin';
   expect(table.pageHref(2)).toBe('/?country=FR&q=alex&page=2');
   await table.handleFilterChange();
@@ -110,9 +115,13 @@ it('pages through the applied results while a new search is still a draft', asyn
 });
 
 it('clears the query and filters together', async () => {
-  const table = new RankingsTable({ basePath: '/', initialUrl: url('/?q=alex&country=FR') });
+  const table = new RankingsTable({
+    basePath: '/',
+    filters: RANKING_FILTERS,
+    initialUrl: url('/?q=alex&country=FR'),
+  });
   await table.clearFilters();
   expect(table.searchFilter).toBe('');
-  expect(table.countryFilter).toBeNull();
+  expect(table.filters.values.country).toBeNull();
   expect(goto).toHaveBeenCalledWith('/', expect.anything());
 });

@@ -69,3 +69,19 @@ pub struct AthleteNeighborRow {
     pub competition_slug: String,
     pub competition_date: Option<NaiveDate>,
 }
+
+#[derive(Debug, FromRow)]
+pub struct SeriesOption {
+    pub series: String,
+    pub name: String,
+    pub federation: String,
+}
+
+#[derive(Debug)]
+pub struct RankingFacets {
+    pub classes: Vec<String>,
+    pub countries: Vec<String>,
+    pub federations: Vec<String>,
+    pub series: Vec<SeriesOption>,
+    pub years: Vec<i32>,
+}

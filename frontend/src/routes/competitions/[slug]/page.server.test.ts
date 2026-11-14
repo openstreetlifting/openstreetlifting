@@ -7,8 +7,7 @@ vi.mock('#lib/server/api/index.js', () => ({
   competitionsService: { getById: vi.fn() },
   rankingsService: {
     getGlobalRankings: vi.fn(),
-    getRankingClasses: vi.fn(),
-    getRankingCountries: vi.fn(),
+    getFacets: vi.fn(),
   },
 }));
 
@@ -26,8 +25,13 @@ beforeEach(() => {
     movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
     categories: [{ participants: [{ athlete }] }],
   } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
-  vi.mocked(rankingsService.getRankingClasses).mockResolvedValue([]);
-  vi.mocked(rankingsService.getRankingCountries).mockResolvedValue([]);
+  vi.mocked(rankingsService.getFacets).mockResolvedValue({
+    classes: [],
+    countries: [],
+    federations: [],
+    series: [],
+    years: [],
+  });
 });
 
 it('keeps a confirmed missing competition as a 404', async () => {

@@ -19,6 +19,9 @@
   import { resolve } from '$app/paths';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
+  import { untrack } from 'svelte';
+  import { UrlFilters } from '#lib/state/url-filters.svelte.js';
+  import { RECORD_FILTERS } from '#lib/constants/filters.js';
   import { SvelteURL } from 'svelte/reactivity';
   import type { RecordGender, RecordGroup, RecordMovement } from '#lib/types/records.js';
   import type { PageData } from './$types';
@@ -35,11 +38,11 @@
 
   let { data }: { data: PageData } = $props();
 
-  let country = $derived(data.country);
-  let federation = $derived(data.federation);
-  let year = $derived(data.year);
-
-  const narrowed = $derived(Boolean(data.country || data.federation || data.year));
+  const filters = new UrlFilters(
+    RECORD_FILTERS,
+    untrack(() => data.filters)
+  );
+  $effect.pre(() => filters.sync(data.filters));
 
   const sections = $derived(
     MOVEMENTS.map((movement) => ({
@@ -53,19 +56,13 @@
     return weights.category(`${group.weight_class.slice(1)}kg`, i18n.locale);
   }
 
-  type Scope = { country: string | null; federation: string | null; year: number | null };
-
-  function apply(gender: RecordGender, scope: Scope) {
+  function apply(gender: RecordGender = data.gender) {
     const url = new SvelteURL(page.url.href);
     url.search = '';
     if (gender === 'F') url.searchParams.set('gender', 'F');
-    if (scope.country) url.searchParams.set('country', scope.country);
-    if (scope.federation) url.searchParams.set('federation', scope.federation);
-    if (scope.year) url.searchParams.set('year', String(scope.year));
+    filters.writeTo(url.searchParams);
     return goto(i18n.href(`${url.pathname}${url.search}`), { reset: false });
   }
-
-  const update = () => apply(data.gender, { country, federation, year });
 </script>
 
 <Seo
@@ -76,10 +73,10 @@
 
 <div class={LAYOUT.page}>
   <Text as="h1" variant="title" class="mb-section text-ink">
-    {#if data.country}
+    {#if data.filters.country}
       <span class="inline-flex items-center gap-3">
-        <Flag countryCode={data.country} class="[--flag-height:0.8em]" />
-        {i18n.t('{country} records', { country: countryName(data.country, i18n.locale) })}
+        <Flag countryCode={data.filters.country} class="[--flag-height:0.8em]" />
+        {i18n.t('{country} records', { country: countryName(data.filters.country, i18n.locale) })}
       </span>
     {:else}
       {i18n.t('OpenStreetlifting records')}
@@ -93,45 +90,53 @@
       items={GENDERS}
       key={(gender) => gender.value}
       selected={(gender) => gender.value === data.gender}
-      onselect={(gender) =>
-        apply(gender.value, {
-          country: data.country,
-          federation: data.federation,
-          year: data.year,
-        })}
+      onselect={(gender) => apply(gender.value)}
       label={i18n.t('Sex')}
     >
       {#snippet children(gender)}{i18n.t(gender.label)}{/snippet}
     </SegmentedControl>
-    <SelectField label={i18n.t('Country')} class={FILTER} bind:value={country} onchange={update}>
+    <SelectField
+      label={i18n.t('Country')}
+      class={FILTER}
+      bind:value={filters.values.country}
+      onchange={() => apply()}
+    >
       <option value={null}>{i18n.t('All Countries')}</option>
-      {#each data.countries as code (code)}
+      {#each data.facets.countries as code (code)}
         <option value={code}>{countryName(code, i18n.locale)}</option>
       {/each}
     </SelectField>
     <SelectField
       label={i18n.t('Federation')}
       class={FILTER}
-      bind:value={federation}
-      onchange={update}
+      bind:value={filters.values.federation}
+      onchange={() => apply()}
     >
       <option value={null}>{i18n.t('All Federations')}</option>
-      {#each data.federations as name (name)}
+      {#each data.facets.federations as name (name)}
         <option value={name}>{name}</option>
       {/each}
     </SelectField>
-    <SelectField label={i18n.t('Year')} class={FILTER} bind:value={year} onchange={update}>
+    <SelectField
+      label={i18n.t('Year')}
+      class={FILTER}
+      bind:value={filters.values.year}
+      onchange={() => apply()}
+    >
       <option value={null}>{i18n.t('All Years')}</option>
-      {#each data.years as option (option)}
+      {#each data.facets.years as option (option)}
         <option value={option}>{option}</option>
       {/each}
     </SelectField>
-    {#if narrowed}
+    {#if filters.activeCount > 0}
       <Button
         variant="outline"
         size="control"
         type="button"
-        onclick={() => apply(data.gender, { country: null, federation: null, year: null })}
+        onclick={() => {
+          filters.clear();
+          apply();
+        }}
         class="gap-1.5 text-meta text-secondary hover:text-ink"
       >
         <CloseIcon class="h-3 w-3" />

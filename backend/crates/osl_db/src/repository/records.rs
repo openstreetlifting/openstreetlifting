@@ -1,8 +1,33 @@
 use sqlx::{PgPool, Postgres, QueryBuilder};
 
 use crate::error::Result;
-use crate::params::{RecordClass, RecordsFilter};
-use crate::projections::records::RecordRow;
+use crate::filter::{Filters, Predicate};
+use crate::params::{RecordBy, RecordClass, RecordsFilter};
+use crate::projections::records::{RecordFacets, RecordRow};
+
+const SET: &str = "
+    FROM records r
+    JOIN athletes a ON a.athlete_id = r.athlete_id
+    JOIN competitions c ON c.competition_id = r.competition_id
+    JOIN federations f ON f.federation_id = c.federation_id
+    WHERE TRUE
+";
+
+impl Predicate for RecordBy {
+    fn push(&self, query: &mut QueryBuilder<Postgres>) {
+        match self {
+            Self::Movement(movement) => query
+                .push("r.movement_name = ")
+                .push_bind(movement.as_str()),
+            Self::Gender(gender) => query.push("r.gender = ").push_bind(gender.as_str()),
+            Self::Country(country) => query.push("a.country = ").push_bind(country.clone()),
+            Self::Federation(federation) => query.push("f.name = ").push_bind(federation.clone()),
+            Self::Year(year) => query
+                .push("EXTRACT(YEAR FROM r.date)::int = ")
+                .push_bind(*year),
+        };
+    }
+}
 
 pub struct RecordsRepository<'a> {
     pool: &'a PgPool,
@@ -21,14 +46,10 @@ impl<'a> RecordsRepository<'a> {
             WITH scoped AS (
                 SELECT r.*, a.first_name, a.last_name, a.slug, a.country,
                        c.name AS competition_name, c.slug AS competition_slug
-                FROM records r
-                JOIN athletes a ON a.athlete_id = r.athlete_id
-                JOIN competitions c ON c.competition_id = r.competition_id
-                JOIN federations f ON f.federation_id = c.federation_id
-                WHERE TRUE
             ",
         );
-        Self::push_scope(&mut query, filter);
+        query.push(SET);
+        filter.by.push_and(&mut query);
         query.push(
             r"
             ),
@@ -90,36 +111,41 @@ impl<'a> RecordsRepository<'a> {
         Ok(query.build_query_as().fetch_all(self.pool).await?)
     }
 
-    fn push_scope(query: &mut QueryBuilder<Postgres>, filter: &RecordsFilter) {
-        if let Some(movement) = filter.movement {
-            query.push(" AND r.movement_name = ");
-            query.push_bind(movement.as_str());
-        }
-        if let Some(gender) = filter.gender {
-            query.push(" AND r.gender = ");
-            query.push_bind(gender.as_str());
-        }
-        if let Some(country) = &filter.country {
-            query.push(" AND a.country = ");
-            query.push_bind(country.clone());
-        }
-        if let Some(federation) = &filter.federation {
-            query.push(" AND f.name = ");
-            query.push_bind(federation.clone());
-        }
-        if let Some(year) = filter.year {
-            query.push(" AND EXTRACT(YEAR FROM r.date)::int = ");
-            query.push_bind(year);
-        }
+    #[tracing::instrument(name = "repository.records.facets", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn facets(&self, by: &Filters<RecordBy>) -> Result<RecordFacets> {
+        let mut countries = Self::set(
+            "SELECT DISTINCT a.country",
+            &by.without(|by| matches!(by, RecordBy::Country(_))),
+        );
+        countries.push(" AND a.country IS NOT NULL ORDER BY 1 ");
+
+        let mut federations = Self::set(
+            "SELECT DISTINCT f.name",
+            &by.without(|by| matches!(by, RecordBy::Federation(_))),
+        );
+        federations.push(" ORDER BY 1 ");
+
+        let mut years = Self::set(
+            "SELECT DISTINCT EXTRACT(YEAR FROM r.date)::int",
+            &by.without(|by| matches!(by, RecordBy::Year(_))),
+        );
+        years.push(" ORDER BY 1 DESC ");
+
+        Ok(RecordFacets {
+            countries: countries.build_query_scalar().fetch_all(self.pool).await?,
+            federations: federations
+                .build_query_scalar()
+                .fetch_all(self.pool)
+                .await?,
+            years: years.build_query_scalar().fetch_all(self.pool).await?,
+        })
     }
 
-    #[tracing::instrument(name = "repository.records.list_years", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn list_years(&self) -> Result<Vec<i32>> {
-        Ok(sqlx::query_scalar(
-            "SELECT DISTINCT EXTRACT(YEAR FROM date)::int AS year FROM records ORDER BY year DESC",
-        )
-        .fetch_all(self.pool)
-        .await?)
+    fn set(select: &str, by: &Filters<RecordBy>) -> QueryBuilder<Postgres> {
+        let mut query = QueryBuilder::new(select);
+        query.push(SET);
+        by.push_and(&mut query);
+        query
     }
 
     #[tracing::instrument(name = "repository.records.marks", skip_all, fields(db.system.name = "postgresql"))]

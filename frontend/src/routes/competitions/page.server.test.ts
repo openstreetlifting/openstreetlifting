@@ -47,16 +47,22 @@ it('normalizes selection order and applies the format to all tab counts', async 
       page_size: 1,
     })
   );
-  expect(result).toMatchObject({ event: 'PD', facets: { formats: ['PD', 'MPDS'] } });
-  expect(competitionsService.getFacets).toHaveBeenCalledWith();
+  expect(result).toMatchObject({ filters: { event: 'PD' }, facets: { formats: ['PD', 'MPDS'] } });
+  expect(competitionsService.getFacets).toHaveBeenCalledWith({
+    status: 'completed',
+    event: 'PD',
+    country: 'FR',
+    year: 2026,
+    federation: 'Test',
+  });
 });
 
 it('keeps a valid but nonexistent combination so the page can show no matches', async () => {
   const result = await load(request('event=MS&status=upcoming'));
   expect(result).toMatchObject({
-    event: 'MS',
+    filters: { event: 'MS' },
     competitions: [],
-    facets: { formats: ['PD', 'MPDS'] },
+    facets: { formats: ['PD', 'MPDS', 'MS'] },
   });
   expect(competitionsService.getAll).toHaveBeenCalledWith(
     expect.objectContaining({ event: 'MS', status: 'upcoming' })
@@ -65,9 +71,7 @@ it('keeps a valid but nonexistent combination so the page can show no matches', 
 
 it.each(['', 'event=', 'event=invalid'])('leaves format unrestricted for %s', async (query) => {
   await load(request(query));
-  expect(competitionsService.getAll).toHaveBeenCalledWith(
-    expect.objectContaining({ event: undefined })
-  );
+  expect(competitionsService.getAll).toHaveBeenCalledWith(expect.objectContaining({ event: null }));
 });
 
 it('loads in-progress results and counts the other statuses with the same filters', async () => {

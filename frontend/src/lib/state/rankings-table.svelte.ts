@@ -4,18 +4,19 @@ import { resolve } from '$app/paths';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 import type { Locale } from '#lib/i18n/locale.js';
 import { localeHref, pathLocale } from '#lib/i18n/paths.js';
+import { readFilters, type FilterSpec } from '#lib/utils/filters.js';
 import { ListingSearch } from './listing-search.svelte';
+import { UrlFilters } from './url-filters.svelte';
 
-interface RankingsTableConfig {
+interface RankingsTableConfig<S extends FilterSpec> {
   /**
    * Route to push filter changes onto, e.g. `/` or `/competitions/some-slug`.
    * Pass a getter when it is read off page data: the class outlives a navigation
    * between two competitions, and a captured value would keep linking to the first.
    */
   basePath: string | (() => string);
-  /** Whether this table supports filtering by competition year. */
-  includeYear?: boolean;
-  includeSeries?: boolean;
+  /** The dropdown filters this table offers. */
+  filters: S;
   initialUrl: typeof page.url;
   /** Column sorted before anyone picks one. Not every competition has a RIS to sort on. */
   defaultSort?: string | (() => string);
@@ -33,12 +34,8 @@ function reader<T>(value: T | (() => T)): () => T {
  * The URL describes the applied results; the search input keeps its own draft
  * while requests are in flight. Rows and pagination come from the page's load.
  */
-export class RankingsTable {
-  genderFilter = $state<string | null>(null);
-  categoryFilter = $state<string | null>(null);
-  countryFilter = $state<string | null>(null);
-  federationFilter = $state<string | null>(null);
-  seriesFilter = $state<string | null>(null);
+export class RankingsTable<S extends FilterSpec> {
+  readonly filters: UrlFilters<S>;
   readonly search: ListingSearch;
   private locale = $state<Locale>();
 
@@ -50,7 +47,6 @@ export class RankingsTable {
     this.search.value = value;
   }
 
-  yearFilter = $state<number | null>(null);
   movementFilter = $state('ris');
   sortDirection = $state<'asc' | 'desc'>('desc');
   /**
@@ -60,8 +56,6 @@ export class RankingsTable {
    */
   focusedAthlete = $state<string | null>(null);
 
-  readonly includeYear: boolean;
-  readonly includeSeries: boolean;
   private readonly readBasePath: () => string;
   private readonly readDefaultSort: () => string;
 
@@ -73,11 +67,13 @@ export class RankingsTable {
     return this.readBasePath();
   }
 
-  constructor(config: RankingsTableConfig) {
+  constructor(config: RankingsTableConfig<S>) {
     this.readBasePath = reader(config.basePath);
     this.readDefaultSort = reader(config.defaultSort ?? 'ris');
-    this.includeYear = config.includeYear ?? false;
-    this.includeSeries = config.includeSeries ?? false;
+    this.filters = new UrlFilters(
+      config.filters,
+      readFilters(config.initialUrl.searchParams, config.filters)
+    );
     this.search = new ListingSearch(config.initialUrl);
 
     this.syncFromUrl(config.initialUrl);
@@ -91,13 +87,8 @@ export class RankingsTable {
   syncFromUrl(url: typeof page.url, type?: AfterNavigate['type']) {
     this.locale = pathLocale(url.pathname);
     const params = url.searchParams;
-    this.genderFilter = params.get('gender') || null;
-    this.categoryFilter = params.get('category') || null;
-    this.countryFilter = params.get('country') || null;
-    this.federationFilter = params.get('federation') || null;
-    this.seriesFilter = this.includeSeries ? params.get('series') || null : null;
+    this.filters.sync(readFilters(params, this.filters.spec));
     this.search.sync(url, type);
-    this.yearFilter = this.includeYear ? Number(params.get('year')) || null : null;
     this.movementFilter = params.get('movement') || this.defaultSort;
     this.sortDirection = params.get('direction') === 'asc' ? 'asc' : 'desc';
     this.focusedAthlete = params.get('athlete') || null;
@@ -106,12 +97,7 @@ export class RankingsTable {
   /** Whether anything but the defaults is in play, so clearing would do something. */
   get narrowed(): boolean {
     return Boolean(
-      this.genderFilter ||
-      this.categoryFilter ||
-      this.countryFilter ||
-      this.federationFilter ||
-      this.seriesFilter ||
-      this.yearFilter ||
+      this.filters.activeCount ||
       this.searchQuery ||
       this.focusedAthlete ||
       this.movementFilter !== this.defaultSort ||
@@ -128,12 +114,7 @@ export class RankingsTable {
     const params = new SvelteURLSearchParams();
     if (this.movementFilter !== this.defaultSort) params.set('movement', this.movementFilter);
     if (this.sortDirection !== 'desc') params.set('direction', this.sortDirection);
-    if (this.genderFilter) params.set('gender', this.genderFilter);
-    if (this.categoryFilter) params.set('category', this.categoryFilter);
-    if (this.includeYear && this.yearFilter) params.set('year', String(this.yearFilter));
-    if (this.countryFilter) params.set('country', this.countryFilter);
-    if (this.federationFilter) params.set('federation', this.federationFilter);
-    if (this.includeSeries && this.seriesFilter) params.set('series', this.seriesFilter);
+    this.filters.writeTo(params);
     if (query.trim()) params.set('q', query.trim());
     if (targetPage > 1) params.set('page', String(targetPage));
 
@@ -153,12 +134,7 @@ export class RankingsTable {
   }
 
   async clearFilters() {
-    this.genderFilter = null;
-    this.categoryFilter = null;
-    this.countryFilter = null;
-    this.federationFilter = null;
-    this.seriesFilter = null;
-    this.yearFilter = null;
+    this.filters.clear();
     this.searchFilter = '';
     this.focusedAthlete = null;
     this.movementFilter = this.defaultSort;

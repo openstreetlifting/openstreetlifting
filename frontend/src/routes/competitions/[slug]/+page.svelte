@@ -62,6 +62,7 @@
     defaultRankingSort,
   } from '#lib/constants/ranking.js';
   import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
+  import { LEADERBOARD_FILTERS } from '#lib/constants/filters.js';
   import type { RankingEntry } from '#lib/types/ranking.js';
   import type { Attempt, Participant, CategoryDetail } from '#lib/types/competition.js';
   import { GENDERS, asRankingMetric, type AthleteStatus } from '#lib/types/enums.js';
@@ -116,6 +117,7 @@
 
   const table = new RankingsTable({
     basePath: () => `/competitions/${data.competition.slug}`,
+    filters: LEADERBOARD_FILTERS,
     initialUrl: page.url,
     defaultSort: () => data.competition.scoring ?? defaultRankingSort(data.ris),
   });
@@ -144,10 +146,6 @@
   );
 
   const sorted = (column: string) => (table.movementFilter === column ? SORTED_COLUMN : '');
-
-  const activeFilters = $derived(
-    [table.countryFilter, table.genderFilter, table.categoryFilter].filter(Boolean).length
-  );
 
   // The event code names the movements a competition contested, so a column with no
   // weight can be read as bombed rather than never lifted.
@@ -331,11 +329,11 @@
         const search = table.searchFilter.trim().toLowerCase();
 
         return (
-          (!table.genderFilter || athlete.gender === table.genderFilter) &&
-          (!table.countryFilter || athlete.country === table.countryFilter) &&
+          (!table.filters.values.gender || athlete.gender === table.filters.values.gender) &&
+          (!table.filters.values.country || athlete.country === table.filters.values.country) &&
           (!classed ||
-            !table.categoryFilter ||
-            category.category.weight_class === table.categoryFilter) &&
+            !table.filters.values.category ||
+            category.category.weight_class === table.filters.values.category) &&
           (!search || formatAthleteName(athlete).toLowerCase().includes(search))
         );
       })
@@ -566,13 +564,13 @@
         bind:search={table.searchFilter}
         placeholder={i18n.t('Search an athlete')}
         onSearch={() => table.handleFilterChange()}
-        activeCount={activeFilters}
+        activeCount={table.filters.activeCount}
         onClear={() => table.clearFilters()}
         clearable={table.narrowed}
       >
         <SelectField
           label={i18n.t('Country')}
-          bind:value={table.countryFilter}
+          bind:value={table.filters.values.country}
           onchange={() => table.handleFilterChange()}
         >
           <option value={null}>{i18n.t('All Countries')}</option>
@@ -582,9 +580,9 @@
         </SelectField>
         <SelectField
           label={i18n.t('Sex')}
-          bind:value={table.genderFilter}
+          bind:value={table.filters.values.gender}
           onchange={() => {
-            table.categoryFilter = null;
+            table.filters.values.category = null;
             table.handleFilterChange();
           }}
         >
@@ -595,7 +593,7 @@
         {#if classed}
           <SelectField
             label={i18n.t('Class')}
-            bind:value={table.categoryFilter}
+            bind:value={table.filters.values.category}
             onchange={() => table.handleFilterChange()}
           >
             <option value={null}>{i18n.t('All Classes')}</option>

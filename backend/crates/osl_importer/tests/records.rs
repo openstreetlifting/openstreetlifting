@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-use osl_db::params::{RecordClass, RecordsFilter};
+use osl_db::params::{RecordBy, RecordClass, RecordsFilter};
 use osl_db::projections::records::RecordRow;
 use osl_db::repository::records::RecordsRepository;
 use osl_domain::{Gender, Movement, WeightClassSlug};
@@ -29,14 +29,25 @@ fn woman(first: &str, last: &str) -> AthleteData {
     lifter
 }
 
-const fn filter(weight_class: Option<RecordClass>) -> RecordsFilter {
+fn filter(weight_class: Option<RecordClass>) -> RecordsFilter {
+    scoped(weight_class, Gender::M, None)
+}
+
+fn scoped(
+    weight_class: Option<RecordClass>,
+    gender: Gender,
+    extra: Option<RecordBy>,
+) -> RecordsFilter {
     RecordsFilter {
-        movement: Some(Movement::MuscleUp),
-        gender: Some(Gender::M),
+        by: [
+            Some(RecordBy::Movement(Movement::MuscleUp)),
+            Some(RecordBy::Gender(gender)),
+            extra,
+        ]
+        .into_iter()
+        .flatten()
+        .collect(),
         weight_class,
-        country: None,
-        federation: None,
-        year: None,
         limit: 3,
     }
 }
@@ -199,8 +210,11 @@ async fn filters_by_country_gender_and_limit(pool: PgPool) {
     )
     .await;
 
-    let mut french = filter(Some(class("M-80")));
-    french.country = Some("FR".into());
+    let french = scoped(
+        Some(class("M-80")),
+        Gender::M,
+        Some(RecordBy::Country("FR".into())),
+    );
     assert_eq!(
         holders(&records(&pool, &french).await),
         vec![("French", "60".into()), ("French", "50".into())]
@@ -213,8 +227,7 @@ async fn filters_by_country_gender_and_limit(pool: PgPool) {
         vec![("Italian", "70".into())]
     );
 
-    let mut women = filter(Some(RecordClass::Open));
-    women.gender = Some(Gender::F);
+    let women = scoped(Some(RecordClass::Open), Gender::F, None);
     assert_eq!(
         holders(&records(&pool, &women).await),
         vec![("Woman", "20".into())]
@@ -305,16 +318,22 @@ async fn takes_each_best_within_a_federation_or_year(pool: PgPool) {
     )
     .await;
 
-    let mut federation = filter(Some(class("M-80")));
-    federation.federation = Some("Local Federation".into());
+    let federation = scoped(
+        Some(class("M-80")),
+        Gender::M,
+        Some(RecordBy::Federation("Local Federation".into())),
+    );
     assert_eq!(
         holders(&records(&pool, &federation).await),
         vec![("Strong", "40".into()), ("Steady", "35".into())],
         "the 50 kg lift belongs to another federation"
     );
 
-    let mut year = filter(Some(RecordClass::Open));
-    year.year = Some(2025);
+    let year = scoped(
+        Some(RecordClass::Open),
+        Gender::M,
+        Some(RecordBy::Year(2025)),
+    );
     assert_eq!(
         holders(&records(&pool, &year).await),
         vec![("Strong", "40".into()), ("Steady", "35".into())],

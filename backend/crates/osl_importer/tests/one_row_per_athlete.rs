@@ -1,4 +1,4 @@
-use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
+use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -9,17 +9,14 @@ use common::{athlete, competition, import, lifting, men_80};
 
 fn filter(movement: RankingMovement, competition_id: Option<Uuid>) -> RankingFilter {
     RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: None,
+        by: competition_id
+            .map(RankingBy::Competition)
+            .into_iter()
+            .collect(),
         name: None,
         movement,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.to_string(),
-        category: None,
-        year: None,
-        competition_id,
         offset: 0,
         limit: 50,
     }
