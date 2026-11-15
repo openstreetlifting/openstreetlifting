@@ -319,6 +319,8 @@ export const messages = [
   '{country} records',
   '{movement} records',
   'No records for this selection yet.',
+  'Note',
+  'Records are grouped by the weight classes of {organiser}, which differ from the standard classes.',
   'Current world record in this weight class',
   'Current national record in this weight class',
 ] as const;

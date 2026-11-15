@@ -6,6 +6,7 @@ export { default as Select } from './select.svelte';
 export { default as SelectField } from './select-field.svelte';
 export { default as ChartPanel } from './chart-panel.svelte';
 export { default as Notice } from './notice.svelte';
+export { default as Callout } from './callout.svelte';
 export { default as RankingCard } from './ranking-card.svelte';
 export { default as MetricCard } from './metric-card.svelte';
 export { default as Button } from './button.svelte';

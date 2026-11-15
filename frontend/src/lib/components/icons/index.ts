@@ -7,3 +7,4 @@ export { default as MenuIcon } from './MenuIcon.svelte';
 export { default as CloseIcon } from './CloseIcon.svelte';
 export { default as ChevronIcon } from './ChevronIcon.svelte';
 export { default as GlobeIcon } from './GlobeIcon.svelte';
+export { default as InfoIcon } from './InfoIcon.svelte';

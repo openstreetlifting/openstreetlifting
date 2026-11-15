@@ -58,8 +58,14 @@ function data(
   return {
     locale: 'en',
     gender: 'M',
-    filters: { country: null, federation: null, year: null, ...filters },
-    facets: { countries: ['FR', 'IT'], federations: ['FinalRep', 'FNSL'], years: [2026, 2025] },
+    filters: { country: null, federation: null, series: null, year: null, ...filters },
+    facets: {
+      countries: ['FR', 'IT'],
+      federations: ['FinalRep', 'FNSL'],
+      series: [{ series: 'sdm', name: 'SDM 2026', federation: 'FNSL' }],
+      years: [2026, 2025],
+      custom_weight_classes: false,
+    },
     groups: [group('muscleup', null), group('muscleup', 'F-57'), group('squat', null)],
     ...overrides,
   } as PageData;
@@ -149,4 +155,30 @@ it('explains when nothing matches', async () => {
   render(RecordsPage, { data: data({ groups: [] }) });
   await expect.element(page.getByText('No records for this selection yet.')).toBeVisible();
   expect(page.getByRole('table').elements()).toHaveLength(0);
+});
+
+it('narrows to a series', async () => {
+  render(RecordsPage, { data: data() });
+  await page.getByRole('combobox', { name: 'Series' }).selectOptions('FNSL · SDM 2026');
+  expect(goto).toHaveBeenCalledWith('/en/records?series=sdm', { reset: false });
+});
+
+it('explains whose weight classes group the records', async () => {
+  const facets = { ...data().facets, custom_weight_classes: true };
+  const groups = [group('squat', null), group('squat', 'M+62.5')];
+
+  const screen = await render(RecordsPage, {
+    data: data({ facets, groups }, { series: 'sdm' }),
+  });
+  await expect.element(page.getByText(/weight classes of FNSL · SDM 2026,/)).toBeVisible();
+  expect(classLabels('Squat')).toEqual(['All Classes', '+62.5kg']);
+
+  await screen.rerender({ data: data({ facets, groups }, { federation: 'FNSL' }) });
+  await expect.element(page.getByText(/weight classes of FNSL,/)).toBeVisible();
+});
+
+it('says nothing about classes on the standard ladder', async () => {
+  render(RecordsPage, { data: data({}, { federation: 'FNSL' }) });
+  await expect.element(page.getByRole('heading', { level: 1 })).toBeVisible();
+  expect(page.getByRole('note').elements()).toHaveLength(0);
 });
