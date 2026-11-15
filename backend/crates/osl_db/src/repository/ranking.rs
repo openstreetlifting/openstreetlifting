@@ -4,11 +4,10 @@ use sqlx::{PgPool, Postgres, QueryBuilder};
 use uuid::Uuid;
 
 use super::ranking_query::{
-    push_eligible, push_latest_total_class, push_metric_candidates, push_name_match,
-    push_ranking_pool, ranked_results, same_class,
+    push_latest_total_class, push_metric_candidates, push_name_match, push_ranking_pool,
+    ranked_results, same_class,
 };
 use crate::error::Result;
-use crate::filter::Filters;
 use crate::params::{RankingBy, RankingFilter, RankingMovement};
 use crate::projections::ranking::{
     AthleteMetricStandingRow, AthleteNeighborRow, RankingFacets, RankingRow,
@@ -37,7 +36,6 @@ impl<'a> RankingRepository<'a> {
 
     async fn count_participants(&self, filter: &RankingFilter) -> Result<i64> {
         let mut query = Self::movement_weights(Some(filter));
-        push_eligible(&mut query, filter);
         push_ranking_pool(&mut query, filter);
         query.push(" SELECT COUNT(*) FROM ranking_pool ");
         push_name_match(&mut query, filter);
@@ -54,7 +52,6 @@ impl<'a> RankingRepository<'a> {
         let sort_column = filter.movement.as_column();
 
         let mut query = Self::movement_weights(Some(filter));
-        push_eligible(&mut query, filter);
         push_ranking_pool(&mut query, filter);
 
         query.push(" , ranked_movements AS ( SELECT *, ROW_NUMBER() OVER (ORDER BY ");
@@ -263,10 +260,11 @@ impl<'a> RankingRepository<'a> {
     }
 
     #[tracing::instrument(name = "repository.ranking.facets", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn facets(&self, by: &Filters<RankingBy>) -> Result<RankingFacets> {
+    pub async fn facets(&self, filter: &RankingFilter) -> Result<RankingFacets> {
         let mut classes = ranked_results(
             "SELECT min_kg, max_kg FROM ( SELECT DISTINCT wc.min_kg, wc.max_kg",
-            &by.without(|by| matches!(by, RankingBy::Class(_))),
+            filter,
+            |by| matches!(by, RankingBy::Class(_)),
         );
         classes.push(" ) t ORDER BY COALESCE(max_kg, min_kg), max_kg NULLS LAST ");
         let bounds: Vec<(Option<Decimal>, Option<Decimal>)> =
@@ -278,22 +276,21 @@ impl<'a> RankingRepository<'a> {
             .collect();
         classes.dedup();
 
-        let mut countries = ranked_results(
-            "SELECT DISTINCT a.country",
-            &by.without(|by| matches!(by, RankingBy::Country(_))),
-        );
+        let mut countries = ranked_results("SELECT DISTINCT a.country", filter, |by| {
+            matches!(by, RankingBy::Country(_))
+        });
         countries.push(" AND a.country IS NOT NULL ORDER BY 1 ");
 
-        let mut federations = ranked_results(
-            "SELECT DISTINCT f.name",
-            &by.without(|by| matches!(by, RankingBy::Federation(_))),
-        );
+        let mut federations = ranked_results("SELECT DISTINCT f.name", filter, |by| {
+            matches!(by, RankingBy::Federation(_))
+        });
         federations.push(" ORDER BY 1 ");
 
         let mut series = ranked_results(
             "SELECT series, name, federation FROM (
                 SELECT DISTINCT ON (c.series) c.series, c.name, f.name AS federation",
-            &by.without(|by| matches!(by, RankingBy::Series(_))),
+            filter,
+            |by| matches!(by, RankingBy::Series(_)),
         );
         series.push(
             " AND c.series IS NOT NULL ORDER BY c.series, c.start_date DESC NULLS LAST, c.slug
@@ -302,7 +299,8 @@ impl<'a> RankingRepository<'a> {
 
         let mut years = ranked_results(
             "SELECT DISTINCT EXTRACT(YEAR FROM c.start_date)::int",
-            &by.without(|by| matches!(by, RankingBy::Year(_))),
+            filter,
+            |by| matches!(by, RankingBy::Year(_)),
         );
         years.push(" AND c.start_date IS NOT NULL ORDER BY 1 DESC ");
 

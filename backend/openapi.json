@@ -708,7 +708,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Values each ranking filter can take given the other filters. Search, sort and paging are ignored.",
+            "description": "Values each ranking filter can take given the other filters, the metric and the event. Search, sort direction and paging are ignored.",
             "content": {
               "application/json": {
                 "schema": {

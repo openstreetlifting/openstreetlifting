@@ -1,14 +1,16 @@
 import { RANKING_FILTERS } from '#lib/constants/filters.js';
 import { rankingsService } from '#lib/server/api/index.js';
+import { asRankingMetric } from '#lib/types/enums.js';
 import { keepSelected, readFilters } from '#lib/utils/filters.js';
 import type { LayoutServerLoad } from './$types';
 
 const NO_OPTIONS = { classes: [], years: [], countries: [], federations: [], series: [] };
 
-// Reads only the dropdown filters, so search and pagination do not reload the options.
+// Reads only the dropdown filters and the metric, so search and pagination do not reload the options.
 export const load: LayoutServerLoad = async ({ url }) => {
   const filters = readFilters(url.searchParams, RANKING_FILTERS);
-  const facets = await rankingsService.getFacets(filters).catch(() => NO_OPTIONS);
+  const movement = asRankingMetric(url.searchParams.get('movement')) ?? 'ris';
+  const facets = await rankingsService.getFacets({ ...filters, movement }).catch(() => NO_OPTIONS);
 
   return keepSelected(facets, {
     classes: filters.category,

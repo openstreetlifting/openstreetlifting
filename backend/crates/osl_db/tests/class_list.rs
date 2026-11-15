@@ -1,10 +1,22 @@
 use osl_db::filter::Filters;
-use osl_db::params::RankingBy;
+use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::Gender;
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
+
+fn totals(by: impl Into<Filters<RankingBy>>) -> RankingFilter {
+    RankingFilter {
+        by: by.into(),
+        name: None,
+        movement: RankingMovement::Total,
+        direction: SortDirection::Desc,
+        event: osl_domain::FULL_EVENT.to_string(),
+        offset: 0,
+        limit: 100,
+    }
+}
 
 struct Competition {
     competition_id: Uuid,
@@ -20,8 +32,8 @@ async fn competition(pool: &PgPool) -> Competition {
     .unwrap();
 
     let competition_id: Uuid = sqlx::query_scalar(
-        "INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, country)
-         VALUES ('Test Open', 'test-open', 'completed', $1, '2026-01-01', '2026-01-01', 'FR')
+        "INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, country, event_code)
+         VALUES ('Test Open', 'test-open', 'completed', $1, '2026-01-01', '2026-01-01', 'FR', 'MPDS')
          RETURNING competition_id",
     )
     .bind(federation_id)
@@ -106,7 +118,7 @@ async fn lists_classes_lightest_first(pool: PgPool) {
     enter(&pool, &competition, "M", Some(73), Some(80), None).await;
 
     let classes = RankingRepository::new(&pool)
-        .facets(&[RankingBy::Sex(Gender::M)].into())
+        .facets(&totals([RankingBy::Sex(Gender::M)]))
         .await
         .unwrap()
         .classes;
@@ -124,7 +136,7 @@ async fn filters_classes_by_gender(pool: PgPool) {
 
     assert_eq!(
         repository
-            .facets(&[RankingBy::Sex(Gender::F)].into())
+            .facets(&totals([RankingBy::Sex(Gender::F)]))
             .await
             .unwrap()
             .classes,
@@ -132,7 +144,7 @@ async fn filters_classes_by_gender(pool: PgPool) {
     );
     assert_eq!(
         repository
-            .facets(&[RankingBy::Sex(Gender::M)].into())
+            .facets(&totals([RankingBy::Sex(Gender::M)]))
             .await
             .unwrap()
             .classes,
@@ -147,7 +159,7 @@ async fn deduplicates_classes_across_divisions(pool: PgPool) {
     enter(&pool, &competition, "M", Some(73), Some(80), Some("Open")).await;
 
     let classes = RankingRepository::new(&pool)
-        .facets(&Filters::default())
+        .facets(&totals(Filters::default()))
         .await
         .unwrap()
         .classes;
@@ -180,7 +192,9 @@ async fn returns_empty_list_when_classes_are_absent(pool: PgPool) {
 
     assert_eq!(
         RankingRepository::new(&pool)
-            .facets(&[RankingBy::Competition(competition.competition_id)].into())
+            .facets(&totals([RankingBy::Competition(
+                competition.competition_id
+            )]))
             .await
             .unwrap()
             .classes,
@@ -197,7 +211,9 @@ async fn filters_classes_by_competition(pool: PgPool) {
 
     assert_eq!(
         repository
-            .facets(&[RankingBy::Competition(competition.competition_id)].into())
+            .facets(&totals([RankingBy::Competition(
+                competition.competition_id
+            )]))
             .await
             .unwrap()
             .classes,
@@ -205,7 +221,7 @@ async fn filters_classes_by_competition(pool: PgPool) {
     );
     assert_eq!(
         repository
-            .facets(&[RankingBy::Competition(Uuid::new_v4())].into())
+            .facets(&totals([RankingBy::Competition(Uuid::new_v4())]))
             .await
             .unwrap()
             .classes,
@@ -226,7 +242,9 @@ async fn lists_unranked_entrants_only_inside_their_competition(pool: PgPool) {
 
     assert_eq!(
         repository
-            .facets(&[RankingBy::Competition(competition.competition_id)].into())
+            .facets(&totals([RankingBy::Competition(
+                competition.competition_id
+            )]))
             .await
             .unwrap()
             .classes,
@@ -234,7 +252,7 @@ async fn lists_unranked_entrants_only_inside_their_competition(pool: PgPool) {
     );
     assert_eq!(
         repository
-            .facets(&Filters::default())
+            .facets(&totals(Filters::default()))
             .await
             .unwrap()
             .classes,

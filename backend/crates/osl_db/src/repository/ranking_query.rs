@@ -1,9 +1,9 @@
 use sqlx::{Postgres, QueryBuilder};
 
-use osl_domain::WeightClass;
+use osl_domain::{Movement, WeightClass};
 use uuid::Uuid;
 
-use crate::filter::{Filters, Predicate};
+use crate::filter::Predicate;
 use crate::params::{RankingBy, RankingFilter, RankingMovement};
 
 fn escape_like(pattern: &str) -> String {
@@ -35,7 +35,45 @@ impl Predicate for RankingBy {
     }
 }
 
-pub(crate) fn ranked_results(select: &str, by: &Filters<RankingBy>) -> QueryBuilder<Postgres> {
+fn scored_on(movement: RankingMovement) -> String {
+    let lifted = |movement: Movement| {
+        format!(
+            "EXISTS (SELECT 1 FROM lifts scored \
+             WHERE scored.participant_id = cp.participant_id \
+               AND scored.movement_name = '{}')",
+            movement.as_str()
+        )
+    };
+
+    match movement {
+        RankingMovement::Ris => "cp.ris_score IS NOT NULL".to_owned(),
+        RankingMovement::Total => "cp.total IS NOT NULL".to_owned(),
+        RankingMovement::Muscleup => lifted(Movement::MuscleUp),
+        RankingMovement::Pullup => lifted(Movement::PullUp),
+        RankingMovement::Dips => lifted(Movement::Dips),
+        RankingMovement::Squat => lifted(Movement::Squat),
+    }
+}
+
+fn push_ranked_on_metric(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
+    query.push(" AND ");
+    query.push(scored_on(filter.movement));
+
+    if matches!(
+        filter.movement,
+        RankingMovement::Total | RankingMovement::Ris
+    ) && !filter.in_competition()
+    {
+        query.push(" AND c.event_code = ");
+        query.push_bind(filter.event.clone());
+    }
+}
+
+pub(crate) fn ranked_results(
+    select: &str,
+    filter: &RankingFilter,
+    own: impl Fn(&RankingBy) -> bool,
+) -> QueryBuilder<Postgres> {
     let mut query = QueryBuilder::new(select);
     query.push(
         r"
@@ -47,17 +85,11 @@ pub(crate) fn ranked_results(select: &str, by: &Filters<RankingBy>) -> QueryBuil
             WHERE TRUE
         ",
     );
-    if !by.any(|by| matches!(by, RankingBy::Competition(_))) {
-        query.push(
-            r"
-              AND cp.status = 'competed'
-              AND (cp.total IS NOT NULL OR cp.ris_score IS NOT NULL OR EXISTS (
-                  SELECT 1 FROM lifts l WHERE l.participant_id = cp.participant_id
-              ))
-            ",
-        );
+    if !filter.in_competition() {
+        query.push(" AND cp.status = 'competed' ");
+        push_ranked_on_metric(&mut query, filter);
     }
-    by.push_and(&mut query);
+    filter.by.without(own).push_and(&mut query);
     query
 }
 
@@ -118,6 +150,7 @@ pub(crate) fn movement_weights(filter: Option<&RankingFilter>) -> QueryBuilder<P
 
     if let Some(filter) = filter {
         filter.by.push_and(&mut query);
+        push_ranked_on_metric(&mut query, filter);
     }
 
     query.push(
@@ -135,32 +168,13 @@ pub(crate) fn movement_weights(filter: Option<&RankingFilter>) -> QueryBuilder<P
     query
 }
 
-pub(crate) fn push_eligible(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
-    let sort_column = filter.movement.as_column();
-
-    query.push(" eligible AS ( SELECT * FROM movement_weights WHERE ");
-    query.push(sort_column);
-    query.push(" IS NOT NULL ");
-
-    if matches!(
-        filter.movement,
-        RankingMovement::Total | RankingMovement::Ris
-    ) && !filter.in_competition()
-    {
-        query.push(" AND event_code = ");
-        query.push_bind(filter.event.clone());
-    }
-
-    query.push(" ) ");
-}
-
 pub(crate) fn push_ranking_pool(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
     if filter.in_competition() {
-        query.push(" , ranking_pool AS ( SELECT * FROM eligible ) ");
+        query.push(" ranking_pool AS ( SELECT * FROM movement_weights ) ");
         return;
     }
 
-    query.push(" , ranking_pool AS ( SELECT DISTINCT ON (athlete_id) * FROM eligible ORDER BY athlete_id, ");
+    query.push(" ranking_pool AS ( SELECT DISTINCT ON (athlete_id) * FROM movement_weights ORDER BY athlete_id, ");
     query.push(filter.movement.as_column());
     query.push(" DESC NULLS LAST");
     if filter.movement == RankingMovement::Total {

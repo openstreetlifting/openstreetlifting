@@ -17,7 +17,7 @@ use crate::shared::dto::{PaginatedResponse, PaginationParams};
     path = "/api/v1/rankings/facets",
     params(GlobalRankingFilter),
     responses(
-        (status = 200, description = "Values each ranking filter can take given the other filters. Search, sort and paging are ignored.", body = RankingFacets),
+        (status = 200, description = "Values each ranking filter can take given the other filters, the metric and the event. Search, sort direction and paging are ignored.", body = RankingFacets),
     ),
     tag = "rankings"
 )]
@@ -26,7 +26,7 @@ pub async fn get_ranking_facets(
     Query(filter): Query<GlobalRankingFilter>,
 ) -> WebResult<Json<RankingFacets>> {
     let facets = RankingRepository::new(state.db.pool())
-        .facets(&filter.filters())
+        .facets(&filter.to_db_filter())
         .await?;
 
     Ok(Json(facets.into()))
