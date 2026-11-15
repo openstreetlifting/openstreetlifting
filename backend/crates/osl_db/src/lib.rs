@@ -2,6 +2,7 @@ use sqlx::postgres::{PgPool, PgPoolOptions};
 
 pub mod error;
 
+pub mod filter;
 pub mod params;
 pub mod projections;
 pub mod repository;

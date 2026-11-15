@@ -83,3 +83,11 @@ pub struct AttemptSummary {
     pub weight: Decimal,
     pub is_successful: bool,
 }
+
+#[derive(Debug)]
+pub struct CompetitionFacets {
+    pub federations: Vec<String>,
+    pub countries: Vec<String>,
+    pub years: Vec<i32>,
+    pub formats: Vec<String>,
+}

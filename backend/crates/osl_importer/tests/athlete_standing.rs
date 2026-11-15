@@ -1,4 +1,4 @@
-use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
+use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::projections::ranking::AthleteMetricStandingRow;
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::{Gender, Movement};
@@ -326,18 +326,21 @@ async fn matches_leaderboards_when_results_tie(pool: PgPool) {
     for movement in RankingMovement::ALL {
         for country in [None, Some("FR"), Some("IT")] {
             let filter = RankingFilter {
-                gender: (movement != RankingMovement::Ris).then_some(osl_domain::Gender::M),
-                category: (movement != RankingMovement::Ris)
-                    .then(|| osl_domain::WeightClass::UpTo(common::decimal("80"))),
-                country: country.map(str::to_string),
-                federation: None,
-                series: None,
+                by: [
+                    (movement != RankingMovement::Ris)
+                        .then_some(RankingBy::Sex(osl_domain::Gender::M)),
+                    (movement != RankingMovement::Ris).then(|| {
+                        RankingBy::Class(osl_domain::WeightClass::UpTo(common::decimal("80")))
+                    }),
+                    country.map(|country| RankingBy::Country(country.to_string())),
+                ]
+                .into_iter()
+                .flatten()
+                .collect(),
                 name: None,
                 movement,
                 direction: SortDirection::Desc,
                 event: osl_domain::FULL_EVENT.to_string(),
-                year: None,
-                competition_id: None,
                 offset: 0,
                 limit: 50,
             };

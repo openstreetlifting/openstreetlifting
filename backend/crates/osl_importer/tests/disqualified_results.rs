@@ -1,3 +1,4 @@
+use osl_db::filter::Filters;
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::{
     athlete::AthleteRepository, competition::CompetitionRepository, ranking::RankingRepository,
@@ -12,17 +13,11 @@ use common::{athlete, competition, disqualified as thrown_out, import, lifting, 
 
 async fn board(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
     let filter = RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: None,
+        by: Filters::default(),
         name: None,
         movement,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.to_string(),
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 50,
     };

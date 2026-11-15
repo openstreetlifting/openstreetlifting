@@ -101,9 +101,9 @@ async fn returns_empty_results_for_unmatched_filters(pool: PgPool) {
     assert_eq!(status, StatusCode::OK);
     assert_eq!(empty["data"], json!([]));
     assert_eq!(empty["pagination"]["total_items"], 0);
-    let (status, formats) = get(&pool, "/formats?event=MS&country=ZZ&year=1900").await;
+    let (status, facets) = get(&pool, "/facets?event=MS").await;
     assert_eq!(status, StatusCode::OK);
-    assert_eq!(formats, json!(["MPD", "MPDS", "PD"]));
+    assert_eq!(facets["formats"], json!(["MPD", "MPDS", "PD"]));
     for event in ["", "XX", "PP", "DP"] {
         assert_eq!(
             get(&pool, &format!("?event={event}")).await.0,
@@ -146,4 +146,25 @@ async fn returns_requested_empty_sections(pool: PgPool) {
     assert_eq!(body["federation"].get("abbreviation"), Some(&Value::Null));
     assert_eq!(body["movements"], json!([]));
     assert_eq!(body["categories"], json!([]));
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn narrows_each_option_list_by_the_other_filters(pool: PgPool) {
+    seed(&pool).await;
+
+    let (_, germany) = get(&pool, "/facets?country=DE").await;
+    assert_eq!(germany["formats"], json!(["PD"]));
+    assert_eq!(germany["countries"], json!(["DE", "FR"]));
+
+    let (_, nowhere) = get(&pool, "/facets?country=ZZ&q=pd&page=3").await;
+    assert_eq!(nowhere["formats"], json!([]));
+    assert_eq!(nowhere["years"], json!([]));
+    assert_eq!(nowhere["countries"], json!(["DE", "FR"]));
+
+    let (_, upcoming) = get(&pool, "/facets?status=upcoming").await;
+    assert_eq!(upcoming["formats"], json!(["PD"]));
+    assert_eq!(upcoming["countries"], json!(["FR"]));
+
+    let (status, _) = get(&pool, "/facets?event=XX").await;
+    assert_eq!(status, StatusCode::BAD_REQUEST);
 }

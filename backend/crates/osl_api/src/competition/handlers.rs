@@ -4,12 +4,13 @@ use axum::{
     Json,
     extract::{Path, Query, State},
 };
-use osl_db::params::CompetitionFilter;
+use osl_db::filter::Filters;
+use osl_db::params::{CompetitionBy, CompetitionFilter};
 use osl_db::repository::competition::CompetitionRepository;
 use osl_domain::CompetitionStatus;
 use serde::Deserialize;
 
-use super::dto::CompetitionResponse;
+use super::dto::{CompetitionFacets, CompetitionResponse};
 use crate::shared::dto::{Direction, PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
 
@@ -36,13 +37,22 @@ pub struct CompetitionListQuery {
 }
 
 impl CompetitionListQuery {
+    fn filters(&self) -> Filters<CompetitionBy> {
+        [
+            self.status.map(CompetitionBy::Status),
+            self.event.clone().map(CompetitionBy::Event),
+            self.federation.clone().map(CompetitionBy::Federation),
+            self.country.clone().map(CompetitionBy::Country),
+            self.year.map(CompetitionBy::Year),
+        ]
+        .into_iter()
+        .flatten()
+        .collect()
+    }
+
     fn to_db_filter(&self) -> CompetitionFilter {
         CompetitionFilter {
-            status: self.status,
-            event: self.event.clone(),
-            federation: self.federation.clone(),
-            country: self.country.clone(),
-            year: self.year,
+            by: self.filters(),
             search: self
                 .q
                 .as_deref()
@@ -51,6 +61,13 @@ impl CompetitionListQuery {
                 .map(str::to_string),
             direction: self.direction.into(),
         }
+    }
+
+    fn validate_event(&self) -> Result<(), WebError> {
+        if let Some(event) = &self.event {
+            osl_domain::event::movements(event).map_err(WebError::BadRequest)?;
+        }
+        Ok(())
     }
 }
 
@@ -75,9 +92,7 @@ pub async fn list_competitions(
     Query(query): Query<CompetitionListQuery>,
 ) -> WebResult<Json<PaginatedResponse<CompetitionResponse>>> {
     query.pagination.validate().map_err(WebError::BadRequest)?;
-    if let Some(event) = &query.event {
-        osl_domain::event::movements(event).map_err(WebError::BadRequest)?;
-    }
+    query.validate_event()?;
     query
         .include
         .validate(LIST_INCLUDES)
@@ -167,58 +182,28 @@ pub async fn get_competition(
 
 #[utoipa::path(
     get,
-    path = "/api/v1/competitions/federations",
+    path = "/api/v1/competitions/facets",
+    params(CompetitionListQuery),
     responses(
-        (status = 200, description = "Federations that have run at least one competition, alphabetical", body = Vec<String>),
+        (status = 200, description = "Values each competition filter can take given the other filters. Search, sort and paging are ignored.", body = CompetitionFacets),
+        (status = 400, description = "Invalid event code")
     ),
     tag = "competitions"
 )]
-pub async fn list_competition_federations(
+pub async fn get_competition_facets(
     State(state): State<AppState>,
-) -> WebResult<Json<Vec<String>>> {
-    let repo = CompetitionRepository::new(state.db.pool());
-    Ok(Json(repo.list_distinct_federations().await?))
-}
+    Query(query): Query<CompetitionListQuery>,
+) -> WebResult<Json<CompetitionFacets>> {
+    query.validate_event()?;
 
-#[utoipa::path(
-    get,
-    path = "/api/v1/competitions/years",
-    responses(
-        (status = 200, description = "Years a competition was held in, most recent first", body = Vec<i32>),
-    ),
-    tag = "competitions"
-)]
-pub async fn list_competition_years(State(state): State<AppState>) -> WebResult<Json<Vec<i32>>> {
-    let repo = CompetitionRepository::new(state.db.pool());
-    Ok(Json(repo.list_distinct_years().await?))
-}
+    let facets = CompetitionRepository::new(state.db.pool())
+        .facets(&query.filters())
+        .await?;
 
-#[utoipa::path(
-    get,
-    path = "/api/v1/competitions/countries",
-    responses(
-        (status = 200, description = "Countries a competition was held in, alphabetical", body = Vec<String>),
-    ),
-    tag = "competitions"
-)]
-pub async fn list_competition_countries(
-    State(state): State<AppState>,
-) -> WebResult<Json<Vec<String>>> {
-    let repo = CompetitionRepository::new(state.db.pool());
-    Ok(Json(repo.list_distinct_countries().await?))
-}
-
-#[utoipa::path(
-    get,
-    path = "/api/v1/competitions/formats",
-    responses(
-        (status = 200, description = "Known formats across all competitions, alphabetical", body = Vec<String>),
-    ),
-    tag = "competitions"
-)]
-pub async fn list_competition_formats(
-    State(state): State<AppState>,
-) -> WebResult<Json<Vec<String>>> {
-    let repo = CompetitionRepository::new(state.db.pool());
-    Ok(Json(repo.list_distinct_formats().await?))
+    Ok(Json(CompetitionFacets {
+        federations: facets.federations,
+        countries: facets.countries,
+        years: facets.years,
+        formats: facets.formats,
+    }))
 }

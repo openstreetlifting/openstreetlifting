@@ -185,8 +185,12 @@ async fn filters_by_federation_and_year(pool: PgPool) {
     upcoming.competition.start_date = chrono::NaiveDate::from_ymd_opt(2027, 6, 1).unwrap();
     upcoming.competition.end_date = upcoming.competition.start_date;
     common::import(&pool, upcoming).await;
-    let (_, years) = get(&pool, "/api/v1/records/years").await;
-    assert_eq!(years, json!([2026]), "an upcoming meet has no lifts yet");
+    let (_, facets) = get(&pool, "/api/v1/records/facets").await;
+    assert_eq!(
+        facets["years"],
+        json!([2026]),
+        "an upcoming meet has no lifts yet"
+    );
 
     let (status, _) = get(&pool, "/api/v1/records?year=soon").await;
     assert_eq!(status, StatusCode::BAD_REQUEST);

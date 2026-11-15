@@ -1,17 +1,11 @@
 use axum::{Router, routing::get};
 
-use super::handler::{
-    get_global_ranking, list_ranking_classes, list_ranking_countries, list_ranking_federations,
-    list_ranking_series, list_ranking_years,
-};
+use super::handler::{get_global_ranking, get_ranking_facets, list_ranking_countries};
 use crate::AppState;
 
 pub fn router() -> Router<AppState> {
     Router::new()
         .route("/rankings", get(get_global_ranking))
-        .route("/rankings/classes", get(list_ranking_classes))
         .route("/rankings/countries", get(list_ranking_countries))
-        .route("/rankings/federations", get(list_ranking_federations))
-        .route("/rankings/series", get(list_ranking_series))
-        .route("/rankings/years", get(list_ranking_years))
+        .route("/rankings/facets", get(get_ranking_facets))
 }

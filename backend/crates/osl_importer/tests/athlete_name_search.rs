@@ -1,4 +1,5 @@
-use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
+use osl_db::filter::Filters;
+use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use sqlx::PgPool;
@@ -18,17 +19,11 @@ fn competition(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
 
 fn filter(name: Option<&str>) -> RankingFilter {
     RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: None,
+        by: Filters::default(),
         name: name.map(str::to_string),
         movement: RankingMovement::Total,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.to_string(),
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 50,
     }
@@ -136,7 +131,7 @@ async fn combines_search_with_ranking_filters(pool: PgPool) {
     seed(&pool).await;
 
     let unknown_competition = RankingFilter {
-        competition_id: Some(Uuid::nil()),
+        by: [RankingBy::Competition(Uuid::nil())].into(),
         ..filter(Some("dupont"))
     };
     let (_, total) = search(&pool, &unknown_competition).await;
@@ -195,7 +190,7 @@ async fn applies_ranking_filters_before_search(pool: PgPool) {
     assert_eq!(worldwide, vec![("Jean Dupont".to_string(), 2)]);
 
     let french = RankingFilter {
-        country: Some("FR".to_string()),
+        by: [RankingBy::Country("FR".to_string())].into(),
         ..filter(Some("jean"))
     };
     let (french, _) = placings(&pool, &french).await;

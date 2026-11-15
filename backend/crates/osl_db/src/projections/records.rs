@@ -18,3 +18,10 @@ pub struct RecordRow {
     pub competition_name: String,
     pub competition_slug: String,
 }
+
+#[derive(Debug)]
+pub struct RecordFacets {
+    pub countries: Vec<String>,
+    pub federations: Vec<String>,
+    pub years: Vec<i32>,
+}

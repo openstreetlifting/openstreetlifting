@@ -7,105 +7,44 @@ use std::collections::HashMap;
 use osl_db::repository::ranking::RankingRepository;
 use osl_db::repository::records::RecordsRepository;
 
-use super::dto::{
-    ClassesFilter, CountriesFilter, GlobalRankingEntry, GlobalRankingFilter, LiftRecord,
-};
+use super::dto::{GlobalRankingEntry, GlobalRankingFilter, LiftRecord, RankingFacets};
 use crate::AppState;
 use crate::error::{WebError, WebResult};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 
 #[utoipa::path(
     get,
-    path = "/api/v1/rankings/series",
-    responses((status = 200, description = "Competition series with results", body = Vec<super::dto::RankingSeries>)),
-    tag = "rankings"
-)]
-pub async fn list_ranking_series(
-    State(state): State<AppState>,
-) -> WebResult<Json<Vec<super::dto::RankingSeries>>> {
-    let series = RankingRepository::new(state.db.pool())
-        .list_distinct_series()
-        .await?
-        .into_iter()
-        .map(|(series, name, federation)| super::dto::RankingSeries {
-            series,
-            name,
-            federation,
-        })
-        .collect();
-    Ok(Json(series))
-}
-
-#[utoipa::path(
-    get,
-    path = "/api/v1/rankings/classes",
-    params(ClassesFilter),
+    path = "/api/v1/rankings/facets",
+    params(GlobalRankingFilter),
     responses(
-        (status = 200, description = "Distinct weight classes, optionally narrowed to one gender", body = Vec<String>),
+        (status = 200, description = "Values each ranking filter can take given the other filters. Search, sort and paging are ignored.", body = RankingFacets),
     ),
     tag = "rankings"
 )]
-pub async fn list_ranking_classes(
+pub async fn get_ranking_facets(
     State(state): State<AppState>,
-    Query(filter): Query<ClassesFilter>,
-) -> WebResult<Json<Vec<String>>> {
-    let repo = RankingRepository::new(state.db.pool());
-    let classes = repo
-        .list_distinct_classes(filter.gender, filter.competition_id)
+    Query(filter): Query<GlobalRankingFilter>,
+) -> WebResult<Json<RankingFacets>> {
+    let facets = RankingRepository::new(state.db.pool())
+        .facets(&filter.filters())
         .await?;
 
-    Ok(Json(classes))
+    Ok(Json(facets.into()))
 }
 
 #[utoipa::path(
     get,
     path = "/api/v1/rankings/countries",
-    params(CountriesFilter),
     responses(
-        (status = 200, description = "Distinct countries athletes have competed under, optionally narrowed to one competition", body = Vec<String>),
+        (status = 200, description = "Distinct countries athletes have competed under", body = Vec<String>),
     ),
     tag = "rankings"
 )]
-pub async fn list_ranking_countries(
-    State(state): State<AppState>,
-    Query(filter): Query<CountriesFilter>,
-) -> WebResult<Json<Vec<String>>> {
+pub async fn list_ranking_countries(State(state): State<AppState>) -> WebResult<Json<Vec<String>>> {
     let repo = RankingRepository::new(state.db.pool());
-    let countries = repo.list_distinct_countries(filter.competition_id).await?;
+    let countries = repo.list_distinct_countries().await?;
 
     Ok(Json(countries))
-}
-
-#[utoipa::path(
-    get,
-    path = "/api/v1/rankings/federations",
-    responses(
-        (status = 200, description = "Federations athletes have competed under, alphabetical", body = Vec<String>),
-    ),
-    tag = "rankings"
-)]
-pub async fn list_ranking_federations(
-    State(state): State<AppState>,
-) -> WebResult<Json<Vec<String>>> {
-    let repo = RankingRepository::new(state.db.pool());
-    let federations = repo.list_distinct_federations().await?;
-
-    Ok(Json(federations))
-}
-
-#[utoipa::path(
-    get,
-    path = "/api/v1/rankings/years",
-    responses(
-        (status = 200, description = "Distinct competition years, most recent first", body = Vec<i32>),
-    ),
-    tag = "rankings"
-)]
-pub async fn list_ranking_years(State(state): State<AppState>) -> WebResult<Json<Vec<i32>>> {
-    let repo = RankingRepository::new(state.db.pool());
-    let years = repo.list_distinct_years().await?;
-
-    Ok(Json(years))
 }
 
 #[utoipa::path(

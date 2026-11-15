@@ -6,7 +6,9 @@ import { defaultRankingSort, risProvenance } from '#lib/constants/ranking.js';
 import { formatAthleteName } from '#lib/utils/format.js';
 import type { PageServerLoad } from './$types';
 import { error, redirect } from '@sveltejs/kit';
-import { asRankedGender, asRankingMetric } from '#lib/types/enums.js';
+import { asRankingMetric } from '#lib/types/enums.js';
+import { LEADERBOARD_FILTERS } from '#lib/constants/filters.js';
+import { keepSelected, readFilters } from '#lib/utils/filters.js';
 
 async function currentFormula() {
   try {
@@ -53,9 +55,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
     competition.scoring ??
     defaultRankingSort(ris);
   const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
-  const gender = asRankedGender(url.searchParams.get('gender'));
-  const category = url.searchParams.get('category') || null;
-  const country = url.searchParams.get('country') || null;
+  const filters = readFilters(url.searchParams, LEADERBOARD_FILTERS);
   const q = url.searchParams.get('q') || null;
   const page = Number(url.searchParams.get('page') ?? 1) || 1;
 
@@ -72,9 +72,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
           page_size: TABLE_PAGE_SIZE,
           movement,
           direction,
-          gender,
-          category,
-          country,
+          ...filters,
           q: formatAthleteName(participant.athlete),
           competition_id: competition.competition_id,
         })
@@ -91,19 +89,18 @@ export const load: PageServerLoad = async ({ params, url }) => {
     }
   }
 
-  const [formula, classes, countries, rankings] = await Promise.all([
+  const [formula, facets, rankings] = await Promise.all([
     currentFormula(),
-    rankingsService.getRankingClasses(gender, competition.competition_id).catch(() => []),
-    rankingsService.getRankingCountries(competition.competition_id).catch(() => []),
+    rankingsService
+      .getFacets({ ...filters, competition_id: competition.competition_id })
+      .catch(() => ({ classes: [], countries: [] })),
     rankingsService
       .getGlobalRankings({
         page,
         page_size: TABLE_PAGE_SIZE,
         movement,
         direction,
-        gender,
-        category,
-        country,
+        ...filters,
         q,
         competition_id: competition.competition_id,
       })
@@ -116,8 +113,10 @@ export const load: PageServerLoad = async ({ params, url }) => {
   return {
     competition,
     ris,
-    classes,
-    countries,
+    ...keepSelected(
+      { classes: facets.classes, countries: facets.countries },
+      { classes: filters.category, countries: filters.country }
+    ),
     initialRankings: rankings.data,
     pagination: rankings.pagination,
     formula,

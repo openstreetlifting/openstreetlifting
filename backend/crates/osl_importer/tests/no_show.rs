@@ -1,3 +1,4 @@
+use osl_db::filter::Filters;
 use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use sqlx::PgPool;
@@ -55,17 +56,11 @@ async fn ranks_only_competed_participants(pool: PgPool) {
 
     let (ranked, total) = RankingRepository::new(&pool)
         .get_global_ranking(&RankingFilter {
-            gender: None,
-            country: None,
-            federation: None,
-            series: None,
+            by: Filters::default(),
             name: None,
             movement: RankingMovement::Total,
             direction: SortDirection::Desc,
             event: osl_domain::FULL_EVENT.to_string(),
-            category: None,
-            year: None,
-            competition_id: None,
             offset: 0,
             limit: 50,
         })

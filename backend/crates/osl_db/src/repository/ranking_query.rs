@@ -3,13 +3,62 @@ use sqlx::{Postgres, QueryBuilder};
 use osl_domain::WeightClass;
 use uuid::Uuid;
 
-use crate::params::{RankingFilter, RankingMovement};
+use crate::filter::{Filters, Predicate};
+use crate::params::{RankingBy, RankingFilter, RankingMovement};
 
 fn escape_like(pattern: &str) -> String {
     pattern
         .replace('\\', "\\\\")
         .replace('%', "\\%")
         .replace('_', "\\_")
+}
+
+impl Predicate for RankingBy {
+    fn push(&self, query: &mut QueryBuilder<Postgres>) {
+        match self {
+            Self::Sex(gender) => query.push("a.gender = ").push_bind(gender.as_str()),
+            Self::CategoryGender(gender) => query
+                .push("COALESCE(cp.category_gender, wc.gender, a.gender) = ")
+                .push_bind(gender.as_str()),
+            Self::Country(country) => query.push("a.country = ").push_bind(country.clone()),
+            Self::Federation(federation) => query.push("f.name = ").push_bind(federation.clone()),
+            Self::Series(series) => query.push("c.series = ").push_bind(series.clone()),
+            Self::Class(WeightClass::UpTo(max)) => query.push("wc.max_kg = ").push_bind(*max),
+            Self::Class(WeightClass::Above(min)) => query
+                .push("wc.max_kg IS NULL AND wc.min_kg = ")
+                .push_bind(*min),
+            Self::Year(year) => query
+                .push("EXTRACT(YEAR FROM c.start_date)::int = ")
+                .push_bind(*year),
+            Self::Competition(id) => query.push("c.competition_id = ").push_bind(*id),
+        };
+    }
+}
+
+pub(crate) fn ranked_results(select: &str, by: &Filters<RankingBy>) -> QueryBuilder<Postgres> {
+    let mut query = QueryBuilder::new(select);
+    query.push(
+        r"
+            FROM competition_participants cp
+            INNER JOIN athletes a ON cp.athlete_id = a.athlete_id
+            INNER JOIN competitions c ON cp.competition_id = c.competition_id
+            INNER JOIN federations f ON c.federation_id = f.federation_id
+            LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+            WHERE TRUE
+        ",
+    );
+    if !by.any(|by| matches!(by, RankingBy::Competition(_))) {
+        query.push(
+            r"
+              AND cp.status = 'competed'
+              AND (cp.total IS NOT NULL OR cp.ris_score IS NOT NULL OR EXISTS (
+                  SELECT 1 FROM lifts l WHERE l.participant_id = cp.participant_id
+              ))
+            ",
+        );
+    }
+    by.push_and(&mut query);
+    query
 }
 
 pub(crate) fn same_class(left: &str, right: &str) -> String {
@@ -68,51 +117,7 @@ pub(crate) fn movement_weights(filter: Option<&RankingFilter>) -> QueryBuilder<P
     );
 
     if let Some(filter) = filter {
-        if let Some(gender) = filter.gender {
-            query.push(if filter.competition_id.is_some() {
-                " AND COALESCE(cp.category_gender, wc.gender, a.gender) = "
-            } else {
-                " AND a.gender = "
-            });
-            query.push_bind(gender.as_str());
-        }
-
-        if let Some(ref country) = filter.country {
-            query.push(" AND a.country = ");
-            query.push_bind(country);
-        }
-
-        if let Some(ref federation) = filter.federation {
-            query.push(" AND f.name = ");
-            query.push_bind(federation);
-        }
-
-        if let Some(ref series) = filter.series {
-            query.push(" AND c.series = ");
-            query.push_bind(series);
-        }
-
-        match filter.category {
-            Some(WeightClass::UpTo(max)) => {
-                query.push(" AND wc.max_kg = ");
-                query.push_bind(max);
-            }
-            Some(WeightClass::Above(min)) => {
-                query.push(" AND wc.max_kg IS NULL AND wc.min_kg = ");
-                query.push_bind(min);
-            }
-            None => {}
-        }
-
-        if let Some(year) = filter.year {
-            query.push(" AND EXTRACT(YEAR FROM c.start_date)::int = ");
-            query.push_bind(year);
-        }
-
-        if let Some(competition_id) = filter.competition_id {
-            query.push(" AND c.competition_id = ");
-            query.push_bind(competition_id);
-        }
+        filter.by.push_and(&mut query);
     }
 
     query.push(
@@ -140,7 +145,7 @@ pub(crate) fn push_eligible(query: &mut QueryBuilder<Postgres>, filter: &Ranking
     if matches!(
         filter.movement,
         RankingMovement::Total | RankingMovement::Ris
-    ) && filter.competition_id.is_none()
+    ) && !filter.in_competition()
     {
         query.push(" AND event_code = ");
         query.push_bind(filter.event.clone());
@@ -150,7 +155,7 @@ pub(crate) fn push_eligible(query: &mut QueryBuilder<Postgres>, filter: &Ranking
 }
 
 pub(crate) fn push_ranking_pool(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
-    if filter.competition_id.is_some() {
+    if filter.in_competition() {
         query.push(" , ranking_pool AS ( SELECT * FROM eligible ) ");
         return;
     }

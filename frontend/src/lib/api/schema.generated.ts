@@ -47,62 +47,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/competitions/countries': {
+  '/api/v1/competitions/facets': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['list_competition_countries'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/competitions/federations': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list_competition_federations'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/competitions/formats': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list_competition_formats'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/competitions/years': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list_competition_years'];
+    get: operations['get_competition_facets'];
     put?: never;
     post?: never;
     delete?: never;
@@ -143,22 +95,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/rankings/classes': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list_ranking_classes'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/api/v1/rankings/countries': {
     parameters: {
       query?: never;
@@ -175,46 +111,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/rankings/federations': {
+  '/api/v1/rankings/facets': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['list_ranking_federations'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/rankings/series': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list_ranking_series'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/rankings/years': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list_ranking_years'];
+    get: operations['get_ranking_facets'];
     put?: never;
     post?: never;
     delete?: never;
@@ -239,14 +143,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/records/years': {
+  '/api/v1/records/facets': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['list_record_years'];
+    get: operations['get_record_facets'];
     put?: never;
     post?: never;
     delete?: never;
@@ -417,6 +321,12 @@ export interface components {
       name: string;
       slug: string;
       start_date: string;
+    };
+    CompetitionFacets: {
+      countries: string[];
+      federations: string[];
+      formats: string[];
+      years: number[];
     };
     CompetitionFederation: {
       abbreviation: string | null;
@@ -640,6 +550,13 @@ export interface components {
       last_name: string;
       slug: string;
     };
+    RankingFacets: {
+      classes: string[];
+      countries: string[];
+      federations: string[];
+      series: components['schemas']['RankingSeries'][];
+      years: number[];
+    };
     RankingFederation: {
       abbreviation: string | null;
       name: string;
@@ -666,6 +583,11 @@ export interface components {
       date: string;
       rank: number;
       weight: string;
+    };
+    RecordFacets: {
+      countries: string[];
+      federations: string[];
+      years: number[];
     };
     RecordGender: 'M' | 'F';
     RecordGroup: {
@@ -813,9 +735,18 @@ export interface operations {
       };
     };
   };
-  list_competition_countries: {
+  get_competition_facets: {
     parameters: {
-      query?: never;
+      query?: {
+        include?: components['schemas']['Include'];
+        status?: components['schemas']['CompetitionStatus'] | null;
+        event?: string | null;
+        federation?: string | null;
+        country?: string | null;
+        year?: number | null;
+        q?: string | null;
+        direction?: components['schemas']['Direction'];
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -827,65 +758,14 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': string[];
+          'application/json': components['schemas']['CompetitionFacets'];
         };
       };
-    };
-  };
-  list_competition_federations: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
+      400: {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          'application/json': string[];
-        };
-      };
-    };
-  };
-  list_competition_formats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': string[];
-        };
-      };
-    };
-  };
-  list_competition_years: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': number[];
-        };
+        content?: never;
       };
     };
   };
@@ -963,31 +843,38 @@ export interface operations {
       };
     };
   };
-  list_ranking_classes: {
-    parameters: {
-      query?: {
-        gender?: components['schemas']['Gender'] | null;
-        competition_id?: string | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': string[];
-        };
-      };
-    };
-  };
   list_ranking_countries: {
     parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': string[];
+        };
+      };
+    };
+  };
+  get_ranking_facets: {
+    parameters: {
       query?: {
+        gender?: components['schemas']['RankedGender'] | null;
+        country?: string | null;
+        federation?: string | null;
+        series?: string | null;
+        q?: string | null;
+        movement?: components['schemas']['RankingMetric'];
+        direction?: components['schemas']['Direction'];
+        event?: string | null;
+        category?: string | null;
+        year?: number | null;
         competition_id?: string | null;
       };
       header?: never;
@@ -1001,64 +888,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': string[];
-        };
-      };
-    };
-  };
-  list_ranking_federations: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': string[];
-        };
-      };
-    };
-  };
-  list_ranking_series: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['RankingSeries'][];
-        };
-      };
-    };
-  };
-  list_ranking_years: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': number[];
+          'application/json': components['schemas']['RankingFacets'];
         };
       };
     };
@@ -1096,9 +926,17 @@ export interface operations {
       };
     };
   };
-  list_record_years: {
+  get_record_facets: {
     parameters: {
-      query?: never;
+      query?: {
+        movement?: components['schemas']['RecordMovement'] | null;
+        gender?: components['schemas']['RecordGender'] | null;
+        weight_class?: string | null;
+        country?: string | null;
+        federation?: string | null;
+        year?: number | null;
+        limit?: number | null;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -1110,8 +948,14 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': number[];
+          'application/json': components['schemas']['RecordFacets'];
         };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };

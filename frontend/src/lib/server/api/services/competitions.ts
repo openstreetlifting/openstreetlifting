@@ -43,14 +43,7 @@ export const competitionsService = {
     };
   },
 
-  async getFacets() {
-    const [federations, years, countries, formats] = await Promise.all([
-      apiData(apiClient.GET('/api/v1/competitions/federations')),
-      apiData(apiClient.GET('/api/v1/competitions/years')),
-      apiData(apiClient.GET('/api/v1/competitions/countries')),
-      apiData(apiClient.GET('/api/v1/competitions/formats')),
-    ]);
-
-    return { federations, years, countries, formats };
+  getFacets(query: CompetitionFilters) {
+    return apiData(apiClient.GET('/api/v1/competitions/facets', { params: { query } }));
   },
 };

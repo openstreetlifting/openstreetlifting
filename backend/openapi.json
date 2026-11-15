@@ -231,95 +231,114 @@
         }
       }
     },
-    "/api/v1/competitions/countries": {
+    "/api/v1/competitions/facets": {
       "get": {
         "tags": [
           "competitions"
         ],
-        "operationId": "list_competition_countries",
-        "responses": {
-          "200": {
-            "description": "Countries a competition was held in, alphabetical",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
+        "operationId": "get_competition_facets",
+        "parameters": [
+          {
+            "name": "include",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Include"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/CompetitionStatus"
+                },
+                {
+                  "type": "null"
                 }
-              }
+              ]
+            }
+          },
+          {
+            "name": "event",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "federation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Direction"
             }
           }
-        }
-      }
-    },
-    "/api/v1/competitions/federations": {
-      "get": {
-        "tags": [
-          "competitions"
         ],
-        "operationId": "list_competition_federations",
         "responses": {
           "200": {
-            "description": "Federations that have run at least one competition, alphabetical",
+            "description": "Values each competition filter can take given the other filters. Search, sort and paging are ignored.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
+                  "$ref": "#/components/schemas/CompetitionFacets"
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/competitions/formats": {
-      "get": {
-        "tags": [
-          "competitions"
-        ],
-        "operationId": "list_competition_formats",
-        "responses": {
-          "200": {
-            "description": "Known formats across all competitions, alphabetical",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/competitions/years": {
-      "get": {
-        "tags": [
-          "competitions"
-        ],
-        "operationId": "list_competition_years",
-        "responses": {
-          "200": {
-            "description": "Years a competition was held in, most recent first",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer",
-                    "format": "int32"
-                  }
-                }
-              }
-            }
+          },
+          "400": {
+            "description": "Invalid event code"
           }
         }
       }
@@ -535,12 +554,35 @@
         }
       }
     },
-    "/api/v1/rankings/classes": {
+    "/api/v1/rankings/countries": {
       "get": {
         "tags": [
           "rankings"
         ],
-        "operationId": "list_ranking_classes",
+        "operationId": "list_ranking_countries",
+        "responses": {
+          "200": {
+            "description": "Distinct countries athletes have competed under",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rankings/facets": {
+      "get": {
+        "tags": [
+          "rankings"
+        ],
+        "operationId": "get_ranking_facets",
         "parameters": [
           {
             "name": "gender",
@@ -549,12 +591,106 @@
             "schema": {
               "oneOf": [
                 {
-                  "$ref": "#/components/schemas/Gender"
+                  "$ref": "#/components/schemas/RankedGender"
                 },
                 {
                   "type": "null"
                 }
               ]
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "federation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "series",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "movement",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/RankingMetric"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Direction"
+            }
+          },
+          {
+            "name": "event",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int32"
             }
           },
           {
@@ -572,121 +708,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Distinct weight classes, optionally narrowed to one gender",
+            "description": "Values each ranking filter can take given the other filters. Search, sort and paging are ignored.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/rankings/countries": {
-      "get": {
-        "tags": [
-          "rankings"
-        ],
-        "operationId": "list_ranking_countries",
-        "parameters": [
-          {
-            "name": "competition_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": [
-                "string",
-                "null"
-              ],
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Distinct countries athletes have competed under, optionally narrowed to one competition",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/rankings/federations": {
-      "get": {
-        "tags": [
-          "rankings"
-        ],
-        "operationId": "list_ranking_federations",
-        "responses": {
-          "200": {
-            "description": "Federations athletes have competed under, alphabetical",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/rankings/series": {
-      "get": {
-        "tags": [
-          "rankings"
-        ],
-        "operationId": "list_ranking_series",
-        "responses": {
-          "200": {
-            "description": "Competition series with results",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RankingSeries"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/rankings/years": {
-      "get": {
-        "tags": [
-          "rankings"
-        ],
-        "operationId": "list_ranking_years",
-        "responses": {
-          "200": {
-            "description": "Distinct competition years, most recent first",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer",
-                    "format": "int32"
-                  }
+                  "$ref": "#/components/schemas/RankingFacets"
                 }
               }
             }
@@ -758,7 +784,7 @@
           {
             "name": "federation",
             "in": "query",
-            "description": "A federation name, as listed by `/api/v1/competitions/federations`.",
+            "description": "A federation name, as listed by `/api/v1/records/facets`.",
             "required": false,
             "schema": {
               "type": [
@@ -814,26 +840,119 @@
         }
       }
     },
-    "/api/v1/records/years": {
+    "/api/v1/records/facets": {
       "get": {
         "tags": [
           "records"
         ],
-        "operationId": "list_record_years",
+        "operationId": "get_record_facets",
+        "parameters": [
+          {
+            "name": "movement",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RecordMovement"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RecordGender"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "name": "weight_class",
+            "in": "query",
+            "description": "A weight class such as `M-73` or `F+70`, or `open` for the best across all classes.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "description": "An ISO 3166-1 alpha-2 country code, such as `FR`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "federation",
+            "in": "query",
+            "description": "A federation name, as listed by `/api/v1/records/facets`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "description": "Only lifts from competitions held in this year.",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Entries per group, from 1 to 50. Defaults to 3.",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int64"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Years with at least one recorded lift, most recent first",
+            "description": "Values each records filter can take given the other filters",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer",
-                    "format": "int32"
-                  }
+                  "$ref": "#/components/schemas/RecordFacets"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid query parameters"
           }
         }
       }
@@ -1478,6 +1597,42 @@
           "start_date": {
             "type": "string",
             "format": "date"
+          }
+        }
+      },
+      "CompetitionFacets": {
+        "type": "object",
+        "required": [
+          "federations",
+          "countries",
+          "years",
+          "formats"
+        ],
+        "properties": {
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "federations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "formats": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "years": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -2710,6 +2865,49 @@
           }
         }
       },
+      "RankingFacets": {
+        "type": "object",
+        "required": [
+          "classes",
+          "countries",
+          "federations",
+          "series",
+          "years"
+        ],
+        "properties": {
+          "classes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "federations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "series": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RankingSeries"
+            }
+          },
+          "years": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
       "RankingFederation": {
         "type": "object",
         "required": [
@@ -2825,6 +3023,35 @@
           },
           "weight": {
             "type": "string"
+          }
+        }
+      },
+      "RecordFacets": {
+        "type": "object",
+        "required": [
+          "countries",
+          "federations",
+          "years"
+        ],
+        "properties": {
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "federations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "years": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },

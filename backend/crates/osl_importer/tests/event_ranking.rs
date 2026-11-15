@@ -1,4 +1,5 @@
-use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
+use osl_db::filter::Filters;
+use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::Movement;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
@@ -50,7 +51,7 @@ async fn breaks_total_ties_by_lower_bodyweight(pool: PgPool) {
             (SortDirection::Asc, vec!["Lighter", "Heavier", "Highest"]),
         ] {
             let mut scoped = filter(RankingMovement::Total);
-            scoped.competition_id = scope;
+            scoped.by = scope.map(RankingBy::Competition).into_iter().collect();
             scoped.direction = direction;
             let (rows, total) = RankingRepository::new(&pool)
                 .get_global_ranking(&scoped)
@@ -77,17 +78,11 @@ fn four_lift_athlete(first: &str, last: &str, muscleup: &str) -> AthleteData {
 
 fn filter(movement: RankingMovement) -> RankingFilter {
     RankingFilter {
-        gender: None,
-        country: None,
-        federation: None,
-        series: None,
+        by: Filters::default(),
         name: None,
         movement,
         direction: SortDirection::Desc,
         event: osl_domain::FULL_EVENT.to_string(),
-        category: None,
-        year: None,
-        competition_id: None,
         offset: 0,
         limit: 50,
     }
@@ -347,7 +342,7 @@ async fn ignores_event_filter_within_competition(pool: PgPool) {
             .unwrap();
 
     let mut scoped = filter(RankingMovement::Total);
-    scoped.competition_id = Some(competition_id);
+    scoped.by = [RankingBy::Competition(competition_id)].into();
 
     let (rows, total) = RankingRepository::new(&pool)
         .get_global_ranking(&scoped)

@@ -1,18 +1,14 @@
 import { apiClient, apiData } from '../client';
-import type { RecordGender } from '#lib/types/records.js';
+import type { paths } from '#lib/api/schema.generated.js';
+
+type RecordsQuery = NonNullable<paths['/api/v1/records']['get']['parameters']['query']>;
 
 export const recordsService = {
-  getRecords(query: {
-    gender?: RecordGender;
-    country?: string | null;
-    federation?: string | null;
-    year?: number | null;
-    limit?: number;
-  }) {
+  getRecords(query: RecordsQuery) {
     return apiData(apiClient.GET('/api/v1/records', { params: { query } }));
   },
 
-  getYears() {
-    return apiData(apiClient.GET('/api/v1/records/years'));
+  getFacets(query: RecordsQuery) {
+    return apiData(apiClient.GET('/api/v1/records/facets', { params: { query } }));
   },
 };

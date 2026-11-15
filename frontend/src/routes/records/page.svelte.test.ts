@@ -51,16 +51,15 @@ function group(movement: RecordGroup['movement'], weight_class: string | null): 
   };
 }
 
-function data(overrides: Partial<PageData> = {}): PageData {
+function data(
+  overrides: Partial<PageData> = {},
+  filters: Partial<PageData['filters']> = {}
+): PageData {
   return {
     locale: 'en',
     gender: 'M',
-    country: null,
-    federation: null,
-    year: null,
-    countries: ['FR', 'IT'],
-    federations: ['FinalRep', 'FNSL'],
-    years: [2026, 2025],
+    filters: { country: null, federation: null, year: null, ...filters },
+    facets: { countries: ['FR', 'IT'], federations: ['FinalRep', 'FNSL'], years: [2026, 2025] },
     groups: [group('muscleup', null), group('muscleup', 'F-57'), group('squat', null)],
     ...overrides,
   } as PageData;
@@ -105,14 +104,14 @@ it('converts weights and classes to pounds', async () => {
 });
 
 it('names the country when one is selected', async () => {
-  render(RecordsPage, { data: data({ country: 'FR' }) });
+  render(RecordsPage, { data: data({}, { country: 'FR' }) });
   await expect
     .element(page.getByRole('heading', { name: /France records/, level: 1 }))
     .toBeVisible();
 });
 
 it('switches to women while keeping every scope filter', async () => {
-  render(RecordsPage, { data: data({ country: 'IT', year: 2025 }) });
+  render(RecordsPage, { data: data({}, { country: 'IT', year: 2025 }) });
   await expect
     .element(page.getByRole('button', { name: 'Men' }))
     .toHaveAttribute('aria-pressed', 'true');
@@ -135,7 +134,7 @@ it('narrows to a federation', async () => {
 });
 
 it('clears every scope filter and keeps the sex', async () => {
-  render(RecordsPage, { data: data({ gender: 'F', country: 'FR', federation: 'FNSL' }) });
+  render(RecordsPage, { data: data({ gender: 'F' }, { country: 'FR', federation: 'FNSL' }) });
   await page.getByRole('button', { name: 'Clear' }).click();
   expect(goto).toHaveBeenCalledWith('/en/records?gender=F', { reset: false });
 });
