@@ -1,4 +1,8 @@
-sources = ["https://www.instagram.com/p/DZ0BlyAsppv/"]
+event = "MPDS"
+sources = [
+    "https://www.instagram.com/p/DZ0BlyAsppv/",
+    "FinalRep app, /events-api/v1/events/3K30CsQla9ZCLNMP4hqGgX5Oa4F/statistics",
+]
 
 [competition]
 name = "Belgian Streetlifting Championship"
@@ -8,7 +12,7 @@ end_date = "2026-11-15"
 city = "Auderghem"
 venue = "Club Akuma 2.0"
 country = "BE"
-status = "upcoming"
+status = "completed"
 
 [federation]
 name = "Streetlifting Belgium"
