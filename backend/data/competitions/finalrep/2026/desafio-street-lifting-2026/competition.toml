@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = ["FinalRep app, /events-api/v1/events/3Lc76MwmXVRY9LCXzFsXmic4uS7/statistics"]
+
+[competition]
+name = "Desafío Street Lifting"
+series = "desafio-street-lifting"
+start_date = "2026-11-14"
+venue = "Gamma Workout"
+country = "VE"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "FinalRep"
+country = "DE"
