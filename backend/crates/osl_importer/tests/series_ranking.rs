@@ -63,7 +63,7 @@ async fn ranks_best_result_within_selected_series_before_search_and_pagination(p
     assert!(rows.is_empty());
     assert_eq!(count, 0);
 
-    let series = repo.facets(&filter.by).await.unwrap().series;
+    let series = repo.facets(&filter).await.unwrap().series;
     assert_eq!(
         series
             .iter()

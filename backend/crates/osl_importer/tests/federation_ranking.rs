@@ -132,7 +132,7 @@ async fn lists_federations_with_results(pool: PgPool) {
     import(&pool, announced).await;
 
     let mut federations = RankingRepository::new(&pool)
-        .facets(&filter(Some("FNSL")).by)
+        .facets(&filter(Some("FNSL")))
         .await
         .expect("listing should succeed")
         .federations;
