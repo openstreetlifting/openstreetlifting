@@ -66,7 +66,7 @@ fn holders(rows: &[RecordRow]) -> Vec<(&str, String)> {
 }
 
 fn class(slug: &str) -> RecordClass {
-    RecordClass::Slug(slug.to_string())
+    RecordClass::Label(slug.to_string())
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

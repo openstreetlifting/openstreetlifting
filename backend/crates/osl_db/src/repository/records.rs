@@ -13,6 +13,17 @@ const SET: &str = "
     WHERE TRUE
 ";
 
+const STANDARD_CLASS: &str = " AND wc.slug IS NOT NULL ";
+
+fn class_label(record: &str) -> String {
+    format!(
+        "({record}.gender || CASE
+            WHEN wc.max_kg IS NOT NULL THEN '-' || trim_scale(wc.max_kg)
+            ELSE '+' || trim_scale(wc.min_kg)
+        END)::VARCHAR"
+    )
+}
+
 impl Predicate for RecordBy {
     fn push(&self, query: &mut QueryBuilder<Postgres>) {
         match self {
@@ -22,6 +33,7 @@ impl Predicate for RecordBy {
             Self::Gender(gender) => query.push("r.gender = ").push_bind(gender.as_str()),
             Self::Country(country) => query.push("a.country = ").push_bind(country.clone()),
             Self::Federation(federation) => query.push("f.name = ").push_bind(federation.clone()),
+            Self::Series(series) => query.push("c.series = ").push_bind(series.clone()),
             Self::Year(year) => query
                 .push("EXTRACT(YEAR FROM r.date)::int = ")
                 .push_bind(*year),
@@ -55,12 +67,24 @@ impl<'a> RecordsRepository<'a> {
             ),
             pool AS (
                 SELECT * FROM (
-                    SELECT DISTINCT ON (s.movement_name, s.weight_class_id, s.athlete_id)
-                           s.*, wc.slug AS weight_class, wc.max_kg, wc.min_kg
+                    SELECT DISTINCT ON (s.movement_name, class.label, s.athlete_id)
+                           s.*, class.label AS weight_class, wc.max_kg, wc.min_kg
                     FROM scoped s
                     JOIN weight_classes wc ON wc.weight_class_id = s.weight_class_id
-                    WHERE wc.slug IS NOT NULL
-                    ORDER BY s.movement_name, s.weight_class_id, s.athlete_id, s.weight DESC, s.date
+                    CROSS JOIN LATERAL ( SELECT ",
+        );
+        query.push(class_label("s"));
+        query.push(
+            r" AS label ) class
+                    WHERE TRUE
+            ",
+        );
+        if !RecordBy::within_organiser(&filter.by) {
+            query.push(STANDARD_CLASS);
+        }
+        query.push(
+            r"
+                    ORDER BY s.movement_name, class.label, s.athlete_id, s.weight DESC, s.date
                 ) classes
                 UNION ALL
                 SELECT * FROM (
@@ -85,9 +109,9 @@ impl<'a> RecordsRepository<'a> {
             Some(RecordClass::Open) => {
                 query.push(" AND weight_class IS NULL ");
             }
-            Some(RecordClass::Slug(slug)) => {
+            Some(RecordClass::Label(label)) => {
                 query.push(" AND weight_class = ");
-                query.push_bind(slug.clone());
+                query.push_bind(label.clone());
             }
             None => {}
         }
@@ -104,7 +128,8 @@ impl<'a> RecordsRepository<'a> {
         query.push(
             r"
             ORDER BY array_position(ARRAY['Muscle-up', 'Pull-up', 'Dips', 'Squat']::VARCHAR[], movement_name),
-                     gender DESC, weight_class IS NOT NULL, max_kg NULLS LAST, min_kg, rank
+                     gender DESC, weight_class IS NOT NULL, max_kg NULLS LAST,
+                     CASE WHEN max_kg IS NULL THEN min_kg END, rank
             ",
         );
 
@@ -125,6 +150,32 @@ impl<'a> RecordsRepository<'a> {
         );
         federations.push(" ORDER BY 1 ");
 
+        let mut series = Self::set(
+            "SELECT series, name, federation FROM (
+                SELECT DISTINCT ON (c.series) c.series, c.name, f.name AS federation",
+            &by.without(|by| matches!(by, RecordBy::Series(_))),
+        );
+        series.push(
+            " AND c.series IS NOT NULL ORDER BY c.series, c.start_date DESC NULLS LAST, c.slug
+            ) available ORDER BY federation, name, series ",
+        );
+
+        let custom_weight_classes = if RecordBy::within_organiser(by) {
+            let mut custom = Self::set("SELECT EXISTS ( SELECT 1", by);
+            custom.push(
+                " AND EXISTS (
+                    SELECT 1 FROM weight_classes wc
+                    WHERE wc.weight_class_id = r.weight_class_id
+                      AND NOT EXISTS (
+                          SELECT 1 FROM weight_classes standard WHERE standard.slug = ",
+            );
+            custom.push(class_label("r"));
+            custom.push(" ) ) ) ");
+            custom.build_query_scalar().fetch_one(self.pool).await?
+        } else {
+            false
+        };
+
         let mut years = Self::set(
             "SELECT DISTINCT EXTRACT(YEAR FROM r.date)::int",
             &by.without(|by| matches!(by, RecordBy::Year(_))),
@@ -137,7 +188,9 @@ impl<'a> RecordsRepository<'a> {
                 .build_query_scalar()
                 .fetch_all(self.pool)
                 .await?,
+            series: series.build_query_as().fetch_all(self.pool).await?,
             years: years.build_query_scalar().fetch_all(self.pool).await?,
+            custom_weight_classes,
         })
     }
 

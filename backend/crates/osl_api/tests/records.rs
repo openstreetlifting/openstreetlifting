@@ -245,3 +245,113 @@ async fn marks_current_records_on_rankings_results_and_history(pool: PgPool) {
         .clone();
     assert_eq!(squat["record"], "WR");
 }
+
+fn regional_meet() -> osl_importer::canonical::models::CanonicalFormat {
+    let mut meet = common::competition(
+        "regional-cup-2026",
+        vec![
+            common::open_category(
+                osl_domain::Gender::M,
+                "62.5",
+                vec![
+                    common::lifting(common::athlete("Sam", "Keller"), ["30", "55", "80", "140"]),
+                    common::lifting(common::athlete("Tom", "Weber"), ["25", "60", "70", "150"]),
+                ],
+            ),
+            common::men_80(vec![common::lifting(
+                common::athlete("Leo", "Braun"),
+                ["35", "50", "60", "110"],
+            )]),
+        ],
+    );
+    meet.competition.series = Some("regional-cup".to_owned());
+    meet.competition.federation.name = String::from("Regional Federation");
+    meet
+}
+
+fn classes(groups: &Value, movement: &str) -> Vec<Value> {
+    groups
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|group| group["movement"] == movement)
+        .map(|group| group["weight_class"].clone())
+        .collect()
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn groups_by_the_classes_of_a_selected_series_or_federation(pool: PgPool) {
+    a_meet(&pool).await;
+    common::import(&pool, regional_meet()).await;
+
+    let (_, standard) = get(&pool, "/api/v1/records").await;
+    assert_eq!(
+        classes(&standard, "squat"),
+        vec![Value::Null, json!("M-80"), json!("M+101")],
+        "a class outside the standard ladder only counts toward the open record"
+    );
+    let (_, by_country) = get(&pool, "/api/v1/records?country=FR").await;
+    assert_eq!(classes(&by_country, "squat"), classes(&standard, "squat"));
+
+    for scope in ["series=regional-cup", "federation=Regional%20Federation"] {
+        let (status, own) = get(&pool, &format!("/api/v1/records?{scope}")).await;
+        assert_eq!(status, StatusCode::OK, "{scope}");
+        assert_eq!(
+            classes(&own, "squat"),
+            vec![Value::Null, json!("M-80"), json!("M+62.5")],
+            "{scope}"
+        );
+
+        let (status, heavy) = get(
+            &pool,
+            &format!("/api/v1/records?{scope}&movement=squat&weight_class=M%2B62.5"),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "{scope}");
+        assert_eq!(heavy[0]["entries"][0]["athlete"]["last_name"], "Weber");
+        assert_eq!(heavy[0]["entries"][1]["athlete"]["last_name"], "Keller");
+    }
+
+    let (status, _) = get(
+        &pool,
+        "/api/v1/records?series=regional-cup&weight_class=heavy",
+    )
+    .await;
+    assert_eq!(status, StatusCode::BAD_REQUEST);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn facets_offer_series_and_flag_custom_classes(pool: PgPool) {
+    a_meet(&pool).await;
+    common::import(&pool, regional_meet()).await;
+
+    let (_, all) = get(&pool, "/api/v1/records/facets").await;
+    assert_eq!(
+        all["series"],
+        json!([{
+            "series": "regional-cup",
+            "name": "regional-cup-2026",
+            "federation": "Regional Federation",
+        }])
+    );
+    assert_eq!(all["custom_weight_classes"], false);
+
+    let (_, series) = get(&pool, "/api/v1/records/facets?series=regional-cup").await;
+    assert_eq!(series["federations"], json!(["Regional Federation"]));
+    assert_eq!(series["series"].as_array().unwrap().len(), 1);
+    assert_eq!(series["custom_weight_classes"], true);
+
+    let (_, federation) = get(
+        &pool,
+        "/api/v1/records/facets?federation=Regional%20Federation",
+    )
+    .await;
+    assert_eq!(federation["custom_weight_classes"], true);
+
+    let (_, standard) = get(&pool, "/api/v1/records/facets?federation=Test%20Federation").await;
+    assert_eq!(standard["series"], json!([]));
+    assert_eq!(standard["custom_weight_classes"], false);
+
+    let (_, country) = get(&pool, "/api/v1/records/facets?country=FR").await;
+    assert_eq!(country["custom_weight_classes"], false);
+}

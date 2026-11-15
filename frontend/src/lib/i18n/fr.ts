@@ -392,6 +392,9 @@ export default {
   '{country} records': 'Records : {country}',
   '{movement} records': 'Records en {movement}',
   'No records for this selection yet.': 'Aucun record pour cette sélection pour l’instant.',
+  Note: 'Remarque',
+  'Records are grouped by the weight classes of {organiser}, which differ from the standard classes.':
+    'Les records sont regroupés selon les catégories de poids de {organiser}, qui diffèrent des catégories standard.',
   'Current world record in this weight class': 'Record du monde actuel dans cette catégorie',
   'Current national record in this weight class': 'Record national actuel dans cette catégorie',
   Results: 'Résultats',

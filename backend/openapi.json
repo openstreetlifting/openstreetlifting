@@ -760,7 +760,7 @@
           {
             "name": "weight_class",
             "in": "query",
-            "description": "A weight class such as `M-73` or `F+70`, or `open` for the best across all classes.",
+            "description": "A weight class such as `M-73` or `F+70`, or `open` for the best across all classes.\nWith a federation or series, any class it entered athletes in, such as `M-75`.",
             "required": false,
             "schema": {
               "type": [
@@ -785,6 +785,18 @@
             "name": "federation",
             "in": "query",
             "description": "A federation name, as listed by `/api/v1/records/facets`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "series",
+            "in": "query",
+            "description": "A competition series, as listed by `/api/v1/records/facets`.",
             "required": false,
             "schema": {
               "type": [
@@ -880,7 +892,7 @@
           {
             "name": "weight_class",
             "in": "query",
-            "description": "A weight class such as `M-73` or `F+70`, or `open` for the best across all classes.",
+            "description": "A weight class such as `M-73` or `F+70`, or `open` for the best across all classes.\nWith a federation or series, any class it entered athletes in, such as `M-75`.",
             "required": false,
             "schema": {
               "type": [
@@ -905,6 +917,18 @@
             "name": "federation",
             "in": "query",
             "description": "A federation name, as listed by `/api/v1/records/facets`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "series",
+            "in": "query",
+            "description": "A competition series, as listed by `/api/v1/records/facets`.",
             "required": false,
             "schema": {
               "type": [
@@ -3031,7 +3055,9 @@
         "required": [
           "countries",
           "federations",
-          "years"
+          "series",
+          "years",
+          "custom_weight_classes"
         ],
         "properties": {
           "countries": {
@@ -3040,10 +3066,20 @@
               "type": "string"
             }
           },
+          "custom_weight_classes": {
+            "type": "boolean",
+            "description": "True when the selected federation or series entered athletes in weight classes outside\nthe standard ladder. Records are then grouped by the classes it used."
+          },
           "federations": {
             "type": "array",
             "items": {
               "type": "string"
+            }
+          },
+          "series": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecordSeries"
             }
           },
           "years": {
@@ -3088,7 +3124,7 @@
               "string",
               "null"
             ],
-            "description": "The weight class, or `null` for the open record."
+            "description": "The weight class, or `null` for the open record. A standard class unless a federation\nor series is selected, which lists the classes it used."
           }
         }
       },
@@ -3107,6 +3143,25 @@
           "dips",
           "squat"
         ]
+      },
+      "RecordSeries": {
+        "type": "object",
+        "required": [
+          "series",
+          "name",
+          "federation"
+        ],
+        "properties": {
+          "federation": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "series": {
+            "type": "string"
+          }
+        }
       },
       "RisConstants": {
         "type": "object",

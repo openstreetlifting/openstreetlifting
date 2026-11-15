@@ -4,7 +4,7 @@ use axum::{
 };
 use osl_db::repository::records::RecordsRepository;
 
-use super::dto::{RecordFacets, RecordGroup, RecordsQuery, group};
+use super::dto::{RecordFacets, RecordGroup, RecordSeries, RecordsQuery, group};
 use crate::AppState;
 use crate::error::{WebError, WebResult};
 
@@ -52,6 +52,16 @@ pub async fn get_record_facets(
     Ok(Json(RecordFacets {
         countries: facets.countries,
         federations: facets.federations,
+        series: facets
+            .series
+            .into_iter()
+            .map(|option| RecordSeries {
+                series: option.series,
+                name: option.name,
+                federation: option.federation,
+            })
+            .collect(),
         years: facets.years,
+        custom_weight_classes: facets.custom_weight_classes,
     }))
 }

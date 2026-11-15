@@ -25,5 +25,6 @@ export const COMPETITION_FILTERS = {
 export const RECORD_FILTERS = {
   country,
   federation: text,
+  series: text,
   year,
 };

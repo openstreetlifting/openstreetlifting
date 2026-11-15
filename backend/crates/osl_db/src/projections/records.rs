@@ -3,6 +3,8 @@ use osl_domain::{Gender, Movement};
 use rust_decimal::Decimal;
 use sqlx::FromRow;
 
+use super::ranking::SeriesOption;
+
 #[derive(Debug, FromRow)]
 pub struct RecordRow {
     pub movement_name: Movement,
@@ -23,5 +25,7 @@ pub struct RecordRow {
 pub struct RecordFacets {
     pub countries: Vec<String>,
     pub federations: Vec<String>,
+    pub series: Vec<SeriesOption>,
     pub years: Vec<i32>,
+    pub custom_weight_classes: bool,
 }

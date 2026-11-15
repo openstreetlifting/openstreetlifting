@@ -5,6 +5,7 @@
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import {
     Button,
+    Callout,
     Flag,
     SegmentedControl,
     SelectField,
@@ -49,6 +50,18 @@
       movement,
       groups: data.groups.filter((group) => group.movement === movement),
     }))
+  );
+
+  const selectedSeries = $derived(
+    data.facets.series.find((option) => option.series === data.filters.series)
+  );
+  const staleSeries = $derived(selectedSeries ? null : filters.values.series);
+  const organiser = $derived(
+    data.filters.series
+      ? selectedSeries
+        ? `${selectedSeries.federation} · ${selectedSeries.name}`
+        : data.filters.series
+      : data.filters.federation
   );
 
   function classLabel(group: RecordGroup): string {
@@ -118,6 +131,18 @@
       {/each}
     </SelectField>
     <SelectField
+      label={i18n.t('Series')}
+      class={FILTER}
+      bind:value={filters.values.series}
+      onchange={() => apply()}
+    >
+      <option value={null}>{i18n.t('All Series')}</option>
+      {#each data.facets.series as option (option.series)}
+        <option value={option.series}>{option.federation} · {option.name}</option>
+      {/each}
+      {#if staleSeries}<option value={staleSeries}>{staleSeries}</option>{/if}
+    </SelectField>
+    <SelectField
       label={i18n.t('Year')}
       class={FILTER}
       bind:value={filters.values.year}
@@ -144,6 +169,15 @@
       </Button>
     {/if}
   </div>
+
+  {#if data.facets.custom_weight_classes && organiser}
+    <Callout title={i18n.t('Note')} class="mb-section">
+      {i18n.t(
+        'Records are grouped by the weight classes of {organiser}, which differ from the standard classes.',
+        { organiser }
+      )}
+    </Callout>
+  {/if}
 
   {#if data.groups.length === 0}
     <p class="border-y border-stroke py-8 text-body text-secondary">

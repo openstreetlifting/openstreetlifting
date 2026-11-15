@@ -586,7 +586,9 @@ export interface components {
     };
     RecordFacets: {
       countries: string[];
+      custom_weight_classes: boolean;
       federations: string[];
+      series: components['schemas']['RecordSeries'][];
       years: number[];
     };
     RecordGender: 'M' | 'F';
@@ -598,6 +600,11 @@ export interface components {
     };
     RecordMark: 'WR' | 'NR';
     RecordMovement: 'muscleup' | 'pullup' | 'dips' | 'squat';
+    RecordSeries: {
+      federation: string;
+      name: string;
+      series: string;
+    };
     RisConstants: {
       men: components['schemas']['GenderConstants'];
       women: components['schemas']['GenderConstants'];
@@ -901,6 +908,7 @@ export interface operations {
         weight_class?: string | null;
         country?: string | null;
         federation?: string | null;
+        series?: string | null;
         year?: number | null;
         limit?: number | null;
       };
@@ -934,6 +942,7 @@ export interface operations {
         weight_class?: string | null;
         country?: string | null;
         federation?: string | null;
+        series?: string | null;
         year?: number | null;
         limit?: number | null;
       };

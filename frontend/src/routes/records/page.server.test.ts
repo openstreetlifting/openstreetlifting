@@ -13,7 +13,9 @@ beforeEach(() => {
   vi.mocked(recordsService.getFacets).mockResolvedValue({
     countries: ['FR', 'IT'],
     federations: ['FNSL'],
+    series: [{ series: 'sdm', name: 'SDM 2026', federation: 'FNSL' }],
     years: [2026, 2025],
+    custom_weight_classes: true,
   });
 });
 
@@ -29,6 +31,7 @@ it('shows men by default across every country', async () => {
     gender: 'M',
     country: null,
     federation: null,
+    series: null,
     year: null,
   });
   expect(result).toMatchObject({
@@ -44,6 +47,7 @@ it('reads the sex and country from the address', async () => {
     gender: 'F',
     country: 'FR',
     federation: null,
+    series: null,
     year: null,
   });
   expect(result).toMatchObject({
@@ -58,12 +62,14 @@ it('passes the federation and year', async () => {
     gender: 'M',
     country: null,
     federation: 'FNSL',
+    series: null,
     year: 2025,
   });
   expect(recordsService.getFacets).toHaveBeenCalledWith({
     gender: 'M',
     country: null,
     federation: 'FNSL',
+    series: null,
     year: 2025,
   });
   expect(result).toMatchObject({
@@ -79,12 +85,28 @@ it('keeps a selected value that its options no longer offer', async () => {
   });
 });
 
+it('passes the series and keeps its options and class flag', async () => {
+  const result = await loadAt('?series=sdm');
+  expect(recordsService.getRecords).toHaveBeenCalledWith(
+    expect.objectContaining({ series: 'sdm' })
+  );
+  expect(recordsService.getFacets).toHaveBeenCalledWith(expect.objectContaining({ series: 'sdm' }));
+  expect(result).toMatchObject({
+    facets: {
+      series: [{ series: 'sdm', name: 'SDM 2026', federation: 'FNSL' }],
+      custom_weight_classes: true,
+    },
+    filters: { series: 'sdm' },
+  });
+});
+
 it('falls back to men for an unknown sex', async () => {
   await loadAt('?gender=MX');
   expect(recordsService.getRecords).toHaveBeenCalledWith({
     gender: 'M',
     country: null,
     federation: null,
+    series: null,
     year: null,
   });
 });

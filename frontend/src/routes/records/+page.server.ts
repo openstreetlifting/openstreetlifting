@@ -17,11 +17,13 @@ export const load: PageServerLoad = async ({ url }) => {
     ]);
     return {
       groups,
-      facets: keepSelected(facets, {
-        countries: filters.country,
-        federations: filters.federation,
-        years: filters.year,
-      }),
+      facets: {
+        ...facets,
+        ...keepSelected(
+          { countries: facets.countries, federations: facets.federations, years: facets.years },
+          { countries: filters.country, federations: filters.federation, years: filters.year }
+        ),
+      },
       gender,
       filters,
     };

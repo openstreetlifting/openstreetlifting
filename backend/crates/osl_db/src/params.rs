@@ -134,7 +134,7 @@ pub struct CompetitionFilter {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RecordClass {
     Open,
-    Slug(String),
+    Label(String),
 }
 
 #[derive(Debug, Clone)]
@@ -143,7 +143,15 @@ pub enum RecordBy {
     Gender(Gender),
     Country(String),
     Federation(String),
+    Series(String),
     Year(i32),
+}
+
+impl RecordBy {
+    #[must_use]
+    pub fn within_organiser(by: &Filters<Self>) -> bool {
+        by.any(|by| matches!(by, Self::Federation(_) | Self::Series(_)))
+    }
 }
 
 #[derive(Debug, Clone)]
