@@ -1,4 +1,3 @@
-/// Wide enough for youth and masters entries; anything outside is a typo.
 const RANGE: std::ops::RangeInclusive<u8> = 5..=100;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
