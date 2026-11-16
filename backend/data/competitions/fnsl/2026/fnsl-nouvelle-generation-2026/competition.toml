@@ -1,0 +1,20 @@
+event = "MPDS"
+sources = [
+    "https://www.instagram.com/p/Dfkh8KdEbjz/",
+    "https://www.instagram.com/p/DfiBzynke1-/",
+]
+
+[competition]
+name = "Nouvelle Génération"
+start_date = "2026-10-31"
+end_date = "2026-11-01"
+city = "Sevran"
+venue = "Gymnase Maurice Baquet"
+region = "Île-de-France"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "FNSL"
+abbreviation = "FNSL"
+country = "FR"
