@@ -9,8 +9,8 @@ controller, explains the purposes of processing, and sets out your GDPR rights.
 
 Results come from federations, organisers, competition platforms, public posts,
 and contributors. They can include names in Latin and original scripts, sex
-category, country, competition details, bodyweight, attempts, scores, placings,
-and participation status. The archive also calculates rankings and performance
+category, country, competition details, age, bodyweight, attempts, scores,
+placings, and participation status. The archive also calculates rankings and performance
 comparisons. Some bodyweights are recovered from published scores rather than
 reported at a weigh-in; their origin is recorded in the data.
 
@@ -56,7 +56,7 @@ removes matching Instagram entries. Importing the changed files and pruning the
 old database records updates the website, API, and new downloads and removes
 the old named profile.
 
-The tool preserves competition details, sex category, country, bodyweight,
+The tool preserves competition details, sex category, country, age, bodyweight,
 attempts, scores, and placings. Those details can still identify someone when
 compared with source results or earlier copies. This is pseudonymisation, not
 guaranteed anonymity or complete erasure. A successful command does not by itself

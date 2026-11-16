@@ -97,6 +97,7 @@ pub fn athlete(first: &str, last: &str) -> AthleteData {
         country: Some(CountryCode::parse("FR").unwrap()),
         bodyweight: Some(Decimal::from(80)),
         bodyweight_source: None,
+        age: None,
         reported_ris_edition: None,
         total: None,
         reported_ris: None,

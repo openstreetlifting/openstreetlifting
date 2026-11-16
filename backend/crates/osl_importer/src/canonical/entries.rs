@@ -21,10 +21,9 @@ pub const TOTAL: &str = "TotalKg";
 pub const STATUS: &str = "Status";
 pub const STATUS_REASON: &str = "StatusReason";
 pub const NATIVE_NAME: &str = "NativeName";
+pub const AGE: &str = "Age";
 
-// These columns may be omitted on input. Formatting always includes
-// IDENTITY_COLUMNS so contributors can copy a consistent base header.
-pub const OPTIONAL_COLUMNS: [&str; 9] = [
+pub const OPTIONAL_COLUMNS: [&str; 10] = [
     CATEGORY_SEX,
     FIRST_NAME,
     DISAMBIGUATION,
@@ -34,6 +33,7 @@ pub const OPTIONAL_COLUMNS: [&str; 9] = [
     NATIVE_NAME,
     BODYWEIGHT_SOURCE,
     REPORTED_RIS_EDITION,
+    AGE,
 ];
 
 pub const IDENTITY_COLUMNS: [&str; 10] = [
@@ -70,6 +70,7 @@ pub struct Layout {
     pub native_names: bool,
     pub bodyweight_sources: bool,
     pub reported_ris_editions: bool,
+    pub ages: bool,
 }
 
 #[must_use]
@@ -98,6 +99,9 @@ pub fn headers(layout: Layout) -> Vec<String> {
     }
     if layout.reported_ris_editions {
         headers.push(REPORTED_RIS_EDITION.to_string());
+    }
+    if layout.ages {
+        headers.push(AGE.to_string());
     }
 
     for movement in Movement::ALL {
@@ -209,6 +213,7 @@ impl Columns {
             native_names: true,
             bodyweight_sources: true,
             reported_ris_editions: true,
+            ages: true,
         });
 
         let missing: Vec<&String> = expected

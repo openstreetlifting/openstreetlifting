@@ -3,8 +3,8 @@ use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
 use osl_domain::{
-    AthleteStatus, CountryCode, Edition, Gender, Movement, WeightClass, WeightClassSlug, event,
-    slugify,
+    Age, AthleteStatus, CountryCode, Edition, Gender, Movement, WeightClass, WeightClassSlug,
+    event, slugify,
 };
 use rust_decimal::Decimal;
 
@@ -277,6 +277,10 @@ fn read_entry(
     let bodyweight = entries::parse_decimal(columns.get(record, entries::BODYWEIGHT))
         .map_err(|e| format!("{}: {e}", entries::BODYWEIGHT))?;
 
+    let age = optional(columns, record, entries::AGE)
+        .map(|raw| Age::parse(&raw))
+        .transpose()?;
+
     let reported_ris = entries::parse_decimal(columns.get(record, entries::REPORTED_RIS))
         .map_err(|e| format!("{}: {e}", entries::REPORTED_RIS))?;
     let bodyweight_source = optional(columns, record, entries::BODYWEIGHT_SOURCE)
@@ -305,6 +309,7 @@ fn read_entry(
         country,
         bodyweight,
         bodyweight_source,
+        age,
         reported_ris,
         reported_ris_edition,
         total: entries::parse_decimal(columns.get(record, entries::TOTAL))
@@ -404,6 +409,11 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
             .iter()
             .flat_map(|c| &c.athletes)
             .any(|athlete| athlete.reported_ris_edition.is_some()),
+        ages: canonical
+            .categories
+            .iter()
+            .flat_map(|c| &c.athletes)
+            .any(|athlete| athlete.age.is_some()),
     };
 
     writer
@@ -462,6 +472,9 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                         .reported_ris_edition
                         .map_or_default(|edition| edition.year().to_string()),
                 );
+            }
+            if layout.ages {
+                row.push(athlete.age.map_or_default(|age| age.to_string()));
             }
 
             for movement in Movement::ALL {

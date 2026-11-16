@@ -455,8 +455,8 @@ impl<'a> CanonicalTransformer<'a> {
             r#"
             INSERT INTO competition_participants
                 (competition_id, weight_class_id, division_id, athlete_id, bodyweight, status, status_reason, ris_score, ris_source,
-                 bodyweight_source, reported_ris_score, reported_ris_edition, total, country, category_gender)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11, $12, $13, $14)
+                 bodyweight_source, reported_ris_score, reported_ris_edition, total, country, category_gender, age)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11, $12, $13, $14, $15)
             ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id, category_gender)
             DO UPDATE SET
                 bodyweight = EXCLUDED.bodyweight,
@@ -469,7 +469,8 @@ impl<'a> CanonicalTransformer<'a> {
                 reported_ris_score = EXCLUDED.reported_ris_score,
                 reported_ris_edition = EXCLUDED.reported_ris_edition,
                 total = EXCLUDED.total,
-                country = EXCLUDED.country
+                country = EXCLUDED.country,
+                age = EXCLUDED.age
             RETURNING participant_id as "participant_id: Uuid"
             "#,
             competition_id,
@@ -485,7 +486,8 @@ impl<'a> CanonicalTransformer<'a> {
             reported_ris_edition,
             athlete.total,
             athlete.country.map(|country| country.as_str().to_owned()),
-            (contest.gender == osl_domain::Gender::Mx).then_some("MX")
+            (contest.gender == osl_domain::Gender::Mx).then_some("MX"),
+            athlete.age.map(|age| i16::from(age.get()))
         )
         .fetch_one(&mut **tx)
         .await?;

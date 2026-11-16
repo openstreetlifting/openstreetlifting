@@ -518,6 +518,7 @@ mod tests {
             country: Some(CountryCode::parse("FR").unwrap()),
             bodyweight: Some(Decimal::from(80)),
             bodyweight_source: None,
+            age: None,
             reported_ris_edition: None,
             total: Some(Decimal::from(100)),
             reported_ris: None,
