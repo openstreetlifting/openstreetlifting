@@ -487,7 +487,7 @@ impl<'a> CanonicalTransformer<'a> {
             athlete.total,
             athlete.country.map(|country| country.as_str().to_owned()),
             (contest.gender == osl_domain::Gender::Mx).then_some("MX"),
-            athlete.age
+            athlete.age.map(|age| i16::from(age.get()))
         )
         .fetch_one(&mut **tx)
         .await?;

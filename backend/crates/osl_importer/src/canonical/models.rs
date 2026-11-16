@@ -1,6 +1,6 @@
 use chrono::NaiveDate;
 use osl_domain::{
-    AthleteStatus, CompetitionStatus, CountryCode, Edition, Gender, Movement, WeightClassSlug,
+    Age, AthleteStatus, CompetitionStatus, CountryCode, Edition, Gender, Movement, WeightClassSlug,
     category_label, display_name,
 };
 use rust_decimal::Decimal;
@@ -92,7 +92,7 @@ pub struct AthleteData {
     pub country: Option<CountryCode>,
     pub bodyweight: Option<Decimal>,
     pub bodyweight_source: Option<BodyweightSource>,
-    pub age: Option<i16>,
+    pub age: Option<Age>,
     pub reported_ris: Option<Decimal>,
     pub reported_ris_edition: Option<Edition>,
     pub total: Option<Decimal>,

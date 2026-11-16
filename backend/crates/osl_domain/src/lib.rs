@@ -1,3 +1,4 @@
+pub mod age;
 pub mod athlete_status;
 pub mod category;
 pub mod competition_status;
@@ -19,6 +20,7 @@ pub mod slug;
 mod sql;
 pub mod weight_class;
 
+pub use age::Age;
 pub use athlete_status::AthleteStatus;
 pub use category::category_label;
 pub use competition_status::CompetitionStatus;

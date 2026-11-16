@@ -3,8 +3,8 @@ use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
 use osl_domain::{
-    AthleteStatus, CountryCode, Edition, Gender, Movement, WeightClass, WeightClassSlug, event,
-    slugify,
+    Age, AthleteStatus, CountryCode, Edition, Gender, Movement, WeightClass, WeightClassSlug,
+    event, slugify,
 };
 use rust_decimal::Decimal;
 
@@ -278,10 +278,7 @@ fn read_entry(
         .map_err(|e| format!("{}: {e}", entries::BODYWEIGHT))?;
 
     let age = optional(columns, record, entries::AGE)
-        .map(|raw| {
-            raw.parse::<i16>()
-                .map_err(|_| format!("{} '{raw}' is not a whole number", entries::AGE))
-        })
+        .map(|raw| Age::parse(&raw))
         .transpose()?;
 
     let reported_ris = entries::parse_decimal(columns.get(record, entries::REPORTED_RIS))
