@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.72.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.71.0...v0.72.0) (2026-11-16)
+
+
+### Features
+
+* competition age bodyweight ([#1013](https://github.com/openstreetlifting/openstreetlifting/issues/1013)) ([18f6ecd](https://github.com/openstreetlifting/openstreetlifting/commit/18f6ecd95f97d7ea9a3d1cf9f1ec709d5502b020))
+* **importer:** ingest athlete age at competition ([#1009](https://github.com/openstreetlifting/openstreetlifting/issues/1009)) ([de6100f](https://github.com/openstreetlifting/openstreetlifting/commit/de6100f2b1061bcb4b5c151655446ec4dfc0403c))
+
 ## [0.71.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.70.0...v0.71.0) (2026-11-16)
 
 
