@@ -1,0 +1,49 @@
+name: "Commitlint"
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, edited, synchronize, reopened]
+  merge_group:
+    types: [checks_requested]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMMITLINT_VERSION: 21.2.4
+
+jobs:
+  commitlint:
+    name: Conventional Commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            commitlint.config.mjs
+            .node-version
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+      - name: Install commitlint
+        run: |
+          npm install --no-save --no-package-lock \
+            "@commitlint/cli@${COMMITLINT_VERSION}" \
+            "@commitlint/config-conventional@${COMMITLINT_VERSION}"
+      - name: Lint PR title
+        if: github.event_name == 'pull_request'
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: printf '%s\n' "$TITLE" | npx --no-install commitlint --verbose
+      - name: Lint merge queue commit
+        if: github.event_name == 'merge_group'
+        env:
+          MESSAGE: ${{ github.event.merge_group.head_commit.message }}
+        run: printf '%s\n' "$MESSAGE" | head -n 1 | npx --no-install commitlint --verbose
