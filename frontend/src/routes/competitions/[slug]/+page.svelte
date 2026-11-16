@@ -672,9 +672,10 @@
               class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} text-secondary"
               >{i18n.t('Athlete')}</th
             >
-            <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}"
-              >{i18n.t('Total')} ({weights.unit})</th
-            >
+            <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary {sorted('total')}">
+              {i18n.t('Total')}
+              <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
+            </th>
             {#if risColumn}
               <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
                 <RisHeader note={risNote} />
@@ -704,9 +705,10 @@
               <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Age')}</th>
             {/if}
             {#if showBodyweight}
-              <th class="{TABLE_HEAD_CELL} text-secondary"
-                >{i18n.t('Bodyweight')} ({weights.unit})</th
-              >
+              <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary">
+                {i18n.t('Bodyweight')}
+                <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
+              </th>
             {/if}
           {/snippet}
 
