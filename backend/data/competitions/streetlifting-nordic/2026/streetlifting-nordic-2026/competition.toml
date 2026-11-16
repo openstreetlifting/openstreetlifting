@@ -1,4 +1,7 @@
+event = "MPDS"
 sources = [
+    "https://docs.google.com/spreadsheets/d/1rZtk7S_iV6vBnZOoieHqRYo1j53J8XeHKMz1icmIJBI/edit",
+    "https://sthlmsthenics.se/results/",
     "https://pfxpo.se/tavlingar/",
     "https://pfxpo.se/om-massan/",
 ]
@@ -11,8 +14,9 @@ end_date = "2026-11-15"
 city = "Nacka"
 region = "Stockholm County"
 country = "SE"
-status = "upcoming"
+status = "completed"
 
 [federation]
 name = "Streetlifting Nordic"
+abbreviation = "SLN"
 country = "SE"
