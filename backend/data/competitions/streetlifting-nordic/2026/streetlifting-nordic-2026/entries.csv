@@ -1,0 +1,38 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Elian,Alkinani,,SE,,91.78,387.5,competed,,,,,25,,,,72.5,,,,100,,,,190
+M,73,Clément,Basso-Bert,,NO,,104.71,475,competed,,,,,32.5,,,,82.5,,,,145,,,,215
+M,73,Sander,Eckhoff,,NO,,83.67,385,competed,,,,,22.5,,,,77.5,,,,110,,,,175
+M,73,Aleksander,Haug,,NO,,0,,disqualified,No successful dip,,,,27.5,,,,83,,,,,,,,170
+M,73,Sebastian,Rousing,,DK,,78.81,357.5,competed,,,,,20,,,,75,,,,85,,,,177.5
+M,80,Johan,Kang,,SE,,83.95,420,competed,,,,,21.25,,,,68.75,,,,112.5,,,,217.5
+M,80,Sven,Thorkildsen,,NO,,87.68,435,competed,,,,,30,,,,82.5,,,,127.5,,,,195
+M,80,Peter,Tolstrup,,NO,,96.93,480,competed,,,,,37.5,,,,85,,,,150,,,,207.5
+M,87,Jawad,Saeed,,DK,,0,,disqualified,No successful muscle-up,,,,,,,,65,,,,115,,,,170
+M,94,Nikola,Celic,,SE,,76.28,402.5,competed,,,,,12.5,,,,70,,,,130,,,,190
+M,94,Miles,Clarke Bolin,,SE,,69.6,372.5,competed,,,,,5,,,,60,,,,105,,,,202.5
+M,94,Sebastian,Helle Rokås,,NO,,75.03,395,competed,,,,,20,,,,75,,,,110,,,,190
+M,101,Lars,Lucas,,SE,,87.67,475,competed,,,,,10,,,,85,,,,130,,,,250
+M,101,Olof,Lundén,,SE,,72.61,392.5,competed,,,,,15,,,,72.5,,,,105,,,,200
+M,101,Maxim,Uebel,,SE,,76.54,415,competed,,,,,0,,,,55,,,,115,,,,245
+M,101+,Aun,Evensen,,NO,,76.96,420,competed,,,,,10,,,,60,,,,135,,,,215
+M,101+,Daniel,Eyafie,,SE,,99.08,541.25,competed,,,,,3.75,,,,95,,,,160,,,,282.5
+M,101+,Bjørn,Rune Trevland,,NO,,63.38,345,competed,,,,,10,,,,60,,,,95,,,,180
+F,52,Isabelle,Bensryd,,SE,,0,,disqualified,No successful dip,,,,10,,,,30,,,,,,,,117.5
+F,52,Mai,Knutsvik,,NO,,87.89,189.75,competed,,,,,1.25,,,,33.5,,,,45,,,,110
+F,52,Caroline,Lagerborg,,SE,,76.97,157.5,competed,,,,,2.5,,,,22.5,,,,30,,,,102.5
+F,52,Linnea,Stenson,,SE,,68.79,148.75,competed,,,,,12.5,,,,30,,,,36.25,,,,70
+F,52,Hedda,Ødegård Torbergsen,,NO,,77.59,167.5,competed,,,,,10,,,,30,,,,35,,,,92.5
+F,57,Isa,Ahlgren,,SE,,81.5032749696543,193.75,competed,,,,,6.25,,,,31.25,,,,51.25,,,,105
+F,57,Ann,Charlotte Farbergshagen,,NO,,77.94710673242311,186.25,competed,,,,,6.25,,,,31.25,,,,43.75,,,,105
+F,57,Anni,Koskenniemi,,FI,,77.29665432605924,183.75,competed,,,,,0,,,,36.25,,,,40,,,,107.5
+F,57,Alma,Nordin Ottosson,,SE,,100.39300850629903,228.5,competed,,,,,13.5,,,,40,,,,60,,,,115
+F,63,Taru,Riipinen,,FI,,98.47416993953381,249,competed,,,,,16.5,,,,40,,,,57.5,,,,135
+F,63,Frida,Tøllefsen,,NO,,81.32772591886884,196.25,competed,,,,,1.25,,,,27.5,,,,42.5,,,,125
+F,63,Ina,Vestin,,SE,,93.54539654959927,235,competed,,,,,15,,,,40,,,,60,,,,120
+F,70,Isabell,Adolfsen,,NO,,100.09,262.5,competed,,,,,7.5,,,,42.5,,,,62.5,,,,150
+F,70,Alexandra,Bartee,,SE,,87.67,228.5,competed,,,,,10,,,,43.5,,,,55,,,,120
+F,70,Märta,Paulsson,,SE,,108.33,281.5,competed,,,,,20.25,,,,42.5,,,,71.25,,,,147.5
+F,70,Isabella,Ratgheb,,SE,,96.79,251.25,competed,,,,,16.25,,,,40,,,,55,,,,140
+F,70+,Ida,Lundén,,SE,,86.02,230,competed,,,,,1.25,,,,31.25,,,,55,,,,142.5
+F,70+,Nelli,Rautiainen,,FI,,88.78,233.75,competed,,,,,1.25,,,,35,,,,50,,,,147.5
+F,70+,Ellen B,Åkesson,,SE,,97.87,259.25,competed,,,,,11.25,,,,37.5,,,,53,,,,157.5
