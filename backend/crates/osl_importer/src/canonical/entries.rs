@@ -23,8 +23,6 @@ pub const STATUS_REASON: &str = "StatusReason";
 pub const NATIVE_NAME: &str = "NativeName";
 pub const AGE: &str = "Age";
 
-// These columns may be omitted on input. Formatting always includes
-// IDENTITY_COLUMNS so contributors can copy a consistent base header.
 pub const OPTIONAL_COLUMNS: [&str; 10] = [
     CATEGORY_SEX,
     FIRST_NAME,
