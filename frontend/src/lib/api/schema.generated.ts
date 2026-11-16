@@ -520,6 +520,7 @@ export interface components {
       page_size?: number;
     };
     ParticipantDetail: {
+      age: number | null;
       athlete: components['schemas']['CompetitionAthlete'];
       bodyweight: string | null;
       lifts: components['schemas']['LiftDetail'][];

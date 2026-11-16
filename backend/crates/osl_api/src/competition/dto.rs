@@ -114,6 +114,8 @@ pub struct ParticipantDetail {
     #[schema(required = true)]
     pub bodyweight: Option<rust_decimal::Decimal>,
     #[schema(required = true)]
+    pub age: Option<i16>,
+    #[schema(required = true)]
     pub rank: Option<i32>,
     #[schema(required = true)]
     pub ris_score: Option<rust_decimal::Decimal>,
@@ -275,6 +277,7 @@ impl From<DbParticipantDetail> for ParticipantDetail {
             participant_id: participant.participant_id,
             athlete: participant.athlete.into(),
             bodyweight: participant.bodyweight,
+            age: participant.age,
             rank: participant.rank,
             ris_score: participant.ris_score,
             ris_source: participant.ris_source,

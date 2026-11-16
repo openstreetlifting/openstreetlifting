@@ -115,6 +115,13 @@
     competition.categories.some(({ category }) => category.weight_class !== '')
   );
 
+  // As of 16/11/2026, only DCSV has authorized me to show the age and bodyweight
+  // of competitors for all DCSV-organized competitions.
+  const AGE_FEDERATIONS = new Set(['DCSV']);
+  const BODYWEIGHT_FEDERATIONS = new Set(['DCSV']);
+  const showAge = $derived(AGE_FEDERATIONS.has(competition.federation.name));
+  const showBodyweight = $derived(BODYWEIGHT_FEDERATIONS.has(competition.federation.name));
+
   const table = new RankingsTable({
     basePath: () => `/competitions/${data.competition.slug}`,
     filters: LEADERBOARD_FILTERS,
@@ -379,6 +386,26 @@
     ]),
   ]}
 />
+
+{#snippet ageCell(participant: Participant | undefined)}
+  <td class="{TABLE_CELL} {CELL.data}">
+    {#if participant?.age == null}
+      <span class={CELL.absent}>{NO_VALUE}</span>
+    {:else}
+      {i18n.number(participant.age, 0)}
+    {/if}
+  </td>
+{/snippet}
+
+{#snippet bodyweightCell(participant: Participant | undefined)}
+  <td class="{TABLE_CELL} {CELL.data}">
+    {#if participant?.bodyweight == null}
+      <span class={CELL.absent}>{NO_VALUE}</span>
+    {:else}
+      {weights.format(participant.bodyweight, i18n.locale)}
+    {/if}
+  </td>
+{/snippet}
 
 {#snippet editLink()}
   {#if editPath}
@@ -673,6 +700,14 @@
             {#if classed}
               <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>
             {/if}
+            {#if showAge}
+              <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Age')}</th>
+            {/if}
+            {#if showBodyweight}
+              <th class="{TABLE_HEAD_CELL} text-secondary"
+                >{i18n.t('Bodyweight')} ({weights.unit})</th
+              >
+            {/if}
           {/snippet}
 
           {#snippet body(rows)}
@@ -783,6 +818,8 @@
                     >{weights.category(entry.category, i18n.locale)}</td
                   >
                 {/if}
+                {#if showAge}{@render ageCell(participant)}{/if}
+                {#if showBodyweight}{@render bodyweightCell(participant)}{/if}
               </tr>
             {/each}
 
@@ -876,6 +913,8 @@
                     >{weights.category(category.category.weight_class, i18n.locale)}</td
                   >
                 {/if}
+                {#if showAge}{@render ageCell(participant)}{/if}
+                {#if showBodyweight}{@render bodyweightCell(participant)}{/if}
               </tr>
             {/each}
           {/snippet}

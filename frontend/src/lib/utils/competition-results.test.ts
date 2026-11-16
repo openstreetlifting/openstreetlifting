@@ -35,6 +35,7 @@ const result = (overrides: Partial<Participant> = {}): Participant => ({
     gender: 'M',
   },
   bodyweight: null,
+  age: null,
   rank: 1,
   total: '400',
   ris_score: null,

@@ -318,7 +318,7 @@ impl<'a> CompetitionRepository<'a> {
 
         for category in categories {
             let participants = sqlx::query!(
-                r#"SELECT cp.participant_id, cp.athlete_id, cp.bodyweight, cp.total,
+                r#"SELECT cp.participant_id, cp.athlete_id, cp.bodyweight, cp.age, cp.total,
                         cp.status as "status: AthleteStatus", cp.status_reason, placed.rank as "rank?",
                         cp.ris_score, cp.ris_source as "ris_source: RisSource"
                  FROM competition_participants cp
@@ -401,6 +401,7 @@ impl<'a> CompetitionRepository<'a> {
                     participant_id: participant.participant_id,
                     athlete,
                     bodyweight: participant.bodyweight,
+                    age: participant.age,
                     rank: participant.rank,
                     ris_score: participant.ris_score,
                     ris_source: participant.ris_source,

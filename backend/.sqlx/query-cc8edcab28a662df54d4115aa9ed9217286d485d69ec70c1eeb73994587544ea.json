@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT cp.participant_id, cp.athlete_id, cp.bodyweight, cp.total,\n                        cp.status as \"status: AthleteStatus\", cp.status_reason, placed.rank as \"rank?\",\n                        cp.ris_score, cp.ris_source as \"ris_source: RisSource\"\n                 FROM competition_participants cp\n                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id\n                 LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n                 LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id\n                                                       AND placed.competition_id = cp.competition_id\n                 WHERE cp.competition_id = $1\n                   AND cp.weight_class_id IS NOT DISTINCT FROM $2\n                   AND cp.division_id IS NOT DISTINCT FROM $3\n                   AND COALESCE(cp.category_gender, wc.gender, a.gender) = $4\n                 ORDER BY placed.rank NULLS LAST",
+  "query": "SELECT cp.participant_id, cp.athlete_id, cp.bodyweight, cp.age, cp.total,\n                        cp.status as \"status: AthleteStatus\", cp.status_reason, placed.rank as \"rank?\",\n                        cp.ris_score, cp.ris_source as \"ris_source: RisSource\"\n                 FROM competition_participants cp\n                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id\n                 LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n                 LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id\n                                                       AND placed.competition_id = cp.competition_id\n                 WHERE cp.competition_id = $1\n                   AND cp.weight_class_id IS NOT DISTINCT FROM $2\n                   AND cp.division_id IS NOT DISTINCT FROM $3\n                   AND COALESCE(cp.category_gender, wc.gender, a.gender) = $4\n                 ORDER BY placed.rank NULLS LAST",
   "describe": {
     "columns": [
       {
@@ -38,6 +38,17 @@
       },
       {
         "ordinal": 3,
+        "name": "age",
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "age"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
         "name": "total",
         "type_info": "Numeric",
         "origin": {
@@ -48,7 +59,7 @@
         }
       },
       {
-        "ordinal": 4,
+        "ordinal": 5,
         "name": "status: AthleteStatus",
         "type_info": "Text",
         "origin": {
@@ -59,7 +70,7 @@
         }
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "status_reason",
         "type_info": "Text",
         "origin": {
@@ -70,7 +81,7 @@
         }
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "rank?",
         "type_info": "Int4",
         "origin": {
@@ -81,7 +92,7 @@
         }
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "ris_score",
         "type_info": "Numeric",
         "origin": {
@@ -92,7 +103,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "ris_source: RisSource",
         "type_info": "Varchar",
         "origin": {
@@ -116,6 +127,7 @@
       false,
       true,
       true,
+      true,
       false,
       true,
       true,
@@ -123,5 +135,5 @@
       true
     ]
   },
-  "hash": "7e29fa0a1b80a2875ccd31b4300d8a003df9626aeda948b417b6e50c92c2a1c1"
+  "hash": "cc8edcab28a662df54d4115aa9ed9217286d485d69ec70c1eeb73994587544ea"
 }
