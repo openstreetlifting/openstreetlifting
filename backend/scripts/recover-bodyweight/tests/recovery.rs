@@ -173,3 +173,15 @@ fn allows_twenty_percent_rejections() {
     assert!(output.contains("Recoverable bodyweights: 4"), "{output}");
     assert!(output.contains("rejected: 1; withheld: 0"), "{output}");
 }
+
+#[test]
+fn recovers_from_extra_precision_without_changing_published_ris() {
+    let score = "113.42859777214694";
+    let fixture = Fixture::new(&VALID.replace("113.43", score));
+    assert!(fixture.run(false).contains("Recovered bodyweights: 1"));
+    let canonical = store::read(&fixture.0).unwrap();
+    osl_importer::canonical::validator::CanonicalValidator::validate(&canonical).unwrap();
+    let athlete = &canonical.categories[0].athletes[0];
+    assert_eq!(athlete.bodyweight.unwrap().to_string(), "91.7");
+    assert_eq!(athlete.reported_ris.unwrap().to_string(), score);
+}

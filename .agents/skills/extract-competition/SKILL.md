@@ -9,7 +9,7 @@ Every written value is backed by the source or by a default stated in these file
 
 1. **Locate.** Search `backend/data/competitions` for the competition and read its files, keeping its slug. A new one goes in `<federation-slug>/<start-year>/<competition-slug>/`; the directory supplies the slug.
 2. **Read the rules.** [format.md](format.md) always; [athletes.md](athletes.md) for results; [sources.md](sources.md) for Instagram carousels, FinalRep screenshots, or third-party aggregators.
-3. **Extract** each row from the source, keeping failed attempts.
+3. **Extract** each row from the source, keeping failed attempts. When published RIS is available and bodyweight is missing, follow [bodyweight recovery](format.md#bodyweight-recovery) before validation.
 4. **Resolve identities** of every athlete the source introduces, per `athletes.md`, before writing their name or country.
 5. **Merge.** Add rows and fill empty cells; leave existing data outside the source's scope untouched. Explain any correction with its evidence. Append to `sources`, keeping earlier entries.
 6. **Validate** from `backend` until there are no errors:

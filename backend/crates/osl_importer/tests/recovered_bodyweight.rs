@@ -318,3 +318,25 @@ async fn clears_provenance_when_recovery_is_removed(pool: PgPool) {
         )
     );
 }
+
+#[test]
+fn validates_extra_precision_scores_at_two_decimal_places() {
+    for source in [
+        None,
+        Some(BodyweightSource::Reported),
+        Some(BodyweightSource::Recovered),
+    ] {
+        let mut canonical = recovered();
+        let athlete = &mut canonical.categories[0].athletes[0];
+        athlete.bodyweight_source = source;
+        athlete.reported_ris = Some(common::decimal("113.42859777214694"));
+        CanonicalValidator::validate(&canonical).unwrap();
+        assert_eq!(
+            canonical.categories[0].athletes[0].reported_ris,
+            Some(common::decimal("113.42859777214694"))
+        );
+        canonical.categories[0].athletes[0].reported_ris =
+            Some(common::decimal("113.43859777214694"));
+        assert!(CanonicalValidator::validate(&canonical).is_err());
+    }
+}

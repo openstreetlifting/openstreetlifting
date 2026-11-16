@@ -216,7 +216,7 @@ impl AthleteData {
                 )),
             };
             let computed = osl_domain::ris::compute(bodyweight, total, gender, edition);
-            if computed != reported_ris {
+            if computed != reported_ris.round_dp(2) {
                 return Err(format!(
                     "ReportedRis {reported_ris} contradicts BodyweightKg and the complete total: edition {} gives {computed}",
                     edition.year()
@@ -241,7 +241,7 @@ impl AthleteData {
         }
         let total = self.complete_total()?;
         let computed = osl_domain::ris::compute(bodyweight, total, self.gender, edition);
-        if computed != ris {
+        if computed != ris.round_dp(2) {
             return Err(format!(
                 "recovered bodyweight reproduces RIS {computed} under edition {}, but the source reports {ris}",
                 edition.year()

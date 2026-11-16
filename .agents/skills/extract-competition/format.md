@@ -47,7 +47,7 @@ Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Reporte
 | `WeightClassKg` | Category bound as `80` or `101+`, never `-80` or `+101` |
 | `FirstName`, `LastName`, `Disambiguation`, `NativeName` | See `athletes.md` |
 | `Country` | See [Country](#country) |
-| `BodyweightKg` | Measured bodyweight from the source |
+| `BodyweightKg` | Source-measured bodyweight, or an estimate with `BodyweightSource=recovered` per [bodyweight recovery](#bodyweight-recovery) |
 | `ReportedRis` | Source score, with or without bodyweight; `ReportedRisEdition` only when the formula is established |
 | `TotalKg` | Published total; `prepare` fills it only from a complete breakdown |
 | `Status` | `competed` (or empty), `disqualified`, `no_show` |
@@ -80,7 +80,7 @@ Conflicting countries for one athlete block import; resolve against the source a
 | `0` / `0x` | Success / failure with no added weight |
 | Empty | Not attempted or unknown |
 
-- Red or crossed-out attempts are failures (`x`). A bodyweight-only `0` on M, P, or D is a real attempt.
+- Red or crossed-out attempts are failures (`x`). A bodyweight-only `0` on M, P, or D is a real attempt when the federation allows it. FNSL does not allow a successful zero dip: when it indicates no valid dip, mark the athlete disqualified and leave `BestDipsKg` and `TotalKg` empty; keep any evidenced failed attempts.
 - **No-show**: a zero squat with no bodyweight and no real lifts, often zeros everywhere. `Status=no_show`, attempt cells empty, no total or positive RIS. Ask when it could be failed attempts instead.
 - **Bomb-out**: every attempt in a contested movement failed. Keep the attempts, `Status=disqualified`, leave that best and `TotalKg` empty, keep any published RIS.
 - `prepare` derives `Best*` from attempts. Write a best by hand only when the source gives bests without attempts.
@@ -88,4 +88,13 @@ Conflicting countries for one athlete block import; resolve against the source a
 
 ## Bodyweight recovery
 
-Only on request: run `backend/scripts/recover-bodyweight` with the total or full breakdown and an established RIS edition. Write `BodyweightKg` with `BodyweightSource=recovered`, keep `ReportedRis` and `ReportedRisEdition`, and call the results estimates. Preserve existing recovery evidence.
+Whenever a source reports RIS and bodyweight is missing, run the Rust `recover-bodyweight` script automatically for eligible results. Establish the source’s RIS edition from evidence or user confirmation; the competition year alone is insufficient. From `backend`, preview before writing:
+
+```sh
+cargo run -p recover-bodyweight -- --edition <source-edition> --check data/competitions/<path>
+cargo run -p recover-bodyweight -- --edition <source-edition> data/competitions/<path>
+```
+
+The script requires an All4 event, a positive published RIS, a complete total, and `Status=competed`. Preserve measured bodyweights and let the script enforce eligibility, plausible weight classes, score reproduction, and its refusal threshold. Report skipped, rejected, or withheld rows; when the edition is unknown, keep the source score and report recovery as unresolved.
+
+Keep `ReportedRis` unchanged. Save accepted estimates with `BodyweightKg`, `BodyweightSource=recovered`, and `ReportedRisEdition`; call them estimated bodyweights. Preserve existing recovery evidence and validate the competition after recovery.

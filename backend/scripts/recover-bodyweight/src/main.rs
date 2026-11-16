@@ -239,7 +239,7 @@ fn recover(canonical: &mut CanonicalFormat, edition: Edition) -> Outcome {
                 }
                 let bodyweight = solve_bodyweight(ris, total, edition.constants(gender))?;
                 validate_bodyweight(bodyweight, bounds, &label)?;
-                if osl_domain::ris::compute(bodyweight, total, gender, edition) != ris {
+                if osl_domain::ris::compute(bodyweight, total, gender, edition) != ris.round_dp(2) {
                     return Err("rounded bodyweight does not reproduce the published RIS".into());
                 }
                 Ok(bodyweight)
