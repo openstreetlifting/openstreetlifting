@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "https://docs.google.com/spreadsheets/d/1rZtk7S_iV6vBnZOoieHqRYo1j53J8XeHKMz1icmIJBI/edit",
+    "https://sthlmsthenics.se/next-gen-comp/",
+]
+
+[competition]
+name = "Fundamentals"
+start_date = "2026-03-28"
+end_date = "2026-03-29"
+city = "Eksjö"
+venue = "Forma Framtid Gym"
+country = "SE"
+status = "completed"
+
+[federation]
+name = "Streetlifting Nordic"
+abbreviation = "SLN"
+country = "SE"
