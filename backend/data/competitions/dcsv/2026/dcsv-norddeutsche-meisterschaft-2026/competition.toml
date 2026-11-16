@@ -1,7 +1,7 @@
 event = "MPDS"
 sources = [
-    "FinalRep app, /events-api/v1/events/{id}/statistics",
-    "https://final-rep.com/event-calendar/",
+    "https://www.dcs-verband.de/dm-weighted-calisthenics/",
+    "User-supplied DCSV Rankings 2022-2026: Wettkampftabelle NDM Weighted Calisthenics 2026.pdf",
 ]
 
 [competition]
@@ -15,4 +15,5 @@ status = "completed"
 
 [federation]
 name = "DCSV"
+abbreviation = "DCSV"
 country = "DE"
