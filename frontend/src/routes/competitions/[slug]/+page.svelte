@@ -115,10 +115,10 @@
     competition.categories.some(({ category }) => category.weight_class !== '')
   );
 
-  // As of 16/11/2026, only DCSV has authorized me to show the age and bodyweight
-  // of competitors for all DCSV-organized competitions.
-  const AGE_FEDERATIONS = new Set(['DCSV']);
-  const BODYWEIGHT_FEDERATIONS = new Set(['DCSV']);
+  // As of 16/11/2026, only DCSV and MACHBAR have authorized me to show the age and
+  // bodyweight of competitors for all the competitions they organize.
+  const AGE_FEDERATIONS = new Set(['DCSV', 'MACHBAR']);
+  const BODYWEIGHT_FEDERATIONS = new Set(['DCSV', 'MACHBAR']);
   const showAge = $derived(AGE_FEDERATIONS.has(competition.federation.name));
   const showBodyweight = $derived(BODYWEIGHT_FEDERATIONS.has(competition.federation.name));
 

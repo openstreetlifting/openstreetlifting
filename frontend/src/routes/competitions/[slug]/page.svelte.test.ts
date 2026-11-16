@@ -170,6 +170,7 @@ it.each([false, true])(
 
 it.each([
   ['DCSV', true],
+  ['MACHBAR', true],
   ['Organizer', false],
 ])('shows age and bodyweight columns for %s results: %s', async (federation, shown) => {
   const results = data('completed');
