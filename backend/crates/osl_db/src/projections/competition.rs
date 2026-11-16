@@ -60,6 +60,7 @@ pub struct ParticipantDetail {
     pub participant_id: Uuid,
     pub athlete: AthleteRow,
     pub bodyweight: Option<Decimal>,
+    pub age: Option<i16>,
     pub rank: Option<i32>,
     pub ris_score: Option<Decimal>,
     pub ris_source: Option<RisSource>,

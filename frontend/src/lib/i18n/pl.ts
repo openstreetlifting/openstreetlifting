@@ -242,6 +242,7 @@ export default {
   'RIS 100 benchmark': 'Poziom odniesienia RIS 100',
   Bodyweight: 'Masa ciała',
   'Bodyweight, {unit}': 'Masa ciała, {unit}',
+  Age: 'Wiek',
   'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.':
     'Najedź kursorem lub dotknij punktu, aby sprawdzić wynik. Gdy wykres jest aktywny, przeglądaj wyniki strzałkami w lewo i w prawo. Klawisze Home i End przenoszą na początek i koniec, Enter wybiera wynik, a Escape czyści wybór.',
   'Figure 1.': 'Rysunek 1.',

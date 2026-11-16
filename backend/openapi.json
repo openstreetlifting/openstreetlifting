@@ -2720,6 +2720,7 @@
           "participant_id",
           "athlete",
           "bodyweight",
+          "age",
           "rank",
           "ris_score",
           "ris_source",
@@ -2729,6 +2730,13 @@
           "total"
         ],
         "properties": {
+          "age": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
           "athlete": {
             "$ref": "#/components/schemas/CompetitionAthlete"
           },
