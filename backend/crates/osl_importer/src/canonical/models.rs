@@ -92,6 +92,8 @@ pub struct AthleteData {
     pub country: Option<CountryCode>,
     pub bodyweight: Option<Decimal>,
     pub bodyweight_source: Option<BodyweightSource>,
+    /// Age at the competition, as published by the source.
+    pub age: Option<i16>,
     pub reported_ris: Option<Decimal>,
     pub reported_ris_edition: Option<Edition>,
     pub total: Option<Decimal>,

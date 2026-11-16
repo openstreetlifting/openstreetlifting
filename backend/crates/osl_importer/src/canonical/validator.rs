@@ -9,6 +9,9 @@ use tracing::warn;
 
 const SERIES_SEPARATOR: char = '-';
 
+/// Wide enough for youth and masters entries; anything outside is a typo.
+const AGE_RANGE: std::ops::RangeInclusive<i16> = 5..=100;
+
 pub struct CanonicalValidator;
 
 impl CanonicalValidator {
@@ -300,6 +303,14 @@ impl CanonicalValidator {
                     ));
                 }
 
+                if athlete.age.is_some_and(|age| !AGE_RANGE.contains(&age)) {
+                    report.errors.push(format!(
+                        "Athlete '{label}' has an age outside {} to {}",
+                        AGE_RANGE.start(),
+                        AGE_RANGE.end()
+                    ));
+                }
+
                 if athlete.reported_ris.is_some_and(|r| r < Decimal::ZERO) {
                     report
                         .errors
@@ -518,6 +529,7 @@ mod tests {
             country: Some(CountryCode::parse("FR").unwrap()),
             bodyweight: Some(Decimal::from(80)),
             bodyweight_source: None,
+            age: None,
             reported_ris_edition: None,
             total: Some(Decimal::from(100)),
             reported_ris: None,
@@ -662,6 +674,18 @@ mod tests {
 
         let report = CanonicalValidator::validate(&canonical).unwrap();
         assert!(report.warnings.iter().any(|w| w.contains("neither")));
+    }
+
+    #[test]
+    fn rejects_implausible_ages() {
+        for age in [0, 150] {
+            let mut canonical = completed();
+            canonical.categories[0].athletes[0].age = Some(age);
+            assert!(CanonicalValidator::validate(&canonical).is_err());
+        }
+        let mut canonical = completed();
+        canonical.categories[0].athletes[0].age = Some(27);
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
     }
 
     #[test]
