@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.70.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.69.0...v0.70.0) (2026-11-15)
+
+
+### Features
+
+* **data:** import Belgian Streetlifting Championship 2026 ([#1004](https://github.com/openstreetlifting/openstreetlifting/issues/1004)) ([69319c4](https://github.com/openstreetlifting/openstreetlifting/commit/69319c46c6f8ba37b73ae7a0382603cd053e8b8e))
+* **data:** import Desafío Street Lifting 2026 ([#1005](https://github.com/openstreetlifting/openstreetlifting/issues/1005)) ([fe7773d](https://github.com/openstreetlifting/openstreetlifting/commit/fe7773d49b2abd8ec76c6ba9f4e356c852398f90))
+* **records:** filter by series and group by the organiser's weight classes ([#1002](https://github.com/openstreetlifting/openstreetlifting/issues/1002)) ([aa0522a](https://github.com/openstreetlifting/openstreetlifting/commit/aa0522ad948f1c00690da695f41f5e6a8ed02b7a))
+
+
+### Bug Fixes
+
+* **rankings:** offer only filter options ranked on the current metric ([#1001](https://github.com/openstreetlifting/openstreetlifting/issues/1001)) ([2479305](https://github.com/openstreetlifting/openstreetlifting/commit/2479305879354a20b9a1091a26986ef80a0baf2d))
+
 ## [0.69.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.68.2...v0.69.0) (2026-11-15)
 
 
