@@ -1,0 +1,34 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Gabriel,Skogberg,,SE,,0,240,competed,,,,,,,,,35,,,,65,,,,140
+M,73,Anthony,Akiki,,SE,,56.48,262.5,competed,,,,,0,,,,45,,,,85,,,,132.5
+M,73,William,Famili,,SE,,69.63,318.75,competed,,,,,15,,,,60,,,,106.25,,,,137.5
+M,73,Ludwig,Horvath,,SE,,78,362.5,competed,,,,,15,,,,72.5,,,,100,,,,175
+M,73,Georgijs,Markovs,,FI,,65.89,295,competed,,,,,15,,,,75,,,,85,,,,120
+M,73,Nikita,Petrov,,SE,,71.99,333.75,competed,,,,,12.5,,,,53.75,,,,92.5,,,,175
+M,80,Oscar,Davis,,SE,,54.82,260,competed,,,,,5,,,,42.5,,,,75,,,,137.5
+M,80,Jonathan,Fjällrud,,SE,,66.32,327.5,competed,,,,,5,,,,52.5,,,,90,,,,180
+M,87,Nikola,Celic,,SE,,73.07,380,competed,,,,,12.5,,,,75,,,,120,,,,172.5
+M,87,Sebastian,Helle Rokås,,NO,,76.1,395,competed,,,,,15,,,,70,,,,110,,,,200
+M,87,Kristian,Karlsson,,SE,,56.06,292.5,competed,,,,,2.5,,,,75,,,,90,,,,125
+M,101+,Sebastian,Brännström,,SE,,0,,disqualified,No successful pull-up,,,,,,,,,,,,105,,,,230
+M,101+,Vilmer,Kastevik,,SE,,0,,disqualified,No successful pull-up,,,,,,,,,,,,132.5,,,,265
+F,52,Isabelle,Bensryd,,SE,,69.01,151.25,competed,,,,,1.25,,,,20,,,,25,,,,105
+F,52,Olivia,Bjurling,,SE,,87.81,195,competed,,,,,5,,,,31.25,,,,43.75,,,,115
+F,52,Lexie,Frösslund,,SE,,0,72.5,competed,,,,,,,,,15,,,,7.5,,,,50
+F,52,Mai,Knutsvik,,NO,,85.29,177.5,competed,,,,,1.25,,,,31.25,,,,42.5,,,,102.5
+F,57,Alma,Nordin Ottosson,,SE,,88.59,205,competed,,,,,5,,,,35,,,,55,,,,110
+F,57,Gaia,Olivo,,SE,,0,,disqualified,No successful dip,,,,,,,,15,,,,,,,,67.5
+F,57,Sara,Olsson,,SE,,71.3,160,competed,,,,,10,,,,27.5,,,,37.5,,,,85
+F,57,Hanna,Sahlström,,NO,,0,155,competed,,,,,,,,,20,,,,35,,,,100
+F,57,Kaia,Svensen,,NO,,0,142.5,competed,,,,,,,,,22.5,,,,40,,,,80
+F,57,Ingrid,Wennerholm,,SE,,0,143.75,competed,,,,,,,,,20,,,,21.25,,,,102.5
+F,63,Sara,Brantvall,,SE,,0,121.25,competed,,,,,,,,,13.75,,,,27.5,,,,80
+F,63,Madelene,Edin,,SE,,0,145,competed,,,,,,,,,20,,,,30,,,,95
+F,70,Ellen,Källgren,,SE,,0,160,competed,,,,,,,,,25,,,,35,,,,100
+F,70,Louise,Petersson,,SE,,0,100,competed,,,,,,,,,10,,,,25,,,,65
+F,70,Nelli,Rautiainen,,FI,,92.62,240,competed,,,,,5,,,,40,,,,55,,,,140
+F,70,Majda,Rekanovic,,SE,,0,160,competed,,,,,,,,,22.5,,,,42.5,,,,95
+F,70+,Selma,Anaya,,SE,,0,190,competed,,,,,,,,,10,,,,30,,,,150
+F,70+,Ellinor,Svensson,,SE,,0,257.5,competed,,,,,,,,,17.5,,,,37.5,,,,202.5
+F,70+,Saga,Thyrell,,SE,,0,203.75,competed,,,,,,,,,23.75,,,,32.5,,,,147.5
+F,70+,Laura,Wallberg,,SE,,0,111.25,competed,,,,,,,,,7.5,,,,6.25,,,,97.5
