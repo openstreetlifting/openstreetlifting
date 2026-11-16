@@ -136,7 +136,7 @@ outside the event. Unknown or misspelled headers are rejected.
 | `BodyweightSource`   | `reported` (default when bodyweight is supplied) or `recovered`.                 |
 | `ReportedRis`        | The source's published RIS score, whether or not bodyweight is known.            |
 | `ReportedRisEdition` | The source's formula year, when established.                                     |
-| `Age`                | Optional. The athlete's age at the competition, if the source gives it.          |
+| `Age`                | Optional. The athlete's age at the competition, if known.                        |
 | `TotalKg`            | Overall total from the source, or filled by `prepare` from a complete breakdown. |
 | `Status`             | `competed`, `disqualified` or `no_show`. Empty means `competed`.                 |
 | `StatusReason`       | A short explanation for `disqualified` or `no_show`. Leave empty for `competed`. |
