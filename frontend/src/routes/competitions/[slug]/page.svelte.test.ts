@@ -200,9 +200,11 @@ it.each([
   render(CompetitionPage, { data: results });
   await expect.element(page.getByRole('link', { name: 'Ada Lovelace' })).toBeVisible();
   const text = (selector: string) =>
-    [...document.querySelectorAll(selector)].map((element) => element.textContent?.trim());
+    [...document.querySelectorAll(selector)].map((element) =>
+      element.textContent?.replace(/\s+/g, ' ').trim()
+    );
   expect(text('th').includes('Age')).toBe(shown);
-  expect(text('th').includes('Bodyweight (kg)')).toBe(shown);
+  expect(text('th').includes('Bodyweight kg')).toBe(shown);
   expect(text('td').includes('27')).toBe(shown);
   expect(text('td').includes('79.3')).toBe(shown);
 });
