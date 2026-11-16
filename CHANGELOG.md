@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.73.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.72.0...v0.73.0) (2026-11-16)
+
+
+### Features
+
+* **competitions:** show athlete age and bodyweight for MACHBAR results ([#1016](https://github.com/openstreetlifting/openstreetlifting/issues/1016)) ([01dc50b](https://github.com/openstreetlifting/openstreetlifting/commit/01dc50b84a536c5d333f07e935e126e61de4bf7b))
+
 ## [0.72.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.71.0...v0.72.0) (2026-11-16)
 
 
