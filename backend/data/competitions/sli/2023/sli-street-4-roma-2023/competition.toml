@@ -1,0 +1,19 @@
+event = "MPDS"
+sources = [
+    "https://streetlifting-italia.it/results/2023/s4-roma-uomini-2023.pdf",
+    "https://streetlifting-italia.it/results/2023/s4-roma-donne-2023.pdf",
+    "https://streetlifting-italia.it/gare-2023",
+]
+
+[competition]
+name = "Street 4 Roma"
+start_date = "2023-11-11"
+end_date = "2023-11-12"
+city = "Roma"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
