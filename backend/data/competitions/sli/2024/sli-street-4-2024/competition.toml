@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = [
+    "https://streetlifting-italia.it/results/2024/street4-dicembre-2024.pdf",
+    "https://streetlifting-italia.it/gare-2024",
+]
+
+[competition]
+name = "Street 4"
+start_date = "2024-12-20"
+end_date = "2024-12-22"
+city = "Monza"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
