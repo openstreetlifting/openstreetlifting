@@ -1,0 +1,19 @@
+event = "PDS"
+sources = [
+    "https://streetlifting-italia.it/__l5e/assets-v1/dc9ed996-ca42-4715-a797-00a93f7d5da9/campionato-italiano-streetlifting-2023-uomini.pdf",
+    "https://streetlifting-italia.it/__l5e/assets-v1/dcb34c4f-3755-4228-95ae-3c03dc08bb84/campionato-italiano-streetlifting-2023-donne.pdf",
+    "https://streetlifting-italia.it/gare-2023",
+]
+
+[competition]
+name = "Campionato Italiano Streetlifting"
+start_date = "2023-02-11"
+end_date = "2023-02-12"
+city = "Roma"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
