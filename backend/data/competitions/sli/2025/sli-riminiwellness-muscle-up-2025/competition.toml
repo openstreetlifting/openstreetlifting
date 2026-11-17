@@ -1,0 +1,17 @@
+event = "M"
+sources = [
+    "https://streetlifting-italia.it/results/2025/rw25-muscle-up.pdf",
+    "https://streetlifting-italia.it/gare-2025",
+]
+
+[competition]
+name = "RiminiWellness Muscle-Up"
+start_date = "2025-05-30"
+city = "Rimini"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
