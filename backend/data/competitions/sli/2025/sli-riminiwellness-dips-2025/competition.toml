@@ -1,0 +1,17 @@
+event = "D"
+sources = [
+    "https://streetlifting-italia.it/results/2025/rw25-dip.pdf",
+    "https://streetlifting-italia.it/gare-2025",
+]
+
+[competition]
+name = "RiminiWellness Dips"
+start_date = "2025-05-31"
+city = "Rimini"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
