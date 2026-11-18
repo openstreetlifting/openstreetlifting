@@ -1,0 +1,19 @@
+event = "PD"
+sources = [
+    "https://streetlifting-italia.it/results/2023/pp-sett-uomini-2023.pdf",
+    "https://streetlifting-italia.it/results/2023/pp-sett-donne-2023.pdf",
+    "https://streetlifting-italia.it/gare-2023",
+]
+
+[competition]
+name = "Push & Pull"
+start_date = "2023-09-23"
+end_date = "2023-09-24"
+city = "Monza"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
