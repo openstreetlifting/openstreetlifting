@@ -3,11 +3,14 @@
   import type { Snippet } from 'svelte';
   import type { ResolvedPathname } from '$app/types';
   import Panel from './panel.svelte';
+  import RecordMark from './record-mark.svelte';
   import { TEXT } from '#lib/constants/typography.js';
+  import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
 
   let {
     heading,
     meta,
+    record,
     href,
     background,
     flagBackground = false,
@@ -16,6 +19,7 @@
   }: {
     heading: string;
     meta?: string;
+    record?: RecordMarkValue | null;
     href?: ResolvedPathname;
     background?: Snippet;
     flagBackground?: boolean;
@@ -31,16 +35,31 @@
   {#if background}<div class="ranking-art" class:ranking-flag={flagBackground} aria-hidden="true">
       {@render background()}
     </div>{/if}
-  <div class="relative">
-    <div class="flex items-baseline justify-between gap-3">
-      <Text as="h3" variant="cardLabel">{heading}</Text>
-      {#if meta}<span class="{TEXT.fieldLabel} hidden shrink-0 tabular-nums lg:inline">{meta}</span
-        >{/if}
-    </div>
-    <div class="mt-2 flex min-h-8 flex-wrap items-baseline gap-x-2 gap-y-1">
+  <div class="relative grid grid-cols-[minmax(0,1fr)_auto] gap-x-2">
+    <Text
+      as="h3"
+      variant="cardLabel"
+      class="col-start-1 row-start-1 flex min-h-6 items-center self-center lg:block lg:min-h-0 {record
+        ? ''
+        : 'col-span-2'}">{heading}</Text
+    >
+    {#if meta}<span
+        class="{TEXT.fieldLabel} col-span-2 col-start-1 row-start-1 hidden self-center justify-self-end tabular-nums lg:inline"
+        >{meta}</span
+      >{/if}
+    {#if record}<span
+        class="col-start-2 row-start-1 flex items-center justify-end lg:row-start-2 lg:mt-2"
+      >
+        <RecordMark badge mark={record} />
+      </span>{/if}
+    <div
+      class="col-span-2 col-start-1 row-start-2 mt-2 flex min-h-8 flex-wrap items-baseline gap-x-2 gap-y-1 {record
+        ? 'lg:col-span-1'
+        : ''}"
+    >
       {@render children()}
     </div>
-    {#if footer}<div class="mt-2 {TEXT.caption}">{@render footer()}</div>{/if}
+    {#if footer}<div class="col-span-2 mt-2 {TEXT.caption}">{@render footer()}</div>{/if}
   </div>
 </Panel>
 

@@ -28,7 +28,7 @@
   import type { PageData } from './$types';
 
   const FILTER = 'w-full min-w-0 sm:w-56';
-  const MOVEMENTS: RecordMovement[] = ['muscleup', 'pullup', 'dips', 'squat'];
+  const MOVEMENTS: RecordMovement[] = ['total', 'muscleup', 'pullup', 'dips', 'squat'];
   const GENDERS: { value: RecordGender; label: 'Women' | 'Men' }[] = [
     { value: 'M', label: 'Men' },
     { value: 'F', label: 'Women' },
@@ -80,7 +80,7 @@
 
 <Seo
   title="OpenStreetlifting records"
-  description="The heaviest muscle-up, pull-up, dips and squat in each weight class, from every competition in the OpenStreetlifting archive."
+  description="The heaviest total, muscle-up, pull-up, dips and squat in each weight class, from every competition in the OpenStreetlifting archive."
   canonical={absolute('/records')}
 />
 
@@ -187,7 +187,11 @@
     <div class="grid gap-section xl:grid-cols-2">
       {#each sections as section (section.movement)}
         {#if section.groups.length}
-          <section class="min-w-0" aria-labelledby="records-{section.movement}">
+          {@const fullWidth = section.movement === 'total'}
+          <section
+            class="min-w-0 {fullWidth ? 'xl:col-span-2' : ''}"
+            aria-labelledby="records-{section.movement}"
+          >
             <Text as="h2" id="records-{section.movement}" variant="heading" class="mb-3 text-ink">
               {i18n.movement(section.movement)}
             </Text>
@@ -234,7 +238,9 @@
                             href={i18n.href(
                               resolve('/athletes/[slug]', { slug: entry.athlete.slug })
                             )}
-                            class="flex max-w-[11rem] items-center gap-2 hover:text-secondary sm:max-w-[16rem] xl:max-w-[12rem] 2xl:max-w-[16rem]"
+                            class="flex max-w-[11rem] items-center gap-2 hover:text-secondary sm:max-w-[16rem] {fullWidth
+                              ? 'xl:max-w-none'
+                              : 'xl:max-w-[12rem] 2xl:max-w-[16rem]'}"
                           >
                             {#if entry.athlete.country}
                               <Flag
@@ -259,8 +265,9 @@
                             href={i18n.href(
                               resolve('/competitions/[slug]', { slug: entry.competition.slug })
                             )}
-                            class="block max-w-[9rem] truncate sm:max-w-[14rem] xl:max-w-[9rem] 2xl:max-w-[12rem] underline hover:text-ink"
-                            >{entry.competition.name}</a
+                            class="block max-w-[9rem] truncate underline hover:text-ink sm:max-w-[14rem] {fullWidth
+                              ? 'xl:max-w-none'
+                              : 'xl:max-w-[9rem] 2xl:max-w-[12rem]'}">{entry.competition.name}</a
                           >
                         </td>
                         <td class="{TABLE_CELL} {CELL.data} {FIGURE}"

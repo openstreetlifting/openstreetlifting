@@ -78,6 +78,8 @@ impl AppState {
             crate::athlete::dto::AthleteCompetitionSummary,
             crate::athlete::dto::AthleteLift,
             crate::athlete::dto::PersonalRecord,
+            crate::athlete::dto::BestTotal,
+            crate::athlete::dto::BestRis,
             crate::shared::dto::PaginationMeta,
             crate::shared::dto::PaginationParams,
             crate::shared::query::Include,

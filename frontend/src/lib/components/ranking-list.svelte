@@ -91,7 +91,10 @@
           </span>
         </td>
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-          >{weights.format(entry.total, i18n.locale)}</td
+          >{weights.format(entry.total, i18n.locale)}<RecordMark
+            worldOnly
+            mark={entry.total_record}
+          /></td
         >
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
           <RisScore value={entry.ris} source={entry.ris_source} />

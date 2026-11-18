@@ -38,6 +38,7 @@ const result = (overrides: Partial<Participant> = {}): Participant => ({
   age: null,
   rank: 1,
   total: '400',
+  total_record: null,
   ris_score: null,
   ris_source: null,
   status: 'competed',

@@ -3,20 +3,33 @@ use sqlx::{Postgres, QueryBuilder, Transaction};
 use crate::error::Result;
 
 const RESULTS: &str = r"
-    WITH results AS (
-        SELECT l.movement_name, a.gender, cp.weight_class_id, wc.slug AS weight_class_slug,
-               cp.athlete_id, cp.competition_id, cp.participant_id,
-               l.max_weight AS weight, c.start_date AS date,
+    WITH entrants AS (
+        SELECT a.gender, cp.weight_class_id, wc.slug AS weight_class_slug,
+               cp.athlete_id, cp.competition_id, cp.participant_id, cp.total,
+               c.start_date AS date, c.event_code,
                a.last_name, a.first_name
-        FROM lifts l
-        JOIN competition_participants cp USING (participant_id)
+        FROM competition_participants cp
         JOIN athletes a USING (athlete_id)
         JOIN competitions c ON c.competition_id = cp.competition_id
         LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
         WHERE cp.status = 'competed'
-          AND l.max_weight IS NOT NULL
           AND cp.category_gender IS NULL
           AND (wc.gender IS NULL OR wc.gender = a.gender)
+    ),
+    results AS (
+        SELECT l.movement_name, e.gender, e.weight_class_id, e.weight_class_slug,
+               e.athlete_id, e.competition_id, e.participant_id,
+               l.max_weight AS weight, e.date, e.last_name, e.first_name
+        FROM lifts l
+        JOIN entrants e USING (participant_id)
+        WHERE l.max_weight IS NOT NULL
+        UNION ALL
+        SELECT 'Total', e.gender, e.weight_class_id, e.weight_class_slug,
+               e.athlete_id, e.competition_id, e.participant_id,
+               e.total, e.date, e.last_name, e.first_name
+        FROM entrants e
+        WHERE e.total IS NOT NULL
+          AND e.event_code = 'MPDS'
     )
 ";
 

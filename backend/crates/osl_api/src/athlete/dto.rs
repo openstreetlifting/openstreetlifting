@@ -1,7 +1,8 @@
 use chrono::NaiveDateTime;
 use osl_db::params::RankingMovement;
 use osl_db::projections::athlete::{
-    AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
+    AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, BestRisRow,
+    BestTotalRow, PersonalRecordRow,
 };
 use osl_db::projections::ranking::{AthleteMetricStandingRow, AthleteNeighborRow};
 use osl_db::rows::athlete::AthleteRow;
@@ -35,6 +36,10 @@ pub struct AthleteResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub personal_records: Option<Vec<PersonalRecord>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub best_total: Option<Option<BestTotal>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub best_ris: Option<Option<BestRis>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub total_competitions: Option<i64>,
@@ -293,6 +298,9 @@ pub struct AthleteCompetitionSummary {
     pub rank: Option<i32>,
     #[schema(required = true)]
     pub total: Option<rust_decimal::Decimal>,
+    /// `WR` or `NR` when this total is the current world or national record for its weight class.
+    #[schema(required = true)]
+    pub total_record: Option<RecordMark>,
     #[schema(required = true)]
     pub ris_score: Option<rust_decimal::Decimal>,
     #[schema(required = true)]
@@ -316,6 +324,28 @@ pub struct PersonalRecord {
     pub date: Option<chrono::NaiveDate>,
 }
 
+/// The athlete's highest total at a full four-lift competition.
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct BestTotal {
+    pub total: rust_decimal::Decimal,
+    /// `WR` or `NR` when this total is the current world or national record for its weight class.
+    #[schema(required = true)]
+    pub record: Option<RecordMark>,
+    pub competition_name: String,
+    pub competition_slug: String,
+    pub date: chrono::NaiveDate,
+}
+
+/// The athlete's highest RIS at a full four-lift competition.
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct BestRis {
+    pub ris_score: rust_decimal::Decimal,
+    pub ris_source: RisSource,
+    pub competition_name: String,
+    pub competition_slug: String,
+    pub date: chrono::NaiveDate,
+}
+
 impl From<AthleteRow> for AthleteResponse {
     fn from(athlete: AthleteRow) -> Self {
         Self {
@@ -331,6 +361,8 @@ impl From<AthleteRow> for AthleteResponse {
             created_at: athlete.created_at,
             competitions: None,
             personal_records: None,
+            best_total: None,
+            best_ris: None,
             total_competitions: None,
             standing: None,
             lift_balance: None,
@@ -345,7 +377,7 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
             competition_id: row.competition_id,
             competition_name: row.competition_name,
             competition_slug: row.competition_slug,
-            competition_date: row.competition_date,
+            competition_date: Some(row.competition_date),
             category_name: osl_domain::category_label(
                 None,
                 row.category_gender,
@@ -355,6 +387,7 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
             division: row.division,
             rank: row.rank,
             total: row.total,
+            total_record: row.total_record,
             ris_score: row.ris_score,
             ris_source: row.ris_source,
             status: row.status,
@@ -388,12 +421,38 @@ impl From<PersonalRecordRow> for PersonalRecord {
     }
 }
 
+impl From<BestTotalRow> for BestTotal {
+    fn from(row: BestTotalRow) -> Self {
+        Self {
+            total: row.total,
+            record: row.record,
+            competition_name: row.competition_name,
+            competition_slug: row.competition_slug,
+            date: row.date,
+        }
+    }
+}
+
+impl From<BestRisRow> for BestRis {
+    fn from(row: BestRisRow) -> Self {
+        Self {
+            ris_score: row.ris_score,
+            ris_source: row.ris_source,
+            competition_name: row.competition_name,
+            competition_slug: row.competition_slug,
+            date: row.date,
+        }
+    }
+}
+
 impl AthleteResponse {
     pub fn from_detail(detail: AthleteDetail, include: &Include) -> Self {
         let AthleteDetail {
             athlete,
             competitions,
             personal_records,
+            best_total,
+            best_ris,
             total_competitions,
             instagram_handle,
         } = detail;
@@ -407,6 +466,8 @@ impl AthleteResponse {
         if include.has("records") {
             response.personal_records =
                 Some(personal_records.into_iter().map(Into::into).collect());
+            response.best_total = Some(best_total.map(Into::into));
+            response.best_ris = Some(best_ris.map(Into::into));
         }
         response
     }

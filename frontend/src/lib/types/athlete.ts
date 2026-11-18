@@ -9,6 +9,8 @@ export type AthleteDetail = AthleteSummary &
       AthleteSummary,
       | 'competitions'
       | 'personal_records'
+      | 'best_total'
+      | 'best_ris'
       | 'total_competitions'
       | 'standing'
       | 'lift_balance'

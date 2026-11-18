@@ -127,7 +127,7 @@ impl<'a> RecordsRepository<'a> {
         query.push_bind(filter.limit);
         query.push(
             r"
-            ORDER BY array_position(ARRAY['Muscle-up', 'Pull-up', 'Dips', 'Squat']::VARCHAR[], movement_name),
+            ORDER BY array_position(ARRAY['Total', 'Muscle-up', 'Pull-up', 'Dips', 'Squat']::VARCHAR[], movement_name),
                      gender DESC, weight_class IS NOT NULL, max_kg NULLS LAST,
                      CASE WHEN max_kg IS NULL THEN min_kg END, rank
             ",
@@ -205,7 +205,7 @@ impl<'a> RecordsRepository<'a> {
     pub async fn marks(
         &self,
         participant_ids: &[uuid::Uuid],
-    ) -> Result<Vec<(uuid::Uuid, osl_domain::Movement, osl_domain::RecordMark)>> {
+    ) -> Result<Vec<(uuid::Uuid, osl_domain::RecordLift, osl_domain::RecordMark)>> {
         Ok(sqlx::query_as(
             "SELECT participant_id, movement_name, mark FROM record_marks WHERE participant_id = ANY($1)",
         )

@@ -1108,6 +1108,7 @@
           "division",
           "rank",
           "total",
+          "total_record",
           "ris_score",
           "ris_source",
           "status",
@@ -1183,6 +1184,17 @@
             "type": [
               "string",
               "null"
+            ]
+          },
+          "total_record": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordMark",
+                "description": "`WR` or `NR` when this total is the current world or national record for its weight class."
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         }
@@ -1335,6 +1347,26 @@
           "athlete_id": {
             "type": "string",
             "format": "uuid"
+          },
+          "best_ris": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/BestRis"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "best_total": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/BestTotal"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "competitions": {
             "type": "array",
@@ -1521,6 +1553,72 @@
             "type": "boolean"
           },
           "weight": {
+            "type": "string"
+          }
+        }
+      },
+      "BestRis": {
+        "type": "object",
+        "description": "The athlete's highest RIS at a full four-lift competition.",
+        "required": [
+          "ris_score",
+          "ris_source",
+          "competition_name",
+          "competition_slug",
+          "date"
+        ],
+        "properties": {
+          "competition_name": {
+            "type": "string"
+          },
+          "competition_slug": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "ris_score": {
+            "type": "string"
+          },
+          "ris_source": {
+            "$ref": "#/components/schemas/RisSource"
+          }
+        }
+      },
+      "BestTotal": {
+        "type": "object",
+        "description": "The athlete's highest total at a full four-lift competition.",
+        "required": [
+          "total",
+          "record",
+          "competition_name",
+          "competition_slug",
+          "date"
+        ],
+        "properties": {
+          "competition_name": {
+            "type": "string"
+          },
+          "competition_slug": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "record": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordMark",
+                "description": "`WR` or `NR` when this total is the current world or national record for its weight class."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "total": {
             "type": "string"
           }
         }
@@ -1974,6 +2072,7 @@
           "ris",
           "ris_source",
           "total",
+          "total_record",
           "muscleup",
           "pullup",
           "dips",
@@ -2074,6 +2173,17 @@
               "null"
             ],
             "format": "double"
+          },
+          "total_record": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordMark",
+                "description": "`WR` or `NR` when this total is the current world or national record for its weight class."
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         }
       },
@@ -2305,6 +2415,26 @@
                 "athlete_id": {
                   "type": "string",
                   "format": "uuid"
+                },
+                "best_ris": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/BestRis"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "best_total": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/BestTotal"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "competitions": {
                   "type": "array",
@@ -2560,6 +2690,7 @@
                 "ris",
                 "ris_source",
                 "total",
+                "total_record",
                 "muscleup",
                 "pullup",
                 "dips",
@@ -2660,6 +2791,17 @@
                     "null"
                   ],
                   "format": "double"
+                },
+                "total_record": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RecordMark",
+                      "description": "`WR` or `NR` when this total is the current world or national record for its weight class."
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               }
             }
@@ -2727,7 +2869,8 @@
           "status",
           "status_reason",
           "lifts",
-          "total"
+          "total",
+          "total_record"
         ],
         "properties": {
           "age": {
@@ -2792,6 +2935,17 @@
             "type": [
               "string",
               "null"
+            ]
+          },
+          "total_record": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordMark",
+                "description": "`WR` or `NR` when this total is the current world or national record for its weight class."
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         }
@@ -3149,7 +3303,8 @@
           "muscleup",
           "pullup",
           "dips",
-          "squat"
+          "squat",
+          "total"
         ]
       },
       "RecordSeries": {

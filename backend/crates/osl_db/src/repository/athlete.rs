@@ -1,4 +1,4 @@
-use osl_domain::{AthleteStatus, Gender, Movement, RisSource};
+use osl_domain::{AthleteStatus, Gender, Movement, RecordMark, RisSource, is_full_event};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
 use std::collections::HashSet;
@@ -7,9 +7,18 @@ use uuid::Uuid;
 use crate::error::{Result, StorageError};
 use crate::params::Page;
 use crate::projections::athlete::{
-    AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, PersonalRecordRow,
+    AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, BestRisRow,
+    BestTotalRow, PersonalRecordRow,
 };
 use crate::rows::athlete::AthleteRow;
+
+fn full_meets(
+    competitions: &[AthleteCompetitionRow],
+) -> impl Iterator<Item = &AthleteCompetitionRow> {
+    competitions.iter().filter(|competition| {
+        competition.status.competed() && is_full_event(competition.event_code.as_deref())
+    })
+}
 
 pub struct AthleteRepository<'a> {
     pool: &'a PgPool,
@@ -211,6 +220,7 @@ impl<'a> AthleteRepository<'a> {
                 wc.max_kg as weight_class_max,
                 placed.rank as "rank?",
                 cp.total as "total: Decimal",
+                total_mark.mark as "total_record?: RecordMark",
                 cp.ris_score,
                 cp.ris_source as "ris_source: RisSource",
                 cp.status as "status: AthleteStatus",
@@ -249,12 +259,14 @@ impl<'a> AthleteRepository<'a> {
             LEFT JOIN lifts l ON l.participant_id = cp.participant_id
             LEFT JOIN record_marks rm
                 ON rm.participant_id = l.participant_id AND rm.movement_name = l.movement_name
+            LEFT JOIN record_marks total_mark
+                ON total_mark.participant_id = cp.participant_id AND total_mark.movement_name = 'Total'
             LEFT JOIN movements m ON m.name = l.movement_name
             LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id
             WHERE cp.athlete_id = $1
             GROUP BY c.competition_id, c.name, c.slug, c.start_date, c.event_code, d.name,
                      COALESCE(cp.category_gender, wc.gender, a.gender), wc.min_kg, wc.max_kg, placed.rank,
-                     cp.ris_score, cp.ris_source, cp.status, cp.total
+                     cp.ris_score, cp.ris_source, cp.status, cp.total, total_mark.mark
             ORDER BY c.start_date DESC NULLS LAST
             "#,
             athlete.athlete_id
@@ -268,13 +280,14 @@ impl<'a> AthleteRepository<'a> {
                 competition_id: row.competition_id,
                 competition_name: row.competition_name,
                 competition_slug: row.competition_slug,
-                competition_date: Some(row.competition_date),
+                competition_date: row.competition_date,
                 division: row.division,
                 category_gender: row.category_gender,
                 weight_class_min: row.weight_class_min,
                 weight_class_max: row.weight_class_max,
                 rank: row.rank,
                 total: row.total,
+                total_record: row.total_record,
                 ris_score: row.ris_score,
                 ris_source: row.ris_source,
                 status: row.status,
@@ -305,10 +318,39 @@ impl<'a> AthleteRepository<'a> {
                         record,
                         competition_name: competition.competition_name.clone(),
                         competition_slug: competition.competition_slug.clone(),
-                        date: competition.competition_date,
+                        date: Some(competition.competition_date),
                     })
             })
             .collect();
+
+        let best_total = full_meets(&competitions)
+            .filter_map(|competition| Some((competition, competition.total?)))
+            .max_by_key(|(competition, total)| {
+                (
+                    *total,
+                    competition.total_record.is_some(),
+                    competition.competition_date,
+                )
+            })
+            .map(|(competition, total)| BestTotalRow {
+                total,
+                record: competition.total_record,
+                competition_name: competition.competition_name.clone(),
+                competition_slug: competition.competition_slug.clone(),
+                date: competition.competition_date,
+            });
+        let best_ris = full_meets(&competitions)
+            .filter_map(|competition| {
+                Some((competition, competition.ris_score?, competition.ris_source?))
+            })
+            .max_by_key(|(competition, ris_score, _)| (*ris_score, competition.competition_date))
+            .map(|(competition, ris_score, ris_source)| BestRisRow {
+                ris_score,
+                ris_source,
+                competition_name: competition.competition_name.clone(),
+                competition_slug: competition.competition_slug.clone(),
+                date: competition.competition_date,
+            });
 
         // Entering multiple divisions at one meet still counts as one competition.
         #[expect(clippy::cast_possible_wrap)]
@@ -335,6 +377,8 @@ impl<'a> AthleteRepository<'a> {
             athlete,
             competitions,
             personal_records,
+            best_total,
+            best_ris,
             total_competitions,
             instagram_handle,
         })

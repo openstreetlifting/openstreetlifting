@@ -12,6 +12,7 @@ function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteComp
     category_name: 'Women -63 kg',
     rank: 1,
     total: '300',
+    total_record: null,
     ris_score: '100',
     ris_source: 'computed',
     status: 'competed',

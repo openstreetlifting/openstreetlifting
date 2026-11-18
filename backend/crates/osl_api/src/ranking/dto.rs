@@ -169,6 +169,9 @@ pub struct GlobalRankingEntry {
     pub ris_source: Option<RisSource>,
     #[schema(required = true)]
     pub total: Option<f64>,
+    /// `WR` or `NR` when this total is the current world or national record for its weight class.
+    #[schema(required = true)]
+    pub total_record: Option<RecordMark>,
     #[schema(required = true)]
     pub muscleup: Option<f64>,
     #[schema(required = true)]
@@ -226,7 +229,11 @@ pub struct FederationInfo {
 
 impl GlobalRankingEntry {
     #[must_use]
-    pub fn new(row: RankingRow, records: Vec<LiftRecord>) -> Self {
+    pub fn new(
+        row: RankingRow,
+        records: Vec<LiftRecord>,
+        total_record: Option<RecordMark>,
+    ) -> Self {
         Self {
             participant_id: row.participant_id,
             rank: row.rank,
@@ -245,6 +252,7 @@ impl GlobalRankingEntry {
             ris: row.ris_score.map(decimal_to_f64),
             ris_source: row.ris_source,
             total: row.total.map(decimal_to_f64),
+            total_record,
             muscleup: row.muscleup.map(decimal_to_f64),
             pullup: row.pullup.map(decimal_to_f64),
             dips: row.dips.map(decimal_to_f64),

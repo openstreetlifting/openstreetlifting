@@ -131,8 +131,11 @@
     latestCategory?.match(/([+-]\d+(?:\.\d+)?)\s*(?:kg)?$/i)?.[1] ?? null
   );
 
-  const CARD_GRID = 'grid max-w-records grid-cols-2 gap-tile md:grid-cols-4';
+  const CARD_GRID = 'grid grid-cols-2 gap-tile md:grid-cols-4';
   const RANKING_CARD_GRID = 'grid grid-cols-1 gap-tile sm:grid-cols-2';
+  const headlineSpan = $derived(
+    athlete.best_total && athlete.best_ris ? 'md:col-span-2' : 'col-span-2 md:col-span-4'
+  );
 
   const filters = $derived(athleteFilters(page.url.searchParams));
   const selectedMetric = $derived(filters.ranking);
@@ -340,29 +343,67 @@
     </div>
   {/if}
 
-  {#if athlete.personal_records.length > 0}
+  {#snippet competitionFooter(name: string, date: string | null)}
+    <span
+      class="mt-1 flex items-center gap-1 border-t border-stroke pt-3 text-secondary transition-colors group-hover:text-ink"
+    >
+      <span class="truncate" title={name}>{name}</span>
+      <ChevronIcon class="size-3 shrink-0 -rotate-90" />
+    </span>
+    {#if date}<span class="{TEXT.fieldLabel} mt-1 block lg:hidden"
+        >{formatDate(date, i18n.locale)}</span
+      >{/if}
+  {/snippet}
+
+  {#if athlete.personal_records.length > 0 || athlete.best_total || athlete.best_ris}
     <div class="mb-section">
       <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Personal records')}</Text>
       <div class={CARD_GRID}>
+        {#if athlete.best_total}
+          {@const best = athlete.best_total}
+          <div class={headlineSpan}>
+            <MetricCard
+              heading={i18n.t('Best total')}
+              meta={formatDate(best.date, i18n.locale)}
+              record={best.record}
+              href={i18n.href(resolve(`competitions/${best.competition_slug}`))}
+            >
+              <span class={TEXT.cardFigure}>{weights.format(best.total, i18n.locale)}</span>
+              <span class="font-mono text-meta text-secondary">{weights.unit}</span>
+              {#snippet footer()}
+                {@render competitionFooter(best.competition_name, best.date)}
+              {/snippet}
+            </MetricCard>
+          </div>
+        {/if}
+        {#if athlete.best_ris}
+          {@const best = athlete.best_ris}
+          <div class={headlineSpan}>
+            <MetricCard
+              heading={i18n.t('Best RIS')}
+              meta={formatDate(best.date, i18n.locale)}
+              href={i18n.href(resolve(`competitions/${best.competition_slug}`))}
+            >
+              <span class={TEXT.cardFigure}
+                ><RisScore value={best.ris_score} source={best.ris_source} /></span
+              >
+              {#snippet footer()}
+                {@render competitionFooter(best.competition_name, best.date)}
+              {/snippet}
+            </MetricCard>
+          </div>
+        {/if}
         {#each athlete.personal_records as pr (pr.movement_name)}
           <MetricCard
             heading={i18n.movement(pr.movement_name)}
             meta={pr.date ? formatDate(pr.date, i18n.locale) : undefined}
+            record={pr.record}
             href={i18n.href(resolve(`competitions/${pr.competition_slug}`))}
           >
             <span class={TEXT.cardFigure}>{weights.format(pr.max_weight, i18n.locale)}</span>
             <span class="font-mono text-meta text-secondary">{weights.unit}</span>
-            <RecordMark badge mark={pr.record} />
             {#snippet footer()}
-              <span
-                class="mt-1 flex items-center gap-1 border-t border-stroke pt-3 text-secondary transition-colors group-hover:text-ink"
-              >
-                <span class="truncate" title={pr.competition_name}>{pr.competition_name}</span>
-                <ChevronIcon class="size-3 shrink-0 -rotate-90" />
-              </span>
-              {#if pr.date}<span class="{TEXT.fieldLabel} mt-1 block lg:hidden"
-                  >{formatDate(pr.date, i18n.locale)}</span
-                >{/if}
+              {@render competitionFooter(pr.competition_name, pr.date)}
             {/snippet}
           </MetricCard>
         {/each}
@@ -456,7 +497,9 @@
               </td>
 
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(competition.total, i18n.locale)}</td
+                >{weights.format(competition.total, i18n.locale)}<RecordMark
+                  mark={competition.total_record}
+                /></td
               >
 
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">

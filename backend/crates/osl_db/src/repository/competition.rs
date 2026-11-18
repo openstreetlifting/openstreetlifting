@@ -319,6 +319,7 @@ impl<'a> CompetitionRepository<'a> {
         for category in categories {
             let participants = sqlx::query!(
                 r#"SELECT cp.participant_id, cp.athlete_id, cp.bodyweight, cp.age, cp.total,
+                        total_mark.mark as "total_record?: RecordMark",
                         cp.status as "status: AthleteStatus", cp.status_reason, placed.rank as "rank?",
                         cp.ris_score, cp.ris_source as "ris_source: RisSource"
                  FROM competition_participants cp
@@ -326,6 +327,8 @@ impl<'a> CompetitionRepository<'a> {
                  LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
                  LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id
                                                        AND placed.competition_id = cp.competition_id
+                 LEFT JOIN record_marks total_mark ON total_mark.participant_id = cp.participant_id
+                                                  AND total_mark.movement_name = 'Total'
                  WHERE cp.competition_id = $1
                    AND cp.weight_class_id IS NOT DISTINCT FROM $2
                    AND cp.division_id IS NOT DISTINCT FROM $3
@@ -408,6 +411,7 @@ impl<'a> CompetitionRepository<'a> {
                     status: participant.status,
                     status_reason: participant.status_reason,
                     total: participant.total,
+                    total_record: participant.total_record,
                     lifts: lift_details,
                 });
             }

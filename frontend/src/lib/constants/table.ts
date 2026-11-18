@@ -47,8 +47,8 @@ export const TEXT_CELL = {
  * widths is what lets the bold figure land at the same offset on every row, so
  * a column can be read straight down to compare lifts.
  */
-export const ATTEMPT_ROW = 'grid grid-cols-[2.5rem_2.5rem_2.5rem_2.9rem] gap-x-1.5 items-baseline';
-export const BEST_ROW = 'grid grid-cols-[2.9rem] items-baseline';
+export const ATTEMPT_ROW = 'grid grid-cols-[2.5rem_2.5rem_2.5rem_3.75rem] gap-x-1.5 items-baseline';
+export const BEST_ROW = 'grid grid-cols-[3.75rem] items-baseline';
 
 /**
  * A measured value, the kind read down a column and compared against the rows
@@ -76,7 +76,7 @@ export const EDGE_TO_EDGE = '-mx-gutter sm:mx-0';
 
 export const RECORD_MARK = 'ml-0.5 align-super text-[0.7em] leading-none font-semibold';
 export const RECORD_BADGE =
-  'ml-auto -my-0.5 inline-flex size-9 shrink-0 items-center justify-center self-center rounded-full border-2 font-mono text-meta leading-none font-bold';
+  'inline-flex size-6 shrink-0 items-center justify-center rounded-full border font-mono text-micro leading-none font-bold lg:size-9 lg:border-2 lg:text-meta';
 export const RECORD_TONE = {
   WR: 'text-record-world border-record-world',
   NR: 'text-record-national border-record-national',

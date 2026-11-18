@@ -1,4 +1,4 @@
-use osl_domain::{CompetitionStatus, Gender, Movement, WeightClass};
+use osl_domain::{CompetitionStatus, Gender, RecordLift, WeightClass};
 use uuid::Uuid;
 
 use crate::filter::Filters;
@@ -139,7 +139,7 @@ pub enum RecordClass {
 
 #[derive(Debug, Clone)]
 pub enum RecordBy {
-    Movement(Movement),
+    Movement(RecordLift),
     Gender(Gender),
     Country(String),
     Federation(String),

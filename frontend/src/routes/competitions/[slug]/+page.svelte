@@ -754,7 +754,10 @@
                   </span>
                 </td>
                 <td class="{TABLE_CELL} {CELL.counted}"
-                  >{weights.format(entry.total, i18n.locale)}</td
+                  >{weights.format(entry.total, i18n.locale)}<RecordMark
+                    worldOnly
+                    mark={participant?.total_record}
+                  /></td
                 >
                 {#if risColumn}
                   <td class="{TABLE_CELL} {CELL.counted}">
@@ -861,9 +864,14 @@
                   </span>
                 </td>
                 <td class="{TABLE_CELL} {CELL.counted}">
-                  {participant.status === 'competed'
-                    ? weights.format(participant.total, i18n.locale)
-                    : NO_RESULT}
+                  {#if participant.status === 'competed'}
+                    {weights.format(participant.total, i18n.locale)}<RecordMark
+                      worldOnly
+                      mark={participant.total_record}
+                    />
+                  {:else}
+                    {NO_RESULT}
+                  {/if}
                 </td>
                 {#if risColumn}
                   <td class="{TABLE_CELL} {CELL.counted}">

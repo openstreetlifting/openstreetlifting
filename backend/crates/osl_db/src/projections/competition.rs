@@ -68,6 +68,7 @@ pub struct ParticipantDetail {
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftDetail>,
     pub total: Option<Decimal>,
+    pub total_record: Option<RecordMark>,
 }
 
 #[derive(Debug)]

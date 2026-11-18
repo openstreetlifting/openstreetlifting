@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-use osl_domain::{Gender, Movement};
+use osl_domain::{Gender, RecordLift};
 use rust_decimal::Decimal;
 use sqlx::FromRow;
 
@@ -7,7 +7,7 @@ use super::ranking::SeriesOption;
 
 #[derive(Debug, FromRow)]
 pub struct RecordRow {
-    pub movement_name: Movement,
+    pub movement_name: RecordLift,
     pub gender: Gender,
     pub weight_class: Option<String>,
     pub rank: i64,

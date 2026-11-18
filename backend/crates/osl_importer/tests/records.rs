@@ -2,7 +2,7 @@ use chrono::NaiveDate;
 use osl_db::params::{RecordBy, RecordClass, RecordsFilter};
 use osl_db::projections::records::RecordRow;
 use osl_db::repository::records::RecordsRepository;
-use osl_domain::{Gender, Movement, WeightClassSlug};
+use osl_domain::{Gender, Movement, RecordLift, WeightClassSlug};
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat, CategoryData};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
@@ -40,7 +40,7 @@ fn scoped(
 ) -> RecordsFilter {
     RecordsFilter {
         by: [
-            Some(RecordBy::Movement(Movement::MuscleUp)),
+            Some(RecordBy::Movement(Movement::MuscleUp.into())),
             Some(RecordBy::Gender(gender)),
             extra,
         ]
@@ -343,6 +343,47 @@ async fn takes_each_best_within_a_federation_or_year(pool: PgPool) {
     assert_eq!(
         holders(&records(&pool, &filter(Some(class("M-80")))).await),
         vec![("Strong", "50".into()), ("Steady", "35".into())]
+    );
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn totals_only_compare_full_meets(pool: PgPool) {
+    let mut reported = athlete("Cara", "Reported");
+    reported.total = Some(common::decimal("320"));
+    import(
+        &pool,
+        on(
+            "full",
+            "2026-01-01",
+            vec![men_80(vec![
+                lifting(athlete("Alex", "Strong"), ["45", "65", "75", "130"]),
+                reported,
+            ])],
+        ),
+    )
+    .await;
+
+    let mut single_lift = on(
+        "single-lift",
+        "2026-02-01",
+        vec![men_80(vec![muscleup(athlete("Ben", "Steady"), "400")])],
+    );
+    single_lift.movements = vec![Movement::MuscleUp];
+    import(&pool, single_lift).await;
+
+    let totals = RecordsFilter {
+        by: [
+            RecordBy::Movement(RecordLift::Total),
+            RecordBy::Gender(Gender::M),
+        ]
+        .into_iter()
+        .collect(),
+        weight_class: Some(class("M-80")),
+        limit: 3,
+    };
+    assert_eq!(
+        holders(&records(&pool, &totals).await),
+        vec![("Reported", "320".into()), ("Strong", "315".into())]
     );
 }
 
