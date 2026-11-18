@@ -1,7 +1,8 @@
-use osl_domain::{AthleteStatus, Gender, Movement, RecordMark, RisSource};
+use osl_domain::{AthleteStatus, Gender, Movement, RecordMark, RisSource, is_full_event};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
+use std::collections::HashSet;
 use uuid::Uuid;
 
 use crate::projections::competition::AttemptSummary;
@@ -61,6 +62,97 @@ pub struct BestRisRow {
     pub competition_name: String,
     pub competition_slug: String,
     pub date: chrono::NaiveDate,
+}
+
+#[derive(Debug)]
+pub struct AthleteRecords {
+    pub personal_records: Vec<PersonalRecordRow>,
+    pub best_total: Option<BestTotalRow>,
+    pub best_ris: Option<BestRisRow>,
+}
+
+impl AthleteRecords {
+    #[must_use]
+    pub fn from_history(history: &[AthleteCompetitionRow]) -> Self {
+        let personal_records = Movement::ALL
+            .into_iter()
+            .filter_map(|movement| {
+                history
+                    .iter()
+                    .filter(|competition| competition.status.competed())
+                    .filter_map(|competition| {
+                        let lift = competition
+                            .lifts
+                            .iter()
+                            .find(|lift| lift.movement_name == movement)?;
+                        Some((competition, lift.best_weight?, lift.record))
+                    })
+                    .max_by_key(|(competition, weight, record)| {
+                        (*weight, competition.competition_date, record.is_some())
+                    })
+                    .map(|(competition, max_weight, record)| PersonalRecordRow {
+                        movement_name: movement,
+                        max_weight,
+                        record,
+                        competition_name: competition.competition_name.clone(),
+                        competition_slug: competition.competition_slug.clone(),
+                        date: competition.competition_date,
+                    })
+            })
+            .collect();
+
+        let best_total = full_meets(history)
+            .filter_map(|competition| Some((competition, competition.total?)))
+            .max_by_key(|(competition, total)| {
+                (
+                    *total,
+                    competition.total_record.is_some(),
+                    competition.competition_date,
+                )
+            })
+            .map(|(competition, total)| BestTotalRow {
+                total,
+                record: competition.total_record,
+                competition_name: competition.competition_name.clone(),
+                competition_slug: competition.competition_slug.clone(),
+                date: competition.competition_date,
+            });
+        let best_ris = full_meets(history)
+            .filter_map(|competition| {
+                Some((competition, competition.ris_score?, competition.ris_source?))
+            })
+            .max_by_key(|(competition, ris_score, _)| (*ris_score, competition.competition_date))
+            .map(|(competition, ris_score, ris_source)| BestRisRow {
+                ris_score,
+                ris_source,
+                competition_name: competition.competition_name.clone(),
+                competition_slug: competition.competition_slug.clone(),
+                date: competition.competition_date,
+            });
+
+        Self {
+            personal_records,
+            best_total,
+            best_ris,
+        }
+    }
+}
+
+fn full_meets(history: &[AthleteCompetitionRow]) -> impl Iterator<Item = &AthleteCompetitionRow> {
+    history.iter().filter(|competition| {
+        competition.status.competed() && is_full_event(competition.event_code.as_deref())
+    })
+}
+
+// Entering multiple divisions at one meet still counts as one competition.
+#[must_use]
+#[expect(clippy::cast_possible_wrap)]
+pub fn count_competitions(history: &[AthleteCompetitionRow]) -> i64 {
+    history
+        .iter()
+        .map(|competition| competition.competition_id)
+        .collect::<HashSet<_>>()
+        .len() as i64
 }
 
 #[derive(Debug)]

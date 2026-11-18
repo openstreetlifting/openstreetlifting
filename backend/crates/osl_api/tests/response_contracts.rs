@@ -1,15 +1,12 @@
 use osl_api::{
     ApiDoc,
-    athlete::dto::{
-        AthleteInclude, AthleteResponse, AthleteStanding, LiftBalance, MetricStanding,
-        StandingPlace,
-    },
+    athlete::dto::{AthleteResponse, AthleteStanding, LiftBalance, MetricStanding, StandingPlace},
     competition::dto::{CategoryInfo, CompetitionResponse},
     ranking::dto::{AthleteInfo, CompetitionInfo, FederationInfo, GlobalRankingEntry},
     ris::dto::ComputeRisRequest,
 };
 use osl_db::{
-    projections::athlete::AthleteDetail,
+    projections::athlete::AthleteRecords,
     rows::{athlete::AthleteRow, competition::CompetitionRow},
 };
 use osl_domain::{CompetitionStatus, Gender};
@@ -83,19 +80,9 @@ fn serializes_missing_athlete_values_as_null() {
 
 #[test]
 fn serializes_requested_empty_sections() {
-    let detail = AthleteDetail {
-        athlete: athlete_row(),
-        competitions: Vec::new(),
-        personal_records: Vec::new(),
-        best_total: None,
-        best_ris: None,
-        total_competitions: 0,
-        instagram_handle: None,
-    };
-    let mut response = AthleteResponse::from_detail(
-        detail,
-        &[AthleteInclude::Competitions, AthleteInclude::Records],
-    );
+    let mut response = AthleteResponse::from(athlete_row());
+    response.set_history(Vec::new().into());
+    response.set_records(AthleteRecords::from_history(&[]).into());
     response.standing = Some(None);
     response.lift_balance = Some(None);
     let body = serde_json::to_value(response).unwrap();

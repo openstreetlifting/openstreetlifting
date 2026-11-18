@@ -1,24 +1,15 @@
-use osl_domain::{AthleteStatus, Gender, Movement, RecordMark, RisSource, is_full_event};
+use osl_domain::{AthleteStatus, Gender, Movement, RecordMark, RisSource};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
-use std::collections::HashSet;
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
 use crate::params::Page;
 use crate::projections::athlete::{
-    AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, BestRisRow,
-    BestTotalRow, PersonalRecordRow,
+    AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, AthleteRecords,
+    count_competitions,
 };
 use crate::rows::athlete::AthleteRow;
-
-fn full_meets(
-    competitions: &[AthleteCompetitionRow],
-) -> impl Iterator<Item = &AthleteCompetitionRow> {
-    competitions.iter().filter(|competition| {
-        competition.status.competed() && is_full_event(competition.event_code.as_deref())
-    })
-}
 
 pub struct AthleteRepository<'a> {
     pool: &'a PgPool,
@@ -204,9 +195,11 @@ impl<'a> AthleteRepository<'a> {
             .collect())
     }
 
-    #[expect(clippy::too_many_lines)]
-    #[tracing::instrument(name = "repository.athlete.get_detailed_athlete", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
+    #[tracing::instrument(name = "repository.athlete.competition_history", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn competition_history(
+        &self,
+        athlete_id: Uuid,
+    ) -> Result<Vec<AthleteCompetitionRow>> {
         let rows = sqlx::query!(
             r#"
             SELECT
@@ -269,12 +262,12 @@ impl<'a> AthleteRepository<'a> {
                      cp.ris_score, cp.ris_source, cp.status, cp.total, total_mark.mark
             ORDER BY c.start_date DESC NULLS LAST
             "#,
-            athlete.athlete_id
+            athlete_id
         )
         .fetch_all(self.pool)
         .await?;
 
-        let competitions: Vec<AthleteCompetitionRow> = rows
+        Ok(rows
             .into_iter()
             .map(|row| AthleteCompetitionRow {
                 competition_id: row.competition_id,
@@ -294,73 +287,12 @@ impl<'a> AthleteRepository<'a> {
                 event_code: row.event_code,
                 lifts: row.lifts.0,
             })
-            .collect();
+            .collect())
+    }
 
-        let personal_records = Movement::ALL
-            .into_iter()
-            .filter_map(|movement| {
-                competitions
-                    .iter()
-                    .filter(|competition| competition.status.competed())
-                    .filter_map(|competition| {
-                        let lift = competition
-                            .lifts
-                            .iter()
-                            .find(|lift| lift.movement_name == movement)?;
-                        Some((competition, lift.best_weight?, lift.record))
-                    })
-                    .max_by_key(|(competition, weight, record)| {
-                        (*weight, competition.competition_date, record.is_some())
-                    })
-                    .map(|(competition, max_weight, record)| PersonalRecordRow {
-                        movement_name: movement,
-                        max_weight,
-                        record,
-                        competition_name: competition.competition_name.clone(),
-                        competition_slug: competition.competition_slug.clone(),
-                        date: competition.competition_date,
-                    })
-            })
-            .collect();
-
-        let best_total = full_meets(&competitions)
-            .filter_map(|competition| Some((competition, competition.total?)))
-            .max_by_key(|(competition, total)| {
-                (
-                    *total,
-                    competition.total_record.is_some(),
-                    competition.competition_date,
-                )
-            })
-            .map(|(competition, total)| BestTotalRow {
-                total,
-                record: competition.total_record,
-                competition_name: competition.competition_name.clone(),
-                competition_slug: competition.competition_slug.clone(),
-                date: competition.competition_date,
-            });
-        let best_ris = full_meets(&competitions)
-            .filter_map(|competition| {
-                Some((competition, competition.ris_score?, competition.ris_source?))
-            })
-            .max_by_key(|(competition, ris_score, _)| (*ris_score, competition.competition_date))
-            .map(|(competition, ris_score, ris_source)| BestRisRow {
-                ris_score,
-                ris_source,
-                competition_name: competition.competition_name.clone(),
-                competition_slug: competition.competition_slug.clone(),
-                date: competition.competition_date,
-            });
-
-        // Entering multiple divisions at one meet still counts as one competition.
-        #[expect(clippy::cast_possible_wrap)]
-        let total_competitions = competitions
-            .iter()
-            .map(|competition| competition.competition_id)
-            .collect::<HashSet<_>>()
-            .len() as i64;
-
-        let instagram_handle = sqlx::query_scalar!(
+    #[tracing::instrument(name = "repository.athlete.instagram_handle", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn instagram_handle(&self, athlete_id: Uuid) -> Result<Option<String>> {
+        Ok(sqlx::query_scalar!(
             r#"
             SELECT ats.handle
             FROM athlete_socials ats
@@ -368,10 +300,22 @@ impl<'a> AthleteRepository<'a> {
             WHERE ats.athlete_id = $1
               AND s.name = 'instagram'
             "#,
-            athlete.athlete_id
+            athlete_id
         )
         .fetch_optional(self.pool)
-        .await?;
+        .await?)
+    }
+
+    #[tracing::instrument(name = "repository.athlete.get_detailed_athlete", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
+        let competitions = self.competition_history(athlete.athlete_id).await?;
+        let instagram_handle = self.instagram_handle(athlete.athlete_id).await?;
+        let AthleteRecords {
+            personal_records,
+            best_total,
+            best_ris,
+        } = AthleteRecords::from_history(&competitions);
+        let total_competitions = count_competitions(&competitions);
 
         Ok(AthleteDetail {
             athlete,
