@@ -1,0 +1,17 @@
+event = "PDS"
+sources = [
+    "https://streetlifting-italia.it/results/2025/street3-monza-16-02-2025.pdf",
+    "https://streetlifting-italia.it/gare-2025",
+]
+
+[competition]
+name = "Street 3"
+start_date = "2025-02-16"
+city = "Monza"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
