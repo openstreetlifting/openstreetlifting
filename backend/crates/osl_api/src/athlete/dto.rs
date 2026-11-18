@@ -324,7 +324,7 @@ pub struct PersonalRecord {
     pub date: Option<chrono::NaiveDate>,
 }
 
-/// The athlete's highest total at a full four-lift competition.
+/// The athlete's highest total at an MPDS competition.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct BestTotal {
     pub total: rust_decimal::Decimal,
@@ -336,7 +336,7 @@ pub struct BestTotal {
     pub date: chrono::NaiveDate,
 }
 
-/// The athlete's highest RIS at a full four-lift competition.
+/// The athlete's highest RIS at an MPDS competition.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct BestRis {
     pub ris_score: rust_decimal::Decimal,
