@@ -13,6 +13,9 @@ use crate::AppState;
 use crate::error::{WebError, WebResult};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 
+/// List ranking filter values
+///
+/// Accepts the ranking filters. Search, sort direction and paging have no effect.
 #[utoipa::path(
     get,
     path = "/api/v1/rankings/facets",
@@ -33,6 +36,9 @@ pub async fn get_ranking_facets(
     Ok(Json(facets.into()))
 }
 
+/// List ranked countries
+///
+/// Returns country codes of athletes with a result.
 #[utoipa::path(
     get,
     path = "/api/v1/rankings/countries",
@@ -48,13 +54,17 @@ pub async fn list_ranking_countries(State(state): State<AppState>) -> WebResult<
     Ok(Json(countries))
 }
 
+/// Get a ranking
+///
+/// Ranks MPDS results on RIS by default. Without `competition_id`, each athlete appears once with
+/// their best result for the selected metric.
 #[utoipa::path(
     get,
     path = "/api/v1/rankings",
     params(PaginationParams, GlobalRankingFilter),
     responses(
         (status = 200, description = "Global ranking retrieved successfully", body = PaginatedResponse<GlobalRankingEntry>),
-        (status = 400, description = "Invalid query parameters")
+        (status = 400, description = "Invalid query parameters", body = crate::error::ErrorResponse)
     ),
     tag = "rankings"
 )]

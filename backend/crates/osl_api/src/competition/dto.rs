@@ -14,6 +14,10 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+/// Optional competition section.
+///
+/// `federation` adds `federation`, `results` adds `categories`, `movements` adds `movements` and
+/// fills `event_code`, and `editions` adds `editions`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum CompetitionInclude {
@@ -23,6 +27,8 @@ pub enum CompetitionInclude {
     Editions,
 }
 
+/// Optional section on each listed competition. `federation` adds `federation`, and `movements`
+/// adds `movements` and fills `event_code`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum CompetitionListInclude {
@@ -30,50 +36,75 @@ pub enum CompetitionListInclude {
     Movements,
 }
 
+/// A competition. Sections appear only when requested with `include`.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CompetitionResponse {
+    /// Stable identifier of the competition.
     pub competition_id: Uuid,
+    /// Name of the competition.
     pub name: String,
+    /// When the competition was added to the archive.
     pub created_at: chrono::NaiveDateTime,
+    /// URL identifier of the competition.
     pub slug: String,
+    /// Current state of the competition.
     pub status: CompetitionStatus,
+    /// Metric the competition ranks on, when known.
     #[schema(required = true)]
     pub scoring: Option<osl_domain::Scoring>,
+    /// Identifier of the organising federation.
     pub federation_id: Uuid,
+    /// City, when known.
     #[schema(required = true)]
     pub city: Option<String>,
+    /// Venue, when known.
     #[schema(required = true)]
     pub venue: Option<String>,
+    /// Region, when known.
     #[schema(required = true)]
     pub region: Option<String>,
+    /// Host country as an ISO 3166-1 alpha-2 country code, such as `FR`.
     #[schema(required = true)]
     pub country: Option<String>,
+    /// First day, when known.
     #[schema(required = true)]
     pub start_date: Option<NaiveDate>,
+    /// Last day, when known.
     #[schema(required = true)]
     pub end_date: Option<NaiveDate>,
+    /// Organising federation. Requires `include=federation`.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub federation: Option<FederationInfo>,
+    /// Movements contested, in display order. Requires `include=movements`.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub movements: Option<Vec<MovementInfo>>,
+    /// Movement letters such as `MPDS` or `PD`. `null` unless `include=movements` is requested.
     #[schema(required = true)]
     pub event_code: Option<String>,
+    /// Results by category. Requires `include=results`.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub categories: Option<Vec<CategoryDetail>>,
+    /// Editions of the same series, oldest first. Requires `include=editions` and is empty without
+    /// a series.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub editions: Option<Vec<CompetitionEdition>>,
+    /// Entries in the competition. Returned by the list endpoint only.
     #[schema(required = true)]
     pub lifter_count: Option<i64>,
 }
 
+/// One edition of a competition series.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CompetitionEdition {
+    /// URL identifier of the edition.
     pub slug: String,
+    /// Name of the edition.
     pub name: String,
+    /// First day of the edition.
     pub start_date: NaiveDate,
 }
 
@@ -87,58 +118,87 @@ impl From<osl_db::projections::competition::CompetitionEdition> for CompetitionE
     }
 }
 
+/// The federation organising a competition.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 #[schema(as = CompetitionFederation)]
 pub struct FederationInfo {
+    /// Stable identifier of the federation.
     pub federation_id: Uuid,
+    /// Full name.
     pub name: String,
+    /// Short name, when known.
     #[schema(required = true)]
     pub abbreviation: Option<String>,
+    /// Federation's ISO 3166-1 alpha-2 country code, such as `FR`.
     #[schema(required = true)]
     pub country: Option<String>,
 }
 
+/// A movement contested at a competition.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct MovementInfo {
+    /// The movement.
     pub movement_name: Movement,
+    /// Position when listing the movements.
     #[schema(required = true)]
     pub display_order: Option<i32>,
+    /// One-letter code: `M`, `P`, `D` or `S`.
     pub code: String,
 }
 
+/// Results for one category.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CategoryDetail {
+    /// The category.
     pub category: CategoryInfo,
+    /// Entries, best placed first.
     pub participants: Vec<ParticipantDetail>,
 }
 
+/// A contested category.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CategoryInfo {
+    /// Display name, such as `Men -80kg`.
     pub name: String,
+    /// Division, when the competition has divisions.
     #[schema(required = true)]
     pub division: Option<String>,
+    /// Sex of the category, or `MX` when mixed.
     pub gender: Gender,
+    /// Weight class label, such as `-80kg`. Empty without a weight class.
     pub weight_class: String,
 }
 
+/// One athlete's entry in a category.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct ParticipantDetail {
+    /// Stable identifier of this entry.
     pub participant_id: Uuid,
+    /// The athlete.
     pub athlete: AthleteInfo,
+    /// Bodyweight in kilograms, when known.
     #[schema(required = true)]
     pub bodyweight: Option<rust_decimal::Decimal>,
+    /// Age at the competition, when known.
     #[schema(required = true)]
     pub age: Option<i16>,
+    /// Place in the category, or `null` when unplaced.
     #[schema(required = true)]
     pub rank: Option<i32>,
+    /// RIS points, when available.
     #[schema(required = true)]
     pub ris_score: Option<rust_decimal::Decimal>,
+    /// Where the RIS comes from, when there is one.
     #[schema(required = true)]
     pub ris_source: Option<RisSource>,
+    /// Whether the athlete competed.
     pub status: AthleteStatus,
+    /// Why the athlete did not compete, when published.
     #[schema(required = true)]
     pub status_reason: Option<String>,
+    /// Results for each movement.
     pub lifts: Vec<LiftDetail>,
+    /// Total in kilograms, or `null` when incomplete or not competed.
     #[schema(required = true)]
     pub total: Option<rust_decimal::Decimal>,
     /// `WR` or `NR` when this total is the current world or national record for its weight class.
@@ -146,33 +206,48 @@ pub struct ParticipantDetail {
     pub total_record: Option<RecordMark>,
 }
 
+/// The athlete behind a competition entry.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 #[schema(as = CompetitionAthlete)]
 pub struct AthleteInfo {
+    /// Stable identifier of the athlete.
     pub athlete_id: uuid::Uuid,
+    /// First name. Empty for redacted athletes.
     pub first_name: String,
+    /// Last name, or a placeholder such as `Redacted Athlete #1` for redacted athletes.
     pub last_name: String,
+    /// Sex the athlete competes under.
     pub gender: Gender,
+    /// Athlete's ISO 3166-1 alpha-2 country code, such as `FR`.
     #[schema(required = true)]
     pub country: Option<String>,
+    /// URL identifier of the athlete.
     pub slug: String,
 }
 
+/// An entry's result for one movement.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct LiftDetail {
+    /// The movement.
     pub movement_name: Movement,
+    /// Best successful attempt in kilograms, or `null` when no attempt succeeded.
     #[schema(required = true)]
     pub best_weight: Option<rust_decimal::Decimal>,
     /// `WR` or `NR` when this lift is the current world or national record for its weight class.
     #[schema(required = true)]
     pub record: Option<RecordMark>,
+    /// Attempts in the order they were taken.
     pub attempts: Vec<AttemptInfo>,
 }
 
+/// One attempt at a lift.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AttemptInfo {
+    /// Attempt number, starting at 1.
     pub attempt_number: i16,
+    /// Weight attempted in kilograms.
     pub weight: rust_decimal::Decimal,
+    /// Whether the attempt was successful.
     pub is_successful: bool,
 }
 
@@ -328,10 +403,15 @@ impl CompetitionResponse {
     }
 }
 
+/// Filter values that still return competitions.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct CompetitionFacets {
+    /// Federation names.
     pub federations: Vec<String>,
+    /// Country codes.
     pub countries: Vec<String>,
+    /// Years, newest first.
     pub years: Vec<i32>,
+    /// Event codes such as `MPDS`.
     pub formats: Vec<String>,
 }

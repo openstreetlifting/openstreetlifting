@@ -2,10 +2,6 @@ use serde::{
     Deserialize, Deserializer,
     de::{DeserializeOwned, IntoDeserializer, value::Error as ValueError},
 };
-use utoipa::{
-    PartialSchema, ToSchema,
-    openapi::{RefOr, Schema, Type, schema::SchemaType},
-};
 
 pub async fn load_if<T>(
     needed: bool,
@@ -61,19 +57,6 @@ impl Include {
         Ok(())
     }
 }
-
-impl PartialSchema for Include {
-    fn schema() -> RefOr<Schema> {
-        RefOr::T(Schema::Object(
-            utoipa::openapi::ObjectBuilder::new()
-                .schema_type(SchemaType::Type(Type::String))
-                .description(Some("Comma-separated list of sections to embed"))
-                .build(),
-        ))
-    }
-}
-
-impl ToSchema for Include {}
 
 impl<'de> Deserialize<'de> for Include {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

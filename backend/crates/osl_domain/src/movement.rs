@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+/// A streetlifting movement.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Movement {

@@ -2,6 +2,7 @@ use osl_domain::Gender;
 use serde::{Deserialize, Deserializer, Serialize};
 use utoipa::ToSchema;
 
+/// `M` for men, `F` for women, `MX` for mixed categories. `MX` needs `competition_id`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum RankedGender {

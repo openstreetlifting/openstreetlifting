@@ -22,17 +22,22 @@ use crate::shared::query::{Include, load_if};
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 #[into_params(parameter_in = Query)]
 pub struct CompetitionFilterParams {
+    /// Only competitions in this state.
     #[serde(default, deserialize_with = "optional_from_str")]
     #[param(nullable)]
     pub status: Option<CompetitionStatus>,
-    #[param(nullable)]
+    /// Only this event, written as movement letters in MPDS order, such as `MPDS` or `PD`.
+    #[param(nullable, example = "MPDS")]
     pub event: Option<String>,
+    /// Only this federation, by exact name.
     #[param(nullable)]
     pub federation: Option<String>,
-    #[param(nullable)]
+    /// Only this host country, as an ISO 3166-1 alpha-2 code.
+    #[param(nullable, example = "FR")]
     pub country: Option<String>,
+    /// Only competitions starting in this year.
     #[serde(default, deserialize_with = "optional_from_str")]
-    #[param(nullable)]
+    #[param(nullable, example = 2025)]
     pub year: Option<i32>,
 }
 
@@ -61,11 +66,14 @@ impl CompetitionFilterParams {
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 #[into_params(parameter_in = Query)]
 pub struct CompetitionListQuery {
+    /// Sections to add to each competition, separated by commas.
     #[serde(default)]
     #[param(value_type = Vec<CompetitionListInclude>, style = Form, explode = false)]
     pub include: Include,
+    /// Case-insensitive text found in the competition name, federation name or city.
     #[param(nullable)]
     pub q: Option<String>,
+    /// Sort by start date. Defaults to `desc`, newest first.
     #[serde(default)]
     pub direction: Direction,
     #[serde(flatten)]
@@ -93,18 +101,22 @@ impl CompetitionListQuery {
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct CompetitionQuery {
+    /// Sections to add, separated by commas, such as `federation,results`.
     #[serde(default)]
     #[param(value_type = Vec<CompetitionInclude>, style = Form, explode = false)]
     pub include: Include,
 }
 
+/// List competitions
+///
+/// Returns competitions ordered by start date. Combine the filters to narrow the list.
 #[utoipa::path(
     get,
     path = "/api/v1/competitions",
     params(PaginationParams, CompetitionFilterParams, CompetitionListQuery),
     responses(
         (status = 200, description = "A page of competitions", body = PaginatedResponse<CompetitionResponse>),
-        (status = 400, description = "Invalid pagination, include value or event code")
+        (status = 400, description = "Invalid pagination, include value or event code", body = crate::error::ErrorResponse)
     ),
     tag = "competitions"
 )]
@@ -183,6 +195,9 @@ pub async fn list_competitions(
     )))
 }
 
+/// Get a competition
+///
+/// Use `include` to add the federation, results, movements or other editions.
 #[utoipa::path(
     get,
     path = "/api/v1/competitions/{slug}",
@@ -192,8 +207,8 @@ pub async fn list_competitions(
     ),
     responses(
         (status = 200, description = "Competition found", body = CompetitionResponse),
-        (status = 400, description = "Unknown include value"),
-        (status = 404, description = "Competition not found")
+        (status = 400, description = "Unknown include value", body = crate::error::ErrorResponse),
+        (status = 404, description = "Competition not found", body = crate::error::ErrorResponse)
     ),
     tag = "competitions"
 )]
@@ -239,13 +254,16 @@ pub async fn get_competition(
     Ok(Json(response))
 }
 
+/// List competition filter values
+///
+/// Each list ignores its own filter, so a selected value stays available.
 #[utoipa::path(
     get,
     path = "/api/v1/competitions/facets",
     params(CompetitionFilterParams),
     responses(
         (status = 200, description = "Values each competition filter can take given the other filters.", body = CompetitionFacets),
-        (status = 400, description = "Invalid event code")
+        (status = 400, description = "Invalid event code", body = crate::error::ErrorResponse)
     ),
     tag = "competitions"
 )]

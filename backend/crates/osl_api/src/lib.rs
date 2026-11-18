@@ -44,8 +44,43 @@ impl AppState {
     }
 }
 
+const API_DESCRIPTION: &str = "Read streetlifting competitions, athletes, rankings, records and \
+RIS scores from the OpenStreetlifting archive.
+
+**Conventions**
+
+- Weights are in kilograms. Most weights and scores are decimal strings, such as `\"315.5\"`. \
+Ranking values are JSON numbers.
+- Dates use `YYYY-MM-DD`. Country codes use ISO 3166-1 alpha-2.
+- `MPDS` is the event with muscle-up, pull-up, dips and squat. Shorter events use the letters of \
+their movements, such as `PD`.
+- List endpoints take `page` and `page_size`, and return `data` with `pagination`.
+- `include` takes comma-separated values. Sections you do not request are left out of the response.
+
+**Errors**
+
+Requests the API rejects return `{\"error\": \"...\"}`. A query value of the wrong type, such as a \
+non-numeric `year`, returns a plain-text `400`.
+
+**Reusing the data**
+
+See the [licensing guide](https://docs.openstreetlifting.org/LICENSING.html).";
+
 #[derive(OpenApi)]
 #[openapi(
+    info(
+        title = "OpenStreetlifting API",
+        description = API_DESCRIPTION,
+        contact(name = "OpenStreetlifting", url = "https://openstreetlifting.org/contact"),
+        license(
+            name = "Licensing guide",
+            url = "https://docs.openstreetlifting.org/LICENSING.html"
+        ),
+    ),
+    servers(
+        (url = "https://api.openstreetlifting.org", description = "Production"),
+        (url = "/", description = "This server"),
+    ),
     paths(
         competition::handlers::list_competitions,
         competition::handlers::get_competition,
@@ -85,7 +120,7 @@ impl AppState {
             crate::athlete::dto::BestRis,
             crate::shared::dto::PaginationMeta,
             crate::shared::dto::PaginationParams,
-            crate::shared::query::Include,
+            crate::error::ErrorResponse,
             osl_domain::AthleteStatus,
             osl_domain::CompetitionStatus,
             osl_domain::Gender,
@@ -116,9 +151,9 @@ impl AppState {
         )
     ),
     tags(
-        (name = "competitions", description = "Competition endpoints"),
-        (name = "athletes", description = "Athlete endpoints"),
-        (name = "rankings", description = "Ranking endpoints"),
+        (name = "competitions", description = "Competitions, their results and filter values"),
+        (name = "athletes", description = "Athletes, their history, records and standings"),
+        (name = "rankings", description = "Rankings by lift, total or RIS"),
         (name = "records", description = "Best results in the OpenStreetlifting archive"),
         (name = "ris", description = "RIS formulas and score computation"),
     ),
@@ -236,6 +271,48 @@ mod tests {
             .unwrap();
         for name in ["include", "q", "direction"] {
             assert!(facets.iter().all(|p| p["name"] != name), "{name}");
+        }
+    }
+
+    #[test]
+    fn documents_every_endpoint_parameter_and_field() {
+        let schema = serde_json::to_value(ApiDoc::openapi()).unwrap();
+        assert!(schema["info"]["description"].is_string());
+        assert_eq!(
+            schema["servers"][0]["url"],
+            "https://api.openstreetlifting.org"
+        );
+
+        for (path, operations) in schema["paths"].as_object().unwrap() {
+            for (method, operation) in operations.as_object().unwrap() {
+                assert!(operation["summary"].is_string(), "{method} {path}");
+                assert!(operation["description"].is_string(), "{method} {path}");
+                for parameter in operation["parameters"].as_array().into_iter().flatten() {
+                    let name = &parameter["name"];
+                    assert!(parameter["description"].is_string(), "{path}: {name}");
+                }
+                for (status, response) in operation["responses"].as_object().unwrap() {
+                    if status.starts_with('4') {
+                        assert_eq!(
+                            response["content"]["application/json"]["schema"]["$ref"],
+                            "#/components/schemas/ErrorResponse",
+                            "{method} {path}: {status}"
+                        );
+                    }
+                }
+            }
+        }
+
+        for (name, component) in schema["components"]["schemas"].as_object().unwrap() {
+            for (field, property) in component["properties"].as_object().into_iter().flatten() {
+                let description = property
+                    .get("description")
+                    .or_else(|| property["oneOf"][0].get("description"));
+                assert!(
+                    description.is_some_and(serde_json::Value::is_string),
+                    "{name}.{field}"
+                );
+            }
         }
     }
 

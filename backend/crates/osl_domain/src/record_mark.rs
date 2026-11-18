@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+/// `WR` or `NR`: the best current result in the archive for a weight class, worldwide or
+/// nationally. Marks are not ratified by a federation.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum RecordMark {

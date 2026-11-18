@@ -11,6 +11,7 @@ const DEFAULT_LIMIT: i64 = 3;
 const MAX_LIMIT: i64 = 50;
 const OPEN: &str = "open";
 
+/// A lift, or `total` for MPDS totals.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum RecordMovement {
@@ -45,6 +46,7 @@ impl From<RecordLift> for RecordMovement {
     }
 }
 
+/// `M` for men, `F` for women.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, ToSchema)]
 pub enum RecordGender {
     M,
@@ -62,7 +64,9 @@ impl From<RecordGender> for Gender {
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct RecordsQuery {
+    /// Only this lift, or `total`.
     pub movement: Option<RecordMovement>,
+    /// Only this sex.
     pub gender: Option<RecordGender>,
     /// A weight class such as `M-73` or `F+70`, or `open` for the best across all classes.
     /// With a federation or series, any class it entered athletes in, such as `M-75`.
@@ -141,38 +145,56 @@ fn non_empty(value: Option<&str>) -> Option<String> {
         .map(str::to_string)
 }
 
+/// The best results for one movement, sex and weight class.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordGroup {
+    /// The lift, or `total`.
     pub movement: RecordMovement,
+    /// Sex of the group.
     pub gender: RecordGender,
     /// The weight class, or `null` for the open record. A standard class unless a federation
     /// or series is selected, which lists the classes it used.
     #[schema(required = true)]
     pub weight_class: Option<String>,
+    /// Best results, one per athlete, heaviest first.
     pub entries: Vec<RecordEntry>,
 }
 
+/// One result in a records group.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordEntry {
+    /// Position in the group, starting at 1.
     pub rank: i64,
+    /// The athlete.
     pub athlete: RecordAthlete,
+    /// Weight or total in kilograms.
     pub weight: Decimal,
+    /// Start date of the competition.
     pub date: NaiveDate,
+    /// The competition.
     pub competition: RecordCompetition,
 }
 
+/// The athlete behind a record.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordAthlete {
+    /// First name. Empty for redacted athletes.
     pub first_name: String,
+    /// Last name, or a placeholder such as `Redacted Athlete #1` for redacted athletes.
     pub last_name: String,
+    /// URL identifier of the athlete.
     pub slug: String,
+    /// Athlete's ISO 3166-1 alpha-2 country code, such as `FR`.
     #[schema(required = true)]
     pub country: Option<String>,
 }
 
+/// The competition behind a record.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordCompetition {
+    /// Name of the competition.
     pub name: String,
+    /// URL identifier of the competition.
     pub slug: String,
 }
 
@@ -221,20 +243,29 @@ pub fn group(rows: Vec<RecordRow>) -> Vec<RecordGroup> {
     groups
 }
 
+/// Filter values that still return records.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordFacets {
+    /// Country codes.
     pub countries: Vec<String>,
+    /// Federation names.
     pub federations: Vec<String>,
+    /// Competition series.
     pub series: Vec<RecordSeries>,
+    /// Years, newest first.
     pub years: Vec<i32>,
     /// True when the selected federation or series entered athletes in weight classes outside
     /// the standard ladder. Records are then grouped by the classes it used.
     pub custom_weight_classes: bool,
 }
 
+/// A competition series.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordSeries {
+    /// Identifier to pass as the `series` filter.
     pub series: String,
+    /// Display name.
     pub name: String,
+    /// Name of the organising federation.
     pub federation: String,
 }

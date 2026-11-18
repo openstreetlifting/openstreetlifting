@@ -7,6 +7,13 @@ use osl_db::error::StorageError;
 use serde_json::json;
 use std::fmt;
 
+/// JSON body returned with an API error.
+#[derive(Debug, serde::Serialize, utoipa::ToSchema)]
+pub struct ErrorResponse {
+    /// What went wrong.
+    pub error: String,
+}
+
 #[derive(Debug)]
 pub enum WebError {
     Storage(StorageError),

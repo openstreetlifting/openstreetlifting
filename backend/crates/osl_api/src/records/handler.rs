@@ -8,13 +8,19 @@ use super::dto::{RecordFacets, RecordGroup, RecordSeries, RecordsQuery, group};
 use crate::AppState;
 use crate::error::{WebError, WebResult};
 
+/// List records
+///
+/// Returns the best results in the archive, grouped by movement, sex and weight class.
+///
+/// Totals count only from MPDS competitions. Each athlete appears once per group, and the earlier
+/// result ranks first on a tie.
 #[utoipa::path(
     get,
     path = "/api/v1/records",
     params(RecordsQuery),
     responses(
         (status = 200, description = "The best results in the OpenStreetlifting archive, grouped by movement, gender and weight class. The open group comes first in each gender.", body = Vec<RecordGroup>),
-        (status = 400, description = "Invalid query parameters")
+        (status = 400, description = "Invalid query parameters", body = crate::error::ErrorResponse)
     ),
     tag = "records"
 )]
@@ -30,13 +36,16 @@ pub async fn list_records(
     Ok(Json(group(rows)))
 }
 
+/// List records filter values
+///
+/// Accepts the records filters.
 #[utoipa::path(
     get,
     path = "/api/v1/records/facets",
     params(RecordsQuery),
     responses(
         (status = 200, description = "Values each records filter can take given the other filters", body = RecordFacets),
-        (status = 400, description = "Invalid query parameters")
+        (status = 400, description = "Invalid query parameters", body = crate::error::ErrorResponse)
     ),
     tag = "records"
 )]

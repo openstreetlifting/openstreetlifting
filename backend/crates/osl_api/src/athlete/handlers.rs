@@ -18,18 +18,22 @@ use crate::shared::query::{Include, load_if};
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct AthleteQuery {
+    /// Sections to add, separated by commas, such as `competitions,records`.
     #[serde(default)]
     #[param(value_type = Vec<AthleteInclude>, style = Form, explode = false)]
     pub include: Include,
 }
 
+/// List athletes
+///
+/// Returns athletes ordered by last name, then first name.
 #[utoipa::path(
     get,
     path = "/api/v1/athletes",
     params(PaginationParams),
     responses(
         (status = 200, description = "A page of athletes", body = PaginatedResponse<AthleteResponse>),
-        (status = 400, description = "Invalid pagination parameters")
+        (status = 400, description = "Invalid pagination parameters", body = crate::error::ErrorResponse)
     ),
     tag = "athletes"
 )]
@@ -66,6 +70,9 @@ pub async fn list_athletes(
     )))
 }
 
+/// Get an athlete
+///
+/// Use `include` to add competition history, records, rankings, lift balance or nearby athletes.
 #[utoipa::path(
     get,
     path = "/api/v1/athletes/{slug}",
@@ -75,8 +82,8 @@ pub async fn list_athletes(
     ),
     responses(
         (status = 200, description = "Athlete found", body = AthleteResponse),
-        (status = 400, description = "Unknown include value"),
-        (status = 404, description = "Athlete not found")
+        (status = 400, description = "Unknown include value", body = crate::error::ErrorResponse),
+        (status = 404, description = "Athlete not found", body = crate::error::ErrorResponse)
     ),
     tag = "athletes"
 )]
