@@ -65,13 +65,13 @@ Give editions of the same competition the same `competition.series`, for example
 - Lowercase ASCII letters and digits separated by single hyphens.
 - Prefixed with the organizer or federation; no years or edition numbers.
 - Stable when an edition changes name, venue or organizer.
-- Separate contests, such as All4 and Classic championships, get separate identifiers.
+- Separate contests, such as MPDS and Classic championships, get separate identifiers.
 
 ### Event
 
 | `event` | Also called | Movements                       |
 | ------- | ----------- | ------------------------------- |
-| `MPDS`  | **All4**    | Muscle-up, pull-up, dips, squat |
+| `MPDS`  |             | Muscle-up, pull-up, dips, squat |
 | `PD`    | **Classic** | Pull-up, dips                   |
 
 | Letter | Movement  |
@@ -162,7 +162,7 @@ Mixed contests need `scoring` under `[competition]`:
 | `scoring` | Ranking                                                                 |
 | --------- | ----------------------------------------------------------------------- |
 | `total`   | `TotalKg`                                                               |
-| `ris`     | RIS. All4 uses each athlete's own formula when its inputs are available. |
+| `ris`     | RIS. MPDS uses each athlete's own formula when its inputs are available. |
 
 ### WeightClassKg
 
@@ -229,10 +229,10 @@ Enter each value the source provides: `BodyweightKg`, `ReportedRis`, or both.
 Leave unknown values empty. The competition year alone does not establish
 `ReportedRisEdition`.
 
-- All4, complete, `competed`, with bodyweight and `M` or `F`: `ReportedRis` is
+- MPDS, complete, `competed`, with bodyweight and `M` or `F`: `ReportedRis` is
   checked against its edition, rounded to two decimal places. A disagreement
   blocks import. An unknown edition or missing result gives a warning.
-- `BodyweightSource=recovered` (All4 only) requires `BodyweightKg`,
+- `BodyweightSource=recovered` (MPDS only) requires `BodyweightKg`,
   `ReportedRis`, `ReportedRisEdition` and a complete total; the estimate must
   reproduce the original score.
 - The former `Ris` header is rejected. Rename it to `ReportedRis`, preserving
@@ -255,7 +255,7 @@ For a mixed contest, retain each athlete's `Sex` and set `CategorySex=MX`.
 
 A missing score produces a warning and leaves that athlete without a RIS
 placing, even when total and bodyweight are known. OSL does not verify a
-shorter-event score against the All4 formula or recover bodyweight from it.
+shorter-event score against the MPDS formula or recover bodyweight from it.
 
 ## Validation
 

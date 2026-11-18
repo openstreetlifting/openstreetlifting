@@ -99,7 +99,7 @@ async fn total_standing_and_neighbors_exclude_other_sexes_even_in_a_shared_categ
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn uses_best_total_in_latest_all4_class_and_drops_rivals_who_moved_class(pool: PgPool) {
+async fn uses_best_total_in_latest_mpds_class_and_drops_rivals_who_moved_class(pool: PgPool) {
     use common::{category, weighing};
     use osl_domain::{Movement, WeightClassSlug};
     import(
@@ -250,7 +250,7 @@ async fn unknown_nationality_has_global_context_without_a_national_pool(pool: Pg
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn no_eligible_total_in_latest_all4_class_returns_no_neighbors_or_total_standing(
+async fn no_eligible_total_in_latest_mpds_class_returns_no_neighbors_or_total_standing(
     pool: PgPool,
 ) {
     import(

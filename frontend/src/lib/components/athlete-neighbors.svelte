@@ -66,7 +66,7 @@
   {:else if !neighbors || !own}
     <Text variant="body" class="text-muted"
       >{i18n.t(
-        'An All4 total in the latest All4 category is needed to show nearby athletes.'
+        'An MPDS total in the latest MPDS category is needed to show nearby athletes.'
       )}</Text
     >
   {:else}

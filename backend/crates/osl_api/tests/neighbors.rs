@@ -60,7 +60,7 @@ async fn includes_total_neighbors_with_exact_gaps_and_both_scopes(pool: PgPool) 
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn omits_unrequested_neighbors_and_returns_null_without_an_all4_total(pool: PgPool) {
+async fn omits_unrequested_neighbors_and_returns_null_without_an_mpds_total(pool: PgPool) {
     let mut competition = common::competition(
         "pull",
         vec![common::men_80(vec![common::best(

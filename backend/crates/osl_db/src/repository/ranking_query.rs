@@ -219,7 +219,7 @@ pub(crate) fn push_metric_candidates(query: &mut QueryBuilder<Postgres>) {
 
         query.push(format!("('{}', ", movement.as_str()));
 
-        // Global total and RIS standings compare the All4 event only.
+        // Global total and RIS standings compare the MPDS event only.
         if matches!(movement, RankingMovement::Total | RankingMovement::Ris) {
             query.push("CASE WHEN event_code = ");
             query.push_bind(osl_domain::FULL_EVENT);

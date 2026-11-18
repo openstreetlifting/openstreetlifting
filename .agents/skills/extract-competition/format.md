@@ -26,7 +26,7 @@ country = "FR"
 - Required: competition name, start date, country, federation name, `sources`. Omit unknown optional fields and `end_date` for one-day events. Add `venue` when the source names it.
 - Country codes are ISO 3166-1 alpha-2; regions are ISO 3166-2 subdivision names.
 - `name` drops the federation and year (`Dutch Streetlifting Nationals`, `EUROS` from `EUROS 24`) but keeps identifying edition numbers (`Australian Open Event 3`).
-- `event` lists contested movements in `MPDS` order: `MPDS` (All4), `PD` (Classic), also `PDS`, `DS`, `M`. Uncontested movement cells stay empty.
+- `event` lists contested movements in `MPDS` order: `MPDS`, `PD` (Classic), also `PDS`, `DS`, `M`. Uncontested movement cells stay empty.
 - RIS: calculated for `MPDS`. A shorter event ranks by published RIS only with `scoring = "ris"` and no weight classes anywhere; see [shorter-event RIS](../../../backend/docs/src/DATA_REFERENCE.md#ris-for-events-shorter-than-mpds).
 - `status`: `draft`, `upcoming`, `live`, `completed`, `cancelled`.
 
@@ -95,6 +95,6 @@ cargo run -p recover-bodyweight -- --edition <source-edition> --check data/compe
 cargo run -p recover-bodyweight -- --edition <source-edition> data/competitions/<path>
 ```
 
-The script requires an All4 event, a positive published RIS, a complete total, and `Status=competed`. Preserve measured bodyweights and let the script enforce eligibility, plausible weight classes, score reproduction, and its refusal threshold. Report skipped, rejected, or withheld rows; when the edition is unknown, keep the source score and report recovery as unresolved.
+The script requires an MPDS event, a positive published RIS, a complete total, and `Status=competed`. Preserve measured bodyweights and let the script enforce eligibility, plausible weight classes, score reproduction, and its refusal threshold. Report skipped, rejected, or withheld rows; when the edition is unknown, keep the source score and report recovery as unresolved.
 
 Keep `ReportedRis` unchanged. Save accepted estimates with `BodyweightKg`, `BodyweightSource=recovered`, and `ReportedRisEdition`; call them estimated bodyweights. Preserve existing recovery evidence and validate the competition after recovery.

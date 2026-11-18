@@ -82,7 +82,7 @@ it('explains a missing qualifying total', async () => {
   render(AthleteNeighbors, { neighbors: null, athleteSlug: 'profile', country: 'FR' });
   await expect
     .element(
-      page.getByText('An All4 total in the latest All4 category is needed to show nearby athletes.')
+      page.getByText('An MPDS total in the latest MPDS category is needed to show nearby athletes.')
     )
     .toBeVisible();
 });

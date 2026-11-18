@@ -6,8 +6,8 @@ export default {
   'Rivals (class: {weightClass})': 'Rivalen (Klasse: {weightClass})',
   'Ranking scope': 'Ranglistenbereich',
   'Profile athlete': 'Athlet dieses Profils',
-  'An All4 total in the latest All4 category is needed to show nearby athletes.':
-    'Ein All4-Gesamtergebnis in der neuesten All4-Gewichtsklasse ist nötig, um benachbarte Athleten anzuzeigen.',
+  'An MPDS total in the latest MPDS category is needed to show nearby athletes.':
+    'Ein MPDS-Gesamtergebnis in der neuesten MPDS-Gewichtsklasse ist nötig, um benachbarte Athleten anzuzeigen.',
   'The only ranked athlete in this category and scope.':
     'Der einzige gewertete Athlet in dieser Gewichtsklasse und diesem Bereich.',
 
@@ -255,7 +255,7 @@ export default {
   'What a RIS score is and where it came from': 'Was der RIS-Wert bedeutet und woher er stammt',
   'What is RIS?': 'Was ist RIS?',
   'The Relative Index for Streetlifting (RIS) provides the definitive method for comparing Streetlifting athletes across weight classes within the same gender. Developed specifically for All-4 competitions, this scoring system normalizes strength performance using comprehensive data from elite competitors. Updated annually to reflect evolving standards, RIS offers a fair benchmark for athletes, coaches, and competition organizers worldwide.':
-    'Der Relative Index for Streetlifting (RIS) bietet eine maßgebliche Methode zum Vergleich von Streetlifting-Athleten desselben Geschlechts über Gewichtsklassen hinweg. Das speziell für All4-Wettkämpfe entwickelte Wertungssystem normiert Kraftleistungen anhand umfangreicher Daten von Spitzenathleten. Es wird jährlich an das Leistungsniveau angepasst und bietet Athleten, Trainern und Veranstaltern weltweit einen fairen Vergleichsmaßstab.',
+    'Der Relative Index for Streetlifting (RIS) bietet eine maßgebliche Methode zum Vergleich von Streetlifting-Athleten desselben Geschlechts über Gewichtsklassen hinweg. Das speziell für MPDS-Wettkämpfe entwickelte Wertungssystem normiert Kraftleistungen anhand umfangreicher Daten von Spitzenathleten. Es wird jährlich an das Leistungsniveau angepasst und bietet Athleten, Trainern und Veranstaltern weltweit einen fairen Vergleichsmaßstab.',
   'We recalculate RIS with the current formula, so scores may differ from published results.':
     'Wir berechnen RIS mit der aktuellen Formel neu. Daher können die Werte von veröffentlichten Ergebnissen abweichen.',
   'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked {mark}.':

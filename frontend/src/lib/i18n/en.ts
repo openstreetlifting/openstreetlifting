@@ -5,7 +5,7 @@ export const messages = [
   'Rivals (class: {weightClass})',
   'Ranking scope',
   'Profile athlete',
-  'An All4 total in the latest All4 category is needed to show nearby athletes.',
+  'An MPDS total in the latest MPDS category is needed to show nearby athletes.',
   'The only ranked athlete in this category and scope.',
 
   'Back to rankings',

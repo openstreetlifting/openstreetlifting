@@ -154,8 +154,8 @@ async fn excludes_short_events_from_full_event_standings(pool: PgPool) {
         offset: 0,
         limit: 50,
     };
-    let (all4, count) = repository.get_global_ranking(&filter).await.unwrap();
-    assert!(all4.is_empty());
+    let (mpds, count) = repository.get_global_ranking(&filter).await.unwrap();
+    assert!(mpds.is_empty());
     assert_eq!(count, 0);
     filter.event = "PDS".into();
     let (shorter, count) = repository.get_global_ranking(&filter).await.unwrap();

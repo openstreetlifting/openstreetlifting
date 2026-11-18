@@ -293,7 +293,7 @@ async fn counts_all_athletes_in_class(pool: PgPool) {
 
     assert_eq!(
         standing.global_field, 4,
-        "the latest All4 class, counting everyone who has lifted in it"
+        "the latest MPDS class, counting everyone who has lifted in it"
     );
     assert_eq!(
         standing.global_place, 3,
@@ -371,7 +371,7 @@ async fn matches_leaderboards_when_results_tie(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn total_uses_best_result_in_latest_all4_category(pool: PgPool) {
+async fn total_uses_best_result_in_latest_mpds_category(pool: PgPool) {
     import(
         &pool,
         common::competition(

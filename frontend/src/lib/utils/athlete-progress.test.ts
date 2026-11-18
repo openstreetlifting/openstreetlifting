@@ -22,7 +22,7 @@ function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteComp
 }
 
 describe('athlete progress', () => {
-  it('keeps published shorter-event RIS separate from All4 progress', () => {
+  it('keeps published shorter-event RIS separate from MPDS progress', () => {
     const competitions = [
       result(),
       result({

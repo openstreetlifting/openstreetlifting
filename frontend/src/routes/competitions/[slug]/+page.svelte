@@ -107,7 +107,7 @@
   );
 
   // The column follows the format the meet contested, the sort follows the data
-  // we hold, so an All4 meet with no published bodyweight keeps an empty column.
+  // we hold, so an MPDS meet with no published bodyweight keeps an empty column.
   const risColumn = $derived(data.ris !== 'not-contested');
   const risSortable = $derived(data.ris === 'recomputed' || data.ris === 'reported');
 
