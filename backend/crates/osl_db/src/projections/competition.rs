@@ -17,14 +17,6 @@ pub struct CompetitionSummaryRow {
 }
 
 #[derive(Debug)]
-pub struct CompetitionListItem {
-    pub competition: CompetitionRow,
-    pub federation: FederationRow,
-    pub movements: Vec<CompetitionMovementRow>,
-    pub lifter_count: i64,
-}
-
-#[derive(Debug)]
 pub struct CompetitionDetail {
     pub competition: CompetitionRow,
     pub federation: FederationRow,

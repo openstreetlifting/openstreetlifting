@@ -75,6 +75,8 @@ impl AppState {
             crate::competition::dto::AthleteInfo,
             crate::competition::dto::MovementInfo,
             crate::athlete::dto::AthleteInclude,
+            crate::competition::dto::CompetitionInclude,
+            crate::competition::dto::CompetitionListInclude,
             crate::athlete::dto::AthleteResponse,
             crate::athlete::dto::AthleteCompetitionSummary,
             crate::athlete::dto::AthleteLift,
@@ -209,6 +211,32 @@ mod tests {
                 "neighbors"
             ])
         );
+    }
+
+    #[test]
+    fn documents_competition_includes_and_keeps_them_off_facets() {
+        let schema = serde_json::to_value(ApiDoc::openapi()).unwrap();
+        for (path, name) in [
+            ("/api/v1/competitions", "CompetitionListInclude"),
+            ("/api/v1/competitions/{slug}", "CompetitionInclude"),
+        ] {
+            let parameters = schema["paths"][path]["get"]["parameters"]
+                .as_array()
+                .unwrap();
+            let include = parameters.iter().find(|p| p["name"] == "include").unwrap();
+            assert_eq!(include["style"], "form", "{path}");
+            assert_eq!(include["explode"], false, "{path}");
+            assert_eq!(
+                include["schema"]["items"]["$ref"],
+                format!("#/components/schemas/{name}"),
+            );
+        }
+        let facets = schema["paths"]["/api/v1/competitions/facets"]["get"]["parameters"]
+            .as_array()
+            .unwrap();
+        for name in ["include", "q", "direction"] {
+            assert!(facets.iter().all(|p| p["name"] != name), "{name}");
+        }
     }
 
     #[test]

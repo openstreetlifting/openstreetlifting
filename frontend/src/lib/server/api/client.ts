@@ -55,6 +55,8 @@ export const apiClient = createClient<paths>({
     ),
 });
 
+export const commaSeparatedArrays = { array: { style: 'form', explode: false } } as const;
+
 export async function apiData<T>(request: Promise<{ data?: T }>): Promise<T> {
   const { data } = await request;
   if (data === undefined) throw new Error('API response has no data');

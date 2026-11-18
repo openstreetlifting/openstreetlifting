@@ -7,7 +7,7 @@ use crate::filter::{Filters, Predicate};
 use crate::params::{CompetitionBy, CompetitionFilter, Page};
 use crate::projections::competition::{
     AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionEdition, CompetitionFacets,
-    CompetitionListItem, CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail,
+    CompetitionSummaryRow, Contest, LiftDetail, ParticipantDetail,
 };
 use crate::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
@@ -116,53 +116,6 @@ impl<'a> CompetitionRepository<'a> {
         }
     }
 
-    #[tracing::instrument(name = "repository.competition.list_with_details", skip_all, fields(db.system.name = "postgresql"))]
-    pub async fn list_with_details(
-        &self,
-        page: &Page,
-        filter: &CompetitionFilter,
-    ) -> Result<(Vec<CompetitionListItem>, i64)> {
-        let (competitions, total) = self.list(page, filter).await?;
-        let mut results = Vec::with_capacity(competitions.len());
-
-        for summary in competitions {
-            let CompetitionSummaryRow {
-                competition,
-                lifter_count,
-            } = summary;
-            let federation = sqlx::query_as!(
-                FederationRow,
-                "SELECT federation_id, name, rulebook_id, country, abbreviation
-                 FROM federations
-                 WHERE federation_id = $1",
-                competition.federation_id
-            )
-            .fetch_one(self.pool)
-            .await?;
-
-            let movements = sqlx::query_as!(
-                CompetitionMovementRow,
-                r#"SELECT competition_id, movement_name as "movement_name: Movement",
-                        display_order
-                 FROM competition_movements
-                 WHERE competition_id = $1
-                 ORDER BY display_order"#,
-                competition.competition_id
-            )
-            .fetch_all(self.pool)
-            .await?;
-
-            results.push(CompetitionListItem {
-                competition,
-                federation,
-                movements,
-                lifter_count,
-            });
-        }
-
-        Ok((results, total))
-    }
-
     #[tracing::instrument(name = "repository.competition.facets", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn facets(&self, by: &Filters<CompetitionBy>) -> Result<CompetitionFacets> {
         let mut federations = Self::listed(
@@ -261,33 +214,81 @@ impl<'a> CompetitionRepository<'a> {
         self.get_detailed_competition(competition).await
     }
 
-    #[expect(clippy::too_many_lines)]
     async fn get_detailed_competition(
         &self,
         competition: CompetitionRow,
     ) -> Result<CompetitionDetail> {
-        let federation = sqlx::query_as!(
+        let federation = self.federation(competition.federation_id).await?;
+        let movements = self.movements(competition.competition_id).await?;
+        let categories = self.results(competition.competition_id).await?;
+
+        Ok(CompetitionDetail {
+            competition,
+            federation,
+            movements,
+            categories,
+        })
+    }
+
+    #[tracing::instrument(name = "repository.competition.federations", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn federations(&self, federation_ids: &[Uuid]) -> Result<Vec<FederationRow>> {
+        Ok(sqlx::query_as(
+            "SELECT federation_id, name, rulebook_id, country, abbreviation
+             FROM federations
+             WHERE federation_id = ANY($1)",
+        )
+        .bind(federation_ids)
+        .fetch_all(self.pool)
+        .await?)
+    }
+
+    #[tracing::instrument(name = "repository.competition.competition_movements", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn competition_movements(
+        &self,
+        competition_ids: &[Uuid],
+    ) -> Result<Vec<CompetitionMovementRow>> {
+        Ok(sqlx::query_as(
+            "SELECT competition_id, movement_name, display_order
+             FROM competition_movements
+             WHERE competition_id = ANY($1)
+             ORDER BY competition_id, display_order",
+        )
+        .bind(competition_ids)
+        .fetch_all(self.pool)
+        .await?)
+    }
+
+    #[tracing::instrument(name = "repository.competition.federation", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn federation(&self, federation_id: Uuid) -> Result<FederationRow> {
+        Ok(sqlx::query_as!(
             FederationRow,
             "SELECT federation_id, name, rulebook_id, country, abbreviation
              FROM federations
              WHERE federation_id = $1",
-            competition.federation_id
+            federation_id
         )
         .fetch_one(self.pool)
-        .await?;
+        .await?)
+    }
 
-        let movements = sqlx::query_as!(
+    #[tracing::instrument(name = "repository.competition.movements", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn movements(&self, competition_id: Uuid) -> Result<Vec<CompetitionMovementRow>> {
+        Ok(sqlx::query_as!(
             CompetitionMovementRow,
             r#"SELECT competition_id, movement_name as "movement_name: Movement",
                     display_order
              FROM competition_movements
              WHERE competition_id = $1
              ORDER BY display_order"#,
-            competition.competition_id
+            competition_id
         )
         .fetch_all(self.pool)
-        .await?;
+        .await?)
+    }
 
+    #[expect(clippy::too_many_lines)]
+    #[tracing::instrument(name = "repository.competition.results", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn results(&self, competition_id: Uuid) -> Result<Vec<CategoryParticipants>> {
         let contests = sqlx::query!(
             r#"SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS "division?",
                     COALESCE(cp.category_gender, wc.gender, a.gender) as "gender!: Gender",
@@ -297,7 +298,7 @@ impl<'a> CompetitionRepository<'a> {
              LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
              LEFT JOIN divisions d ON d.division_id = cp.division_id
              WHERE cp.competition_id = $1"#,
-            competition.competition_id
+            competition_id
         )
         .fetch_all(self.pool)
         .await?;
@@ -334,7 +335,7 @@ impl<'a> CompetitionRepository<'a> {
                    AND cp.division_id IS NOT DISTINCT FROM $3
                    AND COALESCE(cp.category_gender, wc.gender, a.gender) = $4
                  ORDER BY placed.rank NULLS LAST"#,
-                competition.competition_id,
+                competition_id,
                 category.weight_class_id,
                 category.division_id,
                 category.gender.as_str()
@@ -425,12 +426,7 @@ impl<'a> CompetitionRepository<'a> {
         category_details
             .sort_by(|a, b| category_order(&a.category).cmp(&category_order(&b.category)));
 
-        Ok(CompetitionDetail {
-            competition,
-            federation,
-            movements,
-            categories: category_details,
-        })
+        Ok(category_details)
     }
 }
 

@@ -1,4 +1,4 @@
-import { apiClient, apiData } from '../client';
+import { apiClient, apiData, commaSeparatedArrays } from '../client';
 import type { components } from '#lib/api/schema.generated.js';
 import type { CompetitionFilters } from '#lib/types/competition.js';
 
@@ -17,7 +17,8 @@ export const competitionsService = {
   async getAll(filters?: CompetitionFilters) {
     const response = await apiData(
       apiClient.GET('/api/v1/competitions', {
-        params: { query: { ...filters, include: 'federation,movements' } },
+        params: { query: { ...filters, include: ['federation', 'movements'] } },
+        querySerializer: commaSeparatedArrays,
       })
     );
     return { ...response, data: response.data.map(withDetails) };
@@ -29,8 +30,9 @@ export const competitionsService = {
         apiClient.GET('/api/v1/competitions/{slug}', {
           params: {
             path: { slug },
-            query: { include: 'federation,results,movements,editions' },
+            query: { include: ['federation', 'results', 'movements', 'editions'] },
           },
+          querySerializer: commaSeparatedArrays,
         })
       )
     );

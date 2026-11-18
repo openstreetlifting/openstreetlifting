@@ -1,7 +1,7 @@
 use chrono::NaiveDate;
 use osl_db::projections::competition::{
-    AttemptSummary, CategoryParticipants, CompetitionDetail, CompetitionListItem, Contest,
-    LiftDetail as DbLiftDetail, ParticipantDetail as DbParticipantDetail,
+    AttemptSummary, CategoryParticipants, Contest, LiftDetail as DbLiftDetail,
+    ParticipantDetail as DbParticipantDetail,
 };
 use osl_db::rows::{
     athlete::AthleteRow, competition::CompetitionRow, competition_movement::CompetitionMovementRow,
@@ -14,7 +14,21 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
-use crate::shared::query::Include;
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum CompetitionInclude {
+    Federation,
+    Results,
+    Movements,
+    Editions,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum CompetitionListInclude {
+    Federation,
+    Movements,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CompetitionResponse {
@@ -303,48 +317,14 @@ impl From<CategoryParticipants> for CategoryDetail {
 }
 
 impl CompetitionResponse {
-    pub fn from_list_item(item: CompetitionListItem, include: &Include) -> Self {
-        let CompetitionListItem {
-            competition,
-            federation,
-            movements,
-            lifter_count,
-        } = item;
-
-        let mut response = Self::from(competition);
-        response.lifter_count = Some(lifter_count);
-        if include.has("federation") {
-            response.federation = Some(federation.into());
-        }
-        if include.has("movements") {
-            let movements: Vec<MovementInfo> = movements.into_iter().map(Into::into).collect();
-            response.event_code = event_code(&movements);
-            response.movements = Some(movements);
-        }
-        response
+    pub fn set_movements(&mut self, rows: Vec<CompetitionMovementRow>) {
+        let movements: Vec<MovementInfo> = rows.into_iter().map(Into::into).collect();
+        self.event_code = event_code(&movements);
+        self.movements = Some(movements);
     }
 
-    pub fn from_detail(detail: CompetitionDetail, include: &Include) -> Self {
-        let CompetitionDetail {
-            competition,
-            federation,
-            movements,
-            categories,
-        } = detail;
-
-        let mut response = Self::from(competition);
-        if include.has("federation") {
-            response.federation = Some(federation.into());
-        }
-        if include.has("movements") {
-            let movements: Vec<MovementInfo> = movements.into_iter().map(Into::into).collect();
-            response.event_code = event_code(&movements);
-            response.movements = Some(movements);
-        }
-        if include.has("results") {
-            response.categories = Some(categories.into_iter().map(Into::into).collect());
-        }
-        response
+    pub fn set_results(&mut self, categories: Vec<CategoryParticipants>) {
+        self.categories = Some(categories.into_iter().map(Into::into).collect());
     }
 }
 

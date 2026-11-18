@@ -7,6 +7,17 @@ use utoipa::{
     openapi::{RefOr, Schema, Type, schema::SchemaType},
 };
 
+pub async fn load_if<T>(
+    needed: bool,
+    load: impl Future<Output = osl_db::error::Result<T>>,
+) -> osl_db::error::Result<Option<T>> {
+    if needed {
+        load.await.map(Some)
+    } else {
+        Ok(None)
+    }
+}
+
 /// Comma-separated `?include=` list, e.g. `?include=competitions,records`.
 #[derive(Debug, Default, Clone)]
 pub struct Include(Vec<String>);
@@ -80,6 +91,17 @@ mod tests {
     enum Section {
         Competitions,
         LiftBalance,
+    }
+
+    #[tokio::test]
+    async fn skips_a_section_that_is_not_needed() {
+        let loaded = load_if::<()>(false, async { panic!("must not be polled") }).await;
+        assert!(matches!(loaded, Ok(None)));
+    }
+
+    #[tokio::test]
+    async fn loads_a_needed_section() {
+        assert!(matches!(load_if(true, async { Ok(1) }).await, Ok(Some(1))));
     }
 
     #[test]

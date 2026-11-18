@@ -17,7 +17,8 @@ where
 pub fn optional_from_str<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
 where
     D: serde::Deserializer<'de>,
-    T: std::str::FromStr<Err = String>,
+    T: std::str::FromStr,
+    T::Err: std::fmt::Display,
 {
     Option::<String>::deserialize(deserializer)?
         .map(|raw| raw.parse().map_err(serde::de::Error::custom))
@@ -223,11 +224,12 @@ mod tests {
             &"/competitions?status=%20COMPLETED%20".parse().unwrap(),
         )
         .unwrap();
-        assert_eq!(query.status, Some(CompetitionStatus::Completed));
+        assert_eq!(query.filters.status, Some(CompetitionStatus::Completed));
         for value in [json!({}), json!({"status": null, "gender": null})] {
             assert!(
                 serde_json::from_value::<CompetitionListQuery>(value.clone())
                     .unwrap()
+                    .filters
                     .status
                     .is_none()
             );

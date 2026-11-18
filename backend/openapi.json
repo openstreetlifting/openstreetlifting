@@ -132,14 +132,6 @@
             }
           },
           {
-            "name": "include",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/Include"
-            }
-          },
-          {
             "name": "status",
             "in": "query",
             "required": false,
@@ -198,6 +190,19 @@
               ],
               "format": "int32"
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CompetitionListInclude"
+              }
+            },
+            "style": "form",
+            "explode": false
           },
           {
             "name": "q",
@@ -244,14 +249,6 @@
         "operationId": "get_competition_facets",
         "parameters": [
           {
-            "name": "include",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/Include"
-            }
-          },
-          {
             "name": "status",
             "in": "query",
             "required": false,
@@ -310,30 +307,11 @@
               ],
               "format": "int32"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
-            }
-          },
-          {
-            "name": "direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/Direction"
-            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Values each competition filter can take given the other filters. Search, sort and paging are ignored.",
+            "description": "Values each competition filter can take given the other filters.",
             "content": {
               "application/json": {
                 "schema": {
@@ -369,8 +347,13 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/Include"
-            }
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CompetitionInclude"
+              }
+            },
+            "style": "form",
+            "explode": false
           }
         ],
         "responses": {
@@ -1800,6 +1783,15 @@
           }
         }
       },
+      "CompetitionInclude": {
+        "type": "string",
+        "enum": [
+          "federation",
+          "results",
+          "movements",
+          "editions"
+        ]
+      },
       "CompetitionInfo": {
         "type": "object",
         "required": [
@@ -1827,6 +1819,13 @@
             "type": "string"
           }
         }
+      },
+      "CompetitionListInclude": {
+        "type": "string",
+        "enum": [
+          "federation",
+          "movements"
+        ]
       },
       "CompetitionResponse": {
         "type": "object",
