@@ -21,7 +21,7 @@ export const RANKING_GENDERS = [
   { value: 'F', label: 'Women' },
 ] as const;
 
-/** Muscle up, pull up, dips and squat. A competition contesting all four is All4. */
+/** Muscle-up, pull-up, dips and squat: the movements of an MPDS competition. */
 const ALL4_MOVEMENTS = 4;
 
 /**

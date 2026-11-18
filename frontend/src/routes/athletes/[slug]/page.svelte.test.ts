@@ -337,9 +337,7 @@ it('drops the performance section when neither chart has data', async () => {
   await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
   expect(page.getByRole('heading', { name: 'Performance', level: 2 }).elements()).toHaveLength(0);
   expect(
-    page
-      .getByText('A completed competition with all four lifts is needed to show lift balance.')
-      .elements()
+    page.getByText('A completed MPDS competition is needed to show lift balance.').elements()
   ).toHaveLength(0);
 });
 

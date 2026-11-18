@@ -93,7 +93,7 @@ async fn returns_standings_for_all_metrics(pool: PgPool) {
     a_board(&pool).await;
     let standings = standings(&pool, "Italian").await;
 
-    assert_eq!(standings.len(), 6, "RIS, total and all four movements");
+    assert_eq!(standings.len(), 6, "RIS, total and each MPDS movement");
 
     let total = metric(&standings, RankingMovement::Total);
     assert_eq!(total.value.to_string(), "390");

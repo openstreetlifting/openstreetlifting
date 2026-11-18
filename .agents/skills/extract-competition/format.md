@@ -27,7 +27,7 @@ country = "FR"
 - Country codes are ISO 3166-1 alpha-2; regions are ISO 3166-2 subdivision names.
 - `name` drops the federation and year (`Dutch Streetlifting Nationals`, `EUROS` from `EUROS 24`) but keeps identifying edition numbers (`Australian Open Event 3`).
 - `event` lists contested movements in `MPDS` order: `MPDS` (All4), `PD` (Classic), also `PDS`, `DS`, `M`. Uncontested movement cells stay empty.
-- RIS: calculated for `MPDS`. A shorter event ranks by published RIS only with `scoring = "ris"` and no weight classes anywhere; see [shorter-event RIS](../../../backend/docs/src/DATA_REFERENCE.md#ris-for-fewer-than-four-lifts).
+- RIS: calculated for `MPDS`. A shorter event ranks by published RIS only with `scoring = "ris"` and no weight classes anywhere; see [shorter-event RIS](../../../backend/docs/src/DATA_REFERENCE.md#ris-for-events-shorter-than-mpds).
 - `status`: `draft`, `upcoming`, `live`, `completed`, `cancelled`.
 
 **Announcements** get only `competition.toml` with `status = "upcoming"`, and `event` only when stated. Choose the permanent slug now. When results arrive, add `entries.csv` and set `completed`.

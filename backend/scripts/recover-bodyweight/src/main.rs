@@ -193,7 +193,7 @@ fn recover(canonical: &mut CanonicalFormat, edition: Edition) -> Outcome {
 
     if canonical.movements != Movement::ALL {
         outcome.ineligible.insert(
-            "event does not contain all four movements",
+            "event is not MPDS",
             canonical.categories.iter().map(|c| c.athletes.len()).sum(),
         );
         return outcome;

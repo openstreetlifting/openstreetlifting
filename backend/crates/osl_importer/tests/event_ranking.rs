@@ -32,9 +32,9 @@ async fn breaks_total_ties_by_lower_bodyweight(pool: PgPool) {
             "tied-totals",
             ALL_FOUR,
             vec![
-                common::weighing(four_lift_athlete("Ada", "Heavier", "50"), "79"),
-                common::weighing(four_lift_athlete("Grace", "Lighter", "50"), "75"),
-                common::weighing(four_lift_athlete("Alan", "Highest", "55"), "80"),
+                common::weighing(mpds_athlete("Ada", "Heavier", "50"), "79"),
+                common::weighing(mpds_athlete("Grace", "Lighter", "50"), "75"),
+                common::weighing(mpds_athlete("Alan", "Highest", "55"), "80"),
             ],
         ),
     )
@@ -72,7 +72,7 @@ async fn breaks_total_ties_by_lower_bodyweight(pool: PgPool) {
     }
 }
 
-fn four_lift_athlete(first: &str, last: &str, muscleup: &str) -> AthleteData {
+fn mpds_athlete(first: &str, last: &str, muscleup: &str) -> AthleteData {
     lifting(common::athlete(first, last), [muscleup, "90", "100", "150"])
 }
 
@@ -101,9 +101,9 @@ async fn seed_both_events(pool: &PgPool) {
     import(
         pool,
         competition(
-            "four-lift-competition",
+            "mpds-competition",
             ALL_FOUR,
-            vec![four_lift_athlete("Ada", "Fourlift", "50")],
+            vec![mpds_athlete("Ada", "Mpds", "50")],
         ),
     )
     .await;
@@ -136,10 +136,7 @@ async fn records_contested_movements(pool: PgPool) {
     assert_eq!(
         events,
         vec![
-            (
-                "four-lift-competition".to_string(),
-                Some("MPDS".to_string())
-            ),
+            ("mpds-competition".to_string(), Some("MPDS".to_string())),
             ("muscle-up-only".to_string(), Some("M".to_string())),
         ]
     );
@@ -150,7 +147,7 @@ async fn normalizes_event_order_before_scoring(pool: PgPool) {
     let mut canonical = competition(
         "reordered-event",
         ALL_FOUR,
-        vec![four_lift_athlete("Ada", "Fourlift", "50")],
+        vec![mpds_athlete("Ada", "Mpds", "50")],
     );
     canonical.movements.reverse();
     import(&pool, canonical).await;
@@ -167,7 +164,7 @@ async fn normalizes_event_order_before_scoring(pool: PgPool) {
     assert_eq!(source, "computed");
     assert_eq!(
         rank(&pool, RankingMovement::Total).await,
-        (vec!["Fourlift".into()], 1)
+        (vec!["Mpds".into()], 1)
     );
 }
 
@@ -177,7 +174,7 @@ async fn excludes_partial_events_from_full_event_totals(pool: PgPool) {
 
     let (names, total) = rank(&pool, RankingMovement::Total).await;
 
-    assert_eq!(names, vec!["Fourlift"], "only the four-lift total ranks");
+    assert_eq!(names, vec!["Mpds"], "only the MPDS total ranks");
     assert_eq!(total, 1, "the count must match the rows, not overcount");
 }
 
@@ -187,7 +184,7 @@ async fn ranks_single_movements_across_events(pool: PgPool) {
 
     let (names, total) = rank(&pool, RankingMovement::Muscleup).await;
 
-    assert_eq!(names, vec!["Specialist", "Fourlift"]);
+    assert_eq!(names, vec!["Specialist", "Mpds"]);
     assert_eq!(total, 2);
 }
 
@@ -199,7 +196,7 @@ async fn preserves_uncontested_movements_as_absent(pool: PgPool) {
 
     assert_eq!(
         names,
-        vec!["Fourlift"],
+        vec!["Mpds"],
         "the muscle-up specialist never squatted, so they are excluded rather than ranked at zero"
     );
     assert_eq!(total, 1);
@@ -230,10 +227,10 @@ async fn omits_computed_ris_for_partial_events(pool: PgPool) {
     .await
     .unwrap();
 
-    assert!(scores[0].1.is_some(), "the four-lift competition is scored");
+    assert!(scores[0].1.is_some(), "the MPDS competition is scored");
     assert!(
         scores[1].1.is_none(),
-        "a one-movement total measured against a four-lift benchmark would be meaningless"
+        "a one-movement total measured against an MPDS benchmark would be meaningless"
     );
 
     let editions: Vec<Option<i32>> =
@@ -285,7 +282,7 @@ async fn updates_event_when_movements_are_removed(pool: PgPool) {
         competition(
             "shrinking-competition",
             ALL_FOUR,
-            vec![four_lift_athlete("Ada", "Fourlift", "50")],
+            vec![mpds_athlete("Ada", "Mpds", "50")],
         ),
     )
     .await;
@@ -297,7 +294,7 @@ async fn updates_event_when_movements_are_removed(pool: PgPool) {
             &[Movement::MuscleUp, Movement::PullUp, Movement::Dips],
             vec![athlete(
                 "Ada",
-                "Fourlift",
+                "Mpds",
                 vec![
                     (Movement::MuscleUp, "50"),
                     (Movement::PullUp, "90"),
@@ -315,7 +312,7 @@ async fn updates_event_when_movements_are_removed(pool: PgPool) {
     assert_eq!(event, Some("MPD".to_string()), "the event follows the file");
 
     let (names, _) = rank(&pool, RankingMovement::Total).await;
-    assert!(names.is_empty(), "and it leaves the four-lift board");
+    assert!(names.is_empty(), "and it leaves the MPDS board");
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
@@ -377,6 +374,6 @@ async fn filters_global_totals_by_event(pool: PgPool) {
     let (rows, _) = rank(&pool, RankingMovement::Total).await;
     assert!(
         rows.is_empty(),
-        "a Classic total has no place on the four-lift board"
+        "a Classic total has no place on the MPDS board"
     );
 }

@@ -70,8 +70,8 @@ export default {
   'of total': 'del totale',
   'Too few athletes in this weight class to compare.':
     'Troppi pochi atleti in questa categoria per un confronto.',
-  'A completed competition with all four lifts is needed to show lift balance.':
-    'Per mostrare l’equilibrio serve una gara completata con tutte e quattro le alzate.',
+  'A completed MPDS competition is needed to show lift balance.':
+    'Per mostrare l’equilibrio serve una gara MPDS completata.',
   'Match these movements exactly': 'Gare con esattamente questi movimenti',
   'Clear movements': 'Cancella la selezione dei movimenti',
   'Clear selection': 'Cancella la selezione',
@@ -324,7 +324,6 @@ export default {
   Male: 'Maschile',
   Female: 'Femminile',
   Mixed: 'Misto',
-  'All four lifts': 'Tutte e quattro le alzate',
   'Not ranked': 'Non in classifica',
   Global: 'Mondiale',
   National: 'Nazionale',

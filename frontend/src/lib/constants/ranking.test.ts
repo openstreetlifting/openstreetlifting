@@ -31,7 +31,7 @@ it('reads a meet as reported only when no score in it could be recomputed', () =
   ).toBe('recomputed');
 });
 
-it('separates a shorter event from a four lift meet with no published score', () => {
+it('separates a shorter event from an MPDS meet with no published score', () => {
   expect(risProvenance(meet(['P', 'D'], [{}]))).toBe('not-contested');
   expect(risProvenance(meet(all4, [{}, {}]))).toBe('not-published');
 });

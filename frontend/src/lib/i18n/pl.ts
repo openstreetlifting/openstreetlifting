@@ -69,8 +69,8 @@ export default {
   'of total': 'totalu',
   'Too few athletes in this weight class to compare.':
     'Za mało zawodników w tej kategorii wagowej, aby porównać.',
-  'A completed competition with all four lifts is needed to show lift balance.':
-    'Do pokazania balansu potrzebne są ukończone zawody ze wszystkimi czterema bojami.',
+  'A completed MPDS competition is needed to show lift balance.':
+    'Do pokazania balansu potrzebne są ukończone zawody MPDS.',
   'Match these movements exactly': 'Wybierz dokładny zestaw bojów',
   'Clear movements': 'Wyczyść wybór bojów',
   'Clear selection': 'Wyczyść wybór',
@@ -322,7 +322,6 @@ export default {
   Male: 'Mężczyzna',
   Female: 'Kobieta',
   Mixed: 'Mieszana',
-  'All four lifts': 'Wszystkie cztery boje',
   'Not ranked': 'Poza rankingiem',
   Global: 'Światowy',
   National: 'Krajowy',

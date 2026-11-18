@@ -81,7 +81,7 @@ Give editions of the same competition the same `competition.series`, for example
 | `D`    | Dips      |
 | `S`    | Squat     |
 
-Other combinations of these four lifts, such as `PDS`, use the same letter order.
+Other combinations of these lifts, such as `PDS`, use the same letter order.
 
 ### Status
 
@@ -116,7 +116,7 @@ Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,S
 | `NativeName`, `CategorySex`, `BodyweightSource`, `ReportedRisEdition` | Optional.                                                 |
 | All other base headers, including `TotalKg`                           | Required, even when their cells are empty.                |
 
-Keep the columns for all four movements, leaving cells empty for movements
+Keep the columns for every MPDS movement, leaving cells empty for movements
 outside the event. Unknown or misspelled headers are rejected.
 
 ### Athlete and result columns
@@ -238,7 +238,7 @@ Leave unknown values empty. The competition year alone does not establish
 - The former `Ris` header is rejected. Rename it to `ReportedRis`, preserving
   its values.
 
-### RIS for fewer than four lifts
+### RIS for events shorter than MPDS
 
 Some competitions, such as FinalRep Underground 3L, rank athletes by a published
 RIS score across pull-up, dips and squat. Record the actual event as `PDS`.
