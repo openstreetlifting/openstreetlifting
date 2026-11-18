@@ -1,0 +1,18 @@
+event = "PDS"
+sources = [
+    "https://cdtqddvbrdknehebkdnh.supabase.co/storage/v1/object/public/media/risultati/1794853304764-o3f5sc.pdf",
+    "https://streetlifting-italia.it/gare-2026",
+]
+
+[competition]
+name = "Finale Nazionale Street 3"
+start_date = "2026-11-15"
+city = "Monza"
+venue = "Ironfit"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
