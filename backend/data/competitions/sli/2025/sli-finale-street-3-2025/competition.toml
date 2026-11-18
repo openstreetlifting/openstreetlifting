@@ -1,0 +1,16 @@
+event = "PDS"
+sources = [
+    "https://streetlifting-italia.it/results/2025/finale-street3-2025.pdf",
+    "https://streetlifting-italia.it/gare-2025",
+]
+
+[competition]
+name = "Finale Nazionale Street 3"
+start_date = "2025-11-02"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
