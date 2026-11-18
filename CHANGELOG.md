@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.76.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.75.0...v0.76.0) (2026-11-18)
+
+
+### Features
+
+* **data:** import FinalRep DACH 2023 ([#1060](https://github.com/openstreetlifting/openstreetlifting/issues/1060)) ([7bb687f](https://github.com/openstreetlifting/openstreetlifting/commit/7bb687f4c87580990bc53154c71c54f932ea7980))
+
 ## [0.75.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.74.1...v0.75.0) (2026-11-18)
 
 
