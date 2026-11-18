@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.75.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.74.1...v0.75.0) (2026-11-18)
+
+
+### Features
+
+* **data:** import ISF World Championship 2023 ([#1058](https://github.com/openstreetlifting/openstreetlifting/issues/1058)) ([31cfb02](https://github.com/openstreetlifting/openstreetlifting/commit/31cfb02002878b728716a259bfc91e949d6b24da))
+* **data:** import SLI Campionato Italiano Push & Pull 2023 ([#1036](https://github.com/openstreetlifting/openstreetlifting/issues/1036)) ([bfb0ef8](https://github.com/openstreetlifting/openstreetlifting/commit/bfb0ef80162721b94263f1fcbda9427d6a990b24))
+* **data:** import SLI Campionato Italiano Streetlifting 2023 ([#1034](https://github.com/openstreetlifting/openstreetlifting/issues/1034)) ([d3b6c7b](https://github.com/openstreetlifting/openstreetlifting/commit/d3b6c7b5990d8f14b8e965fd94869c2cdb10f92b))
+* **data:** import SLI Finale Nazionale Push & Pull 2025 ([#1053](https://github.com/openstreetlifting/openstreetlifting/issues/1053)) ([12b7031](https://github.com/openstreetlifting/openstreetlifting/commit/12b7031a0523dd2a3c9271ca4747c50797305b3e))
+* **data:** import SLI Finale Nazionale Street 3 2025 ([#1052](https://github.com/openstreetlifting/openstreetlifting/issues/1052)) ([1f5c385](https://github.com/openstreetlifting/openstreetlifting/commit/1f5c385f95245907b8aa58cb2c8996f0ba2f37a0))
+* **data:** import SLI Finale Nazionale Street 3 2026 ([#1055](https://github.com/openstreetlifting/openstreetlifting/issues/1055)) ([3f799bc](https://github.com/openstreetlifting/openstreetlifting/commit/3f799bcb6b657d9ab18c6005b149b843e3e7bf55))
+* **data:** import SLI Push & Pull July 2024 ([#1042](https://github.com/openstreetlifting/openstreetlifting/issues/1042)) ([da23fe3](https://github.com/openstreetlifting/openstreetlifting/commit/da23fe3b3d1b59fd03cd50b0dd6ded0688c4b304))
+* **data:** import SLI Push & Pull Roma 2024 ([#1057](https://github.com/openstreetlifting/openstreetlifting/issues/1057)) ([4c4f65f](https://github.com/openstreetlifting/openstreetlifting/commit/4c4f65f664be5b080bf1949c7dfb84b4e5e2cce3))
+* **data:** import SLI Push & Pull September 2023 ([#1038](https://github.com/openstreetlifting/openstreetlifting/issues/1038)) ([8d56574](https://github.com/openstreetlifting/openstreetlifting/commit/8d56574e3992acccf9f2be67c38e498adf525efd))
+* **data:** import SLI RiminiWellness Dips 2025 ([#1048](https://github.com/openstreetlifting/openstreetlifting/issues/1048)) ([490653d](https://github.com/openstreetlifting/openstreetlifting/commit/490653d0282a7f0c408ba026ced5e3b0237b60be))
+* **data:** import SLI RiminiWellness Muscle-Up 2025 ([#1046](https://github.com/openstreetlifting/openstreetlifting/issues/1046)) ([0625776](https://github.com/openstreetlifting/openstreetlifting/commit/0625776524c4c52321ca1a78cb435c1794ebd7e0))
+* **data:** import SLI RiminiWellness Pull-Up 2025 ([#1047](https://github.com/openstreetlifting/openstreetlifting/issues/1047)) ([3fe7ede](https://github.com/openstreetlifting/openstreetlifting/commit/3fe7eded4cea5950018e2870b9e22f8643c0ef4d))
+* **data:** import SLI RiminiWellness Push & Pull 2025 ([#1050](https://github.com/openstreetlifting/openstreetlifting/issues/1050)) ([d7e0cda](https://github.com/openstreetlifting/openstreetlifting/commit/d7e0cda9a930af19817c0644783143b575c955f9))
+* **data:** import SLI Street 3 2025 ([#1045](https://github.com/openstreetlifting/openstreetlifting/issues/1045)) ([4154cc1](https://github.com/openstreetlifting/openstreetlifting/commit/4154cc1fb81c13b5e14b30401a51b2c7c1234d8d))
+* **data:** import SLI Street 3 January 2024 ([#1032](https://github.com/openstreetlifting/openstreetlifting/issues/1032)) ([695250c](https://github.com/openstreetlifting/openstreetlifting/commit/695250c9be1ba0165fd77f2c3fd87591a14ca148))
+* **data:** import SLI Street 3 September 2024 ([#1044](https://github.com/openstreetlifting/openstreetlifting/issues/1044)) ([3caa888](https://github.com/openstreetlifting/openstreetlifting/commit/3caa8886b1185ed68fb2eca2db2d27699d99bacc))
+* **data:** import SLI Street 4 2024 ([#1030](https://github.com/openstreetlifting/openstreetlifting/issues/1030)) ([9658b9e](https://github.com/openstreetlifting/openstreetlifting/commit/9658b9ee64c6b63c88569b7888f76d39ff3e6a47))
+* **data:** import SLI Street 4 Roma 2023 ([#1040](https://github.com/openstreetlifting/openstreetlifting/issues/1040)) ([d75852a](https://github.com/openstreetlifting/openstreetlifting/commit/d75852ae0eeeab6532224cfcb53119865e965f03))
+
 ## [0.74.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.74.0...v0.74.1) (2026-11-16)
 
 
