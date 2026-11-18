@@ -1,0 +1,20 @@
+event = "PDS"
+sources = [
+    "https://streetlifting-italia.it/results/2023/s3-monza-uomini-2023.pdf",
+    "https://streetlifting-italia.it/results/2023/s3-monza-donne-2023.pdf",
+    "https://streetlifting-italia.it/results/2024/street3-monza-28-01-2024.pdf",
+    "https://streetlifting-italia.it/gare-2023",
+    "https://streetlifting-italia.it/gare-2024",
+]
+
+[competition]
+name = "Street 3"
+start_date = "2024-01-28"
+city = "Monza"
+country = "IT"
+status = "completed"
+
+[federation]
+name = "SLI"
+abbreviation = "SLI"
+country = "IT"
