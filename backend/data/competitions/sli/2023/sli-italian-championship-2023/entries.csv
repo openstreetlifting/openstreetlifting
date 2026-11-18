@@ -1,0 +1,50 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,59,Emanuele,Coluzzi,,IT,56.6,,190.5,competed,,,,,,,,,42.5,,,,58,,,,90
+M,59,Tommaso,Ronchetti,,IT,51.4,,200,competed,,,,,,,,,42.5,,,,57.5,,,,100
+M,66,Tiziano,Bozzi,,IT,64.4,,287.5,competed,,,,,,,,,50,,,,72.5,,,,165
+M,66,Samuele,Calanna,,IT,65.5,,330,competed,,,,,,,,,62.5,,,,100,,,,167.5
+M,66,Mattia,Codo,,IT,64.6,,230,competed,,,,,,,,,50,,,,62.5,,,,117.5
+M,66,Alessio,Fortuna,,IT,64.5,,311.5,competed,,,,,,,,,81.5,,,,92.5,,,,137.5
+M,66,Federico,Impagliazzo,,IT,65.5,,318,competed,,,,,,,,,60,,,,80,,,,178
+M,66,Andrea,Mantello,,IT,64.7,,322.5,competed,,,,,,,,,75,,,,105,,,,142.5
+M,66,Guido,Moschella,,IT,64.7,,262.5,competed,,,,,,,,,37.5,,,,77.5,,,,147.5
+M,66,Johnny Stefano,Suarez,,IT,64.2,,197.5,competed,,,,,,,,,42.5,,,,60,,,,95
+M,74,Ruben,Castelli,,IT,70.2,,312.5,competed,,,,,,,,,70,,,,92.5,,,,150
+M,74,Riccardo,Cuda,,IT,72.6,,330,competed,,,,,,,,,70,,,,102.5,,,,157.5
+M,74,Alberto,Danieletto,,IT,72.7,,327.5,competed,,,,,,,,,62.5,,,,80,,,,185
+M,74,Giuseppe,Del Grande Centi,,IT,72.6,,347.5,competed,,,,,,,,,72.5,,,,95,,,,180
+M,74,Raffaello,Giammichele,,IT,66.1,,305,competed,,,,,,,,,45,,,,90,,,,170
+M,74,Federico,Leuzzi,,IT,69.5,,295,competed,,,,,,,,,45,,,,70,,,,180
+M,74,Simone,Motta,,IT,72.6,,376.5,competed,,,,,,,,,75.5,,,,111,,,,190
+M,74,Federico,Nardella,,IT,70.3,,352.5,competed,,,,,,,,,67.5,,,,95,,,,190
+M,74,Luca,Romano,,IT,73.8,,403.5,competed,,,,,,,,,76,,,,92.5,,,,235
+M,74,Gabriele,Rosiello,,IT,71.1,,285,competed,,,,,,,,,50,,,,75,,,,160
+M,74,Alessandro,Saltimbanco,,IT,69.3,,240,competed,,,,,,,,,67.5,,,,62.5,,,,110
+M,74,Christian,Win,,IT,73.1,,340,competed,,,,,,,,,70,,,,100,,,,170
+M,74,Alessandro,Zito,,IT,72,,207.5,competed,,,,,,,,,45,,,,62.5,,,,100
+M,83,Antonino,Andrea Pensabene,,IT,80.8,,342.5,competed,,,,,,,,,77.5,,,,110,,,,155
+M,83,Filippo,Bellamoli,,IT,80.6,,285,competed,,,,,,,,,47.5,,,,80,,,,157.5
+M,83,Giulio,Ceccarelli,,IT,82.3,,250,competed,,,,,,,,,35,,,,47.5,,,,167.5
+M,83,Matteo,Cerbone,,IT,78.4,,405,competed,,,,,,,,,70,,,,105,,,,230
+M,83,Gaetano,Chianello,,IT,79,,330,competed,,,,,,,,,57.5,,,,100,,,,172.5
+M,83,Francesco,Convertini,,IT,80.5,,320,competed,,,,,,,,,60,,,,82.5,,,,177.5
+M,83,Tony,D'Agostino,,IT,79.1,,430,competed,,,,,,,,,85,,,,100,,,,245
+M,83,Davide,De Salvo,,IT,76.6,,330,competed,,,,,,,,,70,,,,85,,,,175
+M,83,Giovanni Fabrizio,Di Stefano,,IT,80.7,,361.25,competed,,,,,,,,,61.25,,,,100,,,,200
+M,83,Diego,Macri,,IT,74.8,,350,competed,,,,,,,,,87.5,,,,122.5,,,,140
+M,83,Riccardo,Tomasini,,IT,82.6,,350,competed,,,,,,,,,77.5,,,,100,,,,172.5
+M,93,Andrea,Dattola,,IT,88.4,,460,competed,,,,,,,,,90,,,,120,,,,250
+M,93,Davide,Gargaro,,IT,91,,345,competed,,,,,,,,,65,,,,100,,,,180
+M,93,Giovanni,Lategana,,IT,90.2,,420,competed,,,,,,,,,70,,,,115,,,,235
+M,93,Emanuele,Palilla,,IT,86.4,,387.5,competed,,,,,,,,,72.5,,,,102.5,,,,212.5
+M,93+,Marco,Bungaro,,IT,94.9,,382.5,competed,,,,,,,,,57.5,,,,112.5,,,,212.5
+M,93+,Davide,Della Volpe,,IT,93.1,,370,competed,,,,,,,,,75,,,,90,,,,205
+F,52,Federica,D'Angelo,,IT,50.2,,167.5,competed,,,,,,,,,35,,,,45,,,,87.5
+F,52,Giulia,Orfei,,IT,49.9,,145,competed,,,,,,,,,22.5,,,,25,,,,97.5
+F,52,Marika,Scotto Rosato,,IT,48.5,,137.5,competed,,,,,,,,,25,,,,37.5,,,,75
+F,57,Nicole,Anania,,IT,54.2,,161.25,competed,,,,,,,,,23.75,,,,25,,,,112.5
+F,57,Erika,Carlesimo,,IT,54.3,,185.5,competed,,,,,,,,,27.5,,,,45.5,,,,112.5
+F,57,Susanna,Franceschini,,IT,53.4,,117.5,competed,,,,,,,,,10,,,,12.5,,,,95
+F,57,Marta,Galletto,,IT,56.5,,165,competed,,,,,,,,,27.5,,,,37.5,,,,100
+F,57,Federica,Mauri,,IT,56.1,,145,competed,,,,,,,,,15,,,,27.5,,,,102.5
+F,57,Barbara,Palumbo,,IT,54.1,,137.5,competed,,,,,,,,,17.5,,,,35,,,,85
