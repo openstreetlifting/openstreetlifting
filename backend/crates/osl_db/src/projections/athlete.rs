@@ -42,7 +42,7 @@ pub struct PersonalRecordRow {
     pub record: Option<RecordMark>,
     pub competition_name: String,
     pub competition_slug: String,
-    pub date: Option<chrono::NaiveDate>,
+    pub date: chrono::NaiveDate,
 }
 
 #[derive(Debug)]

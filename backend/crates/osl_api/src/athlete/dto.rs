@@ -289,8 +289,7 @@ pub struct AthleteCompetitionSummary {
     pub competition_id: Uuid,
     pub competition_name: String,
     pub competition_slug: String,
-    #[schema(required = true)]
-    pub competition_date: Option<chrono::NaiveDate>,
+    pub competition_date: chrono::NaiveDate,
     pub category_name: String,
     #[schema(required = true)]
     pub division: Option<String>,
@@ -320,8 +319,7 @@ pub struct PersonalRecord {
     pub record: Option<RecordMark>,
     pub competition_name: String,
     pub competition_slug: String,
-    #[schema(required = true)]
-    pub date: Option<chrono::NaiveDate>,
+    pub date: chrono::NaiveDate,
 }
 
 /// The athlete's highest total at an MPDS competition.
@@ -377,7 +375,7 @@ impl From<AthleteCompetitionRow> for AthleteCompetitionSummary {
             competition_id: row.competition_id,
             competition_name: row.competition_name,
             competition_slug: row.competition_slug,
-            competition_date: Some(row.competition_date),
+            competition_date: row.competition_date,
             category_name: osl_domain::category_label(
                 None,
                 row.category_gender,
