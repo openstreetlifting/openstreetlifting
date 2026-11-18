@@ -44,7 +44,7 @@ it('propagates a distinct backend client span and preserves caller headers', asy
   await trace.getTracer('test').startActiveSpan('page', async (span) => {
     await apiClient.GET('/api/v1/athletes/{slug}', {
       headers: new Headers({ 'x-custom': 'kept' }),
-      params: { path: { slug: 'private-slug' }, query: { include: 'standing' } },
+      params: { path: { slug: 'private-slug' }, query: { include: ['standing'] } },
     });
     const headers = (fetch.mock.calls[0][0] as Request).headers;
     const parent = headers.get('traceparent')!.split('-');

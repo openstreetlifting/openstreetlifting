@@ -12,7 +12,16 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::competition::dto::AttemptInfo;
-use crate::shared::query::Include;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum AthleteInclude {
+    Competitions,
+    Records,
+    Standing,
+    LiftBalance,
+    Neighbors,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteResponse {
@@ -444,7 +453,8 @@ impl From<BestRisRow> for BestRis {
 }
 
 impl AthleteResponse {
-    pub fn from_detail(detail: AthleteDetail, include: &Include) -> Self {
+    #[must_use]
+    pub fn from_detail(detail: AthleteDetail, include: &[AthleteInclude]) -> Self {
         let AthleteDetail {
             athlete,
             competitions,
@@ -457,11 +467,11 @@ impl AthleteResponse {
 
         let mut response = Self::from(athlete);
         response.instagram_handle = instagram_handle;
-        if include.has("competitions") {
+        if include.contains(&AthleteInclude::Competitions) {
             response.competitions = Some(competitions.into_iter().map(Into::into).collect());
             response.total_competitions = Some(total_competitions);
         }
-        if include.has("records") {
+        if include.contains(&AthleteInclude::Records) {
             response.personal_records =
                 Some(personal_records.into_iter().map(Into::into).collect());
             response.best_total = Some(best_total.map(Into::into));

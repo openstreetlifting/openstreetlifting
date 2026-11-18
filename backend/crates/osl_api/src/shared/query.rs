@@ -1,4 +1,7 @@
-use serde::{Deserialize, Deserializer};
+use serde::{
+    Deserialize, Deserializer,
+    de::{DeserializeOwned, IntoDeserializer, value::Error as ValueError},
+};
 use utoipa::{
     PartialSchema, ToSchema,
     openapi::{RefOr, Schema, Type, schema::SchemaType},
@@ -22,6 +25,16 @@ impl Include {
     #[must_use]
     pub fn has(&self, name: &str) -> bool {
         self.0.iter().any(|v| v == name)
+    }
+
+    pub fn parse_as<T: DeserializeOwned>(&self) -> Result<Vec<T>, String> {
+        self.0
+            .iter()
+            .map(|value| {
+                T::deserialize(value.as_str().into_deserializer())
+                    .map_err(|error: ValueError| format!("invalid include '{value}': {error}"))
+            })
+            .collect()
     }
 
     pub fn validate(&self, allowed: &[&str]) -> Result<(), String> {
@@ -61,6 +74,31 @@ impl<'de> Deserialize<'de> for Include {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[derive(Debug, PartialEq, Deserialize)]
+    #[serde(rename_all = "snake_case")]
+    enum Section {
+        Competitions,
+        LiftBalance,
+    }
+
+    #[test]
+    fn parses_typed_values() {
+        let include = Include::parse("competitions, lift_balance");
+        assert_eq!(
+            include.parse_as::<Section>().unwrap(),
+            vec![Section::Competitions, Section::LiftBalance]
+        );
+    }
+
+    #[test]
+    fn rejects_unknown_typed_values_and_names_the_allowed_ones() {
+        let err = Include::parse("competitions,bogus")
+            .parse_as::<Section>()
+            .unwrap_err();
+        assert!(err.contains("bogus"), "{err}");
+        assert!(err.contains("lift_balance"), "{err}");
+    }
 
     #[test]
     fn returns_empty_includes_when_absent() {

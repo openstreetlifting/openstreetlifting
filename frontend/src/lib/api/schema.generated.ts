@@ -243,6 +243,7 @@ export interface components {
       total: string | null;
       total_record: components['schemas']['RecordMark'] | null;
     };
+    AthleteInclude: 'competitions' | 'records' | 'standing' | 'lift_balance' | 'neighbors';
     AthleteLift: {
       attempts: components['schemas']['AttemptInfo'][];
       best_weight: string | null;
@@ -697,7 +698,7 @@ export interface operations {
   get_athlete: {
     parameters: {
       query?: {
-        include?: components['schemas']['Include'];
+        include?: components['schemas']['AthleteInclude'][];
       };
       header?: never;
       path: {
@@ -1094,6 +1095,9 @@ type FlattenedDeepRequired<T> = {
 type ReadonlyArray<T> = [Exclude<T, undefined>] extends [unknown[]]
   ? Readonly<Exclude<T, undefined>>
   : Readonly<Exclude<T, undefined>[]>;
+export const athleteIncludeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>['schemas']['AthleteInclude']
+> = ['competitions', 'records', 'standing', 'lift_balance', 'neighbors'];
 export const athleteStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['AthleteStatus']
 > = ['competed', 'disqualified', 'no_show'];

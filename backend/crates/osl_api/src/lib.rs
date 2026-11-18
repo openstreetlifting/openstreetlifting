@@ -74,6 +74,7 @@ impl AppState {
             crate::competition::dto::CategoryInfo,
             crate::competition::dto::AthleteInfo,
             crate::competition::dto::MovementInfo,
+            crate::athlete::dto::AthleteInclude,
             crate::athlete::dto::AthleteResponse,
             crate::athlete::dto::AthleteCompetitionSummary,
             crate::athlete::dto::AthleteLift,
@@ -182,6 +183,31 @@ mod tests {
             serde_json::to_value(ApiDoc::openapi()).unwrap(),
             committed,
             "backend/openapi.json is stale, run from frontend: pnpm api:sync"
+        );
+    }
+
+    #[test]
+    fn documents_athlete_includes_as_a_comma_separated_enum() {
+        let schema = serde_json::to_value(ApiDoc::openapi()).unwrap();
+        let parameters = schema["paths"]["/api/v1/athletes/{slug}"]["get"]["parameters"]
+            .as_array()
+            .unwrap();
+        let include = parameters.iter().find(|p| p["name"] == "include").unwrap();
+        assert_eq!(include["style"], "form");
+        assert_eq!(include["explode"], false);
+        assert_eq!(
+            include["schema"]["items"]["$ref"],
+            "#/components/schemas/AthleteInclude"
+        );
+        assert_eq!(
+            schema["components"]["schemas"]["AthleteInclude"]["enum"],
+            serde_json::json!([
+                "competitions",
+                "records",
+                "standing",
+                "lift_balance",
+                "neighbors"
+            ])
         );
     }
 

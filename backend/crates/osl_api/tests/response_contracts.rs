@@ -1,6 +1,9 @@
 use osl_api::{
     ApiDoc,
-    athlete::dto::{AthleteResponse, AthleteStanding, LiftBalance, MetricStanding, StandingPlace},
+    athlete::dto::{
+        AthleteInclude, AthleteResponse, AthleteStanding, LiftBalance, MetricStanding,
+        StandingPlace,
+    },
     competition::dto::{CategoryInfo, CompetitionResponse},
     ranking::dto::{AthleteInfo, CompetitionInfo, FederationInfo, GlobalRankingEntry},
     ris::dto::ComputeRisRequest,
@@ -89,9 +92,10 @@ fn serializes_requested_empty_sections() {
         total_competitions: 0,
         instagram_handle: None,
     };
-    let include =
-        serde_json::from_value(json!("competitions,records,standing,lift_balance")).unwrap();
-    let mut response = AthleteResponse::from_detail(detail, &include);
+    let mut response = AthleteResponse::from_detail(
+        detail,
+        &[AthleteInclude::Competitions, AthleteInclude::Records],
+    );
     response.standing = Some(None);
     response.lift_balance = Some(None);
     let body = serde_json::to_value(response).unwrap();

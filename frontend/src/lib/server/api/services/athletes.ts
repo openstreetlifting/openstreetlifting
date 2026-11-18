@@ -13,8 +13,9 @@ export const athletesService = {
       apiClient.GET('/api/v1/athletes/{slug}', {
         params: {
           path: { slug },
-          query: { include: 'competitions,records,standing,lift_balance,neighbors' },
+          query: { include: ['competitions', 'records', 'standing', 'lift_balance', 'neighbors'] },
         },
+        querySerializer: { array: { style: 'form', explode: false } },
       })
     );
 
