@@ -318,7 +318,7 @@ impl<'a> AthleteRepository<'a> {
                         record,
                         competition_name: competition.competition_name.clone(),
                         competition_slug: competition.competition_slug.clone(),
-                        date: Some(competition.competition_date),
+                        date: competition.competition_date,
                     })
             })
             .collect();

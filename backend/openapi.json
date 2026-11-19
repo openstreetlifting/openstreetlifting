@@ -1120,10 +1120,7 @@
             "type": "string"
           },
           "competition_date": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": "string",
             "format": "date"
           },
           "competition_id": {
@@ -2968,10 +2965,7 @@
             "type": "string"
           },
           "date": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": "string",
             "format": "date"
           },
           "max_weight": {

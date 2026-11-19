@@ -229,7 +229,7 @@ export interface components {
   schemas: {
     AthleteCompetitionSummary: {
       category_name: string;
-      competition_date: string | null;
+      competition_date: string;
       competition_id: string;
       competition_name: string;
       competition_slug: string;
@@ -557,7 +557,7 @@ export interface components {
     PersonalRecord: {
       competition_name: string;
       competition_slug: string;
-      date: string | null;
+      date: string;
       max_weight: string;
       movement_name: components['schemas']['Movement'];
       record: components['schemas']['RecordMark'] | null;

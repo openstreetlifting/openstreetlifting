@@ -28,7 +28,7 @@ export function progressPoints(
 ): ProgressPoint[] {
   const byCompetition = new Map<string, ProgressPoint>();
   for (const competition of competitions) {
-    if (competition.status !== 'competed' || !competition.competition_date) continue;
+    if (competition.status !== 'competed') continue;
     const timestamp = Date.parse(competition.competition_date);
     if (!Number.isFinite(timestamp)) continue;
     // Keep totals, scores and individual lifts within the selected event format.

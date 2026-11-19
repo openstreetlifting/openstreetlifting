@@ -343,16 +343,14 @@
     </div>
   {/if}
 
-  {#snippet competitionFooter(name: string, date: string | null)}
+  {#snippet competitionFooter(name: string, date: string)}
     <span
       class="mt-1 flex items-center gap-1 border-t border-stroke pt-3 text-secondary transition-colors group-hover:text-ink"
     >
       <span class="truncate" title={name}>{name}</span>
       <ChevronIcon class="size-3 shrink-0 -rotate-90" />
     </span>
-    {#if date}<span class="{TEXT.fieldLabel} mt-1 block lg:hidden"
-        >{formatDate(date, i18n.locale)}</span
-      >{/if}
+    <span class="{TEXT.fieldLabel} mt-1 block lg:hidden">{formatDate(date, i18n.locale)}</span>
   {/snippet}
 
   {#if athlete.personal_records.length > 0 || athlete.best_total || athlete.best_ris}
@@ -396,7 +394,7 @@
         {#each athlete.personal_records as pr (pr.movement_name)}
           <MetricCard
             heading={i18n.movement(pr.movement_name)}
-            meta={pr.date ? formatDate(pr.date, i18n.locale) : undefined}
+            meta={formatDate(pr.date, i18n.locale)}
             record={pr.record}
             href={i18n.href(resolve(`competitions/${pr.competition_slug}`))}
           >

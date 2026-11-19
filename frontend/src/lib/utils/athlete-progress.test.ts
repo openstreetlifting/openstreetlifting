@@ -67,11 +67,10 @@ describe('athlete progress', () => {
     expect(progressPoints(competitions.slice(3), 'total')).toEqual([]);
   });
 
-  it('excludes disqualified, no-show and undated results', () => {
+  it('excludes disqualified, no-show and unparseable results', () => {
     const competitions = [
       result({ status: 'disqualified' }),
       result({ status: 'no_show' }),
-      result({ competition_date: null }),
       result({ competition_date: 'invalid' }),
     ];
     expect(progressPoints(competitions, 'ris')).toEqual([]);
