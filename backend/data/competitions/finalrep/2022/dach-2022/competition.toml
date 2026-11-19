@@ -1,0 +1,16 @@
+event = "MPDS"
+sources = ["https://app.weighted-calisthenics.de/#events"]
+
+[competition]
+name = "DACH"
+start_date = "2022-05-07"
+end_date = "2022-05-08"
+city = "Bayreuth"
+venue = "DS Gym"
+region = "Bayern"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "FinalRep"
+country = "DE"
