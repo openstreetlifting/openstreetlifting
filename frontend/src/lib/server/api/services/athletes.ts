@@ -1,4 +1,4 @@
-import { apiClient, apiData } from '../client';
+import { apiClient, apiData, commaSeparatedArrays } from '../client';
 import type { paths } from '#lib/api/schema.generated.js';
 
 type AthleteQuery = paths['/api/v1/athletes']['get']['parameters']['query'];
@@ -15,7 +15,7 @@ export const athletesService = {
           path: { slug },
           query: { include: ['competitions', 'records', 'standing', 'lift_balance', 'neighbors'] },
         },
-        querySerializer: { array: { style: 'form', explode: false } },
+        querySerializer: commaSeparatedArrays,
       })
     );
 

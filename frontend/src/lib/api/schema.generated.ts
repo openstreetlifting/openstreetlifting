@@ -352,12 +352,14 @@ export interface components {
       federation_id: string;
       name: string;
     };
+    CompetitionInclude: 'federation' | 'results' | 'movements' | 'editions';
     CompetitionInfo: {
       competition_id: string;
       date: string | null;
       name: string;
       slug: string;
     };
+    CompetitionListInclude: 'federation' | 'movements';
     CompetitionResponse: {
       categories?: components['schemas']['CategoryDetail'][];
       city: string | null;
@@ -735,12 +737,12 @@ export interface operations {
       query?: {
         page?: number;
         page_size?: number;
-        include?: components['schemas']['Include'];
         status?: components['schemas']['CompetitionStatus'] | null;
         event?: string | null;
         federation?: string | null;
         country?: string | null;
         year?: number | null;
+        include?: components['schemas']['CompetitionListInclude'][];
         q?: string | null;
         direction?: components['schemas']['Direction'];
       };
@@ -769,14 +771,11 @@ export interface operations {
   get_competition_facets: {
     parameters: {
       query?: {
-        include?: components['schemas']['Include'];
         status?: components['schemas']['CompetitionStatus'] | null;
         event?: string | null;
         federation?: string | null;
         country?: string | null;
         year?: number | null;
-        q?: string | null;
-        direction?: components['schemas']['Direction'];
       };
       header?: never;
       path?: never;
@@ -803,7 +802,7 @@ export interface operations {
   get_competition: {
     parameters: {
       query?: {
-        include?: components['schemas']['Include'];
+        include?: components['schemas']['CompetitionInclude'][];
       };
       header?: never;
       path: {
@@ -1101,6 +1100,12 @@ export const athleteIncludeValues: ReadonlyArray<
 export const athleteStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['AthleteStatus']
 > = ['competed', 'disqualified', 'no_show'];
+export const competitionIncludeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>['schemas']['CompetitionInclude']
+> = ['federation', 'results', 'movements', 'editions'];
+export const competitionListIncludeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>['schemas']['CompetitionListInclude']
+> = ['federation', 'movements'];
 export const competitionStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['CompetitionStatus']
 > = ['draft', 'upcoming', 'live', 'completed', 'cancelled'];
