@@ -1,5 +1,6 @@
 use rust_decimal::Decimal;
 use sqlx::{PgPool, Postgres, QueryBuilder};
+use std::collections::HashMap;
 use uuid::Uuid;
 
 use crate::error::{Result, StorageError};
@@ -303,107 +304,121 @@ impl<'a> CompetitionRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        let categories: Vec<Contest> = contests
-            .into_iter()
-            .map(|row| Contest {
-                weight_class_id: row.weight_class_id,
-                division_id: row.division_id,
-                division: row.division,
-                gender: row.gender,
-                weight_class_min: row.weight_class_min,
-                weight_class_max: row.weight_class_max,
-            })
+        let categories = contests.into_iter().map(|row| Contest {
+            weight_class_id: row.weight_class_id,
+            division_id: row.division_id,
+            division: row.division,
+            gender: row.gender,
+            weight_class_min: row.weight_class_min,
+            weight_class_max: row.weight_class_max,
+        });
+
+        let participants = sqlx::query!(
+            r#"SELECT cp.participant_id, cp.weight_class_id, cp.division_id,
+                    COALESCE(cp.category_gender, wc.gender, a.gender) as "category_gender!: Gender",
+                    cp.bodyweight, cp.age, cp.total,
+                    total_mark.mark as "total_record?: RecordMark",
+                    cp.status as "status: AthleteStatus", cp.status_reason, placed.rank as "rank?",
+                    cp.ris_score, cp.ris_source as "ris_source: RisSource",
+                    a.athlete_id, a.first_name, a.last_name, a.native_name,
+                    a.gender as "gender: Gender", a.created_at, a.country, a.profile_picture_url,
+                    a.slug,
+                    COALESCE(a.slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
+             FROM competition_participants cp
+             INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
+             LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+             LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id
+                                                   AND placed.competition_id = cp.competition_id
+             LEFT JOIN record_marks total_mark ON total_mark.participant_id = cp.participant_id
+                                              AND total_mark.movement_name = 'Total'
+             WHERE cp.competition_id = $1
+             ORDER BY placed.rank NULLS LAST, cp.participant_id"#,
+            competition_id
+        )
+        .fetch_all(self.pool)
+        .await?;
+
+        let participant_ids: Vec<Uuid> = participants
+            .iter()
+            .map(|participant| participant.participant_id)
             .collect();
+        let lifts = sqlx::query!(
+            r#"SELECT l.participant_id, l.lift_id,
+                    l.movement_name as "movement_name: Movement",
+                    l.max_weight,
+                    rm.mark as "record?: RecordMark"
+             FROM lifts l
+             LEFT JOIN record_marks rm
+                 ON rm.participant_id = l.participant_id
+                AND rm.movement_name = l.movement_name
+             LEFT JOIN movements m ON m.name = l.movement_name
+             WHERE l.participant_id = ANY($1)
+             ORDER BY l.participant_id, m.display_order"#,
+            &participant_ids
+        )
+        .fetch_all(self.pool)
+        .await?;
 
-        let mut category_details = Vec::with_capacity(categories.len());
+        let lift_ids: Vec<Uuid> = lifts.iter().map(|lift| lift.lift_id).collect();
+        let attempts = sqlx::query!(
+            "SELECT lift_id, attempt_number, weight, is_successful
+             FROM attempts
+             WHERE lift_id = ANY($1)
+             ORDER BY lift_id, attempt_number",
+            &lift_ids
+        )
+        .fetch_all(self.pool)
+        .await?;
 
-        for category in categories {
-            let participants = sqlx::query!(
-                r#"SELECT cp.participant_id, cp.athlete_id, cp.bodyweight, cp.age, cp.total,
-                        total_mark.mark as "total_record?: RecordMark",
-                        cp.status as "status: AthleteStatus", cp.status_reason, placed.rank as "rank?",
-                        cp.ris_score, cp.ris_source as "ris_source: RisSource"
-                 FROM competition_participants cp
-                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
-                 LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
-                 LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id
-                                                       AND placed.competition_id = cp.competition_id
-                 LEFT JOIN record_marks total_mark ON total_mark.participant_id = cp.participant_id
-                                                  AND total_mark.movement_name = 'Total'
-                 WHERE cp.competition_id = $1
-                   AND cp.weight_class_id IS NOT DISTINCT FROM $2
-                   AND cp.division_id IS NOT DISTINCT FROM $3
-                   AND COALESCE(cp.category_gender, wc.gender, a.gender) = $4
-                 ORDER BY placed.rank NULLS LAST"#,
-                competition_id,
-                category.weight_class_id,
-                category.division_id,
-                category.gender.as_str()
-            )
-            .fetch_all(self.pool)
-            .await?;
+        let mut attempts_by_lift: HashMap<Uuid, Vec<AttemptSummary>> = HashMap::new();
+        for attempt in attempts {
+            attempts_by_lift
+                .entry(attempt.lift_id)
+                .or_default()
+                .push(AttemptSummary {
+                    attempt_number: attempt.attempt_number,
+                    weight: attempt.weight,
+                    is_successful: attempt.is_successful,
+                });
+        }
 
-            let mut participant_details = Vec::with_capacity(participants.len());
+        let mut lifts_by_participant: HashMap<Uuid, Vec<LiftDetail>> = HashMap::new();
+        for lift in lifts {
+            lifts_by_participant
+                .entry(lift.participant_id)
+                .or_default()
+                .push(LiftDetail {
+                    movement_name: lift.movement_name,
+                    best_weight: lift.max_weight,
+                    record: lift.record,
+                    attempts: attempts_by_lift.remove(&lift.lift_id).unwrap_or_default(),
+                });
+        }
 
-            for participant in participants {
-                let athlete = sqlx::query_as!(
-                    AthleteRow,
-                    r#"SELECT athlete_id, first_name, last_name, native_name, gender as "gender: Gender", created_at,
-                            country, profile_picture_url, slug,
-                            COALESCE(slug_history, '[]'::jsonb) as "slug_history!: sqlx::types::Json<Vec<String>>"
-                     FROM athletes
-                     WHERE athlete_id = $1"#,
-                    participant.athlete_id
-                )
-                .fetch_one(self.pool)
-                .await?;
-
-                let lifts = sqlx::query!(
-                    r#"SELECT l.lift_id,
-                            l.movement_name as "movement_name: Movement",
-                            l.max_weight,
-                            rm.mark as "record?: RecordMark"
-                     FROM lifts l
-                     LEFT JOIN record_marks rm
-                         ON rm.participant_id = l.participant_id
-                        AND rm.movement_name = l.movement_name
-                     WHERE l.participant_id = $1"#,
-                    participant.participant_id
-                )
-                .fetch_all(self.pool)
-                .await?;
-
-                let mut lift_details = Vec::with_capacity(lifts.len());
-
-                for lift in lifts {
-                    let attempts = sqlx::query!(
-                        "SELECT attempt_number, weight, is_successful
-                         FROM attempts
-                         WHERE lift_id = $1
-                         ORDER BY attempt_number",
-                        lift.lift_id
-                    )
-                    .fetch_all(self.pool)
-                    .await?;
-
-                    lift_details.push(LiftDetail {
-                        movement_name: lift.movement_name,
-                        best_weight: lift.max_weight,
-                        record: lift.record,
-                        attempts: attempts
-                            .into_iter()
-                            .map(|a| AttemptSummary {
-                                attempt_number: a.attempt_number,
-                                weight: a.weight,
-                                is_successful: a.is_successful,
-                            })
-                            .collect(),
-                    });
-                }
-
-                participant_details.push(ParticipantDetail {
+        let mut by_category: HashMap<(Option<Uuid>, Option<Uuid>, Gender), Vec<ParticipantDetail>> =
+            HashMap::new();
+        for participant in participants {
+            by_category
+                .entry((
+                    participant.weight_class_id,
+                    participant.division_id,
+                    participant.category_gender,
+                ))
+                .or_default()
+                .push(ParticipantDetail {
                     participant_id: participant.participant_id,
-                    athlete,
+                    athlete: AthleteRow {
+                        athlete_id: participant.athlete_id,
+                        first_name: participant.first_name,
+                        last_name: participant.last_name,
+                        native_name: participant.native_name,
+                        gender: participant.gender,
+                        created_at: participant.created_at,
+                        country: participant.country,
+                        profile_picture_url: participant.profile_picture_url,
+                        slug: participant.slug,
+                        slug_history: participant.slug_history,
+                    },
                     bodyweight: participant.bodyweight,
                     age: participant.age,
                     rank: participant.rank,
@@ -413,15 +428,25 @@ impl<'a> CompetitionRepository<'a> {
                     status_reason: participant.status_reason,
                     total: participant.total,
                     total_record: participant.total_record,
-                    lifts: lift_details,
+                    lifts: lifts_by_participant
+                        .remove(&participant.participant_id)
+                        .unwrap_or_default(),
                 });
-            }
-
-            category_details.push(CategoryParticipants {
-                category,
-                participants: participant_details,
-            });
         }
+
+        let mut category_details: Vec<CategoryParticipants> = categories
+            .into_iter()
+            .map(|category| CategoryParticipants {
+                participants: by_category
+                    .remove(&(
+                        category.weight_class_id,
+                        category.division_id,
+                        category.gender,
+                    ))
+                    .unwrap_or_default(),
+                category,
+            })
+            .collect();
 
         category_details
             .sort_by(|a, b| category_order(&a.category).cmp(&category_order(&b.category)));
