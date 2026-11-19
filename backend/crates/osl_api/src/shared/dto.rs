@@ -25,11 +25,11 @@ where
         .transpose()
 }
 
-/// Page selection for list endpoints.
+/// Page selection.
 #[derive(Debug, Default, Deserialize, IntoParams, ToSchema)]
 #[into_params(parameter_in = Query)]
 pub struct PaginationParams {
-    /// Page number, starting at 1. Defaults to 1.
+    /// Page number, from 1. Defaults to 1.
     #[serde(default = "default_page", deserialize_with = "number_from_query")]
     pub page: u32,
     /// Results per page, from 1 to 100. Defaults to 50.
@@ -91,16 +91,16 @@ impl PaginationParams {
     }
 }
 
-/// Position of this page within the full result set.
+/// Paging details.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct PaginationMeta {
-    /// Current page number.
+    /// Current page.
     pub page: u32,
-    /// Maximum results on each page.
+    /// Results per page.
     pub page_size: u32,
-    /// Results matching the request across all pages.
+    /// Results across all pages.
     pub total_items: i64,
-    /// Number of pages available at this page size.
+    /// Number of pages.
     pub total_pages: u32,
 }
 
@@ -122,12 +122,12 @@ impl PaginationMeta {
     }
 }
 
-/// One page of results.
+/// A page of results.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct PaginatedResponse<T> {
     /// Results on this page.
     pub data: Vec<T>,
-    /// Paging details for requesting the other pages.
+    /// Paging details.
     pub pagination: PaginationMeta,
 }
 
@@ -141,7 +141,7 @@ impl<T> PaginatedResponse<T> {
     }
 }
 
-/// Sort order: `desc` for descending, `asc` for ascending.
+/// Sort order: `desc` or `asc`.
 #[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum Direction {

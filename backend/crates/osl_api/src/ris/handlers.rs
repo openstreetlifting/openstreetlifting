@@ -19,7 +19,7 @@ use super::dto::{
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct FormulaQuery {
-    /// Only the edition of this year.
+    /// Edition year.
     pub year: Option<i32>,
 }
 
@@ -46,9 +46,9 @@ pub async fn list_ris_formulas(Query(query): Query<FormulaQuery>) -> Json<Vec<Ri
     )
 }
 
-/// Get the current RIS formula
+/// Retrieve the current RIS formula
 ///
-/// Rankings are scored with this edition.
+/// Returns the edition rankings use.
 #[utoipa::path(
     get,
     path = "/api/v1/ris/formulas/current",
@@ -63,7 +63,7 @@ pub async fn get_current_formula() -> Json<RisFormulaResponse> {
 
 /// Calculate a RIS score
 ///
-/// Uses the current edition unless `formula_year` is set. An unknown edition returns 404.
+/// Returns a score for a bodyweight and total.
 #[utoipa::path(
     post,
     path = "/api/v1/ris/calculations",
@@ -114,9 +114,9 @@ mod tests {
     }
 }
 
-/// Get the RIS distribution
+/// List RIS results
 ///
-/// Returns MPDS results with a computed RIS, a bodyweight and a total, by sex.
+/// Returns every computed MPDS result, by gender.
 #[utoipa::path(
     get,
     path = "/api/v1/ris/distribution",

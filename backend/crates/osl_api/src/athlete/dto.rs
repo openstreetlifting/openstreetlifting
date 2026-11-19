@@ -14,10 +14,6 @@ use uuid::Uuid;
 use crate::competition::dto::AttemptInfo;
 
 /// Optional athlete section.
-///
-/// `competitions` adds `competitions` and `total_competitions`, `records` adds `personal_records`,
-/// `best_total` and `best_ris`, `standing` adds `standing`, `lift_balance` adds `lift_balance`, and
-/// `neighbors` adds `neighbors`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum AthleteInclude {
@@ -28,106 +24,101 @@ pub enum AthleteInclude {
     Neighbors,
 }
 
-/// An athlete. Sections appear only when requested with `include`.
+/// An athlete.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteResponse {
-    /// Stable identifier of the athlete.
+    /// Unique identifier for the athlete.
     pub athlete_id: Uuid,
-    /// First name. Empty for redacted athletes.
+    /// First name. Empty when redacted.
     pub first_name: String,
-    /// Last name, or a placeholder such as `Redacted Athlete #1` for redacted athletes.
+    /// Last name, or a placeholder when redacted.
     pub last_name: String,
-    /// Name in the athlete's native script, when known.
+    /// Name in the athlete's native script.
     #[schema(required = true)]
     pub native_name: Option<String>,
-    /// URL identifier of the athlete.
+    /// URL slug.
     pub slug: String,
-    /// Sex the athlete competes under.
+    /// Gender the athlete competes in.
     pub gender: Gender,
-    /// Athlete's ISO 3166-1 alpha-2 country code, such as `FR`.
+    /// Two-letter country code (ISO 3166-1 alpha-2).
     #[schema(required = true)]
     pub country: Option<String>,
-    /// URL of the profile picture, when available.
+    /// Profile picture URL.
     #[schema(required = true)]
     pub profile_picture_url: Option<String>,
-    /// Instagram handle without the `@`, when known.
+    /// Instagram handle, without `@`.
     #[schema(required = true)]
     pub instagram_handle: Option<String>,
-    /// When the athlete was added to the archive.
+    /// Time the athlete was added.
     pub created_at: NaiveDateTime,
-    /// Competition history, newest first. Requires `include=competitions`.
+    /// Competition history, newest first. Included with `include=competitions`.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub competitions: Option<Vec<AthleteCompetitionSummary>>,
-    /// Best successful lift for each movement. Requires `include=records`.
+    /// Best lift per movement. Included with `include=records`.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub personal_records: Option<Vec<PersonalRecord>>,
-    /// Highest total at an MPDS competition, or `null` when there is none. Requires
-    /// `include=records`.
+    /// Best MPDS total. Included with `include=records`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub best_total: Option<Option<BestTotal>>,
-    /// Highest RIS at an MPDS competition, or `null` when there is none. Requires
-    /// `include=records`.
+    /// Best MPDS RIS. Included with `include=records`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub best_ris: Option<Option<BestRis>>,
-    /// Distinct competitions entered. Several divisions at one meet count once. Requires
-    /// `include=competitions`.
+    /// Competitions entered, each counted once. Included with `include=competitions`.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(nullable = false)]
     pub total_competitions: Option<i64>,
-    /// Places in the rankings, or `null` when the athlete is unranked. Requires `include=standing`.
+    /// Ranking places. Included with `include=standing`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standing: Option<Option<AthleteStanding>>,
-    /// How the best MPDS total divides across the lifts, or `null` when there is none. Requires
-    /// `include=lift_balance`.
+    /// Share of each lift in the best MPDS total. Included with `include=lift_balance`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lift_balance: Option<Option<LiftBalance>>,
-    /// Athletes ranked around this one on MPDS total, or `null` when there is no eligible total.
-    /// Requires `include=neighbors`.
+    /// Athletes ranked nearby on MPDS total. Included with `include=neighbors`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub neighbors: Option<Option<AthleteNeighborhood>>,
 }
 
-/// An athlete near the requested athlete on the MPDS total ranking.
+/// An athlete ranked near the requested athlete.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteNeighbor {
-    /// Stable identifier of the athlete.
+    /// Unique identifier for the athlete.
     pub athlete_id: Uuid,
-    /// First name. Empty for redacted athletes.
+    /// First name. Empty when redacted.
     pub first_name: String,
-    /// Last name, or a placeholder such as `Redacted Athlete #1` for redacted athletes.
+    /// Last name, or a placeholder when redacted.
     pub last_name: String,
-    /// URL identifier of the athlete.
+    /// URL slug.
     pub slug: String,
-    /// Athlete's ISO 3166-1 alpha-2 country code, such as `FR`.
+    /// Two-letter country code (ISO 3166-1 alpha-2).
     #[schema(required = true)]
     pub country: Option<String>,
     /// Best MPDS total in kilograms.
     pub value: rust_decimal::Decimal,
-    /// This total minus the requested athlete's total. Zero for the requested athlete.
+    /// Difference from the requested athlete's total, in kilograms.
     pub gap: rust_decimal::Decimal,
-    /// Place in this ranking.
+    /// Place, from 1.
     pub place: i64,
-    /// Athletes in this ranking.
+    /// Athletes ranked.
     pub field: i64,
-    /// Name of the competition.
+    /// Competition name.
     pub competition_name: String,
-    /// URL identifier of the competition.
+    /// Competition URL slug.
     pub competition_slug: String,
-    /// Start date of the competition.
+    /// Competition start date.
     #[schema(required = true)]
     pub competition_date: Option<chrono::NaiveDate>,
 }
 
-/// Athletes ranked around the requested athlete in their latest MPDS weight class.
+/// Athletes ranked around the requested athlete, in their latest weight class.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteNeighborhood {
-    /// Sex and weight class compared, such as `Men -80kg`.
+    /// Category compared, such as `Men -80kg`.
     pub category: String,
-    /// Nearby athletes across all countries, including the requested athlete.
+    /// Nearby athletes worldwide.
     pub global: Vec<AthleteNeighbor>,
-    /// Nearby athletes from the same country, or `null` without a nationality.
+    /// Nearby athletes from the same country.
     #[schema(required = true)]
     pub national: Option<Vec<AthleteNeighbor>>,
 }
@@ -173,31 +164,31 @@ impl AthleteNeighborhood {
     }
 }
 
-/// How the athlete's best MPDS total divides across the four lifts.
+/// Share of each lift in the best MPDS total.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct LiftBalance {
-    /// Sex and weight class of that total, such as `Men -80kg`.
+    /// Category of the total, such as `Men -80kg`.
     pub category: String,
-    /// The best MPDS total in kilograms.
+    /// Total in kilograms.
     pub total: rust_decimal::Decimal,
-    /// Name of the competition.
+    /// Competition name.
     pub competition_name: String,
-    /// URL identifier of the competition.
+    /// Competition URL slug.
     pub competition_slug: String,
-    /// Start date of the competition.
+    /// Competition start date.
     pub competition_date: chrono::NaiveDate,
     /// Other athletes with an MPDS result in the same sex and weight class.
     pub field: i64,
-    /// Share of the total taken by each lift.
+    /// One entry per lift.
     pub lifts: Vec<LiftShare>,
 }
 
-/// One lift's part of a total.
+/// One lift's share of a total.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct LiftShare {
-    /// The movement.
+    /// Movement.
     pub movement_name: Movement,
-    /// Weight lifted in kilograms.
+    /// Weight in kilograms.
     pub value: rust_decimal::Decimal,
     /// Percentage of the athlete's best total taken by this lift.
     pub share: f64,
@@ -239,60 +230,60 @@ impl LiftBalance {
     }
 }
 
-/// A place within a ranking.
+/// A ranking place.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct StandingPlace {
-    /// Place, starting at 1.
+    /// Place, from 1.
     pub place: i64,
-    /// Athletes in this ranking.
+    /// Athletes ranked.
     pub field: i64,
 }
 
-/// A place among athletes from one country.
+/// A ranking place within one country.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CountryStanding {
-    /// ISO 3166-1 alpha-2 country code, such as `FR`.
+    /// Two-letter country code (ISO 3166-1 alpha-2).
     pub code: String,
-    /// Place within the country, starting at 1.
+    /// Place, from 1.
     pub place: i64,
-    /// Athletes from this country in this ranking.
+    /// Athletes ranked from this country.
     pub field: i64,
 }
 
-/// The athlete's position for one metric.
+/// Ranking place for one metric.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct MetricStanding {
-    /// Best value: kilograms for lifts and total, points for RIS.
+    /// Best value: kilograms, or points for RIS.
     pub value: rust_decimal::Decimal,
-    /// Weight class compared, such as `-80kg`, or `null` for RIS, which spans classes.
+    /// Weight class, such as `-80kg`. `null` for RIS.
     #[schema(required = true)]
     pub class: Option<String>,
-    /// Place across all countries.
+    /// Place worldwide.
     pub global: StandingPlace,
-    /// Place within the athlete's country, or `null` without a nationality.
+    /// Place within the athlete's country.
     #[schema(required = true)]
     pub country: Option<CountryStanding>,
 }
 
-/// The athlete's place for each metric. A metric is `null` when unranked.
+/// Ranking places by metric. `null` when unranked.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteStanding {
-    /// Standing on RIS, from MPDS competitions.
+    /// RIS, from MPDS competitions.
     #[schema(required = true)]
     pub ris: Option<MetricStanding>,
-    /// Standing on total, from MPDS competitions, in the latest weight class.
+    /// Total, from MPDS competitions.
     #[schema(required = true)]
     pub total: Option<MetricStanding>,
-    /// Standing on muscle-up.
+    /// Muscle-up.
     #[schema(required = true)]
     pub muscleup: Option<MetricStanding>,
-    /// Standing on pull-up.
+    /// Pull-up.
     #[schema(required = true)]
     pub pullup: Option<MetricStanding>,
-    /// Standing on dips.
+    /// Dips.
     #[schema(required = true)]
     pub dips: Option<MetricStanding>,
-    /// Standing on squat.
+    /// Squat.
     #[schema(required = true)]
     pub squat: Option<MetricStanding>,
 }
@@ -357,92 +348,92 @@ impl AthleteStanding {
     }
 }
 
-/// A lift in the athlete's competition history.
+/// A lift.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteLift {
-    /// The movement.
+    /// Movement.
     pub movement_name: Movement,
-    /// Best successful attempt in kilograms, or `null` when no attempt succeeded.
+    /// Best successful attempt in kilograms. `null` when every attempt failed.
     #[schema(required = true)]
     pub best_weight: Option<rust_decimal::Decimal>,
     /// `WR` or `NR` when this lift is the current world or national record for its weight class.
     #[schema(required = true)]
     pub record: Option<RecordMark>,
-    /// Attempts in the order they were taken.
+    /// Attempts, in order.
     pub attempts: Vec<AttemptInfo>,
 }
 
-/// One entry in the athlete's competition history.
+/// A competition the athlete entered.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteCompetitionSummary {
-    /// Stable identifier of the competition.
+    /// Unique identifier for the competition.
     pub competition_id: Uuid,
-    /// Name of the competition.
+    /// Competition name.
     pub competition_name: String,
-    /// URL identifier of the competition.
+    /// Competition URL slug.
     pub competition_slug: String,
-    /// Start date of the competition.
+    /// Competition start date.
     pub competition_date: chrono::NaiveDate,
-    /// Sex and weight class entered, such as `Men -80kg`.
+    /// Category, such as `Men -80kg`.
     pub category_name: String,
-    /// Division entered, when the competition has divisions.
+    /// Division.
     #[schema(required = true)]
     pub division: Option<String>,
-    /// Place in the category, or `null` when unplaced.
+    /// Place in the category.
     #[schema(required = true)]
     pub rank: Option<i32>,
-    /// Total in kilograms, or `null` when incomplete or not competed.
+    /// Total in kilograms.
     #[schema(required = true)]
     pub total: Option<rust_decimal::Decimal>,
     /// `WR` or `NR` when this total is the current world or national record for its weight class.
     #[schema(required = true)]
     pub total_record: Option<RecordMark>,
-    /// RIS points, when available.
+    /// RIS points.
     #[schema(required = true)]
     pub ris_score: Option<rust_decimal::Decimal>,
-    /// Where the RIS comes from, when there is one.
+    /// Origin of the RIS.
     #[schema(required = true)]
     pub ris_source: Option<RisSource>,
-    /// Whether the athlete competed.
+    /// Participation status.
     pub status: AthleteStatus,
-    /// Movements contested, such as `MPDS` or `PD`.
+    /// Movements contested, such as `MPDS`.
     #[schema(required = true)]
     pub event: Option<String>,
-    /// Results for each movement.
+    /// One entry per movement.
     pub lifts: Vec<AthleteLift>,
 }
 
-/// The athlete's best successful result for one movement.
+/// Best successful lift for one movement.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct PersonalRecord {
-    /// The movement.
+    /// Movement.
     pub movement_name: Movement,
-    /// Best weight in kilograms.
+    /// Weight in kilograms.
     pub max_weight: rust_decimal::Decimal,
     /// `WR` or `NR` when this best is the current world or national record for its weight class.
     #[schema(required = true)]
     pub record: Option<RecordMark>,
-    /// Name of the competition.
+    /// Competition name.
     pub competition_name: String,
-    /// URL identifier of the competition.
+    /// Competition URL slug.
     pub competition_slug: String,
-    /// Start date of the competition.
+    /// Competition start date.
     pub date: chrono::NaiveDate,
 }
 
 /// The athlete's highest total at an MPDS competition.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct BestTotal {
-    /// The total in kilograms.
+    /// Total in kilograms.
     pub total: rust_decimal::Decimal,
     /// `WR` or `NR` when this total is the current world or national record for its weight class.
     #[schema(required = true)]
     pub record: Option<RecordMark>,
-    /// Name of the competition.
+    /// Competition name.
     pub competition_name: String,
-    /// URL identifier of the competition.
+    /// Competition URL slug.
     pub competition_slug: String,
-    /// Start date of the competition.
+    /// Competition start date.
     pub date: chrono::NaiveDate,
 }
 
@@ -451,13 +442,13 @@ pub struct BestTotal {
 pub struct BestRis {
     /// RIS points.
     pub ris_score: rust_decimal::Decimal,
-    /// Where the score comes from.
+    /// Origin of the score.
     pub ris_source: RisSource,
-    /// Name of the competition.
+    /// Competition name.
     pub competition_name: String,
-    /// URL identifier of the competition.
+    /// Competition URL slug.
     pub competition_slug: String,
-    /// Start date of the competition.
+    /// Competition start date.
     pub date: chrono::NaiveDate,
 }
 

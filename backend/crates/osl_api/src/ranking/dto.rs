@@ -11,7 +11,7 @@ use std::str::FromStr;
 use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
 
-/// Value athletes are ranked on: one lift, the total or RIS.
+/// Metric to rank on.
 #[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum RankingMetric {
@@ -42,34 +42,33 @@ pub struct GlobalRankingFilter {
     #[serde(flatten)]
     #[param(ignore)]
     pub pagination: crate::shared::dto::PaginationParams,
-    /// Only this sex. `MX` requires `competition_id`.
+    /// Gender. `MX` requires `competition_id`.
     pub gender: Option<RankedGender>,
-    /// Only athletes from this ISO 3166-1 alpha-2 country code.
+    /// Athlete country (ISO 3166-1 alpha-2).
     #[param(example = "FR")]
     pub country: Option<String>,
-    /// Only results from this federation, by exact name.
+    /// Federation name.
     pub federation: Option<String>,
-    /// Only results from this competition series, as listed by the facets endpoint.
+    /// Series identifier, from the facets endpoint.
     pub series: Option<String>,
-    /// Case-insensitive text found in the athlete's full name.
+    /// Search on athlete name.
     pub q: Option<String>,
-    /// Value to rank on. Defaults to `ris`.
+    /// Metric to rank on. Defaults to `ris`.
     #[serde(default)]
     pub movement: RankingMetric,
-    /// Sort order of the ranked value. Defaults to `desc`, best first.
+    /// Sort order. Defaults to `desc`.
     #[serde(default)]
     pub direction: Direction,
-    /// Event to rank, as movement letters such as `PD`. Defaults to `MPDS`.
+    /// Event code. Defaults to `MPDS`.
     #[param(example = "MPDS")]
     pub event: Option<String>,
-    /// Only this weight class, written `-80kg` or `+101kg`.
+    /// Weight class, such as `-80kg` or `+101kg`.
     #[param(example = "-80kg")]
     pub category: Option<String>,
 
-    /// Only results from competitions in this year.
+    /// Competition year.
     pub year: Option<i32>,
-    /// Rank the entries of one competition. Without it, each athlete appears once with their best
-    /// result.
+    /// Rank one competition. Otherwise each athlete appears once.
     pub competition_id: Option<Uuid>,
 }
 
@@ -135,10 +134,10 @@ impl GlobalRankingFilter {
     }
 }
 
-/// Filter values that still return ranked results.
+/// Filter values that return ranked results.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RankingFacets {
-    /// Weight class labels.
+    /// Weight classes.
     pub classes: Vec<String>,
     /// Country codes.
     pub countries: Vec<String>,
@@ -173,118 +172,118 @@ impl From<osl_db::projections::ranking::RankingFacets> for RankingFacets {
 /// A competition series.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RankingSeries {
-    /// Identifier to pass as the `series` filter.
+    /// Series identifier.
     pub series: String,
-    /// Display name.
+    /// Series name.
     pub name: String,
-    /// Name of the organising federation.
+    /// Federation name.
     pub federation: String,
 }
 
-/// One ranked result.
+/// A ranked result.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct GlobalRankingEntry {
-    /// Identifier of the competition entry behind this result.
+    /// Unique identifier for the entry.
     pub participant_id: Uuid,
-    /// Position for the selected metric and filters.
+    /// Position for the selected filters.
     pub rank: i64,
-    /// The athlete.
+    /// Athlete.
     pub athlete: AthleteInfo,
-    /// Category of the entry, such as `Men -80kg`.
+    /// Category, such as `Men -80kg`.
     pub category: String,
-    /// Division, when the competition has divisions.
+    /// Division.
     #[schema(required = true)]
     pub division: Option<String>,
-    /// RIS points, when available.
+    /// RIS points.
     #[schema(required = true)]
     pub ris: Option<f64>,
-    /// Where the RIS comes from, when there is one.
+    /// Origin of the RIS.
     #[schema(required = true)]
     pub ris_source: Option<RisSource>,
-    /// Total in kilograms, when complete.
+    /// Total in kilograms.
     #[schema(required = true)]
     pub total: Option<f64>,
     /// `WR` or `NR` when this total is the current world or national record for its weight class.
     #[schema(required = true)]
     pub total_record: Option<RecordMark>,
-    /// Best muscle-up in kilograms, when contested.
+    /// Muscle-up in kilograms.
     #[schema(required = true)]
     pub muscleup: Option<f64>,
-    /// Best pull-up in kilograms, when contested.
+    /// Pull-up in kilograms.
     #[schema(required = true)]
     pub pullup: Option<f64>,
-    /// Best dips in kilograms, when contested.
+    /// Dips in kilograms.
     #[schema(required = true)]
     pub dips: Option<f64>,
-    /// Best squat in kilograms, when contested.
+    /// Squat in kilograms.
     #[schema(required = true)]
     pub squat: Option<f64>,
-    /// Movements of the competition, such as `MPDS`.
+    /// Event code, such as `MPDS`.
     #[schema(required = true)]
     pub event: Option<String>,
-    /// Competition of this result.
+    /// Competition.
     pub competition: CompetitionInfo,
-    /// Federation of this competition.
+    /// Federation.
     pub federation: FederationInfo,
     /// Lifts in this row that are the current world or national record for their weight class.
     pub records: Vec<LiftRecord>,
 }
 
-/// A current record held by a lift in a ranking row.
+/// A current record held by a lift.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct LiftRecord {
-    /// The movement.
+    /// Movement.
     pub movement: Movement,
     /// `WR` or `NR`.
     pub mark: RecordMark,
 }
 
-/// The athlete behind a ranked result.
+/// An athlete.
 #[derive(Debug, Serialize, ToSchema)]
 #[schema(as = RankingAthlete)]
 pub struct AthleteInfo {
-    /// Stable identifier of the athlete.
+    /// Unique identifier for the athlete.
     pub athlete_id: Uuid,
-    /// First name. Empty for redacted athletes.
+    /// First name. Empty when redacted.
     pub first_name: String,
-    /// Last name, or a placeholder such as `Redacted Athlete #1` for redacted athletes.
+    /// Last name, or a placeholder when redacted.
     pub last_name: String,
-    /// URL identifier of the athlete.
+    /// URL slug.
     pub slug: String,
-    /// Athlete's ISO 3166-1 alpha-2 country code, such as `FR`.
+    /// Two-letter country code (ISO 3166-1 alpha-2).
     #[schema(required = true)]
     pub country: Option<String>,
-    /// Sex the athlete competes under.
+    /// Gender the athlete competes in.
     pub gender: Gender,
-    /// Bodyweight at this competition in kilograms, when known.
+    /// Bodyweight in kilograms.
     #[schema(required = true)]
     pub bodyweight: Option<f64>,
-    /// Instagram handle without the `@`, when known.
+    /// Instagram handle, without `@`.
     #[schema(required = true)]
     pub instagram_handle: Option<String>,
 }
 
-/// The competition behind a ranked result.
+/// A competition.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct CompetitionInfo {
-    /// Stable identifier of the competition.
+    /// Unique identifier for the competition.
     pub competition_id: Uuid,
-    /// Name of the competition.
+    /// Competition name.
     pub name: String,
-    /// URL identifier of the competition.
+    /// URL slug.
     pub slug: String,
-    /// Start date, when known.
+    /// Start date.
     #[schema(required = true)]
     pub date: Option<NaiveDate>,
 }
 
-/// The federation behind a ranked result.
+/// A federation.
 #[derive(Debug, Serialize, ToSchema)]
 #[schema(as = RankingFederation)]
 pub struct FederationInfo {
     /// Full name.
     pub name: String,
-    /// Short name, when known.
+    /// Short name.
     #[schema(required = true)]
     pub abbreviation: Option<String>,
 }

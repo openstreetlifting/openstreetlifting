@@ -18,15 +18,15 @@ use crate::shared::query::{Include, load_if};
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct AthleteQuery {
-    /// Sections to add, separated by commas, such as `competitions,records`.
+    /// Sections to include, comma-separated.
     #[serde(default)]
     #[param(value_type = Vec<AthleteInclude>, style = Form, explode = false)]
     pub include: Include,
 }
 
-/// List athletes
+/// List all athletes
 ///
-/// Returns athletes ordered by last name, then first name.
+/// Returns athletes sorted by last name.
 #[utoipa::path(
     get,
     path = "/api/v1/athletes",
@@ -70,9 +70,9 @@ pub async fn list_athletes(
     )))
 }
 
-/// Get an athlete
+/// Retrieve an athlete
 ///
-/// Use `include` to add competition history, records, rankings, lift balance or nearby athletes.
+/// Returns an athlete. Use `include` to add sections.
 #[utoipa::path(
     get,
     path = "/api/v1/athletes/{slug}",

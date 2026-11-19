@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-/// Publication and progress state of a competition.
+/// Competition status.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]

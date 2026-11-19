@@ -44,27 +44,17 @@ impl AppState {
     }
 }
 
-const API_DESCRIPTION: &str = "Read streetlifting competitions, athletes, rankings, records and \
-RIS scores from the OpenStreetlifting archive.
+const API_DESCRIPTION: &str = "Streetlifting competitions, athletes, rankings, records and RIS \
+scores from the OpenStreetlifting archive.
 
-**Conventions**
+- Weights are in kilograms. Decimals are strings, such as `\"315.5\"`; ranking values are numbers.
+- Dates use `YYYY-MM-DD`. Countries use ISO 3166-1 alpha-2 codes.
+- `MPDS` is muscle-up, pull-up, dips and squat. Shorter events use their letters, such as `PD`.
+- Lists return `data`. Paged lists add `pagination`.
+- `include` adds optional sections, comma-separated.
+- Errors return `{\"error\": \"...\"}`. A query value of the wrong type returns plain text.
 
-- Weights are in kilograms. Most weights and scores are decimal strings, such as `\"315.5\"`. \
-Ranking values are JSON numbers.
-- Dates use `YYYY-MM-DD`. Country codes use ISO 3166-1 alpha-2.
-- `MPDS` is the event with muscle-up, pull-up, dips and squat. Shorter events use the letters of \
-their movements, such as `PD`.
-- List endpoints take `page` and `page_size`, and return `data` with `pagination`.
-- `include` takes comma-separated values. Sections you do not request are left out of the response.
-
-**Errors**
-
-Requests the API rejects return `{\"error\": \"...\"}`. A query value of the wrong type, such as a \
-non-numeric `year`, returns a plain-text `400`.
-
-**Reusing the data**
-
-See the [licensing guide](https://docs.openstreetlifting.org/LICENSING.html).";
+[Licensing guide](https://docs.openstreetlifting.org/LICENSING.html)";
 
 #[derive(OpenApi)]
 #[openapi(
@@ -151,11 +141,11 @@ See the [licensing guide](https://docs.openstreetlifting.org/LICENSING.html).";
         )
     ),
     tags(
-        (name = "competitions", description = "Competitions, their results and filter values"),
-        (name = "athletes", description = "Athletes, their history, records and standings"),
+        (name = "competitions", description = "Competitions and their results"),
+        (name = "athletes", description = "Athletes and their history"),
         (name = "rankings", description = "Rankings by lift, total or RIS"),
-        (name = "records", description = "Best results in the OpenStreetlifting archive"),
-        (name = "ris", description = "RIS formulas and score computation"),
+        (name = "records", description = "Best results in the archive"),
+        (name = "ris", description = "RIS formulas and scores"),
     ),
 )]
 pub struct ApiDoc;

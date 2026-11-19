@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-/// `competed` took part, `disqualified` took attempts but was disqualified, `no_show` did not
-/// compete.
+/// Participation status: `competed`, `disqualified` or `no_show`.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]

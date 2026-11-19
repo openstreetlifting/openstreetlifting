@@ -22,20 +22,20 @@ use crate::shared::query::{Include, load_if};
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 #[into_params(parameter_in = Query)]
 pub struct CompetitionFilterParams {
-    /// Only competitions in this state.
+    /// Competition status.
     #[serde(default, deserialize_with = "optional_from_str")]
     #[param(nullable)]
     pub status: Option<CompetitionStatus>,
-    /// Only this event, written as movement letters in MPDS order, such as `MPDS` or `PD`.
+    /// Event code, such as `MPDS` or `PD`.
     #[param(nullable, example = "MPDS")]
     pub event: Option<String>,
-    /// Only this federation, by exact name.
+    /// Federation name.
     #[param(nullable)]
     pub federation: Option<String>,
-    /// Only this host country, as an ISO 3166-1 alpha-2 code.
+    /// Two-letter country code (ISO 3166-1 alpha-2).
     #[param(nullable, example = "FR")]
     pub country: Option<String>,
-    /// Only competitions starting in this year.
+    /// Start year.
     #[serde(default, deserialize_with = "optional_from_str")]
     #[param(nullable, example = 2025)]
     pub year: Option<i32>,
@@ -66,14 +66,14 @@ impl CompetitionFilterParams {
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 #[into_params(parameter_in = Query)]
 pub struct CompetitionListQuery {
-    /// Sections to add to each competition, separated by commas.
+    /// Sections to include, comma-separated.
     #[serde(default)]
     #[param(value_type = Vec<CompetitionListInclude>, style = Form, explode = false)]
     pub include: Include,
-    /// Case-insensitive text found in the competition name, federation name or city.
+    /// Search on name, federation and city.
     #[param(nullable)]
     pub q: Option<String>,
-    /// Sort by start date. Defaults to `desc`, newest first.
+    /// Sort by start date. Defaults to `desc`.
     #[serde(default)]
     pub direction: Direction,
     #[serde(flatten)]
@@ -101,15 +101,15 @@ impl CompetitionListQuery {
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct CompetitionQuery {
-    /// Sections to add, separated by commas, such as `federation,results`.
+    /// Sections to include, comma-separated.
     #[serde(default)]
     #[param(value_type = Vec<CompetitionInclude>, style = Form, explode = false)]
     pub include: Include,
 }
 
-/// List competitions
+/// List all competitions
 ///
-/// Returns competitions ordered by start date. Combine the filters to narrow the list.
+/// Returns competitions sorted by start date.
 #[utoipa::path(
     get,
     path = "/api/v1/competitions",
@@ -195,9 +195,9 @@ pub async fn list_competitions(
     )))
 }
 
-/// Get a competition
+/// Retrieve a competition
 ///
-/// Use `include` to add the federation, results, movements or other editions.
+/// Returns a competition. Use `include` to add sections.
 #[utoipa::path(
     get,
     path = "/api/v1/competitions/{slug}",
@@ -256,7 +256,7 @@ pub async fn get_competition(
 
 /// List competition filter values
 ///
-/// Each list ignores its own filter, so a selected value stays available.
+/// Returns the values each filter accepts, given the other filters.
 #[utoipa::path(
     get,
     path = "/api/v1/competitions/facets",

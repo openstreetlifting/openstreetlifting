@@ -11,7 +11,7 @@ const DEFAULT_LIMIT: i64 = 3;
 const MAX_LIMIT: i64 = 50;
 const OPEN: &str = "open";
 
-/// A lift, or `total` for MPDS totals.
+/// Movement, or `total` for MPDS totals.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum RecordMovement {
@@ -46,7 +46,7 @@ impl From<RecordLift> for RecordMovement {
     }
 }
 
-/// `M` for men, `F` for women.
+/// `M` or `F`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, ToSchema)]
 pub enum RecordGender {
     M,
@@ -64,9 +64,9 @@ impl From<RecordGender> for Gender {
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct RecordsQuery {
-    /// Only this lift, or `total`.
+    /// Movement, or `total`.
     pub movement: Option<RecordMovement>,
-    /// Only this sex.
+    /// Gender.
     pub gender: Option<RecordGender>,
     /// A weight class such as `M-73` or `F+70`, or `open` for the best across all classes.
     /// With a federation or series, any class it entered athletes in, such as `M-75`.
@@ -145,56 +145,56 @@ fn non_empty(value: Option<&str>) -> Option<String> {
         .map(str::to_string)
 }
 
-/// The best results for one movement, sex and weight class.
+/// Best results for one movement, gender and weight class.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordGroup {
-    /// The lift, or `total`.
+    /// Movement, or `total`.
     pub movement: RecordMovement,
-    /// Sex of the group.
+    /// Gender.
     pub gender: RecordGender,
     /// The weight class, or `null` for the open record. A standard class unless a federation
     /// or series is selected, which lists the classes it used.
     #[schema(required = true)]
     pub weight_class: Option<String>,
-    /// Best results, one per athlete, heaviest first.
+    /// Best result per athlete, heaviest first.
     pub entries: Vec<RecordEntry>,
 }
 
-/// One result in a records group.
+/// A record result.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordEntry {
-    /// Position in the group, starting at 1.
+    /// Position, from 1.
     pub rank: i64,
-    /// The athlete.
+    /// Athlete.
     pub athlete: RecordAthlete,
-    /// Weight or total in kilograms.
+    /// Weight in kilograms.
     pub weight: Decimal,
-    /// Start date of the competition.
+    /// Competition start date.
     pub date: NaiveDate,
-    /// The competition.
+    /// Competition.
     pub competition: RecordCompetition,
 }
 
-/// The athlete behind a record.
+/// An athlete.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordAthlete {
-    /// First name. Empty for redacted athletes.
+    /// First name. Empty when redacted.
     pub first_name: String,
-    /// Last name, or a placeholder such as `Redacted Athlete #1` for redacted athletes.
+    /// Last name, or a placeholder when redacted.
     pub last_name: String,
-    /// URL identifier of the athlete.
+    /// URL slug.
     pub slug: String,
-    /// Athlete's ISO 3166-1 alpha-2 country code, such as `FR`.
+    /// Two-letter country code (ISO 3166-1 alpha-2).
     #[schema(required = true)]
     pub country: Option<String>,
 }
 
-/// The competition behind a record.
+/// A competition.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordCompetition {
-    /// Name of the competition.
+    /// Competition name.
     pub name: String,
-    /// URL identifier of the competition.
+    /// URL slug.
     pub slug: String,
 }
 
@@ -243,7 +243,7 @@ pub fn group(rows: Vec<RecordRow>) -> Vec<RecordGroup> {
     groups
 }
 
-/// Filter values that still return records.
+/// Filter values that return records.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordFacets {
     /// Country codes.
@@ -262,10 +262,10 @@ pub struct RecordFacets {
 /// A competition series.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct RecordSeries {
-    /// Identifier to pass as the `series` filter.
+    /// Series identifier.
     pub series: String,
-    /// Display name.
+    /// Series name.
     pub name: String,
-    /// Name of the organising federation.
+    /// Federation name.
     pub federation: String,
 }

@@ -10,10 +10,7 @@ use crate::error::{WebError, WebResult};
 
 /// List records
 ///
-/// Returns the best results in the archive, grouped by movement, sex and weight class.
-///
-/// Totals count only from MPDS competitions. Each athlete appears once per group, and the earlier
-/// result ranks first on a tie.
+/// Returns the best results by movement, gender and weight class. Ties go to the earlier result.
 #[utoipa::path(
     get,
     path = "/api/v1/records",
@@ -38,7 +35,7 @@ pub async fn list_records(
 
 /// List records filter values
 ///
-/// Accepts the records filters.
+/// Returns the values each filter accepts, given the other filters.
 #[utoipa::path(
     get,
     path = "/api/v1/records/facets",

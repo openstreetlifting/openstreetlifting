@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-/// Metric a competition ranks on: `total` or `ris`.
+/// Ranking metric: `total` or `ris`.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

@@ -3,18 +3,18 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-/// One published edition of the RIS formula.
+/// An edition of the RIS formula.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RisFormulaResponse {
-    /// Year of the edition.
+    /// Edition year.
     pub year: i32,
     /// Whether rankings use this edition.
     pub is_current: bool,
-    /// Constants for each sex.
+    /// Constants by gender.
     pub constants: RisConstants,
 }
 
-/// Formula constants by sex.
+/// Formula constants by gender.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RisConstants {
     /// Constants for men.
@@ -23,23 +23,25 @@ pub struct RisConstants {
     pub women: GenderConstants,
 }
 
-/// Constants of the benchmark `a + (k - a) / (1 + q * exp(-b * (bodyweight - v)))`. RIS is `total *
-/// 100 / benchmark`, rounded to two decimals.
+/// Benchmark constants.
+///
+/// RIS is `total * 100 / benchmark`, where
+/// `benchmark = a + (k - a) / (1 + q * exp(-b * (bodyweight - v)))`.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct GenderConstants {
-    /// Lower asymptote of the benchmark curve.
+    /// Lower asymptote.
     pub a: f64,
-    /// Upper asymptote of the benchmark curve.
+    /// Upper asymptote.
     pub k: f64,
-    /// Growth rate of the curve.
+    /// Growth rate.
     pub b: f64,
-    /// Bodyweight offset of the curve, in kilograms.
+    /// Bodyweight offset, in kilograms.
     pub v: f64,
-    /// Shape constant of the curve.
+    /// Shape constant.
     pub q: f64,
 }
 
-/// Values used to calculate a RIS score.
+/// Inputs for a RIS score.
 #[derive(Debug, Clone, Deserialize, ToSchema)]
 #[schema(example = json!({"bodyweight": "80", "total": "300", "gender": "M"}))]
 pub struct ComputeRisRequest {
@@ -54,10 +56,10 @@ pub struct ComputeRisRequest {
     pub formula_year: Option<i32>,
 }
 
-/// A calculated RIS score.
+/// A RIS score.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct ComputeRisResponse {
-    /// RIS points, rounded to two decimals.
+    /// RIS points, to two decimals.
     pub ris_score: Decimal,
     /// Edition year used.
     pub formula_year: i32,
@@ -91,17 +93,17 @@ impl From<Edition> for RisFormulaResponse {
 /// A result scored with the RIS formula.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RisPerformanceResponse {
-    /// Identifier of the competition entry.
+    /// Unique identifier for the entry.
     pub participant_id: uuid::Uuid,
-    /// Full name of the athlete.
+    /// Athlete full name.
     pub athlete_name: String,
-    /// URL identifier of the athlete.
+    /// Athlete URL slug.
     pub athlete_slug: String,
-    /// Name of the competition.
+    /// Competition name.
     pub competition_name: String,
-    /// URL identifier of the competition.
+    /// Competition URL slug.
     pub competition_slug: String,
-    /// Start date of the competition.
+    /// Competition start date.
     pub competition_date: chrono::NaiveDate,
     /// Bodyweight in kilograms.
     pub bodyweight: Decimal,
@@ -109,11 +111,11 @@ pub struct RisPerformanceResponse {
     pub total: Decimal,
 }
 
-/// Computed MPDS results by sex, lightest bodyweight first.
+/// Computed MPDS results by gender, lightest first.
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RisDistributionResponse {
-    /// Results by men.
+    /// Results for men.
     pub men: Vec<RisPerformanceResponse>,
-    /// Results by women.
+    /// Results for women.
     pub women: Vec<RisPerformanceResponse>,
 }

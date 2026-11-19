@@ -15,7 +15,7 @@ use crate::shared::dto::{PaginatedResponse, PaginationParams};
 
 /// List ranking filter values
 ///
-/// Accepts the ranking filters. Search, sort direction and paging have no effect.
+/// Returns the values each filter accepts, given the other filters.
 #[utoipa::path(
     get,
     path = "/api/v1/rankings/facets",
@@ -38,7 +38,7 @@ pub async fn get_ranking_facets(
 
 /// List ranked countries
 ///
-/// Returns country codes of athletes with a result.
+/// Returns the countries of ranked athletes.
 #[utoipa::path(
     get,
     path = "/api/v1/rankings/countries",
@@ -54,10 +54,9 @@ pub async fn list_ranking_countries(State(state): State<AppState>) -> WebResult<
     Ok(Json(countries))
 }
 
-/// Get a ranking
+/// List ranked results
 ///
-/// Ranks MPDS results on RIS by default. Without `competition_id`, each athlete appears once with
-/// their best result for the selected metric.
+/// Returns results ranked by `movement`, RIS by default.
 #[utoipa::path(
     get,
     path = "/api/v1/rankings",
