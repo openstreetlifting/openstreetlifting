@@ -1,0 +1,282 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT cp.participant_id, cp.weight_class_id, cp.division_id,\n                    COALESCE(cp.category_gender, wc.gender, a.gender) as \"category_gender!: Gender\",\n                    cp.bodyweight, cp.age, cp.total,\n                    total_mark.mark as \"total_record?: RecordMark\",\n                    cp.status as \"status: AthleteStatus\", cp.status_reason, placed.rank as \"rank?\",\n                    cp.ris_score, cp.ris_source as \"ris_source: RisSource\",\n                    a.athlete_id, a.first_name, a.last_name, a.native_name,\n                    a.gender as \"gender: Gender\", a.created_at, a.country, a.profile_picture_url,\n                    a.slug,\n                    COALESCE(a.slug_history, '[]'::jsonb) as \"slug_history!: sqlx::types::Json<Vec<String>>\"\n             FROM competition_participants cp\n             INNER JOIN athletes a ON a.athlete_id = cp.athlete_id\n             LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n             LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id\n                                                   AND placed.competition_id = cp.competition_id\n             LEFT JOIN record_marks total_mark ON total_mark.participant_id = cp.participant_id\n                                              AND total_mark.movement_name = 'Total'\n             WHERE cp.competition_id = $1\n             ORDER BY placed.rank NULLS LAST, cp.participant_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "participant_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "participant_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "weight_class_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "weight_class_id"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "division_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "division_id"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "category_gender!: Gender",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "bodyweight",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "bodyweight"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "age",
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "age"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "total",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "total"
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "total_record?: RecordMark",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "record_marks",
+            "name": "mark"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "status: AthleteStatus",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "ordinal": 9,
+        "name": "status_reason",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "status_reason"
+          }
+        }
+      },
+      {
+        "ordinal": 10,
+        "name": "rank?",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "participant_standings",
+            "name": "rank"
+          }
+        }
+      },
+      {
+        "ordinal": 11,
+        "name": "ris_score",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "ris_score"
+          }
+        }
+      },
+      {
+        "ordinal": 12,
+        "name": "ris_source: RisSource",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "competition_participants",
+            "name": "ris_source"
+          }
+        }
+      },
+      {
+        "ordinal": 13,
+        "name": "athlete_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "athlete_id"
+          }
+        }
+      },
+      {
+        "ordinal": 14,
+        "name": "first_name",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "first_name"
+          }
+        }
+      },
+      {
+        "ordinal": 15,
+        "name": "last_name",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "last_name"
+          }
+        }
+      },
+      {
+        "ordinal": 16,
+        "name": "native_name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "native_name"
+          }
+        }
+      },
+      {
+        "ordinal": 17,
+        "name": "gender: Gender",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "gender"
+          }
+        }
+      },
+      {
+        "ordinal": 18,
+        "name": "created_at",
+        "type_info": "Timestamp",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "created_at"
+          }
+        }
+      },
+      {
+        "ordinal": 19,
+        "name": "country",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "country"
+          }
+        }
+      },
+      {
+        "ordinal": 20,
+        "name": "profile_picture_url",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "profile_picture_url"
+          }
+        }
+      },
+      {
+        "ordinal": 21,
+        "name": "slug",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "athletes",
+            "name": "slug"
+          }
+        }
+      },
+      {
+        "ordinal": 22,
+        "name": "slug_history!: sqlx::types::Json<Vec<String>>",
+        "type_info": "Jsonb",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      null,
+      true,
+      true,
+      true,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      true,
+      false,
+      null
+    ]
+  },
+  "hash": "36bc66f19cfef3bd3e5c3e5906a0aa64089f7746d949d404b6322babf94bb412"
+}
