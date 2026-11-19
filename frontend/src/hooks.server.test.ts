@@ -1,8 +1,36 @@
 import { expect, it, vi } from 'vitest';
-import { handle } from './hooks.server';
+import { handle, handleError } from './hooks.server';
 import { LOCALES } from '#lib/i18n/locale.js';
+import { logger } from '#lib/server/logger.js';
 
 vi.mock('#lib/server/logger.js', () => ({ logger: { debug: vi.fn(), error: vi.fn() } }));
+
+type ErrorInput = Parameters<typeof handleError>[0];
+
+function caught(kind: string, error: unknown, route: string | null = '/athletes/[slug]') {
+  return { kind, error, event: { route: { id: route } } } as unknown as ErrorInput;
+}
+
+it.each([
+  ['app', { status: 404, message: 'Athlete not found' }],
+  ['framework', { status: 404, message: 'Not Found' }],
+])('keeps %s errors and does not log them', (kind, error) => {
+  vi.mocked(logger.error).mockClear();
+  expect(handleError(caught(kind, error, null))).toEqual(error);
+  expect(logger.error).not.toHaveBeenCalled();
+});
+
+it('logs unknown errors and hides their details', () => {
+  vi.mocked(logger.error).mockClear();
+  const error = new Error('database password is wrong');
+  expect(handleError(caught('unknown', error))).toEqual({
+    message: 'An unexpected error occurred',
+  });
+  expect(logger.error).toHaveBeenCalledWith(
+    { err: error, 'http.route': '/athletes/[slug]' },
+    'Unhandled frontend server error occurred'
+  );
+});
 
 function request(path: string, acceptLanguage = 'en') {
   return {
