@@ -90,6 +90,29 @@ async fn omits_every_section_without_includes(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
+async fn returns_the_instagram_handle_however_the_athlete_is_requested(pool: PgPool) {
+    a_meet(&pool).await;
+    sqlx::query(
+        "INSERT INTO athlete_socials (athlete_id, social_id, handle)
+         SELECT a.athlete_id, s.social_id, 'alex.martin'
+         FROM athletes a, socials s
+         WHERE a.slug = 'alex-martin' AND s.name = 'instagram'",
+    )
+    .execute(&pool)
+    .await
+    .unwrap();
+
+    let (_, plain) = get(&pool, "/api/v1/athletes/alex-martin").await;
+    assert_eq!(plain["instagram_handle"], "alex.martin");
+
+    let (_, included) = get(&pool, "/api/v1/athletes/alex-martin?include=standing").await;
+    assert_eq!(included["instagram_handle"], "alex.martin");
+
+    let (_, list) = get(&pool, "/api/v1/athletes").await;
+    assert_eq!(list["data"][0]["instagram_handle"], "alex.martin");
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
 async fn rejects_an_unknown_include_before_looking_up_the_athlete(pool: PgPool) {
     let (status, body) = get(&pool, "/api/v1/athletes/nobody?include=bogus").await;
     assert_eq!(status, StatusCode::BAD_REQUEST);

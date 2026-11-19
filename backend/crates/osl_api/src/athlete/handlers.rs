@@ -8,6 +8,7 @@ use osl_db::projections::athlete::AthleteRecords;
 use osl_db::repository::athlete::AthleteRepository;
 use osl_db::repository::ranking::RankingRepository;
 use serde::Deserialize;
+use std::collections::HashMap;
 
 use super::dto::{
     AthleteInclude, AthleteNeighborhood, AthleteResponse, AthleteStanding, LiftBalance,
@@ -41,7 +42,21 @@ pub async fn list_athletes(
     let repo = AthleteRepository::new(state.db.pool());
     let (athletes, total_items) = repo.list(&pagination.to_page()).await?;
 
-    let data: Vec<AthleteResponse> = athletes.into_iter().map(AthleteResponse::from).collect();
+    let athlete_ids: Vec<_> = athletes.iter().map(|athlete| athlete.athlete_id).collect();
+    let mut handles: HashMap<_, _> = repo
+        .instagram_handles(&athlete_ids)
+        .await?
+        .into_iter()
+        .collect();
+    let data: Vec<AthleteResponse> = athletes
+        .into_iter()
+        .map(|athlete| {
+            let instagram_handle = handles.remove(&athlete.athlete_id);
+            let mut response = AthleteResponse::from(athlete);
+            response.instagram_handle = instagram_handle;
+            response
+        })
+        .collect();
 
     Ok(Json(PaginatedResponse::new(
         data,
@@ -75,10 +90,6 @@ pub async fn get_athlete(
 
     let repo = AthleteRepository::new(state.db.pool());
     let athlete = repo.find_by_slug(&slug).await?;
-    if include.is_empty() {
-        return Ok(Json(AthleteResponse::from(athlete)));
-    }
-
     let athlete_id = athlete.athlete_id;
     let rankings = RankingRepository::new(state.db.pool());
     let wants_competitions = wants(AthleteInclude::Competitions);

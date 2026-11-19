@@ -306,6 +306,20 @@ impl<'a> AthleteRepository<'a> {
         .await?)
     }
 
+    #[tracing::instrument(name = "repository.athlete.instagram_handles", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn instagram_handles(&self, athlete_ids: &[Uuid]) -> Result<Vec<(Uuid, String)>> {
+        Ok(sqlx::query_as(
+            "SELECT ats.athlete_id, ats.handle
+             FROM athlete_socials ats
+             JOIN socials s ON s.social_id = ats.social_id
+             WHERE ats.athlete_id = ANY($1)
+               AND s.name = 'instagram'",
+        )
+        .bind(athlete_ids)
+        .fetch_all(self.pool)
+        .await?)
+    }
+
     #[tracing::instrument(name = "repository.athlete.get_detailed_athlete", skip_all, fields(db.system.name = "postgresql"))]
     pub async fn get_detailed_athlete(&self, athlete: AthleteRow) -> Result<AthleteDetail> {
         let competitions = self.competition_history(athlete.athlete_id).await?;
