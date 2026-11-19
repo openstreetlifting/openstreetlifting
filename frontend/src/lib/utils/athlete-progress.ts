@@ -1,4 +1,5 @@
 import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
+import type { Movement } from '#lib/types/enums.js';
 import type { RANKING_SORTS } from '#lib/constants/ranking.js';
 
 export type ProgressMetric = (typeof RANKING_SORTS)[number]['value'];
@@ -8,6 +9,23 @@ const MOVEMENTS = {
   dips: 'Dips',
   squat: 'Squat',
 } as const;
+
+const MOVEMENT_METRICS = {
+  'Muscle-up': 'muscleup',
+  'Pull-up': 'pullup',
+  Dips: 'dips',
+  Squat: 'squat',
+} as const satisfies Record<Movement, ProgressMetric>;
+
+export function movementMetric(movement: Movement): ProgressMetric {
+  return MOVEMENT_METRICS[movement];
+}
+
+export function competitionFocusQuery(metric: ProgressMetric, athleteSlug?: string): string {
+  const query = new URLSearchParams({ movement: metric });
+  if (athleteSlug) query.set('athlete', athleteSlug);
+  return query.toString();
+}
 
 export interface ProgressPoint {
   competition: AthleteCompetitionSummary;
