@@ -398,6 +398,9 @@ export interface components {
       place: number;
     };
     Direction: 'desc' | 'asc';
+    ErrorResponse: {
+      error: string;
+    };
     Gender: 'M' | 'F' | 'MX';
     GenderConstants: {
       a: number;
@@ -425,7 +428,6 @@ export interface components {
       total: number | null;
       total_record: components['schemas']['RecordMark'] | null;
     };
-    Include: string;
     LiftBalance: {
       category: string;
       competition_date: string;
@@ -693,7 +695,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
     };
   };
@@ -722,13 +726,17 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
       404: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
     };
   };
@@ -764,7 +772,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
     };
   };
@@ -795,7 +805,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
     };
   };
@@ -824,13 +836,17 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
       404: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
     };
   };
@@ -869,7 +885,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
     };
   };
@@ -953,7 +971,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
     };
   };
@@ -987,7 +1007,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
     };
   };
@@ -1016,7 +1038,17 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
     };
   };
@@ -1062,7 +1094,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
       };
     };
   };

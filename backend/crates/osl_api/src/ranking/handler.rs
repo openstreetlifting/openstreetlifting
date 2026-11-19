@@ -13,6 +13,9 @@ use crate::AppState;
 use crate::error::{WebError, WebResult};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 
+/// List ranking filter values
+///
+/// Returns the values each filter accepts, given the other filters.
 #[utoipa::path(
     get,
     path = "/api/v1/rankings/facets",
@@ -33,6 +36,9 @@ pub async fn get_ranking_facets(
     Ok(Json(facets.into()))
 }
 
+/// List ranked countries
+///
+/// Returns the countries of ranked athletes.
 #[utoipa::path(
     get,
     path = "/api/v1/rankings/countries",
@@ -48,13 +54,16 @@ pub async fn list_ranking_countries(State(state): State<AppState>) -> WebResult<
     Ok(Json(countries))
 }
 
+/// List ranked results
+///
+/// Returns results ranked by `movement`, RIS by default.
 #[utoipa::path(
     get,
     path = "/api/v1/rankings",
     params(PaginationParams, GlobalRankingFilter),
     responses(
         (status = 200, description = "Global ranking retrieved successfully", body = PaginatedResponse<GlobalRankingEntry>),
-        (status = 400, description = "Invalid query parameters")
+        (status = 400, description = "Invalid query parameters", body = crate::error::ErrorResponse)
     ),
     tag = "rankings"
 )]

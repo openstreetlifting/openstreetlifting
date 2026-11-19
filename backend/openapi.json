@@ -1,24 +1,42 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "osl_api",
-    "description": "",
+    "title": "OpenStreetlifting API",
+    "description": "OpenStreetlifting is an open, collaborative project building a permanent and traceable archive of all Streetlifting data, freely accessible to everyone.\n\nThis is the public API to read that archive.",
+    "contact": {
+      "name": "OpenStreetlifting",
+      "url": "https://openstreetlifting.org/contact"
+    },
     "license": {
-      "name": ""
+      "name": "Licensing guide",
+      "url": "https://docs.openstreetlifting.org/LICENSING.html"
     },
     "version": "0.76.0"
   },
+  "servers": [
+    {
+      "url": "https://api.openstreetlifting.org",
+      "description": "Production"
+    },
+    {
+      "url": "/",
+      "description": "This server"
+    }
+  ],
   "paths": {
     "/api/v1/athletes": {
       "get": {
         "tags": [
           "athletes"
         ],
+        "summary": "List all athletes",
+        "description": "Returns athletes sorted by last name.",
         "operationId": "list_athletes",
         "parameters": [
           {
             "name": "page",
             "in": "query",
+            "description": "Page number, from 1. Defaults to 1.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -29,6 +47,7 @@
           {
             "name": "page_size",
             "in": "query",
+            "description": "Results per page, from 1 to 100. Defaults to 50.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -49,7 +68,14 @@
             }
           },
           "400": {
-            "description": "Invalid pagination parameters"
+            "description": "Invalid pagination parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -59,6 +85,8 @@
         "tags": [
           "athletes"
         ],
+        "summary": "Retrieve an athlete",
+        "description": "Returns an athlete. Use `include` to add sections.",
         "operationId": "get_athlete",
         "parameters": [
           {
@@ -73,6 +101,7 @@
           {
             "name": "include",
             "in": "query",
+            "description": "Sections to include, comma-separated.",
             "required": false,
             "schema": {
               "type": "array",
@@ -96,10 +125,24 @@
             }
           },
           "400": {
-            "description": "Unknown include value"
+            "description": "Unknown include value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Athlete not found"
+            "description": "Athlete not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -109,11 +152,14 @@
         "tags": [
           "competitions"
         ],
+        "summary": "List all competitions",
+        "description": "Returns competitions sorted by start date.",
         "operationId": "list_competitions",
         "parameters": [
           {
             "name": "page",
             "in": "query",
+            "description": "Page number, from 1. Defaults to 1.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -124,6 +170,7 @@
           {
             "name": "page_size",
             "in": "query",
+            "description": "Results per page, from 1 to 100. Defaults to 50.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -134,6 +181,7 @@
           {
             "name": "status",
             "in": "query",
+            "description": "Competition status.",
             "required": false,
             "schema": {
               "oneOf": [
@@ -149,17 +197,20 @@
           {
             "name": "event",
             "in": "query",
+            "description": "Event code, such as `MPDS` or `PD`.",
             "required": false,
             "schema": {
               "type": [
                 "string",
                 "null"
               ]
-            }
+            },
+            "example": "MPDS"
           },
           {
             "name": "federation",
             "in": "query",
+            "description": "Federation name.",
             "required": false,
             "schema": {
               "type": [
@@ -171,17 +222,20 @@
           {
             "name": "country",
             "in": "query",
+            "description": "Two-letter country code (ISO 3166-1 alpha-2).",
             "required": false,
             "schema": {
               "type": [
                 "string",
                 "null"
               ]
-            }
+            },
+            "example": "FR"
           },
           {
             "name": "year",
             "in": "query",
+            "description": "Start year.",
             "required": false,
             "schema": {
               "type": [
@@ -189,11 +243,13 @@
                 "null"
               ],
               "format": "int32"
-            }
+            },
+            "example": 2025
           },
           {
             "name": "include",
             "in": "query",
+            "description": "Sections to include, comma-separated.",
             "required": false,
             "schema": {
               "type": "array",
@@ -207,6 +263,7 @@
           {
             "name": "q",
             "in": "query",
+            "description": "Search on name, federation and city.",
             "required": false,
             "schema": {
               "type": [
@@ -218,6 +275,7 @@
           {
             "name": "direction",
             "in": "query",
+            "description": "Sort by start date. Defaults to `desc`.",
             "required": false,
             "schema": {
               "$ref": "#/components/schemas/Direction"
@@ -236,7 +294,14 @@
             }
           },
           "400": {
-            "description": "Invalid pagination, include value or event code"
+            "description": "Invalid pagination, include value or event code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -246,11 +311,14 @@
         "tags": [
           "competitions"
         ],
+        "summary": "List competition filter values",
+        "description": "Returns the values each filter accepts, given the other filters.",
         "operationId": "get_competition_facets",
         "parameters": [
           {
             "name": "status",
             "in": "query",
+            "description": "Competition status.",
             "required": false,
             "schema": {
               "oneOf": [
@@ -266,17 +334,20 @@
           {
             "name": "event",
             "in": "query",
+            "description": "Event code, such as `MPDS` or `PD`.",
             "required": false,
             "schema": {
               "type": [
                 "string",
                 "null"
               ]
-            }
+            },
+            "example": "MPDS"
           },
           {
             "name": "federation",
             "in": "query",
+            "description": "Federation name.",
             "required": false,
             "schema": {
               "type": [
@@ -288,17 +359,20 @@
           {
             "name": "country",
             "in": "query",
+            "description": "Two-letter country code (ISO 3166-1 alpha-2).",
             "required": false,
             "schema": {
               "type": [
                 "string",
                 "null"
               ]
-            }
+            },
+            "example": "FR"
           },
           {
             "name": "year",
             "in": "query",
+            "description": "Start year.",
             "required": false,
             "schema": {
               "type": [
@@ -306,7 +380,8 @@
                 "null"
               ],
               "format": "int32"
-            }
+            },
+            "example": 2025
           }
         ],
         "responses": {
@@ -321,7 +396,14 @@
             }
           },
           "400": {
-            "description": "Invalid event code"
+            "description": "Invalid event code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -331,6 +413,8 @@
         "tags": [
           "competitions"
         ],
+        "summary": "Retrieve a competition",
+        "description": "Returns a competition. Use `include` to add sections.",
         "operationId": "get_competition",
         "parameters": [
           {
@@ -345,6 +429,7 @@
           {
             "name": "include",
             "in": "query",
+            "description": "Sections to include, comma-separated.",
             "required": false,
             "schema": {
               "type": "array",
@@ -368,10 +453,24 @@
             }
           },
           "400": {
-            "description": "Unknown include value"
+            "description": "Unknown include value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Competition not found"
+            "description": "Competition not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -381,11 +480,14 @@
         "tags": [
           "rankings"
         ],
+        "summary": "List ranked results",
+        "description": "Returns results ranked by `movement`, RIS by default.",
         "operationId": "get_global_ranking",
         "parameters": [
           {
             "name": "page",
             "in": "query",
+            "description": "Page number, from 1. Defaults to 1.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -396,6 +498,7 @@
           {
             "name": "page_size",
             "in": "query",
+            "description": "Results per page, from 1 to 100. Defaults to 50.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -406,6 +509,7 @@
           {
             "name": "gender",
             "in": "query",
+            "description": "Gender. `MX` requires `competition_id`.",
             "required": false,
             "schema": {
               "oneOf": [
@@ -421,17 +525,20 @@
           {
             "name": "country",
             "in": "query",
+            "description": "Athlete country (ISO 3166-1 alpha-2).",
             "required": false,
             "schema": {
               "type": [
                 "string",
                 "null"
               ]
-            }
+            },
+            "example": "FR"
           },
           {
             "name": "federation",
             "in": "query",
+            "description": "Federation name.",
             "required": false,
             "schema": {
               "type": [
@@ -443,6 +550,7 @@
           {
             "name": "series",
             "in": "query",
+            "description": "Series identifier, from the facets endpoint.",
             "required": false,
             "schema": {
               "type": [
@@ -454,6 +562,7 @@
           {
             "name": "q",
             "in": "query",
+            "description": "Search on athlete name.",
             "required": false,
             "schema": {
               "type": [
@@ -465,6 +574,7 @@
           {
             "name": "movement",
             "in": "query",
+            "description": "Metric to rank on. Defaults to `ris`.",
             "required": false,
             "schema": {
               "$ref": "#/components/schemas/RankingMetric"
@@ -473,6 +583,7 @@
           {
             "name": "direction",
             "in": "query",
+            "description": "Sort order. Defaults to `desc`.",
             "required": false,
             "schema": {
               "$ref": "#/components/schemas/Direction"
@@ -481,28 +592,33 @@
           {
             "name": "event",
             "in": "query",
+            "description": "Event code. Defaults to `MPDS`.",
             "required": false,
             "schema": {
               "type": [
                 "string",
                 "null"
               ]
-            }
+            },
+            "example": "MPDS"
           },
           {
             "name": "category",
             "in": "query",
+            "description": "Weight class, such as `-80kg` or `+101kg`.",
             "required": false,
             "schema": {
               "type": [
                 "string",
                 "null"
               ]
-            }
+            },
+            "example": "-80kg"
           },
           {
             "name": "year",
             "in": "query",
+            "description": "Competition year.",
             "required": false,
             "schema": {
               "type": [
@@ -515,6 +631,7 @@
           {
             "name": "competition_id",
             "in": "query",
+            "description": "Rank one competition. Otherwise each athlete appears once.",
             "required": false,
             "schema": {
               "type": [
@@ -537,7 +654,14 @@
             }
           },
           "400": {
-            "description": "Invalid query parameters"
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -547,6 +671,8 @@
         "tags": [
           "rankings"
         ],
+        "summary": "List ranked countries",
+        "description": "Returns the countries of ranked athletes.",
         "operationId": "list_ranking_countries",
         "responses": {
           "200": {
@@ -570,11 +696,14 @@
         "tags": [
           "rankings"
         ],
+        "summary": "List ranking filter values",
+        "description": "Returns the values each filter accepts, given the other filters.",
         "operationId": "get_ranking_facets",
         "parameters": [
           {
             "name": "gender",
             "in": "query",
+            "description": "Gender. `MX` requires `competition_id`.",
             "required": false,
             "schema": {
               "oneOf": [
@@ -590,17 +719,20 @@
           {
             "name": "country",
             "in": "query",
+            "description": "Athlete country (ISO 3166-1 alpha-2).",
             "required": false,
             "schema": {
               "type": [
                 "string",
                 "null"
               ]
-            }
+            },
+            "example": "FR"
           },
           {
             "name": "federation",
             "in": "query",
+            "description": "Federation name.",
             "required": false,
             "schema": {
               "type": [
@@ -612,6 +744,7 @@
           {
             "name": "series",
             "in": "query",
+            "description": "Series identifier, from the facets endpoint.",
             "required": false,
             "schema": {
               "type": [
@@ -623,6 +756,7 @@
           {
             "name": "q",
             "in": "query",
+            "description": "Search on athlete name.",
             "required": false,
             "schema": {
               "type": [
@@ -634,6 +768,7 @@
           {
             "name": "movement",
             "in": "query",
+            "description": "Metric to rank on. Defaults to `ris`.",
             "required": false,
             "schema": {
               "$ref": "#/components/schemas/RankingMetric"
@@ -642,6 +777,7 @@
           {
             "name": "direction",
             "in": "query",
+            "description": "Sort order. Defaults to `desc`.",
             "required": false,
             "schema": {
               "$ref": "#/components/schemas/Direction"
@@ -650,28 +786,33 @@
           {
             "name": "event",
             "in": "query",
+            "description": "Event code. Defaults to `MPDS`.",
             "required": false,
             "schema": {
               "type": [
                 "string",
                 "null"
               ]
-            }
+            },
+            "example": "MPDS"
           },
           {
             "name": "category",
             "in": "query",
+            "description": "Weight class, such as `-80kg` or `+101kg`.",
             "required": false,
             "schema": {
               "type": [
                 "string",
                 "null"
               ]
-            }
+            },
+            "example": "-80kg"
           },
           {
             "name": "year",
             "in": "query",
+            "description": "Competition year.",
             "required": false,
             "schema": {
               "type": [
@@ -684,6 +825,7 @@
           {
             "name": "competition_id",
             "in": "query",
+            "description": "Rank one competition. Otherwise each athlete appears once.",
             "required": false,
             "schema": {
               "type": [
@@ -713,11 +855,14 @@
         "tags": [
           "records"
         ],
+        "summary": "List records",
+        "description": "Returns the best results by movement, gender and weight class. Ties go to the earlier result.",
         "operationId": "list_records",
         "parameters": [
           {
             "name": "movement",
             "in": "query",
+            "description": "Movement, or `total`.",
             "required": false,
             "schema": {
               "oneOf": [
@@ -733,6 +878,7 @@
           {
             "name": "gender",
             "in": "query",
+            "description": "Gender.",
             "required": false,
             "schema": {
               "oneOf": [
@@ -835,7 +981,14 @@
             }
           },
           "400": {
-            "description": "Invalid query parameters"
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -845,11 +998,14 @@
         "tags": [
           "records"
         ],
+        "summary": "List records filter values",
+        "description": "Returns the values each filter accepts, given the other filters.",
         "operationId": "get_record_facets",
         "parameters": [
           {
             "name": "movement",
             "in": "query",
+            "description": "Movement, or `total`.",
             "required": false,
             "schema": {
               "oneOf": [
@@ -865,6 +1021,7 @@
           {
             "name": "gender",
             "in": "query",
+            "description": "Gender.",
             "required": false,
             "schema": {
               "oneOf": [
@@ -964,7 +1121,14 @@
             }
           },
           "400": {
-            "description": "Invalid query parameters"
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -974,6 +1138,8 @@
         "tags": [
           "ris"
         ],
+        "summary": "Calculate a RIS score",
+        "description": "Returns a score for a bodyweight and total.",
         "operationId": "calculate_ris",
         "requestBody": {
           "content": {
@@ -997,7 +1163,24 @@
             }
           },
           "400": {
-            "description": "Invalid request"
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown formula year",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1007,6 +1190,8 @@
         "tags": [
           "ris"
         ],
+        "summary": "List RIS results",
+        "description": "Returns every computed MPDS result, by gender.",
         "operationId": "get_ris_distribution",
         "responses": {
           "200": {
@@ -1027,11 +1212,14 @@
         "tags": [
           "ris"
         ],
+        "summary": "List RIS formulas",
+        "description": "Returns every edition, or the edition of `year`.",
         "operationId": "list_ris_formulas",
         "parameters": [
           {
             "name": "year",
             "in": "query",
+            "description": "Edition year.",
             "required": false,
             "schema": {
               "type": [
@@ -1057,7 +1245,14 @@
             }
           },
           "400": {
-            "description": "Invalid year"
+            "description": "Invalid year",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1067,6 +1262,8 @@
         "tags": [
           "ris"
         ],
+        "summary": "Retrieve the current RIS formula",
+        "description": "Returns the edition rankings use.",
         "operationId": "get_current_formula",
         "responses": {
           "200": {
@@ -1087,6 +1284,7 @@
     "schemas": {
       "AthleteCompetitionSummary": {
         "type": "object",
+        "description": "A competition the athlete entered.",
         "required": [
           "competition_id",
           "competition_name",
@@ -1105,57 +1303,68 @@
         ],
         "properties": {
           "category_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Category, such as `Men -80kg`."
           },
           "competition_date": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "description": "Competition start date."
           },
           "competition_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the competition."
           },
           "competition_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition name."
           },
           "competition_slug": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition URL slug."
           },
           "division": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Division."
           },
           "event": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Movements contested, such as `MPDS`."
           },
           "lifts": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AthleteLift"
-            }
+            },
+            "description": "One entry per movement."
           },
           "rank": {
             "type": [
               "integer",
               "null"
             ],
-            "format": "int32"
+            "format": "int32",
+            "description": "Place in the category."
           },
           "ris_score": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "RIS points."
           },
           "ris_source": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/RisSource"
+                "$ref": "#/components/schemas/RisSource",
+                "description": "Origin of the RIS."
               },
               {
                 "type": "null"
@@ -1163,13 +1372,15 @@
             ]
           },
           "status": {
-            "$ref": "#/components/schemas/AthleteStatus"
+            "$ref": "#/components/schemas/AthleteStatus",
+            "description": "Participation status."
           },
           "total": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Total in kilograms."
           },
           "total_record": {
             "oneOf": [
@@ -1186,6 +1397,7 @@
       },
       "AthleteInclude": {
         "type": "string",
+        "description": "Optional athlete section.",
         "enum": [
           "competitions",
           "records",
@@ -1196,6 +1408,7 @@
       },
       "AthleteLift": {
         "type": "object",
+        "description": "A lift.",
         "required": [
           "movement_name",
           "best_weight",
@@ -1207,16 +1420,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AttemptInfo"
-            }
+            },
+            "description": "Attempts, in order."
           },
           "best_weight": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Best successful attempt in kilograms. `null` when every attempt failed."
           },
           "movement_name": {
-            "$ref": "#/components/schemas/Movement"
+            "$ref": "#/components/schemas/Movement",
+            "description": "Movement."
           },
           "record": {
             "oneOf": [
@@ -1233,6 +1449,7 @@
       },
       "AthleteNeighbor": {
         "type": "object",
+        "description": "An athlete ranked near the requested athlete.",
         "required": [
           "athlete_id",
           "first_name",
@@ -1250,54 +1467,67 @@
         "properties": {
           "athlete_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the athlete."
           },
           "competition_date": {
             "type": [
               "string",
               "null"
             ],
-            "format": "date"
+            "format": "date",
+            "description": "Competition start date."
           },
           "competition_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition name."
           },
           "competition_slug": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition URL slug."
           },
           "country": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Two-letter country code (ISO 3166-1 alpha-2)."
           },
           "field": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Athletes ranked."
           },
           "first_name": {
-            "type": "string"
+            "type": "string",
+            "description": "First name. Empty when redacted."
           },
           "gap": {
-            "type": "string"
+            "type": "string",
+            "description": "Difference from the requested athlete's total, in kilograms."
           },
           "last_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Last name, or a placeholder when redacted."
           },
           "place": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Place, from 1."
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL slug."
           },
           "value": {
-            "type": "string"
+            "type": "string",
+            "description": "Best MPDS total in kilograms."
           }
         }
       },
       "AthleteNeighborhood": {
         "type": "object",
+        "description": "Athletes ranked around the requested athlete, in their latest weight class.",
         "required": [
           "category",
           "global",
@@ -1305,13 +1535,15 @@
         ],
         "properties": {
           "category": {
-            "type": "string"
+            "type": "string",
+            "description": "Category compared, such as `Men -80kg`."
           },
           "global": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AthleteNeighbor"
-            }
+            },
+            "description": "Nearby athletes worldwide."
           },
           "national": {
             "type": [
@@ -1320,12 +1552,14 @@
             ],
             "items": {
               "$ref": "#/components/schemas/AthleteNeighbor"
-            }
+            },
+            "description": "Nearby athletes from the same country."
           }
         }
       },
       "AthleteResponse": {
         "type": "object",
+        "description": "An athlete.",
         "required": [
           "athlete_id",
           "first_name",
@@ -1341,12 +1575,14 @@
         "properties": {
           "athlete_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the athlete."
           },
           "best_ris": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/BestRis"
+                "$ref": "#/components/schemas/BestRis",
+                "description": "Best MPDS RIS. Included with `include=records`."
               },
               {
                 "type": "null"
@@ -1356,7 +1592,8 @@
           "best_total": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/BestTotal"
+                "$ref": "#/components/schemas/BestTotal",
+                "description": "Best MPDS total. Included with `include=records`."
               },
               {
                 "type": "null"
@@ -1367,37 +1604,45 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AthleteCompetitionSummary"
-            }
+            },
+            "description": "Competition history, newest first. Included with `include=competitions`."
           },
           "country": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Two-letter country code (ISO 3166-1 alpha-2)."
           },
           "created_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Time the athlete was added."
           },
           "first_name": {
-            "type": "string"
+            "type": "string",
+            "description": "First name. Empty when redacted."
           },
           "gender": {
-            "$ref": "#/components/schemas/Gender"
+            "$ref": "#/components/schemas/Gender",
+            "description": "Gender the athlete competes in."
           },
           "instagram_handle": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Instagram handle, without `@`."
           },
           "last_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Last name, or a placeholder when redacted."
           },
           "lift_balance": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/LiftBalance"
+                "$ref": "#/components/schemas/LiftBalance",
+                "description": "Share of each lift in the best MPDS total. Included with `include=lift_balance`."
               },
               {
                 "type": "null"
@@ -1408,12 +1653,14 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Name in the athlete's native script."
           },
           "neighbors": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/AthleteNeighborhood"
+                "$ref": "#/components/schemas/AthleteNeighborhood",
+                "description": "Athletes ranked nearby on MPDS total. Included with `include=neighbors`."
               },
               {
                 "type": "null"
@@ -1424,21 +1671,25 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PersonalRecord"
-            }
+            },
+            "description": "Best lift per movement. Included with `include=records`."
           },
           "profile_picture_url": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Profile picture URL."
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL slug."
           },
           "standing": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/AthleteStanding"
+                "$ref": "#/components/schemas/AthleteStanding",
+                "description": "Ranking places. Included with `include=standing`."
               },
               {
                 "type": "null"
@@ -1447,12 +1698,14 @@
           },
           "total_competitions": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Competitions entered, each counted once. Included with `include=competitions`."
           }
         }
       },
       "AthleteStanding": {
         "type": "object",
+        "description": "Ranking places by metric. `null` when unranked.",
         "required": [
           "ris",
           "total",
@@ -1465,7 +1718,8 @@
           "dips": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "$ref": "#/components/schemas/MetricStanding",
+                "description": "Dips."
               },
               {
                 "type": "null"
@@ -1475,7 +1729,8 @@
           "muscleup": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "$ref": "#/components/schemas/MetricStanding",
+                "description": "Muscle-up."
               },
               {
                 "type": "null"
@@ -1485,7 +1740,8 @@
           "pullup": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "$ref": "#/components/schemas/MetricStanding",
+                "description": "Pull-up."
               },
               {
                 "type": "null"
@@ -1495,7 +1751,8 @@
           "ris": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "$ref": "#/components/schemas/MetricStanding",
+                "description": "RIS, from MPDS competitions."
               },
               {
                 "type": "null"
@@ -1505,7 +1762,8 @@
           "squat": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "$ref": "#/components/schemas/MetricStanding",
+                "description": "Squat."
               },
               {
                 "type": "null"
@@ -1515,7 +1773,8 @@
           "total": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/MetricStanding"
+                "$ref": "#/components/schemas/MetricStanding",
+                "description": "Total, from MPDS competitions."
               },
               {
                 "type": "null"
@@ -1526,6 +1785,7 @@
       },
       "AthleteStatus": {
         "type": "string",
+        "description": "Participation status: `competed`, `disqualified` or `no_show`.",
         "enum": [
           "competed",
           "disqualified",
@@ -1534,6 +1794,7 @@
       },
       "AttemptInfo": {
         "type": "object",
+        "description": "An attempt.",
         "required": [
           "attempt_number",
           "weight",
@@ -1542,13 +1803,16 @@
         "properties": {
           "attempt_number": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "Attempt number, from 1."
           },
           "is_successful": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether the attempt succeeded."
           },
           "weight": {
-            "type": "string"
+            "type": "string",
+            "description": "Weight in kilograms."
           }
         }
       },
@@ -1564,20 +1828,25 @@
         ],
         "properties": {
           "competition_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition name."
           },
           "competition_slug": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition URL slug."
           },
           "date": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "description": "Competition start date."
           },
           "ris_score": {
-            "type": "string"
+            "type": "string",
+            "description": "RIS points."
           },
           "ris_source": {
-            "$ref": "#/components/schemas/RisSource"
+            "$ref": "#/components/schemas/RisSource",
+            "description": "Origin of the score."
           }
         }
       },
@@ -1593,14 +1862,17 @@
         ],
         "properties": {
           "competition_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition name."
           },
           "competition_slug": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition URL slug."
           },
           "date": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "description": "Competition start date."
           },
           "record": {
             "oneOf": [
@@ -1614,30 +1886,35 @@
             ]
           },
           "total": {
-            "type": "string"
+            "type": "string",
+            "description": "Total in kilograms."
           }
         }
       },
       "CategoryDetail": {
         "type": "object",
+        "description": "Results for one category.",
         "required": [
           "category",
           "participants"
         ],
         "properties": {
           "category": {
-            "$ref": "#/components/schemas/CategoryInfo"
+            "$ref": "#/components/schemas/CategoryInfo",
+            "description": "Category."
           },
           "participants": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ParticipantDetail"
-            }
+            },
+            "description": "Entries, best placed first."
           }
         }
       },
       "CategoryInfo": {
         "type": "object",
+        "description": "A category.",
         "required": [
           "name",
           "division",
@@ -1649,21 +1926,26 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Division."
           },
           "gender": {
-            "$ref": "#/components/schemas/Gender"
+            "$ref": "#/components/schemas/Gender",
+            "description": "Category gender. `MX` when mixed."
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Category name, such as `Men -80kg`."
           },
           "weight_class": {
-            "type": "string"
+            "type": "string",
+            "description": "Weight class, such as `-80kg`. Empty when open."
           }
         }
       },
       "CompetitionAthlete": {
         "type": "object",
+        "description": "An athlete.",
         "required": [
           "athlete_id",
           "first_name",
@@ -1675,30 +1957,37 @@
         "properties": {
           "athlete_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the athlete."
           },
           "country": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Two-letter country code (ISO 3166-1 alpha-2)."
           },
           "first_name": {
-            "type": "string"
+            "type": "string",
+            "description": "First name. Empty when redacted."
           },
           "gender": {
-            "$ref": "#/components/schemas/Gender"
+            "$ref": "#/components/schemas/Gender",
+            "description": "Gender the athlete competes in."
           },
           "last_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Last name, or a placeholder when redacted."
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL slug."
           }
         }
       },
       "CompetitionEdition": {
         "type": "object",
+        "description": "An edition of a competition series.",
         "required": [
           "slug",
           "name",
@@ -1706,19 +1995,23 @@
         ],
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Edition name."
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL slug."
           },
           "start_date": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "description": "Start date."
           }
         }
       },
       "CompetitionFacets": {
         "type": "object",
+        "description": "Filter values that return competitions.",
         "required": [
           "federations",
           "countries",
@@ -1730,31 +2023,36 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Country codes."
           },
           "federations": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Federation names."
           },
           "formats": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Event codes, such as `MPDS`."
           },
           "years": {
             "type": "array",
             "items": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "description": "Years, newest first."
           }
         }
       },
       "CompetitionFederation": {
         "type": "object",
+        "description": "A federation.",
         "required": [
           "federation_id",
           "name",
@@ -1766,25 +2064,30 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Short name."
           },
           "country": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Two-letter country code (ISO 3166-1 alpha-2)."
           },
           "federation_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the federation."
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Full name."
           }
         }
       },
       "CompetitionInclude": {
         "type": "string",
+        "description": "Optional competition section.",
         "enum": [
           "federation",
           "results",
@@ -1794,6 +2097,7 @@
       },
       "CompetitionInfo": {
         "type": "object",
+        "description": "A competition.",
         "required": [
           "competition_id",
           "name",
@@ -1803,25 +2107,30 @@
         "properties": {
           "competition_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the competition."
           },
           "date": {
             "type": [
               "string",
               "null"
             ],
-            "format": "date"
+            "format": "date",
+            "description": "Start date."
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition name."
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL slug."
           }
         }
       },
       "CompetitionListInclude": {
         "type": "string",
+        "description": "Optional section on each competition.",
         "enum": [
           "federation",
           "movements"
@@ -1829,6 +2138,7 @@
       },
       "CompetitionResponse": {
         "type": "object",
+        "description": "A competition.",
         "required": [
           "competition_id",
           "name",
@@ -1851,80 +2161,95 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CategoryDetail"
-            }
+            },
+            "description": "Results by category. Included with `include=results`."
           },
           "city": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "City."
           },
           "competition_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the competition."
           },
           "country": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Two-letter country code (ISO 3166-1 alpha-2)."
           },
           "created_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Time the competition was added."
           },
           "editions": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CompetitionEdition"
-            }
+            },
+            "description": "Editions of the same series, oldest first. Included with `include=editions`."
           },
           "end_date": {
             "type": [
               "string",
               "null"
             ],
-            "format": "date"
+            "format": "date",
+            "description": "End date."
           },
           "event_code": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Movement letters, such as `MPDS`. Included with `include=movements`."
           },
           "federation": {
-            "$ref": "#/components/schemas/CompetitionFederation"
+            "$ref": "#/components/schemas/CompetitionFederation",
+            "description": "Organising federation. Included with `include=federation`."
           },
           "federation_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the organising federation."
           },
           "lifter_count": {
             "type": [
               "integer",
               "null"
             ],
-            "format": "int64"
+            "format": "int64",
+            "description": "Number of entries. List endpoint only."
           },
           "movements": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/MovementInfo"
-            }
+            },
+            "description": "Movements contested. Included with `include=movements`."
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition name."
           },
           "region": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Region."
           },
           "scoring": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/Scoring"
+                "$ref": "#/components/schemas/Scoring",
+                "description": "Metric the competition ranks on."
               },
               {
                 "type": "null"
@@ -1932,28 +2257,33 @@
             ]
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL slug."
           },
           "start_date": {
             "type": [
               "string",
               "null"
             ],
-            "format": "date"
+            "format": "date",
+            "description": "Start date."
           },
           "status": {
-            "$ref": "#/components/schemas/CompetitionStatus"
+            "$ref": "#/components/schemas/CompetitionStatus",
+            "description": "Competition status."
           },
           "venue": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Venue."
           }
         }
       },
       "CompetitionStatus": {
         "type": "string",
+        "description": "Competition status.",
         "enum": [
           "draft",
           "upcoming",
@@ -1964,6 +2294,7 @@
       },
       "ComputeRisRequest": {
         "type": "object",
+        "description": "Inputs for a RIS score.",
         "required": [
           "bodyweight",
           "total",
@@ -1971,25 +2302,35 @@
         ],
         "properties": {
           "bodyweight": {
-            "type": "string"
+            "type": "string",
+            "description": "Bodyweight in kilograms."
           },
           "formula_year": {
             "type": [
               "integer",
               "null"
             ],
-            "format": "int32"
+            "format": "int32",
+            "description": "Edition year. Defaults to the current edition."
           },
           "gender": {
-            "$ref": "#/components/schemas/Gender"
+            "$ref": "#/components/schemas/Gender",
+            "description": "`M` or `F`."
           },
           "total": {
-            "type": "string"
+            "type": "string",
+            "description": "Total in kilograms."
           }
+        },
+        "example": {
+          "bodyweight": "80",
+          "gender": "M",
+          "total": "300"
         }
       },
       "ComputeRisResponse": {
         "type": "object",
+        "description": "A RIS score.",
         "required": [
           "ris_score",
           "formula_year"
@@ -1997,15 +2338,18 @@
         "properties": {
           "formula_year": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "Edition year used."
           },
           "ris_score": {
-            "type": "string"
+            "type": "string",
+            "description": "RIS points, to two decimals."
           }
         }
       },
       "CountryStanding": {
         "type": "object",
+        "description": "A ranking place within one country.",
         "required": [
           "code",
           "place",
@@ -2013,27 +2357,45 @@
         ],
         "properties": {
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "Two-letter country code (ISO 3166-1 alpha-2)."
           },
           "field": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Athletes ranked from this country."
           },
           "place": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Place, from 1."
           }
         }
       },
       "Direction": {
         "type": "string",
+        "description": "Sort order: `desc` or `asc`.",
         "enum": [
           "desc",
           "asc"
         ]
       },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "JSON body returned with an API error.",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "What went wrong."
+          }
+        }
+      },
       "Gender": {
         "type": "string",
+        "description": "`M`, `F`, or `MX` for a mixed category.",
         "enum": [
           "M",
           "F",
@@ -2042,6 +2404,7 @@
       },
       "GenderConstants": {
         "type": "object",
+        "description": "Benchmark constants.\n\nRIS is `total * 100 / benchmark`, where\n`benchmark = a + (k - a) / (1 + q * exp(-b * (bodyweight - v)))`.",
         "required": [
           "a",
           "k",
@@ -2052,28 +2415,34 @@
         "properties": {
           "a": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "Lower asymptote."
           },
           "b": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "Growth rate."
           },
           "k": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "Upper asymptote."
           },
           "q": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "Shape constant."
           },
           "v": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "Bodyweight offset, in kilograms."
           }
         }
       },
       "GlobalRankingEntry": {
         "type": "object",
+        "description": "A ranked result.",
         "required": [
           "participant_id",
           "rank",
@@ -2095,57 +2464,68 @@
         ],
         "properties": {
           "athlete": {
-            "$ref": "#/components/schemas/RankingAthlete"
+            "$ref": "#/components/schemas/RankingAthlete",
+            "description": "Athlete."
           },
           "category": {
-            "type": "string"
+            "type": "string",
+            "description": "Category, such as `Men -80kg`."
           },
           "competition": {
-            "$ref": "#/components/schemas/CompetitionInfo"
+            "$ref": "#/components/schemas/CompetitionInfo",
+            "description": "Competition."
           },
           "dips": {
             "type": [
               "number",
               "null"
             ],
-            "format": "double"
+            "format": "double",
+            "description": "Dips in kilograms."
           },
           "division": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Division."
           },
           "event": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Event code, such as `MPDS`."
           },
           "federation": {
-            "$ref": "#/components/schemas/RankingFederation"
+            "$ref": "#/components/schemas/RankingFederation",
+            "description": "Federation."
           },
           "muscleup": {
             "type": [
               "number",
               "null"
             ],
-            "format": "double"
+            "format": "double",
+            "description": "Muscle-up in kilograms."
           },
           "participant_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the entry."
           },
           "pullup": {
             "type": [
               "number",
               "null"
             ],
-            "format": "double"
+            "format": "double",
+            "description": "Pull-up in kilograms."
           },
           "rank": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Position for the selected filters."
           },
           "records": {
             "type": "array",
@@ -2159,12 +2539,14 @@
               "number",
               "null"
             ],
-            "format": "double"
+            "format": "double",
+            "description": "RIS points."
           },
           "ris_source": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/RisSource"
+                "$ref": "#/components/schemas/RisSource",
+                "description": "Origin of the RIS."
               },
               {
                 "type": "null"
@@ -2176,14 +2558,16 @@
               "number",
               "null"
             ],
-            "format": "double"
+            "format": "double",
+            "description": "Squat in kilograms."
           },
           "total": {
             "type": [
               "number",
               "null"
             ],
-            "format": "double"
+            "format": "double",
+            "description": "Total in kilograms."
           },
           "total_record": {
             "oneOf": [
@@ -2198,12 +2582,9 @@
           }
         }
       },
-      "Include": {
-        "type": "string",
-        "description": "Comma-separated list of sections to embed"
-      },
       "LiftBalance": {
         "type": "object",
+        "description": "Share of each lift in the best MPDS total.",
         "required": [
           "category",
           "total",
@@ -2215,17 +2596,21 @@
         ],
         "properties": {
           "category": {
-            "type": "string"
+            "type": "string",
+            "description": "Category of the total, such as `Men -80kg`."
           },
           "competition_date": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "description": "Competition start date."
           },
           "competition_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition name."
           },
           "competition_slug": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition URL slug."
           },
           "field": {
             "type": "integer",
@@ -2236,15 +2621,18 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LiftShare"
-            }
+            },
+            "description": "One entry per lift."
           },
           "total": {
-            "type": "string"
+            "type": "string",
+            "description": "Total in kilograms."
           }
         }
       },
       "LiftDetail": {
         "type": "object",
+        "description": "A lift.",
         "required": [
           "movement_name",
           "best_weight",
@@ -2256,16 +2644,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AttemptInfo"
-            }
+            },
+            "description": "Attempts, in order."
           },
           "best_weight": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Best successful attempt in kilograms. `null` when every attempt failed."
           },
           "movement_name": {
-            "$ref": "#/components/schemas/Movement"
+            "$ref": "#/components/schemas/Movement",
+            "description": "Movement."
           },
           "record": {
             "oneOf": [
@@ -2282,21 +2673,25 @@
       },
       "LiftRecord": {
         "type": "object",
+        "description": "A current record held by a lift.",
         "required": [
           "movement",
           "mark"
         ],
         "properties": {
           "mark": {
-            "$ref": "#/components/schemas/RecordMark"
+            "$ref": "#/components/schemas/RecordMark",
+            "description": "`WR` or `NR`."
           },
           "movement": {
-            "$ref": "#/components/schemas/Movement"
+            "$ref": "#/components/schemas/Movement",
+            "description": "Movement."
           }
         }
       },
       "LiftShare": {
         "type": "object",
+        "description": "One lift's share of a total.",
         "required": [
           "movement_name",
           "value",
@@ -2322,7 +2717,8 @@
             "description": "Sample standard deviation of the share across the other athletes in the class."
           },
           "movement_name": {
-            "$ref": "#/components/schemas/Movement"
+            "$ref": "#/components/schemas/Movement",
+            "description": "Movement."
           },
           "share": {
             "type": "number",
@@ -2330,12 +2726,14 @@
             "description": "Percentage of the athlete's best total taken by this lift."
           },
           "value": {
-            "type": "string"
+            "type": "string",
+            "description": "Weight in kilograms."
           }
         }
       },
       "MetricStanding": {
         "type": "object",
+        "description": "Ranking place for one metric.",
         "required": [
           "value",
           "class",
@@ -2347,12 +2745,14 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Weight class, such as `-80kg`. `null` for RIS."
           },
           "country": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/CountryStanding"
+                "$ref": "#/components/schemas/CountryStanding",
+                "description": "Place within the athlete's country."
               },
               {
                 "type": "null"
@@ -2360,15 +2760,18 @@
             ]
           },
           "global": {
-            "$ref": "#/components/schemas/StandingPlace"
+            "$ref": "#/components/schemas/StandingPlace",
+            "description": "Place worldwide."
           },
           "value": {
-            "type": "string"
+            "type": "string",
+            "description": "Best value: kilograms, or points for RIS."
           }
         }
       },
       "Movement": {
         "type": "string",
+        "description": "A streetlifting movement.",
         "enum": [
           "Muscle-up",
           "Pull-up",
@@ -2378,6 +2781,7 @@
       },
       "MovementInfo": {
         "type": "object",
+        "description": "A contested movement.",
         "required": [
           "movement_name",
           "display_order",
@@ -2385,22 +2789,26 @@
         ],
         "properties": {
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "Letter: `M`, `P`, `D` or `S`."
           },
           "display_order": {
             "type": [
               "integer",
               "null"
             ],
-            "format": "int32"
+            "format": "int32",
+            "description": "Display position."
           },
           "movement_name": {
-            "$ref": "#/components/schemas/Movement"
+            "$ref": "#/components/schemas/Movement",
+            "description": "Movement."
           }
         }
       },
       "PaginatedResponse_AthleteResponse": {
         "type": "object",
+        "description": "A page of results.",
         "required": [
           "data",
           "pagination"
@@ -2410,6 +2818,7 @@
             "type": "array",
             "items": {
               "type": "object",
+              "description": "An athlete.",
               "required": [
                 "athlete_id",
                 "first_name",
@@ -2425,12 +2834,14 @@
               "properties": {
                 "athlete_id": {
                   "type": "string",
-                  "format": "uuid"
+                  "format": "uuid",
+                  "description": "Unique identifier for the athlete."
                 },
                 "best_ris": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/BestRis"
+                      "$ref": "#/components/schemas/BestRis",
+                      "description": "Best MPDS RIS. Included with `include=records`."
                     },
                     {
                       "type": "null"
@@ -2440,7 +2851,8 @@
                 "best_total": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/BestTotal"
+                      "$ref": "#/components/schemas/BestTotal",
+                      "description": "Best MPDS total. Included with `include=records`."
                     },
                     {
                       "type": "null"
@@ -2451,37 +2863,45 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/AthleteCompetitionSummary"
-                  }
+                  },
+                  "description": "Competition history, newest first. Included with `include=competitions`."
                 },
                 "country": {
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "Two-letter country code (ISO 3166-1 alpha-2)."
                 },
                 "created_at": {
                   "type": "string",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "description": "Time the athlete was added."
                 },
                 "first_name": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "First name. Empty when redacted."
                 },
                 "gender": {
-                  "$ref": "#/components/schemas/Gender"
+                  "$ref": "#/components/schemas/Gender",
+                  "description": "Gender the athlete competes in."
                 },
                 "instagram_handle": {
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "Instagram handle, without `@`."
                 },
                 "last_name": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Last name, or a placeholder when redacted."
                 },
                 "lift_balance": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/LiftBalance"
+                      "$ref": "#/components/schemas/LiftBalance",
+                      "description": "Share of each lift in the best MPDS total. Included with `include=lift_balance`."
                     },
                     {
                       "type": "null"
@@ -2492,12 +2912,14 @@
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "Name in the athlete's native script."
                 },
                 "neighbors": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/AthleteNeighborhood"
+                      "$ref": "#/components/schemas/AthleteNeighborhood",
+                      "description": "Athletes ranked nearby on MPDS total. Included with `include=neighbors`."
                     },
                     {
                       "type": "null"
@@ -2508,21 +2930,25 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/PersonalRecord"
-                  }
+                  },
+                  "description": "Best lift per movement. Included with `include=records`."
                 },
                 "profile_picture_url": {
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "Profile picture URL."
                 },
                 "slug": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "URL slug."
                 },
                 "standing": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/AthleteStanding"
+                      "$ref": "#/components/schemas/AthleteStanding",
+                      "description": "Ranking places. Included with `include=standing`."
                     },
                     {
                       "type": "null"
@@ -2531,18 +2957,22 @@
                 },
                 "total_competitions": {
                   "type": "integer",
-                  "format": "int64"
+                  "format": "int64",
+                  "description": "Competitions entered, each counted once. Included with `include=competitions`."
                 }
               }
-            }
+            },
+            "description": "Results on this page."
           },
           "pagination": {
-            "$ref": "#/components/schemas/PaginationMeta"
+            "$ref": "#/components/schemas/PaginationMeta",
+            "description": "Paging details."
           }
         }
       },
       "PaginatedResponse_CompetitionResponse": {
         "type": "object",
+        "description": "A page of results.",
         "required": [
           "data",
           "pagination"
@@ -2552,6 +2982,7 @@
             "type": "array",
             "items": {
               "type": "object",
+              "description": "A competition.",
               "required": [
                 "competition_id",
                 "name",
@@ -2574,80 +3005,95 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/CategoryDetail"
-                  }
+                  },
+                  "description": "Results by category. Included with `include=results`."
                 },
                 "city": {
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "City."
                 },
                 "competition_id": {
                   "type": "string",
-                  "format": "uuid"
+                  "format": "uuid",
+                  "description": "Unique identifier for the competition."
                 },
                 "country": {
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "Two-letter country code (ISO 3166-1 alpha-2)."
                 },
                 "created_at": {
                   "type": "string",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "description": "Time the competition was added."
                 },
                 "editions": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/CompetitionEdition"
-                  }
+                  },
+                  "description": "Editions of the same series, oldest first. Included with `include=editions`."
                 },
                 "end_date": {
                   "type": [
                     "string",
                     "null"
                   ],
-                  "format": "date"
+                  "format": "date",
+                  "description": "End date."
                 },
                 "event_code": {
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "Movement letters, such as `MPDS`. Included with `include=movements`."
                 },
                 "federation": {
-                  "$ref": "#/components/schemas/CompetitionFederation"
+                  "$ref": "#/components/schemas/CompetitionFederation",
+                  "description": "Organising federation. Included with `include=federation`."
                 },
                 "federation_id": {
                   "type": "string",
-                  "format": "uuid"
+                  "format": "uuid",
+                  "description": "Unique identifier for the organising federation."
                 },
                 "lifter_count": {
                   "type": [
                     "integer",
                     "null"
                   ],
-                  "format": "int64"
+                  "format": "int64",
+                  "description": "Number of entries. List endpoint only."
                 },
                 "movements": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/MovementInfo"
-                  }
+                  },
+                  "description": "Movements contested. Included with `include=movements`."
                 },
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Competition name."
                 },
                 "region": {
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "Region."
                 },
                 "scoring": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Scoring"
+                      "$ref": "#/components/schemas/Scoring",
+                      "description": "Metric the competition ranks on."
                     },
                     {
                       "type": "null"
@@ -2655,34 +3101,41 @@
                   ]
                 },
                 "slug": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "URL slug."
                 },
                 "start_date": {
                   "type": [
                     "string",
                     "null"
                   ],
-                  "format": "date"
+                  "format": "date",
+                  "description": "Start date."
                 },
                 "status": {
-                  "$ref": "#/components/schemas/CompetitionStatus"
+                  "$ref": "#/components/schemas/CompetitionStatus",
+                  "description": "Competition status."
                 },
                 "venue": {
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "Venue."
                 }
               }
-            }
+            },
+            "description": "Results on this page."
           },
           "pagination": {
-            "$ref": "#/components/schemas/PaginationMeta"
+            "$ref": "#/components/schemas/PaginationMeta",
+            "description": "Paging details."
           }
         }
       },
       "PaginatedResponse_GlobalRankingEntry": {
         "type": "object",
+        "description": "A page of results.",
         "required": [
           "data",
           "pagination"
@@ -2692,6 +3145,7 @@
             "type": "array",
             "items": {
               "type": "object",
+              "description": "A ranked result.",
               "required": [
                 "participant_id",
                 "rank",
@@ -2713,57 +3167,68 @@
               ],
               "properties": {
                 "athlete": {
-                  "$ref": "#/components/schemas/RankingAthlete"
+                  "$ref": "#/components/schemas/RankingAthlete",
+                  "description": "Athlete."
                 },
                 "category": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Category, such as `Men -80kg`."
                 },
                 "competition": {
-                  "$ref": "#/components/schemas/CompetitionInfo"
+                  "$ref": "#/components/schemas/CompetitionInfo",
+                  "description": "Competition."
                 },
                 "dips": {
                   "type": [
                     "number",
                     "null"
                   ],
-                  "format": "double"
+                  "format": "double",
+                  "description": "Dips in kilograms."
                 },
                 "division": {
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "Division."
                 },
                 "event": {
                   "type": [
                     "string",
                     "null"
-                  ]
+                  ],
+                  "description": "Event code, such as `MPDS`."
                 },
                 "federation": {
-                  "$ref": "#/components/schemas/RankingFederation"
+                  "$ref": "#/components/schemas/RankingFederation",
+                  "description": "Federation."
                 },
                 "muscleup": {
                   "type": [
                     "number",
                     "null"
                   ],
-                  "format": "double"
+                  "format": "double",
+                  "description": "Muscle-up in kilograms."
                 },
                 "participant_id": {
                   "type": "string",
-                  "format": "uuid"
+                  "format": "uuid",
+                  "description": "Unique identifier for the entry."
                 },
                 "pullup": {
                   "type": [
                     "number",
                     "null"
                   ],
-                  "format": "double"
+                  "format": "double",
+                  "description": "Pull-up in kilograms."
                 },
                 "rank": {
                   "type": "integer",
-                  "format": "int64"
+                  "format": "int64",
+                  "description": "Position for the selected filters."
                 },
                 "records": {
                   "type": "array",
@@ -2777,12 +3242,14 @@
                     "number",
                     "null"
                   ],
-                  "format": "double"
+                  "format": "double",
+                  "description": "RIS points."
                 },
                 "ris_source": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/RisSource"
+                      "$ref": "#/components/schemas/RisSource",
+                      "description": "Origin of the RIS."
                     },
                     {
                       "type": "null"
@@ -2794,14 +3261,16 @@
                     "number",
                     "null"
                   ],
-                  "format": "double"
+                  "format": "double",
+                  "description": "Squat in kilograms."
                 },
                 "total": {
                   "type": [
                     "number",
                     "null"
                   ],
-                  "format": "double"
+                  "format": "double",
+                  "description": "Total in kilograms."
                 },
                 "total_record": {
                   "oneOf": [
@@ -2815,15 +3284,18 @@
                   ]
                 }
               }
-            }
+            },
+            "description": "Results on this page."
           },
           "pagination": {
-            "$ref": "#/components/schemas/PaginationMeta"
+            "$ref": "#/components/schemas/PaginationMeta",
+            "description": "Paging details."
           }
         }
       },
       "PaginationMeta": {
         "type": "object",
+        "description": "Paging details.",
         "required": [
           "page",
           "page_size",
@@ -2834,41 +3306,49 @@
           "page": {
             "type": "integer",
             "format": "int32",
+            "description": "Current page.",
             "minimum": 0
           },
           "page_size": {
             "type": "integer",
             "format": "int32",
+            "description": "Results per page.",
             "minimum": 0
           },
           "total_items": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Results across all pages."
           },
           "total_pages": {
             "type": "integer",
             "format": "int32",
+            "description": "Number of pages.",
             "minimum": 0
           }
         }
       },
       "PaginationParams": {
         "type": "object",
+        "description": "Page selection.",
         "properties": {
           "page": {
             "type": "integer",
             "format": "int32",
+            "description": "Page number, from 1. Defaults to 1.",
             "minimum": 0
           },
           "page_size": {
             "type": "integer",
             "format": "int32",
+            "description": "Results per page, from 1 to 100. Defaults to 50.",
             "minimum": 0
           }
         }
       },
       "ParticipantDetail": {
         "type": "object",
+        "description": "An entry in a category.",
         "required": [
           "participant_id",
           "athlete",
@@ -2889,44 +3369,52 @@
               "integer",
               "null"
             ],
-            "format": "int32"
+            "format": "int32",
+            "description": "Age at the competition."
           },
           "athlete": {
-            "$ref": "#/components/schemas/CompetitionAthlete"
+            "$ref": "#/components/schemas/CompetitionAthlete",
+            "description": "Athlete."
           },
           "bodyweight": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Bodyweight in kilograms."
           },
           "lifts": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LiftDetail"
-            }
+            },
+            "description": "One entry per movement."
           },
           "participant_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the entry."
           },
           "rank": {
             "type": [
               "integer",
               "null"
             ],
-            "format": "int32"
+            "format": "int32",
+            "description": "Place in the category."
           },
           "ris_score": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "RIS points."
           },
           "ris_source": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/RisSource"
+                "$ref": "#/components/schemas/RisSource",
+                "description": "Origin of the RIS."
               },
               {
                 "type": "null"
@@ -2934,19 +3422,22 @@
             ]
           },
           "status": {
-            "$ref": "#/components/schemas/AthleteStatus"
+            "$ref": "#/components/schemas/AthleteStatus",
+            "description": "Participation status."
           },
           "status_reason": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Published reason for the status."
           },
           "total": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Total in kilograms."
           },
           "total_record": {
             "oneOf": [
@@ -2963,6 +3454,7 @@
       },
       "PersonalRecord": {
         "type": "object",
+        "description": "Best successful lift for one movement.",
         "required": [
           "movement_name",
           "max_weight",
@@ -2973,20 +3465,25 @@
         ],
         "properties": {
           "competition_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition name."
           },
           "competition_slug": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition URL slug."
           },
           "date": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "description": "Competition start date."
           },
           "max_weight": {
-            "type": "string"
+            "type": "string",
+            "description": "Weight in kilograms."
           },
           "movement_name": {
-            "$ref": "#/components/schemas/Movement"
+            "$ref": "#/components/schemas/Movement",
+            "description": "Movement."
           },
           "record": {
             "oneOf": [
@@ -3003,6 +3500,7 @@
       },
       "RankedGender": {
         "type": "string",
+        "description": "`M`, `F` or `MX`. `MX` requires `competition_id`.",
         "enum": [
           "M",
           "F",
@@ -3011,6 +3509,7 @@
       },
       "RankingAthlete": {
         "type": "object",
+        "description": "An athlete.",
         "required": [
           "athlete_id",
           "first_name",
@@ -3024,43 +3523,52 @@
         "properties": {
           "athlete_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the athlete."
           },
           "bodyweight": {
             "type": [
               "number",
               "null"
             ],
-            "format": "double"
+            "format": "double",
+            "description": "Bodyweight in kilograms."
           },
           "country": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Two-letter country code (ISO 3166-1 alpha-2)."
           },
           "first_name": {
-            "type": "string"
+            "type": "string",
+            "description": "First name. Empty when redacted."
           },
           "gender": {
-            "$ref": "#/components/schemas/Gender"
+            "$ref": "#/components/schemas/Gender",
+            "description": "Gender the athlete competes in."
           },
           "instagram_handle": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Instagram handle, without `@`."
           },
           "last_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Last name, or a placeholder when redacted."
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL slug."
           }
         }
       },
       "RankingFacets": {
         "type": "object",
+        "description": "Filter values that return ranked results.",
         "required": [
           "classes",
           "countries",
@@ -3073,37 +3581,43 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Weight classes."
           },
           "countries": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Country codes."
           },
           "federations": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Federation names."
           },
           "series": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RankingSeries"
-            }
+            },
+            "description": "Competition series."
           },
           "years": {
             "type": "array",
             "items": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "description": "Years, newest first."
           }
         }
       },
       "RankingFederation": {
         "type": "object",
+        "description": "A federation.",
         "required": [
           "name",
           "abbreviation"
@@ -3113,15 +3627,18 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Short name."
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Full name."
           }
         }
       },
       "RankingMetric": {
         "type": "string",
+        "description": "Metric to rank on.",
         "enum": [
           "muscleup",
           "pullup",
@@ -3133,6 +3650,7 @@
       },
       "RankingSeries": {
         "type": "object",
+        "description": "A competition series.",
         "required": [
           "series",
           "name",
@@ -3140,18 +3658,22 @@
         ],
         "properties": {
           "federation": {
-            "type": "string"
+            "type": "string",
+            "description": "Federation name."
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Series name."
           },
           "series": {
-            "type": "string"
+            "type": "string",
+            "description": "Series identifier."
           }
         }
       },
       "RecordAthlete": {
         "type": "object",
+        "description": "An athlete.",
         "required": [
           "first_name",
           "last_name",
@@ -3163,36 +3685,44 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Two-letter country code (ISO 3166-1 alpha-2)."
           },
           "first_name": {
-            "type": "string"
+            "type": "string",
+            "description": "First name. Empty when redacted."
           },
           "last_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Last name, or a placeholder when redacted."
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL slug."
           }
         }
       },
       "RecordCompetition": {
         "type": "object",
+        "description": "A competition.",
         "required": [
           "name",
           "slug"
         ],
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition name."
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL slug."
           }
         }
       },
       "RecordEntry": {
         "type": "object",
+        "description": "A record result.",
         "required": [
           "rank",
           "athlete",
@@ -3202,26 +3732,32 @@
         ],
         "properties": {
           "athlete": {
-            "$ref": "#/components/schemas/RecordAthlete"
+            "$ref": "#/components/schemas/RecordAthlete",
+            "description": "Athlete."
           },
           "competition": {
-            "$ref": "#/components/schemas/RecordCompetition"
+            "$ref": "#/components/schemas/RecordCompetition",
+            "description": "Competition."
           },
           "date": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "description": "Competition start date."
           },
           "rank": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Position, from 1."
           },
           "weight": {
-            "type": "string"
+            "type": "string",
+            "description": "Weight in kilograms."
           }
         }
       },
       "RecordFacets": {
         "type": "object",
+        "description": "Filter values that return records.",
         "required": [
           "countries",
           "federations",
@@ -3234,7 +3770,8 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Country codes."
           },
           "custom_weight_classes": {
             "type": "boolean",
@@ -3244,25 +3781,29 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Federation names."
           },
           "series": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RecordSeries"
-            }
+            },
+            "description": "Competition series."
           },
           "years": {
             "type": "array",
             "items": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "description": "Years, newest first."
           }
         }
       },
       "RecordGender": {
         "type": "string",
+        "description": "`M` or `F`.",
         "enum": [
           "M",
           "F"
@@ -3270,6 +3811,7 @@
       },
       "RecordGroup": {
         "type": "object",
+        "description": "Best results for one movement, gender and weight class.",
         "required": [
           "movement",
           "gender",
@@ -3281,13 +3823,16 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RecordEntry"
-            }
+            },
+            "description": "Best result per athlete, heaviest first."
           },
           "gender": {
-            "$ref": "#/components/schemas/RecordGender"
+            "$ref": "#/components/schemas/RecordGender",
+            "description": "Gender."
           },
           "movement": {
-            "$ref": "#/components/schemas/RecordMovement"
+            "$ref": "#/components/schemas/RecordMovement",
+            "description": "Movement, or `total`."
           },
           "weight_class": {
             "type": [
@@ -3300,6 +3845,7 @@
       },
       "RecordMark": {
         "type": "string",
+        "description": "Current best in the archive for a weight class: `WR` worldwide, `NR` nationally. Not ratified by\na federation.",
         "enum": [
           "WR",
           "NR"
@@ -3307,6 +3853,7 @@
       },
       "RecordMovement": {
         "type": "string",
+        "description": "Movement, or `total` for MPDS totals.",
         "enum": [
           "muscleup",
           "pullup",
@@ -3317,6 +3864,7 @@
       },
       "RecordSeries": {
         "type": "object",
+        "description": "A competition series.",
         "required": [
           "series",
           "name",
@@ -3324,33 +3872,40 @@
         ],
         "properties": {
           "federation": {
-            "type": "string"
+            "type": "string",
+            "description": "Federation name."
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Series name."
           },
           "series": {
-            "type": "string"
+            "type": "string",
+            "description": "Series identifier."
           }
         }
       },
       "RisConstants": {
         "type": "object",
+        "description": "Formula constants by gender.",
         "required": [
           "men",
           "women"
         ],
         "properties": {
           "men": {
-            "$ref": "#/components/schemas/GenderConstants"
+            "$ref": "#/components/schemas/GenderConstants",
+            "description": "Constants for men."
           },
           "women": {
-            "$ref": "#/components/schemas/GenderConstants"
+            "$ref": "#/components/schemas/GenderConstants",
+            "description": "Constants for women."
           }
         }
       },
       "RisDistributionResponse": {
         "type": "object",
+        "description": "Computed MPDS results by gender, lightest first.",
         "required": [
           "men",
           "women"
@@ -3360,18 +3915,21 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RisPerformanceResponse"
-            }
+            },
+            "description": "Results for men."
           },
           "women": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RisPerformanceResponse"
-            }
+            },
+            "description": "Results for women."
           }
         }
       },
       "RisFormulaResponse": {
         "type": "object",
+        "description": "An edition of the RIS formula.",
         "required": [
           "year",
           "is_current",
@@ -3379,19 +3937,23 @@
         ],
         "properties": {
           "constants": {
-            "$ref": "#/components/schemas/RisConstants"
+            "$ref": "#/components/schemas/RisConstants",
+            "description": "Constants by gender."
           },
           "is_current": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether rankings use this edition."
           },
           "year": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "Edition year."
           }
         }
       },
       "RisPerformanceResponse": {
         "type": "object",
+        "description": "A result scored with the RIS formula.",
         "required": [
           "participant_id",
           "athlete_name",
@@ -3404,30 +3966,38 @@
         ],
         "properties": {
           "athlete_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Athlete full name."
           },
           "athlete_slug": {
-            "type": "string"
+            "type": "string",
+            "description": "Athlete URL slug."
           },
           "bodyweight": {
-            "type": "string"
+            "type": "string",
+            "description": "Bodyweight in kilograms."
           },
           "competition_date": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "description": "Competition start date."
           },
           "competition_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition name."
           },
           "competition_slug": {
-            "type": "string"
+            "type": "string",
+            "description": "Competition URL slug."
           },
           "participant_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unique identifier for the entry."
           },
           "total": {
-            "type": "string"
+            "type": "string",
+            "description": "Total in kilograms."
           }
         }
       },
@@ -3441,6 +4011,7 @@
       },
       "Scoring": {
         "type": "string",
+        "description": "Ranking metric: `total` or `ris`.",
         "enum": [
           "total",
           "ris"
@@ -3448,6 +4019,7 @@
       },
       "StandingPlace": {
         "type": "object",
+        "description": "A ranking place.",
         "required": [
           "place",
           "field"
@@ -3455,11 +4027,13 @@
         "properties": {
           "field": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Athletes ranked."
           },
           "place": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Place, from 1."
           }
         }
       }
@@ -3468,23 +4042,23 @@
   "tags": [
     {
       "name": "competitions",
-      "description": "Competition endpoints"
+      "description": "Competitions and their results"
     },
     {
       "name": "athletes",
-      "description": "Athlete endpoints"
+      "description": "Athletes and their history"
     },
     {
       "name": "rankings",
-      "description": "Ranking endpoints"
+      "description": "Rankings by lift, total or RIS"
     },
     {
       "name": "records",
-      "description": "Best results in the OpenStreetlifting archive"
+      "description": "Best results in the archive"
     },
     {
       "name": "ris",
-      "description": "RIS formulas and score computation"
+      "description": "RIS formulas and scores"
     }
   ]
 }

@@ -44,8 +44,26 @@ impl AppState {
     }
 }
 
+const API_DESCRIPTION: &str = "OpenStreetlifting is an open, collaborative project building a \
+permanent and traceable archive of all Streetlifting data, freely accessible to everyone.
+
+This is the public API to read that archive.";
+
 #[derive(OpenApi)]
 #[openapi(
+    info(
+        title = "OpenStreetlifting API",
+        description = API_DESCRIPTION,
+        contact(name = "OpenStreetlifting", url = "https://openstreetlifting.org/contact"),
+        license(
+            name = "Licensing guide",
+            url = "https://docs.openstreetlifting.org/LICENSING.html"
+        ),
+    ),
+    servers(
+        (url = "https://api.openstreetlifting.org", description = "Production"),
+        (url = "/", description = "This server"),
+    ),
     paths(
         competition::handlers::list_competitions,
         competition::handlers::get_competition,
@@ -85,7 +103,7 @@ impl AppState {
             crate::athlete::dto::BestRis,
             crate::shared::dto::PaginationMeta,
             crate::shared::dto::PaginationParams,
-            crate::shared::query::Include,
+            crate::error::ErrorResponse,
             osl_domain::AthleteStatus,
             osl_domain::CompetitionStatus,
             osl_domain::Gender,
@@ -116,11 +134,11 @@ impl AppState {
         )
     ),
     tags(
-        (name = "competitions", description = "Competition endpoints"),
-        (name = "athletes", description = "Athlete endpoints"),
-        (name = "rankings", description = "Ranking endpoints"),
-        (name = "records", description = "Best results in the OpenStreetlifting archive"),
-        (name = "ris", description = "RIS formulas and score computation"),
+        (name = "competitions", description = "Competitions and their results"),
+        (name = "athletes", description = "Athletes and their history"),
+        (name = "rankings", description = "Rankings by lift, total or RIS"),
+        (name = "records", description = "Best results in the archive"),
+        (name = "ris", description = "RIS formulas and scores"),
     ),
 )]
 pub struct ApiDoc;
@@ -236,6 +254,48 @@ mod tests {
             .unwrap();
         for name in ["include", "q", "direction"] {
             assert!(facets.iter().all(|p| p["name"] != name), "{name}");
+        }
+    }
+
+    #[test]
+    fn documents_every_endpoint_parameter_and_field() {
+        let schema = serde_json::to_value(ApiDoc::openapi()).unwrap();
+        assert!(schema["info"]["description"].is_string());
+        assert_eq!(
+            schema["servers"][0]["url"],
+            "https://api.openstreetlifting.org"
+        );
+
+        for (path, operations) in schema["paths"].as_object().unwrap() {
+            for (method, operation) in operations.as_object().unwrap() {
+                assert!(operation["summary"].is_string(), "{method} {path}");
+                assert!(operation["description"].is_string(), "{method} {path}");
+                for parameter in operation["parameters"].as_array().into_iter().flatten() {
+                    let name = &parameter["name"];
+                    assert!(parameter["description"].is_string(), "{path}: {name}");
+                }
+                for (status, response) in operation["responses"].as_object().unwrap() {
+                    if status.starts_with('4') {
+                        assert_eq!(
+                            response["content"]["application/json"]["schema"]["$ref"],
+                            "#/components/schemas/ErrorResponse",
+                            "{method} {path}: {status}"
+                        );
+                    }
+                }
+            }
+        }
+
+        for (name, component) in schema["components"]["schemas"].as_object().unwrap() {
+            for (field, property) in component["properties"].as_object().into_iter().flatten() {
+                let description = property
+                    .get("description")
+                    .or_else(|| property["oneOf"][0].get("description"));
+                assert!(
+                    description.is_some_and(serde_json::Value::is_string),
+                    "{name}.{field}"
+                );
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+/// Current best in the archive for a weight class: `WR` worldwide, `NR` nationally. Not ratified by
+/// a federation.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum RecordMark {

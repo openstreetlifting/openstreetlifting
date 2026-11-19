@@ -19,16 +19,20 @@ use super::dto::{
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct FormulaQuery {
+    /// Edition year.
     pub year: Option<i32>,
 }
 
+/// List RIS formulas
+///
+/// Returns every edition, or the edition of `year`.
 #[utoipa::path(
     get,
     path = "/api/v1/ris/formulas",
     params(FormulaQuery),
     responses(
         (status = 200, description = "RIS editions matching the optional year filter", body = Vec<RisFormulaResponse>),
-        (status = 400, description = "Invalid year")
+        (status = 400, description = "Invalid year", body = crate::error::ErrorResponse)
     ),
     tag = "ris"
 )]
@@ -42,6 +46,9 @@ pub async fn list_ris_formulas(Query(query): Query<FormulaQuery>) -> Json<Vec<Ri
     )
 }
 
+/// Retrieve the current RIS formula
+///
+/// Returns the edition rankings use.
 #[utoipa::path(
     get,
     path = "/api/v1/ris/formulas/current",
@@ -54,13 +61,17 @@ pub async fn get_current_formula() -> Json<RisFormulaResponse> {
     Json(Edition::CURRENT.into())
 }
 
+/// Calculate a RIS score
+///
+/// Returns a score for a bodyweight and total.
 #[utoipa::path(
     post,
     path = "/api/v1/ris/calculations",
     request_body = ComputeRisRequest,
     responses(
         (status = 200, description = "RIS computed successfully", body = ComputeRisResponse),
-        (status = 400, description = "Invalid request")
+        (status = 400, description = "Invalid request", body = crate::error::ErrorResponse),
+        (status = 404, description = "Unknown formula year", body = crate::error::ErrorResponse)
     ),
     tag = "ris"
 )]
@@ -103,6 +114,9 @@ mod tests {
     }
 }
 
+/// List RIS results
+///
+/// Returns every computed MPDS result, by gender.
 #[utoipa::path(
     get,
     path = "/api/v1/ris/distribution",

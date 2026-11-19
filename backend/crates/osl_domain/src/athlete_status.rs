@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+/// Participation status: `competed`, `disqualified` or `no_show`.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
