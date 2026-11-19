@@ -21,6 +21,8 @@ it('encodes athlete slugs and preserves null values and empty requested sections
     created_at: '2026-01-01T00:00:00',
     competitions: [],
     personal_records: [],
+    best_total: null,
+    best_ris: null,
     total_competitions: 0,
     standing: null,
     lift_balance: null,

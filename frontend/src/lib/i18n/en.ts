@@ -211,6 +211,8 @@ export const messages = [
   'Ranking',
   'Metric',
   'Personal records',
+  'Best total',
+  'Best RIS',
   'Competition history',
   'Division',
   'No competition history available',

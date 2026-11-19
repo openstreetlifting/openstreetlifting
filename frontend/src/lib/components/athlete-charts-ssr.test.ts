@@ -21,6 +21,7 @@ it.each(['kg', 'lb'] as const)(
             division: null,
             rank: 1,
             total: '400',
+            total_record: null,
             ris_score: null,
             ris_source: null,
             status: 'competed',

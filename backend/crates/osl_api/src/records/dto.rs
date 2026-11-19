@@ -2,7 +2,7 @@ use chrono::NaiveDate;
 use osl_db::filter::Filters;
 use osl_db::params::{RecordBy, RecordClass, RecordsFilter};
 use osl_db::projections::records::RecordRow;
-use osl_domain::{Gender, Movement, WeightClassSlug};
+use osl_domain::{Gender, Movement, RecordLift, WeightClassSlug};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
@@ -18,26 +18,29 @@ pub enum RecordMovement {
     Pullup,
     Dips,
     Squat,
+    Total,
 }
 
-impl From<RecordMovement> for Movement {
+impl From<RecordMovement> for RecordLift {
     fn from(movement: RecordMovement) -> Self {
         match movement {
-            RecordMovement::Muscleup => Self::MuscleUp,
-            RecordMovement::Pullup => Self::PullUp,
-            RecordMovement::Dips => Self::Dips,
-            RecordMovement::Squat => Self::Squat,
+            RecordMovement::Muscleup => Movement::MuscleUp.into(),
+            RecordMovement::Pullup => Movement::PullUp.into(),
+            RecordMovement::Dips => Movement::Dips.into(),
+            RecordMovement::Squat => Movement::Squat.into(),
+            RecordMovement::Total => Self::Total,
         }
     }
 }
 
-impl From<Movement> for RecordMovement {
-    fn from(movement: Movement) -> Self {
-        match movement {
-            Movement::MuscleUp => Self::Muscleup,
-            Movement::PullUp => Self::Pullup,
-            Movement::Dips => Self::Dips,
-            Movement::Squat => Self::Squat,
+impl From<RecordLift> for RecordMovement {
+    fn from(lift: RecordLift) -> Self {
+        match lift {
+            RecordLift::Movement(Movement::MuscleUp) => Self::Muscleup,
+            RecordLift::Movement(Movement::PullUp) => Self::Pullup,
+            RecordLift::Movement(Movement::Dips) => Self::Dips,
+            RecordLift::Movement(Movement::Squat) => Self::Squat,
+            RecordLift::Total => Self::Total,
         }
     }
 }

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT cp.participant_id, cp.athlete_id, cp.bodyweight, cp.age, cp.total,\n                        cp.status as \"status: AthleteStatus\", cp.status_reason, placed.rank as \"rank?\",\n                        cp.ris_score, cp.ris_source as \"ris_source: RisSource\"\n                 FROM competition_participants cp\n                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id\n                 LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n                 LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id\n                                                       AND placed.competition_id = cp.competition_id\n                 WHERE cp.competition_id = $1\n                   AND cp.weight_class_id IS NOT DISTINCT FROM $2\n                   AND cp.division_id IS NOT DISTINCT FROM $3\n                   AND COALESCE(cp.category_gender, wc.gender, a.gender) = $4\n                 ORDER BY placed.rank NULLS LAST",
+  "query": "SELECT cp.participant_id, cp.athlete_id, cp.bodyweight, cp.age, cp.total,\n                        total_mark.mark as \"total_record?: RecordMark\",\n                        cp.status as \"status: AthleteStatus\", cp.status_reason, placed.rank as \"rank?\",\n                        cp.ris_score, cp.ris_source as \"ris_source: RisSource\"\n                 FROM competition_participants cp\n                 INNER JOIN athletes a ON a.athlete_id = cp.athlete_id\n                 LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n                 LEFT JOIN participant_standings placed ON placed.participant_id = cp.participant_id\n                                                       AND placed.competition_id = cp.competition_id\n                 LEFT JOIN record_marks total_mark ON total_mark.participant_id = cp.participant_id\n                                                  AND total_mark.movement_name = 'Total'\n                 WHERE cp.competition_id = $1\n                   AND cp.weight_class_id IS NOT DISTINCT FROM $2\n                   AND cp.division_id IS NOT DISTINCT FROM $3\n                   AND COALESCE(cp.category_gender, wc.gender, a.gender) = $4\n                 ORDER BY placed.rank NULLS LAST",
   "describe": {
     "columns": [
       {
@@ -60,6 +60,17 @@
       },
       {
         "ordinal": 5,
+        "name": "total_record?: RecordMark",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "record_marks",
+            "name": "mark"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
         "name": "status: AthleteStatus",
         "type_info": "Text",
         "origin": {
@@ -70,7 +81,7 @@
         }
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "status_reason",
         "type_info": "Text",
         "origin": {
@@ -81,7 +92,7 @@
         }
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "rank?",
         "type_info": "Int4",
         "origin": {
@@ -92,7 +103,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "ris_score",
         "type_info": "Numeric",
         "origin": {
@@ -103,7 +114,7 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "ris_source: RisSource",
         "type_info": "Varchar",
         "origin": {
@@ -129,11 +140,12 @@
       true,
       true,
       false,
+      false,
       true,
       true,
       true,
       true
     ]
   },
-  "hash": "cc8edcab28a662df54d4115aa9ed9217286d485d69ec70c1eeb73994587544ea"
+  "hash": "99ae50ecc2064f456a8e30000bcc92aa33e78d3599035870debd0979b2226d9c"
 }

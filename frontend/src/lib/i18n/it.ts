@@ -286,6 +286,8 @@ export default {
   Ranking: 'Classifica',
   Metric: 'Criterio',
   'Personal records': 'Record personali',
+  'Best total': 'Miglior totale',
+  'Best RIS': 'Miglior RIS',
   'Competition history': 'Storico delle gare',
   Division: 'Divisione',
   'No competition history available': 'Nessuna gara registrata',

@@ -66,7 +66,12 @@ function data(
       years: [2026, 2025],
       custom_weight_classes: false,
     },
-    groups: [group('muscleup', null), group('muscleup', 'F-57'), group('squat', null)],
+    groups: [
+      group('total', null),
+      group('muscleup', null),
+      group('muscleup', 'F-57'),
+      group('squat', null),
+    ],
     ...overrides,
   } as PageData;
 }
@@ -88,7 +93,7 @@ it('lists each movement in order with the open group first', async () => {
       .getByRole('heading', { level: 2 })
       .elements()
       .map((heading) => heading.textContent?.trim())
-  ).toEqual(['Muscle-up', 'Squat']);
+  ).toEqual(['Total', 'Muscle-up', 'Squat']);
   expect(classLabels('Muscle-up')).toEqual(['All Classes', '-57kg']);
 
   const muscleup = page.getByRole('table', { name: 'Muscle-up records' });

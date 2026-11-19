@@ -285,6 +285,8 @@ export default {
   Ranking: 'Rangliste',
   Metric: 'Kennzahl',
   'Personal records': 'Persönliche Bestleistungen',
+  'Best total': 'Bestes Total',
+  'Best RIS': 'Bester RIS',
   'Competition history': 'Wettkampfhistorie',
   Division: 'Division',
   'No competition history available': 'Keine Wettkämpfe erfasst',

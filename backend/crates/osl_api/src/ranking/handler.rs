@@ -6,6 +6,7 @@ use std::collections::HashMap;
 
 use osl_db::repository::ranking::RankingRepository;
 use osl_db::repository::records::RecordsRepository;
+use osl_domain::RecordLift;
 
 use super::dto::{GlobalRankingEntry, GlobalRankingFilter, LiftRecord, RankingFacets};
 use crate::AppState;
@@ -71,17 +72,24 @@ pub async fn get_global_ranking(
         .marks(&participant_ids)
         .await?;
     let mut records: HashMap<_, Vec<LiftRecord>> = HashMap::new();
-    for (participant_id, movement, mark) in marks {
-        records
-            .entry(participant_id)
-            .or_default()
-            .push(LiftRecord { movement, mark });
+    let mut total_records = HashMap::new();
+    for (participant_id, lift, mark) in marks {
+        match lift {
+            RecordLift::Movement(movement) => records
+                .entry(participant_id)
+                .or_default()
+                .push(LiftRecord { movement, mark }),
+            RecordLift::Total => {
+                total_records.insert(participant_id, mark);
+            }
+        }
     }
     let entries: Vec<GlobalRankingEntry> = rows
         .into_iter()
         .map(|row| {
             let records = records.remove(&row.participant_id).unwrap_or_default();
-            GlobalRankingEntry::new(row, records)
+            let total_record = total_records.remove(&row.participant_id);
+            GlobalRankingEntry::new(row, records, total_record)
         })
         .collect();
 

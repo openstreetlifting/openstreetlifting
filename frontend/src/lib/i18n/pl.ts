@@ -284,6 +284,8 @@ export default {
   Ranking: 'Ranking',
   Metric: 'Kryterium',
   'Personal records': 'Rekordy życiowe',
+  'Best total': 'Najlepsza suma',
+  'Best RIS': 'Najlepszy RIS',
   'Competition history': 'Historia startów',
   Division: 'Dywizja',
   'No competition history available': 'Brak historii startów',

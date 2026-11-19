@@ -21,6 +21,8 @@ export const athletesService = {
     if (
       athlete.competitions === undefined ||
       athlete.personal_records === undefined ||
+      athlete.best_total === undefined ||
+      athlete.best_ris === undefined ||
       athlete.total_competitions === undefined ||
       athlete.standing === undefined ||
       athlete.lift_balance === undefined ||
@@ -33,6 +35,8 @@ export const athletesService = {
       ...athlete,
       competitions: athlete.competitions,
       personal_records: athlete.personal_records,
+      best_total: athlete.best_total,
+      best_ris: athlete.best_ris,
       total_competitions: athlete.total_competitions,
       standing: athlete.standing,
       lift_balance: athlete.lift_balance,

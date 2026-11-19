@@ -241,6 +241,7 @@ export interface components {
       ris_source: components['schemas']['RisSource'] | null;
       status: components['schemas']['AthleteStatus'];
       total: string | null;
+      total_record: components['schemas']['RecordMark'] | null;
     };
     AthleteLift: {
       attempts: components['schemas']['AttemptInfo'][];
@@ -269,6 +270,8 @@ export interface components {
     };
     AthleteResponse: {
       athlete_id: string;
+      best_ris?: components['schemas']['BestRis'] | null;
+      best_total?: components['schemas']['BestTotal'] | null;
       competitions?: components['schemas']['AthleteCompetitionSummary'][];
       country: string | null;
       created_at: string;
@@ -298,6 +301,20 @@ export interface components {
       attempt_number: number;
       is_successful: boolean;
       weight: string;
+    };
+    BestRis: {
+      competition_name: string;
+      competition_slug: string;
+      date: string;
+      ris_score: string;
+      ris_source: components['schemas']['RisSource'];
+    };
+    BestTotal: {
+      competition_name: string;
+      competition_slug: string;
+      date: string;
+      record: components['schemas']['RecordMark'] | null;
+      total: string;
     };
     CategoryDetail: {
       category: components['schemas']['CategoryInfo'];
@@ -403,6 +420,7 @@ export interface components {
       ris_source: components['schemas']['RisSource'] | null;
       squat: number | null;
       total: number | null;
+      total_record: components['schemas']['RecordMark'] | null;
     };
     Include: string;
     LiftBalance: {
@@ -446,6 +464,8 @@ export interface components {
     PaginatedResponse_AthleteResponse: {
       data: {
         athlete_id: string;
+        best_ris?: components['schemas']['BestRis'] | null;
+        best_total?: components['schemas']['BestTotal'] | null;
         competitions?: components['schemas']['AthleteCompetitionSummary'][];
         country: string | null;
         created_at: string;
@@ -506,6 +526,7 @@ export interface components {
         ris_source: components['schemas']['RisSource'] | null;
         squat: number | null;
         total: number | null;
+        total_record: components['schemas']['RecordMark'] | null;
       }[];
       pagination: components['schemas']['PaginationMeta'];
     };
@@ -531,6 +552,7 @@ export interface components {
       status: components['schemas']['AthleteStatus'];
       status_reason: string | null;
       total: string | null;
+      total_record: components['schemas']['RecordMark'] | null;
     };
     PersonalRecord: {
       competition_name: string;
@@ -600,7 +622,7 @@ export interface components {
       weight_class: string | null;
     };
     RecordMark: 'WR' | 'NR';
-    RecordMovement: 'muscleup' | 'pullup' | 'dips' | 'squat';
+    RecordMovement: 'muscleup' | 'pullup' | 'dips' | 'squat' | 'total';
     RecordSeries: {
       federation: string;
       name: string;
@@ -1103,7 +1125,7 @@ export const recordMarkValues: ReadonlyArray<
 > = ['WR', 'NR'];
 export const recordMovementValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RecordMovement']
-> = ['muscleup', 'pullup', 'dips', 'squat'];
+> = ['muscleup', 'pullup', 'dips', 'squat', 'total'];
 export const risSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RisSource']
 > = ['computed', 'reported'];

@@ -68,6 +68,8 @@ export class I18n {
         return this.t('Dips');
       case 'squat':
         return this.t('Squat');
+      case 'total':
+        return this.t('Total');
       default:
         return value;
     }

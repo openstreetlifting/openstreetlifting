@@ -20,13 +20,14 @@ pub struct AthleteCompetitionRow {
     pub competition_id: Uuid,
     pub competition_name: String,
     pub competition_slug: String,
-    pub competition_date: Option<chrono::NaiveDate>,
+    pub competition_date: chrono::NaiveDate,
     pub division: Option<String>,
     pub category_gender: Gender,
     pub weight_class_min: Option<Decimal>,
     pub weight_class_max: Option<Decimal>,
     pub rank: Option<i32>,
     pub total: Option<Decimal>,
+    pub total_record: Option<RecordMark>,
     pub ris_score: Option<Decimal>,
     pub ris_source: Option<RisSource>,
     pub status: AthleteStatus,
@@ -45,10 +46,30 @@ pub struct PersonalRecordRow {
 }
 
 #[derive(Debug)]
+pub struct BestTotalRow {
+    pub total: Decimal,
+    pub record: Option<RecordMark>,
+    pub competition_name: String,
+    pub competition_slug: String,
+    pub date: chrono::NaiveDate,
+}
+
+#[derive(Debug)]
+pub struct BestRisRow {
+    pub ris_score: Decimal,
+    pub ris_source: RisSource,
+    pub competition_name: String,
+    pub competition_slug: String,
+    pub date: chrono::NaiveDate,
+}
+
+#[derive(Debug)]
 pub struct AthleteDetail {
     pub athlete: AthleteRow,
     pub competitions: Vec<AthleteCompetitionRow>,
     pub personal_records: Vec<PersonalRecordRow>,
+    pub best_total: Option<BestTotalRow>,
+    pub best_ris: Option<BestRisRow>,
     pub total_competitions: i64,
     pub instagram_handle: Option<String>,
 }

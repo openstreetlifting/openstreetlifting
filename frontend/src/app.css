@@ -38,7 +38,6 @@
   --container-reading: 56rem;
   --container-card: 21.5rem;
   --container-summary: calc(2 * var(--container-card) + 1rem);
-  --container-records: calc(4 * var(--container-card) + 3rem);
   /* Panels and controls share square corners; circular information glyphs are exempt. */
   --radius-panel: 0px;
   --radius-control: 0px;

@@ -127,6 +127,9 @@ pub struct ParticipantDetail {
     pub lifts: Vec<LiftDetail>,
     #[schema(required = true)]
     pub total: Option<rust_decimal::Decimal>,
+    /// `WR` or `NR` when this total is the current world or national record for its weight class.
+    #[schema(required = true)]
+    pub total_record: Option<RecordMark>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -285,6 +288,7 @@ impl From<DbParticipantDetail> for ParticipantDetail {
             status_reason: participant.status_reason,
             lifts: participant.lifts.into_iter().map(Into::into).collect(),
             total: participant.total,
+            total_record: participant.total_record,
         }
     }
 }

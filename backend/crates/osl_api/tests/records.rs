@@ -58,23 +58,26 @@ async fn groups_every_record_without_parameters(pool: PgPool) {
     let groups = body.as_array().unwrap();
     assert_eq!(
         groups.len(),
-        12,
-        "four movements, each with open, M-80 and M+101"
+        15,
+        "the total and four movements, each with open, M-80 and M+101"
     );
     assert_eq!(
         groups
             .iter()
-            .take(3)
+            .take(4)
             .map(|group| (group["movement"].clone(), group["weight_class"].clone()))
             .collect::<Vec<_>>(),
         vec![
+            (json!("total"), Value::Null),
+            (json!("total"), json!("M-80")),
+            (json!("total"), json!("M+101")),
             (json!("muscleup"), Value::Null),
-            (json!("muscleup"), json!("M-80")),
-            (json!("muscleup"), json!("M+101")),
         ]
     );
+    assert_eq!(groups[0]["entries"][0]["athlete"]["last_name"], "Heavy");
+    assert_eq!(groups[0]["entries"][0]["weight"], "370");
 
-    let open = &groups[0];
+    let open = &groups[3];
     assert_eq!(open["gender"], "M");
     assert_eq!(open["entries"].as_array().unwrap().len(), 3);
     assert_eq!(
@@ -154,7 +157,7 @@ async fn rejects_invalid_parameters(pool: PgPool) {
         "/api/v1/records?limit=51",
         "/api/v1/records?weight_class=M-75",
         "/api/v1/records?gender=MX",
-        "/api/v1/records?movement=total",
+        "/api/v1/records?movement=ris",
     ] {
         let (status, _) = get(&pool, uri).await;
         assert_eq!(status, StatusCode::BAD_REQUEST, "{uri}");
@@ -171,7 +174,7 @@ async fn filters_by_federation_and_year(pool: PgPool) {
     )
     .await;
     assert_eq!(status, StatusCode::OK);
-    assert_eq!(known.as_array().unwrap().len(), 12);
+    assert_eq!(known.as_array().unwrap().len(), 15);
 
     for uri in [
         "/api/v1/records?federation=Elsewhere",
@@ -244,6 +247,45 @@ async fn marks_current_records_on_rankings_results_and_history(pool: PgPool) {
         .unwrap()
         .clone();
     assert_eq!(squat["record"], "WR");
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn marks_current_total_records_on_rankings_results_and_history(pool: PgPool) {
+    a_meet(&pool).await;
+
+    let (_, rankings) = get(&pool, "/api/v1/rankings?movement=total").await;
+    let total_record = |slug: &str| {
+        rankings["data"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|entry| entry["athlete"]["slug"] == slug)
+            .unwrap()["total_record"]
+            .clone()
+    };
+    assert_eq!(total_record("hugo-heavy"), "WR");
+    assert_eq!(total_record("alex-martin"), "WR");
+    assert_eq!(total_record("ben-dupont"), Value::Null);
+
+    let (_, competition) = get(&pool, "/api/v1/competitions/worlds?include=results").await;
+    let participants: Vec<_> = competition["categories"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .flat_map(|category| category["participants"].as_array().unwrap())
+        .collect();
+    let result_mark = |slug: &str| {
+        participants
+            .iter()
+            .find(|participant| participant["athlete"]["slug"] == slug)
+            .unwrap()["total_record"]
+            .clone()
+    };
+    assert_eq!(result_mark("alex-martin"), "WR");
+    assert_eq!(result_mark("ben-dupont"), Value::Null);
+
+    let (_, athlete) = get(&pool, "/api/v1/athletes/hugo-heavy?include=competitions").await;
+    assert_eq!(athlete["competitions"][0]["total_record"], "WR");
 }
 
 fn regional_meet() -> osl_importer::canonical::models::CanonicalFormat {

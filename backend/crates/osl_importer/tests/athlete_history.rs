@@ -1,5 +1,5 @@
 use osl_db::repository::athlete::AthleteRepository;
-use osl_domain::Movement;
+use osl_domain::{Movement, RecordMark, RisSource};
 use sqlx::PgPool;
 
 mod common;
@@ -74,6 +74,54 @@ async fn orders_records_and_counts_distinct_competitions(pool: PgPool) {
             ("Squat", "180".to_string(), "later"),
         ]
     );
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn takes_best_total_and_ris_from_full_meets(pool: PgPool) {
+    let lifter = || athlete("Alex", "Martin");
+    import(
+        &pool,
+        competition(
+            "best-ris",
+            vec![men_80(vec![common::scored(
+                lifting(lifter(), ["40", "60", "80", "120"]),
+                "120",
+            )])],
+        ),
+    )
+    .await;
+    let mut heavier = competition(
+        "best-total",
+        vec![men_80(vec![common::scored(
+            lifting(lifter(), ["50", "70", "90", "140"]),
+            "100",
+        )])],
+    );
+    heavier.competition.start_date = chrono::NaiveDate::from_ymd_opt(2026, 2, 1).unwrap();
+    heavier.competition.end_date = heavier.competition.start_date;
+    import(&pool, heavier).await;
+    let mut single_lift = competition(
+        "single-lift",
+        vec![men_80(vec![common::scored(
+            common::best(lifter(), Movement::MuscleUp, "500"),
+            "900",
+        )])],
+    );
+    single_lift.movements = vec![Movement::MuscleUp];
+    import(&pool, single_lift).await;
+
+    let detail = AthleteRepository::new(&pool)
+        .find_by_slug_detailed("alex-martin")
+        .await
+        .unwrap();
+    let total = detail.best_total.unwrap();
+    assert_eq!(total.total, common::decimal("350"));
+    assert_eq!(total.competition_slug, "best-total");
+    assert_eq!(total.record, Some(RecordMark::World));
+    let ris = detail.best_ris.unwrap();
+    assert_eq!(ris.ris_score, common::decimal("120"));
+    assert_eq!(ris.competition_slug, "best-ris");
+    assert_eq!(ris.ris_source, RisSource::Reported);
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

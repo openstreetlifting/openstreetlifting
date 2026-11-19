@@ -67,6 +67,8 @@ fn serializes_missing_athlete_values_as_null() {
     for field in [
         "competitions",
         "personal_records",
+        "best_total",
+        "best_ris",
         "total_competitions",
         "standing",
         "lift_balance",
@@ -82,6 +84,8 @@ fn serializes_requested_empty_sections() {
         athlete: athlete_row(),
         competitions: Vec::new(),
         personal_records: Vec::new(),
+        best_total: None,
+        best_ris: None,
         total_competitions: 0,
         instagram_handle: None,
     };
@@ -93,6 +97,8 @@ fn serializes_requested_empty_sections() {
     let body = serde_json::to_value(response).unwrap();
     assert_eq!(body["competitions"], json!([]));
     assert_eq!(body["personal_records"], json!([]));
+    assert_eq!(body.get("best_total"), Some(&Value::Null));
+    assert_eq!(body.get("best_ris"), Some(&Value::Null));
     assert_eq!(body["total_competitions"], 0);
     assert_eq!(body.get("standing"), Some(&Value::Null));
     assert_eq!(body.get("lift_balance"), Some(&Value::Null));
@@ -189,6 +195,7 @@ fn preserves_zero_and_null_ranking_values() {
         ris: None,
         ris_source: None,
         total: Some(0.0),
+        total_record: None,
         muscleup: Some(0.0),
         pullup: None,
         dips: None,
@@ -239,6 +246,8 @@ fn requires_fields_except_conditional_sections() {
                     field.as_str(),
                     "competitions"
                         | "personal_records"
+                        | "best_total"
+                        | "best_ris"
                         | "total_competitions"
                         | "standing"
                         | "lift_balance"

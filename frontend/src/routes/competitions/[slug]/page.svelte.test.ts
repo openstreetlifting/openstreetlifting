@@ -195,6 +195,7 @@ it.each([
       status_reason: null,
       lifts: [],
       total: null,
+      total_record: null,
     },
   ];
   render(CompetitionPage, { data: results });

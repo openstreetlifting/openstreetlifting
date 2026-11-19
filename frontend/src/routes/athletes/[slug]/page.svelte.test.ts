@@ -82,6 +82,8 @@ function athlete(): AthleteDetail {
     created_at: '2026-01-01T00:00:00',
     competitions: [],
     personal_records: [],
+    best_total: null,
+    best_ris: null,
     total_competitions: 0,
     standing: {
       ris: standing('105.5'),
@@ -138,6 +140,35 @@ it('marks a personal best that is a current record', async () => {
   await expect
     .element(page.getByLabelText('Current national record in this weight class'))
     .toHaveTextContent('NR');
+});
+
+it('shows the best total with its record mark beside the best RIS', async () => {
+  const lifter = athlete();
+  lifter.best_total = {
+    total: '512.5',
+    record: 'WR',
+    competition_name: 'Worlds',
+    competition_slug: 'worlds',
+    date: '2026-03-01',
+  };
+  lifter.best_ris = {
+    ris_score: '118.25',
+    ris_source: 'computed',
+    competition_name: 'Euros',
+    competition_slug: 'euros',
+    date: '2026-01-01',
+  };
+  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+
+  const total = page.getByRole('link', { name: /Best total/ });
+  await expect.element(total).toHaveAttribute('href', '/en/competitions/worlds');
+  await expect.element(total.getByText('512.5', { exact: true })).toBeVisible();
+  await expect.element(total.getByLabelText(/world record/i)).toHaveTextContent('WR');
+
+  const ris = page.getByRole('link', { name: /Best RIS/ });
+  await expect.element(ris).toHaveAttribute('href', '/en/competitions/euros');
+  await expect.element(ris.getByText('118.25', { exact: true })).toBeVisible();
+  await expect.element(ris.getByText('WR')).not.toBeInTheDocument();
 });
 
 it('defaults both cards to RIS with separate global and country pages', async () => {
@@ -236,6 +267,7 @@ it('renders multiple divisions from the same meet and distinguishes absent, bomb
     category_name: '-80',
     rank: 1,
     total: '60',
+    total_record: null,
     ris_score: null,
     ris_source: null,
     status: 'competed',
@@ -364,6 +396,7 @@ it('marks a lift that is a current record', async () => {
       division: null,
       rank: 1,
       total: null,
+      total_record: null,
       ris_score: null,
       ris_source: null,
       status: 'competed',
