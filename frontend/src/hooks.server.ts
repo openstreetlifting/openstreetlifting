@@ -60,7 +60,8 @@ export const handle: Handle = async ({ event, resolve }) => {
   return response;
 };
 
-export const handleError: HandleServerError = ({ error, event }) => {
+export const handleError: HandleServerError = ({ kind, error, event }) => {
+  if (kind !== 'unknown') return error;
   logger.error(
     { err: error, 'http.route': event.route.id ?? 'unmatched' },
     'Unhandled frontend server error occurred'
