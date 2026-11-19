@@ -1,0 +1,15 @@
+event = "MPDS"
+sources = ["https://app.weighted-calisthenics.de/#events"]
+
+[competition]
+name = "DACH"
+start_date = "2020-10-17"
+city = "Cologne"
+venue = "Rhein Gym"
+region = "Nordrhein-Westfalen"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "FinalRep"
+country = "DE"
