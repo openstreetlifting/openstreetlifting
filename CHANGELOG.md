@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.77.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.76.0...v0.77.0) (2026-11-19)
+
+
+### Features
+
+* **records:** add total records and best total and RIS cards ([#1062](https://github.com/openstreetlifting/openstreetlifting/issues/1062)) ([312dae7](https://github.com/openstreetlifting/openstreetlifting/commit/312dae7c1c6d2b4f224ec36d8e801b3cb9d8d2bd))
+
+
+### Bug Fixes
+
+* **api:** return Instagram handles on every athlete response ([#1067](https://github.com/openstreetlifting/openstreetlifting/issues/1067)) ([66f387b](https://github.com/openstreetlifting/openstreetlifting/commit/66f387befa9e439a3935bcd375bd3334c7b46f28))
+* **frontend:** stop logging expected 404s as server errors ([#1073](https://github.com/openstreetlifting/openstreetlifting/issues/1073)) ([0811ad0](https://github.com/openstreetlifting/openstreetlifting/commit/0811ad07ae9278271c9a04ede5dff5477a85c09d))
+
+
+### Performance
+
+* **api:** load competition results in four queries ([#1072](https://github.com/openstreetlifting/openstreetlifting/issues/1072)) ([6228a6a](https://github.com/openstreetlifting/openstreetlifting/commit/6228a6a388539f6d94b1a98965314942e54112c2))
+
+
+### Refactoring
+
+* **api:** load athlete sections independently ([#1066](https://github.com/openstreetlifting/openstreetlifting/issues/1066)) ([42b5a19](https://github.com/openstreetlifting/openstreetlifting/commit/42b5a1985ef3b3ba30e99521681449142564aa0d))
+* **api:** load competition sections independently ([#1068](https://github.com/openstreetlifting/openstreetlifting/issues/1068)) ([b776d1e](https://github.com/openstreetlifting/openstreetlifting/commit/b776d1edafa1d818bf7f98bfbf3b49b1eee2edd7))
+* **api:** make athlete competition and record dates required ([#1063](https://github.com/openstreetlifting/openstreetlifting/issues/1063)) ([400f4ed](https://github.com/openstreetlifting/openstreetlifting/commit/400f4eda4161b596d554dfbfbee6f17f9b4b9ad6))
+* **terminology:** use MPDS instead of four lifts ([#1065](https://github.com/openstreetlifting/openstreetlifting/issues/1065)) ([30e6854](https://github.com/openstreetlifting/openstreetlifting/commit/30e6854a5ead8aab6be61275495aa5298a2da7eb))
+
+
+### Documentation
+
+* **api:** document endpoints, parameters and response fields ([#1069](https://github.com/openstreetlifting/openstreetlifting/issues/1069)) ([3f0baa1](https://github.com/openstreetlifting/openstreetlifting/commit/3f0baa1beb21a00d05dd7a3aa70479398742488c))
+
 ## [0.76.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.75.0...v0.76.0) (2026-11-18)
 
 
