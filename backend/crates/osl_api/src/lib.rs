@@ -44,17 +44,10 @@ impl AppState {
     }
 }
 
-const API_DESCRIPTION: &str = "Streetlifting competitions, athletes, rankings, records and RIS \
-scores from the OpenStreetlifting archive.
+const API_DESCRIPTION: &str = "OpenStreetlifting is an open, collaborative project building a \
+permanent and traceable archive of all Streetlifting data, freely accessible to everyone.
 
-- Weights are in kilograms. Decimals are strings, such as `\"315.5\"`; ranking values are numbers.
-- Dates use `YYYY-MM-DD`. Countries use ISO 3166-1 alpha-2 codes.
-- `MPDS` is muscle-up, pull-up, dips and squat. Shorter events use their letters, such as `PD`.
-- Lists return `data`. Paged lists add `pagination`.
-- `include` adds optional sections, comma-separated.
-- Errors return `{\"error\": \"...\"}`. A query value of the wrong type returns plain text.
-
-[Licensing guide](https://docs.openstreetlifting.org/LICENSING.html)";
+This is the public API to read that archive.";
 
 #[derive(OpenApi)]
 #[openapi(

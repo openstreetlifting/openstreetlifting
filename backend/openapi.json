@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "OpenStreetlifting API",
-    "description": "Streetlifting competitions, athletes, rankings, records and RIS scores from the OpenStreetlifting archive.\n\n- Weights are in kilograms. Decimals are strings, such as `\"315.5\"`; ranking values are numbers.\n- Dates use `YYYY-MM-DD`. Countries use ISO 3166-1 alpha-2 codes.\n- `MPDS` is muscle-up, pull-up, dips and squat. Shorter events use their letters, such as `PD`.\n- Lists return `data`. Paged lists add `pagination`.\n- `include` adds optional sections, comma-separated.\n- Errors return `{\"error\": \"...\"}`. A query value of the wrong type returns plain text.\n\n[Licensing guide](https://docs.openstreetlifting.org/LICENSING.html)",
+    "description": "OpenStreetlifting is an open, collaborative project building a permanent and traceable archive of all Streetlifting data, freely accessible to everyone.\n\nThis is the public API to read that archive.",
     "contact": {
       "name": "OpenStreetlifting",
       "url": "https://openstreetlifting.org/contact"
