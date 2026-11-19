@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Checkout deployment repository
         uses: actions/checkout@v7
@@ -66,26 +68,27 @@ jobs:
 
       - name: Verify staging runs the release
         env:
-          GH_TOKEN: ${{ github.token }}
+          FRONTEND_TAG: ${{ steps.tags.outputs.frontend_sha }}
+          BACKEND_TAG: ${{ steps.tags.outputs.backend_sha }}
+          IMPORTER_TAG: ${{ steps.tags.outputs.importer_sha }}
         run: |
           check() {
             local component=$1 tag=$2
+            shift 2
             local commit="${tag#sha-}"
-            local status
-            if ! status=$(gh api \
-              "repos/${GITHUB_REPOSITORY}/compare/${GITHUB_REF_NAME}...${commit}" \
-              --jq .status 2>&1); then
-              echo "::error::staging ${component} tag '${tag}' is not a commit of ${GITHUB_REPOSITORY}; refusing to promote." >&2
+            if ! git merge-base --is-ancestor "$commit" "$GITHUB_REF_NAME" 2>/dev/null; then
+              echo "::error::staging ${component} (${tag}) is not part of ${GITHUB_REF_NAME}; refusing to promote." >&2
               exit 1
             fi
-            if [[ "$status" != "behind" && "$status" != "identical" ]]; then
+            if ! git diff --quiet "$commit" "${GITHUB_REF_NAME}^" -- "$@"; then
               echo "::error::staging ${component} (${tag}) is older than ${GITHUB_REF_NAME}. Deploy it to staging before promoting." >&2
+              git diff --stat "$commit" "${GITHUB_REF_NAME}^" -- "$@" >&2
               exit 1
             fi
           }
-          check frontend "${{ steps.tags.outputs.frontend_sha }}"
-          check backend "${{ steps.tags.outputs.backend_sha }}"
-          check importer "${{ steps.tags.outputs.importer_sha }}"
+          check frontend "$FRONTEND_TAG" frontend
+          check backend "$BACKEND_TAG" backend charts
+          check importer "$IMPORTER_TAG" backend charts
 
       - name: Retag images
         env:
