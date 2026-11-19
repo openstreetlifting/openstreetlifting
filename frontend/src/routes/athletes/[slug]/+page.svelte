@@ -33,6 +33,11 @@
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { athleteFilters } from '#lib/utils/athlete-filters.js';
+  import {
+    competitionFocusQuery,
+    movementMetric,
+    type ProgressMetric,
+  } from '#lib/utils/athlete-progress.js';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
@@ -171,6 +176,11 @@
           category: selectedStanding?.class ?? '',
         }
   );
+
+  function competitionHref(slug: string, metric: ProgressMetric) {
+    const query = competitionFocusQuery(metric, athlete.slug);
+    return i18n.href(resolve(`competitions/${slug}?${query}`));
+  }
 
   function boardQuery(place: number, filters: Record<string, string> = {}): string {
     const params = new SvelteURLSearchParams(filters);
@@ -364,7 +374,7 @@
               heading={i18n.t('Best total')}
               meta={formatDate(best.date, i18n.locale)}
               record={best.record}
-              href={i18n.href(resolve(`competitions/${best.competition_slug}`))}
+              href={competitionHref(best.competition_slug, 'total')}
             >
               <span class={TEXT.cardFigure}>{weights.format(best.total, i18n.locale)}</span>
               <span class="font-mono text-meta text-secondary">{weights.unit}</span>
@@ -380,7 +390,7 @@
             <MetricCard
               heading={i18n.t('Best RIS')}
               meta={formatDate(best.date, i18n.locale)}
-              href={i18n.href(resolve(`competitions/${best.competition_slug}`))}
+              href={competitionHref(best.competition_slug, 'ris')}
             >
               <span class={TEXT.cardFigure}
                 ><RisScore value={best.ris_score} source={best.ris_source} /></span
@@ -396,7 +406,7 @@
             heading={i18n.movement(pr.movement_name)}
             meta={formatDate(pr.date, i18n.locale)}
             record={pr.record}
-            href={i18n.href(resolve(`competitions/${pr.competition_slug}`))}
+            href={competitionHref(pr.competition_slug, movementMetric(pr.movement_name))}
           >
             <span class={TEXT.cardFigure}>{weights.format(pr.max_weight, i18n.locale)}</span>
             <span class="font-mono text-meta text-secondary">{weights.unit}</span>

@@ -7,13 +7,13 @@
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
   import { CHART } from '#lib/constants/typography.js';
   import {
+    competitionFocusQuery,
     progressPoints,
     type ProgressMetric,
     type ProgressPoint,
   } from '#lib/utils/athlete-progress.js';
   import { formatLongDate, formatScore } from '#lib/utils/format.js';
   import { resolve } from '$app/paths';
-  import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
   import { Tooltip, type ChartState } from 'layerchart';
   import { scaleUtc, scaleLinear } from 'd3-scale';
@@ -78,8 +78,7 @@
   );
 
   function competitionLink(slug: string) {
-    const query = new SvelteURLSearchParams({ movement: metric });
-    if (athleteSlug) query.set('athlete', athleteSlug);
+    const query = competitionFocusQuery(metric, athleteSlug);
     return i18n.href(resolve(`competitions/${slug}?${query}`));
   }
 

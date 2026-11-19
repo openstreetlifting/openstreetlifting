@@ -140,6 +140,9 @@ it('marks a personal best that is a current record', async () => {
   await expect
     .element(page.getByLabelText('Current national record in this weight class'))
     .toHaveTextContent('NR');
+  await expect
+    .element(page.getByRole('link', { name: /Dips/ }))
+    .toHaveAttribute('href', '/en/competitions/serbian-open?movement=dips&athlete=alex-martin');
 });
 
 it('shows the best total with its record mark beside the best RIS', async () => {
@@ -161,12 +164,16 @@ it('shows the best total with its record mark beside the best RIS', async () => 
   render(AthletePage, { data: { locale: 'en', athlete: lifter } });
 
   const total = page.getByRole('link', { name: /Best total/ });
-  await expect.element(total).toHaveAttribute('href', '/en/competitions/worlds');
+  await expect
+    .element(total)
+    .toHaveAttribute('href', '/en/competitions/worlds?movement=total&athlete=alex-martin');
   await expect.element(total.getByText('512.5', { exact: true })).toBeVisible();
   await expect.element(total.getByLabelText(/world record/i)).toHaveTextContent('WR');
 
   const ris = page.getByRole('link', { name: /Best RIS/ });
-  await expect.element(ris).toHaveAttribute('href', '/en/competitions/euros');
+  await expect
+    .element(ris)
+    .toHaveAttribute('href', '/en/competitions/euros?movement=ris&athlete=alex-martin');
   await expect.element(ris.getByText('118.25', { exact: true })).toBeVisible();
   await expect.element(ris.getByText('WR')).not.toBeInTheDocument();
 });
