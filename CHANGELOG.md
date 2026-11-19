@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.78.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.77.0...v0.78.0) (2026-11-19)
+
+
+### Features
+
+* **athletes:** focus the athlete when a record card opens a competition ([#1076](https://github.com/openstreetlifting/openstreetlifting/issues/1076)) ([cdf2662](https://github.com/openstreetlifting/openstreetlifting/commit/cdf26627de1a0a7c9117e6009494e7c377038681))
+* **data:** import FinalRep DACH 2020 ([#1074](https://github.com/openstreetlifting/openstreetlifting/issues/1074)) ([aa07df3](https://github.com/openstreetlifting/openstreetlifting/commit/aa07df3ae143fabf7cc44bd23e2364a50314d4c2))
+* **data:** import FinalRep DACH 2022 ([#1075](https://github.com/openstreetlifting/openstreetlifting/issues/1075)) ([742b006](https://github.com/openstreetlifting/openstreetlifting/commit/742b006dc5833b43862cf278a983aadc8fd143ea))
+
 ## [0.77.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.76.0...v0.77.0) (2026-11-19)
 
 
