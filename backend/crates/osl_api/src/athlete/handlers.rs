@@ -4,25 +4,21 @@ use axum::{
     Json,
     extract::{Path, Query, State},
 };
+use osl_db::projections::athlete::AthleteRecords;
 use osl_db::repository::athlete::AthleteRepository;
 use osl_db::repository::ranking::RankingRepository;
 use serde::Deserialize;
 
-use super::dto::{AthleteNeighborhood, AthleteResponse, AthleteStanding, LiftBalance};
+use super::dto::{
+    AthleteInclude, AthleteNeighborhood, AthleteResponse, AthleteStanding, LiftBalance,
+};
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::Include;
-
-const ATHLETE_INCLUDES: &[&str] = &[
-    "competitions",
-    "records",
-    "standing",
-    "lift_balance",
-    "neighbors",
-];
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct AthleteQuery {
     #[serde(default)]
+    #[param(value_type = Vec<AthleteInclude>, style = Form, explode = false)]
     pub include: Include,
 }
 
@@ -74,64 +70,80 @@ pub async fn get_athlete(
     Path(slug): Path<String>,
     Query(query): Query<AthleteQuery>,
 ) -> WebResult<Json<AthleteResponse>> {
-    query
-        .include
-        .validate(ATHLETE_INCLUDES)
-        .map_err(WebError::BadRequest)?;
+    let include: Vec<AthleteInclude> = query.include.parse_as().map_err(WebError::BadRequest)?;
+    let wants = |section| include.contains(&section);
 
     let repo = AthleteRepository::new(state.db.pool());
-
-    if ATHLETE_INCLUDES.iter().any(|name| query.include.has(name)) {
-        let athlete = repo.find_by_slug(&slug).await?;
-        let athlete_id = athlete.athlete_id;
-        let rankings = RankingRepository::new(state.db.pool());
-        let (detail, metric_standings, lift_balance, neighbors) = tokio::try_join!(
-            repo.get_detailed_athlete(athlete),
-            async {
-                if query.include.has("standing") {
-                    rankings
-                        .get_athlete_metric_standings_stored(athlete_id)
-                        .await
-                } else {
-                    Ok(Vec::new())
-                }
-            },
-            async {
-                if query.include.has("lift_balance") {
-                    repo.lift_balance(athlete_id).await
-                } else {
-                    Ok(Vec::new())
-                }
-            },
-            async {
-                if query.include.has("neighbors") {
-                    rankings
-                        .get_athlete_total_neighbors_stored(athlete_id)
-                        .await
-                } else {
-                    Ok(Vec::new())
-                }
-            }
-        )?;
-
-        let mut response = AthleteResponse::from_detail(detail, &query.include);
-        response.standing = query
-            .include
-            .has("standing")
-            .then(|| AthleteStanding::from_rows(metric_standings));
-        response.lift_balance = query
-            .include
-            .has("lift_balance")
-            .then(|| LiftBalance::from_rows(lift_balance));
-
-        response.neighbors = query
-            .include
-            .has("neighbors")
-            .then(|| AthleteNeighborhood::from_rows(neighbors, response.gender));
-
-        return Ok(Json(response));
+    let athlete = repo.find_by_slug(&slug).await?;
+    if include.is_empty() {
+        return Ok(Json(AthleteResponse::from(athlete)));
     }
 
-    let athlete = repo.find_by_slug(&slug).await?;
-    Ok(Json(AthleteResponse::from(athlete)))
+    let athlete_id = athlete.athlete_id;
+    let rankings = RankingRepository::new(state.db.pool());
+    let wants_competitions = wants(AthleteInclude::Competitions);
+    let wants_records = wants(AthleteInclude::Records);
+    let (history, instagram_handle, standing, lift_balance, neighbors) = tokio::try_join!(
+        load_if(
+            wants_competitions || wants_records,
+            repo.competition_history(athlete_id)
+        ),
+        repo.instagram_handle(athlete_id),
+        load_if(
+            wants(AthleteInclude::Standing),
+            rankings.get_athlete_metric_standings_stored(athlete_id)
+        ),
+        load_if(
+            wants(AthleteInclude::LiftBalance),
+            repo.lift_balance(athlete_id)
+        ),
+        load_if(
+            wants(AthleteInclude::Neighbors),
+            rankings.get_athlete_total_neighbors_stored(athlete_id)
+        ),
+    )?;
+
+    let mut response = AthleteResponse::from(athlete);
+    response.instagram_handle = instagram_handle;
+    if let Some(history) = history {
+        if wants_records {
+            response.set_records(AthleteRecords::from_history(&history).into());
+        }
+        if wants_competitions {
+            response.set_history(history.into());
+        }
+    }
+    response.standing = standing.map(AthleteStanding::from_rows);
+    response.lift_balance = lift_balance.map(LiftBalance::from_rows);
+    response.neighbors =
+        neighbors.map(|rows| AthleteNeighborhood::from_rows(rows, response.gender));
+
+    Ok(Json(response))
+}
+
+async fn load_if<T>(
+    needed: bool,
+    load: impl Future<Output = osl_db::error::Result<T>>,
+) -> osl_db::error::Result<Option<T>> {
+    if needed {
+        load.await.map(Some)
+    } else {
+        Ok(None)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn skips_a_section_that_is_not_needed() {
+        let loaded = load_if::<()>(false, async { panic!("must not be polled") }).await;
+        assert!(matches!(loaded, Ok(None)));
+    }
+
+    #[tokio::test]
+    async fn loads_a_needed_section() {
+        assert!(matches!(load_if(true, async { Ok(1) }).await, Ok(Some(1))));
+    }
 }

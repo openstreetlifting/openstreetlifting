@@ -1,8 +1,8 @@
 use chrono::NaiveDateTime;
 use osl_db::params::RankingMovement;
 use osl_db::projections::athlete::{
-    AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, BestRisRow,
-    BestTotalRow, PersonalRecordRow,
+    AthleteBalanceRow, AthleteCompetitionRow, AthleteLiftRow, AthleteRecords, BestRisRow,
+    BestTotalRow, PersonalRecordRow, count_competitions,
 };
 use osl_db::projections::ranking::{AthleteMetricStandingRow, AthleteNeighborRow};
 use osl_db::rows::athlete::AthleteRow;
@@ -12,7 +12,16 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::competition::dto::AttemptInfo;
-use crate::shared::query::Include;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum AthleteInclude {
+    Competitions,
+    Records,
+    Standing,
+    LiftBalance,
+    Neighbors,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AthleteResponse {
@@ -443,30 +452,51 @@ impl From<BestRisRow> for BestRis {
     }
 }
 
-impl AthleteResponse {
-    pub fn from_detail(detail: AthleteDetail, include: &Include) -> Self {
-        let AthleteDetail {
-            athlete,
-            competitions,
-            personal_records,
-            best_total,
-            best_ris,
-            total_competitions,
-            instagram_handle,
-        } = detail;
+#[derive(Debug)]
+pub struct AthleteHistorySection {
+    competitions: Vec<AthleteCompetitionSummary>,
+    total_competitions: i64,
+}
 
-        let mut response = Self::from(athlete);
-        response.instagram_handle = instagram_handle;
-        if include.has("competitions") {
-            response.competitions = Some(competitions.into_iter().map(Into::into).collect());
-            response.total_competitions = Some(total_competitions);
+impl From<Vec<AthleteCompetitionRow>> for AthleteHistorySection {
+    fn from(history: Vec<AthleteCompetitionRow>) -> Self {
+        Self {
+            total_competitions: count_competitions(&history),
+            competitions: history.into_iter().map(Into::into).collect(),
         }
-        if include.has("records") {
-            response.personal_records =
-                Some(personal_records.into_iter().map(Into::into).collect());
-            response.best_total = Some(best_total.map(Into::into));
-            response.best_ris = Some(best_ris.map(Into::into));
+    }
+}
+
+#[derive(Debug)]
+pub struct AthleteRecordsSection {
+    personal_records: Vec<PersonalRecord>,
+    best_total: Option<BestTotal>,
+    best_ris: Option<BestRis>,
+}
+
+impl From<AthleteRecords> for AthleteRecordsSection {
+    fn from(records: AthleteRecords) -> Self {
+        Self {
+            personal_records: records
+                .personal_records
+                .into_iter()
+                .map(Into::into)
+                .collect(),
+            best_total: records.best_total.map(Into::into),
+            best_ris: records.best_ris.map(Into::into),
         }
-        response
+    }
+}
+
+impl AthleteResponse {
+    pub fn set_history(&mut self, section: AthleteHistorySection) {
+        self.competitions = Some(section.competitions);
+        self.total_competitions = Some(section.total_competitions);
+    }
+
+    pub fn set_records(&mut self, section: AthleteRecordsSection) {
+        self.personal_records = Some(section.personal_records);
+        self.best_total = Some(section.best_total);
+        self.best_ris = Some(section.best_ris);
     }
 }

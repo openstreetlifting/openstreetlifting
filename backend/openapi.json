@@ -75,8 +75,13 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/Include"
-            }
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AthleteInclude"
+              }
+            },
+            "style": "form",
+            "explode": false
           }
         ],
         "responses": {
@@ -1195,6 +1200,16 @@
             ]
           }
         }
+      },
+      "AthleteInclude": {
+        "type": "string",
+        "enum": [
+          "competitions",
+          "records",
+          "standing",
+          "lift_balance",
+          "neighbors"
+        ]
       },
       "AthleteLift": {
         "type": "object",
