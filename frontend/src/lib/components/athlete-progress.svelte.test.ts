@@ -98,7 +98,7 @@ it('shows a single result as a milestone and handles a missing metric', async ()
 });
 
 it('keeps one metric selector and always plots MPDS results', async () => {
-  const all4: AthleteCompetitionSummary[] = competitions.map((competition, index) => ({
+  const mpds: AthleteCompetitionSummary[] = competitions.map((competition, index) => ({
     ...competition,
     lifts: [
       {
@@ -115,7 +115,7 @@ it('keeps one metric selector and always plots MPDS results', async () => {
     event: 'PD',
     lifts: [{ movement_name: 'Pull-up', best_weight: '30', record: null, attempts: [] }],
   };
-  render(AthleteProgress, { competitions: [...all4, shorter] });
+  render(AthleteProgress, { competitions: [...mpds, shorter] });
   expect(page.getByRole('combobox').elements()).toHaveLength(1);
   await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('pullup');
   expect(page.getByRole('combobox').elements()).toHaveLength(1);

@@ -54,9 +54,9 @@ Before submitting files, check that:
 - Separate divisions remain separate if a weight class was contested more than once.
 - Mixed contests use `CategorySex=MX`, each athlete has `Sex=M` or `Sex=F`, and
   `competition.scoring` matches the source's ranking method.
-- RIS contests with fewer than four lifts declare their actual event, have no
+- RIS contests shorter than MPDS declare their actual event, have no
   weight classes anywhere in the competition, and use the source's `ReportedRis`.
-  Follow [the shorter-event RIS rules](./DATA_REFERENCE.md#ris-for-fewer-than-four-lifts).
+  Follow [the shorter-event RIS rules](./DATA_REFERENCE.md#ris-for-events-shorter-than-mpds).
 - You have explained any validation errors or warnings you need help with.
 
 ## Getting help

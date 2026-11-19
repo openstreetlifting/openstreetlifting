@@ -21,13 +21,13 @@ export const RANKING_GENDERS = [
   { value: 'F', label: 'Women' },
 ] as const;
 
-/** Muscle up, pull up, dips and squat. A competition contesting all four is All4. */
-const ALL4_MOVEMENTS = 4;
+/** Muscle-up, pull-up, dips and squat: the movements of an MPDS competition. */
+const MPDS_MOVEMENTS = 4;
 
 /**
  * Where a competition's RIS came from, or why it has none.
  *
- * All4 RIS is recomputed wherever bodyweight and total are available. Shorter events use published
+ * MPDS RIS is recomputed wherever bodyweight and total are available. Shorter events use published
  * scores when the meet explicitly ranks by RIS and has no weight classes.
  * A meet can carry both sources and is reported when none were recomputed.
  * `not-contested` means a shorter event has no ranking RIS.
@@ -51,7 +51,7 @@ export function risProvenance(competition: RisShape): RisProvenance {
     }
   }
   if (hasReported) return 'reported';
-  return competition.movements.length === ALL4_MOVEMENTS || competition.scoring === 'ris'
+  return competition.movements.length === MPDS_MOVEMENTS || competition.scoring === 'ris'
     ? 'not-published'
     : 'not-contested';
 }

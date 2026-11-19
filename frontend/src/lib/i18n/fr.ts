@@ -6,8 +6,8 @@ export default {
   'Rivals (class: {weightClass})': 'Rivaux (catégorie : {weightClass})',
   'Ranking scope': 'Portée du classement',
   'Profile athlete': 'Athlète de ce profil',
-  'An All4 total in the latest All4 category is needed to show nearby athletes.':
-    'Un total All4 dans la dernière catégorie All4 est nécessaire pour afficher les athlètes proches.',
+  'An MPDS total in the latest MPDS category is needed to show nearby athletes.':
+    'Un total MPDS dans la dernière catégorie MPDS est nécessaire pour afficher les athlètes proches.',
   'The only ranked athlete in this category and scope.':
     'Seul athlète classé dans cette catégorie et cette portée.',
 
@@ -69,8 +69,8 @@ export default {
   'of total': 'du total',
   'Too few athletes in this weight class to compare.':
     'Trop peu d’athlètes dans cette catégorie pour comparer.',
-  'A completed competition with all four lifts is needed to show lift balance.':
-    'Une compétition terminée avec les quatre mouvements est nécessaire pour afficher l’équilibre.',
+  'A completed MPDS competition is needed to show lift balance.':
+    'Une compétition MPDS terminée est nécessaire pour afficher l’équilibre.',
   'Match these movements exactly': 'Rechercher exactement ces mouvements',
   'Clear movements': 'Effacer les mouvements',
   'Clear selection': 'Effacer la sélection',
@@ -255,7 +255,7 @@ export default {
   'What a RIS score is and where it came from': 'Le score RIS et son origine',
   'What is RIS?': 'Qu’est-ce que le RIS ?',
   'The Relative Index for Streetlifting (RIS) provides the definitive method for comparing Streetlifting athletes across weight classes within the same gender. Developed specifically for All-4 competitions, this scoring system normalizes strength performance using comprehensive data from elite competitors. Updated annually to reflect evolving standards, RIS offers a fair benchmark for athletes, coaches, and competition organizers worldwide.':
-    'Le Relative Index for Streetlifting (RIS) est une méthode de comparaison des athlètes de streetlifting entre catégories de poids, au sein d’un même sexe. Conçu pour les compétitions All4, ce système normalise les performances de force à partir des résultats d’athlètes de haut niveau. Mis à jour chaque année pour suivre l’évolution du niveau, le RIS offre une référence commune aux athlètes, aux entraîneurs et aux organisateurs du monde entier.',
+    'Le Relative Index for Streetlifting (RIS) est une méthode de comparaison des athlètes de streetlifting entre catégories de poids, au sein d’un même sexe. Conçu pour les compétitions MPDS, ce système normalise les performances de force à partir des résultats d’athlètes de haut niveau. Mis à jour chaque année pour suivre l’évolution du niveau, le RIS offre une référence commune aux athlètes, aux entraîneurs et aux organisateurs du monde entier.',
   'We recalculate RIS with the current formula, so scores may differ from published results.':
     'Nous recalculons le RIS avec la formule actuelle ; les scores peuvent donc différer des résultats publiés.',
   'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked {mark}.':
@@ -323,7 +323,6 @@ export default {
   Male: 'Homme',
   Female: 'Femme',
   Mixed: 'Mixte',
-  'All four lifts': 'Les quatre mouvements',
   'Not ranked': 'Non classé',
   Global: 'Mondial',
   National: 'National',

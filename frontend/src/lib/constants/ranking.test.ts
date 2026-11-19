@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { defaultRankingSort, risProvenance } from './ranking';
 
-const all4 = ['M', 'P', 'D', 'S'];
+const mpds = ['M', 'P', 'D', 'S'];
 
 const meet = (
   movements: string[],
@@ -12,18 +12,18 @@ const meet = (
 });
 
 it('reads a meet as recomputed when any score was computed from a bodyweight', () => {
-  expect(risProvenance(meet(all4, [{ ris_score: '312.45', ris_source: 'computed' }]))).toBe(
+  expect(risProvenance(meet(mpds, [{ ris_score: '312.45', ris_source: 'computed' }]))).toBe(
     'recomputed'
   );
 });
 
 it('reads a meet as reported only when no score in it could be recomputed', () => {
-  expect(risProvenance(meet(all4, [{ ris_score: '300', ris_source: 'reported' }]))).toBe(
+  expect(risProvenance(meet(mpds, [{ ris_score: '300', ris_source: 'reported' }]))).toBe(
     'reported'
   );
   expect(
     risProvenance(
-      meet(all4, [
+      meet(mpds, [
         { ris_score: '300', ris_source: 'reported' },
         { ris_score: '312.45', ris_source: 'computed' },
       ])
@@ -31,9 +31,9 @@ it('reads a meet as reported only when no score in it could be recomputed', () =
   ).toBe('recomputed');
 });
 
-it('separates a shorter event from a four lift meet with no published score', () => {
+it('separates a shorter event from an MPDS meet with no published score', () => {
   expect(risProvenance(meet(['P', 'D'], [{}]))).toBe('not-contested');
-  expect(risProvenance(meet(all4, [{}, {}]))).toBe('not-published');
+  expect(risProvenance(meet(mpds, [{}, {}]))).toBe('not-published');
 });
 
 it('shows published RIS for a shorter event and makes RIS the default sort', () => {

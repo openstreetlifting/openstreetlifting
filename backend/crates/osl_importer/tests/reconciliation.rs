@@ -185,7 +185,7 @@ async fn removes_movements_when_dropped_from_source(pool: PgPool) {
     );
 }
 
-fn four_lifts() -> Vec<(Movement, Vec<(&'static str, bool)>)> {
+fn mpds_lifts() -> Vec<(Movement, Vec<(&'static str, bool)>)> {
     vec![
         (Movement::MuscleUp, vec![("60", true)]),
         (Movement::PullUp, vec![("90", true)]),
@@ -196,8 +196,8 @@ fn four_lifts() -> Vec<(Movement, Vec<(&'static str, bool)>)> {
 
 fn two_lifters_full_event() -> Vec<AthleteData> {
     vec![
-        athlete("Ada", "Lovelace", four_lifts()),
-        athlete("Grace", "Hopper", four_lifts()),
+        athlete("Ada", "Lovelace", mpds_lifts()),
+        athlete("Grace", "Hopper", mpds_lifts()),
     ]
 }
 
@@ -230,7 +230,7 @@ async fn removes_scores_when_participants_are_dropped(pool: PgPool) {
     .await
     .unwrap();
 
-    let remaining = vec![athlete("Ada", "Lovelace", four_lifts())];
+    let remaining = vec![athlete("Ada", "Lovelace", mpds_lifts())];
     import(&pool, full_event_file("test-competition", remaining)).await;
 
     let orphaned: i64 = sqlx::query_scalar(

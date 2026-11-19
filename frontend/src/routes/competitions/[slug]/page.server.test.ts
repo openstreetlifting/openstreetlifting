@@ -76,7 +76,7 @@ it('respects an explicit page without repeating the athlete lookup', async () =>
   );
 });
 
-it('ranks an All4 meet on total when its source published no bodyweight', async () => {
+it('ranks an MPDS meet on total when its source published no bodyweight', async () => {
   vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
     data: [],
     pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },

@@ -2109,7 +2109,7 @@
           "field": {
             "type": "integer",
             "format": "int64",
-            "description": "Other athletes with a four-lift result in the same sex and weight class."
+            "description": "Other athletes with an MPDS result in the same sex and weight class."
           },
           "lifts": {
             "type": "array",

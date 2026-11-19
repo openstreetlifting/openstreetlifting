@@ -120,7 +120,7 @@ pub struct LiftBalance {
     pub competition_name: String,
     pub competition_slug: String,
     pub competition_date: chrono::NaiveDate,
-    /// Other athletes with a four-lift result in the same sex and weight class.
+    /// Other athletes with an MPDS result in the same sex and weight class.
     pub field: i64,
     pub lifts: Vec<LiftShare>,
 }

@@ -139,7 +139,7 @@ impl<'a> CanonicalTransformer<'a> {
         } else {
             debug!(
                 %competition_id,
-                "RIS computation skipped; the event does not include all four movements"
+                "RIS computation skipped; the event is not MPDS"
             );
         }
 

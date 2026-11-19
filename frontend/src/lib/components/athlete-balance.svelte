@@ -313,7 +313,7 @@
     {/if}
   {:else}
     <p class="border-y border-stroke py-8 text-body text-secondary">
-      {i18n.t('A completed competition with all four lifts is needed to show lift balance.')}
+      {i18n.t('A completed MPDS competition is needed to show lift balance.')}
     </p>
   {/if}
 </ChartPanel>

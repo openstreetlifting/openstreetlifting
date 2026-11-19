@@ -59,11 +59,9 @@ it('lists shares without a comparison when the class is too small', async () => 
   await expect.element(page.getByRole('definition').first()).toHaveTextContent('5.0% of total');
 });
 
-it('explains when no four-lift competition exists', async () => {
+it('explains when no MPDS competition exists', async () => {
   render(AthleteBalance, { balance: null });
   await expect
-    .element(
-      page.getByText('A completed competition with all four lifts is needed to show lift balance.')
-    )
+    .element(page.getByText('A completed MPDS competition is needed to show lift balance.'))
     .toBeVisible();
 });
