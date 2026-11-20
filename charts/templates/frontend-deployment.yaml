@@ -49,10 +49,6 @@ spec:
             - name: PUBLIC_ENVIRONMENT
               value: {{ .Values.environment | quote }}
             {{- if eq .Values.environment "production" }}
-            - name: PUBLIC_UMAMI_SCRIPT_URL
-              value: {{ .Values.frontend.env.umamiScriptUrl | quote }}
-            - name: PUBLIC_UMAMI_WEBSITE_ID
-              value: {{ .Values.frontend.env.umamiWebsiteId | quote }}
             {{- with .Values.frontend.env.posthogProjectToken }}
             - name: PUBLIC_POSTHOG_PROJECT_TOKEN
               value: {{ . | quote }}
