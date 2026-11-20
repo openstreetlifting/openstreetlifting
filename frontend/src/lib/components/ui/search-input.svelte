@@ -4,6 +4,7 @@
   import { FIELD } from '#lib/constants/typography.js';
   import { onDestroy } from 'svelte';
   import { beforeNavigate } from '$app/navigation';
+  import posthog from 'posthog-js';
 
   const i18n = useI18n();
 
@@ -34,14 +35,19 @@
   beforeNavigate(cancel);
   onDestroy(cancel);
 
+  function performSearch() {
+    onSearch();
+    if (value.trim()) posthog.capture('site_search_performed');
+  }
+
   function schedule() {
     cancel();
-    if (!composing) timer = setTimeout(onSearch, delay);
+    if (!composing) timer = setTimeout(performSearch, delay);
   }
 
   function flush() {
     cancel();
-    onSearch();
+    performSearch();
   }
 
   function clear() {

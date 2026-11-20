@@ -64,15 +64,19 @@
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@opentelemetry/api": "^1.10.0",
+    "@opentelemetry/api-logs": "^0.223.0",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.301.2",
     "@opentelemetry/exporter-trace-otlp-proto": "^0.301.2",
     "@opentelemetry/resources": "^3.1.1",
+    "@opentelemetry/sdk-logs": "^3.1.1",
     "@opentelemetry/sdk-node": "^0.301.2",
     "d3-scale": "^4.0.3",
     "d3-shape": "^3.2.1",
     "d3-time": "^3.1.1",
     "layerchart": "^2.10.1",
     "openapi-fetch": "0.17.0",
-    "pino": "^10.4.0"
+    "pino": "^10.4.0",
+    "posthog-js": "^1.453.0"
   },
   "imports": {
     "#lib": "./src/lib/index.js",

@@ -53,6 +53,12 @@ spec:
               value: {{ .Values.frontend.env.umamiScriptUrl | quote }}
             - name: PUBLIC_UMAMI_WEBSITE_ID
               value: {{ .Values.frontend.env.umamiWebsiteId | quote }}
+            {{- with .Values.frontend.env.posthogProjectToken }}
+            - name: PUBLIC_POSTHOG_PROJECT_TOKEN
+              value: {{ . | quote }}
+            - name: PUBLIC_POSTHOG_HOST
+              value: {{ $.Values.frontend.env.posthogHost | quote }}
+            {{- end }}
             {{- end }}
           livenessProbe:
             httpGet:

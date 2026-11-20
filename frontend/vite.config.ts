@@ -15,6 +15,10 @@ export default defineConfig({
       preprocess: vitePreprocess(),
 
       adapter: adapter(),
+      // Required for PostHog session replay to work correctly with SSR.
+      paths: {
+        relative: false,
+      },
     }),
   ],
   optimizeDeps: { exclude: ['layerchart'], include: ['d3-scale', 'd3-time'] },
