@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.79.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.79.0...v0.79.1) (2026-11-20)
+
+
+### Bug Fixes
+
+* **ci:** keep staging consistent and stop releases upgrading dependen… ([#1085](https://github.com/openstreetlifting/openstreetlifting/issues/1085)) ([15c8fcd](https://github.com/openstreetlifting/openstreetlifting/commit/15c8fcdf9e052169f963e1f9dde6048bdd4ae832))
+
 ## [0.79.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.78.2...v0.79.0) (2026-11-20)
 
 
