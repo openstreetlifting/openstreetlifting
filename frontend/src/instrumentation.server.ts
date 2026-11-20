@@ -1,6 +1,11 @@
 import { defaultResource, resourceFromAttributes } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { logger } from '#lib/server/logger.js';
+import {
+  configurePostHogLogger,
+  emitPostHogLog,
+  shutdownPostHogLogger,
+} from '#lib/server/posthog-logger.js';
 import { SafeTraceExporter } from '#lib/server/trace-exporter.js';
 
 const runtime = globalThis as typeof globalThis & { oslTelemetry?: NodeSDK };
@@ -29,14 +34,19 @@ if (!runtime.oslTelemetry) {
         }),
   });
   sdk.start();
+  configurePostHogLogger();
+  emitPostHogLog('INFO', 'SvelteKit server started', { event: 'server_started' });
   process.on('uncaughtExceptionMonitor', (err) => {
     logger.fatal({ err }, 'Frontend process terminated');
   });
   runtime.oslTelemetry = sdk;
 
   process.once('sveltekit:shutdown', () => {
-    void sdk.shutdown().catch((err: unknown) => {
-      logger.error({ err }, 'Frontend trace exporter shutdown failed');
-    });
+    void Promise.all([
+      sdk.shutdown().catch((err: unknown) => {
+        logger.error({ err }, 'Frontend trace exporter shutdown failed');
+      }),
+      shutdownPostHogLogger(),
+    ]);
   });
 }

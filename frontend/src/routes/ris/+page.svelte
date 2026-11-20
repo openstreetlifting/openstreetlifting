@@ -11,6 +11,7 @@
   import type { PageData } from './$types';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
+  import posthog from 'posthog-js';
   import { readRisScenario, writeRisScenario, type RisScenario } from '#lib/utils/ris-scenario.js';
 
   const i18n = useI18n();
@@ -22,7 +23,8 @@
   const scenarioUrl = $derived(page.shallow?.url ?? page.url);
   const scenario = $derived(readRisScenario(scenarioUrl.searchParams));
 
-  function updateScenario(next: RisScenario) {
+  function updateScenario(next: RisScenario, changedInput: 'category' | 'fields' | 'target') {
+    posthog.capture('ris_scenario_updated', { changed_input: changedInput });
     const url = writeRisScenario(scenarioUrl, next);
     // The calculator is local; changing it does not need another distribution request.
     return goto(i18n.href(`${url.pathname}${url.search}${url.hash}`), {
@@ -66,9 +68,13 @@
   {#if current}
     <RisSimulator
       edition={current}
-      bind:sex={() => scenario.sex, (sex) => updateScenario({ ...scenario, sex })}
-      bind:fields={() => scenario.fields, (fields) => updateScenario({ ...scenario, fields })}
-      bind:targetField={() => scenario.target, (target) => updateScenario({ ...scenario, target })}
+      bind:sex={() => scenario.sex, (sex) => updateScenario({ ...scenario, sex }, 'category')}
+      bind:fields={
+        () => scenario.fields, (fields) => updateScenario({ ...scenario, fields }, 'fields')
+      }
+      bind:targetField={
+        () => scenario.target, (target) => updateScenario({ ...scenario, target }, 'target')
+      }
     />
   {/if}
 
@@ -105,7 +111,9 @@
         </Text>
       </div>
       <div class="mb-6">
-        <RisCategory bind:sex={() => scenario.sex, (sex) => updateScenario({ ...scenario, sex })} />
+        <RisCategory
+          bind:sex={() => scenario.sex, (sex) => updateScenario({ ...scenario, sex }, 'category')}
+        />
       </div>
 
       {#key scenario.sex}

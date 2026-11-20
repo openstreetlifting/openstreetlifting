@@ -4,6 +4,7 @@
   import { useI18n } from '#lib/i18n/index.js';
   import { LOCALES, LANGUAGE_NAMES, isLocale } from '#lib/i18n/locale.js';
   import { localeHref } from '#lib/i18n/paths.js';
+  import posthog from 'posthog-js';
 
   const i18n = useI18n();
 </script>
@@ -15,8 +16,10 @@
   onchange={(event) => {
     const locale = event.currentTarget.value;
     const url = page.shallow?.url ?? page.url;
-    if (isLocale(locale))
+    if (isLocale(locale)) {
+      posthog.capture('language_selected', { locale });
       window.location.assign(localeHref(`${url.pathname}${url.search}${url.hash}`, locale));
+    }
   }}
   class="w-auto px-2"
 >

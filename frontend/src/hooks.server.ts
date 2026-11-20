@@ -4,6 +4,7 @@ import { DEFAULT_LOCALE, negotiateLocale } from '#lib/i18n/locale.js';
 import { redirect } from '@sveltejs/kit';
 import { legacyRedirect, localeHref, pathLocale } from '#lib/i18n/paths.js';
 import { logger } from '#lib/server/logger.js';
+import { emitPostHogLog } from '#lib/server/posthog-logger.js';
 
 export const handle: Handle = async ({ event, resolve }) => {
   const started = performance.now();
@@ -57,6 +58,10 @@ export const handle: Handle = async ({ event, resolve }) => {
   } else {
     logger.debug(attributes, 'Frontend HTTP request completed');
   }
+  emitPostHogLog(response.status >= 500 ? 'ERROR' : 'INFO', 'SvelteKit request completed', {
+    event: 'server_request_completed',
+    ...attributes,
+  });
   return response;
 };
 
@@ -66,5 +71,10 @@ export const handleError: HandleServerError = ({ kind, error, event }) => {
     { err: error, 'http.route': event.route.id ?? 'unmatched' },
     'Unhandled frontend server error occurred'
   );
+  emitPostHogLog('ERROR', 'Unhandled SvelteKit server error', {
+    event: 'server_error',
+    'http.route': event.route.id ?? 'unmatched',
+    'error.kind': kind,
+  });
   return { message: 'An unexpected error occurred' };
 };
