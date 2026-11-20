@@ -122,7 +122,7 @@
       </p>
       <p class="mb-4">
         {i18n.t(
-          'OVH hosts the service, database, and analytics on a VPS in France. GitHub hosts the public repository. Public copies may be held outside the European Economic Area.'
+          'OVH hosts the service and database on a VPS in France. PostHog hosts website analytics in the European Union. GitHub hosts the public repository. Public copies may be held outside the European Economic Area.'
         )}
       </p>
       <p>{i18n.t('Privacy-request emails are handled privately.')}</p>
@@ -140,7 +140,7 @@
       </p>
       <p>
         {i18n.t(
-          'When enabled, self-hosted Umami measures visits to help me understand how the site is used. It can record pages, referral sources, browser and device details, and approximate location. Its standard tracker uses no cookies.'
+          'PostHog, hosted in the European Union, measures visits and errors to help me understand how the site is used and fix problems. It can record pages, clicks, referral sources, browser and device details, and approximate location. It sets no cookies and keeps no identifier between visits.'
         )}
       </p>
     </section>

@@ -149,15 +149,15 @@ export default {
   'Data sharing': 'Udostępnianie danych',
   'Athlete data is public through the website, API, downloads, and GitHub repository. Search engines can index it, and people worldwide can copy it. The CC0 licence does not affect your data protection rights.':
     'Dane zawodników są publicznie dostępne na stronie, przez API, w plikach do pobrania i w repozytorium GitHub. Wyszukiwarki mogą je indeksować, a osoby na całym świecie — kopiować. Licencja CC0 nie ogranicza Twoich praw do ochrony danych.',
-  'OVH hosts the service, database, and analytics on a VPS in France. GitHub hosts the public repository. Public copies may be held outside the European Economic Area.':
-    'OVH utrzymuje serwis, bazę danych i analitykę na serwerze VPS we Francji. Publiczne repozytorium jest utrzymywane przez GitHub. Publiczne kopie mogą być przechowywane poza Europejskim Obszarem Gospodarczym.',
+  'OVH hosts the service and database on a VPS in France. PostHog hosts website analytics in the European Union. GitHub hosts the public repository. Public copies may be held outside the European Economic Area.':
+    'OVH utrzymuje serwis i bazę danych na serwerze VPS we Francji. PostHog utrzymuje analitykę w Unii Europejskiej. Publiczne repozytorium jest utrzymywane przez GitHub. Publiczne kopie mogą być przechowywane poza Europejskim Obszarem Gospodarczym.',
   'Privacy-request emails are handled privately.':
     'Wiadomości e-mail dotyczące prywatności są obsługiwane poufnie.',
   'Website analytics': 'Analityka serwisu',
   'You can browse without an account. Servers receive connection information, including your IP address and browser details, to deliver pages and protect the service, on the basis of legitimate interests under Article 6(1)(f).':
     'Serwis można przeglądać bez konta. Aby wyświetlać strony i chronić usługę, serwery otrzymują informacje o połączeniu, w tym adres IP i dane przeglądarki, na podstawie prawnie uzasadnionego interesu określonego w art. 6 ust. 1 lit. f.',
-  'When enabled, self-hosted Umami measures visits to help me understand how the site is used. It can record pages, referral sources, browser and device details, and approximate location. Its standard tracker uses no cookies.':
-    'Gdy jest włączone, samodzielnie hostowane Umami mierzy odwiedziny, aby pomóc mi zrozumieć, jak użytkownicy korzystają z serwisu. Może zapisywać odwiedzane strony, źródła wejść, dane przeglądarki i urządzenia oraz przybliżoną lokalizację. Standardowy mechanizm śledzenia nie używa plików cookie.',
+  'PostHog, hosted in the European Union, measures visits and errors to help me understand how the site is used and fix problems. It can record pages, clicks, referral sources, browser and device details, and approximate location. It sets no cookies and keeps no identifier between visits.':
+    'PostHog, utrzymywany w Unii Europejskiej, mierzy odwiedziny i błędy, aby pomóc mi zrozumieć, jak użytkownicy korzystają z serwisu, i naprawiać problemy. Może zapisywać odwiedzane strony, kliknięcia, źródła wejść, dane przeglądarki i urządzenia oraz przybliżoną lokalizację. Nie ustawia plików cookie i nie przechowuje identyfikatora między wizytami.',
   'Subject to the conditions of the {gdpr}, you have the following rights:':
     'Zgodnie z przepisami {gdpr} przysługują Ci następujące prawa:',
   GDPR: 'RODO',

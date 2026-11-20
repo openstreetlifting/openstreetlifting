@@ -24,6 +24,7 @@ export async function init() {
   posthog.init(token, {
     api_host: host,
     persistence: 'memory',
+    disable_session_recording: true,
     capture_exceptions: true,
   });
   initialized = true;
