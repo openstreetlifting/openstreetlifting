@@ -1,5 +1,6 @@
 import type { HandleClientError } from '@sveltejs/kit/hooks';
 import posthog from 'posthog-js';
+import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_PROJECT_TOKEN } from '$app/env/public';
 
 let initialized = false;
 
@@ -16,15 +17,13 @@ function requireConfiguration(
 }
 
 export async function init() {
-  const token = requireConfiguration(
-    'PUBLIC_POSTHOG_PROJECT_TOKEN',
-    import.meta.env.PUBLIC_POSTHOG_PROJECT_TOKEN
-  );
-  const host = requireConfiguration('PUBLIC_POSTHOG_HOST', import.meta.env.PUBLIC_POSTHOG_HOST);
+  const token = requireConfiguration('PUBLIC_POSTHOG_PROJECT_TOKEN', PUBLIC_POSTHOG_PROJECT_TOKEN);
+  const host = requireConfiguration('PUBLIC_POSTHOG_HOST', PUBLIC_POSTHOG_HOST);
   if (!token || !host) return;
 
   posthog.init(token, {
     api_host: host,
+    persistence: 'memory',
     capture_exceptions: true,
   });
   initialized = true;

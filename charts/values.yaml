@@ -19,6 +19,8 @@ frontend:
     siteUrl: "https://openstreetlifting.org"
     umamiScriptUrl: "https://umami.adrienpelfresne.com/script.js"
     umamiWebsiteId: "01a3177c-6b2e-4b8e-802b-6b9d26ece8ef"
+    posthogProjectToken: ""
+    posthogHost: "https://eu.i.posthog.com"
   resources:
     requests:
       cpu: 50m
