@@ -2,6 +2,12 @@ name: "Deploy to Staging"
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Rebuild and deploy every component
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -25,13 +31,14 @@ jobs:
     # staging by the release workflow rather than rebuilt here.
     if: "${{ !startsWith(github.event.head_commit.message, 'chore(main): release') }}"
     outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
+      backend: ${{ inputs.force || steps.filter.outputs.backend }}
+      frontend: ${{ inputs.force || steps.filter.outputs.frontend }}
       sha_tag: ${{ steps.sha_tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
         id: filter
+        if: ${{ !inputs.force }}
         with:
           filters: |
             backend:
@@ -122,6 +129,7 @@ jobs:
       always() &&
       needs.changes.result == 'success' &&
       !contains(needs.*.result, 'cancelled') &&
+      !contains(needs.*.result, 'failure') &&
       (needs.build-backend.result == 'success' ||
        needs.build-importer.result == 'success' ||
        needs.build-frontend.result == 'success')
