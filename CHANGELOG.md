@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.80.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.79.1...v0.80.0) (2026-11-20)
+
+
+### Features
+
+* replace umami with posthog in production ([#1088](https://github.com/openstreetlifting/openstreetlifting/issues/1088)) ([8228266](https://github.com/openstreetlifting/openstreetlifting/commit/8228266290e19252726d25fbc54c6612600ecac7))
+
+
+### Bug Fixes
+
+* Julia Schmälter third attempt in DCSV 2025 ([f64f0cd](https://github.com/openstreetlifting/openstreetlifting/commit/f64f0cd457b8e0fea2c933b8b983b12a5f2a100f))
+
 ## [0.79.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.79.0...v0.79.1) (2026-11-20)
 
 
