@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.79.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.78.2...v0.79.0) (2026-11-20)
+
+
+### Features
+
+* instrument application with PostHog ([#1083](https://github.com/openstreetlifting/openstreetlifting/issues/1083)) ([d9a9f51](https://github.com/openstreetlifting/openstreetlifting/commit/d9a9f51f442e88c942dd17ee62b6ce59a169d096))
+
 ## [0.78.2](https://github.com/openstreetlifting/openstreetlifting/compare/v0.78.1...v0.78.2) (2026-11-19)
 
 
