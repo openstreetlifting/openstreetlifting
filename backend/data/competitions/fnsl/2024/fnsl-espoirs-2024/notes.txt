@@ -1,0 +1,5 @@
+Lauriane Mahait: the workbook publishes RIS 69.63. Its 2024 formula gives
+70.44 from her measured bodyweight of 53 kg and total of 152.75 kg.
+The published score is preserved here and omitted from ReportedRis because
+it conflicts with those results. RIS 2026 is computed from the bodyweight
+and total when the competition is imported.

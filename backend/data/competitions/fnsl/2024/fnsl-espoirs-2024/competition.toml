@@ -1,4 +1,5 @@
 event = "MPDS"
+sources = ["FNSL ESPOIRS 2024.xlsx"]
 
 [competition]
 name = "Espoirs"
