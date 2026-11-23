@@ -1,0 +1,55 @@
+Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,Romaric,Agbeninou,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Quentin,Allard,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Mike,Ambroise,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Miranto,Andrianarisoa,,FR,66,76.55431451,325,competed,,2025,11.25,16.25,20,20,40,50,56.25x,50,75,85,92.5x,85,157.5x,157.5,170,170
+M,Kevin,Authier,,FR,89.7,73.55063126,390,competed,,2025,10,15,17.5,17.5,45,52.5,60x,52.5,90,100,110,110,185,200,210,210
+M,Samy,Bach,,FR,76.6,62.58003138,303.75,competed,,2025,0x,0,1.25,1.25,40x,45,50,50,95,105,110,110,125x,135,142.5,142.5
+M,Gabin,Bailleul,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Bislan,Bataev,,FR,78,37.58541556,,disqualified,No valid Squat attempt,2025,10,15x,15,15,60,66.25,70,70,92.5,100,105x,100,190x,190x,,
+M,Julien,Beaubigny,,FR,94.5,59.0473212,,disqualified,No valid MuscleUp attempt,2025,0x,2.5x,5x,,45,52.5,56.25x,52.5,100,110x,110x,100,147.5,165,175x,165
+M,Léonard,Bloch,,FR,73.7,84.86334929,398.75,competed,,2025,25,30x,,25,57.5,66.25,68.75x,66.25,95,105,,105,192.5,202.5,210x,202.5
+M,Pierre,Boisneau,,FR,75.4,66.52190625,318.75,competed,,2025,12.5,15,17.5,17.5,62.5,67.5,71.25,71.25,100,105,107.5x,105,120,125,130x,125
+M,Adrien,Boyer,,FR,83.8,65.50593603,337.5,competed,,2025,5,10,15x,10,45,52.5,57.5,57.5,85,95,100x,95,165,175,190x,175
+M,Lucas,Di Marino,,FR,69.8,44.7342663,,disqualified,No valid MuscleUp attempt,2025,0x,0x,0x,,37.5,40,42.5,42.5,25x,30x,32.5,32.5,100,115,125,125
+M,Fred,Dossou,,FR,91.8,58.76113977,,disqualified,No valid MuscleUp attempt,2025,,,,,40,46.25,51.25,51.25,82.5x,92.5,100x,92.5,150,165x,170,170
+M,Yassine,El Mouaddin,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Willelm,Etienne,,FR,75.4,62.86972316,301.25,competed,,2025,10,12.5,15x,12.5,57.5,61.25,62.5x,61.25,95x,100x,100,100,125x,127.5x,127.5,127.5
+M,Louis,Evrard,,FR,67.8,56.88018932,247.5,competed,,2025,0x,0,1.25x,0,35,40x,40x,35,72.5,80x,80x,72.5,132.5,140,145x,140
+M,Rafaele,Fiore,,FR,52.2,56.20491166,205,competed,,2025,12.5x,12.5x,12.5,12.5,42.5,47.5,52.5x,47.5,45,55,65x,55,90x,90,100x,90
+M,Arthur,Fortin,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Estebann,Gadeau,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Julien,Gautherie,,FR,84.5,35.02991052,,disqualified,No valid Squat attempt,2025,16.25,20x,20x,16.25,57.5,65x,65,65,90,100,,100,,,,
+M,Vincent,Gauthier,,FR,67,72.60952757,312.5,competed,,2025,15x,15,17.5,17.5,50,55,60x,55,70,80,82.5x,80,160x,160,170x,160
+M,Vincent,Graca Goncalves,,FR,77.4,58.75251909,287.5,competed,,2025,5,7.5,10x,7.5,52.5,57.5,62.5x,57.5,70,77.5,82.5,82.5,120x,130,140,140
+M,Constantin,Guzun,,FR,77.8,59.03130091,290,competed,,2025,10,15x,15x,10,50,55x,60x,50,90,100,105,105,110x,125,140x,125
+M,Nathan,Hiquet,,FR,73.8,64.03664899,301.25,competed,,2025,5,10x,10,10,40,46.25,50x,46.25,72.5,80,85,85,150,160,170x,160
+M,Ilan,Kann,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Alexandre,Karaghiannis,,FR,76.5,58.52050423,283.75,competed,,2025,2.5,6.25,8.75x,6.25,45,50x,50x,45,67.5x,72.5,80x,72.5,145,152.5,160,160
+M,Antoine,Lacoste,,FR,68.5,83.93994741,368.75,competed,,2025,16.25x,21.25,23.75x,21.25,56.25,61.25,65,65,100,107.5,110x,107.5,160,175,182.5x,175
+M,Rémi,Lecland,,FR,77.2,54.26277629,265,competed,,2025,5,8.75,12.5x,8.75,35,42.5,46.25,46.25,62.5,72.5,80,80,110,122.5,130,130
+M,Gaetan,Marcon,,FR,83.4,71.99676483,370,competed,,2025,17.5,18.75,20x,18.75,55,58.75,60x,58.75,102.5,112.5,,112.5,170,177.5x,180,180
+M,Victor,Maximim,,FR,76.4,71.22729958,345,competed,,2025,7.5,12.5,15x,12.5,47.5,52.5,56.25x,52.5,87.5,100,105x,100,170x,180,,180
+M,Aurélien,Molle,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Michel,Nguyen,,FR,71.2,62.03068533,282.5,competed,,2025,2.5,5x,5,5,40,45,47.5x,45,65x,72.5,80,80,145x,152.5,160x,152.5
+M,Victor,Nicolas,,FR,64.1,60.72159438,251.25,competed,,2025,7.5,11.25,15x,11.25,40,47.5,50,50,60,70,75,75,105,115,117.5x,115
+M,Charles,Noel,,FR,56.7,61.6602267,233.75,competed,,2025,7.5x,11.25,13.75x,11.25,36.25,41.25,45,45,55,62.5,67.5x,62.5,100,110,115,115
+M,Vincent,Perrard,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Yanis,Regent,,FR,79.4,78.9769637,393.75,competed,,2025,20,25,30x,25,67.5,71.25,75x,71.25,105x,110,115x,110,170,180,187.5,187.5
+M,Kevin,Rose,,FR,83,59.01711101,302.5,competed,,2025,5,7.5,10x,7.5,40x,47.5,55,55,80,90,100x,90,125,137.5,150,150
+M,Bastien,Sirot,,FR,73.6,43.68107886,,disqualified,No valid Squat attempt,2025,22.5,26.25,30x,26.25,62.5,68.75,73.75,73.75,95,102.5,105,105,162.5x,167.5x,167.5x,
+M,Dorian,Tchefranoff,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Martin,Thomas,,FR,75.2,97.5213431,466.25,competed,,2025,25,30x,30,30,77.5,85,87.5x,85,126.25,133.75,136.25,136.25,205,215,220x,215
+M,Rafael,Tonini,,FR,74.5,52.44443024,248.75,competed,,2025,2.5,6.25,7.5x,6.25,40,47.5,50x,47.5,57.5,65,70x,65,117.5,130,142.5x,130
+M,Léon,Touchard,,FR,65.6,86.44644657,365,competed,,2025,20,22.5,25,25,55,60,62.5x,60,95,100,102.5x,100,167.5,175,180,180
+M,Victor,Toujas,,FR,78.5,53.33268195,263.75,competed,,2025,5,8.75,10,10,45,50,53.75,53.75,70,77.5,85x,77.5,107.5,115,122.5,122.5
+M,Matisse,Velasquez,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+M,Marc,Yeurc'h,,FR,100.6,51.08674801,,disqualified,"No valid MuscleUp, Dips attempt",2025,2.5x,2.5x,2.5x,,52.5,57.5,60x,57.5,100x,110x,115x,,220,232.5x,240x,220
+F,Eloise,Gaudin,,FR,71.2,57.7444495,,disqualified,No valid MuscleUp attempt,2025,,,,,6.25,10,12.5x,10,26.25,32.5,37.5,37.5,92.5,100,105,105
+F,Daniella,Lefaix,,FR,59,78.73206753,192.5,competed,,2025,2.5,6.25,10x,6.25,20,25,27.5x,25,30,36.25,40x,36.25,117.5,125,130x,125
+F,Mathilde,Lequeau,,FR,54.3,70.6419431,162.5,competed,,2025,2.5,7.5x,8.75,8.75,12.5,21.25,26.25,26.25,15,25,32.5,32.5,85,95,100x,95
+F,Morgane,Montreuil,,FR,55.5,71.0293452,,disqualified,No valid MuscleUp attempt,2025,,,,,20,25x,26.25,26.25,30,35,37.5x,35,92.5,100,105,105
+F,Laura,Nicolet,,FR,83.1,57.19869385,,disqualified,No valid MuscleUp attempt,2025,,,,,0,2.5,5,5,8.75,13.75,16.25x,13.75,122.5,130,135,135
+F,Mélanie,Pereira,,FR,60,56.66366057,,disqualified,No valid MuscleUp attempt,2025,,,,,10,13.75,15,15,23.75,27.5,30,30,85,90,95,95
+F,Julie,Tinot,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+F,Sarah,Vanhee,,BE,55.2,80.44792827,,disqualified,No valid MuscleUp attempt,2025,0x,2.5x,2.5x,,20,25,26.25,26.25,27.5,33.75,36.25,36.25,117.5,125x,125,125
