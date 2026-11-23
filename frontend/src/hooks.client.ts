@@ -23,6 +23,8 @@ export async function init() {
 
   posthog.init(token, {
     api_host: host,
+    ui_host: 'https://eu.posthog.com',
+    defaults: '2026-08-30',
     persistence: 'memory',
     disable_session_recording: true,
     capture_exceptions: true,
