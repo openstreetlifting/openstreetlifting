@@ -14,7 +14,7 @@ Each hit's `athlete` carries `first_name`, `last_name`, `country`, and `athlete_
 
 | Finding | Action |
 | --- | --- |
-| Same person | Use the archive's names and, under the national default, its country |
+| Same person | Use the archive's names and country |
 | Names swapped in the source | Put each part in its column |
 | Differs only in accents, case, punctuation | Keep the archive spelling |
 | Different letters, transliteration, or extra names | Ask which spelling is canonical |
