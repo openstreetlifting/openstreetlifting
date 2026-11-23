@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.80.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.79.1...v0.80.0) (2026-11-23)
+
+
+### Features
+
+* **data:** import 4Lift 2026 ([#1102](https://github.com/openstreetlifting/openstreetlifting/issues/1102)) ([6faf5a1](https://github.com/openstreetlifting/openstreetlifting/commit/6faf5a11b5306f985ecf4c650b7486044ce71e97))
+* **data:** import Czech Nationals & Eastern European Championships 2026 ([#1094](https://github.com/openstreetlifting/openstreetlifting/issues/1094)) ([d3e3128](https://github.com/openstreetlifting/openstreetlifting/commit/d3e312879d4a2da813d3ad42b948fe0643fdcab5))
+* **data:** import Czech Nationals & Eastern European Championships Pull & Dip 2026 ([#1095](https://github.com/openstreetlifting/openstreetlifting/issues/1095)) ([50eaa97](https://github.com/openstreetlifting/openstreetlifting/commit/50eaa97596746ba00388849705fd39f31d00b6bd))
+* **data:** import FinalRep AMERICS 2026 ([#1093](https://github.com/openstreetlifting/openstreetlifting/issues/1093)) ([6abb8fa](https://github.com/openstreetlifting/openstreetlifting/commit/6abb8fa9384b89d9a102992ef346f41e42b87e93))
+* **data:** import FNSL Espoirs 2024 ([#1099](https://github.com/openstreetlifting/openstreetlifting/issues/1099)) ([d5ce6d6](https://github.com/openstreetlifting/openstreetlifting/commit/d5ce6d6be5497f5d0499527e27b374e143d8b83f))
+* **data:** import MFC Barbattle 2026 ([#1096](https://github.com/openstreetlifting/openstreetlifting/issues/1096)) ([98d150f](https://github.com/openstreetlifting/openstreetlifting/commit/98d150f87ceb407fd2dab4a19b4f8ac406f7ef3f))
+* **data:** import Spartan Cup 2026 ([#1100](https://github.com/openstreetlifting/openstreetlifting/issues/1100)) ([0282779](https://github.com/openstreetlifting/openstreetlifting/commit/02827796ad99f259897a2c7fd4dff0d870aad8e5))
+* replace umami with posthog in production ([#1088](https://github.com/openstreetlifting/openstreetlifting/issues/1088)) ([8228266](https://github.com/openstreetlifting/openstreetlifting/commit/8228266290e19252726d25fbc54c6612600ecac7))
+
+
+### Bug Fixes
+
+* **data:** correct Julia Schmälter total in DCSV 2025 ([#1101](https://github.com/openstreetlifting/openstreetlifting/issues/1101)) ([fd700d5](https://github.com/openstreetlifting/openstreetlifting/commit/fd700d5e56e371fb72cdc7134f9f2ad1666276a4))
+* Julia Schmälter third attempt in DCSV 2025 ([f64f0cd](https://github.com/openstreetlifting/openstreetlifting/commit/f64f0cd457b8e0fea2c933b8b983b12a5f2a100f))
+* route PostHog through custom domain ([cb14e58](https://github.com/openstreetlifting/openstreetlifting/commit/cb14e58c4cff3291853d455ab426b5c03498fa85))
+
+
+### Documentation
+
+* **skill:** keep archive country for known athletes ([#1097](https://github.com/openstreetlifting/openstreetlifting/issues/1097)) ([94b30d5](https://github.com/openstreetlifting/openstreetlifting/commit/94b30d5627cf3d20448beeb60e02e4d65a06f7e6))
+
 ## [0.79.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.79.0...v0.79.1) (2026-11-20)
 
 
