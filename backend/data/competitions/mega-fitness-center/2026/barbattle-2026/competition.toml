@@ -1,0 +1,17 @@
+event = "PD"
+sources = ["FinalRep app, /events-api/v1/events/3KBsmaW42lwbQfXXy9tEx91fsqE/statistics"]
+
+[competition]
+name = "Barbattle"
+start_date = "2026-11-22"
+city = "Percut Sei Tuan"
+venue = "Mega Fitness Center"
+region = "Sumatera Utara"
+country = "ID"
+status = "completed"
+scoring = "ris"
+
+[federation]
+name = "Mega Fitness Center"
+abbreviation = "MFC"
+country = "ID"
