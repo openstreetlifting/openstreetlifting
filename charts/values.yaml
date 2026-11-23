@@ -18,7 +18,7 @@ frontend:
     backendUrl: "http://openstreetlifting-backend:8080"
     siteUrl: "https://openstreetlifting.org"
     posthogProjectToken: "phc_wWkGaC2926vb4W3Xkq7jT7GGcsnArBQBrkz5DTnW4R7R"
-    posthogHost: "https://openstreetlifting.org"
+    posthogHost: "https://ph.openstreetlifting.org"
   resources:
     requests:
       cpu: 50m
