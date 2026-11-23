@@ -355,6 +355,7 @@ async fn links_older_and_later_editions_of_the_same_championship(pool: PgPool) {
         &pool,
         "belgian-streetlifting-championship-2025",
         &[
+            "belgian-streetlifting-championship-2023",
             "belgian-streetlifting-championship-2025",
             "belgian-streetlifting-championship-2026",
         ],

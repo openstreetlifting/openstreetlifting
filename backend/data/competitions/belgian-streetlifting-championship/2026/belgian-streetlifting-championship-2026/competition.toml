@@ -15,5 +15,6 @@ country = "BE"
 status = "completed"
 
 [federation]
-name = "Streetlifting Belgium"
+name = "Belgian Streetlifting Championship"
+abbreviation = "BSLC"
 country = "BE"
