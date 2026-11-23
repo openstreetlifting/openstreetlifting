@@ -57,12 +57,12 @@ Keep existing provenance columns; `prepare` sets column order.
 
 ### Country
 
-Use the source-listed country. When the source omits it:
+An athlete already in the archive keeps their archive country (API `athlete.country` or existing entries), whatever the competition type and even when the source lists none or another one; report a differing source country. For athletes new to the archive, use the source-listed country. When the source omits it:
 
-- **Domestic competition** (any event of a national federation or organiser in its own country: nationals, regionals, series, qualifiers, local classics such as FNSL Interrégionales, AESL Ragnarok Battles or SLI Street): default every athlete to the host country. An athlete whose archive country (API `athlete.country` or existing entries) differs keeps that country.
+- **Domestic competition** (any event of a national federation or organiser in its own country: nationals, regionals, series, qualifiers, local classics such as FNSL Interrégionales, AESL Ragnarok Battles or SLI Street): default to the host country.
 - **International competition** (opens, undergrounds, Euros, Worlds, expo events such as Arnold Classic): leave the cell empty. The host country is not nationality.
 
-Conflicting countries for one athlete block import; resolve against the source and update the affected entries together.
+Conflicting countries for one athlete block import; when the archive itself is split, ask which is right and update the affected entries together.
 
 ### Categories
 
