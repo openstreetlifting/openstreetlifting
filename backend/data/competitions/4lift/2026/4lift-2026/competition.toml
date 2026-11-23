@@ -1,0 +1,18 @@
+event = "MPDS"
+sources = ["https://www.helloasso.com/associations/annecy-street-event/evenements/4lift-2026-plateau-open"]
+
+[competition]
+name = "4Lift"
+series = "4lift"
+start_date = "2026-11-21"
+end_date = "2026-11-22"
+city = "Epagny Metz-Tessy"
+venue = "Oski Crossfit"
+region = "Auvergne-Rhône-Alpes"
+country = "FR"
+status = "completed"
+scoring = "total"
+
+[federation]
+name = "4Lift"
+country = "FR"
