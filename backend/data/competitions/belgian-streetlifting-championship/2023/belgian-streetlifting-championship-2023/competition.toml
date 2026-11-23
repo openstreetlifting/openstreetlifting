@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = ["Instagram @bslc._ archived category result posts, sent by the organiser"]
+
+[competition]
+name = "Belgian Streetlifting Championship"
+series = "streetlifting-belgium-championship"
+start_date = "2023-05-27"
+end_date = "2023-05-28"
+city = "Puurs"
+venue = "The Cross"
+country = "BE"
+status = "completed"
+
+[federation]
+name = "Belgian Streetlifting Championship"
+abbreviation = "BSLC"
+country = "BE"

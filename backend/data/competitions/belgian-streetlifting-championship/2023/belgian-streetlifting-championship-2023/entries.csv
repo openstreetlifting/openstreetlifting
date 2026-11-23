@@ -1,0 +1,42 @@
+Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
+M,66,Ibrahim,Chaibi,,BE,58.9,,245,competed,,,,,10,,,,40,,,,70,,,,125
+M,66,Dylan,Eren,,BE,65.9,,367.5,competed,,,,,25,,,,80,,,,115,,,,147.5
+M,66,Killian,Flecheux,,BE,64.8,,238.75,competed,,,,,3.75,,,,47.5,,,,70,,,,117.5
+M,66,Maxime,Janssens,,BE,65.9,,293.75,competed,,,,,10,,,,62.5,,,,96.25,,,,125
+M,66,Arthur,Jongen,,BE,65,,,disqualified,Bombed the squat,,,,20,,,,67.5,,,,80,,,,
+M,66,Luca,Parrini,,BE,65.7,,292.5,competed,,,,,17.5,,,,67.5,,,,80,,,,127.5
+M,66,Rudolf,Sommer,,BE,59.3,,280,competed,,,,,15,,,,57.5,,,,90,,,,117.5
+M,66,Eneas,Vanneste,,BE,64.9,,206,competed,,,,,5,,,,46.25,,,,48.75,,,,106
+M,73,Sabati,Boduka,,BE,72.9,,275,competed,,,,,15,,,,55,,,,90,,,,115
+M,73,Anthony,Colot,,BE,71.3,,318.5,competed,,,,,16,,,,65,,,,90,,,,147.5
+M,73,Daniel,Dinescu,,BE,70.5,,,disqualified,Bombed the dips and squat,,,,20,,,,70,,,,,,,,
+M,73,Thomas,Henrotte,,BE,70.7,,260,competed,,,,,2.5,,,,45,,,,72.5,,,,140
+M,73,Samir,Hussain,,BE,71.6,,350,competed,,,,,27.5,,,,82.5,,,,90,,,,150
+M,73,Laurent,Modolo,,BE,72.9,,332.5,competed,,,,,15,,,,60,,,,100,,,,157.5
+M,80,Alexandre,Antropovski,,BE,76,,330,competed,,,,,10,,,,60,,,,102.5,,,,157.5
+M,80,Sylvain,Cerny,,BE,79.3,,437.5,competed,,,,,26.25,,,,76.25,,,,127.5,,,,207.5
+M,80,Deniz,Insel,,BE,76.6,,327.5,competed,,,,,17.5,,,,60,,,,100,,,,150
+M,80,Albert,Israelian,,BE,76.9,,436.25,competed,,,,,22.5,,,,66.25,,,,127.5,,,,220
+M,80,Midas,Opsomer,,BE,78.6,,296.25,competed,,,,,1.25,,,,42.5,,,,72.5,,,,180
+M,80,Taha,Riassi,,BE,78.8,,351.25,competed,,,,,16.25,,,,65,,,,100,,,,170
+M,80,Mateusz,Slyszewski,,BE,79.8,,342.5,competed,,,,,5,,,,47.5,,,,90,,,,200
+M,87,Amine,Benhaddou,,BE,93.3,,,disqualified,Bombed the muscle-up,,,,,,,,45,,,,80,,,,185
+M,87,Antoine,Deliedekerke,,BE,83.6,,372.5,competed,,,,,27.5,,,,77.5,,,,107.5,,,,160
+M,87,Nabil,Hofayz,,BE,84.7,,,disqualified,Bombed the muscle-up,,,,,,,,55,,,,80,,,,120
+M,87,Paul-Emile,Huet,,BE,84.8,,435,competed,,,,,20,,,,90,,,,110,,,,215
+M,87,Jonas,Mees,,BE,86,,431.25,competed,,,,,13.75,,,,62.5,,,,120,,,,235
+M,87,Ayman,Menssouri,,BE,86.9,,312.5,competed,,,,,12.5,,,,65,,,,95,,,,140
+M,87,Léo,Moke,,BE,82.7,,420,competed,,,,,15,,,,75,,,,100,,,,230
+M,87,Maïcky,Sautiere,,BE,85.5,,366.75,competed,,,,,23.75,,,,73,,,,90,,,,180
+M,87,Sebastiano,Thanasi,,BE,86.2,,347.25,competed,,,,,0,,,,52.25,,,,97.5,,,,197.5
+M,94,Nicolas,Lenoir,,BE,91.3,,295,competed,,,,,0,,,,52.5,,,,77.5,,,,165
+M,94,Gwendal Scott,Roy Simon,,BE,91.5,,463.5,competed,,,,,30,,,,76,,,,145,,,,212.5
+M,94,Arthur,Schlumpf,,BE,90.9,,358.75,competed,,,,,16.25,,,,52.5,,,,115,,,,175
+F,63,Laurine,Bourcy,,BE,59.6,,,disqualified,Bombed the muscle-up,,,,,,,,17.5,,,,35,,,,102.5
+F,63,Christina,Cerfontaine,,BE,62.8,,,disqualified,Bombed the muscle-up,,,,,,,,16.25,,,,31.25,,,,107.5
+F,63,Nivetha,Poovendran,,BE,62.9,,,disqualified,Bombed the muscle-up,,,,,,,,3.75,,,,13.75,,,,100
+F,63,Ilona,Serena Fernandez,,BE,62.9,,,disqualified,Bombed the muscle-up,,,,,,,,10,,,,13.75,,,,97.5
+F,63,Manon,Vergucht,,BE,57,,157.5,competed,,,,,2.5,,,,25,,,,32.5,,,,97.5
+F,63+,Alix,Lhoir,,BE,65.9,,,disqualified,Bombed the muscle-up,,,,,,,,20,,,,27.5,,,,137.5
+F,63+,Anaïs,Lobo,,BE,85.8,,,disqualified,Bombed the muscle-up,,,,,,,,12.5,,,,0,,,,110
+F,63+,Laura,Ngambi,,BE,72,,221.25,competed,,,,,2.5,,,,33.75,,,,42.5,,,,142.5
