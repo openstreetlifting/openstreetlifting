@@ -1,0 +1,14 @@
+event = "MPDS"
+
+[competition]
+name = "Spartan Cup"
+start_date = "2026-07-11"
+end_date = "2026-07-12"
+city = "Rennes"
+region = "Bretagne"
+country = "FR"
+status = "completed"
+
+[federation]
+name = "Spartan Lifters"
+country = "FR"
