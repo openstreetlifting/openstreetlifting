@@ -1,0 +1,19 @@
+event = "PD"
+sources = [
+    "FinalRep app, /events-api/v1/events/3IHhzfCYXI7lrdd6xGrTUOCmayh/statistics",
+    "https://www.instagram.com/p/Df2u2zuFVcE/",
+]
+
+[competition]
+name = "Czech Nationals & Eastern European Championships Pull & Dip"
+start_date = "2026-11-22"
+city = "Brno"
+venue = "Brno Exhibition Centre"
+region = "Jihomoravský kraj"
+country = "CZ"
+status = "completed"
+
+[federation]
+name = "Česká federace streetliftingu"
+abbreviation = "ČFSL"
+country = "CZ"
