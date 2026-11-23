@@ -55,8 +55,10 @@
       class="{NAV_LINK} w-full justify-start border-b-0 border-transparent px-0 lg:justify-center lg:border-b-2"
       class:border-ink={isActive('/')}
       class:text-ink={isActive('/')}
-      aria-current={isActive('/') ? 'page' : undefined}>{i18n.t('Rankings')}</a
+      aria-current={isActive('/') ? 'page' : undefined}
     >
+      {i18n.t('Rankings')}
+    </a>
   </li>
   <li class="min-w-0 flex-1 lg:flex-none">
     <a
@@ -64,8 +66,10 @@
       class="{NAV_LINK} w-full justify-start border-b-0 border-transparent px-0 lg:justify-center lg:border-b-2"
       class:border-ink={isActive('/competitions')}
       class:text-ink={isActive('/competitions')}
-      aria-current={isActive('/competitions') ? 'page' : undefined}>{i18n.t('Competitions')}</a
+      aria-current={isActive('/competitions') ? 'page' : undefined}
     >
+      {i18n.t('Competitions')}
+    </a>
   </li>
   <li class="min-w-0 flex-1 lg:flex-none">
     <a
@@ -73,8 +77,10 @@
       class="{NAV_LINK} w-full justify-start border-b-0 border-transparent px-0 lg:justify-center lg:border-b-2"
       class:border-ink={isActive('/records')}
       class:text-ink={isActive('/records')}
-      aria-current={isActive('/records') ? 'page' : undefined}>{i18n.t('Records')}</a
+      aria-current={isActive('/records') ? 'page' : undefined}
     >
+      {i18n.t('Records')}
+    </a>
   </li>
 {/snippet}
 
@@ -84,24 +90,30 @@
       href={i18n.href(resolve('ris'))}
       class={NAV_LINK}
       class:text-ink={isActive('/ris')}
-      aria-current={isActive('/ris') ? 'page' : undefined}>RIS</a
+      aria-current={isActive('/ris') ? 'page' : undefined}
     >
+      RIS
+    </a>
   </li>
   <li>
     <a
       href="https://docs.openstreetlifting.org/"
       target="_blank"
       rel="noopener noreferrer"
-      class={NAV_LINK}>{i18n.t('Docs')}</a
+      class={NAV_LINK}
     >
+      {i18n.t('Docs')}
+    </a>
   </li>
   <li>
     <a
       href={i18n.href(resolve('contact'))}
       class={NAV_LINK}
       class:text-ink={isActive('/contact')}
-      aria-current={isActive('/contact') ? 'page' : undefined}>{i18n.t('Contact')}</a
+      aria-current={isActive('/contact') ? 'page' : undefined}
     >
+      {i18n.t('Contact')}
+    </a>
   </li>
 {/snippet}
 
@@ -155,8 +167,10 @@
               aria-current={link.active ? 'page' : undefined}
               class="{MENU_LINK} {link.active
                 ? 'bg-surface-selected text-ink'
-                : 'text-secondary hover:bg-surface hover:text-ink'}">{link.label}</a
+                : 'text-secondary hover:bg-surface hover:text-ink'}"
             >
+              {link.label}
+            </a>
           </li>
         {/each}
         <li class={MENU_ITEM}>
@@ -165,8 +179,9 @@
             target="_blank"
             rel="noopener noreferrer"
             class="{MENU_LINK} text-secondary hover:bg-surface hover:text-ink"
-            >{i18n.t('Docs')}<span aria-hidden="true" class="text-muted">↗</span></a
           >
+            {i18n.t('Docs')}<span aria-hidden="true" class="text-muted">↗</span>
+          </a>
         </li>
       </ul>
       <div
@@ -179,15 +194,19 @@
             target="_blank"
             rel="noopener noreferrer"
             class={SOCIAL}
-            aria-label="GitHub"><GitHubIcon class="h-5 w-5" /></a
+            aria-label="GitHub"
           >
+            <GitHubIcon class="h-5 w-5" />
+          </a>
           <a
             href="https://www.instagram.com/openstreetlifting"
             target="_blank"
             rel="noopener noreferrer"
             class={SOCIAL}
-            aria-label="Instagram"><InstagramIcon class="h-5 w-5" /></a
+            aria-label="Instagram"
           >
+            <InstagramIcon class="h-5 w-5" />
+          </a>
         </div>
       </div>
     </div>

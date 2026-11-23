@@ -24,8 +24,9 @@
   <a
     href="#main-content"
     class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-action focus:px-4 focus:py-3 focus:text-on-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-    >{i18n.t('Skip to main content')}</a
   >
+    {i18n.t('Skip to main content')}
+  </a>
   <Header />
   <!-- min-w-0 because a flex item defaults to min-width:auto, which refuses to
        shrink below its content. Without it a table wider than the screen widens

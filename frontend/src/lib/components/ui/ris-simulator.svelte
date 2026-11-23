@@ -114,9 +114,9 @@
 </script>
 
 <section aria-labelledby="{id}-heading" class="mb-chapter">
-  <Text as="h2" variant="heading" class="text-ink" id="{id}-heading"
-    >{i18n.t('Calculate your RIS')}</Text
-  >
+  <Text as="h2" variant="heading" class="text-ink" id="{id}-heading">
+    {i18n.t('Calculate your RIS')}
+  </Text>
   <p class="sr-only" role="status" aria-live="polite" aria-atomic="true">{scoreAnnouncement}</p>
   <Text variant="body" class="mt-3 leading-6 text-secondary">
     {i18n.t(
@@ -133,9 +133,9 @@
       {@const invalid = fields[control.key].text !== '' && value === undefined}
       <div>
         <div class="mb-3">
-          <label for="{id}-{control.key}" class="mb-2 block text-body font-medium text-ink"
-            >{i18n.t(control.label)}</label
-          >
+          <label for="{id}-{control.key}" class="mb-2 block text-body font-medium text-ink">
+            {i18n.t(control.label)}
+          </label>
           <div class="relative">
             <input
               id="{id}-{control.key}"
@@ -154,8 +154,9 @@
             />
             <span
               class="pointer-events-none absolute inset-y-0 right-3 flex items-center font-mono text-meta text-secondary"
-              >{weights.unit}</span
             >
+              {weights.unit}
+            </span>
           </div>
         </div>
         <p
@@ -203,14 +204,16 @@
         data-ris-live-score
         aria-labelledby="{id}-score-label"
         class="font-mono text-title font-normal"
-        aria-live="off">{i18n.number(performance.score, 2)}</output
+        aria-live="off"
       >
+        {i18n.number(performance.score, 2)}
+      </output>
     </div>
 
     <section aria-labelledby="{id}-target-heading" class="mt-8 border-y border-stroke py-4">
-      <Text as="h2" variant="heading" class="text-ink" id="{id}-target-heading"
-        >{i18n.t('Target RIS')}</Text
-      >
+      <Text as="h2" variant="heading" class="text-ink" id="{id}-target-heading">
+        {i18n.t('Target RIS')}
+      </Text>
       <div class="mt-4 mb-4 flex flex-wrap items-center gap-3">
         <label for="{id}-target" class="text-body text-secondary">{i18n.t('Target score')}</label>
         <input
@@ -241,15 +244,16 @@
       {:else if scenario}
         <Stack gap={4} class="text-body leading-6 text-secondary">
           <p>
-            {#snippet total()}<strong class="font-medium text-ink"
-                >{weights.format(scenario.total, i18n.locale, 1)} {weights.unit}</strong
-              >{/snippet}
-            {#snippet difference()}<strong class="font-medium text-ink"
-                >{i18n.t('{difference} {unit} more', {
+            {#snippet total()}<strong class="font-medium text-ink">
+                {weights.format(scenario.total, i18n.locale, 1)}
+                {weights.unit}
+              </strong>{/snippet}
+            {#snippet difference()}<strong class="font-medium text-ink">
+                {i18n.t('{difference} {unit} more', {
                   unit: weights.unit,
                   difference: weights.format(scenario.total - performance.total, i18n.locale, 1),
-                })}</strong
-              >{/snippet}
+                })}
+              </strong>{/snippet}
             <Message
               message={'At a fixed bodyweight of {bodyweight} {unit}, {target} RIS corresponds to a total of {total}, or {difference} than the entered total.'}
               values={{
@@ -265,22 +269,22 @@
             {#if scenario.bodyweight.kind === 'bodyweight'}
               {#if scenario.bodyweight.value >= 30 && scenario.bodyweight.value <= 220}
                 {@const calculatedWeight = scenario.bodyweight.value}
-                {#snippet bodyweight()}<strong class="font-medium text-ink"
-                    >{i18n.t('{bodyweight} {unit} bodyweight', {
+                {#snippet bodyweight()}<strong class="font-medium text-ink">
+                    {i18n.t('{bodyweight} {unit} bodyweight', {
                       unit: weights.unit,
                       bodyweight: weights.format(calculatedWeight, i18n.locale, 1),
-                    })}</strong
-                  >{/snippet}
-                {#snippet difference()}<strong class="font-medium text-ink"
-                    >{i18n.t('{difference} {unit} less', {
+                    })}
+                  </strong>{/snippet}
+                {#snippet difference()}<strong class="font-medium text-ink">
+                    {i18n.t('{difference} {unit} less', {
                       unit: weights.unit,
                       difference: weights.format(
                         performance.bodyweight - calculatedWeight,
                         i18n.locale,
                         1
                       ),
-                    })}</strong
-                  >{/snippet}
+                    })}
+                  </strong>{/snippet}
                 <Message
                   message={'At a fixed total of {total} {unit}, {target} RIS corresponds to {bodyweight}, or {difference} than the entered bodyweight.'}
                   values={{

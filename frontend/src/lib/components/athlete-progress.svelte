@@ -121,8 +121,9 @@
         <a
           href={competitionLink(bestPoint.competition.competition_slug)}
           class="text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
-          >{bestPoint.competition.competition_name}</a
         >
+          {bestPoint.competition.competition_name}
+        </a>
       </p>
     </div>
     {#key metric + weights.unit}
@@ -268,8 +269,9 @@
                   <a
                     href={competitionLink(point.competition.competition_slug)}
                     class="mt-1 inline-block text-body text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
-                    >{point.competition.competition_name}</a
                   >
+                    {point.competition.competition_name}
+                  </a>
                   <p class="mt-1 text-meta text-muted">
                     {formatLongDate(point.competition.competition_date, i18n.locale)} · {weights.category(
                       point.competition.category_name,

@@ -21,5 +21,7 @@
 {#if shown}<abbr
     class="{badge ? RECORD_BADGE : RECORD_MARK} {RECORD_TONE[shown]} no-underline"
     title={i18n.t(RECORD_TITLE[shown])}
-    aria-label={i18n.t(RECORD_TITLE[shown])}>{shown}</abbr
-  >{/if}
+    aria-label={i18n.t(RECORD_TITLE[shown])}
+  >
+    {shown}
+  </abbr>{/if}

@@ -47,8 +47,9 @@
   {#snippet head()}
     <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competition')}</th>
     <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Format')}</th>
-    <th class="{TABLE_HEAD_CELL} text-secondary">{upcoming ? i18n.t('When') : i18n.t('Lifters')}</th
-    >
+    <th class="{TABLE_HEAD_CELL} text-secondary">
+      {upcoming ? i18n.t('When') : i18n.t('Lifters')}
+    </th>
     <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Date')}</th>
     <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Location')}</th>
     {#if showFederation}
@@ -74,8 +75,10 @@
           class="{TABLE_CELL} {CELL.data} whitespace-nowrap"
           title={competition.movements
             .map(({ movement_name }) => i18n.movement(movement_name))
-            .join(' · ')}>{competition.event_code ?? '—'}</td
+            .join(' · ')}
         >
+          {competition.event_code ?? '—'}
+        </td>
 
         <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap {upcoming ? '' : FIGURE}">
           {upcoming
@@ -83,9 +86,9 @@
             : (competition.lifter_count ?? 0)}
         </td>
 
-        <td class="{TABLE_CELL} whitespace-nowrap text-secondary"
-          >{competitionDates(competition.start_date, competition.end_date)}</td
-        >
+        <td class="{TABLE_CELL} whitespace-nowrap text-secondary">
+          {competitionDates(competition.start_date, competition.end_date)}
+        </td>
 
         <td class="{TABLE_CELL} {CELL.data}">
           <span class={TEXT_CELL.location}>

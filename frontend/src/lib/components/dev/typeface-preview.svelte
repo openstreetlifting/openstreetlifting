@@ -28,8 +28,9 @@
 >
   <summary
     class="min-h-11 cursor-pointer px-3 py-3 font-mono text-micro focus-visible:outline-2 focus-visible:outline-focus"
-    >Typography preview</summary
   >
+    Typography preview
+  </summary>
   <div class="border-t border-stroke p-3">
     <label class="grid gap-2 font-sans text-meta text-secondary">
       Interface and numbers

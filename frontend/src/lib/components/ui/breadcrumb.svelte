@@ -41,8 +41,10 @@
         {:else}
           <span
             aria-current={index === items.length - 1 ? 'page' : undefined}
-            class="text-secondary">{item.label}</span
+            class="text-secondary"
           >
+            {item.label}
+          </span>
         {/if}
       </li>
     {/each}

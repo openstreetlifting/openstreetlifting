@@ -11,9 +11,9 @@
   const linkClass = 'text-secondary underline underline-offset-4 transition-colors hover:text-ink';
 </script>
 
-{#snippet email()}<a href="mailto:contact@openstreetlifting.org" class={linkClass}
-    >contact@openstreetlifting.org</a
-  >{/snippet}
+{#snippet email()}<a href="mailto:contact@openstreetlifting.org" class={linkClass}>
+    contact@openstreetlifting.org
+  </a>{/snippet}
 
 <Seo
   title="Privacy policy"
@@ -53,9 +53,9 @@
 
   <Stack gap={12} class="leading-relaxed text-secondary">
     <section aria-labelledby="controller">
-      <Text as="h2" variant="heading" class="mb-4 text-ink" id="controller"
-        >{i18n.t('Data controller')}</Text
-      >
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="controller">
+        {i18n.t('Data controller')}
+      </Text>
       <p>
         <Message
           message={'Adrien Pelfresne is the data controller for OpenStreetlifting. Contact: {email}.'}
@@ -65,9 +65,9 @@
     </section>
 
     <section aria-labelledby="data">
-      <Text as="h2" variant="heading" class="mb-4 text-ink" id="data"
-        >{i18n.t('Personal data')}</Text
-      >
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="data">
+        {i18n.t('Personal data')}
+      </Text>
       <p class="mb-4">
         {i18n.t(
           'Athlete records come from results published by federations, organisers, competition platforms, and public posts, or supplied by contributors. Competition pages link to sources where available. Records can include:'
@@ -96,9 +96,9 @@
     </section>
 
     <section aria-labelledby="legal-basis">
-      <Text as="h2" variant="heading" class="mb-4 text-ink" id="legal-basis"
-        >{i18n.t('Legal basis')}</Text
-      >
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="legal-basis">
+        {i18n.t('Legal basis')}
+      </Text>
       <p class="mb-4">
         {i18n.t(
           'I rely on legitimate interests under Article 6(1)(f) of the GDPR to preserve competition results, connect an athlete’s performances across events, and make the sport’s record accessible. Instagram links help readers find an athlete’s public account.'
@@ -112,9 +112,9 @@
     </section>
 
     <section aria-labelledby="sharing">
-      <Text as="h2" variant="heading" class="mb-4 text-ink" id="sharing"
-        >{i18n.t('Data sharing')}</Text
-      >
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="sharing">
+        {i18n.t('Data sharing')}
+      </Text>
       <p class="mb-4">
         {i18n.t(
           'Athlete data is public through the website, API, downloads, and GitHub repository. Search engines can index it, and people worldwide can copy it. The CC0 licence does not affect your data protection rights.'
@@ -129,9 +129,9 @@
     </section>
 
     <section aria-labelledby="visitors">
-      <Text as="h2" variant="heading" class="mb-4 text-ink" id="visitors"
-        >{i18n.t('Website analytics')}</Text
-      >
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="visitors">
+        {i18n.t('Website analytics')}
+      </Text>
       <p class="mb-4">{i18n.t('Your weight unit preference is saved in your browser.')}</p>
       <p class="mb-4">
         {i18n.t(
@@ -146,9 +146,9 @@
     </section>
 
     <section aria-labelledby="your-rights">
-      <Text as="h2" variant="heading" class="mb-4 text-ink" id="your-rights"
-        >{i18n.t('GDPR rights')}</Text
-      >
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="your-rights">
+        {i18n.t('GDPR rights')}
+      </Text>
       <p class="mb-4">
         {#snippet gdpr()}<a
             href="https://eur-lex.europa.eu/eli/reg/2016/679/oj/{{
@@ -158,8 +158,10 @@
               it: 'ita',
               pl: 'pol',
             }[i18n.locale]}"
-            class={linkClass}>{i18n.t('GDPR')}</a
-          >{/snippet}
+            class={linkClass}
+          >
+            {i18n.t('GDPR')}
+          </a>{/snippet}
         <Message
           message={'Subject to the conditions of the {gdpr}, you have the following rights:'}
           values={{ gdpr }}
@@ -209,9 +211,9 @@
     </section>
 
     <section aria-labelledby="removal">
-      <Text as="h2" variant="heading" class="mb-4 text-ink" id="removal"
-        >{i18n.t('Removal requests')}</Text
-      >
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="removal">
+        {i18n.t('Removal requests')}
+      </Text>
       <p class="mb-4">
         <Message
           message={'Write to {email} with your athlete-page link or competition details and the change you are requesting. Requests are handled in accordance with Article 12 of the GDPR.'}
@@ -242,9 +244,9 @@
     </section>
 
     <section aria-labelledby="retention">
-      <Text as="h2" variant="heading" class="mb-4 text-ink" id="retention"
-        >{i18n.t('Data retention')}</Text
-      >
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="retention">
+        {i18n.t('Data retention')}
+      </Text>
       <p class="mb-4">
         {i18n.t(
           'Competition results have no scheduled expiry: they form the sporting archive. Continued retention remains subject to your GDPR rights.'
@@ -258,13 +260,13 @@
     </section>
 
     <section aria-labelledby="complaints">
-      <Text as="h2" variant="heading" class="mb-4 text-ink" id="complaints"
-        >{i18n.t('Complaints')}</Text
-      >
+      <Text as="h2" variant="heading" class="mb-4 text-ink" id="complaints">
+        {i18n.t('Complaints')}
+      </Text>
       <p>
-        {#snippet cnil()}<a href="https://www.cnil.fr/fr/plaintes" class={linkClass}
-            >{i18n.t('CNIL')}</a
-          >{/snippet}
+        {#snippet cnil()}<a href="https://www.cnil.fr/fr/plaintes" class={linkClass}>
+            {i18n.t('CNIL')}
+          </a>{/snippet}
         <Message
           message={'You may lodge a complaint with the {cnil} or another competent supervisory authority (Article 77).'}
           values={{ cnil }}

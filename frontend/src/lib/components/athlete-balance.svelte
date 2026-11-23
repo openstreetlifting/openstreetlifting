@@ -79,10 +79,10 @@
       aria-hidden="true"
     ></span>
     <span class="min-w-0 truncate text-secondary">{label}</span>
-    <span class="ml-auto shrink-0 whitespace-nowrap"
-      ><span class="font-mono font-medium text-ink tabular-nums">{share(value)}</span>
-      <span class="text-muted">{i18n.t('of total')}</span></span
-    >
+    <span class="ml-auto shrink-0 whitespace-nowrap">
+      <span class="font-mono font-medium text-ink tabular-nums">{share(value)}</span>
+      <span class="text-muted">{i18n.t('of total')}</span>
+    </span>
   </span>
 {/snippet}
 
@@ -287,9 +287,9 @@
       >
         {#each lifts as lift (lift.movement_name)}
           <div class="min-w-0 @min-[36rem]:py-1.5 @min-[36rem]:first:pt-0 @min-[36rem]:last:pb-0">
-            <Text as="dt" variant="fieldLabel" class="mb-1 text-meta font-medium text-secondary"
-              >{i18n.movement(lift.movement_name)}</Text
-            >
+            <Text as="dt" variant="fieldLabel" class="mb-1 text-meta font-medium text-secondary">
+              {i18n.movement(lift.movement_name)}
+            </Text>
             <dd>
               {#if comparable && lift.class_share !== null && lift.gap !== null}
                 {@render shareRow('athlete', i18n.t('Athlete'), lift.share)}

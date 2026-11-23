@@ -204,14 +204,15 @@
                   <tr class="border-b border-stroke-strong bg-table-head">
                     <th scope="col" class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>
                     <th scope="col" class="{TABLE_HEAD_CELL} w-8 text-secondary">#</th>
-                    <th scope="col" class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Athlete')}</th
-                    >
-                    <th scope="col" class="{TABLE_HEAD_CELL} text-right text-secondary"
-                      >{weights.unit}</th
-                    >
-                    <th scope="col" class="{TABLE_HEAD_CELL} text-secondary"
-                      >{i18n.t('Competition')}</th
-                    >
+                    <th scope="col" class="{TABLE_HEAD_CELL} text-secondary">
+                      {i18n.t('Athlete')}
+                    </th>
+                    <th scope="col" class="{TABLE_HEAD_CELL} text-right text-secondary">
+                      {weights.unit}
+                    </th>
+                    <th scope="col" class="{TABLE_HEAD_CELL} text-secondary">
+                      {i18n.t('Competition')}
+                    </th>
                     <th scope="col" class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Date')}</th>
                   </tr>
                 </thead>
@@ -248,9 +249,9 @@
                                 class="shrink-0 [--flag-height:1.25em]"
                               />
                             {/if}
-                            <span class="truncate underline"
-                              >{formatAthleteName(entry.athlete)}</span
-                            >
+                            <span class="truncate underline">
+                              {formatAthleteName(entry.athlete)}
+                            </span>
                           </a>
                         </td>
                         <td
@@ -267,12 +268,14 @@
                             )}
                             class="block max-w-[9rem] truncate underline hover:text-ink sm:max-w-[14rem] {fullWidth
                               ? 'xl:max-w-none'
-                              : 'xl:max-w-[9rem] 2xl:max-w-[12rem]'}">{entry.competition.name}</a
+                              : 'xl:max-w-[9rem] 2xl:max-w-[12rem]'}"
                           >
+                            {entry.competition.name}
+                          </a>
                         </td>
-                        <td class="{TABLE_CELL} {CELL.data} {FIGURE}"
-                          >{formatDate(entry.date, i18n.locale)}</td
-                        >
+                        <td class="{TABLE_CELL} {CELL.data} {FIGURE}">
+                          {formatDate(entry.date, i18n.locale)}
+                        </td>
                       </tr>
                     {/each}
                   </tbody>

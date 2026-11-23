@@ -41,8 +41,8 @@
   <div class="mt-8 flex w-full max-w-sm flex-col gap-3 sm:w-auto sm:flex-row">
     <Button size="control" href={i18n.href(resolve(''))}>{i18n.t('Back to rankings')}</Button>
 
-    <Button href={i18n.href(resolve('contact'))} variant="outline" size="control" class="text-ink"
-      >{i18n.t('Get in touch')}</Button
-    >
+    <Button href={i18n.href(resolve('contact'))} variant="outline" size="control" class="text-ink">
+      {i18n.t('Get in touch')}
+    </Button>
   </div>
 </div>

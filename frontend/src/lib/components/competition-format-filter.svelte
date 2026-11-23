@@ -111,8 +111,9 @@
           disabled={!value}
           onclick={() => onChange('')}
           class="w-full justify-start px-3 text-micro text-secondary disabled:text-faint"
-          >{i18n.t('Clear selection')}</Button
         >
+          {i18n.t('Clear selection')}
+        </Button>
       </div>
     </div>
   </details>
