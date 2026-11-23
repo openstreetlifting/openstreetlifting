@@ -18,5 +18,7 @@
 {formatScore(value, i18n.locale)}{#if source === 'reported'}<span
     class={REPORTED_MARK}
     title={i18n.t(REPORTED_TITLE)}
-    aria-label={i18n.t(REPORTED_TITLE)}>{REPORTED_GLYPH}</span
-  >{/if}
+    aria-label={i18n.t(REPORTED_TITLE)}
+  >
+    {REPORTED_GLYPH}
+  </span>{/if}

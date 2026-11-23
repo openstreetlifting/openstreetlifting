@@ -27,8 +27,10 @@
           href="https://docs.openstreetlifting.org/"
           target="_blank"
           rel="noopener noreferrer"
-          class={NAV_LINK}>{i18n.t('Documentation')}</a
+          class={NAV_LINK}
         >
+          {i18n.t('Documentation')}
+        </a>
 
         <a href={i18n.href(resolve('contact'))} class={NAV_LINK}>{i18n.t('Contact')}</a>
         <a href={i18n.href(resolve('privacy'))} class={NAV_LINK}>{i18n.t('Privacy')}</a>
@@ -44,8 +46,10 @@
               href="https://github.com/openstreetlifting/openstreetlifting/releases/tag/v{buildInfo.version}"
               target="_blank"
               rel="noopener noreferrer"
-              class="transition-colors hover:text-ink">v{buildInfo.version}</a
+              class="transition-colors hover:text-ink"
             >
+              v{buildInfo.version}
+            </a>
           {/if}
           {#if buildInfo.shortSha}
             {#if buildInfo.label || buildInfo.version}
@@ -56,8 +60,10 @@
               href="https://github.com/openstreetlifting/openstreetlifting/commit/{buildInfo.sha}"
               target="_blank"
               rel="noopener noreferrer"
-              class="transition-colors hover:text-ink">{buildInfo.shortSha}</a
+              class="transition-colors hover:text-ink"
             >
+              {buildInfo.shortSha}
+            </a>
           {:else if !buildInfo.label && !buildInfo.version}
             dev
           {/if}

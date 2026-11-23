@@ -49,12 +49,14 @@
   {busy}
 >
   {#snippet head()}
-    <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"><RankHeader /></th
-    >
+    <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary">
+      <RankHeader />
+    </th>
     <th
       class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} text-secondary"
-      >{i18n.t('Athlete')}</th
     >
+      {i18n.t('Athlete')}
+    </th>
     <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')} ({weights.unit})</th>
     <th class="{TABLE_HEAD_CELL} text-secondary {SORTED_COLUMN}">
       <RisHeader />
@@ -86,43 +88,45 @@
             />
             <a
               href={i18n.href(resolve(`athletes/${entry.athlete.slug}`))}
-              class="truncate underline hover:text-secondary">{formatAthleteName(entry.athlete)}</a
+              class="truncate underline hover:text-secondary"
             >
+              {formatAthleteName(entry.athlete)}
+            </a>
           </span>
         </td>
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-          >{weights.format(entry.total, i18n.locale)}<RecordMark
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+          {weights.format(entry.total, i18n.locale)}<RecordMark
             worldOnly
             mark={entry.total_record}
-          /></td
-        >
+          />
+        </td>
         <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
           <RisScore value={entry.ris} source={entry.ris_source} />
         </td>
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-          >{weights.format(entry.muscleup, i18n.locale)}<RecordMark
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+          {weights.format(entry.muscleup, i18n.locale)}<RecordMark
             worldOnly
             mark={recordFor(entry.records, 'Muscle-up')}
-          /></td
-        >
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-          >{weights.format(entry.pullup, i18n.locale)}<RecordMark
+          />
+        </td>
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+          {weights.format(entry.pullup, i18n.locale)}<RecordMark
             worldOnly
             mark={recordFor(entry.records, 'Pull-up')}
-          /></td
-        >
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-          >{weights.format(entry.dips, i18n.locale)}<RecordMark
+          />
+        </td>
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+          {weights.format(entry.dips, i18n.locale)}<RecordMark
             worldOnly
             mark={recordFor(entry.records, 'Dips')}
-          /></td
-        >
-        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-          >{weights.format(entry.squat, i18n.locale)}<RecordMark
+          />
+        </td>
+        <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+          {weights.format(entry.squat, i18n.locale)}<RecordMark
             worldOnly
             mark={recordFor(entry.records, 'Squat')}
-          /></td
-        >
+          />
+        </td>
         <td class="{TABLE_CELL} {CELL.data}">
           <a
             href={i18n.href(resolve(`competitions/${entry.competition.slug}`))}
@@ -147,9 +151,9 @@
           {formatDate(entry.competition.date, i18n.locale)}
         </td>
         <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
-        {#if classed}<td class="{TABLE_CELL} {CELL.data}"
-            >{weights.category(entry.category, i18n.locale)}</td
-          >{/if}
+        {#if classed}<td class="{TABLE_CELL} {CELL.data}">
+            {weights.category(entry.category, i18n.locale)}
+          </td>{/if}
       </tr>
     {/each}
   {/snippet}

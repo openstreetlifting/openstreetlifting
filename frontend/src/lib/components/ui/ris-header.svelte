@@ -28,8 +28,10 @@
         href={RIS_SOURCE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        class="underline transition-colors hover:text-ink">warisradji.com</a
+        class="underline transition-colors hover:text-ink"
       >
+        warisradji.com
+      </a>
     </p>
 
     <p class="mb-3">
@@ -47,9 +49,9 @@
     </p>
 
     <p class="text-secondary">
-      <a href={i18n.href(resolve('ris'))} class="underline transition-colors hover:text-ink"
-        >{i18n.t('Learn more on the ris page of OpenStreetlifting')}</a
-      >
+      <a href={i18n.href(resolve('ris'))} class="underline transition-colors hover:text-ink">
+        {i18n.t('Learn more on the ris page of OpenStreetlifting')}
+      </a>
     </p>
   </InfoTip>
 </span>

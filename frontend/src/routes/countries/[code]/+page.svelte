@@ -67,8 +67,9 @@
                 <a
                   href={i18n.href(resolve('/federations/[slug]', { slug: slugify(federation) }))}
                   class="break-words text-ink underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
-                  >{federation}</a
                 >
+                  {federation}
+                </a>
               </li>
             {/each}
           </ul>

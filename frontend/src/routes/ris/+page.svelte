@@ -44,9 +44,9 @@
 
 <article class="mx-auto max-w-reading px-gutter pt-chapter pb-16">
   <header class="mb-chapter">
-    <Text as="h1" variant="title" class="text-ink"
-      >{i18n.t('The Relative Index for Streetlifting')}</Text
-    >
+    <Text as="h1" variant="title" class="text-ink">
+      {i18n.t('The Relative Index for Streetlifting')}
+    </Text>
     <p class="mt-3 text-lead leading-7 text-secondary">
       {i18n.t(
         'The Relative Index for Streetlifting (RIS) compares competition totals across bodyweights within the same gender category. It uses the combined total of Muscle-up, Pull-up, Dips and Squat.'
@@ -56,8 +56,9 @@
       {#snippet authors()}<a
           href="https://warisradji.com/ris/"
           class="text-ink underline underline-offset-4"
-          >{i18n.t('Waris Radji and Mathieu Ardoin')}</a
-        >{/snippet}
+        >
+          {i18n.t('Waris Radji and Mathieu Ardoin')}
+        </a>{/snippet}
       <Message
         message={'RIS was developed by {authors}, using results from leading Streetlifting athletes.'}
         values={{ authors }}

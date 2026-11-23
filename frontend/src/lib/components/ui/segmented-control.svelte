@@ -41,17 +41,19 @@
         <span aria-current="page" class="{SEGMENT} {ACTIVE}">{@render children(item)}</span>
       {:else if href}
         <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- callers supply resolved app paths -->
-        <a href={href(item)} class="{SEGMENT} {IDLE}" {...attributes?.(item)}
-          >{@render children(item)}</a
-        >
+        <a href={href(item)} class="{SEGMENT} {IDLE}" {...attributes?.(item)}>
+          {@render children(item)}
+        </a>
       {:else}
         <button
           type="button"
           aria-pressed={active}
           onclick={() => onselect?.(item)}
           class="{SEGMENT} {active ? ACTIVE : IDLE}"
-          {...attributes?.(item)}>{@render children(item)}</button
+          {...attributes?.(item)}
         >
+          {@render children(item)}
+        </button>
       {/if}
     </li>
   {/each}

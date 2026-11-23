@@ -52,12 +52,14 @@
           <td class="{TABLE_CELL} {CELL.data} {FIGURE}">{i18n.number(country.upcoming, 0)}</td>
           <td class="{TABLE_CELL} {CELL.data}">
             {#each country.federations as name, index (name)}
-              <span class="whitespace-nowrap"
-                >{index > 0 ? ', ' : ''}<a
+              <span class="whitespace-nowrap">
+                {index > 0 ? ', ' : ''}<a
                   href={i18n.href(resolve('/federations/[slug]', { slug: slugify(name) }))}
-                  class="underline hover:text-ink">{name}</a
-                ></span
-              >
+                  class="underline hover:text-ink"
+                >
+                  {name}
+                </a>
+              </span>
             {:else}
               {NO_VALUE}
             {/each}

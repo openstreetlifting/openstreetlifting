@@ -392,9 +392,9 @@
               meta={formatDate(best.date, i18n.locale)}
               href={competitionHref(best.competition_slug, 'ris')}
             >
-              <span class={TEXT.cardFigure}
-                ><RisScore value={best.ris_score} source={best.ris_source} /></span
-              >
+              <span class={TEXT.cardFigure}>
+                <RisScore value={best.ris_score} source={best.ris_source} />
+              </span>
               {#snippet footer()}
                 {@render competitionFooter(best.competition_name, best.date)}
               {/snippet}
@@ -457,9 +457,9 @@
         frozenColumns="rank"
       >
         {#snippet head()}
-          <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
-            ><RankHeader /></th
-          >
+          <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary">
+            <RankHeader />
+          </th>
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competition')}</th>
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')} ({weights.unit})</th>
           <th class="{TABLE_HEAD_CELL} text-secondary"><RisHeader /></th>
@@ -489,8 +489,9 @@
                   <span
                     class={STATUS_FLAG}
                     title={athleteStatusTitle(competition.status, null, i18n.locale)}
-                    >{ATHLETE_STATUS_LABEL[competition.status]}</span
                   >
+                    {ATHLETE_STATUS_LABEL[competition.status]}
+                  </span>
                 {:else}
                   {competition.rank || NO_VALUE}
                 {/if}
@@ -504,11 +505,11 @@
                 </a>
               </td>
 
-              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(competition.total, i18n.locale)}<RecordMark
+              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+                {weights.format(competition.total, i18n.locale)}<RecordMark
                   mark={competition.total_record}
-                /></td
-              >
+                />
+              </td>
 
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
                 <RisScore value={competition.ris_score} source={competition.ris_source} />
@@ -553,8 +554,10 @@
                           class="font-normal {CELL.nothing}"
                           title={i18n.t('No successful {movement}', {
                             movement: i18n.t(lift.label).toLowerCase(),
-                          })}>{NO_RESULT}</span
+                          })}
                         >
+                          {NO_RESULT}
+                        </span>
                       {:else}
                         {weights.format(cell.best, i18n.locale)}<RecordMark mark={cell.record} />
                       {/if}

@@ -32,18 +32,16 @@
 </script>
 
 {#snippet total(row: AthleteNeighbor)}
-  <span class="{FIGURE} whitespace-nowrap font-semibold text-ink"
-    >{weights.format(row.value, i18n.locale)}&nbsp;{weights.unit}</span
-  >
+  <span class="{FIGURE} whitespace-nowrap font-semibold text-ink">
+    {weights.format(row.value, i18n.locale)}&nbsp;{weights.unit}
+  </span>
 {/snippet}
 
 <section class="@container mb-section" aria-label={i18n.t('Rivals')}>
   <div class="mb-4">
-    <Text as="h2" variant="heading" class="text-ink"
-      >{weightClass
-        ? i18n.t('Rivals (class: {weightClass})', { weightClass })
-        : i18n.t('Rivals')}</Text
-    >
+    <Text as="h2" variant="heading" class="text-ink">
+      {weightClass ? i18n.t('Rivals (class: {weightClass})', { weightClass }) : i18n.t('Rivals')}
+    </Text>
     <SegmentedControl
       class="mt-3"
       items={SCOPES}
@@ -64,11 +62,9 @@
   {#if scope === 'national' && !country}
     <Text variant="body" class="text-muted">{i18n.t('Country needed for national ranking')}</Text>
   {:else if !neighbors || !own}
-    <Text variant="body" class="text-muted"
-      >{i18n.t(
-        'An MPDS total in the latest MPDS category is needed to show nearby athletes.'
-      )}</Text
-    >
+    <Text variant="body" class="text-muted">
+      {i18n.t('An MPDS total in the latest MPDS category is needed to show nearby athletes.')}
+    </Text>
   {:else}
     <ol
       class="flex flex-col-reverse gap-0.5 text-body @3xl:flex-row @3xl:flex-wrap @3xl:items-baseline @3xl:gap-x-4 @3xl:gap-y-2"
@@ -90,8 +86,9 @@
               <a
                 class="shrink-0 whitespace-nowrap underline-offset-2 hover:underline"
                 href={i18n.href(resolve('/competitions/[slug]', { slug: row.competition_slug }))}
-                >{@render total(row)}</a
               >
+                {@render total(row)}
+              </a>
             </span>
           {:else}
             <a
@@ -103,27 +100,27 @@
               {#if gap === 0}
                 {@render total(row)}
               {:else}
-                <span class="{FIGURE} shrink-0 whitespace-nowrap font-semibold text-ink"
-                  >{signed(gap)}&nbsp;{weights.unit}</span
-                >
-                <span class="shrink-0 whitespace-nowrap text-muted"
-                  >({weights.format(row.value, i18n.locale)}&nbsp;{weights.unit})</span
-                >
+                <span class="{FIGURE} shrink-0 whitespace-nowrap font-semibold text-ink">
+                  {signed(gap)}&nbsp;{weights.unit}
+                </span>
+                <span class="shrink-0 whitespace-nowrap text-muted">
+                  ({weights.format(row.value, i18n.locale)}&nbsp;{weights.unit})
+                </span>
               {/if}
             </a>
           {/if}
           {#if next}
-            <span class="{FIGURE} hidden text-muted @3xl:inline" aria-hidden="true"
-              >{Number(next.value) === Number(row.value) ? '=' : '<'}</span
-            >
+            <span class="{FIGURE} hidden text-muted @3xl:inline" aria-hidden="true">
+              {Number(next.value) === Number(row.value) ? '=' : '<'}
+            </span>
           {/if}
         </li>
       {/each}
     </ol>
     {#if own.field === 1}
-      <Text variant="meta" class="mt-3 text-muted"
-        >{i18n.t('The only ranked athlete in this category and scope.')}</Text
-      >
+      <Text variant="meta" class="mt-3 text-muted">
+        {i18n.t('The only ranked athlete in this category and scope.')}
+      </Text>
     {/if}
   {/if}
 </section>

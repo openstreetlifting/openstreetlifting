@@ -104,8 +104,9 @@
             <a
               href={i18n.href(resolve(`competitions/${competition.slug}`))}
               class="inline-flex min-h-8 items-center gap-1.5 text-ink underline decoration-stroke-strong underline-offset-4 hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
-              >{competition.name}</a
             >
+              {competition.name}
+            </a>
 
             <dl class="flex flex-wrap items-center gap-x-6 gap-y-1 text-secondary">
               {#if competition.event_code}
@@ -138,15 +139,15 @@
                 <div>
                   <dt class="sr-only">{i18n.t('Date')}</dt>
                   <dd class="flex flex-wrap items-baseline gap-x-1.5 tabular-nums">
-                    <time class="whitespace-nowrap" datetime={competition.start_date}
-                      >{formatDate(competition.start_date, i18n.locale)}</time
-                    >
+                    <time class="whitespace-nowrap" datetime={competition.start_date}>
+                      {formatDate(competition.start_date, i18n.locale)}
+                    </time>
                     {#if competition.end_date && competition.end_date !== competition.start_date}
                       <span class="inline-flex gap-x-1.5">
                         <span>{i18n.t('to')}</span>
-                        <time class="whitespace-nowrap" datetime={competition.end_date}
-                          >{formatDate(competition.end_date, i18n.locale)}</time
-                        >
+                        <time class="whitespace-nowrap" datetime={competition.end_date}>
+                          {formatDate(competition.end_date, i18n.locale)}
+                        </time>
                       </span>
                     {/if}
                   </dd>
@@ -160,8 +161,9 @@
             <a
               href={listingHref({ status: 'live' })}
               class="inline-flex min-h-8 items-center text-secondary underline underline-offset-4"
-              >{i18n.t('View all in progress')}</a
             >
+              {i18n.t('View all in progress')}
+            </a>
           </li>
         {/if}
       </ul>

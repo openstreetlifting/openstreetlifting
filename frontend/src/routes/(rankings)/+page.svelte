@@ -115,9 +115,9 @@
           onchange={() => table.handleFilterChange()}
         >
           {#each sorts as sort (sort.value)}
-            <option value={sort.value}
-              >{i18n.t('Sort by {sort}', { sort: i18n.t(sort.label) })}</option
-            >
+            <option value={sort.value}>
+              {i18n.t('Sort by {sort}', { sort: i18n.t(sort.label) })}
+            </option>
           {/each}
         </SelectField>
         <SelectField
@@ -161,9 +161,9 @@
       >
         <option value={null}>{i18n.t('All Series')}</option>
         {#each data.series as seriesOption (seriesOption.series)}
-          <option value={seriesOption.series}
-            >{seriesOption.federation} · {seriesOption.name}</option
-          >
+          <option value={seriesOption.series}>
+            {seriesOption.federation} · {seriesOption.name}
+          </option>
         {/each}
         {#if staleSeries}<option value={staleSeries}>{staleSeries}</option>{/if}
       </SelectField>
@@ -216,16 +216,17 @@
         }}
       >
         {#snippet head()}
-          <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
-            ><RankHeader /></th
-          >
+          <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary">
+            <RankHeader />
+          </th>
           <th
             class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN} text-secondary"
-            >{i18n.t('Athlete')}</th
           >
-          <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}"
-            >{i18n.t('Total')} ({weights.unit})</th
-          >
+            {i18n.t('Athlete')}
+          </th>
+          <th class="{TABLE_HEAD_CELL} text-secondary {sorted('total')}">
+            {i18n.t('Total')} ({weights.unit})
+          </th>
           <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
             <RisHeader />
           </th>
@@ -283,39 +284,39 @@
                   {/if}
                 </span>
               </td>
-              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(entry.total, i18n.locale)}<RecordMark
+              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+                {weights.format(entry.total, i18n.locale)}<RecordMark
                   worldOnly
                   mark={entry.total_record}
-                /></td
-              >
+                />
+              </td>
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
                 <RisScore value={entry.ris} source={entry.ris_source} />
               </td>
-              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(entry.muscleup, i18n.locale)}<RecordMark
+              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+                {weights.format(entry.muscleup, i18n.locale)}<RecordMark
                   worldOnly
                   mark={recordFor(entry.records, 'Muscle-up')}
-                /></td
-              >
-              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(entry.pullup, i18n.locale)}<RecordMark
+                />
+              </td>
+              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+                {weights.format(entry.pullup, i18n.locale)}<RecordMark
                   worldOnly
                   mark={recordFor(entry.records, 'Pull-up')}
-                /></td
-              >
-              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(entry.dips, i18n.locale)}<RecordMark
+                />
+              </td>
+              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+                {weights.format(entry.dips, i18n.locale)}<RecordMark
                   worldOnly
                   mark={recordFor(entry.records, 'Dips')}
-                /></td
-              >
-              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}"
-                >{weights.format(entry.squat, i18n.locale)}<RecordMark
+                />
+              </td>
+              <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
+                {weights.format(entry.squat, i18n.locale)}<RecordMark
                   worldOnly
                   mark={recordFor(entry.records, 'Squat')}
-                /></td
-              >
+                />
+              </td>
               <td class="{TABLE_CELL} {CELL.data}">
                 <a
                   href={i18n.href(resolve(`competitions/${entry.competition.slug}`))}
@@ -338,9 +339,9 @@
                 {formatDate(entry.competition.date, i18n.locale)}
               </td>
               <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
-              <td class="{TABLE_CELL} {CELL.data}"
-                >{weights.category(entry.category, i18n.locale) || NO_VALUE}</td
-              >
+              <td class="{TABLE_CELL} {CELL.data}">
+                {weights.category(entry.category, i18n.locale) || NO_VALUE}
+              </td>
             </tr>
           {/each}
         {/snippet}

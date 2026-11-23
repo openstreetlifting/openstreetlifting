@@ -39,12 +39,16 @@
     <p>
       {#snippet email()}<a
           href="mailto:contact@openstreetlifting.org"
-          class="underline underline-offset-4 hover:text-ink">contact@openstreetlifting.org</a
-        >{/snippet}
+          class="underline underline-offset-4 hover:text-ink"
+        >
+          contact@openstreetlifting.org
+        </a>{/snippet}
       {#snippet privacyNotice()}<a
           href={i18n.href(resolve('privacy'))}
-          class="underline underline-offset-4 hover:text-ink">{i18n.t('privacy notice')}</a
-        >{/snippet}
+          class="underline underline-offset-4 hover:text-ink"
+        >
+          {i18n.t('privacy notice')}
+        </a>{/snippet}
       <Message
         message={'To ask about your personal data or request name removal, email {email}. Keep these requests private. You can read more in the {privacyNotice}.'}
         values={{ email, privacyNotice }}

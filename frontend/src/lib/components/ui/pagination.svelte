@@ -77,9 +77,9 @@
   <div class="hidden items-center gap-1 sm:flex">
     {#each items as item, index (index)}
       {#if item === 'ellipsis'}
-        <span class="inline-flex h-8 min-w-8 items-center justify-center text-meta text-muted"
-          >&hellip;</span
-        >
+        <span class="inline-flex h-8 min-w-8 items-center justify-center text-meta text-muted">
+          &hellip;
+        </span>
       {:else}
         <a
           href={disabled || item === page ? undefined : pageHref(item)}

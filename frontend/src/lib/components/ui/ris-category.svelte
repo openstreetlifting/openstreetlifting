@@ -12,9 +12,9 @@
 </script>
 
 <fieldset>
-  <legend class="mb-2 {prominent ? 'text-body font-medium text-ink' : `${TEXT.meta} text-muted`}"
-    >{i18n.t('Category')}</legend
-  >
+  <legend class="mb-2 {prominent ? 'text-body font-medium text-ink' : `${TEXT.meta} text-muted`}">
+    {i18n.t('Category')}
+  </legend>
   <div
     class="flex h-control w-fit overflow-hidden rounded-control border {prominent
       ? 'border-stroke-strong'
@@ -28,8 +28,10 @@
         class="{CONTROL} inline-flex h-full items-center px-3 transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-secondary {sex ===
         value
           ? 'bg-ink text-canvas'
-          : 'bg-canvas text-secondary hover:bg-surface hover:text-ink'}">{label}</button
+          : 'bg-canvas text-secondary hover:bg-surface hover:text-ink'}"
       >
+        {label}
+      </button>
     {/each}
   </div>
 </fieldset>

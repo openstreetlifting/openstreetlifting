@@ -41,12 +41,15 @@
       variant="cardLabel"
       class="col-start-1 row-start-1 flex min-h-6 items-center self-center lg:block lg:min-h-0 {record
         ? ''
-        : 'col-span-2'}">{heading}</Text
+        : 'col-span-2'}"
     >
+      {heading}
+    </Text>
     {#if meta}<span
         class="{TEXT.fieldLabel} col-span-2 col-start-1 row-start-1 hidden self-center justify-self-end tabular-nums lg:inline"
-        >{meta}</span
-      >{/if}
+      >
+        {meta}
+      </span>{/if}
     {#if record}<span
         class="col-start-2 row-start-1 flex items-center justify-end lg:row-start-2 lg:mt-2"
       >

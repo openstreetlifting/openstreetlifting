@@ -283,30 +283,33 @@
   <section aria-label={i18n.t('Selected performances')} class="mt-4 border-t border-stroke pt-4">
     <div class="mb-4 flex items-start justify-between gap-4">
       <div class="flex flex-wrap gap-x-4 gap-y-2 text-meta text-secondary">
-        <span
-          >{i18n.t('Bodyweight')}
-          <span class="font-mono text-ink"
-            >{weights.format(selected.bodyweight, i18n.locale)} {weights.unit}</span
-          ></span
-        >
-        <span
-          >{i18n.t('Total')}
-          <span class="font-mono text-ink"
-            >{weights.format(selected.total, i18n.locale)} {weights.unit}</span
-          ></span
-        >
-        <span
-          >RIS <span class="font-mono text-ink"
-            >{i18n.number(calculateRis(constants, selected.bodyweight, selected.total), 2)}</span
-          ></span
-        >
+        <span>
+          {i18n.t('Bodyweight')}
+          <span class="font-mono text-ink">
+            {weights.format(selected.bodyweight, i18n.locale)}
+            {weights.unit}
+          </span>
+        </span>
+        <span>
+          {i18n.t('Total')}
+          <span class="font-mono text-ink">
+            {weights.format(selected.total, i18n.locale)}
+            {weights.unit}
+          </span>
+        </span>
+        <span>
+          RIS <span class="font-mono text-ink">
+            {i18n.number(calculateRis(constants, selected.bodyweight, selected.total), 2)}
+          </span>
+        </span>
       </div>
       <button
         type="button"
         onclick={() => (selected = null)}
         class="shrink-0 text-meta text-secondary underline underline-offset-4 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-muted"
-        >{i18n.t('Clear selection')}</button
       >
+        {i18n.t('Clear selection')}
+      </button>
     </div>
     {#if selectedPerformances.length > 1}
       <p class="mb-3 text-meta text-muted">
@@ -324,19 +327,21 @@
           <a
             href={i18n.href(resolve('/athletes/[slug]', { slug: performance.athlete_slug }))}
             class="text-body font-medium text-ink underline decoration-stroke-strong underline-offset-4 hover:text-ink"
-            >{performance.athlete_name}</a
           >
+            {performance.athlete_name}
+          </a>
           <div class="text-meta leading-6 text-muted sm:text-right">
             <a
               href={i18n.href(
                 resolve('/competitions/[slug]', { slug: performance.competition_slug })
               )}
               class="text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
-              >{performance.competition_name}</a
             >
-            <span class="ml-2 whitespace-nowrap"
-              >{formatLongDate(performance.competition_date, i18n.locale)}</span
-            >
+              {performance.competition_name}
+            </a>
+            <span class="ml-2 whitespace-nowrap">
+              {formatLongDate(performance.competition_date, i18n.locale)}
+            </span>
           </div>
         </li>
       {/each}

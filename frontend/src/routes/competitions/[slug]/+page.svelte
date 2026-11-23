@@ -488,10 +488,9 @@
                 class="mt-[0.3em] shrink-0 [--flag-height:0.9em]"
               />
             {/if}
-            <span class="min-w-0"
-              >{place ||
-                (competition.country ? countryName(competition.country, i18n.locale) : '')}</span
-            >
+            <span class="min-w-0">
+              {place || (competition.country ? countryName(competition.country, i18n.locale) : '')}
+            </span>
           </dd>
         {/if}
         <dt class="text-muted">{i18n.t('Federation')}</dt>
@@ -508,8 +507,9 @@
             )}
             title={competition.federation.name}
             class="min-w-0 break-words underline decoration-stroke-strong underline-offset-2 hover:text-secondary"
-            >{federationLabel}</a
           >
+            {federationLabel}
+          </a>
         </dd>
       </dl>
       <dl class={DETAILS}>
@@ -577,9 +577,9 @@
     </div>
   {:else}
     <div class="mb-shell-dense flex flex-wrap items-center justify-between gap-3">
-      <Text as="h2" variant="heading" id="results-heading" class="text-ink"
-        >{i18n.t('Results')}</Text
-      >
+      <Text as="h2" variant="heading" id="results-heading" class="text-ink">
+        {i18n.t('Results')}
+      </Text>
       {@render editLink()}
     </div>
     <section
@@ -637,9 +637,9 @@
           onchange={() => table.handleFilterChange()}
         >
           {#each sorts as sort (sort.value)}
-            <option value={sort.value}
-              >{i18n.t('Sort by {sort}', { sort: i18n.t(sort.label) })}</option
-            >
+            <option value={sort.value}>
+              {i18n.t('Sort by {sort}', { sort: i18n.t(sort.label) })}
+            </option>
           {/each}
         </SelectField>
       </FilterBar>
@@ -665,13 +665,14 @@
           }}
         >
           {#snippet head()}
-            <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary"
-              ><RankHeader /></th
-            >
+            <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary">
+              <RankHeader />
+            </th>
             <th
               class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} text-secondary"
-              >{i18n.t('Athlete')}</th
             >
+              {i18n.t('Athlete')}
+            </th>
             <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary {sorted('total')}">
               {i18n.t('Total')}
               <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
@@ -753,12 +754,12 @@
                     {/if}
                   </span>
                 </td>
-                <td class="{TABLE_CELL} {CELL.counted}"
-                  >{weights.format(entry.total, i18n.locale)}<RecordMark
+                <td class="{TABLE_CELL} {CELL.counted}">
+                  {weights.format(entry.total, i18n.locale)}<RecordMark
                     worldOnly
                     mark={participant?.total_record}
-                  /></td
-                >
+                  />
+                </td>
                 {#if risColumn}
                   <td class="{TABLE_CELL} {CELL.counted}">
                     <RisScore value={entry.ris} source={entry.ris_source} />
@@ -805,8 +806,10 @@
                             class="font-normal {CELL.nothing}"
                             title={i18n.t('No successful {movement}', {
                               movement: i18n.t(lift.label).toLowerCase(),
-                            })}>{NO_RESULT}</span
+                            })}
                           >
+                            {NO_RESULT}
+                          </span>
                         {:else}
                           {weights.format(cell.best, i18n.locale)}<RecordMark
                             worldOnly
@@ -819,9 +822,9 @@
                 {/each}
                 <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
                 {#if classed}
-                  <td class="{TABLE_CELL} {CELL.data}"
-                    >{weights.category(entry.category, i18n.locale)}</td
-                  >
+                  <td class="{TABLE_CELL} {CELL.data}">
+                    {weights.category(entry.category, i18n.locale)}
+                  </td>
                 {/if}
                 {#if showAge}{@render ageCell(participant)}{/if}
                 {#if showBodyweight}{@render bodyweightCell(participant)}{/if}
@@ -919,9 +922,9 @@
                 {/each}
                 <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
                 {#if classed}
-                  <td class="{TABLE_CELL} {CELL.data}"
-                    >{weights.category(category.category.weight_class, i18n.locale)}</td
-                  >
+                  <td class="{TABLE_CELL} {CELL.data}">
+                    {weights.category(category.category.weight_class, i18n.locale)}
+                  </td>
                 {/if}
                 {#if showAge}{@render ageCell(participant)}{/if}
                 {#if showBodyweight}{@render bodyweightCell(participant)}{/if}
