@@ -1,4 +1,5 @@
 event = "MPDS"
+sources = ["Copie de SPARTAN CUP 2026.xlsx"]
 
 [competition]
 name = "Spartan Cup"
