@@ -1,0 +1,15 @@
+sources = ["https://www.instagram.com/p/Dd_qoq7jaRP/"]
+
+[competition]
+name = "BSLC Rookie"
+start_date = "2026-12-05"
+end_date = "2026-12-06"
+city = "Auderghem"
+venue = "Club Akuma 2.0"
+country = "BE"
+status = "upcoming"
+
+[federation]
+name = "Belgian Streetlifting Championship"
+abbreviation = "BSLC"
+country = "BE"
