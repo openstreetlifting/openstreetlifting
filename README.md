@@ -19,6 +19,11 @@ If you have Docker, [rustup](https://rustup.rs), Node and pnpm 12.
 ```
 
 ## Import data
+If you are starting from a fresh database, you will need to create the database and apply the migrations (one time setup):
+
+`cd backend && cargo sqlx database create && cargo sqlx migrate run ./crates/osl_db/migrations`
+
+you will need [sqlx](https://crates.io/crates/sqlx-cli)
 
 The database is initially empty. You can import all competitions
 
