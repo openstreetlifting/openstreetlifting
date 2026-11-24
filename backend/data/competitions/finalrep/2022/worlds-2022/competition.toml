@@ -1,0 +1,17 @@
+event = "MPDS"
+sources = ["Results FinalRep.pdf"]
+
+[competition]
+name = "Worlds"
+series = "finalrep-worlds"
+start_date = "2022-10-01"
+end_date = "2022-10-02"
+city = "Berlin"
+venue = "Gold's Gym Performance Center"
+region = "Berlin"
+country = "DE"
+status = "completed"
+
+[federation]
+name = "FinalRep"
+country = "DE"
