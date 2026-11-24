@@ -1,6 +1,12 @@
 import { expect, it } from 'vitest';
 import type { CategoryDetail, Participant } from '#lib/types/competition.js';
-import { competitionDivisions, hasRankingResult, weightClasses } from './competition-results';
+import {
+  competitionDivisions,
+  contestSummary,
+  hasRankingResult,
+  sharedRankBy,
+  weightClasses,
+} from './competition-results';
 
 it('lists classes once per sex in weight order across divisions using the published labels', () => {
   const categories: CategoryDetail[] = (
@@ -108,4 +114,74 @@ it('keeps a published RIS without lifts or total in one ranked row', () => {
       'ris'
     )
   ).toBe(true);
+});
+
+const contest = (
+  division: string | null,
+  gender: 'M' | 'F' | 'MX',
+  weight_class: string,
+  rank_by: 'total' | 'ris',
+  entries = 1
+): CategoryDetail => ({
+  category: { name: '', division, gender, weight_class, rank_by },
+  participants: Array.from({ length: entries }, () => result()),
+});
+
+it('describes each division by its contests and how they were ranked', () => {
+  const summary = contestSummary([
+    contest('Open', 'M', '-66kg', 'total', 9),
+    contest('Open', 'M', '+87kg', 'total', 5),
+    contest('Open', 'F', '', 'total', 6),
+    contest('FNSL Elite', 'MX', '', 'ris', 8),
+    contest('FNSL Masters', 'M', '', 'ris', 3),
+  ]);
+
+  expect(summary).toEqual([
+    {
+      name: 'Open',
+      groups: [
+        { gender: 'M', classes: ['-66kg', '+87kg'], allWeights: false, rankBy: 'total' },
+        { gender: 'F', classes: [], allWeights: true, rankBy: 'total' },
+      ],
+      classed: true,
+      rankBy: 'total',
+    },
+    {
+      name: 'FNSL Elite',
+      groups: [{ gender: 'MX', classes: [], allWeights: true, rankBy: 'ris' }],
+      classed: false,
+      rankBy: 'ris',
+    },
+    {
+      name: 'FNSL Masters',
+      groups: [{ gender: 'M', classes: [], allWeights: true, rankBy: 'ris' }],
+      classed: false,
+      rankBy: 'ris',
+    },
+  ]);
+  expect(sharedRankBy(summary)).toBeNull();
+});
+
+it('summarizes a meet without divisions as one contest list with its shared rule', () => {
+  const summary = contestSummary([
+    contest(null, 'M', '-80kg', 'total'),
+    contest(null, 'F', '-63kg', 'total'),
+  ]);
+
+  expect(summary).toHaveLength(1);
+  expect(summary[0]).toMatchObject({ name: null, classed: true, rankBy: 'total' });
+  expect(sharedRankBy(summary)).toBe('total');
+});
+
+it('keeps a rule per sex when one division ranked its sexes differently', () => {
+  const [division] = contestSummary([
+    contest(null, 'M', '-80kg', 'total'),
+    contest(null, 'F', '', 'ris'),
+  ]);
+
+  expect(division.rankBy).toBeNull();
+  expect(division.groups.map(({ gender, rankBy }) => [gender, rankBy])).toEqual([
+    ['M', 'total'],
+    ['F', 'ris'],
+  ]);
 });

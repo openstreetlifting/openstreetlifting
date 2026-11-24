@@ -61,8 +61,14 @@
   import { LEADERBOARD_FILTERS } from '#lib/constants/filters.js';
   import type { RankingEntry } from '#lib/types/ranking.js';
   import type { Attempt, Participant, CategoryDetail } from '#lib/types/competition.js';
-  import { GENDERS, asRankingMetric, type AthleteStatus } from '#lib/types/enums.js';
-  import { hasRankingResult, weightClasses } from '#lib/utils/competition-results.js';
+  import { asRankingMetric, type AthleteStatus, type RankBy } from '#lib/types/enums.js';
+  import {
+    contestSummary,
+    hasRankingResult,
+    sharedRankBy,
+    type ContestGroup,
+    type DivisionSummary,
+  } from '#lib/utils/competition-results.js';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
   import Seo from '#lib/components/seo.svelte';
   import {
@@ -75,8 +81,6 @@
 
   const i18n = useI18n();
   const weights = useWeightUnit();
-
-  const rankByLabel = (rankBy: string) => (rankBy === 'ris' ? 'RIS' : i18n.t('Total'));
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
@@ -311,16 +315,18 @@
   );
   const place = $derived([competition.venue, location].filter(Boolean).join(', '));
   const DETAILS =
-    'grid w-max max-w-full grid-cols-[6rem_minmax(0,1fr)] content-start gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]';
+    'grid w-max max-w-full grid-cols-[7rem_minmax(0,1fr)] content-start gap-x-3 gap-y-1.5 text-body';
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
-  const representedClasses = $derived(
-    GENDERS.map((gender) => ({
-      gender,
-      label: i18n.t(({ M: 'Men', F: 'Women', MX: 'Mixed' } as const)[gender]),
-      classes: weightClasses(competition.categories, gender),
-    })).filter(({ classes }) => classes.length > 0)
+  const summary = $derived(contestSummary(competition.categories));
+  const divisioned = $derived(summary.length > 1);
+  const overallRankBy = $derived(sharedRankBy(summary));
+  const risLabel = $derived(
+    data.formula ? i18n.t('RIS {year}', { year: data.formula.year }) : 'RIS'
   );
+  const rule = (rankBy: RankBy) => (rankBy === 'ris' ? risLabel : i18n.t('Total'));
+  const who = (group: ContestGroup) =>
+    i18n.t(({ M: 'Men', F: 'Women', MX: 'Mixed' } as const)[group.gender]);
 
   // Missing scores have no rank, but their entries still belong in the results.
   const NOT_PLACED_ORDER: AthleteStatus[] = ['competed', 'disqualified', 'no_show'];
@@ -410,6 +416,55 @@
       {weights.format(participant.bodyweight, i18n.locale)}
     {/if}
   </td>
+{/snippet}
+
+{#snippet contests(group: ContestGroup)}
+  <p class="flex flex-col gap-x-2 sm:flex-row">
+    <span class="shrink-0 text-muted sm:min-w-14">{who(group)}</span>
+    <span
+      class="flex min-w-0 flex-wrap gap-x-3 gap-y-1"
+      role="list"
+      aria-label={i18n.t("{category}'s weight classes", { category: who(group) })}
+    >
+      {#each group.classes as weightClass (weightClass)}
+        <span role="listitem" class="whitespace-nowrap tabular-nums">
+          {weights.category(weightClass, i18n.locale)}
+        </span>
+      {/each}
+      {#if group.allWeights}
+        <span role="listitem" class="whitespace-nowrap">{i18n.t('None')}</span>
+      {/if}
+    </span>
+  </p>
+{/snippet}
+
+{#snippet ranking(division: DivisionSummary)}
+  <dt class="text-muted">{i18n.t('Ranked by')}</dt>
+  {#if division.rankBy}
+    <dd class="text-ink">{rule(division.rankBy)}</dd>
+  {:else}
+    <dd class="grid min-w-0 gap-y-1.5 text-ink">
+      {#each division.groups as group (group.gender)}
+        <p class="flex flex-col gap-x-2 sm:flex-row">
+          <span class="shrink-0 text-muted sm:min-w-14">{who(group)}</span>
+          <span>{group.rankBy ? rule(group.rankBy) : '—'}</span>
+        </p>
+      {/each}
+    </dd>
+  {/if}
+{/snippet}
+
+{#snippet classes(division: DivisionSummary)}
+  <dt class="text-muted">{i18n.t('Weight classes')}</dt>
+  <dd class="grid min-w-0 gap-y-1.5 text-ink">
+    {#if division.classed || divisioned}
+      {#each division.groups as group (group.gender)}
+        {@render contests(group)}
+      {/each}
+    {:else}
+      {i18n.t('None')}
+    {/if}
+  </dd>
 {/snippet}
 
 {#snippet editLink()}
@@ -523,43 +578,33 @@
           {formatLabel ||
             (competition.status === 'upcoming' ? i18n.t('Format not announced') : '—')}
         </dd>
-        {#if data.divisions.length > 1}
-          <dt class="text-muted">{i18n.t('Ranked by')}</dt>
-          <dd class="grid gap-y-1.5 text-ink">
-            {#each data.divisions as division (division.name)}
-              <p>{division.name}: {rankByLabel(division.rankBy)}</p>
-            {/each}
-          </dd>
-        {:else if competition.rank_by}
-          <dt class="text-muted">{i18n.t('Ranked by')}</dt>
-          <dd class="text-ink">{rankByLabel(competition.rank_by)}</dd>
-        {/if}
-        {#if published}
-          <dt class="text-muted">{i18n.t('Weight classes')}</dt>
-          <dd class="grid min-w-0 gap-y-1.5 text-ink">
-            {#if classed}
-              {#each representedClasses as group (group.gender)}
-                <p class="flex flex-col gap-x-2 sm:flex-row">
-                  <span class="shrink-0 text-muted sm:w-14">{group.label}</span>
-                  <span
-                    class="flex min-w-0 flex-wrap gap-x-3 gap-y-1"
-                    role="list"
-                    aria-label={i18n.t("{category}'s weight classes", { category: group.label })}
-                  >
-                    {#each group.classes as weightClass (weightClass)}
-                      <span role="listitem" class="whitespace-nowrap tabular-nums">
-                        {weights.category(weightClass, i18n.locale) || i18n.t('No weight classes')}
-                      </span>
-                    {/each}
-                  </span>
-                </p>
-              {/each}
-            {:else}
-              {i18n.t('No weight classes')}
-            {/if}
-          </dd>
+        {#if !published}
+          {#if competition.rank_by}
+            <dt class="text-muted">{i18n.t('Ranked by')}</dt>
+            <dd class="text-ink">{rule(competition.rank_by)}</dd>
+          {/if}
+        {:else if divisioned}
+          {#if overallRankBy}
+            <dt class="text-muted">{i18n.t('Ranked by')}</dt>
+            <dd class="text-ink">{rule(overallRankBy)}</dd>
+          {/if}
+        {:else}
+          {@render ranking(summary[0])}
+          {@render classes(summary[0])}
         {/if}
       </dl>
+      {#if published && divisioned}
+        {#each summary as division (division.name)}
+          <dl class={DETAILS}>
+            <dt class="text-muted">{i18n.t('Division')}</dt>
+            <dd class="font-medium text-ink">{division.name}</dd>
+            {#if !overallRankBy}
+              {@render ranking(division)}
+            {/if}
+            {@render classes(division)}
+          </dl>
+        {/each}
+      {/if}
     </div>
   </header>
 
@@ -604,7 +649,7 @@
           attributes={(division) => ({
             title: i18n.t('{division}, ranked by {metric}', {
               division: division.name,
-              metric: rankByLabel(division.rankBy),
+              metric: rule(division.rankBy),
             }),
           })}
         >

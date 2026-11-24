@@ -251,6 +251,7 @@ it('switches between division boards and lists how each division is ranked', asy
   results.division = 'FNSL Elite';
   results.activeDivision = 'FNSL Elite';
   results.rankBy = 'ris';
+  results.formula = { year: 2026, is_current: true } as PageData['formula'];
   render(CompetitionPage, { data: results });
 
   const tabs = page.getByRole('navigation', { name: 'Divisions' });
@@ -259,6 +260,36 @@ it('switches between division boards and lists how each division is ranked', asy
     .element(tabs.getByRole('link', { name: 'Open' }))
     .toHaveAttribute('href', '/en/competitions/current');
   await expect.element(tabs.getByText('FNSL Elite')).toHaveAttribute('aria-current', 'page');
-  await expect.element(page.getByText('FNSL Elite: RIS')).toBeVisible();
-  await expect.element(page.getByText('Open: Total')).toBeVisible();
+  const pairs = () =>
+    [...document.querySelectorAll('dl')].map((list) =>
+      [...list.querySelectorAll(':scope > dt')].map((term) => [
+        term.textContent?.trim(),
+        term.nextElementSibling?.textContent?.replace(/\s+/g, ' ').trim(),
+      ])
+    );
+  await expect.element(page.getByText('RIS 2026')).toBeVisible();
+  expect(pairs()).toContainEqual([
+    ['Division', 'FNSL Elite'],
+    ['Ranked by', 'RIS 2026'],
+    ['Weight classes', 'Mixed None'],
+  ]);
+  expect(pairs()).toContainEqual([
+    ['Division', 'Open'],
+    ['Ranked by', 'Total'],
+    ['Weight classes', 'Men -80kg'],
+  ]);
+  expect(
+    pairs()
+      .flat()
+      .filter(([term]) => term === 'Ranked by')
+  ).toHaveLength(2);
+});
+
+it('states one rule and the weight classes for a meet without divisions', async () => {
+  render(CompetitionPage, { data: data('completed') });
+
+  await expect.element(page.getByRole('list', { name: "Men's weight classes" })).toBeVisible();
+  const terms = [...document.querySelectorAll('dt')].map((term) => term.textContent?.trim());
+  expect(terms).toContain('Ranked by');
+  expect(terms).not.toContain('Division');
 });
