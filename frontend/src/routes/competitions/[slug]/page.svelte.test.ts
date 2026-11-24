@@ -37,7 +37,7 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
       name: 'Current edition',
       slug: 'current',
       status,
-      scoring: null,
+      rank_by: null,
       start_date: '2026-11-01',
       end_date: '2026-11-01',
       city: null,
@@ -61,7 +61,7 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
                   gender: 'M',
                   weight_class: '-80kg',
                   division: null,
-                  scoring: 'total',
+                  rank_by: 'total',
                 },
                 participants: [],
               },
@@ -76,7 +76,7 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
     divisions: [],
     division: null,
     activeDivision: null,
-    scoring: 'total',
+    rankBy: 'total',
     classes: [],
     countries: [],
     initialRankings: [],
@@ -220,7 +220,7 @@ it.each([
   expect(text('td').includes('79.3')).toBe(shown);
 });
 
-it('switches between division boards and lists each division scoring', async () => {
+it('switches between division boards and lists how each division is ranked', async () => {
   const results = data('completed');
   results.competition.categories = [
     {
@@ -229,7 +229,7 @@ it('switches between division boards and lists each division scoring', async () 
         gender: 'M',
         weight_class: '-80kg',
         division: 'Open',
-        scoring: 'total',
+        rank_by: 'total',
       },
       participants: [],
     },
@@ -239,18 +239,18 @@ it('switches between division boards and lists each division scoring', async () 
         gender: 'MX',
         weight_class: '',
         division: 'FNSL Elite',
-        scoring: 'ris',
+        rank_by: 'ris',
       },
       participants: [],
     },
   ];
   results.divisions = [
-    { name: 'Open', scoring: 'total', entries: 30 },
-    { name: 'FNSL Elite', scoring: 'ris', entries: 8 },
+    { name: 'Open', rankBy: 'total', entries: 30 },
+    { name: 'FNSL Elite', rankBy: 'ris', entries: 8 },
   ];
   results.division = 'FNSL Elite';
   results.activeDivision = 'FNSL Elite';
-  results.scoring = 'ris';
+  results.rankBy = 'ris';
   render(CompetitionPage, { data: results });
 
   const tabs = page.getByRole('navigation', { name: 'Divisions' });

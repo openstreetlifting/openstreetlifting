@@ -36,7 +36,7 @@ const MPDS_MOVEMENTS = 4;
 export type RisProvenance = 'recomputed' | 'reported' | 'not-contested' | 'not-published';
 
 type RisShape = {
-  scoring?: string | null;
+  rank_by?: string | null;
   movements: unknown[];
   categories: { participants: { ris_score?: string | null; ris_source?: string | null }[] }[];
 };
@@ -51,7 +51,7 @@ export function risProvenance(competition: RisShape): RisProvenance {
     }
   }
   if (hasReported) return 'reported';
-  return competition.movements.length === MPDS_MOVEMENTS || competition.scoring === 'ris'
+  return competition.movements.length === MPDS_MOVEMENTS || competition.rank_by === 'ris'
     ? 'not-published'
     : 'not-contested';
 }

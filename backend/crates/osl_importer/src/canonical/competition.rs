@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use chrono::NaiveDate;
-use osl_domain::{CompetitionStatus, CountryCode, Scoring};
+use osl_domain::{CompetitionStatus, CountryCode, RankBy};
 use serde::{Deserialize, Serialize};
 
 use super::models::{CompetitionData, FederationData};
@@ -46,7 +46,7 @@ pub struct CompetitionSection {
     pub status: Option<CompetitionStatus>,
 
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scoring: Option<Scoring>,
+    pub rank_by: Option<RankBy>,
 
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub divisions: BTreeMap<String, DivisionSection>,
@@ -55,7 +55,7 @@ pub struct CompetitionSection {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct DivisionSection {
-    pub scoring: Scoring,
+    pub rank_by: RankBy,
 }
 
 impl CompetitionSection {
@@ -73,11 +73,11 @@ impl CompetitionSection {
             region: self.region,
             country: self.country,
             status: self.status,
-            scoring: self.scoring,
+            rank_by: self.rank_by,
             divisions: self
                 .divisions
                 .into_iter()
-                .map(|(name, division)| (name, division.scoring))
+                .map(|(name, division)| (name, division.rank_by))
                 .collect(),
         }
     }
@@ -95,11 +95,11 @@ impl CompetitionSection {
             region: competition.region.clone(),
             country: competition.country,
             status: competition.status,
-            scoring: competition.scoring,
+            rank_by: competition.rank_by,
             divisions: competition
                 .divisions
                 .iter()
-                .map(|(name, &scoring)| (name.clone(), DivisionSection { scoring }))
+                .map(|(name, &rank_by)| (name.clone(), DivisionSection { rank_by }))
                 .collect(),
         }
     }
@@ -146,19 +146,19 @@ country = "FR"
     }
 
     #[test]
-    fn preserves_division_scoring_when_formatting_metadata() {
+    fn preserves_division_rank_by_when_formatting_metadata() {
         let text = COMPETITION.replace(
             "status = \"completed\"",
-            "status = \"completed\"\n\n[competition.divisions.\"FNSL Elite\"]\nscoring = \"ris\"",
+            "status = \"completed\"\n\n[competition.divisions.\"FNSL Elite\"]\nrank_by = \"ris\"",
         );
         let file: CompetitionFile = toml::from_str(&text).unwrap();
         let data = file.competition.into_data("elite".into(), file.federation);
-        assert_eq!(data.divisions.get("FNSL Elite"), Some(&Scoring::Ris));
+        assert_eq!(data.divisions.get("FNSL Elite"), Some(&RankBy::Ris));
         let output = toml::to_string(&CompetitionSection::from_data(&data)).unwrap();
         let reparsed: CompetitionSection = toml::from_str(&output).unwrap();
         assert_eq!(
-            reparsed.divisions.get("FNSL Elite").map(|d| d.scoring),
-            Some(Scoring::Ris)
+            reparsed.divisions.get("FNSL Elite").map(|d| d.rank_by),
+            Some(RankBy::Ris)
         );
     }
 

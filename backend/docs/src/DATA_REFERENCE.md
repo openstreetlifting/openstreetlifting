@@ -51,30 +51,36 @@ name = "FinalRep"
 | `competition.city`        | The city, if known.                                                       |
 | `competition.region`      | The region or state, if known.                                            |
 | `competition.country`     | An ISO 3166-1 alpha-2 country code, such as `FR` or `DE`.                 |
-| `competition.scoring`     | `total` or `ris`; required for mixed contests.                            |
-| `competition.divisions`   | Optional; see [Division scoring](#division-scoring).                      |
+| `competition.rank_by`     | Optional `total` or `ris`; see [Ranking](#ranking).                       |
+| `competition.divisions`   | Optional `rank_by` per division; see [Ranking](#ranking).                 |
 | `competition.status`      | See [Status](#status) below.                                              |
 | `federation.name`         | The federation's name, written consistently across competitions.          |
 | `federation.abbreviation` | Its abbreviation, if used.                                                |
 | `federation.country`      | Its ISO 3166-1 alpha-2 country code, if applicable.                       |
 
-### Division scoring
+### Ranking
 
-When divisions of one competition were ranked differently, give each its rule.
-The key is the `Division` value from `entries.csv`:
+Each contest (one division, sex and weight class) is ordered by one metric:
+
+| `rank_by` | Ranking                                                                  |
+| --------- | ------------------------------------------------------------------------ |
+| `total`   | `TotalKg`                                                                |
+| `ris`     | RIS. MPDS uses each athlete's own formula when its inputs are available. |
+
+Without a declaration, a contest with a weight class ranks by total and a
+contest without one ranks by RIS. Declare `rank_by` only where the organizer
+ranked otherwise, under `[competition]` for the whole meet or per division. The
+key is the `Division` value from `entries.csv`:
 
 ```toml
 [competition.divisions.Open]
-scoring = "total"
-
-[competition.divisions."FNSL Elite"]
-scoring = "ris"
+rank_by = "total"
 ```
 
-A division's `scoring` overrides `competition.scoring` for its contests. Each
-key must match a `Division` in the entries. Without either, contests with weight
-classes rank by total and contests without rank by RIS. The competition page
-shows one results board per division.
+A division's `rank_by` overrides `competition.rank_by`, which overrides the
+default. Each division key must match a `Division` in the entries. Ties go to
+the higher total, then the lower bodyweight. The competition page shows one
+results board per division.
 
 ### Editions
 
@@ -176,13 +182,7 @@ starting at `1`.
 | `M` or `F`        | Must match `Sex`         |
 | `MX`              | Mixed contest            |
 
-Mixed contests need `scoring` under `[competition]` or under their division in
-[`competition.divisions`](#division-scoring):
-
-| `scoring` | Ranking                                                                 |
-| --------- | ----------------------------------------------------------------------- |
-| `total`   | `TotalKg`                                                               |
-| `ris`     | RIS. MPDS uses each athlete's own formula when its inputs are available. |
+A mixed contest follows the [ranking](#ranking) rules like any other.
 
 ### WeightClassKg
 
@@ -265,7 +265,7 @@ RIS score across pull-up, dips and squat. Record the actual event as `PDS`.
 
 For any supported event with one, two or three movements, RIS ranking requires:
 
-- `scoring = "ris"` under `[competition]`, supported by the organizer's rules.
+- `rank_by = "ris"` under `[competition]`, supported by the organizer's rules.
 - No weight classes anywhere in the competition. Omit `WeightClassKg`; a meet
   containing even one weight-classed contest is ineligible for shorter-event RIS.
 - The organizer's published score in `ReportedRis` for each athlete who receives

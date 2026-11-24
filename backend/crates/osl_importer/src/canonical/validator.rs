@@ -222,13 +222,6 @@ impl CanonicalValidator {
     #[expect(clippy::too_many_lines)]
     fn check_athletes(canonical: &CanonicalFormat, report: &mut ValidationReport) {
         let uses_reported_ris = canonical.uses_reported_ris();
-        if canonical.categories.iter().any(|category| {
-            category.gender == osl_domain::Gender::Mx && canonical.scoring_for(category).is_none()
-        }) {
-            report.errors.push(
-                "Mixed contests require competition.scoring or their division's scoring = \"total\" or \"ris\"".into(),
-            );
-        }
         for division in canonical.competition.divisions.keys() {
             if !canonical
                 .categories
@@ -243,13 +236,13 @@ impl CanonicalValidator {
         if canonical
             .categories
             .iter()
-            .any(|category| canonical.scoring_for(category) == Some(osl_domain::Scoring::Ris))
+            .any(|category| canonical.rank_by_for(category) == Some(osl_domain::RankBy::Ris))
             && canonical.movements != osl_domain::Movement::ALL
             && !uses_reported_ris
         {
             report
                 .errors
-                .push("RIS scoring requires MPDS or a shorter event with no weight classes anywhere in the competition".into());
+                .push("rank_by = \"ris\" requires MPDS or a shorter event with no weight classes anywhere in the competition".into());
         }
         for category in &canonical.categories {
             for athlete in &category.athletes {
@@ -512,7 +505,7 @@ mod tests {
                 region: None,
                 country: CountryCode::parse("FR").unwrap(),
                 status: Some(CompetitionStatus::Upcoming),
-                scoring: None,
+                rank_by: None,
                 divisions: std::collections::BTreeMap::new(),
             },
             movements: Vec::new(),

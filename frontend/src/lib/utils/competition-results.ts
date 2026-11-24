@@ -32,7 +32,7 @@ export function hasRankingResult(participant: Participant, metric: RankingMetric
   );
 }
 
-export type CompetitionDivision = { name: string; scoring: RankingMetric; entries: number };
+export type CompetitionDivision = { name: string; rankBy: RankingMetric; entries: number };
 
 /** The largest division opens first; a meet without two named divisions has one board. */
 export function competitionDivisions(categories: CategoryDetail[]): CompetitionDivision[] {
@@ -41,7 +41,7 @@ export function competitionDivisions(categories: CategoryDetail[]): CompetitionD
     if (!category.division) continue;
     const division = divisions.get(category.division) ?? {
       name: category.division,
-      scoring: category.scoring,
+      rankBy: category.rank_by,
       entries: 0,
     };
     division.entries += participants.length;

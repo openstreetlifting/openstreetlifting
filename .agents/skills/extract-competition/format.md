@@ -27,7 +27,7 @@ country = "FR"
 - Country codes are ISO 3166-1 alpha-2; regions are ISO 3166-2 subdivision names.
 - `name` drops the federation and year (`Dutch Streetlifting Nationals`, `EUROS` from `EUROS 24`) but keeps identifying edition numbers (`Australian Open Event 3`).
 - `event` lists contested movements in `MPDS` order: `MPDS`, `PD` (Classic), also `PDS`, `DS`, `M`. Uncontested movement cells stay empty.
-- RIS: calculated for `MPDS`. A shorter event ranks by published RIS only with `scoring = "ris"` and no weight classes anywhere; see [shorter-event RIS](../../../backend/docs/src/DATA_REFERENCE.md#ris-for-events-shorter-than-mpds).
+- RIS: calculated for `MPDS`. A shorter event ranks by published RIS only with `rank_by = "ris"` and no weight classes anywhere; see [shorter-event RIS](../../../backend/docs/src/DATA_REFERENCE.md#ris-for-events-shorter-than-mpds).
 - `status`: `draft`, `upcoming`, `live`, `completed`, `cancelled`.
 
 **Announcements** get only `competition.toml` with `status = "upcoming"`, and `event` only when stated. Choose the permanent slug now. When results arrive, add `entries.csv` and set `completed`.
@@ -69,7 +69,8 @@ Conflicting countries for one athlete block import; when the archive itself is s
 - Read the class from the source category, not the bodyweight. Keep federation-specific classes. A placeholder such as `D/C` is not a class; resolve it.
 - No classes anywhere: omit `WeightClassKg`. Classes in some contests only: keep the column, leave unclassed rows empty.
 - `Division` (first column) only for separate contests sharing sex and class, such as Elite and Open; fill it on every row. A meet that is one division needs none. Placings are per division.
-- Mixed contests: real `Sex` on every row, `CategorySex=MX`, and `scoring = "total"` or `"ris"` under `[competition]`, established from the source. Report contests using different or unsupported scoring before importing. Placing rules: [DATA_REFERENCE.md](../../../backend/docs/src/DATA_REFERENCE.md#athlete-sex-and-mixed-contests).
+- Mixed contests: real `Sex` on every row and `CategorySex=MX`.
+- Ranking: contests with a weight class rank by total and contests without rank by RIS. Where the source ranked otherwise, set `rank_by = "total"` or `"ris"` under `[competition]` or `[competition.divisions."<Division>"]`, established from the source. Report contests using unsupported ranking before importing. Rules: [DATA_REFERENCE.md](../../../backend/docs/src/DATA_REFERENCE.md#ranking).
 
 ## Attempts and status
 

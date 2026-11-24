@@ -15,7 +15,7 @@ it('lists classes once per sex in weight order across divisions using the publis
       { division: 'Junior', gender: 'F', weight_class: '-52kg' },
     ] as const
   ).map((category) => ({
-    category: { ...category, name: category.weight_class, scoring: 'total' as const },
+    category: { ...category, name: category.weight_class, rank_by: 'total' as const },
     participants: [],
   }));
 
@@ -24,9 +24,9 @@ it('lists classes once per sex in weight order across divisions using the publis
   expect(weightClasses(categories, 'MX')).toEqual([]);
 });
 
-it('opens the largest division first and keeps each division scoring', () => {
-  const contest = (division: string | null, scoring: 'total' | 'ris', entries: number) => ({
-    category: { name: '', division, gender: 'M' as const, weight_class: '', scoring },
+it('opens the largest division first and keeps how each division is ranked', () => {
+  const contest = (division: string | null, rankBy: 'total' | 'ris', entries: number) => ({
+    category: { name: '', division, gender: 'M' as const, weight_class: '', rank_by: rankBy },
     participants: Array.from({ length: entries }, () => result()),
   });
 
@@ -38,9 +38,9 @@ it('opens the largest division first and keeps each division scoring', () => {
       contest('FNSL Masters', 'ris', 3),
     ])
   ).toEqual([
-    { name: 'Open', scoring: 'total', entries: 49 },
-    { name: 'FNSL Elite', scoring: 'ris', entries: 8 },
-    { name: 'FNSL Masters', scoring: 'ris', entries: 3 },
+    { name: 'Open', rankBy: 'total', entries: 49 },
+    { name: 'FNSL Elite', rankBy: 'ris', entries: 8 },
+    { name: 'FNSL Masters', rankBy: 'ris', entries: 3 },
   ]);
   expect(competitionDivisions([contest(null, 'total', 5)])).toEqual([]);
 });

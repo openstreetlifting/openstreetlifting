@@ -11,7 +11,7 @@ start_date = "2025-07-20"
 city = "Lisbon"
 country = "PT"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "FinalRep"

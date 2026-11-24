@@ -11,7 +11,7 @@ city = "Chennai"
 region = "Tamil Nadu"
 country = "IN"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "FinalRep"

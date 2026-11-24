@@ -9,7 +9,7 @@ name = "Barbattle: Against Gravity"
 start_date = "2026-09-13"
 country = "ID"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "FinalRep"

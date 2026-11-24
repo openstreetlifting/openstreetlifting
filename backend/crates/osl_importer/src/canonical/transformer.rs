@@ -27,7 +27,7 @@ struct ContestKey {
     weight_class_id: Option<Uuid>,
     division_id: Option<Uuid>,
     gender: osl_domain::Gender,
-    scoring: Option<osl_domain::Scoring>,
+    rank_by: Option<osl_domain::RankBy>,
 }
 
 impl<'a> CanonicalTransformer<'a> {
@@ -109,13 +109,13 @@ impl<'a> CanonicalTransformer<'a> {
             .all(|movement| canonical.movements.contains(movement));
 
         for category in &canonical.categories {
-            let division_scoring = category
+            let division_rank_by = category
                 .division
                 .as_ref()
                 .and_then(|division| canonical.competition.divisions.get(division))
                 .copied();
             let contest = self
-                .resolve_contest(category, federation_id, division_scoring, tx)
+                .resolve_contest(category, federation_id, division_rank_by, tx)
                 .await?;
 
             for athlete in &category.athletes {
@@ -257,7 +257,7 @@ impl<'a> CanonicalTransformer<'a> {
 
         let competition_id = sqlx::query_scalar!(
             r#"
-            INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, city, region, country, scoring, venue, event_code, series)
+            INSERT INTO competitions (name, slug, status, federation_id, start_date, end_date, city, region, country, rank_by, venue, event_code, series)
             VALUES ($1, $2, COALESCE($3, 'completed'), $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
             ON CONFLICT (slug)
             DO UPDATE SET
@@ -269,7 +269,7 @@ impl<'a> CanonicalTransformer<'a> {
                 city = EXCLUDED.city,
                 region = EXCLUDED.region,
                 country = EXCLUDED.country,
-                scoring = EXCLUDED.scoring,
+                rank_by = EXCLUDED.rank_by,
                 venue = EXCLUDED.venue,
                 event_code = EXCLUDED.event_code,
                 series = EXCLUDED.series
@@ -287,7 +287,7 @@ impl<'a> CanonicalTransformer<'a> {
             competition.city,
             competition.region,
             competition.country.as_str(),
-            competition.scoring.map(osl_domain::Scoring::as_str),
+            competition.rank_by.map(osl_domain::RankBy::as_str),
             competition.venue,
             event_code,
             competition.series
@@ -430,7 +430,7 @@ impl<'a> CanonicalTransformer<'a> {
         &self,
         category: &CategoryData,
         federation_id: Uuid,
-        scoring: Option<osl_domain::Scoring>,
+        rank_by: Option<osl_domain::RankBy>,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<ContestKey> {
         let weight_class_id = self.resolve_weight_class(category, tx).await?;
@@ -444,7 +444,7 @@ impl<'a> CanonicalTransformer<'a> {
             weight_class_id,
             division_id,
             gender: category.gender,
-            scoring,
+            rank_by,
         })
     }
 
@@ -465,7 +465,7 @@ impl<'a> CanonicalTransformer<'a> {
             r#"
             INSERT INTO competition_participants
                 (competition_id, weight_class_id, division_id, athlete_id, bodyweight, status, status_reason, ris_score, ris_source,
-                 bodyweight_source, reported_ris_score, reported_ris_edition, total, country, category_gender, age, scoring)
+                 bodyweight_source, reported_ris_score, reported_ris_edition, total, country, category_gender, age, rank_by)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11, $12, $13, $14, $15, $16)
             ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id, category_gender)
             DO UPDATE SET
@@ -481,7 +481,7 @@ impl<'a> CanonicalTransformer<'a> {
                 total = EXCLUDED.total,
                 country = EXCLUDED.country,
                 age = EXCLUDED.age,
-                scoring = EXCLUDED.scoring
+                rank_by = EXCLUDED.rank_by
             RETURNING participant_id as "participant_id: Uuid"
             "#,
             competition_id,
@@ -499,7 +499,7 @@ impl<'a> CanonicalTransformer<'a> {
             athlete.country.map(|country| country.as_str().to_owned()),
             (contest.gender == osl_domain::Gender::Mx).then_some("MX"),
             athlete.age.map(|age| i16::from(age.get())),
-            contest.scoring.map(osl_domain::Scoring::as_str)
+            contest.rank_by.map(osl_domain::RankBy::as_str)
         )
         .fetch_one(&mut **tx)
         .await?;

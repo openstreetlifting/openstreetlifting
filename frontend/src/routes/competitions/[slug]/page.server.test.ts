@@ -123,10 +123,10 @@ it('reports a failed ranking request instead of showing only unranked participan
   }
 });
 
-it('uses the declared scoring rule for mixed contests and keeps the mixed filter', async () => {
+it('uses the declared ranking rule for mixed contests and keeps the mixed filter', async () => {
   vi.mocked(competitionsService.getById).mockResolvedValue({
     competition_id: 'meet-id',
-    scoring: 'total',
+    rank_by: 'total',
     movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
     categories: [
       {
@@ -146,14 +146,14 @@ it('uses the declared scoring rule for mixed contests and keeps the mixed filter
 });
 
 it('ranks each division on its own board and opens the largest one first', async () => {
-  const contest = (division: string, scoring: string, slug: string) => ({
-    category: { division, scoring },
+  const contest = (division: string, rankBy: string, slug: string) => ({
+    category: { division, rank_by: rankBy },
     participants: [{ athlete: { ...athlete, slug }, ris_score: null, ris_source: null }],
   });
   vi.mocked(competitionsService.getById).mockResolvedValue({
     competition_id: 'meet-id',
     movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
-    scoring: null,
+    rank_by: null,
     categories: [
       contest('FNSL Elite', 'ris', 'elite-lifter'),
       contest('Open', 'total', 'open-lifter'),
@@ -168,7 +168,7 @@ it('ranks each division on its own board and opens the largest one first', async
   expect(await load(request(''))).toMatchObject({
     division: null,
     activeDivision: 'Open',
-    scoring: 'total',
+    rankBy: 'total',
   });
   expect(rankingsService.getGlobalRankings).toHaveBeenLastCalledWith(
     expect.objectContaining({ division: 'Open', movement: 'total' })
@@ -177,7 +177,7 @@ it('ranks each division on its own board and opens the largest one first', async
   expect(await load(request('division=FNSL+Elite'))).toMatchObject({
     division: 'FNSL Elite',
     activeDivision: 'FNSL Elite',
-    scoring: 'ris',
+    rankBy: 'ris',
   });
   expect(rankingsService.getGlobalRankings).toHaveBeenLastCalledWith(
     expect.objectContaining({ division: 'FNSL Elite', movement: 'ris' })

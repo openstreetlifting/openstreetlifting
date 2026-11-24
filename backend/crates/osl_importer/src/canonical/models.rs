@@ -22,7 +22,7 @@ impl CanonicalFormat {
     pub fn uses_reported_ris(&self) -> bool {
         !self.movements.is_empty()
             && self.movements != Movement::ALL
-            && self.competition.scoring == Some(osl_domain::Scoring::Ris)
+            && self.competition.rank_by == Some(osl_domain::RankBy::Ris)
             && self
                 .categories
                 .iter()
@@ -30,13 +30,13 @@ impl CanonicalFormat {
     }
 
     #[must_use]
-    pub fn scoring_for(&self, category: &CategoryData) -> Option<osl_domain::Scoring> {
+    pub fn rank_by_for(&self, category: &CategoryData) -> Option<osl_domain::RankBy> {
         category
             .division
             .as_ref()
             .and_then(|division| self.competition.divisions.get(division))
             .copied()
-            .or(self.competition.scoring)
+            .or(self.competition.rank_by)
     }
 }
 
@@ -53,8 +53,8 @@ pub struct CompetitionData {
     pub region: Option<String>,
     pub country: CountryCode,
     pub status: Option<CompetitionStatus>,
-    pub scoring: Option<osl_domain::Scoring>,
-    pub divisions: BTreeMap<String, osl_domain::Scoring>,
+    pub rank_by: Option<osl_domain::RankBy>,
+    pub divisions: BTreeMap<String, osl_domain::RankBy>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -35,5 +35,5 @@ text_enum!(
     crate::RecordLift,
     crate::RecordMark,
     crate::RisSource,
-    crate::Scoring,
+    crate::RankBy,
 );

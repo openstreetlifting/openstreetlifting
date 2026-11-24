@@ -12,7 +12,7 @@ start_date = "2026-08-30"
 city = "Rabka-Zdrój"
 country = "PL"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "FinalRep"

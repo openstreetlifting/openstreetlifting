@@ -50,7 +50,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
       ? (divisions.find((division) => division.name === requested) ?? divisions[0])
       : null;
   const division = active && active !== divisions[0] ? active.name : null;
-  const scoring = active?.scoring ?? competition.scoring ?? defaultRankingSort(ris);
+  const rankBy = active?.rankBy ?? competition.rank_by ?? defaultRankingSort(ris);
 
   if (competition.categories.length === 0) {
     const empty = noRankings();
@@ -60,7 +60,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
       divisions,
       division,
       activeDivision: null,
-      scoring,
+      rankBy,
       classes: [],
       countries: [],
       initialRankings: empty.data,
@@ -68,7 +68,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
     };
   }
 
-  const movement = asRankingMetric(url.searchParams.get('movement')) ?? scoring;
+  const movement = asRankingMetric(url.searchParams.get('movement')) ?? rankBy;
   const scope = active ? { division: active.name } : {};
   const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
   const filters = readFilters(url.searchParams, LEADERBOARD_FILTERS);
@@ -135,7 +135,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
     divisions,
     division,
     activeDivision: active?.name ?? null,
-    scoring,
+    rankBy,
     ...keepSelected(
       { classes: facets.classes, countries: facets.countries },
       { classes: filters.category, countries: filters.country }

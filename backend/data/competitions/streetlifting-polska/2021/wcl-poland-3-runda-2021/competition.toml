@@ -7,7 +7,7 @@ start_date = "2021-09-18"
 city = "Ostrów Mazowiecka"
 country = "PL"
 status = "completed"
-scoring = "total"
+rank_by = "total"
 
 [federation]
 name = "StreetLifting Polska"

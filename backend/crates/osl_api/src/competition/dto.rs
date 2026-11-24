@@ -47,7 +47,7 @@ pub struct CompetitionResponse {
     pub status: CompetitionStatus,
     /// Metric the competition ranks on.
     #[schema(required = true)]
-    pub scoring: Option<osl_domain::Scoring>,
+    pub rank_by: Option<osl_domain::RankBy>,
     /// Unique identifier for the organising federation.
     pub federation_id: Uuid,
     /// City.
@@ -163,7 +163,7 @@ pub struct CategoryInfo {
     /// Weight class, such as `-80kg`. Empty when open.
     pub weight_class: String,
     /// Ranking metric for this contest.
-    pub scoring: osl_domain::Scoring,
+    pub rank_by: osl_domain::RankBy,
 }
 
 /// An entry in a category.
@@ -256,7 +256,7 @@ impl From<CompetitionRow> for CompetitionResponse {
             created_at: comp.created_at,
             slug: comp.slug,
             status: comp.status,
-            scoring: comp.scoring,
+            rank_by: comp.rank_by,
             federation_id: comp.federation_id,
             city: comp.city,
             venue: comp.venue,
@@ -322,7 +322,7 @@ impl From<Contest> for CategoryInfo {
             division: contest.division,
             gender: contest.gender,
             weight_class: WeightClass::label(contest.weight_class_min, contest.weight_class_max),
-            scoring: contest.scoring,
+            rank_by: contest.rank_by,
         }
     }
 }

@@ -7,7 +7,7 @@ start_date = "2026-11-08"
 city = "Szczecin"
 country = "PL"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "StreetLifting Polska"

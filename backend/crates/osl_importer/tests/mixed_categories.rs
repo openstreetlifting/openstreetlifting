@@ -1,6 +1,6 @@
 use osl_db::params::{RankingBy, RankingFilter};
 use osl_db::repository::{athlete::AthleteRepository, competition::CompetitionRepository};
-use osl_domain::{Gender, Scoring};
+use osl_domain::{Gender, RankBy};
 use osl_importer::canonical::{
     models::CanonicalFormat, store, transformer::CanonicalTransformer,
     validator::CanonicalValidator,
@@ -10,7 +10,7 @@ use uuid::Uuid;
 
 mod common;
 
-fn mixed(scoring: Option<Scoring>, classed: bool) -> CanonicalFormat {
+fn mixed(rank_by: Option<RankBy>, classed: bool) -> CanonicalFormat {
     let mut man = common::athlete("Alex", "Example");
     man.total = Some(common::decimal("300"));
     let mut woman = common::athlete("Alex", "Example");
@@ -22,19 +22,14 @@ fn mixed(scoring: Option<Scoring>, classed: bool) -> CanonicalFormat {
     category.weight_class_slug = None;
     category.weight_class_max = classed.then(|| common::decimal("80"));
     let mut canonical = common::competition("mixed", vec![category]);
-    canonical.competition.scoring = scoring;
+    canonical.competition.rank_by = rank_by;
     canonical
 }
 
 #[test]
-fn requires_sex_and_scoring_for_mixed_contests() {
-    assert!(
-        CanonicalValidator::validate(&mixed(None, false))
-            .unwrap_err()
-            .to_string()
-            .contains("scoring")
-    );
-    let mut canonical = mixed(Some(Scoring::Ris), false);
+fn requires_athlete_sex_but_not_rank_by_for_mixed_contests() {
+    CanonicalValidator::validate(&mixed(None, false)).unwrap();
+    let mut canonical = mixed(Some(RankBy::Ris), false);
     canonical.categories[0].athletes[0].gender = Gender::Mx;
     assert!(
         CanonicalValidator::validate(&canonical)
@@ -42,7 +37,7 @@ fn requires_sex_and_scoring_for_mixed_contests() {
             .to_string()
             .contains("Sex must be M or F")
     );
-    let mut canonical = mixed(Some(Scoring::Ris), false);
+    let mut canonical = mixed(Some(RankBy::Ris), false);
     canonical.movements.pop();
     canonical.categories[0].weight_class_max = Some(common::decimal("80"));
     assert!(
@@ -55,7 +50,7 @@ fn requires_sex_and_scoring_for_mixed_contests() {
 
 #[test]
 fn preserves_athlete_sex_on_round_trip() {
-    let canonical = mixed(Some(Scoring::Ris), false);
+    let canonical = mixed(Some(RankBy::Ris), false);
     CanonicalValidator::validate(&canonical).unwrap();
     let path = std::env::temp_dir().join(format!("osl-mixed-{}", Uuid::new_v4()));
     std::fs::create_dir_all(&path).unwrap();
@@ -68,7 +63,7 @@ fn preserves_athlete_sex_on_round_trip() {
     assert_eq!(read.categories.len(), 1);
     assert_eq!(read.categories[0].gender, Gender::Mx);
     assert_eq!(read.categories[0].athletes[1].gender, Gender::F);
-    assert_eq!(read.competition.scoring, Some(Scoring::Ris));
+    assert_eq!(read.competition.rank_by, Some(RankBy::Ris));
     std::fs::write(path.join("entries.csv"), text.replace("\nM,MX,", "\n,MX,")).unwrap();
     assert!(store::read(&path).is_err());
     std::fs::write(
@@ -93,10 +88,10 @@ fn preserves_athlete_sex_on_round_trip() {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn uses_athlete_sex_and_declared_scoring(pool: PgPool) {
+async fn uses_athlete_sex_and_declared_rank_by(pool: PgPool) {
     for classed in [false, true] {
-        for scoring in [Scoring::Ris, Scoring::Total] {
-            let canonical = mixed(Some(scoring), classed);
+        for rank_by in [RankBy::Ris, RankBy::Total] {
+            let canonical = mixed(Some(rank_by), classed);
             CanonicalTransformer::new(&pool)
                 .import_to_database(canonical)
                 .await
@@ -116,7 +111,7 @@ async fn uses_athlete_sex_and_declared_scoring(pool: PgPool) {
                 .unwrap();
             assert_eq!(
                 winner.athlete.gender,
-                if scoring == Scoring::Ris {
+                if rank_by == RankBy::Ris {
                     Gender::F
                 } else {
                     Gender::M
@@ -147,8 +142,8 @@ async fn uses_athlete_sex_and_declared_scoring(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn omits_rank_when_scoring_metric_is_missing(pool: PgPool) {
-    let mut canonical = mixed(Some(Scoring::Ris), false);
+async fn omits_rank_when_ranking_metric_is_missing(pool: PgPool) {
+    let mut canonical = mixed(Some(RankBy::Ris), false);
     canonical.categories[0].athletes[0].bodyweight = None;
     CanonicalTransformer::new(&pool)
         .import_to_database(canonical)
@@ -169,7 +164,7 @@ async fn omits_rank_when_scoring_metric_is_missing(pool: PgPool) {
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn shares_identity_across_contest_types(pool: PgPool) {
-    let mut canonical = mixed(Some(Scoring::Total), false);
+    let mut canonical = mixed(Some(RankBy::Total), false);
     let mut men = canonical.categories[0].clone();
     men.gender = Gender::M;
     men.athletes.retain(|a| a.gender == Gender::M);

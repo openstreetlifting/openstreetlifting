@@ -7,7 +7,7 @@ start_date = "2026-01-18"
 city = "Rennes"
 country = "FR"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "Ace Squad"

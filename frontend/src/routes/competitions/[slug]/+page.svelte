@@ -76,7 +76,7 @@
   const i18n = useI18n();
   const weights = useWeightUnit();
 
-  const scoringLabel = (scoring: string) => (scoring === 'ris' ? 'RIS' : i18n.t('Total'));
+  const rankByLabel = (rankBy: string) => (rankBy === 'ris' ? 'RIS' : i18n.t('Total'));
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
@@ -124,7 +124,7 @@
     basePath: () => `/competitions/${data.competition.slug}`,
     filters: LEADERBOARD_FILTERS,
     initialUrl: page.url,
-    defaultSort: () => data.scoring,
+    defaultSort: () => data.rankBy,
     scope: () => ({ division: data.division }),
   });
 
@@ -325,7 +325,7 @@
   // Missing scores have no rank, but their entries still belong in the results.
   const NOT_PLACED_ORDER: AthleteStatus[] = ['competed', 'disqualified', 'no_show'];
 
-  const selectedMetric = $derived(asRankingMetric(table.movementFilter) ?? data.scoring);
+  const selectedMetric = $derived(asRankingMetric(table.movementFilter) ?? data.rankBy);
 
   const notPlaced = $derived(
     competition.categories
@@ -524,15 +524,15 @@
             (competition.status === 'upcoming' ? i18n.t('Format not announced') : '—')}
         </dd>
         {#if data.divisions.length > 1}
-          <dt class="text-muted">{i18n.t('Scoring')}</dt>
+          <dt class="text-muted">{i18n.t('Ranked by')}</dt>
           <dd class="grid gap-y-1.5 text-ink">
             {#each data.divisions as division (division.name)}
-              <p>{division.name}: {scoringLabel(division.scoring)}</p>
+              <p>{division.name}: {rankByLabel(division.rankBy)}</p>
             {/each}
           </dd>
-        {:else if competition.scoring}
-          <dt class="text-muted">{i18n.t('Scoring')}</dt>
-          <dd class="text-ink">{scoringLabel(competition.scoring)}</dd>
+        {:else if competition.rank_by}
+          <dt class="text-muted">{i18n.t('Ranked by')}</dt>
+          <dd class="text-ink">{rankByLabel(competition.rank_by)}</dd>
         {/if}
         {#if published}
           <dt class="text-muted">{i18n.t('Weight classes')}</dt>
@@ -602,9 +602,9 @@
           selected={(division) => division.name === data.activeDivision}
           href={(division) => divisionHref(division.name)}
           attributes={(division) => ({
-            title: i18n.t('{division}, ranked by {scoring}', {
+            title: i18n.t('{division}, ranked by {metric}', {
               division: division.name,
-              scoring: scoringLabel(division.scoring),
+              metric: rankByLabel(division.rankBy),
             }),
           })}
         >

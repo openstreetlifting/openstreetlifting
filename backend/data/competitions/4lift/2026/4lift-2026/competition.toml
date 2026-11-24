@@ -12,14 +12,8 @@ region = "Auvergne-Rhône-Alpes"
 country = "FR"
 status = "completed"
 
-[competition.divisions."FNSL Elite"]
-scoring = "ris"
-
-[competition.divisions."FNSL Masters"]
-scoring = "ris"
-
 [competition.divisions.Open]
-scoring = "total"
+rank_by = "total"
 
 [federation]
 name = "4Lift"

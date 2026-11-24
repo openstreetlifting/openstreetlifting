@@ -52,8 +52,9 @@ Before submitting files, check that:
 - You have pointed out missing details, athletes who share a name, or unusual
   weight classes.
 - Separate divisions remain separate if a weight class was contested more than once.
-- Mixed contests use `CategorySex=MX`, each athlete has `Sex=M` or `Sex=F`, and
-  `competition.scoring` matches the source's ranking method.
+- Mixed contests use `CategorySex=MX` and each athlete has `Sex=M` or `Sex=F`.
+- Each contest ranks the way the source did: `rank_by` is declared wherever the
+  default (total with a weight class, RIS without) does not match.
 - RIS contests shorter than MPDS declare their actual event, have no
   weight classes anywhere in the competition, and use the source's `ReportedRis`.
   Follow [the shorter-event RIS rules](./DATA_REFERENCE.md#ris-for-events-shorter-than-mpds).

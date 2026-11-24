@@ -39,7 +39,7 @@ pub struct Contest {
     pub gender: Gender,
     pub weight_class_min: Option<Decimal>,
     pub weight_class_max: Option<Decimal>,
-    pub scoring: osl_domain::Scoring,
+    pub rank_by: osl_domain::RankBy,
 }
 
 #[derive(Debug)]

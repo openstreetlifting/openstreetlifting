@@ -45,7 +45,7 @@ it('shows published RIS for a shorter event and makes RIS the default sort', () 
 });
 
 it('marks a declared shorter RIS event as unavailable when no scores were published', () => {
-  expect(risProvenance({ ...meet(['P', 'D', 'S'], [{}]), scoring: 'ris' })).toBe('not-published');
+  expect(risProvenance({ ...meet(['P', 'D', 'S'], [{}]), rank_by: 'ris' })).toBe('not-published');
 });
 
 it('sorts on total whenever no athlete has a RIS to sort on', () => {

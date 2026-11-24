@@ -10,7 +10,7 @@ start_date = "2024-06-29"
 city = "Hamburg"
 country = "DE"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "FinalRep"
