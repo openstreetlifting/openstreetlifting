@@ -31,6 +31,8 @@
     ATHLETE_CONTENT,
     Text,
     RankHeader,
+    DetailList,
+    Detail,
   } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
   import type { ResolvedPathname } from '$app/types';
@@ -314,13 +316,14 @@
           : undefined
   );
   const place = $derived([competition.venue, location].filter(Boolean).join(', '));
-  const DETAILS =
-    'grid w-max max-w-full grid-cols-[7rem_minmax(0,1fr)] content-start gap-x-3 gap-y-1.5 text-body';
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
   const summary = $derived(contestSummary(competition.categories));
   const divisioned = $derived(summary.length > 1);
   const overallRankBy = $derived(sharedRankBy(summary));
+  const activeSummary = $derived(
+    divisioned ? summary.find((division) => division.name === data.activeDivision) : undefined
+  );
   const risLabel = $derived(
     data.formula ? i18n.t('RIS {year}', { year: data.formula.year }) : 'RIS'
   );
@@ -418,53 +421,41 @@
   </td>
 {/snippet}
 
-{#snippet contests(group: ContestGroup)}
-  <p class="flex flex-col gap-x-2 sm:flex-row">
-    <span class="shrink-0 text-muted sm:min-w-14">{who(group)}</span>
-    <span
-      class="flex min-w-0 flex-wrap gap-x-3 gap-y-1"
-      role="list"
-      aria-label={i18n.t("{category}'s weight classes", { category: who(group) })}
-    >
-      {#each group.classes as weightClass (weightClass)}
-        <span role="listitem" class="whitespace-nowrap tabular-nums">
-          {weights.category(weightClass, i18n.locale)}
-        </span>
-      {/each}
-      {#if group.allWeights}
-        <span role="listitem" class="whitespace-nowrap">{i18n.t('None')}</span>
-      {/if}
-    </span>
-  </p>
-{/snippet}
-
-{#snippet ranking(division: DivisionSummary)}
-  <dt class="text-muted">{i18n.t('Ranked by')}</dt>
-  {#if division.rankBy}
-    <dd class="text-ink">{rule(division.rankBy)}</dd>
-  {:else}
-    <dd class="grid min-w-0 gap-y-1.5 text-ink">
+{#snippet rules(division: DivisionSummary)}
+  <Detail label={i18n.t('Ranked by')} class={division.rankBy ? '' : 'grid gap-y-1.5'}>
+    {#if division.rankBy}
+      {rule(division.rankBy)}
+    {:else}
       {#each division.groups as group (group.gender)}
         <p class="flex flex-col gap-x-2 sm:flex-row">
           <span class="shrink-0 text-muted sm:min-w-14">{who(group)}</span>
           <span>{group.rankBy ? rule(group.rankBy) : '—'}</span>
         </p>
       {/each}
-    </dd>
-  {/if}
-{/snippet}
-
-{#snippet classes(division: DivisionSummary)}
-  <dt class="text-muted">{i18n.t('Weight classes')}</dt>
-  <dd class="grid min-w-0 gap-y-1.5 text-ink">
-    {#if division.classed || divisioned}
-      {#each division.groups as group (group.gender)}
-        {@render contests(group)}
-      {/each}
-    {:else}
-      {i18n.t('None')}
     {/if}
-  </dd>
+  </Detail>
+  {#each division.groups as group (group.gender)}
+    <Detail label={who(group)}>
+      {#if group.classes.length === 0}
+        {i18n.t('No weight classes')}
+      {:else}
+        <span
+          class="flex flex-wrap gap-x-3 gap-y-1"
+          role="list"
+          aria-label={i18n.t("{category}'s weight classes", { category: who(group) })}
+        >
+          {#each group.classes as weightClass (weightClass)}
+            <span role="listitem" class="whitespace-nowrap tabular-nums">
+              {weights.category(weightClass, i18n.locale)}
+            </span>
+          {/each}
+          {#if group.allWeights}
+            <span role="listitem" class="whitespace-nowrap">{i18n.t('Unclassed')}</span>
+          {/if}
+        </span>
+      {/if}
+    </Detail>
+  {/each}
 {/snippet}
 
 {#snippet editLink()}
@@ -499,9 +490,8 @@
     </div>
 
     {#if editions.length > 1}
-      <dl class="{DETAILS} mt-4">
-        <dt id="edition-label" class="self-center text-muted">{i18n.t('Edition')}</dt>
-        <dd class="min-w-0">
+      <DetailList class="mt-4">
+        <Detail label={i18n.t('Edition')} labelId="edition-label" labelClass="self-center">
           <nav aria-labelledby="edition-label">
             <SegmentedControl
               items={editions}
@@ -518,15 +508,14 @@
               {/snippet}
             </SegmentedControl>
           </nav>
-        </dd>
-      </dl>
+        </Detail>
+      </DetailList>
     {/if}
 
-    <div class="mt-section flex flex-wrap gap-x-chapter gap-y-section">
-      <dl class={DETAILS}>
+    <div class="mt-section grid gap-y-section sm:grid-cols-2 sm:gap-x-chapter">
+      <DetailList>
         {#if competition.start_date}
-          <dt class="text-muted">{i18n.t('Date')}</dt>
-          <dd class="text-ink">
+          <Detail label={i18n.t('Date')}>
             <time datetime={competition.start_date}>
               {competitionDate.format(new Date(competition.start_date))}
             </time>
@@ -536,11 +525,10 @@
                 {competitionDate.format(new Date(competition.end_date))}
               </time>
             {/if}
-          </dd>
+          </Detail>
         {/if}
         {#if place || competition.country}
-          <dt class="text-muted">{i18n.t('Location')}</dt>
-          <dd class="flex min-w-0 items-start gap-2 text-ink">
+          <Detail label={i18n.t('Location')} class="flex items-start gap-2">
             {#if competition.country}
               <Flag
                 countryCode={competition.country}
@@ -551,10 +539,9 @@
             <span class="min-w-0">
               {place || (competition.country ? countryName(competition.country, i18n.locale) : '')}
             </span>
-          </dd>
+          </Detail>
         {/if}
-        <dt class="text-muted">{i18n.t('Federation')}</dt>
-        <dd class="flex min-w-0 items-center gap-2 text-ink">
+        <Detail label={i18n.t('Federation')} class="flex items-center gap-2">
           {#if competition.federation.country}
             <Flag
               countryCode={competition.federation.country}
@@ -570,41 +557,28 @@
           >
             {federationLabel}
           </a>
-        </dd>
-      </dl>
-      <dl class={DETAILS}>
-        <dt class="text-muted">{i18n.t('Format')}</dt>
-        <dd class="text-ink">
+        </Detail>
+      </DetailList>
+      <DetailList>
+        <Detail label={i18n.t('Format')}>
           {formatLabel ||
             (competition.status === 'upcoming' ? i18n.t('Format not announced') : '—')}
-        </dd>
+        </Detail>
         {#if !published}
           {#if competition.rank_by}
-            <dt class="text-muted">{i18n.t('Ranked by')}</dt>
-            <dd class="text-ink">{rule(competition.rank_by)}</dd>
+            <Detail label={i18n.t('Ranked by')}>{rule(competition.rank_by)}</Detail>
           {/if}
         {:else if divisioned}
           {#if overallRankBy}
-            <dt class="text-muted">{i18n.t('Ranked by')}</dt>
-            <dd class="text-ink">{rule(overallRankBy)}</dd>
+            <Detail label={i18n.t('Ranked by')}>{rule(overallRankBy)}</Detail>
           {/if}
+          <Detail label={i18n.t('Divisions')}>
+            {data.divisions.map((division) => division.name).join(', ')}
+          </Detail>
         {:else}
-          {@render ranking(summary[0])}
-          {@render classes(summary[0])}
+          {@render rules(summary[0])}
         {/if}
-      </dl>
-      {#if published && divisioned}
-        {#each summary as division (division.name)}
-          <dl class={DETAILS}>
-            <dt class="text-muted">{i18n.t('Division')}</dt>
-            <dd class="font-medium text-ink">{division.name}</dd>
-            {#if !overallRankBy}
-              {@render ranking(division)}
-            {/if}
-            {@render classes(division)}
-          </dl>
-        {/each}
-      {/if}
+      </DetailList>
     </div>
   </header>
 
@@ -658,6 +632,9 @@
           {/snippet}
         </SegmentedControl>
       </nav>
+      {#if activeSummary}
+        <DetailList class="mb-shell-dense">{@render rules(activeSummary)}</DetailList>
+      {/if}
     {/if}
     <section
       class="{EDGE_TO_EDGE} min-w-0 rounded-panel border border-stroke-strong"

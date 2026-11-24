@@ -306,8 +306,8 @@ export default {
     'La fonte non riporta punteggi RIS pubblicati.',
   'RIS scores are unavailable because the required bodyweight or total is missing.':
     'I punteggi RIS non sono disponibili: manca il peso corporeo o il totale necessario per calcolarli.',
-  None: 'Nessuno',
-  'Weight classes': 'Categorie di peso',
+  'No weight classes': 'Nessuna categoria di peso',
+  Unclassed: 'Senza categoria',
   'Edit competition on GitHub': 'Modifica la gara su GitHub',
   'Results are not available yet.': 'I risultati non sono ancora disponibili.',
   'Results will appear here once they are published.':

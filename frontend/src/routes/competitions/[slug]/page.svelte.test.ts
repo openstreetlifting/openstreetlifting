@@ -269,20 +269,23 @@ it('switches between division boards and lists how each division is ranked', asy
     );
   await expect.element(page.getByText('RIS 2026')).toBeVisible();
   expect(pairs()).toContainEqual([
-    ['Division', 'FNSL Elite'],
-    ['Ranked by', 'RIS 2026'],
-    ['Weight classes', 'Mixed None'],
+    ['Format', expect.any(String)],
+    ['Divisions', 'Open, FNSL Elite'],
   ]);
   expect(pairs()).toContainEqual([
-    ['Division', 'Open'],
-    ['Ranked by', 'Total'],
-    ['Weight classes', 'Men -80kg'],
+    ['Ranked by', 'RIS 2026'],
+    ['Mixed', 'No weight classes'],
   ]);
   expect(
     pairs()
       .flat()
+      .map(([term]) => term)
+  ).not.toContain('Division');
+  expect(
+    pairs()
+      .flat()
       .filter(([term]) => term === 'Ranked by')
-  ).toHaveLength(2);
+  ).toHaveLength(1);
 });
 
 it('states one rule and the weight classes for a meet without divisions', async () => {

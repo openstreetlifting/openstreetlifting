@@ -304,8 +304,8 @@ export default {
     'W źródle nie ma opublikowanych wyników RIS.',
   'RIS scores are unavailable because the required bodyweight or total is missing.':
     'Do obliczenia RIS brakuje masy ciała lub sumy.',
-  None: 'Brak',
-  'Weight classes': 'Kategorie wagowe',
+  'No weight classes': 'Bez kategorii wagowych',
+  Unclassed: 'Bez kategorii',
   'Edit competition on GitHub': 'Edytuj dane zawodów na GitHubie',
   'Results are not available yet.': 'Wyniki nie są jeszcze dostępne.',
   'Results will appear here once they are published.':
