@@ -293,6 +293,8 @@ export default {
   'No competition history available': 'Nessuna gara registrata',
   Venue: 'Sede',
   Scoring: 'Criterio di classifica',
+  Divisions: 'Divisioni',
+  '{division}, ranked by {scoring}': '{division}, classifica per {scoring}',
   Recomputed: 'Ricalcolato',
   Reported: 'Pubblicato',
   Computed: 'Calcolato',

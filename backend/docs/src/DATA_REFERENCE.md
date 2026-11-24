@@ -52,10 +52,29 @@ name = "FinalRep"
 | `competition.region`      | The region or state, if known.                                            |
 | `competition.country`     | An ISO 3166-1 alpha-2 country code, such as `FR` or `DE`.                 |
 | `competition.scoring`     | `total` or `ris`; required for mixed contests.                            |
+| `competition.divisions`   | Optional; see [Division scoring](#division-scoring).                      |
 | `competition.status`      | See [Status](#status) below.                                              |
 | `federation.name`         | The federation's name, written consistently across competitions.          |
 | `federation.abbreviation` | Its abbreviation, if used.                                                |
 | `federation.country`      | Its ISO 3166-1 alpha-2 country code, if applicable.                       |
+
+### Division scoring
+
+When divisions of one competition were ranked differently, give each its rule.
+The key is the `Division` value from `entries.csv`:
+
+```toml
+[competition.divisions.Open]
+scoring = "total"
+
+[competition.divisions."FNSL Elite"]
+scoring = "ris"
+```
+
+A division's `scoring` overrides `competition.scoring` for its contests. Each
+key must match a `Division` in the entries. Without either, contests with weight
+classes rank by total and contests without rank by RIS. The competition page
+shows one results board per division.
 
 ### Editions
 
@@ -157,7 +176,8 @@ starting at `1`.
 | `M` or `F`        | Must match `Sex`         |
 | `MX`              | Mixed contest            |
 
-Mixed contests need `scoring` under `[competition]`:
+Mixed contests need `scoring` under `[competition]` or under their division in
+[`competition.divisions`](#division-scoring):
 
 | `scoring` | Ranking                                                                 |
 | --------- | ----------------------------------------------------------------------- |

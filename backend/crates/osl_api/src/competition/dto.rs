@@ -162,6 +162,8 @@ pub struct CategoryInfo {
     pub gender: Gender,
     /// Weight class, such as `-80kg`. Empty when open.
     pub weight_class: String,
+    /// Ranking metric for this contest.
+    pub scoring: osl_domain::Scoring,
 }
 
 /// An entry in a category.
@@ -320,6 +322,7 @@ impl From<Contest> for CategoryInfo {
             division: contest.division,
             gender: contest.gender,
             weight_class: WeightClass::label(contest.weight_class_min, contest.weight_class_max),
+            scoring: contest.scoring,
         }
     }
 }

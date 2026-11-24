@@ -75,6 +75,7 @@ fn meet(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
             country: CountryCode::parse("FR").unwrap(),
             status: Some(CompetitionStatus::Completed),
             scoring: None,
+            divisions: std::collections::BTreeMap::new(),
         },
         movements: Movement::ALL.to_vec(),
         categories: vec![CategoryData {

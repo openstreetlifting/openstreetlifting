@@ -95,6 +95,7 @@ pub enum RankingBy {
     Class(WeightClass),
     Year(i32),
     Competition(Uuid),
+    Division(String),
 }
 
 #[derive(Debug, Clone)]

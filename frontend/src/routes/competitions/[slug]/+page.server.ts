@@ -9,6 +9,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { asRankingMetric } from '#lib/types/enums.js';
 import { LEADERBOARD_FILTERS } from '#lib/constants/filters.js';
 import { keepSelected, readFilters } from '#lib/utils/filters.js';
+import { competitionDivisions } from '#lib/utils/competition-results.js';
 
 async function currentFormula() {
   try {
@@ -37,12 +38,29 @@ export const load: PageServerLoad = async ({ params, url }) => {
   }
 
   const ris = risProvenance(competition);
+  const divisions = competitionDivisions(competition.categories);
+  const focused = url.searchParams.get('athlete');
+  const requested =
+    url.searchParams.get('division') ??
+    competition.categories.find(({ participants }) =>
+      participants.some((participant) => participant.athlete.slug === focused)
+    )?.category.division;
+  const active =
+    divisions.length > 1
+      ? (divisions.find((division) => division.name === requested) ?? divisions[0])
+      : null;
+  const division = active && active !== divisions[0] ? active.name : null;
+  const scoring = active?.scoring ?? competition.scoring ?? defaultRankingSort(ris);
 
   if (competition.categories.length === 0) {
     const empty = noRankings();
     return {
       competition,
       ris,
+      divisions,
+      division,
+      activeDivision: null,
+      scoring,
       classes: [],
       countries: [],
       initialRankings: empty.data,
@@ -50,18 +68,16 @@ export const load: PageServerLoad = async ({ params, url }) => {
     };
   }
 
-  const movement =
-    asRankingMetric(url.searchParams.get('movement')) ??
-    competition.scoring ??
-    defaultRankingSort(ris);
+  const movement = asRankingMetric(url.searchParams.get('movement')) ?? scoring;
+  const scope = active ? { division: active.name } : {};
   const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
   const filters = readFilters(url.searchParams, LEADERBOARD_FILTERS);
   const q = url.searchParams.get('q') || null;
   const page = Number(url.searchParams.get('page') ?? 1) || 1;
 
-  const focused = url.searchParams.get('athlete');
   if (focused && !url.searchParams.has('page') && !q) {
     const participant = competition.categories
+      .filter(({ category }) => !active || category.division === active.name)
       .flatMap((category) => category.participants)
       .find((participant) => participant.athlete.slug === focused);
     if (participant) {
@@ -73,6 +89,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
           movement,
           direction,
           ...filters,
+          ...scope,
           q: formatAthleteName(participant.athlete),
           competition_id: competition.competition_id,
         })
@@ -83,6 +100,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
         if (targetPage > 1) {
           const target = new URL(url);
           target.searchParams.set('page', String(targetPage));
+          if (division) target.searchParams.set('division', division);
           redirect(307, `${target.pathname}${target.search}`);
         }
       }
@@ -92,7 +110,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   const [formula, facets, rankings] = await Promise.all([
     currentFormula(),
     rankingsService
-      .getFacets({ ...filters, competition_id: competition.competition_id })
+      .getFacets({ ...filters, ...scope, competition_id: competition.competition_id })
       .catch(() => ({ classes: [], countries: [] })),
     rankingsService
       .getGlobalRankings({
@@ -101,6 +119,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
         movement,
         direction,
         ...filters,
+        ...scope,
         q,
         competition_id: competition.competition_id,
       })
@@ -113,6 +132,10 @@ export const load: PageServerLoad = async ({ params, url }) => {
   return {
     competition,
     ris,
+    divisions,
+    division,
+    activeDivision: active?.name ?? null,
+    scoring,
     ...keepSelected(
       { classes: facets.classes, countries: facets.countries },
       { classes: filters.category, countries: filters.country }

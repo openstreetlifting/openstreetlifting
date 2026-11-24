@@ -11,6 +11,14 @@ venue = "Oski Crossfit"
 region = "Auvergne-Rhône-Alpes"
 country = "FR"
 status = "completed"
+
+[competition.divisions."FNSL Elite"]
+scoring = "ris"
+
+[competition.divisions."FNSL Masters"]
+scoring = "ris"
+
+[competition.divisions.Open]
 scoring = "total"
 
 [federation]

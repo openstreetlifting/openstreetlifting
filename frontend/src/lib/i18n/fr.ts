@@ -292,6 +292,8 @@ export default {
   'No competition history available': 'Aucun historique de compétition disponible',
   Venue: 'Salle',
   Scoring: 'Classement au',
+  Divisions: 'Divisions',
+  '{division}, ranked by {scoring}': '{division}, classé au {scoring}',
   Recomputed: 'Recalculé',
   Reported: 'Publié',
   Computed: 'Calculé',

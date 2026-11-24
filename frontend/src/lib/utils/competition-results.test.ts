@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 import type { CategoryDetail, Participant } from '#lib/types/competition.js';
-import { hasRankingResult, weightClasses } from './competition-results';
+import { competitionDivisions, hasRankingResult, weightClasses } from './competition-results';
 
 it('lists classes once per sex in weight order across divisions using the published labels', () => {
   const categories: CategoryDetail[] = (
@@ -15,13 +15,34 @@ it('lists classes once per sex in weight order across divisions using the publis
       { division: 'Junior', gender: 'F', weight_class: '-52kg' },
     ] as const
   ).map((category) => ({
-    category: { ...category, name: category.weight_class },
+    category: { ...category, name: category.weight_class, scoring: 'total' as const },
     participants: [],
   }));
 
   expect(weightClasses(categories, 'M')).toEqual(['-66kg', '-80kg', '-101kg', '', '+101kg']);
   expect(weightClasses(categories, 'F')).toEqual(['-52kg', '-52.5kg']);
   expect(weightClasses(categories, 'MX')).toEqual([]);
+});
+
+it('opens the largest division first and keeps each division scoring', () => {
+  const contest = (division: string | null, scoring: 'total' | 'ris', entries: number) => ({
+    category: { name: '', division, gender: 'M' as const, weight_class: '', scoring },
+    participants: Array.from({ length: entries }, () => result()),
+  });
+
+  expect(
+    competitionDivisions([
+      contest('FNSL Elite', 'ris', 8),
+      contest('Open', 'total', 30),
+      contest('Open', 'total', 19),
+      contest('FNSL Masters', 'ris', 3),
+    ])
+  ).toEqual([
+    { name: 'Open', scoring: 'total', entries: 49 },
+    { name: 'FNSL Elite', scoring: 'ris', entries: 8 },
+    { name: 'FNSL Masters', scoring: 'ris', entries: 3 },
+  ]);
+  expect(competitionDivisions([contest(null, 'total', 5)])).toEqual([]);
 });
 
 const result = (overrides: Partial<Participant> = {}): Participant => ({

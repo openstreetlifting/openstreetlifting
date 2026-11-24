@@ -292,6 +292,8 @@ export default {
   'No competition history available': 'Keine Wettkämpfe erfasst',
   Venue: 'Wettkampfstätte',
   Scoring: 'Wertung',
+  Divisions: 'Divisionen',
+  '{division}, ranked by {scoring}': '{division}, Wertung nach {scoring}',
   Recomputed: 'Neu berechnet',
   Reported: 'Veröffentlicht',
   Computed: 'Berechnet',

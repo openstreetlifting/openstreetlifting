@@ -1,5 +1,7 @@
+use std::collections::BTreeMap;
+
 use chrono::NaiveDate;
-use osl_domain::{CompetitionStatus, CountryCode};
+use osl_domain::{CompetitionStatus, CountryCode, Scoring};
 use serde::{Deserialize, Serialize};
 
 use super::models::{CompetitionData, FederationData};
@@ -44,7 +46,16 @@ pub struct CompetitionSection {
     pub status: Option<CompetitionStatus>,
 
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scoring: Option<osl_domain::Scoring>,
+    pub scoring: Option<Scoring>,
+
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub divisions: BTreeMap<String, DivisionSection>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct DivisionSection {
+    pub scoring: Scoring,
 }
 
 impl CompetitionSection {
@@ -63,6 +74,11 @@ impl CompetitionSection {
             country: self.country,
             status: self.status,
             scoring: self.scoring,
+            divisions: self
+                .divisions
+                .into_iter()
+                .map(|(name, division)| (name, division.scoring))
+                .collect(),
         }
     }
 
@@ -80,6 +96,11 @@ impl CompetitionSection {
             country: competition.country,
             status: competition.status,
             scoring: competition.scoring,
+            divisions: competition
+                .divisions
+                .iter()
+                .map(|(name, &scoring)| (name.clone(), DivisionSection { scoring }))
+                .collect(),
         }
     }
 }
@@ -122,6 +143,23 @@ country = "FR"
         assert_eq!(data.series.as_deref(), Some("fnsl-elite"));
         let output = toml::to_string(&CompetitionSection::from_data(&data)).unwrap();
         assert!(output.contains("series = \"fnsl-elite\""));
+    }
+
+    #[test]
+    fn preserves_division_scoring_when_formatting_metadata() {
+        let text = COMPETITION.replace(
+            "status = \"completed\"",
+            "status = \"completed\"\n\n[competition.divisions.\"FNSL Elite\"]\nscoring = \"ris\"",
+        );
+        let file: CompetitionFile = toml::from_str(&text).unwrap();
+        let data = file.competition.into_data("elite".into(), file.federation);
+        assert_eq!(data.divisions.get("FNSL Elite"), Some(&Scoring::Ris));
+        let output = toml::to_string(&CompetitionSection::from_data(&data)).unwrap();
+        let reparsed: CompetitionSection = toml::from_str(&output).unwrap();
+        assert_eq!(
+            reparsed.divisions.get("FNSL Elite").map(|d| d.scoring),
+            Some(Scoring::Ris)
+        );
     }
 
     #[test]

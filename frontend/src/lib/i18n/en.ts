@@ -218,6 +218,8 @@ export const messages = [
   'No competition history available',
   'Venue',
   'Scoring',
+  'Divisions',
+  '{division}, ranked by {scoring}',
   'Recomputed',
   'Reported',
   'Computed',

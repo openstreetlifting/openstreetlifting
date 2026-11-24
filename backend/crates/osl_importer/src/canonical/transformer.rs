@@ -27,6 +27,7 @@ struct ContestKey {
     weight_class_id: Option<Uuid>,
     division_id: Option<Uuid>,
     gender: osl_domain::Gender,
+    scoring: Option<osl_domain::Scoring>,
 }
 
 impl<'a> CanonicalTransformer<'a> {
@@ -108,7 +109,14 @@ impl<'a> CanonicalTransformer<'a> {
             .all(|movement| canonical.movements.contains(movement));
 
         for category in &canonical.categories {
-            let contest = self.resolve_contest(category, federation_id, tx).await?;
+            let division_scoring = category
+                .division
+                .as_ref()
+                .and_then(|division| canonical.competition.divisions.get(division))
+                .copied();
+            let contest = self
+                .resolve_contest(category, federation_id, division_scoring, tx)
+                .await?;
 
             for athlete in &category.athletes {
                 // Shorter events keep published scores even when bodyweight and total are known.
@@ -422,6 +430,7 @@ impl<'a> CanonicalTransformer<'a> {
         &self,
         category: &CategoryData,
         federation_id: Uuid,
+        scoring: Option<osl_domain::Scoring>,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<ContestKey> {
         let weight_class_id = self.resolve_weight_class(category, tx).await?;
@@ -435,6 +444,7 @@ impl<'a> CanonicalTransformer<'a> {
             weight_class_id,
             division_id,
             gender: category.gender,
+            scoring,
         })
     }
 
@@ -455,8 +465,8 @@ impl<'a> CanonicalTransformer<'a> {
             r#"
             INSERT INTO competition_participants
                 (competition_id, weight_class_id, division_id, athlete_id, bodyweight, status, status_reason, ris_score, ris_source,
-                 bodyweight_source, reported_ris_score, reported_ris_edition, total, country, category_gender, age)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11, $12, $13, $14, $15)
+                 bodyweight_source, reported_ris_score, reported_ris_edition, total, country, category_gender, age, scoring)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CASE WHEN $8::numeric IS NULL THEN NULL ELSE 'reported' END, $9, $10, $11, $12, $13, $14, $15, $16)
             ON CONFLICT (competition_id, weight_class_id, division_id, athlete_id, category_gender)
             DO UPDATE SET
                 bodyweight = EXCLUDED.bodyweight,
@@ -470,7 +480,8 @@ impl<'a> CanonicalTransformer<'a> {
                 reported_ris_edition = EXCLUDED.reported_ris_edition,
                 total = EXCLUDED.total,
                 country = EXCLUDED.country,
-                age = EXCLUDED.age
+                age = EXCLUDED.age,
+                scoring = EXCLUDED.scoring
             RETURNING participant_id as "participant_id: Uuid"
             "#,
             competition_id,
@@ -487,7 +498,8 @@ impl<'a> CanonicalTransformer<'a> {
             athlete.total,
             athlete.country.map(|country| country.as_str().to_owned()),
             (contest.gender == osl_domain::Gender::Mx).then_some("MX"),
-            athlete.age.map(|age| i16::from(age.get()))
+            athlete.age.map(|age| i16::from(age.get())),
+            contest.scoring.map(osl_domain::Scoring::as_str)
         )
         .fetch_one(&mut **tx)
         .await?;

@@ -640,6 +640,18 @@
               ],
               "format": "uuid"
             }
+          },
+          {
+            "name": "division",
+            "in": "query",
+            "description": "Division name. Requires `competition_id`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
           }
         ],
         "responses": {
@@ -833,6 +845,18 @@
                 "null"
               ],
               "format": "uuid"
+            }
+          },
+          {
+            "name": "division",
+            "in": "query",
+            "description": "Division name. Requires `competition_id`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
             }
           }
         ],
@@ -1919,7 +1943,8 @@
           "name",
           "division",
           "gender",
-          "weight_class"
+          "weight_class",
+          "scoring"
         ],
         "properties": {
           "division": {
@@ -1936,6 +1961,10 @@
           "name": {
             "type": "string",
             "description": "Category name, such as `Men -80kg`."
+          },
+          "scoring": {
+            "$ref": "#/components/schemas/Scoring",
+            "description": "Ranking metric for this contest."
           },
           "weight_class": {
             "type": "string",

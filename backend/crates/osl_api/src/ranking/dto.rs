@@ -70,6 +70,8 @@ pub struct GlobalRankingFilter {
     pub year: Option<i32>,
     /// Rank one competition. Otherwise each athlete appears once.
     pub competition_id: Option<Uuid>,
+    /// Division name. Requires `competition_id`.
+    pub division: Option<String>,
 }
 
 impl GlobalRankingFilter {
@@ -77,6 +79,9 @@ impl GlobalRankingFilter {
         self.pagination.validate()?;
         if self.gender == Some(RankedGender::Mx) && self.competition_id.is_none() {
             return Err("MX requires competition_id; global rankings use athlete sex".into());
+        }
+        if self.division.is_some() && self.competition_id.is_none() {
+            return Err("division requires competition_id; division names are not shared between federations".into());
         }
 
         if let Some(ref category) = self.category {
@@ -107,6 +112,7 @@ impl GlobalRankingFilter {
             class.map(RankingBy::Class),
             self.year.map(RankingBy::Year),
             self.competition_id.map(RankingBy::Competition),
+            self.division.clone().map(RankingBy::Division),
         ]
         .into_iter()
         .flatten()

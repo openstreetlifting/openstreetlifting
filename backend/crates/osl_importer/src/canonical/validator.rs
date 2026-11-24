@@ -222,17 +222,28 @@ impl CanonicalValidator {
     #[expect(clippy::too_many_lines)]
     fn check_athletes(canonical: &CanonicalFormat, report: &mut ValidationReport) {
         let uses_reported_ris = canonical.uses_reported_ris();
+        if canonical.categories.iter().any(|category| {
+            category.gender == osl_domain::Gender::Mx && canonical.scoring_for(category).is_none()
+        }) {
+            report.errors.push(
+                "Mixed contests require competition.scoring or their division's scoring = \"total\" or \"ris\"".into(),
+            );
+        }
+        for division in canonical.competition.divisions.keys() {
+            if !canonical
+                .categories
+                .iter()
+                .any(|category| category.division.as_ref() == Some(division))
+            {
+                report.errors.push(format!(
+                    "competition.divisions.\"{division}\" matches no Division in the entries"
+                ));
+            }
+        }
         if canonical
             .categories
             .iter()
-            .any(|category| category.gender == osl_domain::Gender::Mx)
-            && canonical.competition.scoring.is_none()
-        {
-            report
-                .errors
-                .push("Mixed contests require competition.scoring = \"total\" or \"ris\"".into());
-        }
-        if canonical.competition.scoring == Some(osl_domain::Scoring::Ris)
+            .any(|category| canonical.scoring_for(category) == Some(osl_domain::Scoring::Ris))
             && canonical.movements != osl_domain::Movement::ALL
             && !uses_reported_ris
         {
@@ -502,6 +513,7 @@ mod tests {
                 country: CountryCode::parse("FR").unwrap(),
                 status: Some(CompetitionStatus::Upcoming),
                 scoring: None,
+                divisions: std::collections::BTreeMap::new(),
             },
             movements: Vec::new(),
             categories: Vec::new(),

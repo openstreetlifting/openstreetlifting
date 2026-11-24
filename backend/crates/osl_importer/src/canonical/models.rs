@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use chrono::NaiveDate;
 use osl_domain::{
     Age, AthleteStatus, CompetitionStatus, CountryCode, Edition, Gender, Movement, WeightClassSlug,
@@ -26,6 +28,16 @@ impl CanonicalFormat {
                 .iter()
                 .all(|category| category.bounds() == (None, None))
     }
+
+    #[must_use]
+    pub fn scoring_for(&self, category: &CategoryData) -> Option<osl_domain::Scoring> {
+        category
+            .division
+            .as_ref()
+            .and_then(|division| self.competition.divisions.get(division))
+            .copied()
+            .or(self.competition.scoring)
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -42,6 +54,7 @@ pub struct CompetitionData {
     pub country: CountryCode,
     pub status: Option<CompetitionStatus>,
     pub scoring: Option<osl_domain::Scoring>,
+    pub divisions: BTreeMap<String, osl_domain::Scoring>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -291,6 +291,8 @@ export default {
   'No competition history available': 'Brak historii startów',
   Venue: 'Obiekt',
   Scoring: 'Klasyfikacja',
+  Divisions: 'Dywizje',
+  '{division}, ranked by {scoring}': '{division}, klasyfikacja według {scoring}',
   Recomputed: 'Przeliczony',
   Reported: 'Opublikowany',
   Computed: 'Obliczony',

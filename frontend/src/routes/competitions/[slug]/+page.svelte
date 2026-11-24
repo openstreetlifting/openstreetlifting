@@ -33,6 +33,7 @@
     RankHeader,
   } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
+  import type { ResolvedPathname } from '$app/types';
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { page, navigating } from '$app/state';
   import { afterNavigate } from '$app/navigation';
@@ -55,12 +56,7 @@
     EDGE_TO_EDGE,
   } from '#lib/constants/table.js';
   import { GitHubIcon } from '#lib/components/icons/index.js';
-  import {
-    RANKING_SORTS,
-    RANKING_SORTS_NO_RIS,
-    RANKING_GENDERS,
-    defaultRankingSort,
-  } from '#lib/constants/ranking.js';
+  import { RANKING_SORTS, RANKING_SORTS_NO_RIS, RANKING_GENDERS } from '#lib/constants/ranking.js';
   import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
   import { LEADERBOARD_FILTERS } from '#lib/constants/filters.js';
   import type { RankingEntry } from '#lib/types/ranking.js';
@@ -79,6 +75,8 @@
 
   const i18n = useI18n();
   const weights = useWeightUnit();
+
+  const scoringLabel = (scoring: string) => (scoring === 'ris' ? 'RIS' : i18n.t('Total'));
 
   let { data }: { data: PageData } = $props();
   const competition = $derived(data.competition);
@@ -126,8 +124,16 @@
     basePath: () => `/competitions/${data.competition.slug}`,
     filters: LEADERBOARD_FILTERS,
     initialUrl: page.url,
-    defaultSort: () => data.competition.scoring ?? defaultRankingSort(data.ris),
+    defaultSort: () => data.scoring,
+    scope: () => ({ division: data.division }),
   });
+
+  const divisionHref = (name: string) => {
+    const base = i18n.href(resolve('/competitions/[slug]', { slug: competition.slug }));
+    return (
+      name === data.divisions[0]?.name ? base : `${base}?division=${encodeURIComponent(name)}`
+    ) as ResolvedPathname;
+  };
 
   afterNavigate(({ type, shallow }) => {
     if (shallow) return;
@@ -319,9 +325,7 @@
   // Missing scores have no rank, but their entries still belong in the results.
   const NOT_PLACED_ORDER: AthleteStatus[] = ['competed', 'disqualified', 'no_show'];
 
-  const selectedMetric = $derived(
-    asRankingMetric(table.movementFilter) ?? defaultRankingSort(data.ris)
-  );
+  const selectedMetric = $derived(asRankingMetric(table.movementFilter) ?? data.scoring);
 
   const notPlaced = $derived(
     competition.categories
@@ -336,6 +340,7 @@
         const search = table.searchFilter.trim().toLowerCase();
 
         return (
+          (!data.activeDivision || category.category.division === data.activeDivision) &&
           (!table.filters.values.gender || athlete.gender === table.filters.values.gender) &&
           (!table.filters.values.country || athlete.country === table.filters.values.country) &&
           (!classed ||
@@ -518,9 +523,16 @@
           {formatLabel ||
             (competition.status === 'upcoming' ? i18n.t('Format not announced') : '—')}
         </dd>
-        {#if competition.scoring}
+        {#if data.divisions.length > 1}
           <dt class="text-muted">{i18n.t('Scoring')}</dt>
-          <dd class="text-ink">{competition.scoring === 'ris' ? 'RIS' : i18n.t('Total')}</dd>
+          <dd class="grid gap-y-1.5 text-ink">
+            {#each data.divisions as division (division.name)}
+              <p>{division.name}: {scoringLabel(division.scoring)}</p>
+            {/each}
+          </dd>
+        {:else if competition.scoring}
+          <dt class="text-muted">{i18n.t('Scoring')}</dt>
+          <dd class="text-ink">{scoringLabel(competition.scoring)}</dd>
         {/if}
         {#if published}
           <dt class="text-muted">{i18n.t('Weight classes')}</dt>
@@ -582,6 +594,26 @@
       </Text>
       {@render editLink()}
     </div>
+    {#if data.divisions.length > 1}
+      <nav class="mb-shell-dense" aria-label={i18n.t('Divisions')}>
+        <SegmentedControl
+          items={data.divisions}
+          key={(division) => division.name}
+          selected={(division) => division.name === data.activeDivision}
+          href={(division) => divisionHref(division.name)}
+          attributes={(division) => ({
+            title: i18n.t('{division}, ranked by {scoring}', {
+              division: division.name,
+              scoring: scoringLabel(division.scoring),
+            }),
+          })}
+        >
+          {#snippet children(division)}
+            {division.name}
+          {/snippet}
+        </SegmentedControl>
+      </nav>
+    {/if}
     <section
       class="{EDGE_TO_EDGE} min-w-0 rounded-panel border border-stroke-strong"
       aria-labelledby="results-heading"

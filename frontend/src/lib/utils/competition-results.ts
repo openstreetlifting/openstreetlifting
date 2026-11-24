@@ -31,3 +31,23 @@ export function hasRankingResult(participant: Participant, metric: RankingMetric
     (lift) => lift.movement_name === movements[metric] && lift.best_weight != null
   );
 }
+
+export type CompetitionDivision = { name: string; scoring: RankingMetric; entries: number };
+
+/** The largest division opens first; a meet without two named divisions has one board. */
+export function competitionDivisions(categories: CategoryDetail[]): CompetitionDivision[] {
+  const divisions = new Map<string, CompetitionDivision>();
+  for (const { category, participants } of categories) {
+    if (!category.division) continue;
+    const division = divisions.get(category.division) ?? {
+      name: category.division,
+      scoring: category.scoring,
+      entries: 0,
+    };
+    division.entries += participants.length;
+    divisions.set(category.division, division);
+  }
+  return [...divisions.values()].sort(
+    (a, b) => b.entries - a.entries || a.name.localeCompare(b.name)
+  );
+}

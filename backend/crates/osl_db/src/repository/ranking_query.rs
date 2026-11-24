@@ -31,6 +31,10 @@ impl Predicate for RankingBy {
                 .push("EXTRACT(YEAR FROM c.start_date)::int = ")
                 .push_bind(*year),
             Self::Competition(id) => query.push("c.competition_id = ").push_bind(*id),
+            Self::Division(name) => query
+                .push("cp.division_id IN (SELECT division_id FROM divisions WHERE name = ")
+                .push_bind(name.clone())
+                .push(")"),
         };
     }
 }

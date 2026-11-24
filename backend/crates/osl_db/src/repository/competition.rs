@@ -293,8 +293,12 @@ impl<'a> CompetitionRepository<'a> {
         let contests = sqlx::query!(
             r#"SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS "division?",
                     COALESCE(cp.category_gender, wc.gender, a.gender) as "gender!: Gender",
-                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
+                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max,
+                    COALESCE(cp.scoring, c.scoring,
+                             CASE WHEN cp.weight_class_id IS NULL THEN 'ris' ELSE 'total' END)
+                        AS "scoring!: osl_domain::Scoring"
              FROM competition_participants cp
+             INNER JOIN competitions c ON c.competition_id = cp.competition_id
              INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
              LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
              LEFT JOIN divisions d ON d.division_id = cp.division_id
@@ -311,6 +315,7 @@ impl<'a> CompetitionRepository<'a> {
             gender: row.gender,
             weight_class_min: row.weight_class_min,
             weight_class_max: row.weight_class_max,
+            scoring: row.scoring,
         });
 
         let participants = sqlx::query!(

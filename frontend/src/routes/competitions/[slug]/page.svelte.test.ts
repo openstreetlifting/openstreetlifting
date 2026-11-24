@@ -56,7 +56,13 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
           ? []
           : [
               {
-                category: { name: 'Men -80kg', gender: 'M', weight_class: '-80kg', division: null },
+                category: {
+                  name: 'Men -80kg',
+                  gender: 'M',
+                  weight_class: '-80kg',
+                  division: null,
+                  scoring: 'total',
+                },
                 participants: [],
               },
             ],
@@ -67,6 +73,10 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
       ],
     },
     ris: 'not-contested',
+    divisions: [],
+    division: null,
+    activeDivision: null,
+    scoring: 'total',
     classes: [],
     countries: [],
     initialRankings: [],
@@ -208,4 +218,47 @@ it.each([
   expect(text('th').includes('Bodyweight kg')).toBe(shown);
   expect(text('td').includes('27')).toBe(shown);
   expect(text('td').includes('79.3')).toBe(shown);
+});
+
+it('switches between division boards and lists each division scoring', async () => {
+  const results = data('completed');
+  results.competition.categories = [
+    {
+      category: {
+        name: 'Open Men -80kg',
+        gender: 'M',
+        weight_class: '-80kg',
+        division: 'Open',
+        scoring: 'total',
+      },
+      participants: [],
+    },
+    {
+      category: {
+        name: 'FNSL Elite Mixed',
+        gender: 'MX',
+        weight_class: '',
+        division: 'FNSL Elite',
+        scoring: 'ris',
+      },
+      participants: [],
+    },
+  ];
+  results.divisions = [
+    { name: 'Open', scoring: 'total', entries: 30 },
+    { name: 'FNSL Elite', scoring: 'ris', entries: 8 },
+  ];
+  results.division = 'FNSL Elite';
+  results.activeDivision = 'FNSL Elite';
+  results.scoring = 'ris';
+  render(CompetitionPage, { data: results });
+
+  const tabs = page.getByRole('navigation', { name: 'Divisions' });
+  await expect.element(tabs).toBeVisible();
+  await expect
+    .element(tabs.getByRole('link', { name: 'Open' }))
+    .toHaveAttribute('href', '/en/competitions/current');
+  await expect.element(tabs.getByText('FNSL Elite')).toHaveAttribute('aria-current', 'page');
+  await expect.element(page.getByText('FNSL Elite: RIS')).toBeVisible();
+  await expect.element(page.getByText('Open: Total')).toBeVisible();
 });

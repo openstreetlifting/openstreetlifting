@@ -325,6 +325,7 @@ export interface components {
       division: string | null;
       gender: components['schemas']['Gender'];
       name: string;
+      scoring: components['schemas']['Scoring'];
       weight_class: string;
     };
     CompetitionAthlete: {
@@ -866,6 +867,7 @@ export interface operations {
         category?: string | null;
         year?: number | null;
         competition_id?: string | null;
+        division?: string | null;
       };
       header?: never;
       path?: never;
@@ -924,6 +926,7 @@ export interface operations {
         category?: string | null;
         year?: number | null;
         competition_id?: string | null;
+        division?: string | null;
       };
       header?: never;
       path?: never;
