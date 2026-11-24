@@ -112,3 +112,12 @@ export function contestSummary(categories: CategoryDetail[]): DivisionSummary[] 
 export function sharedRankBy(summary: DivisionSummary[]): RankBy | null {
   return shared(summary.map((division) => division.rankBy));
 }
+
+export type RankScope = 'class' | 'sex' | null;
+
+/** Contests are split by weight class where any exist, otherwise by sex unless men and women met in one field. */
+export function rankScope(groups: ContestGroup[]): RankScope {
+  if (groups.some((group) => group.classes.length > 0)) return 'class';
+  if (groups.length > 1 && groups.every((group) => group.gender !== 'MX')) return 'sex';
+  return null;
+}

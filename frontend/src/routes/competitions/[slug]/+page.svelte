@@ -67,6 +67,7 @@
   import {
     contestSummary,
     hasRankingResult,
+    rankScope,
     sharedRankBy,
     type ContestGroup,
     type DivisionSummary,
@@ -328,6 +329,14 @@
     data.formula ? i18n.t('RIS {year}', { year: data.formula.year }) : 'RIS'
   );
   const rule = (rankBy: RankBy) => (rankBy === 'ris' ? risLabel : i18n.t('Total'));
+  const scoped = (rankBy: RankBy, groups: ContestGroup[]) => {
+    const scope = rankScope(groups);
+    return scope === 'class'
+      ? i18n.t('{rule} within each weight class', { rule: rule(rankBy) })
+      : scope === 'sex'
+        ? i18n.t('{rule} within each sex', { rule: rule(rankBy) })
+        : rule(rankBy);
+  };
   const who = (group: ContestGroup) =>
     i18n.t(({ M: 'Men', F: 'Women', MX: 'Mixed' } as const)[group.gender]);
 
@@ -424,12 +433,12 @@
 {#snippet rules(division: DivisionSummary)}
   <Detail label={i18n.t('Ranked by')} class={division.rankBy ? '' : 'grid gap-y-1.5'}>
     {#if division.rankBy}
-      {rule(division.rankBy)}
+      {scoped(division.rankBy, division.groups)}
     {:else}
       {#each division.groups as group (group.gender)}
         <p class="flex flex-col gap-x-2 sm:flex-row">
           <span class="shrink-0 text-muted sm:min-w-14">{who(group)}</span>
-          <span>{group.rankBy ? rule(group.rankBy) : '—'}</span>
+          <span>{group.rankBy ? scoped(group.rankBy, [group]) : '—'}</span>
         </p>
       {/each}
     {/if}

@@ -306,6 +306,8 @@ export default {
   'RIS scores are unavailable because the required bodyweight or total is missing.':
     'RIS-Werte sind nicht verfügbar, weil das benötigte Körpergewicht oder Total fehlt.',
   'No weight classes': 'Keine Gewichtsklassen',
+  '{rule} within each weight class': '{rule} innerhalb jeder Gewichtsklasse',
+  '{rule} within each sex': '{rule} getrennt nach Geschlecht',
   Unclassed: 'Ohne Klasse',
   'Edit competition on GitHub': 'Wettkampf auf GitHub bearbeiten',
   'Results are not available yet.': 'Noch keine Ergebnisse verfügbar.',

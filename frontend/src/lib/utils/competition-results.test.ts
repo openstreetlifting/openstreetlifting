@@ -6,6 +6,8 @@ import {
   hasRankingResult,
   sharedRankBy,
   weightClasses,
+  rankScope,
+  type ContestGroup,
 } from './competition-results';
 
 it('lists classes once per sex in weight order across divisions using the published labels', () => {
@@ -184,4 +186,18 @@ it('keeps a rule per sex when one division ranked its sexes differently', () => 
     ['M', 'total'],
     ['F', 'ris'],
   ]);
+});
+
+it('names the field each contest was ranked within', () => {
+  const group = (gender: ContestGroup['gender'], classes: string[]): ContestGroup => ({
+    gender,
+    classes,
+    allWeights: classes.length === 0,
+    rankBy: 'total',
+  });
+
+  expect(rankScope([group('M', ['-80kg']), group('F', [])])).toBe('class');
+  expect(rankScope([group('M', []), group('F', [])])).toBe('sex');
+  expect(rankScope([group('M', [])])).toBeNull();
+  expect(rankScope([group('MX', [])])).toBeNull();
 });

@@ -230,6 +230,8 @@ export const messages = [
   'Published RIS scores are missing from the source.',
   'RIS scores are unavailable because the required bodyweight or total is missing.',
   'No weight classes',
+  '{rule} within each weight class',
+  '{rule} within each sex',
   'Unclassed',
   'Edit competition on GitHub',
   'Results are not available yet.',

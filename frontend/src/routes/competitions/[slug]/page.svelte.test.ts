@@ -295,4 +295,5 @@ it('states one rule and the weight classes for a meet without divisions', async 
   const terms = [...document.querySelectorAll('dt')].map((term) => term.textContent?.trim());
   expect(terms).toContain('Ranked by');
   expect(terms).not.toContain('Division');
+  await expect.element(page.getByText('Total within each weight class')).toBeVisible();
 });
