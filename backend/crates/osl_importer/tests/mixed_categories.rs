@@ -206,7 +206,7 @@ async fn shares_identity_across_contest_types(pool: PgPool) {
         name: None,
         movement: osl_db::params::RankingMovement::Total,
         direction: osl_db::params::SortDirection::Desc,
-        event: osl_domain::FULL_EVENT.into(),
+        event: Some(osl_domain::FULL_EVENT.into()),
         offset: 0,
         limit: 20,
     };

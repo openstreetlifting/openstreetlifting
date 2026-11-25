@@ -3,6 +3,7 @@ import type { Movement } from '#lib/types/enums.js';
 import type { RANKING_SORTS } from '#lib/constants/ranking.js';
 
 export type ProgressMetric = (typeof RANKING_SORTS)[number]['value'];
+
 const MOVEMENTS = {
   muscleup: 'Muscle-up',
   pullup: 'Pull-up',

@@ -24,7 +24,7 @@ fn filter(movement: RankingMovement) -> RankingFilter {
         name: None,
         movement,
         direction: SortDirection::Desc,
-        event: osl_domain::FULL_EVENT.into(),
+        event: Some(osl_domain::FULL_EVENT.into()),
         offset: 0,
         limit: 10,
     }

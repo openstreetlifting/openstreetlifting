@@ -589,7 +589,8 @@ export interface components {
       abbreviation: string | null;
       name: string;
     };
-    RankingMetric: 'muscleup' | 'pullup' | 'dips' | 'squat' | 'total' | 'ris';
+    RankingMetric:
+      'muscleup' | 'pullup' | 'dips' | 'squat' | 'total' | 'classic_total' | 'name' | 'ris';
     RankingSeries: {
       federation: string;
       name: string;
@@ -1159,7 +1160,7 @@ export const rankedGenderValues: ReadonlyArray<
 > = ['M', 'F', 'MX'];
 export const rankingMetricValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RankingMetric']
-> = ['muscleup', 'pullup', 'dips', 'squat', 'total', 'ris'];
+> = ['muscleup', 'pullup', 'dips', 'squat', 'total', 'classic_total', 'name', 'ris'];
 export const recordGenderValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RecordGender']
 > = ['M', 'F'];

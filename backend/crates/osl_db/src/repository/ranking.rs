@@ -49,22 +49,33 @@ impl<'a> RankingRepository<'a> {
     }
 
     async fn fetch_ranked_entries(&self, filter: &RankingFilter) -> Result<Vec<RankingRow>> {
-        let sort_column = filter.movement.as_column();
+        let movement = filter.movement;
+        let sort_column = movement.as_column();
+        let by_name = movement == RankingMovement::Name;
 
         let mut query = Self::movement_weights(Some(filter));
         push_ranking_pool(&mut query, filter);
 
         query.push(" , ranked_movements AS ( SELECT *, ROW_NUMBER() OVER (ORDER BY ");
-        query.push(sort_column);
-        query.push(" ");
-        query.push(filter.direction.as_sql());
-        if filter.movement == RankingMovement::Total {
-            query.push(", bodyweight ASC NULLS LAST");
+        if by_name {
+            query.push("last_name, first_name, athlete_id");
+        } else {
+            query.push(sort_column);
+            query.push(" ");
+            query.push(filter.direction.as_sql());
+            if movement.ranks_total() {
+                query.push(", bodyweight ASC NULLS LAST");
+            }
+            query.push(", athlete_id, participant_id");
         }
-        query.push(", athlete_id, participant_id) as rank FROM ranking_pool ) ");
+        query.push(") as rank FROM ranking_pool ) ");
         query.push(" SELECT * FROM ranked_movements ");
         push_name_match(&mut query, filter);
-        query.push(" ORDER BY rank LIMIT ");
+        if by_name {
+            query.push(" ORDER BY last_name, first_name, athlete_id LIMIT ");
+        } else {
+            query.push(" ORDER BY rank LIMIT ");
+        }
         query.push_bind(filter.limit);
         query.push(" OFFSET ");
         query.push_bind(filter.offset);

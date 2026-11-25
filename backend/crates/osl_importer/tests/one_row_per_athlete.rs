@@ -16,7 +16,7 @@ fn filter(movement: RankingMovement, competition_id: Option<Uuid>) -> RankingFil
         name: None,
         movement,
         direction: SortDirection::Desc,
-        event: osl_domain::FULL_EVENT.to_string(),
+        event: Some(osl_domain::FULL_EVENT.to_string()),
         offset: 0,
         limit: 50,
     }

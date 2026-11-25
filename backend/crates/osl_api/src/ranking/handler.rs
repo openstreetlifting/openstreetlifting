@@ -56,7 +56,8 @@ pub async fn list_ranking_countries(State(state): State<AppState>) -> WebResult<
 
 /// List ranked results
 ///
-/// Returns results ranked by `movement`, RIS by default.
+/// Returns results ranked by `movement`, RIS by default. A name search spans
+/// every event and ranks totals, so shorter-event athletes are reachable.
 #[utoipa::path(
     get,
     path = "/api/v1/rankings",

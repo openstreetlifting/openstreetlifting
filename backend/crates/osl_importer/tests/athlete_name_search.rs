@@ -23,9 +23,17 @@ fn filter(name: Option<&str>) -> RankingFilter {
         name: name.map(str::to_string),
         movement: RankingMovement::Total,
         direction: SortDirection::Desc,
-        event: osl_domain::FULL_EVENT.to_string(),
+        event: Some(osl_domain::FULL_EVENT.to_string()),
         offset: 0,
         limit: 50,
+    }
+}
+
+fn name_directory(name: &str) -> RankingFilter {
+    RankingFilter {
+        movement: RankingMovement::Name,
+        event: None,
+        ..filter(Some(name))
     }
 }
 
@@ -196,4 +204,87 @@ async fn applies_ranking_filters_before_search(pool: PgPool) {
     let (french, _) = placings(&pool, &french).await;
 
     assert_eq!(french, vec![("Jean Dupont".to_string(), 1)]);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn keeps_the_board_rank_when_searching(pool: PgPool) {
+    seed(&pool).await;
+    import(
+        &pool,
+        common::classic_competition(
+            "polish-classic",
+            vec![common::classic_athlete("Paul", "Martin", "200", "200")],
+        ),
+    )
+    .await;
+
+    let (placings, total) = placings(&pool, &filter(Some("martin"))).await;
+
+    assert_eq!(total, 1, "a Classic-only athlete is not on this board");
+    assert_eq!(
+        placings,
+        vec![("Pierre Martin".to_string(), 2)],
+        "the rank is the athlete's place on the board, not a position in the results"
+    );
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn lists_classic_only_athletes_in_the_name_directory(pool: PgPool) {
+    seed(&pool).await;
+    import(
+        &pool,
+        common::classic_competition(
+            "polish-classic",
+            vec![common::classic_athlete("Jan", "Kowalski", "60", "100")],
+        ),
+    )
+    .await;
+
+    let (mpds, _) = search(&pool, &filter(Some("kowalski"))).await;
+    assert!(
+        mpds.is_empty(),
+        "the MPDS board cannot reach a Classic-only athlete"
+    );
+
+    let (listed, total) = search(&pool, &name_directory("kowalski")).await;
+    assert_eq!(total, 1);
+    assert_eq!(listed, vec!["Jan Kowalski"]);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn name_directory_lists_every_event_and_lift(pool: PgPool) {
+    seed(&pool).await;
+    import(
+        &pool,
+        common::classic_competition(
+            "polish-classic",
+            vec![common::classic_athlete("Paul", "Martin", "60", "90")],
+        ),
+    )
+    .await;
+
+    let (listed, total) = search(&pool, &name_directory("martin")).await;
+
+    assert_eq!(total, 2);
+    assert_eq!(
+        listed,
+        vec!["Paul Martin", "Pierre Martin"],
+        "an MPDS total and a Classic total are both listed, alphabetically"
+    );
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn name_directory_ranks_alphabetically(pool: PgPool) {
+    seed(&pool).await;
+
+    let (placings, _) = placings(&pool, &name_directory("dupont")).await;
+
+    assert_eq!(
+        placings,
+        vec![
+            ("Jean Dupont".to_string(), 1),
+            ("Marie Dupont".to_string(), 2),
+        ],
+        "a name list is ordered by name, not by a score"
+    );
 }

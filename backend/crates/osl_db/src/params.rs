@@ -16,6 +16,8 @@ pub enum RankingMovement {
     Dips,
     Squat,
     Total,
+    ClassicTotal,
+    Name,
     #[default]
     Ris,
 }
@@ -37,7 +39,8 @@ impl RankingMovement {
             Self::Pullup => "pullup",
             Self::Dips => "dips",
             Self::Squat => "squat",
-            Self::Total => "total",
+            Self::Total | Self::ClassicTotal => "total",
+            Self::Name => "last_name",
             Self::Ris => "ris_score",
         }
     }
@@ -50,8 +53,15 @@ impl RankingMovement {
             Self::Dips => "dips",
             Self::Squat => "squat",
             Self::Total => "total",
+            Self::ClassicTotal => "classic_total",
+            Self::Name => "name",
             Self::Ris => "ris",
         }
+    }
+
+    #[must_use]
+    pub const fn ranks_total(&self) -> bool {
+        matches!(self, Self::Total | Self::ClassicTotal)
     }
 }
 
@@ -59,6 +69,12 @@ impl std::str::FromStr for RankingMovement {
     type Err = String;
 
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        for movement in [Self::ClassicTotal, Self::Name] {
+            if s == movement.as_str() {
+                return Ok(movement);
+            }
+        }
+
         Self::ALL
             .into_iter()
             .find(|movement| movement.as_str() == s)
@@ -103,7 +119,7 @@ pub struct RankingFilter {
     pub name: Option<String>,
     pub movement: RankingMovement,
     pub direction: SortDirection,
-    pub event: String,
+    pub event: Option<String>,
     pub offset: i64,
     pub limit: i64,
 }
@@ -112,6 +128,19 @@ impl RankingFilter {
     #[must_use]
     pub fn in_competition(&self) -> bool {
         self.by.any(|by| matches!(by, RankingBy::Competition(_)))
+    }
+
+    #[must_use]
+    pub fn event_scope(&self) -> Option<&str> {
+        match self.movement {
+            RankingMovement::ClassicTotal => Some(osl_domain::CLASSIC_EVENT),
+            RankingMovement::Total | RankingMovement::Ris => self.event.as_deref(),
+            RankingMovement::Muscleup
+            | RankingMovement::Pullup
+            | RankingMovement::Dips
+            | RankingMovement::Squat
+            | RankingMovement::Name => None,
+        }
     }
 }
 

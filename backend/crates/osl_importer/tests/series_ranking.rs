@@ -30,7 +30,7 @@ async fn ranks_best_result_within_selected_series_before_search_and_pagination(p
         name: None,
         movement: RankingMovement::Total,
         direction: SortDirection::Desc,
-        event: osl_domain::FULL_EVENT.into(),
+        event: Some(osl_domain::FULL_EVENT.into()),
         offset: 0,
         limit: 1,
     };

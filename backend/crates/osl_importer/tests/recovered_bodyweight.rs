@@ -237,7 +237,7 @@ async fn recomputes_recovered_scores_with_current_edition(pool: PgPool) {
         name: None,
         movement: RankingMovement::Ris,
         direction: SortDirection::Desc,
-        event: osl_domain::FULL_EVENT.into(),
+        event: Some(osl_domain::FULL_EVENT.into()),
         offset: 0,
         limit: 10,
     };

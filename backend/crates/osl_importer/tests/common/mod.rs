@@ -82,6 +82,17 @@ pub fn men_80(athletes: Vec<AthleteData>) -> CategoryData {
     category(WeightClassSlug::M80, athletes)
 }
 
+pub fn classic_competition(slug: &str, athletes: Vec<AthleteData>) -> CanonicalFormat {
+    let mut canonical = competition(slug, vec![men_80(athletes)]);
+    canonical.movements = vec![Movement::PullUp, Movement::Dips];
+    canonical
+}
+
+pub fn classic_athlete(first: &str, last: &str, pull_up: &str, dips: &str) -> AthleteData {
+    let athlete = best(athlete(first, last), Movement::PullUp, pull_up);
+    best(athlete, Movement::Dips, dips)
+}
+
 pub fn in_division(mut category: CategoryData, division: &str) -> CategoryData {
     category.division = Some(division.to_string());
     category
