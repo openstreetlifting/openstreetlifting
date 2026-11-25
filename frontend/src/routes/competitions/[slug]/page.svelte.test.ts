@@ -182,43 +182,46 @@ it.each([
   ['DCSV', true],
   ['MACHBAR', true],
   ['Organizer', false],
-])('shows age and bodyweight columns for %s results: %s', async (federation, shown) => {
-  const results = data('completed');
-  results.competition.federation.name = federation;
-  results.competition.categories[0].participants = [
-    {
-      participant_id: 'entry',
-      athlete: {
-        athlete_id: 'athlete',
-        first_name: 'Ada',
-        last_name: 'Lovelace',
-        gender: 'M',
-        country: 'DE',
-        slug: 'ada-lovelace',
+])(
+  'shows age for %s results: %s, and bodyweight for every federation',
+  async (federation, shown) => {
+    const results = data('completed');
+    results.competition.federation.name = federation;
+    results.competition.categories[0].participants = [
+      {
+        participant_id: 'entry',
+        athlete: {
+          athlete_id: 'athlete',
+          first_name: 'Ada',
+          last_name: 'Lovelace',
+          gender: 'M',
+          country: 'DE',
+          slug: 'ada-lovelace',
+        },
+        age: 27,
+        bodyweight: '79.3',
+        rank: null,
+        ris_score: null,
+        ris_source: null,
+        status: 'competed',
+        status_reason: null,
+        lifts: [],
+        total: null,
+        total_record: null,
       },
-      age: 27,
-      bodyweight: '79.3',
-      rank: null,
-      ris_score: null,
-      ris_source: null,
-      status: 'competed',
-      status_reason: null,
-      lifts: [],
-      total: null,
-      total_record: null,
-    },
-  ];
-  render(CompetitionPage, { data: results });
-  await expect.element(page.getByRole('link', { name: 'Ada Lovelace' })).toBeVisible();
-  const text = (selector: string) =>
-    [...document.querySelectorAll(selector)].map((element) =>
-      element.textContent?.replace(/\s+/g, ' ').trim()
-    );
-  expect(text('th').includes('Age')).toBe(shown);
-  expect(text('th').includes('Bodyweight kg')).toBe(shown);
-  expect(text('td').includes('27')).toBe(shown);
-  expect(text('td').includes('79.3')).toBe(shown);
-});
+    ];
+    render(CompetitionPage, { data: results });
+    await expect.element(page.getByRole('link', { name: 'Ada Lovelace' })).toBeVisible();
+    const text = (selector: string) =>
+      [...document.querySelectorAll(selector)].map((element) =>
+        element.textContent?.replace(/\s+/g, ' ').trim()
+      );
+    expect(text('th').includes('Age')).toBe(shown);
+    expect(text('th').includes('Bodyweight kg')).toBe(true);
+    expect(text('td').includes('27')).toBe(shown);
+    expect(text('td').includes('79.3')).toBe(true);
+  }
+);
 
 it('switches between division boards and lists how each division is ranked', async () => {
   const results = data('completed');

@@ -120,12 +120,10 @@
     competition.categories.some(({ category }) => category.weight_class !== '')
   );
 
-  // As of 16/11/2026, only DCSV and MACHBAR have authorized me to show the age and
-  // bodyweight of competitors for all the competitions they organize.
+  // As of 16/11/2026, only DCSV and MACHBAR have authorized me to show the age of
+  // competitors for all the competitions they organize.
   const AGE_FEDERATIONS = new Set(['DCSV', 'MACHBAR']);
-  const BODYWEIGHT_FEDERATIONS = new Set(['DCSV', 'MACHBAR']);
   const showAge = $derived(AGE_FEDERATIONS.has(competition.federation.name));
-  const showBodyweight = $derived(BODYWEIGHT_FEDERATIONS.has(competition.federation.name));
 
   const table = new RankingsTable({
     basePath: () => `/competitions/${data.competition.slug}`,
@@ -767,12 +765,10 @@
             {#if showAge}
               <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Age')}</th>
             {/if}
-            {#if showBodyweight}
-              <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary">
-                {i18n.t('Bodyweight')}
-                <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
-              </th>
-            {/if}
+            <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary">
+              {i18n.t('Bodyweight')}
+              <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
+            </th>
           {/snippet}
 
           {#snippet body(rows)}
@@ -889,7 +885,7 @@
                   </td>
                 {/if}
                 {#if showAge}{@render ageCell(participant)}{/if}
-                {#if showBodyweight}{@render bodyweightCell(participant)}{/if}
+                {@render bodyweightCell(participant)}
               </tr>
             {/each}
 
@@ -989,7 +985,7 @@
                   </td>
                 {/if}
                 {#if showAge}{@render ageCell(participant)}{/if}
-                {#if showBodyweight}{@render bodyweightCell(participant)}{/if}
+                {@render bodyweightCell(participant)}
               </tr>
             {/each}
           {/snippet}
