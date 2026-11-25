@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.81.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.80.1...v0.81.0) (2026-11-23)
+
+
+### Features
+
+* **data:** rename BSLC federation, import BSLC 2023, announce BSLC Rookie 2026 ([#1098](https://github.com/openstreetlifting/openstreetlifting/issues/1098)) ([bbb0002](https://github.com/openstreetlifting/openstreetlifting/commit/bbb0002e890e0c0469fd609e432fdae0d809e6d9))
+
+
+### Bug Fixes
+
+* **data:** rename Colin Schwerdtfeger to Colin Florschütz ([5c35f3e](https://github.com/openstreetlifting/openstreetlifting/commit/5c35f3e2fcea3082aa47c8064ade6e56f44a517a))
+* **deps:** update frontend dependencies ([#1091](https://github.com/openstreetlifting/openstreetlifting/issues/1091)) ([cdc4abc](https://github.com/openstreetlifting/openstreetlifting/commit/cdc4abcfa5076683f102a838afe80bfd9e7e5bba))
+
 ## [0.80.1](https://github.com/openstreetlifting/openstreetlifting/compare/v0.80.0...v0.80.1) (2026-11-23)
 
 

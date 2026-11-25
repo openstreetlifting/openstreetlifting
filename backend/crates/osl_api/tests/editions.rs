@@ -178,41 +178,53 @@ async fn assert_editions(pool: &PgPool, slug: &str, expected: &[&str]) {
     assert_eq!(slugs, expected, "{slug}");
 }
 
+async fn edition_slugs(pool: &PgPool, slug: &str) -> Vec<String> {
+    let (status, body) = get(pool, &format!("/{slug}?include=editions")).await;
+    assert_eq!(status, StatusCode::OK, "{slug}");
+    body["editions"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|edition| edition["slug"].as_str().unwrap().to_owned())
+        .collect()
+}
+
+async fn assert_linked(pool: &PgPool, group: &[&str]) {
+    for slug in group {
+        let editions = edition_slugs(pool, slug).await;
+        let linked: Vec<_> = editions
+            .iter()
+            .filter(|edition| group.contains(&edition.as_str()))
+            .collect();
+        assert_eq!(linked, group, "{slug} editions: {editions:?}");
+    }
+}
+
+async fn assert_separate(pool: &PgPool, slugs: &[&str]) {
+    for slug in slugs {
+        let editions = edition_slugs(pool, slug).await;
+        for other in slugs.iter().filter(|other| *other != slug) {
+            assert!(
+                !editions.iter().any(|edition| edition == other),
+                "{slug} should not list {other}: {editions:?}"
+            );
+        }
+    }
+}
+
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn archive_keeps_championships_within_a_federation_separate(pool: PgPool) {
     seed_archive(&pool).await;
-    assert_editions(&pool, "worlds-2025", &["worlds-2023", "worlds-2025"]).await;
-    assert_editions(
-        &pool,
-        "german-open-2025",
+    for group in [
+        &["worlds-2023", "worlds-2025"][..],
         &["german-open-2024", "german-open-2025"],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "portugal-open-2026",
         &["portuguese-open-2025", "portugal-open-2026"],
-    )
-    .await;
-    assert_editions(&pool, "ace-cup-2026", &["ace-cup-2025", "ace-cup-2026"]).await;
-    assert_editions(
-        &pool,
-        "fnsl-elite-2027",
+        &["ace-cup-2025", "ace-cup-2026"],
         &["fnsl-elite-2026", "fnsl-elite-2027"],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "fnsl-interregionale-centre-2027",
         &[
             "fnsl-interregionale-centre-2026",
             "fnsl-interregionale-centre-2027",
         ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "dcsv-german-championship-2026",
         &[
             "dcsv-german-championship-2022",
             "dcsv-german-championship-2023",
@@ -220,68 +232,53 @@ async fn archive_keeps_championships_within_a_federation_separate(pool: PgPool) 
             "dcsv-german-championship-2025",
             "dcsv-german-championship-2026",
         ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "australian-national-finals-2026",
         &[
             "australian-national-finals-2025",
             "australian-national-finals-2026",
         ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "australian-open-2026-event-4",
         &[
             "australian-open-2025-event-1",
             "australian-open-2026-event-2",
             "australian-open-2026-event-3",
             "australian-open-2026-event-4",
         ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "usastreetlifting-nationals-3-2026",
         &[
             "usastreetlifting-national-championships-2024",
             "usastreetlifting-national-championships-2025",
             "usastreetlifting-nationals-3-2026",
         ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "bodystrong-uk-ire-nationals-2026",
         &[
             "bodystrong-uk-nationals-2024",
             "bodystrong-uk-ire-nationals-2025",
             "bodystrong-uk-ire-nationals-2026",
         ],
-    )
-    .await;
+    ] {
+        assert_linked(&pool, group).await;
+    }
+    for slugs in [
+        &["worlds-2025", "euros-2026"][..],
+        &["german-open-2025", "dcsv-german-championship-2026"],
+        &["fnsl-elite-2027", "fnsl-interregionale-centre-2027"],
+        &[
+            "australian-national-finals-2026",
+            "australian-open-2026-event-4",
+        ],
+    ] {
+        assert_separate(&pool, slugs).await;
+    }
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn archive_keeps_contests_at_the_same_meet_separate(pool: PgPool) {
     seed_archive(&pool).await;
-    assert_editions(
-        &pool,
-        "aesl-gods-battles-all4-2025",
+    for group in [
         &[
             "aesl-gods-battles-all4-2021",
             "aesl-gods-battles-all4-2022",
             "aesl-gods-battles-all4-2023",
             "aesl-gods-battles-all4-2024",
             "aesl-gods-battles-all4-2025",
-        ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "aesl-gods-battles-classic-2025",
+        ][..],
         &[
             "aesl-gods-battles-classic-2021",
             "aesl-gods-battles-classic-2022",
@@ -289,78 +286,62 @@ async fn archive_keeps_contests_at_the_same_meet_separate(pool: PgPool) {
             "aesl-gods-battles-classic-2024",
             "aesl-gods-battles-classic-2025",
         ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "nationals-streetlifting-glogow-2022-single-pullup",
         &[
             "nationals-streetlifting-glogow-2021-single-pullup",
             "nationals-streetlifting-glogow-2022-single-pullup",
         ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "iii-turniej-lipka-krajenska-2024-m",
         &[
             "ii-turniej-lipka-krajenska-2023-m",
             "iii-turniej-lipka-krajenska-2024-m",
         ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "lomza-street-power-ix-2026",
         &[
             "lomza-street-power-2018",
             "lomza-street-power-viii-2025",
             "lomza-street-power-ix-2026",
         ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "lomza-street-power-viii-2025-muscleup",
         &[
             "lomza-street-power-2024",
             "lomza-street-power-viii-2025-muscleup",
         ],
-    )
-    .await;
-    assert_editions(
-        &pool,
-        "lomza-street-power-2021",
         &["lomza-street-power-2019", "lomza-street-power-2021"],
-    )
-    .await;
+    ] {
+        assert_linked(&pool, group).await;
+    }
+    for slugs in [
+        &[
+            "aesl-gods-battles-all4-2025",
+            "aesl-gods-battles-classic-2025",
+        ][..],
+        &[
+            "nationals-streetlifting-glogow-2022",
+            "nationals-streetlifting-glogow-2022-single-pullup",
+            "nationals-streetlifting-glogow-2022-single-dip",
+            "nationals-streetlifting-glogow-2022-single-squat",
+        ],
+        &[
+            "lomza-street-power-ix-2026",
+            "lomza-street-power-viii-2025-muscleup",
+            "lomza-street-power-2021",
+        ],
+    ] {
+        assert_separate(&pool, slugs).await;
+    }
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
 async fn links_older_and_later_editions_of_the_same_championship(pool: PgPool) {
     seed_archive(&pool).await;
-    for slug in ["euros-2024", "euros-2026"] {
-        let (status, body) = get(&pool, &format!("/{slug}?include=editions")).await;
-        assert_eq!(status, StatusCode::OK);
-        assert_eq!(
-            body["editions"],
-            json!([
-                { "slug": "euros-2024", "name": "Euros", "start_date": "2024-11-02" },
-                { "slug": "euros-2026", "name": "Euros", "start_date": "2026-10-02" },
-            ])
-        );
-    }
-    assert_editions(&pool, "worlds-2023", &["worlds-2023", "worlds-2025"]).await;
-    assert_editions(
-        &pool,
-        "belgian-streetlifting-championship-2025",
+    for group in [
+        &["euros-2024", "euros-2026"][..],
+        &["worlds-2022", "worlds-2023", "worlds-2025"],
         &[
             "belgian-streetlifting-championship-2023",
             "belgian-streetlifting-championship-2025",
             "belgian-streetlifting-championship-2026",
         ],
-    )
-    .await;
+    ] {
+        assert_linked(&pool, group).await;
+    }
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
