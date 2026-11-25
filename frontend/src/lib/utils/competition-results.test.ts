@@ -4,10 +4,7 @@ import {
   competitionDivisions,
   contestSummary,
   hasRankingResult,
-  sharedRankBy,
   weightClasses,
-  rankScope,
-  type ContestGroup,
 } from './competition-results';
 
 it('lists classes once per sex in weight order across divisions using the published labels', () => {
@@ -142,37 +139,30 @@ it('describes each division by its contests and how they were ranked', () => {
     {
       name: 'Open',
       groups: [
-        { gender: 'M', classes: ['-66kg', '+87kg'], allWeights: false, rankBy: 'total' },
         { gender: 'F', classes: [], allWeights: true, rankBy: 'total' },
+        { gender: 'M', classes: ['-66kg', '+87kg'], allWeights: false, rankBy: 'total' },
       ],
-      classed: true,
-      rankBy: 'total',
     },
     {
       name: 'FNSL Elite',
       groups: [{ gender: 'MX', classes: [], allWeights: true, rankBy: 'ris' }],
-      classed: false,
-      rankBy: 'ris',
     },
     {
       name: 'FNSL Masters',
       groups: [{ gender: 'M', classes: [], allWeights: true, rankBy: 'ris' }],
-      classed: false,
-      rankBy: 'ris',
     },
   ]);
-  expect(sharedRankBy(summary)).toBeNull();
 });
 
-it('summarizes a meet without divisions as one contest list with its shared rule', () => {
+it('summarizes a meet without divisions as one list of fields, women first', () => {
   const summary = contestSummary([
     contest(null, 'M', '-80kg', 'total'),
     contest(null, 'F', '-63kg', 'total'),
   ]);
 
   expect(summary).toHaveLength(1);
-  expect(summary[0]).toMatchObject({ name: null, classed: true, rankBy: 'total' });
-  expect(sharedRankBy(summary)).toBe('total');
+  expect(summary[0].name).toBeNull();
+  expect(summary[0].groups.map(({ gender }) => gender)).toEqual(['F', 'M']);
 });
 
 it('keeps a rule per sex when one division ranked its sexes differently', () => {
@@ -181,23 +171,8 @@ it('keeps a rule per sex when one division ranked its sexes differently', () => 
     contest(null, 'F', '', 'ris'),
   ]);
 
-  expect(division.rankBy).toBeNull();
   expect(division.groups.map(({ gender, rankBy }) => [gender, rankBy])).toEqual([
-    ['M', 'total'],
     ['F', 'ris'],
+    ['M', 'total'],
   ]);
-});
-
-it('names the field each contest was ranked within', () => {
-  const group = (gender: ContestGroup['gender'], classes: string[]): ContestGroup => ({
-    gender,
-    classes,
-    allWeights: classes.length === 0,
-    rankBy: 'total',
-  });
-
-  expect(rankScope([group('M', ['-80kg']), group('F', [])])).toBe('class');
-  expect(rankScope([group('M', []), group('F', [])])).toBe('sex');
-  expect(rankScope([group('M', [])])).toBeNull();
-  expect(rankScope([group('MX', [])])).toBeNull();
 });

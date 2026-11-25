@@ -295,7 +295,6 @@ export default {
   'Ranked by': 'Classifica',
   Divisions: 'Divisioni',
   '{division}, ranked by {metric}': '{division}, classifica: {metric}',
-  'RIS {year}': 'RIS {year}',
   Recomputed: 'Ricalcolato',
   Reported: 'Pubblicato',
   Computed: 'Calcolato',
@@ -306,10 +305,10 @@ export default {
     'La fonte non riporta punteggi RIS pubblicati.',
   'RIS scores are unavailable because the required bodyweight or total is missing.':
     'I punteggi RIS non sono disponibili: manca il peso corporeo o il totale necessario per calcolarli.',
-  'No weight classes': 'Nessuna categoria di peso',
-  '{rule} within each weight class': '{rule} per categoria di peso',
-  '{rule} within each sex': '{rule} per sesso',
-  Unclassed: 'Senza categoria',
+  '{rule}, by weight class:': '{rule}, per categoria di peso:',
+  '{rule}, open weight': '{rule}, senza categorie di peso',
+  'open weight': 'senza categoria',
+  'Men and women': 'Uomini e donne',
   'Edit competition on GitHub': 'Modifica la gara su GitHub',
   'Results are not available yet.': 'I risultati non sono ancora disponibili.',
   'Results will appear here once they are published.':

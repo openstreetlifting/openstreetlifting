@@ -67,8 +67,6 @@
   import {
     contestSummary,
     hasRankingResult,
-    rankScope,
-    sharedRankBy,
     type ContestGroup,
     type DivisionSummary,
   } from '#lib/utils/competition-results.js';
@@ -321,24 +319,12 @@
   // appear in several divisions but only needs to be listed once per sex.
   const summary = $derived(contestSummary(competition.categories));
   const divisioned = $derived(summary.length > 1);
-  const overallRankBy = $derived(sharedRankBy(summary));
   const activeSummary = $derived(
     divisioned ? summary.find((division) => division.name === data.activeDivision) : undefined
   );
-  const risLabel = $derived(
-    data.formula ? i18n.t('RIS {year}', { year: data.formula.year }) : 'RIS'
-  );
-  const rule = (rankBy: RankBy) => (rankBy === 'ris' ? risLabel : i18n.t('Total'));
-  const scoped = (rankBy: RankBy, groups: ContestGroup[]) => {
-    const scope = rankScope(groups);
-    return scope === 'class'
-      ? i18n.t('{rule} within each weight class', { rule: rule(rankBy) })
-      : scope === 'sex'
-        ? i18n.t('{rule} within each sex', { rule: rule(rankBy) })
-        : rule(rankBy);
-  };
+  const rule = (rankBy: RankBy) => (rankBy === 'ris' ? 'RIS' : i18n.t('Total'));
   const who = (group: ContestGroup) =>
-    i18n.t(({ M: 'Men', F: 'Women', MX: 'Mixed' } as const)[group.gender]);
+    i18n.t(({ M: 'Men', F: 'Women', MX: 'Men and women' } as const)[group.gender]);
 
   // Missing scores have no rank, but their entries still belong in the results.
   const NOT_PLACED_ORDER: AthleteStatus[] = ['competed', 'disqualified', 'no_show'];
@@ -431,25 +417,13 @@
 {/snippet}
 
 {#snippet rules(division: DivisionSummary)}
-  <Detail label={i18n.t('Ranked by')} class={division.rankBy ? '' : 'grid gap-y-1.5'}>
-    {#if division.rankBy}
-      {scoped(division.rankBy, division.groups)}
-    {:else}
-      {#each division.groups as group (group.gender)}
-        <p class="flex flex-col gap-x-2 sm:flex-row">
-          <span class="shrink-0 text-muted sm:min-w-14">{who(group)}</span>
-          <span>{group.rankBy ? scoped(group.rankBy, [group]) : '—'}</span>
-        </p>
-      {/each}
-    {/if}
-  </Detail>
   {#each division.groups as group (group.gender)}
-    <Detail label={who(group)}>
-      {#if group.classes.length === 0}
-        {i18n.t('No weight classes')}
-      {:else}
+    {@const rankedBy = group.rankBy ? rule(group.rankBy) : '—'}
+    <Detail label={who(group)} class="flex flex-wrap gap-x-3 gap-y-1">
+      {#if group.classes.length > 0}
+        <span>{i18n.t('{rule}, by weight class:', { rule: rankedBy })}</span>
         <span
-          class="flex flex-wrap gap-x-3 gap-y-1"
+          class="contents"
           role="list"
           aria-label={i18n.t("{category}'s weight classes", { category: who(group) })}
         >
@@ -459,9 +433,13 @@
             </span>
           {/each}
           {#if group.allWeights}
-            <span role="listitem" class="whitespace-nowrap">{i18n.t('Unclassed')}</span>
+            <span role="listitem" class="whitespace-nowrap">{i18n.t('open weight')}</span>
           {/if}
         </span>
+      {:else if group.rankBy === 'total'}
+        {i18n.t('{rule}, open weight', { rule: rankedBy })}
+      {:else}
+        {rankedBy}
       {/if}
     </Detail>
   {/each}
@@ -578,9 +556,6 @@
             <Detail label={i18n.t('Ranked by')}>{rule(competition.rank_by)}</Detail>
           {/if}
         {:else if divisioned}
-          {#if overallRankBy}
-            <Detail label={i18n.t('Ranked by')}>{rule(overallRankBy)}</Detail>
-          {/if}
           <Detail label={i18n.t('Divisions')}>
             {data.divisions.map((division) => division.name).join(', ')}
           </Detail>

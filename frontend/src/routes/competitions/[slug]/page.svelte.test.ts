@@ -267,33 +267,59 @@ it('switches between division boards and lists how each division is ranked', asy
         term.nextElementSibling?.textContent?.replace(/\s+/g, ' ').trim(),
       ])
     );
-  await expect.element(page.getByText('RIS 2026')).toBeVisible();
+  await expect.element(page.getByText('RIS', { exact: true })).toBeVisible();
   expect(pairs()).toContainEqual([
     ['Format', expect.any(String)],
     ['Divisions', 'Open, FNSL Elite'],
   ]);
-  expect(pairs()).toContainEqual([
-    ['Ranked by', 'RIS 2026'],
-    ['Mixed', 'No weight classes'],
-  ]);
-  expect(
-    pairs()
-      .flat()
-      .map(([term]) => term)
-  ).not.toContain('Division');
-  expect(
-    pairs()
-      .flat()
-      .filter(([term]) => term === 'Ranked by')
-  ).toHaveLength(1);
+  expect(pairs()).toContainEqual([['Men and women', 'RIS']]);
+  const terms = pairs()
+    .flat()
+    .map(([term]) => term);
+  expect(terms).not.toContain('Division');
+  expect(terms).not.toContain('Ranked by');
 });
 
-it('states one rule and the weight classes for a meet without divisions', async () => {
+const fieldRows = () =>
+  [...document.querySelectorAll('dt')]
+    .map((term) => [
+      term.textContent?.trim(),
+      term.nextElementSibling?.textContent?.replace(/\s+/g, ' ').trim(),
+    ])
+    .filter(([term]) => ['Women', 'Men', 'Men and women'].includes(term ?? ''));
+
+const field = (gender: 'M' | 'F' | 'MX', weight_class: string, rank_by: 'total' | 'ris') => ({
+  category: { name: '', gender, weight_class, division: null, rank_by },
+  participants: [],
+});
+
+it('states each field on one line with its rule and weight classes', async () => {
   render(CompetitionPage, { data: data('completed') });
 
   await expect.element(page.getByRole('list', { name: "Men's weight classes" })).toBeVisible();
   const terms = [...document.querySelectorAll('dt')].map((term) => term.textContent?.trim());
-  expect(terms).toContain('Ranked by');
+  expect(terms).not.toContain('Ranked by');
   expect(terms).not.toContain('Division');
-  await expect.element(page.getByText('Total within each weight class')).toBeVisible();
+  expect(fieldRows()).toEqual([['Men', expect.stringMatching(/^Total, by weight class: .80kg$/)]]);
+});
+
+it('lists women first and names only the rule for open fields ranked by RIS', async () => {
+  const results = data('completed');
+  results.competition.categories = [field('M', '', 'ris'), field('F', '', 'ris')];
+  render(CompetitionPage, { data: results });
+
+  await expect.element(page.getByRole('banner').getByText('Women', { exact: true })).toBeVisible();
+  expect(fieldRows()).toEqual([
+    ['Women', 'RIS'],
+    ['Men', 'RIS'],
+  ]);
+});
+
+it('says open weight when an open field is ranked by total', async () => {
+  const results = data('completed');
+  results.competition.categories = [field('F', '', 'total')];
+  render(CompetitionPage, { data: results });
+
+  await expect.element(page.getByText('Total, open weight')).toBeVisible();
+  expect(fieldRows()).toEqual([['Women', 'Total, open weight']]);
 });

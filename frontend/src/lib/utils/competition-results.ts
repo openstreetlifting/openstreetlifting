@@ -1,11 +1,5 @@
 import type { CategoryDetail, Participant } from '#lib/types/competition.js';
-import {
-  GENDERS,
-  type Gender,
-  type Movement,
-  type RankBy,
-  type RankingMetric,
-} from '#lib/types/enums.js';
+import { type Gender, type Movement, type RankBy, type RankingMetric } from '#lib/types/enums.js';
 
 /** Class labels are shared across divisions; capped classes precede open classes. */
 export function weightClasses(categories: CategoryDetail[], gender: Gender): string[] {
@@ -68,15 +62,15 @@ export type ContestGroup = {
 export type DivisionSummary = {
   name: string | null;
   groups: ContestGroup[];
-  classed: boolean;
-  rankBy: RankBy | null;
 };
+
+const FIELD_ORDER: Gender[] = ['F', 'M', 'MX'];
 
 const shared = <T>(values: T[]): T | null =>
   values.length > 0 && values.every((value) => value === values[0]) ? values[0] : null;
 
 function summarize(name: string | null, categories: CategoryDetail[]): DivisionSummary {
-  const groups = GENDERS.flatMap((gender) => {
+  const groups = FIELD_ORDER.flatMap((gender) => {
     const contests = categories.filter(({ category }) => category.gender === gender);
     if (contests.length === 0) return [];
     return [
@@ -88,12 +82,7 @@ function summarize(name: string | null, categories: CategoryDetail[]): DivisionS
       },
     ];
   });
-  return {
-    name,
-    groups,
-    classed: groups.some((group) => group.classes.length > 0),
-    rankBy: shared(categories.map(({ category }) => category.rank_by)),
-  };
+  return { name, groups };
 }
 
 /** One entry per division, in the order of the division switcher; a meet without divisions has one. */
@@ -106,18 +95,4 @@ export function contestSummary(categories: CategoryDetail[]): DivisionSummary[] 
       categories.filter(({ category }) => category.division === name)
     )
   );
-}
-
-/** The rule every contest shares, or null when divisions or sexes were ranked differently. */
-export function sharedRankBy(summary: DivisionSummary[]): RankBy | null {
-  return shared(summary.map((division) => division.rankBy));
-}
-
-export type RankScope = 'class' | 'sex' | null;
-
-/** Contests are split by weight class where any exist, otherwise by sex unless men and women met in one field. */
-export function rankScope(groups: ContestGroup[]): RankScope {
-  if (groups.some((group) => group.classes.length > 0)) return 'class';
-  if (groups.length > 1 && groups.every((group) => group.gender !== 'MX')) return 'sex';
-  return null;
 }
