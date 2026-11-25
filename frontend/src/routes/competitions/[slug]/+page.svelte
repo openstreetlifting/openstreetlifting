@@ -5,6 +5,7 @@
     MIN_POINTS,
     type BodyweightPoint,
   } from '#lib/components/competition-bodyweight.svelte';
+  import CompetitionAttempts, { MIN_ATTEMPTS } from '#lib/components/competition-attempts.svelte';
   import SegmentedControl from '#lib/components/ui/segmented-control.svelte';
   import Button from '#lib/components/ui/button.svelte';
   import { LAYOUT } from '#lib/constants/layout.js';
@@ -65,6 +66,7 @@
   import type { Attempt, Participant, CategoryDetail } from '#lib/types/competition.js';
   import { asRankingMetric, type AthleteStatus, type RankBy } from '#lib/types/enums.js';
   import {
+    attemptSuccess,
     contestSummary,
     hasRankingResult,
     type ContestGroup,
@@ -217,8 +219,14 @@
     return best === null ? { kind: 'bombed' } : { kind: 'best', best, record };
   }
 
+  const charted = $derived(
+    data.activeDivision
+      ? competition.categories.filter(({ category }) => category.division === data.activeDivision)
+      : competition.categories
+  );
+
   const bodyweightPoints = $derived(
-    competition.categories.flatMap((category) =>
+    charted.flatMap((category) =>
       category.category.gender === 'MX'
         ? []
         : category.participants.flatMap((participant): BodyweightPoint[] => {
@@ -237,6 +245,17 @@
               : [];
           })
     )
+  );
+
+  const bodyweightCharted = $derived(data.formula != null && bodyweightPoints.length >= MIN_POINTS);
+  const attemptRates = $derived(
+    attemptSuccess(
+      charted,
+      competition.movements.map(({ movement_name }) => movement_name)
+    )
+  );
+  const attemptsCharted = $derived(
+    attemptRates.some((rate) => rate.attempt === 1 && rate.taken >= MIN_ATTEMPTS)
   );
 
   const withAttempts = $derived(
@@ -977,9 +996,18 @@
         </Table>
       {/if}
     </section>
-    {#if data.formula && bodyweightPoints.length >= MIN_POINTS}
-      <div class="mt-section">
-        <CompetitionBodyweight points={bodyweightPoints} formula={data.formula} />
+    {#if bodyweightCharted || attemptsCharted}
+      <div
+        class="mt-section grid gap-tile {bodyweightCharted && attemptsCharted
+          ? 'lg:grid-cols-2'
+          : ''}"
+      >
+        {#if bodyweightCharted && data.formula}
+          <CompetitionBodyweight points={bodyweightPoints} formula={data.formula} />
+        {/if}
+        {#if attemptsCharted}
+          <CompetitionAttempts rates={attemptRates} />
+        {/if}
       </div>
     {/if}
   {/if}

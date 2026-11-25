@@ -368,6 +368,12 @@ export default {
   'in category {category}': 'dans la catégorie {category}',
   'Attempt {slot}: {weight} {unit}, {result}': 'Essai {slot} : {weight} {unit}, {result}',
   'Attempt {slot} not recorded': 'Essai {slot} non renseigné',
+  'Attempt success': 'Réussite des essais',
+  'About attempt success': 'À propos de la réussite des essais',
+  'Attempt {number}': 'Essai {number}',
+  '{made} of {taken}': '{made} sur {taken}',
+  'The share of first, second and third attempts judged good, for each movement. Every recorded attempt counts.':
+    'La part des premiers, deuxièmes et troisièmes essais validés, pour chaque mouvement. Chaque essai enregistré compte.',
   'good lift': 'validé',
   'no lift': 'non validé',
   'No successful {movement}': 'Aucun essai validé : {movement}',

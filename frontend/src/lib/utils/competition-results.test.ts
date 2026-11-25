@@ -2,6 +2,7 @@ import { expect, it } from 'vitest';
 import type { CategoryDetail, Participant } from '#lib/types/competition.js';
 import {
   competitionDivisions,
+  attemptSuccess,
   contestSummary,
   hasRankingResult,
   weightClasses,
@@ -174,5 +175,34 @@ it('keeps a rule per sex when one division ranked its sexes differently', () => 
   expect(division.groups.map(({ gender, rankBy }) => [gender, rankBy])).toEqual([
     ['F', 'ris'],
     ['M', 'total'],
+  ]);
+});
+
+it('counts made and taken attempts per movement and attempt number', () => {
+  const lift = (movement_name: 'Pull-up' | 'Dips', made: boolean[]) => ({
+    movement_name,
+    best_weight: null,
+    record: null,
+    attempts: made.map((is_successful, index) => ({
+      attempt_number: index + 1,
+      is_successful,
+      weight: '50',
+    })),
+  });
+  const field: CategoryDetail = {
+    category: { name: '', division: null, gender: 'M', weight_class: '', rank_by: 'ris' },
+    participants: [
+      result({ lifts: [lift('Pull-up', [true, true, false]), lift('Dips', [true])] }),
+      result({ status: 'disqualified', lifts: [lift('Pull-up', [true, false, false])] }),
+    ],
+  };
+
+  expect(attemptSuccess([field], ['Pull-up', 'Dips'])).toEqual([
+    { movement: 'Pull-up', attempt: 1, made: 2, taken: 2 },
+    { movement: 'Pull-up', attempt: 2, made: 1, taken: 2 },
+    { movement: 'Pull-up', attempt: 3, made: 0, taken: 2 },
+    { movement: 'Dips', attempt: 1, made: 1, taken: 1 },
+    { movement: 'Dips', attempt: 2, made: 0, taken: 0 },
+    { movement: 'Dips', attempt: 3, made: 0, taken: 0 },
   ]);
 });

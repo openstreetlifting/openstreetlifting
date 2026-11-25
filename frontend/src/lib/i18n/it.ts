@@ -368,6 +368,12 @@ export default {
   'in category {category}': 'nella categoria {category}',
   'Attempt {slot}: {weight} {unit}, {result}': 'Tentativo {slot}: {weight} {unit}, {result}',
   'Attempt {slot} not recorded': 'Tentativo {slot} non registrato',
+  'Attempt success': 'Riuscita delle prove',
+  'About attempt success': 'Informazioni sulla riuscita delle prove',
+  'Attempt {number}': 'Prova {number}',
+  '{made} of {taken}': '{made} su {taken}',
+  'The share of first, second and third attempts judged good, for each movement. Every recorded attempt counts.':
+    'La quota di prime, seconde e terze prove valide, per ogni movimento. Conta ogni prova registrata.',
   'good lift': 'valido',
   'no lift': 'nullo',
   'No successful {movement}': 'Nessun tentativo valido: {movement}',

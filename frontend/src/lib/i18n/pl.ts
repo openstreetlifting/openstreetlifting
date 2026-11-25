@@ -366,6 +366,12 @@ export default {
   'in category {category}': 'w kategorii {category}',
   'Attempt {slot}: {weight} {unit}, {result}': 'Podejście {slot}: {weight} {unit}, {result}',
   'Attempt {slot} not recorded': 'Nie zapisano podejścia {slot}',
+  'Attempt success': 'Skuteczność podejść',
+  'About attempt success': 'O skuteczności podejść',
+  'Attempt {number}': 'Podejście {number}',
+  '{made} of {taken}': '{made} z {taken}',
+  'The share of first, second and third attempts judged good, for each movement. Every recorded attempt counts.':
+    'Odsetek zaliczonych pierwszych, drugich i trzecich podejść w każdym ruchu. Liczy się każde zapisane podejście.',
   'good lift': 'zaliczone',
   'no lift': 'niezaliczone',
   'No successful {movement}': 'Brak zaliczonego podejścia: {movement}',
