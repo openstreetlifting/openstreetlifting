@@ -147,6 +147,10 @@
       rule={false}
       clip
       tooltipContext={interactive ? { mode: 'quadtree', touchEvents: 'pan-y' } : false}
+      highlight={{
+        lines: false,
+        points: { r: 4, fill: 'var(--color-ink)', stroke: 'var(--color-canvas)' },
+      }}
       props={{
         svg: { viewBox: `0 0 ${chartWidth} ${chartHeight}`, preserveAspectRatio: 'none' },
         xAxis: {
