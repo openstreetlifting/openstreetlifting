@@ -90,7 +90,7 @@ jobs:
           tool: sqlx-cli
       - name: Check competitions files are prepared
         working-directory: backend
-        run: cargo run --locked -p osl_importer --bin import -- prepare --check ./data/competitions ./data/staging/competitions
+        run: cargo run --locked -p osl_importer --bin import -- prepare --check ./data/competitions
       - name: Run migrations
         working-directory: backend
         run: sqlx migrate run --source crates/osl_db/migrations
@@ -102,8 +102,7 @@ jobs:
             args+=(--dry-run --skip-privacy-check)
           fi
           cargo run --locked -p osl_importer --bin import -- competitions \
-            ./data/competitions \
-            ./data/staging/competitions "${args[@]}"
+            ./data/competitions "${args[@]}"
       - name: Check nobody on the privacy list is named
         if: github.event_name == 'merge_group' || github.event.pull_request.head.repo.fork == false
         working-directory: backend
