@@ -12,7 +12,7 @@ done
 
 [ -f backend/.env ] || cp backend/.env.example backend/.env
 
-docker compose up -d --wait postgres
+docker-compose up -d --wait postgres
 (cd frontend && pnpm install --frozen-lockfile)
 
 if command -v watchexec >/dev/null; then
