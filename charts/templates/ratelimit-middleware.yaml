@@ -1,0 +1,21 @@
+{{- if .Values.ingress.rateLimit.enabled }}
+{{- range $target := list "frontend" "backend" }}
+{{- $limits := index $.Values.ingress.rateLimit $target }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: openstreetlifting-ratelimit-{{ $target }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "openstreetlifting.labels" $ | nindent 4 }}
+spec:
+  rateLimit:
+    average: {{ $limits.average }}
+    burst: {{ $limits.burst }}
+    period: 1s
+    sourceCriterion:
+      ipStrategy:
+        depth: {{ $.Values.ingress.rateLimit.ipDepth }}
+{{- end }}
+{{- end }}
