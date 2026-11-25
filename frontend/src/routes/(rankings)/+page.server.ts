@@ -27,15 +27,15 @@ export const load: PageServerLoad = async ({ url }) => {
       }),
       q && isEventScoped(movement)
         ? rankingsService
-          .getGlobalRankings({
-            page: 1,
-            page_size: 1,
-            movement: 'name',
-            direction,
-            ...filters,
-            q,
-          })
-          .catch(() => null)
+            .getGlobalRankings({
+              page: 1,
+              page_size: 1,
+              movement: 'name',
+              direction,
+              ...filters,
+              q,
+            })
+            .catch(() => null)
         : null,
     ]);
 
