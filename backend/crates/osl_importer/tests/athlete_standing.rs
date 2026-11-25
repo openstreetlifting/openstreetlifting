@@ -340,7 +340,7 @@ async fn matches_leaderboards_when_results_tie(pool: PgPool) {
                 name: None,
                 movement,
                 direction: SortDirection::Desc,
-                event: osl_domain::FULL_EVENT.to_string(),
+                event: Some(osl_domain::FULL_EVENT.to_string()),
                 offset: 0,
                 limit: 50,
             };

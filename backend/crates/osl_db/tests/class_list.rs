@@ -12,7 +12,7 @@ fn totals(by: impl Into<Filters<RankingBy>>) -> RankingFilter {
         name: None,
         movement: RankingMovement::Total,
         direction: SortDirection::Desc,
-        event: osl_domain::FULL_EVENT.to_string(),
+        event: Some(osl_domain::FULL_EVENT.to_string()),
         offset: 0,
         limit: 100,
     }

@@ -32,7 +32,7 @@
   import { formatDate, countryName, formatAthleteName } from '#lib/utils/index.js';
   import { CELL, FIGURE, NO_VALUE, SORTED_COLUMN, TEXT_CELL } from '#lib/constants/table.js';
   import { recordFor } from '#lib/utils/records.js';
-  import { RANKING_LIFTS, RANKING_SORTS, RANKING_GENDERS } from '#lib/constants/ranking.js';
+  import { RANKING_LIFTS, GLOBAL_RANKING_SORTS, RANKING_GENDERS } from '#lib/constants/ranking.js';
   import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
   import { RANKING_FILTERS } from '#lib/constants/filters.js';
   import { rememberRankings } from '#lib/state/rankings-return.svelte.js';
@@ -56,7 +56,7 @@
   const busy = $derived(loading.current);
 
   const lifts = RANKING_LIFTS;
-  const sorts = RANKING_SORTS;
+  const sorts = GLOBAL_RANKING_SORTS;
   const genders = RANKING_GENDERS;
 
   const seo = $derived(listingSeo(page.url));
@@ -80,7 +80,11 @@
       : table.filters.values.series
   );
 
-  const sorted = (column: string) => (table.movementFilter === column ? SORTED_COLUMN : '');
+  const sorted = (column: string) =>
+    table.movementFilter === column ||
+    (column === 'total' && table.movementFilter === 'classic_total')
+      ? SORTED_COLUMN
+      : '';
 </script>
 
 <Seo
@@ -189,6 +193,20 @@
       </SelectField>
     </FilterBar>
 
+    {#if data.otherEventAthletes > 0}
+      <p
+        class="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-stroke px-3 py-2 text-micro text-secondary"
+      >
+        {i18n.t('Also found in other events: {athletes}', {
+          athletes: i18n.count('athlete', data.otherEventAthletes),
+        })}
+        <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- pageHref returns a resolved URL -->
+        <a href={table.pageHref(1, table.search.applied, 'name')} class="underline hover:text-ink">
+          {i18n.t('Show every event')}
+        </a>
+      </p>
+    {/if}
+
     {#if data.error}
       <ResultState
         embedded
@@ -235,6 +253,7 @@
               {i18n.t(lift.label)}
             </th>
           {/each}
+          <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Event')}</th>
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Competition')}</th>
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Federation')}</th>
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Date')}</th>
@@ -317,6 +336,7 @@
                   mark={recordFor(entry.records, 'Squat')}
                 />
               </td>
+              <td class="{TABLE_CELL} {CELL.data}">{entry.event ?? NO_VALUE}</td>
               <td class="{TABLE_CELL} {CELL.data}">
                 <a
                   href={i18n.href(resolve(`competitions/${entry.competition.slug}`))}

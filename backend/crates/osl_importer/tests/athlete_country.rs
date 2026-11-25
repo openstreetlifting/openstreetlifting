@@ -162,7 +162,7 @@ async fn preserves_history_when_country_is_unknown(pool: PgPool) {
         name: None,
         movement: RankingMovement::Total,
         direction: SortDirection::Desc,
-        event: osl_domain::FULL_EVENT.into(),
+        event: Some(osl_domain::FULL_EVENT.into()),
         offset: 0,
         limit: 10,
     };

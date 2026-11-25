@@ -20,6 +20,9 @@ pub enum RankingMetric {
     Dips,
     Squat,
     Total,
+    #[serde(rename = "classic_total")]
+    ClassicTotal,
+    Name,
     #[default]
     Ris,
 }
@@ -32,6 +35,8 @@ impl From<RankingMetric> for RankingMovement {
             RankingMetric::Dips => Self::Dips,
             RankingMetric::Squat => Self::Squat,
             RankingMetric::Total => Self::Total,
+            RankingMetric::ClassicTotal => Self::ClassicTotal,
+            RankingMetric::Name => Self::Name,
             RankingMetric::Ris => Self::Ris,
         }
     }
@@ -52,6 +57,9 @@ pub struct GlobalRankingFilter {
     /// Series identifier, from the facets endpoint.
     pub series: Option<String>,
     /// Search on athlete name.
+    ///
+    /// Narrows the selected board and keeps each athlete's rank on it. To find
+    /// an athlete who only competed a shorter event, rank by `name`.
     pub q: Option<String>,
     /// Metric to rank on. Defaults to `ris`.
     #[serde(default)]
@@ -59,7 +67,7 @@ pub struct GlobalRankingFilter {
     /// Sort order. Defaults to `desc`.
     #[serde(default)]
     pub direction: Direction,
-    /// Event code. Defaults to `MPDS`.
+    /// Event code, such as `MPDS` or `PD`. Defaults to `MPDS`.
     #[param(example = "MPDS")]
     pub event: Option<String>,
     /// Weight class, such as `-80kg` or `+101kg`.
@@ -83,7 +91,19 @@ impl GlobalRankingFilter {
             WeightClass::from_str(category)?;
         }
 
+        if let Some(event) = self.requested_event() {
+            osl_domain::event::movements(&event)?;
+        }
+
         Ok(())
+    }
+
+    fn requested_event(&self) -> Option<String> {
+        self.event
+            .as_deref()
+            .map(str::trim)
+            .filter(|event| !event.is_empty())
+            .map(str::to_ascii_uppercase)
     }
 
     pub fn filters(&self) -> Filters<RankingBy> {
@@ -114,20 +134,28 @@ impl GlobalRankingFilter {
     }
 
     pub fn to_db_filter(&self) -> RankingFilter {
+        let name = self
+            .q
+            .as_deref()
+            .map(str::trim)
+            .filter(|query| !query.is_empty())
+            .map(str::to_string);
+        let movement: RankingMovement = self.movement.into();
+
+        let event = match movement {
+            RankingMovement::ClassicTotal | RankingMovement::Name => None,
+            _ => Some(
+                self.requested_event()
+                    .unwrap_or_else(|| osl_domain::FULL_EVENT.to_string()),
+            ),
+        };
+
         RankingFilter {
             by: self.filters(),
-            name: self
-                .q
-                .as_deref()
-                .map(str::trim)
-                .filter(|query| !query.is_empty())
-                .map(str::to_string),
-            movement: self.movement.into(),
+            name,
+            movement,
             direction: self.direction.into(),
-            event: self
-                .event
-                .clone()
-                .unwrap_or_else(|| osl_domain::FULL_EVENT.to_string()),
+            event,
             offset: self.pagination.offset(),
             limit: i64::from(self.pagination.limit()),
         }
@@ -336,4 +364,79 @@ impl GlobalRankingEntry {
 
 fn decimal_to_f64(decimal: Decimal) -> f64 {
     decimal.to_string().parse().unwrap_or(0.0)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::ranking::dto::{GlobalRankingFilter, RankingMetric};
+    use crate::shared::dto::{Direction, PaginationParams};
+    use osl_db::params::{RankingFilter, RankingMovement};
+
+    fn request(q: Option<&str>, movement: RankingMetric) -> RankingFilter {
+        GlobalRankingFilter {
+            pagination: PaginationParams {
+                page: 1,
+                page_size: 50,
+            },
+            gender: None,
+            country: None,
+            federation: None,
+            series: None,
+            q: q.map(str::to_string),
+            movement,
+            direction: Direction::default(),
+            event: None,
+            category: None,
+            year: None,
+            competition_id: None,
+        }
+        .to_db_filter()
+    }
+
+    #[test]
+    fn keeps_the_selected_board_when_searching() {
+        for (metric, movement) in [
+            (RankingMetric::Ris, RankingMovement::Ris),
+            (RankingMetric::Total, RankingMovement::Total),
+        ] {
+            let filter = request(Some("kowalski"), metric);
+            assert_eq!(
+                filter.event.as_deref(),
+                Some(osl_domain::FULL_EVENT),
+                "a search narrows the board it is shown on, so ranks stay comparable"
+            );
+            assert_eq!(filter.movement, movement);
+            assert_eq!(filter.name.as_deref(), Some("kowalski"));
+        }
+    }
+
+    #[test]
+    fn keeps_the_requested_board_when_not_searching() {
+        let filter = request(None, RankingMetric::Total);
+        assert_eq!(filter.event.as_deref(), Some(osl_domain::FULL_EVENT));
+        assert_eq!(filter.movement, RankingMovement::Total);
+    }
+
+    #[test]
+    fn leaves_the_classic_board_unscoped_because_its_metric_names_the_event() {
+        let filter = request(None, RankingMetric::ClassicTotal);
+        assert_eq!(filter.event, None);
+        assert_eq!(
+            filter.event_scope(),
+            Some(osl_domain::CLASSIC_EVENT),
+            "Classic Total always means the PD event"
+        );
+    }
+
+    #[test]
+    fn the_name_directory_spans_every_event_so_shorter_events_are_reachable() {
+        let filter = request(Some("kowalski"), RankingMetric::Name);
+        assert_eq!(filter.movement, RankingMovement::Name);
+        assert_eq!(
+            filter.event, None,
+            "an athlete who only competed a shorter event must still be listed"
+        );
+        assert_eq!(filter.event_scope(), None);
+        assert_eq!(filter.name.as_deref(), Some("kowalski"));
+    }
 }

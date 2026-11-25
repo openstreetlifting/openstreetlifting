@@ -26,7 +26,7 @@ pub use athlete_status::AthleteStatus;
 pub use category::category_label;
 pub use competition_status::CompetitionStatus;
 pub use country::CountryCode;
-pub use event::{FULL_EVENT, is_full_event};
+pub use event::{CLASSIC_EVENT, FULL_EVENT, is_full_event};
 pub use gender::Gender;
 pub use movement::Movement;
 pub use name_rules::{check_name, check_native_name};

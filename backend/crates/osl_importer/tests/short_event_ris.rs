@@ -150,14 +150,14 @@ async fn excludes_short_events_from_full_event_standings(pool: PgPool) {
         name: None,
         movement: RankingMovement::Ris,
         direction: SortDirection::Desc,
-        event: osl_domain::FULL_EVENT.into(),
+        event: Some(osl_domain::FULL_EVENT.into()),
         offset: 0,
         limit: 50,
     };
     let (mpds, count) = repository.get_global_ranking(&filter).await.unwrap();
     assert!(mpds.is_empty());
     assert_eq!(count, 0);
-    filter.event = "PDS".into();
+    filter.event = Some("PDS".into());
     let (shorter, count) = repository.get_global_ranking(&filter).await.unwrap();
     assert_eq!(count, 2);
     assert_eq!(shorter[0].last_name, "Score");
@@ -168,7 +168,7 @@ async fn excludes_short_events_from_full_event_standings(pool: PgPool) {
             .unwrap()
             .is_empty()
     );
-    filter.event = osl_domain::FULL_EVENT.into();
+    filter.event = Some(osl_domain::FULL_EVENT.into());
     filter.by = [RankingBy::Competition(shorter[0].competition_id)].into();
     assert_eq!(repository.get_global_ranking(&filter).await.unwrap().1, 2);
 }

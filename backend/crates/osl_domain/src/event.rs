@@ -1,6 +1,7 @@
 use crate::movement::Movement;
 
 pub const FULL_EVENT: &str = "MPDS";
+pub const CLASSIC_EVENT: &str = "PD";
 
 #[must_use]
 pub fn is_full_event(event_code: Option<&str>) -> bool {
@@ -59,6 +60,15 @@ mod tests {
         let codes: String = Movement::ALL.iter().map(Movement::code).collect();
         assert_eq!(codes, FULL_EVENT);
         assert_eq!(movements(FULL_EVENT).unwrap(), Movement::ALL.to_vec());
+    }
+
+    #[test]
+    fn names_the_classic_event() {
+        assert_eq!(
+            movements(CLASSIC_EVENT).unwrap(),
+            vec![Movement::PullUp, Movement::Dips],
+            "the Classic board ranks a pull-up plus dips total"
+        );
     }
 
     #[test]

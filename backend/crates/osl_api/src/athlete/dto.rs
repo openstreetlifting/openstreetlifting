@@ -340,6 +340,7 @@ impl AthleteStanding {
                 RankingMovement::Pullup => &mut standing.pullup,
                 RankingMovement::Dips => &mut standing.dips,
                 RankingMovement::Squat => &mut standing.squat,
+                RankingMovement::ClassicTotal | RankingMovement::Name => continue,
             };
             *slot = Some(MetricStanding::from_row(row));
         }

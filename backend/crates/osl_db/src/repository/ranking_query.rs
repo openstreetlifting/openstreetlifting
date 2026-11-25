@@ -47,7 +47,8 @@ fn scored_on(movement: RankingMovement) -> String {
 
     match movement {
         RankingMovement::Ris => "cp.ris_score IS NOT NULL".to_owned(),
-        RankingMovement::Total => "cp.total IS NOT NULL".to_owned(),
+        RankingMovement::Total | RankingMovement::ClassicTotal => "cp.total IS NOT NULL".to_owned(),
+        RankingMovement::Name => "TRUE".to_owned(),
         RankingMovement::Muscleup => lifted(Movement::MuscleUp),
         RankingMovement::Pullup => lifted(Movement::PullUp),
         RankingMovement::Dips => lifted(Movement::Dips),
@@ -59,13 +60,11 @@ fn push_ranked_on_metric(query: &mut QueryBuilder<Postgres>, filter: &RankingFil
     query.push(" AND ");
     query.push(scored_on(filter.movement));
 
-    if matches!(
-        filter.movement,
-        RankingMovement::Total | RankingMovement::Ris
-    ) && !filter.in_competition()
+    if !filter.in_competition()
+        && let Some(event) = filter.event_scope()
     {
         query.push(" AND c.event_code = ");
-        query.push_bind(filter.event.clone());
+        query.push_bind(event.to_owned());
     }
 }
 
@@ -175,9 +174,14 @@ pub(crate) fn push_ranking_pool(query: &mut QueryBuilder<Postgres>, filter: &Ran
     }
 
     query.push(" ranking_pool AS ( SELECT DISTINCT ON (athlete_id) * FROM movement_weights ORDER BY athlete_id, ");
+    if filter.movement == RankingMovement::Name {
+        query.push("total DESC NULLS LAST, start_date DESC, participant_id ) ");
+        return;
+    }
+
     query.push(filter.movement.as_column());
     query.push(" DESC NULLS LAST");
-    if filter.movement == RankingMovement::Total {
+    if filter.movement.ranks_total() {
         query.push(", bodyweight ASC NULLS LAST");
     }
     query.push(", start_date DESC, participant_id ) ");

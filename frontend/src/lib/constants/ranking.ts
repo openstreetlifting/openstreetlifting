@@ -13,6 +13,14 @@ export const RANKING_SORTS = [
   ...RANKING_LIFTS,
 ] as const;
 
+export const GLOBAL_RANKING_SORTS = [
+  { value: 'total', label: 'Total' },
+  { value: 'classic_total', label: 'Classic Total' },
+  { value: 'ris', label: 'RIS' },
+  ...RANKING_LIFTS,
+  { value: 'name', label: 'Name' },
+] as const;
+
 export const RANKING_SORTS_NO_RIS = RANKING_SORTS.filter((sort) => sort.value !== 'ris');
 
 export const RANKING_GENDERS = [

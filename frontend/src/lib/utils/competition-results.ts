@@ -15,7 +15,9 @@ export function weightClasses(categories: CategoryDetail[], gender: Gender): str
   ].sort((a, b) => max(a) - max(b) || min(a) - min(b));
 }
 
-const movements: Record<Exclude<RankingMetric, 'total' | 'ris'>, Movement> = {
+type LiftMetric = Exclude<RankingMetric, 'total' | 'ris' | 'classic_total' | 'name'>;
+
+const movements: Record<LiftMetric, Movement> = {
   muscleup: 'Muscle-up',
   pullup: 'Pull-up',
   dips: 'Dips',
@@ -27,6 +29,13 @@ export function hasRankingResult(participant: Participant, metric: RankingMetric
   if (participant.status !== 'competed') return false;
   if (metric === 'ris') return participant.ris_score != null;
   if (metric === 'total') return participant.total != null;
+  if (metric === 'classic_total') {
+    return ['Pull-up', 'Dips'].every((movement) =>
+      participant.lifts.some((lift) => lift.movement_name === movement && lift.best_weight != null)
+    );
+  }
+  // The name directory lists every competed athlete regardless of what they lifted.
+  if (metric === 'name') return participant.lifts.length > 0 || participant.total != null;
   return participant.lifts.some(
     (lift) => lift.movement_name === movements[metric] && lift.best_weight != null
   );

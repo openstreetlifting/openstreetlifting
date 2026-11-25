@@ -481,7 +481,7 @@
           "rankings"
         ],
         "summary": "List ranked results",
-        "description": "Returns results ranked by `movement`, RIS by default.",
+        "description": "Returns results ranked by `movement`, RIS by default. A name search spans\nevery event and ranks totals, so shorter-event athletes are reachable.",
         "operationId": "get_global_ranking",
         "parameters": [
           {
@@ -562,7 +562,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search on athlete name.",
+            "description": "Search on athlete name.\n\nNarrows the selected board and keeps each athlete's rank on it. To find\nan athlete who only competed a shorter event, rank by `name`.",
             "required": false,
             "schema": {
               "type": [
@@ -592,7 +592,7 @@
           {
             "name": "event",
             "in": "query",
-            "description": "Event code. Defaults to `MPDS`.",
+            "description": "Event code, such as `MPDS` or `PD`. Defaults to `MPDS`.",
             "required": false,
             "schema": {
               "type": [
@@ -756,7 +756,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search on athlete name.",
+            "description": "Search on athlete name.\n\nNarrows the selected board and keeps each athlete's rank on it. To find\nan athlete who only competed a shorter event, rank by `name`.",
             "required": false,
             "schema": {
               "type": [
@@ -786,7 +786,7 @@
           {
             "name": "event",
             "in": "query",
-            "description": "Event code. Defaults to `MPDS`.",
+            "description": "Event code, such as `MPDS` or `PD`. Defaults to `MPDS`.",
             "required": false,
             "schema": {
               "type": [
@@ -3645,6 +3645,8 @@
           "dips",
           "squat",
           "total",
+          "classic_total",
+          "name",
           "ris"
         ]
       },

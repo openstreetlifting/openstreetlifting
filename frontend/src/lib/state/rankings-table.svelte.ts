@@ -108,10 +108,14 @@ export class RankingsTable<S extends FilterSpec> {
     return this.searchFilter.trim();
   }
 
-  /** Defaults stay out of the query string so a shared link carries only what was chosen. */
-  pageHref(targetPage: number, query = this.search.applied) {
+  /**
+   * Defaults stay out of the query string so a shared link carries only what
+   * was chosen. Pass `movement` to link to another board without leaving the
+   * current filters or search behind.
+   */
+  pageHref(targetPage: number, query = this.search.applied, movement = this.movementFilter) {
     const params = new SvelteURLSearchParams();
-    if (this.movementFilter !== this.defaultSort) params.set('movement', this.movementFilter);
+    if (movement !== this.defaultSort) params.set('movement', movement);
     if (this.sortDirection !== 'desc') params.set('direction', this.sortDirection);
     this.filters.writeTo(params);
     if (query.trim()) params.set('q', query.trim());

@@ -17,7 +17,7 @@ async fn board(pool: &PgPool, movement: RankingMovement) -> (Vec<String>, i64) {
         name: None,
         movement,
         direction: SortDirection::Desc,
-        event: osl_domain::FULL_EVENT.to_string(),
+        event: Some(osl_domain::FULL_EVENT.to_string()),
         offset: 0,
         limit: 50,
     };
