@@ -90,7 +90,7 @@ jobs:
           tool: sqlx-cli
       - name: Check competitions files are prepared
         working-directory: backend
-        run: cargo run --locked -p osl_importer --bin import -- prepare --check ./data/competitions ./data/staging/competitions
+        run: cargo run --locked -p osl_importer --bin import -- prepare --check ./data/competitions
       - name: Run migrations
         working-directory: backend
         run: sqlx migrate run --source crates/osl_db/migrations
