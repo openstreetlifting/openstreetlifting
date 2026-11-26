@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT wc.min_kg, wc.max_kg\n           FROM competition_participants cp\n           JOIN weight_classes wc USING (weight_class_id)",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "min_kg",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "weight_classes",
+            "name": "min_kg"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "max_kg",
+        "type_info": "Numeric",
+        "origin": {
+          "Table": {
+            "table": "weight_classes",
+            "name": "max_kg"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true
+    ]
+  },
+  "hash": "fde3f149af3a126768f18c23246fbd1b46e166d80bee2fa63f679e202720f50c"
+}

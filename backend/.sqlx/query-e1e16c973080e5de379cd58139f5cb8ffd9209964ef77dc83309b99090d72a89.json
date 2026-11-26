@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT d.name FROM competition_participants cp\n           JOIN divisions d ON d.division_id = cp.division_id\n           ORDER BY d.name",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "name",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "divisions",
+            "name": "name"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "e1e16c973080e5de379cd58139f5cb8ffd9209964ef77dc83309b99090d72a89"
+}

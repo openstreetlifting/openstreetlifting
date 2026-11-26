@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT competition_id as \"competition_id: Uuid\" FROM competitions WHERE slug = 'test-open'",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "competition_id: Uuid",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "competitions",
+            "name": "competition_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "0d127875003556cee8c02d03209423c70703271cf3e99fbbdf6ea8dfb54dd06f"
+}
