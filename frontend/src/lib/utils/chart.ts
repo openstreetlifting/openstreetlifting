@@ -10,7 +10,12 @@ export const AXIS = {
   tickLabelProps: TICK_LABEL,
 } as const;
 
-export const BAND_AXIS = { ...AXIS, tickMarks: false, rule: false } as const;
+export const BAND_AXIS = {
+  ...AXIS,
+  tickMarks: false,
+  rule: false,
+  tickLabelProps: { ...TICK_LABEL, class: CHART.label },
+} as const;
 
 export const PLOT_PADDING = { top: 24, right: 12, bottom: 44, left: 48 } as const;
 

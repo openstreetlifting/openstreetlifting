@@ -9,13 +9,13 @@
   import { Chart, Tooltip } from 'layerchart/svg';
   import { scaleBand, scaleLinear } from 'd3-scale';
   import { onMount } from 'svelte';
-  import type { AttemptRate } from '#lib/utils/competition-results.js';
+  import type { AttemptRate, MovementAttempts } from '#lib/utils/competition-results.js';
   import { CHART, TEXT } from '#lib/constants/typography.js';
   import { AXIS, BAND_AXIS, PLOT_PADDING } from '#lib/utils/chart.js';
 
   const i18n = useI18n();
 
-  let { rates }: { rates: AttemptRate[] } = $props();
+  let { rates }: { rates: MovementAttempts[] } = $props();
 
   let interactive = $state(false);
   onMount(() => {
@@ -34,23 +34,16 @@
     { number: 3, fill: 'var(--color-ink)' },
   ] as const;
 
-  const columns = $derived(
-    [...new Set(rates.map((rate) => rate.movement))].map((movement) => ({
-      label: i18n.movement(movement),
-      rates: rates.filter((rate) => rate.movement === movement),
-    }))
-  );
-
   const percent = $derived(
     new Intl.NumberFormat(i18n.locale, { style: 'percent', maximumFractionDigits: 0 })
   );
   const share = (rate: AttemptRate) => (rate.taken > 0 ? rate.made / rate.taken : null);
 
   const summary = $derived(
-    columns
+    rates
       .map((column) =>
         [
-          column.label,
+          i18n.movement(column.movement),
           ...column.rates.map((rate) => {
             const value = share(rate);
             return `${i18n.t('Attempt {number}', { number: rate.attempt })} ${value === null ? '—' : percent.format(value)}`;
@@ -89,8 +82,8 @@
       ssr
       width={chartWidth}
       height={chartHeight}
-      data={columns}
-      x="label"
+      data={rates}
+      x="movement"
       y={() => 1}
       xScale={scaleBand()
         .paddingInner(COLUMN_PADDING)
@@ -104,10 +97,7 @@
       tooltipContext={interactive ? { mode: 'manual', touchEvents: 'pan-y' } : false}
       props={{
         svg: { viewBox: `0 0 ${chartWidth} ${chartHeight}`, preserveAspectRatio: 'none' },
-        xAxis: {
-          ...BAND_AXIS,
-          tickLabelProps: { ...BAND_AXIS.tickLabelProps, class: CHART.label },
-        },
+        xAxis: { ...BAND_AXIS, format: (movement: string) => i18n.movement(movement) },
         yAxis: {
           ...AXIS,
           ticks: [0, 0.25, 0.5, 0.75, 1],
@@ -125,8 +115,8 @@
           .domain([1, 2, 3])
           .range([(band - group) / 2, (band + group) / 2])
           .paddingInner(BAR_GAP / (group / 3))}
-        {#each columns as column (column.label)}
-          {@const start = context.xScale(column.label) ?? 0}
+        {#each rates as column (column.movement)}
+          {@const start = context.xScale(column.movement) ?? 0}
           {#each column.rates as rate (rate.attempt)}
             {@const value = share(rate)}
             {#if value !== null}
@@ -155,7 +145,7 @@
           class={CHART.tooltip}
         >
           {#snippet children({ data })}
-            <p class={CHART.tooltipTitle}>{data.label}</p>
+            <p class={CHART.tooltipTitle}>{i18n.movement(data.movement)}</p>
             <dl class={CHART.tooltipRows}>
               {#each data.rates as rate (rate.attempt)}
                 {@const value = share(rate)}

@@ -198,11 +198,21 @@ it('counts made and taken attempts per movement and attempt number', () => {
   };
 
   expect(attemptSuccess([field], ['Pull-up', 'Dips'])).toEqual([
-    { movement: 'Pull-up', attempt: 1, made: 2, taken: 2 },
-    { movement: 'Pull-up', attempt: 2, made: 1, taken: 2 },
-    { movement: 'Pull-up', attempt: 3, made: 0, taken: 2 },
-    { movement: 'Dips', attempt: 1, made: 1, taken: 1 },
-    { movement: 'Dips', attempt: 2, made: 0, taken: 0 },
-    { movement: 'Dips', attempt: 3, made: 0, taken: 0 },
+    {
+      movement: 'Pull-up',
+      rates: [
+        { attempt: 1, made: 2, taken: 2 },
+        { attempt: 2, made: 1, taken: 2 },
+        { attempt: 3, made: 0, taken: 2 },
+      ],
+    },
+    {
+      movement: 'Dips',
+      rates: [
+        { attempt: 1, made: 1, taken: 1 },
+        { attempt: 2, made: 0, taken: 0 },
+        { attempt: 3, made: 0, taken: 0 },
+      ],
+    },
   ]);
 });

@@ -48,9 +48,10 @@
     }))
   );
   let chartContext = $state<ChartState<(typeof chartPoints)[number]>>();
-  const metrics = $derived(
-    RANKING_SORTS.filter((option) => chartableMetrics(competitions, format).includes(option.value))
-  );
+  const metrics = $derived.by(() => {
+    const chartable = chartableMetrics(competitions, format);
+    return RANKING_SORTS.filter((option) => chartable.includes(option.value));
+  });
   const label = $derived(i18n.t(RANKING_SORTS.find((option) => option.value === metric)!.label));
 
   const best = $derived(Math.max(...points.map((point) => point.value)));

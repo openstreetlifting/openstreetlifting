@@ -253,7 +253,7 @@
     )
   );
   const attemptsCharted = $derived(
-    attemptRates.some((rate) => rate.attempt === 1 && rate.taken >= MIN_ATTEMPTS)
+    attemptRates.some(({ rates }) => rates[0].taken >= MIN_ATTEMPTS)
   );
 
   const withAttempts = $derived(
