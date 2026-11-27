@@ -1,7 +1,9 @@
 <script lang="ts">
   import RecordMark from '#lib/components/ui/record-mark.svelte';
+  import LiftMark from '#lib/components/ui/lift-mark.svelte';
   import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
   import { LAYOUT } from '#lib/constants/layout.js';
+  import { LIFTS, type Lift } from '#lib/constants/lift.js';
   import Select from '#lib/components/ui/select.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
@@ -68,15 +70,6 @@
   const progressMetrics = $derived(chartableMetrics(athlete.competitions));
   const showsProgress = $derived(progressMetrics.length > 0);
   const balance = $derived(balanceComparable(athlete.lift_balance) ? athlete.lift_balance : null);
-
-  const LIFTS = [
-    { key: 'muscleup', code: 'M', movement: 'Muscle-up', label: 'Muscle Up' },
-    { key: 'pullup', code: 'P', movement: 'Pull-up', label: 'Pull Up' },
-    { key: 'dips', code: 'D', movement: 'Dips', label: 'Dips' },
-    { key: 'squat', code: 'S', movement: 'Squat', label: 'Squat' },
-  ] as const;
-
-  type Lift = (typeof LIFTS)[number];
 
   // Without an event code, recorded lifts are the only evidence of contested movements.
   function contestedBy(competition: AthleteCompetitionSummary, lift: Lift): boolean {
@@ -406,6 +399,7 @@
         {#each athlete.personal_records as pr (pr.movement_name)}
           <MetricCard
             heading={i18n.movement(pr.movement_name)}
+            movement={pr.movement_name}
             meta={formatDate(pr.date, i18n.locale)}
             record={pr.record}
             href={competitionHref(pr.competition_slug, movementMetric(pr.movement_name))}
@@ -465,8 +459,11 @@
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')} ({weights.unit})</th>
           <th class="{TABLE_HEAD_CELL} text-secondary"><RisHeader /></th>
           {#each contested as lift (lift.key)}
-            <th class="{TABLE_HEAD_CELL} text-secondary">
-              {i18n.t(lift.label)}
+            <th
+              class="{TABLE_HEAD_CELL} text-secondary"
+              style:box-shadow="inset 0 2px 0 {lift.tone}"
+            >
+              <LiftMark movement={lift.movement} class="mr-2" />{i18n.t(lift.label)}
               <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
                 <span class="text-right">1</span>
                 <span class="text-right">2</span>

@@ -6,6 +6,7 @@
   import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
   import { CHART } from '#lib/constants/typography.js';
+  import { liftTone } from '#lib/constants/lift.js';
   import { AXIS, PLOT_PADDING, withUnit, yTitle } from '#lib/utils/chart.js';
   import {
     chartableMetrics,
@@ -52,6 +53,7 @@
     const chartable = chartableMetrics(competitions, format);
     return RANKING_SORTS.filter((option) => chartable.includes(option.value));
   });
+  const tone = $derived(liftTone(metric) ?? 'var(--color-chart-athlete)');
   const label = $derived(i18n.t(RANKING_SORTS.find((option) => option.value === metric)!.label));
 
   const best = $derived(Math.max(...points.map((point) => point.value)));
@@ -156,7 +158,7 @@
               format={(value: number) => i18n.number(value)}
               grid={{ class: 'stroke-stroke' }}
             />
-            {#if points.length > 1}<Spline class="stroke-chart-athlete" strokeWidth={2} />{/if}
+            {#if points.length > 1}<Spline stroke={tone} strokeWidth={2} />{/if}
             <Points>
               {#snippet children({ points: marks })}
                 {#each marks as point (point.data.competition.competition_id)}
@@ -164,7 +166,8 @@
                     cx={point.x}
                     cy={point.y}
                     r={context.tooltip.data === point.data ? 6 : 4}
-                    class="fill-chart-athlete stroke-canvas"
+                    class="stroke-canvas"
+                    fill={tone}
                     strokeWidth={2}
                   />
                   <Circle

@@ -1,8 +1,9 @@
 /**
  * Brightness carries one meaning across every table, how much a number counts,
- * and nothing else may use it. Hue is reserved for notability, a lift that set
- * a record, which is the one thing the archive can say that a column header
- * cannot.
+ * and nothing else may use it. Hue on a value is reserved for notability, a
+ * lift that set a record, which is the one thing the archive can say that a
+ * column header cannot. Hue on a label names a lift (see LIFTS), and never
+ * reaches the numbers under it.
  *
  * Amber is the single exception, and it always means a status rather than a
  * value: a lifter who did not place, and a score that was reported rather than

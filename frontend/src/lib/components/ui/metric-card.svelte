@@ -4,11 +4,13 @@
   import type { ResolvedPathname } from '$app/types';
   import Panel from './panel.svelte';
   import RecordMark from './record-mark.svelte';
+  import LiftMark from './lift-mark.svelte';
   import { TEXT } from '#lib/constants/typography.js';
   import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
 
   let {
     heading,
+    movement,
     meta,
     record,
     href,
@@ -18,6 +20,7 @@
     footer,
   }: {
     heading: string;
+    movement?: string;
     meta?: string;
     record?: RecordMarkValue | null;
     href?: ResolvedPathname;
@@ -43,7 +46,7 @@
         ? ''
         : 'col-span-2'}"
     >
-      {heading}
+      {#if movement}<LiftMark {movement} class="mr-2" />{/if}{heading}
     </Text>
     {#if meta}<span
         class="{TEXT.fieldLabel} col-span-2 col-start-1 row-start-1 hidden self-center justify-self-end tabular-nums lg:inline"

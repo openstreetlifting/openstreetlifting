@@ -1,5 +1,6 @@
 <script lang="ts">
   import RecordMark from '#lib/components/ui/record-mark.svelte';
+  import LiftMark from '#lib/components/ui/lift-mark.svelte';
   import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
   import CompetitionBodyweight, {
     MIN_POINTS,
@@ -9,6 +10,7 @@
   import SegmentedControl from '#lib/components/ui/segmented-control.svelte';
   import Button from '#lib/components/ui/button.svelte';
   import { LAYOUT } from '#lib/constants/layout.js';
+  import { LIFTS } from '#lib/constants/lift.js';
   import Notice from '#lib/components/ui/notice.svelte';
   import SelectField from '#lib/components/ui/select-field.svelte';
   import { useI18n } from '#lib/i18n/index.js';
@@ -167,12 +169,6 @@
 
   // The event code names the movements a competition contested, so a column with no
   // weight can be read as bombed rather than never lifted.
-  const LIFTS = [
-    { key: 'muscleup', code: 'M', movement: 'Muscle-up', label: 'Muscle Up' },
-    { key: 'pullup', code: 'P', movement: 'Pull-up', label: 'Pull Up' },
-    { key: 'dips', code: 'D', movement: 'Dips', label: 'Dips' },
-    { key: 'squat', code: 'S', movement: 'Squat', label: 'Squat' },
-  ] as const;
 
   // The rankings response carries a best per movement; the attempts behind it
   // arrive with the competition itself, keyed by entry.
@@ -744,8 +740,11 @@
             {/if}
             {#each contested as lift (lift.key)}
               {@const attempts = withAttempts.has(lift.movement)}
-              <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
-                {i18n.t(lift.label)}
+              <th
+                class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}"
+                style:box-shadow="inset 0 2px 0 {lift.tone}"
+              >
+                <LiftMark movement={lift.movement} class="mr-2" />{i18n.t(lift.label)}
                 {#if attempts}
                   <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
                     <span class="text-right">1</span>

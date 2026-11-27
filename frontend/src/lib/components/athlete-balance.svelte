@@ -16,6 +16,8 @@
 <script lang="ts">
   import ChartPanel from '#lib/components/ui/chart-panel.svelte';
   import InfoTip from '#lib/components/ui/info-tip.svelte';
+  import LiftMark from '#lib/components/ui/lift-mark.svelte';
+  import { liftTone } from '#lib/constants/lift.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import { Chart, Layer, Axis, Spline, Points, Circle } from 'layerchart/svg';
@@ -185,7 +187,8 @@
                       cx={dot.x}
                       cy={dot.y}
                       r={4}
-                      class="fill-chart-athlete stroke-canvas"
+                      class="stroke-canvas"
+                      fill={liftTone(dot.data.movement_name)}
                       strokeWidth={2}
                     />
                     <Circle
@@ -237,7 +240,11 @@
             >
               {#snippet children({ data: lift })}
                 <div role="tooltip">
-                  <p class={CHART.tooltipTitle}>{i18n.movement(lift.movement_name)}</p>
+                  <p class={CHART.tooltipTitle}>
+                    <LiftMark movement={lift.movement_name} class="mr-2" />{i18n.movement(
+                      lift.movement_name
+                    )}
+                  </p>
                   <p class={CHART.tooltipNote}>
                     {weights.format(lift.value, i18n.locale)}
                     {weights.unit} · {i18n.t('of total')}
@@ -271,7 +278,9 @@
         {#each lifts as lift (lift.movement_name)}
           <tr>
             <th scope="row" class="{TABLE_CELL} text-left font-sans font-normal text-secondary">
-              {i18n.movement(lift.movement_name)}
+              <LiftMark movement={lift.movement_name} class="mr-2" />{i18n.movement(
+                lift.movement_name
+              )}
             </th>
             <td class="{TABLE_CELL} text-right text-ink">{share(lift.share)}</td>
             <td class="{TABLE_CELL} text-right text-ink">

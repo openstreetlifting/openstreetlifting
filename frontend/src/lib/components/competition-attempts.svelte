@@ -5,6 +5,7 @@
 <script lang="ts">
   import ChartPanel from '#lib/components/ui/chart-panel.svelte';
   import InfoTip from '#lib/components/ui/info-tip.svelte';
+  import LiftMark from '#lib/components/ui/lift-mark.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { Chart, Tooltip } from 'layerchart/svg';
   import { scaleBand, scaleLinear } from 'd3-scale';
@@ -12,6 +13,7 @@
   import type { AttemptRate, MovementAttempts } from '#lib/utils/competition-results.js';
   import { CHART, TEXT } from '#lib/constants/typography.js';
   import { AXIS, BAND_AXIS, PLOT_PADDING } from '#lib/utils/chart.js';
+  import { liftTone } from '#lib/constants/lift.js';
 
   const i18n = useI18n();
 
@@ -29,10 +31,16 @@
   const BAR_GAP = 2;
 
   const ATTEMPTS = [
-    { number: 1, fill: 'var(--color-faint)' },
-    { number: 2, fill: 'var(--color-secondary)' },
-    { number: 3, fill: 'var(--color-ink)' },
+    { number: 1, fill: 'var(--color-faint)', strength: 40 },
+    { number: 2, fill: 'var(--color-secondary)', strength: 70 },
+    { number: 3, fill: 'var(--color-ink)', strength: 100 },
   ] as const;
+
+  function barFill(movement: string, attempt: number): string {
+    const { fill, strength } = ATTEMPTS[attempt - 1];
+    const tone = liftTone(movement);
+    return tone ? `color-mix(in oklch, ${tone} ${strength}%, var(--color-surface))` : fill;
+  }
 
   const percent = $derived(
     new Intl.NumberFormat(i18n.locale, { style: 'percent', maximumFractionDigits: 0 })
@@ -126,7 +134,7 @@
                 width={inner.bandwidth()}
                 height={Math.max(0, context.yScale(0) - context.yScale(value))}
                 rx="2"
-                fill={ATTEMPTS[rate.attempt - 1].fill}
+                fill={barFill(column.movement, rate.attempt)}
                 role="presentation"
                 onpointermove={(event) => context.tooltip.show(event, column)}
                 onpointerleave={() => context.tooltip.hide()}
@@ -145,7 +153,9 @@
           class={CHART.tooltip}
         >
           {#snippet children({ data })}
-            <p class={CHART.tooltipTitle}>{i18n.movement(data.movement)}</p>
+            <p class={CHART.tooltipTitle}>
+              <LiftMark movement={data.movement} class="mr-2" />{i18n.movement(data.movement)}
+            </p>
             <dl class={CHART.tooltipRows}>
               {#each data.rates as rate (rate.attempt)}
                 {@const value = share(rate)}
