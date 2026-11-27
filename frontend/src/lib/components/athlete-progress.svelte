@@ -26,7 +26,7 @@
 
   let chartWidth = $state<number>();
   let measuredHeight = $state<number>();
-  const chartHeight = $derived(measuredHeight || 480);
+  const chartHeight = $derived(measuredHeight || 448);
 
   let {
     competitions,

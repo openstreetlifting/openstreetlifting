@@ -22,7 +22,7 @@
     interactive = true;
   });
   let chartWidth = $state(848);
-  let chartHeight = $state(480);
+  let chartHeight = $state(448);
 
   const COLUMN_PADDING = 0.3;
   const BAR_WIDTH = 20;

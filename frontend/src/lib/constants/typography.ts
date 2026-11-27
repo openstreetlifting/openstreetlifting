@@ -28,7 +28,7 @@ export const CHART = {
   tooltipNote: 'mt-1 text-muted',
   tooltipRows: 'mt-2 grid grid-cols-[1fr_auto] gap-x-6 gap-y-1',
   tooltipValue: 'text-right font-mono text-ink',
-  plot: 'h-[30rem]',
+  plot: 'h-[28rem]',
   tick: 'fill-muted stroke-none font-mono text-micro',
   label: 'fill-secondary stroke-none font-mono text-micro',
 } as const;

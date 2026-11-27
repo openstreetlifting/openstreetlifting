@@ -113,7 +113,7 @@
         </li>
       </ul>
       <div
-        class="mx-auto h-72 w-full min-w-0 max-w-md"
+        class="mx-auto h-64 w-full min-w-0 max-w-md"
         bind:clientWidth={chartWidth}
         onfocusout={(event) => {
           if (
@@ -141,7 +141,7 @@
           yDomain={[-RANGE, RANGE]}
           yRange={({ width, height }) => [0, Math.min(width, height) / 2]}
           radial
-          height={288}
+          height={256}
           padding={roomy
             ? { left: 84, right: 84, top: 30, bottom: 30 }
             : { left: 56, right: 56, top: 30, bottom: 30 }}

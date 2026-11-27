@@ -35,7 +35,7 @@
     interactive = true;
   });
   let chartWidth = $state(848);
-  let chartHeight = $state(480);
+  let chartHeight = $state(448);
 
   const sexes = $derived(
     (['men', 'women'] as const).filter((sex) => points.some((p) => p.sex === sex))
