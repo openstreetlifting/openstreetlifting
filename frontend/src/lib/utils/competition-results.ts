@@ -95,3 +95,33 @@ export function contestSummary(categories: CategoryDetail[]): DivisionSummary[] 
     )
   );
 }
+
+export type AttemptRate = { attempt: 1 | 2 | 3; made: number; taken: number };
+export type MovementAttempts = { movement: Movement; rates: AttemptRate[] };
+
+/** Every recorded attempt counts, whatever the athlete's final status. */
+export function attemptSuccess(
+  categories: CategoryDetail[],
+  movements: Movement[]
+): MovementAttempts[] {
+  const attempts = categories.flatMap(({ participants }) =>
+    participants.flatMap(({ lifts }) =>
+      lifts.flatMap((lift) =>
+        lift.attempts.map((attempt) => ({ ...attempt, movement: lift.movement_name }))
+      )
+    )
+  );
+  return movements.map((movement) => ({
+    movement,
+    rates: ([1, 2, 3] as const).map((number) => {
+      const taken = attempts.filter(
+        (attempt) => attempt.movement === movement && attempt.attempt_number === number
+      );
+      return {
+        attempt: number,
+        made: taken.filter((attempt) => attempt.is_successful).length,
+        taken: taken.length,
+      };
+    }),
+  }));
+}

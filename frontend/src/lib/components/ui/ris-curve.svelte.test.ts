@@ -29,8 +29,8 @@ it('keeps RIS in kilograms while converting axes, keyboard announcements and sel
     },
     context: new Map([[WEIGHT_UNIT_CONTEXT, new WeightPreference(() => 'lb')]]),
   });
-  await expect.element(screen.getByText('Total, lb', { exact: true })).toBeVisible();
-  await expect.element(screen.getByText('Bodyweight, lb', { exact: true })).toBeVisible();
+  await expect.element(screen.getByText('Total (lb)', { exact: true })).toBeVisible();
+  await expect.element(screen.getByText('Bodyweight (lb)', { exact: true })).toBeVisible();
   const chart = screen.getByRole('group', { name: 'RIS distribution' });
   chart.element().dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
   await expect

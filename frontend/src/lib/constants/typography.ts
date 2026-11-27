@@ -23,7 +23,12 @@ export const FIELD =
 
 export const CHART = {
   tooltip:
-    'max-w-64 rounded-panel border border-stroke-strong bg-surface p-3 text-ink shadow-lg shadow-overlay/30',
+    'max-w-64 rounded-panel border border-stroke-strong bg-surface p-3 text-meta text-secondary shadow-lg shadow-overlay/30',
+  tooltipTitle: 'max-w-56 font-medium text-ink',
+  tooltipNote: 'mt-1 text-muted',
+  tooltipRows: 'mt-2 grid grid-cols-[1fr_auto] gap-x-6 gap-y-1',
+  tooltipValue: 'text-right font-mono text-ink',
+  plot: 'h-[28rem]',
   tick: 'fill-muted stroke-none font-mono text-micro',
   label: 'fill-secondary stroke-none font-mono text-micro',
 } as const;

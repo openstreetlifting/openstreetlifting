@@ -54,7 +54,9 @@ it('converts the performance chart and tooltips while keeping RIS and source res
     props: { competitions },
     context: new Map([[WEIGHT_UNIT_CONTEXT, weights]]),
   });
-  await expect.element(page.getByText('992.08 lb', { exact: true })).toBeVisible();
+  await expect
+    .element(page.getByRole('button', { name: /Second meet.*992.08 lb/ }))
+    .toBeInTheDocument();
   await page.getByRole('button', { name: /First meet.*881.85 lb/ }).click();
   await expect.element(page.getByRole('tooltip')).toMatchTextContent('881.85 lb');
   await expect.element(page.getByRole('tooltip')).toMatchTextContent('Men -176.37 lb');
@@ -66,9 +68,6 @@ it('converts the performance chart and tooltips while keeping RIS and source res
 
 it('selects competition points and switches metrics without losing a real zero result', async () => {
   render(AthleteProgress, { competitions, athleteSlug: 'alex-martin' });
-  await expect
-    .element(page.getByRole('link', { name: 'Second meet' }))
-    .toHaveAttribute('href', '/en/competitions/second?movement=total&athlete=alex-martin');
   await expect.element(page.getByRole('tooltip')).not.toBeInTheDocument();
   await page.getByRole('button', { name: /First meet/ }).hover();
   await expect
@@ -92,11 +91,14 @@ it('selects competition points and switches metrics without losing a real zero r
   await expect.element(page.getByRole('tooltip')).not.toBeInTheDocument();
 });
 
-it('shows a single result as a milestone and handles a missing metric', async () => {
-  render(AthleteProgress, { competitions: competitions.slice(0, 1) });
-  await expect.element(page.getByText(/One result recorded/)).toBeVisible();
-  await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('dips');
-  await expect.element(page.getByText('No dated Dips results available for MPDS.')).toBeVisible();
+it('offers only metrics with at least two dated results', async () => {
+  render(AthleteProgress, { competitions });
+  const options = page.getByRole('combobox', { name: 'Performance', exact: true }).element();
+  expect([...(options as HTMLSelectElement).options].map((option) => option.value)).toEqual([
+    'total',
+    'ris',
+    'muscleup',
+  ]);
 });
 
 it('keeps one metric selector and always plots MPDS results', async () => {
@@ -124,6 +126,6 @@ it('keeps one metric selector and always plots MPDS results', async () => {
   await expect
     .element(page.getByRole('combobox', { name: 'Format', exact: true }))
     .not.toBeInTheDocument();
-  await expect.element(page.getByText('20 kg', { exact: true })).toBeVisible();
-  await expect.element(page.getByText('30 kg', { exact: true })).not.toBeInTheDocument();
+  await expect.element(page.getByRole('button', { name: /20 kg/ })).toBeInTheDocument();
+  expect(page.getByRole('button', { name: /30 kg/ }).elements()).toHaveLength(0);
 });

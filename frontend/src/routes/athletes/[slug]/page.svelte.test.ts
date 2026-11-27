@@ -369,25 +369,24 @@ it('keeps global rankings and history when country is not recorded', async () =>
     .toBeVisible();
 });
 
-it('drops the performance section when neither chart has data', async () => {
+it('drops both chart sections when neither chart has data to show', async () => {
   const lifter = athlete();
   lifter.total_competitions = 1;
+  lifter.lift_balance = { ...balance('Elite Men -80kg'), field: 9 };
   render(AthletePage, { data: { locale: 'en', athlete: lifter } });
   await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
-  expect(page.getByRole('heading', { name: 'Performance', level: 2 }).elements()).toHaveLength(0);
-  expect(
-    page.getByText('A completed MPDS competition is needed to show lift balance.').elements()
-  ).toHaveLength(0);
+  expect(page.getByRole('heading', { name: 'Performance over time' }).elements()).toHaveLength(0);
+  expect(page.getByRole('heading', { name: 'Lift balance' }).elements()).toHaveLength(0);
 });
 
-it('shows lift balance alone after a single competition', async () => {
+it('shows lift balance as its own section after a single competition', async () => {
   const lifter = athlete();
   lifter.total_competitions = 1;
   lifter.lift_balance = balance('Elite Men -80kg');
   render(AthletePage, { data: { locale: 'en', athlete: lifter } });
-  await expect.element(page.getByRole('heading', { name: 'Performance', level: 2 })).toBeVisible();
-  await expect.element(page.getByText('Lift balance', { exact: true })).toBeVisible();
-  expect(page.getByText('Performance over time', { exact: true }).elements()).toHaveLength(0);
+  await expect.element(page.getByRole('heading', { name: 'Lift balance', level: 2 })).toBeVisible();
+  expect(page.getByRole('heading', { name: 'Performance', level: 2 }).elements()).toHaveLength(0);
+  expect(page.getByRole('heading', { name: 'Performance over time' }).elements()).toHaveLength(0);
 });
 
 it('marks a lift that is a current record', async () => {

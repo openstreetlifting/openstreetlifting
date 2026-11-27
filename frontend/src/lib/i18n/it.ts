@@ -32,11 +32,7 @@ export default {
   Performance: 'Prestazione',
   Event: 'Formato',
   Best: 'Migliore',
-  on: 'il',
-  at: 'a',
   Date: 'Data',
-  'One result recorded. A trend will appear after another competition.':
-    'C’è un solo risultato registrato. Dopo un’altra gara potrai vedere l’andamento.',
   'RIS scores are shown as recorded; formula editions and reported scores may differ.':
     'I punteggi RIS sono mostrati come registrati; le edizioni della formula e i punteggi pubblicati possono differire.',
   'Lift balance': 'Equilibrio delle alzate',
@@ -44,12 +40,12 @@ export default {
   'Lift balance compared with other athletes in {category}':
     'Equilibrio delle alzate rispetto agli altri atleti in {category}',
   'Lift shares of best total': 'Quote delle alzate sul miglior totale',
+  'Share of total': 'Quota del totale',
+  Difference: 'Differenza',
   'Total by bodyweight': 'Totale per peso corporeo',
   'About total by bodyweight': 'Informazioni sul totale per peso corporeo',
   'Each point is an athlete with a recorded bodyweight. The lines show the total needed for a RIS of 100 at each bodyweight, using the {year} edition.':
     'Ogni punto è un atleta con peso corporeo registrato. Le linee mostrano il totale necessario per un RIS di 100 a ogni peso corporeo, secondo l’edizione {year}.',
-  'Points above their line scored more than 100 RIS.':
-    'I punti sopra la loro linea superano 100 RIS.',
   'RIS 100, {sex}': 'RIS 100, {sex}',
   'Total by bodyweight for {count} athletes, {above} of them above a RIS of 100.':
     'Totale per peso corporeo di {count} atleti, {above} dei quali sopra RIS 100.',
@@ -60,18 +56,11 @@ export default {
     'In questa gara i punteggi RIS sono mostrati come pubblicati.',
   'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.':
     'Rappresenta ogni alzata come proporzione del miglior totale dell’atleta ({total} {unit}, {competition}) rispetto alla proporzione media di {count} atleti in {category}. Uno scostamento verso l’esterno indica un’enfasi su quell’alzata.',
-  'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}).':
-    'Rappresenta ogni alzata come proporzione del miglior totale dell’atleta ({total} {unit}, {competition}).',
   '{class} class': 'Categoria {class}',
   Reference: 'Riferimento',
   '{movement}: {share} of total, reference {average}':
     '{movement}: {share} del totale, riferimento {average}',
-  'of total · reference {average}': 'del totale · riferimento {average}',
   'of total': 'del totale',
-  'Too few athletes in this weight class to compare.':
-    'Troppi pochi atleti in questa categoria per un confronto.',
-  'A completed MPDS competition is needed to show lift balance.':
-    'Per mostrare l’equilibrio serve una gara MPDS completata.',
   'Match these movements exactly': 'Gare con esattamente questi movimenti',
   'Clear movements': 'Cancella la selezione dei movimenti',
   'Clear selection': 'Cancella la selezione',
@@ -240,10 +229,8 @@ export default {
   'Next page': 'Pagina successiva',
   Next: 'Successiva',
   Category: 'Categoria',
-  'Total, {unit}': 'Totale, {unit}',
   'RIS 100 benchmark': 'Riferimento RIS 100',
   Bodyweight: 'Peso corporeo',
-  'Bodyweight, {unit}': 'Peso corporeo, {unit}',
   Age: 'Età',
   'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.':
     'Passa il cursore o tocca una prestazione per esaminarla. Con il grafico attivo, usa le frecce sinistra e destra per scorrere le prestazioni, Inizio o Fine per spostarti agli estremi, Invio per selezionare ed Esc per cancellare la selezione.',
@@ -368,14 +355,16 @@ export default {
   'in category {category}': 'nella categoria {category}',
   'Attempt {slot}: {weight} {unit}, {result}': 'Tentativo {slot}: {weight} {unit}, {result}',
   'Attempt {slot} not recorded': 'Tentativo {slot} non registrato',
+  'Attempt success': 'Riuscita delle prove',
+  'About attempt success': 'Informazioni sulla riuscita delle prove',
+  'Attempt {number}': 'Prova {number}',
+  'The share of first, second and third attempts judged good, for each movement.':
+    'La quota di prime, seconde e terze prove valide, per ogni movimento.',
   'good lift': 'valido',
   'no lift': 'nullo',
   'No successful {movement}': 'Nessun tentativo valido: {movement}',
   "{category}'s weight classes": 'Categorie di peso: {category}',
   '{label} over time': 'Andamento di {label}',
-  'No dated {movement} results available.': 'Nessun risultato con data registrata per {movement}.',
-  'No dated {movement} results available for {format}.':
-    'Nessun risultato con data registrata per {movement} nel formato {format}.',
   'Enter a number between {min} and {max} {unit}.': 'Inserisci un numero tra {min} e {max} {unit}.',
   '{label} slider': 'Cursore: {label}',
   'The calculated score is above the target of {target} RIS.':

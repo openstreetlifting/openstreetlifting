@@ -1,6 +1,6 @@
 import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
 import type { Movement } from '#lib/types/enums.js';
-import type { RANKING_SORTS } from '#lib/constants/ranking.js';
+import { RANKING_SORTS } from '#lib/constants/ranking.js';
 
 export type ProgressMetric = (typeof RANKING_SORTS)[number]['value'];
 const MOVEMENTS = {
@@ -68,5 +68,14 @@ export function progressPoints(
     (a, b) =>
       a.timestamp - b.timestamp ||
       a.competition.competition_id.localeCompare(b.competition.competition_id)
+  );
+}
+
+export function chartableMetrics(
+  competitions: AthleteCompetitionSummary[],
+  event = 'MPDS'
+): ProgressMetric[] {
+  return RANKING_SORTS.map((sort) => sort.value).filter(
+    (metric) => progressPoints(competitions, metric, event).length >= 2
   );
 }

@@ -12,6 +12,7 @@
   import { formatLongDate } from '#lib/utils/format.js';
   import { kilograms } from '#lib/utils/weight-unit.js';
   import { CHART } from '#lib/constants/typography.js';
+  import { AXIS, PLOT_PADDING, expand, withUnit, xTitle, yTitle } from '#lib/utils/chart.js';
 
   const i18n = useI18n();
   const weights = useWeightUnit();
@@ -128,10 +129,10 @@
 </script>
 
 <figure class="ris-chart m-0" aria-labelledby="{id}-caption">
-  <div class="mb-3 flex items-center justify-between text-meta text-muted">
-    <span>{i18n.t('Total, {unit}', { unit: weights.unit })}</span>
-    <span class="font-mono">{i18n.t('RIS 100 benchmark')}</span>
-  </div>
+  <p class="mb-3 flex items-center justify-end gap-2 text-meta text-secondary">
+    <span class="w-4 border-t-2 border-secondary" aria-hidden="true"></span>
+    {i18n.t('RIS 100 benchmark')}
+  </p>
   <div
     class="chart-viewport h-[19rem] sm:h-[23rem]"
     bind:clientWidth={chartWidth}
@@ -147,9 +148,9 @@
       y="total"
       xScale={scaleLinear()}
       yScale={scaleLinear()}
-      {xDomain}
-      {yDomain}
-      padding={{ top: 12, right: 14, bottom: 30, left: 42 }}
+      xDomain={expand(xDomain)}
+      yDomain={expand(yDomain)}
+      padding={PLOT_PADDING}
       axis
       grid={{ x: false, y: true }}
       rule={false}
@@ -165,24 +166,22 @@
           preserveAspectRatio: 'none',
         },
         xAxis: {
-          tickMarks: false,
-          tickSpacing: 70,
+          ...AXIS,
+          ...xTitle(withUnit(i18n.t('Bodyweight'), weights.unit)),
           ticks: scaleLinear()
             .domain(xDomain.map((value) => weights.value(value)))
             .ticks(Math.max(2, Math.floor(chartWidth / 90)))
             .map((value) => kilograms(value, weights.unit)),
           format: (value: number) => weights.format(value, i18n.locale),
-          tickLabelProps: { fontSize: 11, class: CHART.tick },
         },
         yAxis: {
-          tickMarks: false,
-          tickSpacing: 60,
+          ...AXIS,
+          ...yTitle(withUnit(i18n.t('Total'), weights.unit)),
           ticks: scaleLinear()
             .domain(yDomain.map((value) => weights.value(value)))
             .ticks(5)
             .map((value) => kilograms(value, weights.unit)),
           format: (value: number) => weights.format(value, i18n.locale),
-          tickLabelProps: { fontSize: 11, class: CHART.tick },
         },
       }}
       role="group"
@@ -221,27 +220,26 @@
           portal={false}
           motion="none"
           fadeDuration={0}
-          class="{CHART.tooltip} text-meta text-secondary"
+          class={CHART.tooltip}
         >
           {#snippet children({ data })}
-            <p class="max-w-56 font-medium text-ink">{data.athlete_name}</p>
-            <p class="mt-1 max-w-56 text-secondary">{data.competition_name}</p>
-            <p class="mt-0.5 mb-3 text-muted">
-              {formatLongDate(data.competition_date, i18n.locale)}
+            <p class={CHART.tooltipTitle}>{data.athlete_name}</p>
+            <p class="{CHART.tooltipNote} max-w-56">
+              {data.competition_name} · {formatLongDate(data.competition_date, i18n.locale)}
             </p>
-            <dl class="grid grid-cols-[1fr_auto] gap-x-6 gap-y-1.5">
+            <dl class={CHART.tooltipRows}>
               <dt>{i18n.t('Bodyweight')}</dt>
-              <dd class="text-right font-mono">
+              <dd class={CHART.tooltipValue}>
                 {weights.format(data.bodyweight, i18n.locale, 2)}
                 {weights.unit}
               </dd>
               <dt>{i18n.t('Total')}</dt>
-              <dd class="text-right font-mono">
+              <dd class={CHART.tooltipValue}>
                 {weights.format(data.total, i18n.locale, 2)}
                 {weights.unit}
               </dd>
               <dt>RIS</dt>
-              <dd class="text-right font-mono text-ink">
+              <dd class={CHART.tooltipValue}>
                 {i18n.number(calculateRis(constants, data.bodyweight, data.total), 2)}
               </dd>
             </dl>
@@ -250,9 +248,6 @@
       {/snippet}
     </Chart>
   </div>
-  <p class="mt-1 text-right text-meta text-muted">
-    {i18n.t('Bodyweight, {unit}', { unit: weights.unit })}
-  </p>
   <p id="{id}-instructions" class="sr-only">
     {i18n.t(
       'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.'
