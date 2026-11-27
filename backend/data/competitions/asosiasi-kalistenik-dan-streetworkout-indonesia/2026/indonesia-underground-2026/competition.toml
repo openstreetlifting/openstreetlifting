@@ -8,5 +8,6 @@ country = "ID"
 status = "completed"
 
 [federation]
-name = "Indonesia Underground"
+name = "Asosiasi Kalistenik dan Streetworkout Indonesia"
+abbreviation = "AKSI"
 country = "ID"

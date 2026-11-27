@@ -12,5 +12,6 @@ country = "ID"
 status = "completed"
 
 [federation]
-name = "ICSA"
+name = "Asosiasi Kalistenik dan Streetworkout Indonesia"
+abbreviation = "AKSI"
 country = "ID"
