@@ -246,6 +246,8 @@ export default {
     'Il Relative Index for Streetlifting (RIS) è un metodo per confrontare gli atleti di streetlifting tra categorie di peso dello stesso sesso. Sviluppato per le gare MPDS, questo sistema normalizza le prestazioni di forza usando i dati di atleti di alto livello. Aggiornato ogni anno per riflettere l’evoluzione del livello agonistico, il RIS offre un riferimento equo per atleti, allenatori e organizzatori di gare in tutto il mondo.',
   'We recalculate RIS with the current formula, so scores may differ from published results.':
     'Ricalcoliamo il RIS con la formula attuale, quindi i punteggi possono differire dai risultati pubblicati.',
+  'We recalculate RIS with the {year} formula, so scores may differ from published results.':
+    'Ricalcoliamo il RIS con la formula {year}, quindi i punteggi possono differire dai risultati pubblicati.',
   'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked {mark}.':
     'Quando il peso corporeo non è indicato, lo stimiamo sulla base dei dati RIS pubblicati, ove possibile. In caso contrario, manteniamo il punteggio riportato, contrassegnato con {mark}.',
   'Learn more on the ris page of OpenStreetlifting':

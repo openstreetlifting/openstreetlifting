@@ -4,16 +4,19 @@
   import InfoTip from './info-tip.svelte';
   import Message from './message.svelte';
   import { REPORTED_GLYPH, REPORTED_MARK } from '#lib/constants/table.js';
+  import { page } from '$app/state';
 
   const i18n = useI18n();
 
-  let { note }: { note?: string } = $props();
+  let { note, published = false }: { note?: string; published?: boolean } = $props();
+
+  const edition = $derived(published ? null : page.data.risEdition);
 
   const RIS_SOURCE_URL = 'https://warisradji.com/ris/';
 </script>
 
 <span class="inline-flex items-center align-middle whitespace-nowrap">
-  RIS
+  {edition ? `RIS ${edition}` : 'RIS'}
   <InfoTip label={i18n.t('What a RIS score is and where it came from')}>
     {#if note}<p class="mb-3 border-l-2 border-focus pl-3 text-ink">{note}</p>{/if}
     <p class="mb-3 font-medium text-ink">{i18n.t('What is RIS?')}</p>
@@ -35,9 +38,14 @@
     </p>
 
     <p class="mb-3">
-      {i18n.t(
-        'We recalculate RIS with the current formula, so scores may differ from published results.'
-      )}
+      {edition
+        ? i18n.t(
+            'We recalculate RIS with the {year} formula, so scores may differ from published results.',
+            { year: edition }
+          )
+        : i18n.t(
+            'We recalculate RIS with the current formula, so scores may differ from published results.'
+          )}
     </p>
 
     <p class="mb-3">

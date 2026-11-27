@@ -1,6 +1,7 @@
 import { logger } from '#lib/server/logger.js';
 import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
-import { competitionsService, rankingsService, risService } from '#lib/server/api/index.js';
+import { competitionsService, rankingsService } from '#lib/server/api/index.js';
+import { currentRisFormula } from '#lib/server/ris-formula.js';
 import { ApiError } from '#lib/server/api/client.js';
 import { defaultRankingSort, risProvenance } from '#lib/constants/ranking.js';
 import { formatAthleteName } from '#lib/utils/format.js';
@@ -10,15 +11,6 @@ import { asRankingMetric } from '#lib/types/enums.js';
 import { LEADERBOARD_FILTERS } from '#lib/constants/filters.js';
 import { keepSelected, readFilters } from '#lib/utils/filters.js';
 import { competitionDivisions } from '#lib/utils/competition-results.js';
-
-async function currentFormula() {
-  try {
-    const formulas = await risService.getFormulas();
-    return formulas.find((formula) => formula.is_current) ?? null;
-  } catch {
-    return null;
-  }
-}
 
 const noRankings = () => ({
   data: [],
@@ -108,7 +100,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   }
 
   const [formula, facets, rankings] = await Promise.all([
-    currentFormula(),
+    currentRisFormula(),
     rankingsService
       .getFacets({ ...filters, ...scope, competition_id: competition.competition_id })
       .catch(() => ({ classes: [], countries: [] })),
