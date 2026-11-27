@@ -458,10 +458,7 @@
           <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Total')} ({weights.unit})</th>
           <th class="{TABLE_HEAD_CELL} text-secondary"><RisHeader /></th>
           {#each contested as lift (lift.key)}
-            <th
-              class="{TABLE_HEAD_CELL} text-secondary"
-              style:box-shadow="inset 0 2px 0 {lift.tone}"
-            >
+            <th class="{TABLE_HEAD_CELL} text-secondary">
               <span style:color={lift.tone}>{i18n.t(lift.label)}</span>
               <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
                 <span class="text-right">1</span>

@@ -739,10 +739,7 @@
             {/if}
             {#each contested as lift (lift.key)}
               {@const attempts = withAttempts.has(lift.movement)}
-              <th
-                class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}"
-                style:box-shadow="inset 0 2px 0 {lift.tone}"
-              >
+              <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
                 <span style:color={lift.tone}>{i18n.t(lift.label)}</span>
                 {#if attempts}
                   <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
