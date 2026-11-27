@@ -323,6 +323,7 @@
     divisioned ? summary.find((division) => division.name === data.activeDivision) : undefined
   );
   const rule = (rankBy: RankBy) => (rankBy === 'ris' ? 'RIS' : i18n.t('Total'));
+  const ruleInline = (rankBy: RankBy) => (rankBy === 'ris' ? 'RIS' : i18n.t('total'));
   const who = (group: ContestGroup) =>
     i18n.t(({ M: 'Men', F: 'Women', MX: 'Men and women' } as const)[group.gender]);
 
@@ -418,10 +419,10 @@
 
 {#snippet rules(division: DivisionSummary)}
   {#each division.groups as group (group.gender)}
-    {@const rankedBy = group.rankBy ? rule(group.rankBy) : '—'}
+    {@const rankedBy = group.rankBy ? ruleInline(group.rankBy) : '—'}
     <Detail label={who(group)} class="flex flex-wrap gap-x-3 gap-y-1">
       {#if group.classes.length > 0}
-        <span>{i18n.t('{rule}, by weight class:', { rule: rankedBy })}</span>
+        <span>{i18n.t('Ranked by {rule}, by weight class:', { rule: rankedBy })}</span>
         <span
           class="contents"
           role="list"
@@ -437,7 +438,9 @@
           {/if}
         </span>
       {:else if group.rankBy === 'total'}
-        {i18n.t('{rule}, open weight', { rule: rankedBy })}
+        {i18n.t('Ranked by {rule}, open weight', { rule: rankedBy })}
+      {:else if group.rankBy}
+        {i18n.t('Ranked by {rule}', { rule: rankedBy })}
       {:else}
         {rankedBy}
       {/if}

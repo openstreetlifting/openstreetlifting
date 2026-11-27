@@ -305,8 +305,10 @@ export default {
     'La fonte non riporta punteggi RIS pubblicati.',
   'RIS scores are unavailable because the required bodyweight or total is missing.':
     'I punteggi RIS non sono disponibili: manca il peso corporeo o il totale necessario per calcolarli.',
-  '{rule}, by weight class:': '{rule}, per categoria di peso:',
-  '{rule}, open weight': '{rule}, senza categorie di peso',
+  total: 'totale',
+  'Ranked by {rule}': 'Classifica per {rule}',
+  'Ranked by {rule}, by weight class:': 'Classifica per {rule}, per categoria di peso:',
+  'Ranked by {rule}, open weight': 'Classifica per {rule}, senza categorie di peso',
   'open weight': 'senza categoria',
   'Men and women': 'Uomini e donne',
   'Edit competition on GitHub': 'Modifica la gara su GitHub',

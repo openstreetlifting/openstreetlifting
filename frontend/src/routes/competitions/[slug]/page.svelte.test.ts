@@ -267,12 +267,12 @@ it('switches between division boards and lists how each division is ranked', asy
         term.nextElementSibling?.textContent?.replace(/\s+/g, ' ').trim(),
       ])
     );
-  await expect.element(page.getByText('RIS', { exact: true })).toBeVisible();
+  await expect.element(page.getByText('Ranked by RIS', { exact: true })).toBeVisible();
   expect(pairs()).toContainEqual([
     ['Format', expect.any(String)],
     ['Divisions', 'Open, FNSL Elite'],
   ]);
-  expect(pairs()).toContainEqual([['Men and women', 'RIS']]);
+  expect(pairs()).toContainEqual([['Men and women', 'Ranked by RIS']]);
   const terms = pairs()
     .flat()
     .map(([term]) => term);
@@ -300,7 +300,9 @@ it('states each field on one line with its rule and weight classes', async () =>
   const terms = [...document.querySelectorAll('dt')].map((term) => term.textContent?.trim());
   expect(terms).not.toContain('Ranked by');
   expect(terms).not.toContain('Division');
-  expect(fieldRows()).toEqual([['Men', expect.stringMatching(/^Total, by weight class: .80kg$/)]]);
+  expect(fieldRows()).toEqual([
+    ['Men', expect.stringMatching(/^Ranked by total, by weight class: .80kg$/)],
+  ]);
 });
 
 it('lists women first and names only the rule for open fields ranked by RIS', async () => {
@@ -310,8 +312,8 @@ it('lists women first and names only the rule for open fields ranked by RIS', as
 
   await expect.element(page.getByRole('banner').getByText('Women', { exact: true })).toBeVisible();
   expect(fieldRows()).toEqual([
-    ['Women', 'RIS'],
-    ['Men', 'RIS'],
+    ['Women', 'Ranked by RIS'],
+    ['Men', 'Ranked by RIS'],
   ]);
 });
 
@@ -320,6 +322,6 @@ it('says open weight when an open field is ranked by total', async () => {
   results.competition.categories = [field('F', '', 'total')];
   render(CompetitionPage, { data: results });
 
-  await expect.element(page.getByText('Total, open weight')).toBeVisible();
-  expect(fieldRows()).toEqual([['Women', 'Total, open weight']]);
+  await expect.element(page.getByText('Ranked by total, open weight')).toBeVisible();
+  expect(fieldRows()).toEqual([['Women', 'Ranked by total, open weight']]);
 });
