@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS \"division?\",\n                    COALESCE(cp.category_gender, wc.gender, a.gender) as \"gender!: Gender\",\n                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max\n             FROM competition_participants cp\n             INNER JOIN athletes a ON a.athlete_id = cp.athlete_id\n             LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n             LEFT JOIN divisions d ON d.division_id = cp.division_id\n             WHERE cp.competition_id = $1",
+  "query": "SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS \"division?\",\n                    COALESCE(cp.category_gender, wc.gender, a.gender) as \"gender!: Gender\",\n                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max,\n                    COALESCE(cp.rank_by, c.rank_by,\n                             CASE WHEN cp.weight_class_id IS NULL THEN 'ris' ELSE 'total' END)\n                        AS \"rank_by!: osl_domain::RankBy\"\n             FROM competition_participants cp\n             INNER JOIN competitions c ON c.competition_id = cp.competition_id\n             INNER JOIN athletes a ON a.athlete_id = cp.athlete_id\n             LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id\n             LEFT JOIN divisions d ON d.division_id = cp.division_id\n             WHERE cp.competition_id = $1",
   "describe": {
     "columns": [
       {
@@ -63,6 +63,12 @@
             "name": "max_kg"
           }
         }
+      },
+      {
+        "ordinal": 6,
+        "name": "rank_by!: osl_domain::RankBy",
+        "type_info": "Text",
+        "origin": "Expression"
       }
     ],
     "parameters": {
@@ -76,8 +82,9 @@
       false,
       null,
       true,
-      true
+      true,
+      null
     ]
   },
-  "hash": "2b5057421020ef97ba90a5ba2be1c4603fe7eb319833861908f6f012091bca3b"
+  "hash": "2f1398b42de43a30cf962ef073e33b1a0ac166312a965c08340542eb788c8f2d"
 }

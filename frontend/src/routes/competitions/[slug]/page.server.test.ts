@@ -23,7 +23,7 @@ beforeEach(() => {
   vi.mocked(competitionsService.getById).mockResolvedValue({
     competition_id: 'meet-id',
     movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
-    categories: [{ participants: [{ athlete }] }],
+    categories: [{ category: { division: null }, participants: [{ athlete }] }],
   } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
   vi.mocked(rankingsService.getFacets).mockResolvedValue({
     classes: [],
@@ -92,7 +92,12 @@ it('keeps RIS as the default once an athlete carries a recomputed score', async 
   vi.mocked(competitionsService.getById).mockResolvedValue({
     competition_id: 'meet-id',
     movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
-    categories: [{ participants: [{ athlete, ris_score: '312.45', ris_source: 'computed' }] }],
+    categories: [
+      {
+        category: { division: null },
+        participants: [{ athlete, ris_score: '312.45', ris_source: 'computed' }],
+      },
+    ],
   } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
   vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
     data: [],
@@ -118,10 +123,10 @@ it('reports a failed ranking request instead of showing only unranked participan
   }
 });
 
-it('uses the declared scoring rule for mixed contests and keeps the mixed filter', async () => {
+it('uses the declared ranking rule for mixed contests and keeps the mixed filter', async () => {
   vi.mocked(competitionsService.getById).mockResolvedValue({
     competition_id: 'meet-id',
-    scoring: 'total',
+    rank_by: 'total',
     movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
     categories: [
       {
@@ -138,4 +143,47 @@ it('uses the declared scoring rule for mixed contests and keeps the mixed filter
   expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
     expect.objectContaining({ movement: 'total', gender: 'MX' })
   );
+});
+
+it('ranks each division on its own board and opens the largest one first', async () => {
+  const contest = (division: string, rankBy: string, slug: string) => ({
+    category: { division, rank_by: rankBy },
+    participants: [{ athlete: { ...athlete, slug }, ris_score: null, ris_source: null }],
+  });
+  vi.mocked(competitionsService.getById).mockResolvedValue({
+    competition_id: 'meet-id',
+    movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
+    rank_by: null,
+    categories: [
+      contest('FNSL Elite', 'ris', 'elite-lifter'),
+      contest('Open', 'total', 'open-lifter'),
+      contest('Open', 'total', 'other-open-lifter'),
+    ],
+  } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
+  vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
+    data: [],
+    pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
+  });
+
+  expect(await load(request(''))).toMatchObject({
+    division: null,
+    activeDivision: 'Open',
+    rankBy: 'total',
+  });
+  expect(rankingsService.getGlobalRankings).toHaveBeenLastCalledWith(
+    expect.objectContaining({ division: 'Open', movement: 'total' })
+  );
+
+  expect(await load(request('division=FNSL+Elite'))).toMatchObject({
+    division: 'FNSL Elite',
+    activeDivision: 'FNSL Elite',
+    rankBy: 'ris',
+  });
+  expect(rankingsService.getGlobalRankings).toHaveBeenLastCalledWith(
+    expect.objectContaining({ division: 'FNSL Elite', movement: 'ris' })
+  );
+
+  expect(await load(request('athlete=elite-lifter&page=1'))).toMatchObject({
+    activeDivision: 'FNSL Elite',
+  });
 });

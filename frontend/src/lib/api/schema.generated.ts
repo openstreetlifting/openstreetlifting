@@ -325,6 +325,7 @@ export interface components {
       division: string | null;
       gender: components['schemas']['Gender'];
       name: string;
+      rank_by: components['schemas']['RankBy'];
       weight_class: string;
     };
     CompetitionAthlete: {
@@ -374,8 +375,8 @@ export interface components {
       lifter_count: number | null;
       movements?: components['schemas']['MovementInfo'][];
       name: string;
+      rank_by: components['schemas']['RankBy'] | null;
       region: string | null;
-      scoring: components['schemas']['Scoring'] | null;
       slug: string;
       start_date: string | null;
       status: components['schemas']['CompetitionStatus'];
@@ -504,8 +505,8 @@ export interface components {
         lifter_count: number | null;
         movements?: components['schemas']['MovementInfo'][];
         name: string;
+        rank_by: components['schemas']['RankBy'] | null;
         region: string | null;
-        scoring: components['schemas']['Scoring'] | null;
         slug: string;
         start_date: string | null;
         status: components['schemas']['CompetitionStatus'];
@@ -567,6 +568,7 @@ export interface components {
       movement_name: components['schemas']['Movement'];
       record: components['schemas']['RecordMark'] | null;
     };
+    RankBy: 'total' | 'ris';
     RankedGender: 'M' | 'F' | 'MX';
     RankingAthlete: {
       athlete_id: string;
@@ -657,7 +659,6 @@ export interface components {
       total: string;
     };
     RisSource: 'computed' | 'reported';
-    Scoring: 'total' | 'ris';
     StandingPlace: {
       field: number;
       place: number;
@@ -866,6 +867,7 @@ export interface operations {
         category?: string | null;
         year?: number | null;
         competition_id?: string | null;
+        division?: string | null;
       };
       header?: never;
       path?: never;
@@ -924,6 +926,7 @@ export interface operations {
         category?: string | null;
         year?: number | null;
         competition_id?: string | null;
+        division?: string | null;
       };
       header?: never;
       path?: never;
@@ -1154,6 +1157,10 @@ export const genderValues: ReadonlyArray<FlattenedDeepRequired<components>['sche
 export const movementValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['Movement']
 > = ['Muscle-up', 'Pull-up', 'Dips', 'Squat'];
+export const rankByValues: ReadonlyArray<FlattenedDeepRequired<components>['schemas']['RankBy']> = [
+  'total',
+  'ris',
+];
 export const rankedGenderValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RankedGender']
 > = ['M', 'F', 'MX'];
@@ -1172,5 +1179,3 @@ export const recordMovementValues: ReadonlyArray<
 export const risSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RisSource']
 > = ['computed', 'reported'];
-export const scoringValues: ReadonlyArray<FlattenedDeepRequired<components>['schemas']['Scoring']> =
-  ['total', 'ris'];

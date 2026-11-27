@@ -6,7 +6,7 @@ name = "Phoenix Games"
 start_date = "2026-08-22"
 country = "PL"
 status = "completed"
-scoring = "total"
+rank_by = "total"
 
 [federation]
 name = "StreetLifting Polska"

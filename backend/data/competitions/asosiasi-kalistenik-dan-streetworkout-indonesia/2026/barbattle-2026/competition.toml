@@ -9,7 +9,7 @@ venue = "Mega Fitness Center"
 region = "Sumatera Utara"
 country = "ID"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "Asosiasi Kalistenik dan Streetworkout Indonesia"

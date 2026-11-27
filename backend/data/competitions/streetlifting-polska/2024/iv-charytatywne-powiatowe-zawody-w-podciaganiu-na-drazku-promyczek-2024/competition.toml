@@ -11,7 +11,7 @@ city = "Otwock"
 venue = "Hard Box"
 country = "PL"
 status = "completed"
-scoring = "total"
+rank_by = "total"
 
 [federation]
 name = "StreetLifting Polska"

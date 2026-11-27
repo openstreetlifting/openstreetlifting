@@ -1,7 +1,7 @@
 use osl_db::filter::Filters;
 use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::{competition::CompetitionRepository, ranking::RankingRepository};
-use osl_domain::{AthleteStatus, Gender, Movement, Scoring};
+use osl_domain::{AthleteStatus, Gender, Movement, RankBy};
 use osl_importer::canonical::{models::CanonicalFormat, validator::CanonicalValidator};
 use rust_decimal::Decimal;
 use sqlx::PgPool;
@@ -31,7 +31,7 @@ fn underground() -> CanonicalFormat {
     category.weight_class_slug = None;
     let mut canonical = common::competition("underground", vec![category]);
     canonical.movements = vec![Movement::PullUp, Movement::Dips, Movement::Squat];
-    canonical.competition.scoring = Some(Scoring::Ris);
+    canonical.competition.rank_by = Some(RankBy::Ris);
     for athlete in &mut canonical.categories[0].athletes {
         if athlete.total.is_none() {
             athlete.total = athlete.total_from_lifts(&canonical.movements);
@@ -174,10 +174,10 @@ async fn excludes_short_events_from_full_event_standings(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn clears_short_scores_when_scoring_changes(pool: PgPool) {
+async fn clears_short_scores_when_rank_by_changes(pool: PgPool) {
     common::import(&pool, underground()).await;
     let mut canonical = underground();
-    canonical.competition.scoring = Some(Scoring::Total);
+    canonical.competition.rank_by = Some(RankBy::Total);
     common::import(&pool, canonical).await;
     let rows: Vec<(Option<Decimal>, Option<Decimal>)> =
         sqlx::query_as("SELECT reported_ris_score, ris_score FROM competition_participants")

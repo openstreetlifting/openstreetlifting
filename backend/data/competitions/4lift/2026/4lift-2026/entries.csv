@@ -1,15 +1,15 @@
 Division,Sex,CategorySex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,Status,StatusReason,ReportedRisEdition,MuscleUp1Kg,MuscleUp2Kg,MuscleUp3Kg,BestMuscleUpKg,PullUp1Kg,PullUp2Kg,PullUp3Kg,BestPullUpKg,Dips1Kg,Dips2Kg,Dips3Kg,BestDipsKg,Squat1Kg,Squat2Kg,Squat3Kg,BestSquatKg
-Elite,M,MX,,Max,Amblard,,FR,86.5,100.37,525,competed,,2025,22.5,27.5,32.5,32.5,72.5,77.5,81.25x,77.5,117.5,125x,125,125,272.5,280,290,290
-Elite,M,MX,,Thavisay,Chanthaboun,,FR,74.2,95.73,452.5,competed,,2025,18.75,22.5,25,25,70,76.25,78.75x,76.25,125,131.25,135x,131.25,210,220,227.5x,220
-Elite,M,MX,,Donan Ibrahim,Claret,,DZ,74.9,89.19,425,competed,,2025,27.5,35,37.5,37.5,72.5,80,82.5x,80,115,125,130x,125,167.5,177.5,182.5,182.5
-Elite,M,MX,,Alix,Davy,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
-Elite,F,MX,,Anne-Sophie,Gherardi,,FR,61.5,98.28,243.75,competed,,,10,15,16.25x,15,27.5,33.75,37.5x,33.75,55,60x,60,60,125,135,137.5x,135
-Elite,F,MX,,Amélia,Jézéquel,,FR,61.8,97.53,245,competed,,2025,7.5,10,15x,10,27.5,33.75,37.5x,33.75,40,46.25,51.25,51.25,137.5,145,150,150
-Elite,M,MX,,Georges,Louvel,,FR,79.9,70.15,491.25,competed,,,20,26.25,28.75,28.75,70,75,80,80,130,135,140,140,232.5,242.5,252.5x,242.5
-Elite,F,MX,,Juliette,Roux,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
-Master,M,,,Yoann,Francius,,FR,72.3,,322.5,competed,,,12.5,15,17.5x,15,52.5,60,,60,82.5,87.5,,87.5,160,170x,,160
-Master,M,,,Julian,Letestu,,FR,81.3,,397.5,competed,,,7.5,10x,,7.5,55,60,,60,90,95,,95,222.5,235,,235
-Master,M,,,Nicolas,Poignant,,FR,87.4,,410,competed,,,15,17.5x,,15,72.5x,70,,70,110,117.5x,,110,215,222.5x,,215
+FNSL Elite,M,MX,,Max,Amblard,,FR,86.5,100.37,525,competed,,2025,22.5,27.5,32.5,32.5,72.5,77.5,81.25x,77.5,117.5,125x,125,125,272.5,280,290,290
+FNSL Elite,M,MX,,Thavisay,Chanthaboun,,FR,74.2,95.73,452.5,competed,,2025,18.75,22.5,25,25,70,76.25,78.75x,76.25,125,131.25,135x,131.25,210,220,227.5x,220
+FNSL Elite,M,MX,,Donan Ibrahim,Claret,,DZ,74.9,89.19,425,competed,,2025,27.5,35,37.5,37.5,72.5,80,82.5x,80,115,125,130x,125,167.5,177.5,182.5,182.5
+FNSL Elite,M,MX,,Alix,Davy,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+FNSL Elite,F,MX,,Anne-Sophie,Gherardi,,FR,61.5,98.28,243.75,competed,,,10,15,16.25x,15,27.5,33.75,37.5x,33.75,55,60x,60,60,125,135,137.5x,135
+FNSL Elite,F,MX,,Amélia,Jézéquel,,FR,61.8,97.53,245,competed,,2025,7.5,10,15x,10,27.5,33.75,37.5x,33.75,40,46.25,51.25,51.25,137.5,145,150,150
+FNSL Elite,M,MX,,Georges,Louvel,,FR,79.9,,491.25,competed,,,20,26.25,28.75,28.75,70,75,80,80,130,135,140,140,232.5,242.5,252.5x,242.5
+FNSL Elite,F,MX,,Juliette,Roux,,FR,,,,no_show,,,,,,,,,,,,,,,,,,
+FNSL Masters,M,,,Yoann,Francius,,FR,72.3,,322.5,competed,,,12.5,15,17.5x,15,52.5,60,,60,82.5,87.5,,87.5,160,170x,,160
+FNSL Masters,M,,,Julian,Letestu,,FR,81.3,,397.5,competed,,,7.5,10x,,7.5,55,60,,60,90,95,,95,222.5,235,,235
+FNSL Masters,M,,,Nicolas,Poignant,,FR,87.4,,410,competed,,,15,17.5x,,15,72.5x,70,,70,110,117.5x,,110,215,222.5x,,215
 Open,M,,66,Aziz,Ben Naceur,,FR,65.3,61.53,258.75,competed,,2025,6.25x,6.25,12.5,12.5,36.25,41.25x,41.25x,36.25,60,67.5x,67.5x,60,130,140,150,150
 Open,M,,66,Jérémie,Caminade,,FR,64.5,69.11,287.5,competed,,2025,7.5,11.25,12.5x,11.25,35,40,43.75,43.75,72.5,80,83.75x,80,135,145,152.5,152.5
 Open,M,,66,Zacharie,Duloisy,,FR,,,,no_show,,,,,,,,,,,,,,,,,,

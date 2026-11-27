@@ -37,7 +37,7 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
       name: 'Current edition',
       slug: 'current',
       status,
-      scoring: null,
+      rank_by: null,
       start_date: '2026-11-01',
       end_date: '2026-11-01',
       city: null,
@@ -56,7 +56,13 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
           ? []
           : [
               {
-                category: { name: 'Men -80kg', gender: 'M', weight_class: '-80kg', division: null },
+                category: {
+                  name: 'Men -80kg',
+                  gender: 'M',
+                  weight_class: '-80kg',
+                  division: null,
+                  rank_by: 'total',
+                },
                 participants: [],
               },
             ],
@@ -67,6 +73,10 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
       ],
     },
     ris: 'not-contested',
+    divisions: [],
+    division: null,
+    activeDivision: null,
+    rankBy: 'total',
     classes: [],
     countries: [],
     initialRankings: [],
@@ -208,4 +218,110 @@ it.each([
   expect(text('th').includes('Bodyweight kg')).toBe(shown);
   expect(text('td').includes('27')).toBe(shown);
   expect(text('td').includes('79.3')).toBe(shown);
+});
+
+it('switches between division boards and lists how each division is ranked', async () => {
+  const results = data('completed');
+  results.competition.categories = [
+    {
+      category: {
+        name: 'Open Men -80kg',
+        gender: 'M',
+        weight_class: '-80kg',
+        division: 'Open',
+        rank_by: 'total',
+      },
+      participants: [],
+    },
+    {
+      category: {
+        name: 'FNSL Elite Mixed',
+        gender: 'MX',
+        weight_class: '',
+        division: 'FNSL Elite',
+        rank_by: 'ris',
+      },
+      participants: [],
+    },
+  ];
+  results.divisions = [
+    { name: 'Open', rankBy: 'total', entries: 30 },
+    { name: 'FNSL Elite', rankBy: 'ris', entries: 8 },
+  ];
+  results.division = 'FNSL Elite';
+  results.activeDivision = 'FNSL Elite';
+  results.rankBy = 'ris';
+  results.formula = { year: 2026, is_current: true } as PageData['formula'];
+  render(CompetitionPage, { data: results });
+
+  const tabs = page.getByRole('navigation', { name: 'Divisions' });
+  await expect.element(tabs).toBeVisible();
+  await expect
+    .element(tabs.getByRole('link', { name: 'Open' }))
+    .toHaveAttribute('href', '/en/competitions/current');
+  await expect.element(tabs.getByText('FNSL Elite')).toHaveAttribute('aria-current', 'page');
+  const pairs = () =>
+    [...document.querySelectorAll('dl')].map((list) =>
+      [...list.querySelectorAll(':scope > dt')].map((term) => [
+        term.textContent?.trim(),
+        term.nextElementSibling?.textContent?.replace(/\s+/g, ' ').trim(),
+      ])
+    );
+  await expect.element(page.getByText('Ranked by RIS', { exact: true })).toBeVisible();
+  expect(pairs()).toContainEqual([
+    ['Format', expect.any(String)],
+    ['Divisions', 'Open, FNSL Elite'],
+  ]);
+  expect(pairs()).toContainEqual([['Men and women', 'Ranked by RIS']]);
+  const terms = pairs()
+    .flat()
+    .map(([term]) => term);
+  expect(terms).not.toContain('Division');
+  expect(terms).not.toContain('Ranked by');
+});
+
+const fieldRows = () =>
+  [...document.querySelectorAll('dt')]
+    .map((term) => [
+      term.textContent?.trim(),
+      term.nextElementSibling?.textContent?.replace(/\s+/g, ' ').trim(),
+    ])
+    .filter(([term]) => ['Women', 'Men', 'Men and women'].includes(term ?? ''));
+
+const field = (gender: 'M' | 'F' | 'MX', weight_class: string, rank_by: 'total' | 'ris') => ({
+  category: { name: '', gender, weight_class, division: null, rank_by },
+  participants: [],
+});
+
+it('states each field on one line with its rule and weight classes', async () => {
+  render(CompetitionPage, { data: data('completed') });
+
+  await expect.element(page.getByRole('list', { name: "Men's weight classes" })).toBeVisible();
+  const terms = [...document.querySelectorAll('dt')].map((term) => term.textContent?.trim());
+  expect(terms).not.toContain('Ranked by');
+  expect(terms).not.toContain('Division');
+  expect(fieldRows()).toEqual([
+    ['Men', expect.stringMatching(/^Ranked by total, by weight class: .80kg$/)],
+  ]);
+});
+
+it('lists women first and names only the rule for open fields ranked by RIS', async () => {
+  const results = data('completed');
+  results.competition.categories = [field('M', '', 'ris'), field('F', '', 'ris')];
+  render(CompetitionPage, { data: results });
+
+  await expect.element(page.getByRole('banner').getByText('Women', { exact: true })).toBeVisible();
+  expect(fieldRows()).toEqual([
+    ['Women', 'Ranked by RIS'],
+    ['Men', 'Ranked by RIS'],
+  ]);
+});
+
+it('says open weight when an open field is ranked by total', async () => {
+  const results = data('completed');
+  results.competition.categories = [field('F', '', 'total')];
+  render(CompetitionPage, { data: results });
+
+  await expect.element(page.getByText('Ranked by total, open weight')).toBeVisible();
+  expect(fieldRows()).toEqual([['Women', 'Ranked by total, open weight']]);
 });

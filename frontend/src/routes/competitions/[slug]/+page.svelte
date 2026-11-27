@@ -31,8 +31,11 @@
     ATHLETE_CONTENT,
     Text,
     RankHeader,
+    DetailList,
+    Detail,
   } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
+  import type { ResolvedPathname } from '$app/types';
   import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
   import { page, navigating } from '$app/state';
   import { afterNavigate } from '$app/navigation';
@@ -55,18 +58,18 @@
     EDGE_TO_EDGE,
   } from '#lib/constants/table.js';
   import { GitHubIcon } from '#lib/components/icons/index.js';
-  import {
-    RANKING_SORTS,
-    RANKING_SORTS_NO_RIS,
-    RANKING_GENDERS,
-    defaultRankingSort,
-  } from '#lib/constants/ranking.js';
+  import { RANKING_SORTS, RANKING_SORTS_NO_RIS, RANKING_GENDERS } from '#lib/constants/ranking.js';
   import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
   import { LEADERBOARD_FILTERS } from '#lib/constants/filters.js';
   import type { RankingEntry } from '#lib/types/ranking.js';
   import type { Attempt, Participant, CategoryDetail } from '#lib/types/competition.js';
-  import { GENDERS, asRankingMetric, type AthleteStatus } from '#lib/types/enums.js';
-  import { hasRankingResult, weightClasses } from '#lib/utils/competition-results.js';
+  import { asRankingMetric, type AthleteStatus, type RankBy } from '#lib/types/enums.js';
+  import {
+    contestSummary,
+    hasRankingResult,
+    type ContestGroup,
+    type DivisionSummary,
+  } from '#lib/utils/competition-results.js';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
   import Seo from '#lib/components/seo.svelte';
   import {
@@ -126,8 +129,16 @@
     basePath: () => `/competitions/${data.competition.slug}`,
     filters: LEADERBOARD_FILTERS,
     initialUrl: page.url,
-    defaultSort: () => data.competition.scoring ?? defaultRankingSort(data.ris),
+    defaultSort: () => data.rankBy,
+    scope: () => ({ division: data.division }),
   });
+
+  const divisionHref = (name: string) => {
+    const base = i18n.href(resolve('/competitions/[slug]', { slug: competition.slug }));
+    return (
+      name === data.divisions[0]?.name ? base : `${base}?division=${encodeURIComponent(name)}`
+    ) as ResolvedPathname;
+  };
 
   afterNavigate(({ type, shallow }) => {
     if (shallow) return;
@@ -304,24 +315,22 @@
           : undefined
   );
   const place = $derived([competition.venue, location].filter(Boolean).join(', '));
-  const DETAILS =
-    'grid w-max max-w-full grid-cols-[6rem_minmax(0,1fr)] content-start gap-x-3 gap-y-1.5 text-body sm:grid-cols-[7rem_minmax(0,1fr)]';
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
-  const representedClasses = $derived(
-    GENDERS.map((gender) => ({
-      gender,
-      label: i18n.t(({ M: 'Men', F: 'Women', MX: 'Mixed' } as const)[gender]),
-      classes: weightClasses(competition.categories, gender),
-    })).filter(({ classes }) => classes.length > 0)
+  const summary = $derived(contestSummary(competition.categories));
+  const divisioned = $derived(summary.length > 1);
+  const activeSummary = $derived(
+    divisioned ? summary.find((division) => division.name === data.activeDivision) : undefined
   );
+  const rule = (rankBy: RankBy) => (rankBy === 'ris' ? 'RIS' : i18n.t('Total'));
+  const ruleInline = (rankBy: RankBy) => (rankBy === 'ris' ? 'RIS' : i18n.t('total'));
+  const who = (group: ContestGroup) =>
+    i18n.t(({ M: 'Men', F: 'Women', MX: 'Men and women' } as const)[group.gender]);
 
   // Missing scores have no rank, but their entries still belong in the results.
   const NOT_PLACED_ORDER: AthleteStatus[] = ['competed', 'disqualified', 'no_show'];
 
-  const selectedMetric = $derived(
-    asRankingMetric(table.movementFilter) ?? defaultRankingSort(data.ris)
-  );
+  const selectedMetric = $derived(asRankingMetric(table.movementFilter) ?? data.rankBy);
 
   const notPlaced = $derived(
     competition.categories
@@ -336,6 +345,7 @@
         const search = table.searchFilter.trim().toLowerCase();
 
         return (
+          (!data.activeDivision || category.category.division === data.activeDivision) &&
           (!table.filters.values.gender || athlete.gender === table.filters.values.gender) &&
           (!table.filters.values.country || athlete.country === table.filters.values.country) &&
           (!classed ||
@@ -407,6 +417,37 @@
   </td>
 {/snippet}
 
+{#snippet rules(division: DivisionSummary)}
+  {#each division.groups as group (group.gender)}
+    {@const rankedBy = group.rankBy ? ruleInline(group.rankBy) : '—'}
+    <Detail label={who(group)} class="flex flex-wrap gap-x-3 gap-y-1">
+      {#if group.classes.length > 0}
+        <span>{i18n.t('Ranked by {rule}, by weight class:', { rule: rankedBy })}</span>
+        <span
+          class="contents"
+          role="list"
+          aria-label={i18n.t("{category}'s weight classes", { category: who(group) })}
+        >
+          {#each group.classes as weightClass (weightClass)}
+            <span role="listitem" class="whitespace-nowrap tabular-nums">
+              {weights.category(weightClass, i18n.locale)}
+            </span>
+          {/each}
+          {#if group.allWeights}
+            <span role="listitem" class="whitespace-nowrap">{i18n.t('open weight')}</span>
+          {/if}
+        </span>
+      {:else if group.rankBy === 'total'}
+        {i18n.t('Ranked by {rule}, open weight', { rule: rankedBy })}
+      {:else if group.rankBy}
+        {i18n.t('Ranked by {rule}', { rule: rankedBy })}
+      {:else}
+        {rankedBy}
+      {/if}
+    </Detail>
+  {/each}
+{/snippet}
+
 {#snippet editLink()}
   {#if editPath}
     <Button
@@ -439,9 +480,8 @@
     </div>
 
     {#if editions.length > 1}
-      <dl class="{DETAILS} mt-4">
-        <dt id="edition-label" class="self-center text-muted">{i18n.t('Edition')}</dt>
-        <dd class="min-w-0">
+      <DetailList class="mt-4">
+        <Detail label={i18n.t('Edition')} labelId="edition-label" labelClass="self-center">
           <nav aria-labelledby="edition-label">
             <SegmentedControl
               items={editions}
@@ -458,15 +498,16 @@
               {/snippet}
             </SegmentedControl>
           </nav>
-        </dd>
-      </dl>
+        </Detail>
+      </DetailList>
     {/if}
 
-    <div class="mt-section flex flex-wrap gap-x-chapter gap-y-section">
-      <dl class={DETAILS}>
+    <div
+      class="mt-section grid gap-y-section sm:grid-cols-[repeat(2,minmax(0,36rem))] sm:gap-x-chapter"
+    >
+      <DetailList>
         {#if competition.start_date}
-          <dt class="text-muted">{i18n.t('Date')}</dt>
-          <dd class="text-ink">
+          <Detail label={i18n.t('Date')}>
             <time datetime={competition.start_date}>
               {competitionDate.format(new Date(competition.start_date))}
             </time>
@@ -476,11 +517,10 @@
                 {competitionDate.format(new Date(competition.end_date))}
               </time>
             {/if}
-          </dd>
+          </Detail>
         {/if}
         {#if place || competition.country}
-          <dt class="text-muted">{i18n.t('Location')}</dt>
-          <dd class="flex min-w-0 items-start gap-2 text-ink">
+          <Detail label={i18n.t('Location')} class="flex items-start gap-2">
             {#if competition.country}
               <Flag
                 countryCode={competition.country}
@@ -491,10 +531,9 @@
             <span class="min-w-0">
               {place || (competition.country ? countryName(competition.country, i18n.locale) : '')}
             </span>
-          </dd>
+          </Detail>
         {/if}
-        <dt class="text-muted">{i18n.t('Federation')}</dt>
-        <dd class="flex min-w-0 items-center gap-2 text-ink">
+        <Detail label={i18n.t('Federation')} class="flex items-center gap-2">
           {#if competition.federation.country}
             <Flag
               countryCode={competition.federation.country}
@@ -510,44 +549,25 @@
           >
             {federationLabel}
           </a>
-        </dd>
-      </dl>
-      <dl class={DETAILS}>
-        <dt class="text-muted">{i18n.t('Format')}</dt>
-        <dd class="text-ink">
+        </Detail>
+      </DetailList>
+      <DetailList>
+        <Detail label={i18n.t('Format')}>
           {formatLabel ||
             (competition.status === 'upcoming' ? i18n.t('Format not announced') : '—')}
-        </dd>
-        {#if competition.scoring}
-          <dt class="text-muted">{i18n.t('Scoring')}</dt>
-          <dd class="text-ink">{competition.scoring === 'ris' ? 'RIS' : i18n.t('Total')}</dd>
+        </Detail>
+        {#if !published}
+          {#if competition.rank_by}
+            <Detail label={i18n.t('Ranked by')}>{rule(competition.rank_by)}</Detail>
+          {/if}
+        {:else if divisioned}
+          <Detail label={i18n.t('Divisions')}>
+            {data.divisions.map((division) => division.name).join(', ')}
+          </Detail>
+        {:else}
+          {@render rules(summary[0])}
         {/if}
-        {#if published}
-          <dt class="text-muted">{i18n.t('Weight classes')}</dt>
-          <dd class="grid min-w-0 gap-y-1.5 text-ink">
-            {#if classed}
-              {#each representedClasses as group (group.gender)}
-                <p class="flex flex-col gap-x-2 sm:flex-row">
-                  <span class="shrink-0 text-muted sm:w-14">{group.label}</span>
-                  <span
-                    class="flex min-w-0 flex-wrap gap-x-3 gap-y-1"
-                    role="list"
-                    aria-label={i18n.t("{category}'s weight classes", { category: group.label })}
-                  >
-                    {#each group.classes as weightClass (weightClass)}
-                      <span role="listitem" class="whitespace-nowrap tabular-nums">
-                        {weights.category(weightClass, i18n.locale) || i18n.t('No weight classes')}
-                      </span>
-                    {/each}
-                  </span>
-                </p>
-              {/each}
-            {:else}
-              {i18n.t('No weight classes')}
-            {/if}
-          </dd>
-        {/if}
-      </dl>
+      </DetailList>
     </div>
   </header>
 
@@ -582,6 +602,29 @@
       </Text>
       {@render editLink()}
     </div>
+    {#if data.divisions.length > 1}
+      <nav class="mb-shell-dense" aria-label={i18n.t('Divisions')}>
+        <SegmentedControl
+          items={data.divisions}
+          key={(division) => division.name}
+          selected={(division) => division.name === data.activeDivision}
+          href={(division) => divisionHref(division.name)}
+          attributes={(division) => ({
+            title: i18n.t('{division}, ranked by {metric}', {
+              division: division.name,
+              metric: rule(division.rankBy),
+            }),
+          })}
+        >
+          {#snippet children(division)}
+            {division.name}
+          {/snippet}
+        </SegmentedControl>
+      </nav>
+      {#if activeSummary}
+        <DetailList class="mb-shell-dense">{@render rules(activeSummary)}</DetailList>
+      {/if}
+    {/if}
     <section
       class="{EDGE_TO_EDGE} min-w-0 rounded-panel border border-stroke-strong"
       aria-labelledby="results-heading"

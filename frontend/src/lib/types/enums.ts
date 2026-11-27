@@ -10,7 +10,7 @@ export {
   rankedGenderValues as RANKED_GENDERS,
   rankingMetricValues as RANKING_METRICS,
   risSourceValues as RIS_SOURCES,
-  scoringValues as SCORING_METHODS,
+  rankByValues as RANK_BY_VALUES,
 } from '#lib/api/schema.generated.js';
 
 type Schemas = components['schemas'];
@@ -22,7 +22,7 @@ export type Movement = Schemas['Movement'];
 export type RankedGender = Schemas['RankedGender'];
 export type RankingMetric = Schemas['RankingMetric'];
 export type RisSource = Schemas['RisSource'];
-export type Scoring = Schemas['Scoring'];
+export type RankBy = Schemas['RankBy'];
 export type SortDirection = Schemas['Direction'];
 
 function narrow<T extends string>(

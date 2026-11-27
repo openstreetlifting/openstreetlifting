@@ -11,7 +11,9 @@ venue = "Oski Crossfit"
 region = "Auvergne-Rhône-Alpes"
 country = "FR"
 status = "completed"
-scoring = "total"
+
+[competition.divisions.Open]
+rank_by = "total"
 
 [federation]
 name = "4Lift"

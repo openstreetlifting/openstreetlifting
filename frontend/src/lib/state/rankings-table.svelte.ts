@@ -19,6 +19,8 @@ interface RankingsTableConfig<S extends FilterSpec> {
   initialUrl: typeof page.url;
   /** Column sorted before anyone picks one. Not every competition has a RIS to sort on. */
   defaultSort?: string | (() => string);
+  /** Query parameters that select which board this is, kept through every filter change and clear. */
+  scope?: () => Record<string, string | null>;
 }
 
 function reader<T>(value: T | (() => T)): () => T {
@@ -57,6 +59,7 @@ export class RankingsTable<S extends FilterSpec> {
 
   private readonly readBasePath: () => string;
   private readonly readDefaultSort: () => string;
+  private readonly readScope: () => Record<string, string | null>;
 
   get defaultSort(): string {
     return this.readDefaultSort();
@@ -69,6 +72,7 @@ export class RankingsTable<S extends FilterSpec> {
   constructor(config: RankingsTableConfig<S>) {
     this.readBasePath = reader(config.basePath);
     this.readDefaultSort = reader(config.defaultSort ?? 'ris');
+    this.readScope = config.scope ?? (() => ({}));
     this.filters = new UrlFilters(
       config.filters,
       readFilters(config.initialUrl.searchParams, config.filters)
@@ -111,6 +115,9 @@ export class RankingsTable<S extends FilterSpec> {
   /** Defaults stay out of the query string so a shared link carries only what was chosen. */
   pageHref(targetPage: number, query = this.search.applied) {
     const params = new SvelteURLSearchParams();
+    for (const [name, value] of Object.entries(this.readScope())) {
+      if (value) params.set(name, value);
+    }
     if (this.movementFilter !== this.defaultSort) params.set('movement', this.movementFilter);
     if (this.sortDirection !== 'desc') params.set('direction', this.sortDirection);
     this.filters.writeTo(params);

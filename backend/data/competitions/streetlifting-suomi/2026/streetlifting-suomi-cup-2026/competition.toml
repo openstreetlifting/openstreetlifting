@@ -12,7 +12,7 @@ city = "Jyväskylä"
 venue = "PTV Gym Jyväskylä"
 country = "FI"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "Streetlifting Suomi"

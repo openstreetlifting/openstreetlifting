@@ -640,6 +640,18 @@
               ],
               "format": "uuid"
             }
+          },
+          {
+            "name": "division",
+            "in": "query",
+            "description": "Division name. Requires `competition_id`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
           }
         ],
         "responses": {
@@ -833,6 +845,18 @@
                 "null"
               ],
               "format": "uuid"
+            }
+          },
+          {
+            "name": "division",
+            "in": "query",
+            "description": "Division name. Requires `competition_id`.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
             }
           }
         ],
@@ -1919,7 +1943,8 @@
           "name",
           "division",
           "gender",
-          "weight_class"
+          "weight_class",
+          "rank_by"
         ],
         "properties": {
           "division": {
@@ -1936,6 +1961,10 @@
           "name": {
             "type": "string",
             "description": "Category name, such as `Men -80kg`."
+          },
+          "rank_by": {
+            "$ref": "#/components/schemas/RankBy",
+            "description": "Ranking metric for this contest."
           },
           "weight_class": {
             "type": "string",
@@ -2145,7 +2174,7 @@
           "created_at",
           "slug",
           "status",
-          "scoring",
+          "rank_by",
           "federation_id",
           "city",
           "venue",
@@ -2238,23 +2267,23 @@
             "type": "string",
             "description": "Competition name."
           },
-          "region": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Region."
-          },
-          "scoring": {
+          "rank_by": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/Scoring",
+                "$ref": "#/components/schemas/RankBy",
                 "description": "Metric the competition ranks on."
               },
               {
                 "type": "null"
               }
             ]
+          },
+          "region": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Region."
           },
           "slug": {
             "type": "string",
@@ -2989,7 +3018,7 @@
                 "created_at",
                 "slug",
                 "status",
-                "scoring",
+                "rank_by",
                 "federation_id",
                 "city",
                 "venue",
@@ -3082,23 +3111,23 @@
                   "type": "string",
                   "description": "Competition name."
                 },
-                "region": {
-                  "type": [
-                    "string",
-                    "null"
-                  ],
-                  "description": "Region."
-                },
-                "scoring": {
+                "rank_by": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Scoring",
+                      "$ref": "#/components/schemas/RankBy",
                       "description": "Metric the competition ranks on."
                     },
                     {
                       "type": "null"
                     }
                   ]
+                },
+                "region": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Region."
                 },
                 "slug": {
                   "type": "string",
@@ -3497,6 +3526,14 @@
             ]
           }
         }
+      },
+      "RankBy": {
+        "type": "string",
+        "description": "Ranking metric: `total` or `ris`.",
+        "enum": [
+          "total",
+          "ris"
+        ]
       },
       "RankedGender": {
         "type": "string",
@@ -4007,14 +4044,6 @@
         "enum": [
           "computed",
           "reported"
-        ]
-      },
-      "Scoring": {
-        "type": "string",
-        "description": "Ranking metric: `total` or `ris`.",
-        "enum": [
-          "total",
-          "ris"
         ]
       },
       "StandingPlace": {

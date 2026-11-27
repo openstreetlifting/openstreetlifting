@@ -9,7 +9,7 @@ pub struct CompetitionRow {
     pub created_at: chrono::NaiveDateTime,
     pub slug: String,
     pub status: CompetitionStatus,
-    pub scoring: Option<osl_domain::Scoring>,
+    pub rank_by: Option<osl_domain::RankBy>,
     pub federation_id: Uuid,
     pub city: Option<String>,
     pub venue: Option<String>,

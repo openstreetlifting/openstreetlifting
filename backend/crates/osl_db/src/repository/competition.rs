@@ -64,7 +64,7 @@ impl<'a> CompetitionRepository<'a> {
     ) -> Result<(Vec<CompetitionSummaryRow>, i64)> {
         let mut query = QueryBuilder::new(
             r"
-            SELECT c.competition_id, c.name, c.created_at, c.slug, c.status, c.scoring,
+            SELECT c.competition_id, c.name, c.created_at, c.slug, c.status, c.rank_by,
                    c.federation_id, c.venue, c.city, c.region, c.country,
                    c.start_date, c.end_date,
                    COUNT(p.participant_id) AS lifter_count
@@ -169,7 +169,7 @@ impl<'a> CompetitionRepository<'a> {
             CompetitionRow,
             r#"
             SELECT competition_id, name, created_at, slug,
-                   status as "status: CompetitionStatus", scoring as "scoring: osl_domain::Scoring", federation_id,
+                   status as "status: CompetitionStatus", rank_by as "rank_by: osl_domain::RankBy", federation_id,
                    city, venue, region, country, start_date, end_date
             FROM competitions
             WHERE competition_id = $1
@@ -189,7 +189,7 @@ impl<'a> CompetitionRepository<'a> {
             CompetitionRow,
             r#"
             SELECT competition_id, name, created_at, slug,
-                   status as "status: CompetitionStatus", scoring as "scoring: osl_domain::Scoring", federation_id,
+                   status as "status: CompetitionStatus", rank_by as "rank_by: osl_domain::RankBy", federation_id,
                    city, venue, region, country, start_date, end_date
             FROM competitions
             WHERE slug = $1
@@ -293,8 +293,12 @@ impl<'a> CompetitionRepository<'a> {
         let contests = sqlx::query!(
             r#"SELECT DISTINCT cp.weight_class_id, cp.division_id, d.name AS "division?",
                     COALESCE(cp.category_gender, wc.gender, a.gender) as "gender!: Gender",
-                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max
+                    wc.min_kg AS weight_class_min, wc.max_kg AS weight_class_max,
+                    COALESCE(cp.rank_by, c.rank_by,
+                             CASE WHEN cp.weight_class_id IS NULL THEN 'ris' ELSE 'total' END)
+                        AS "rank_by!: osl_domain::RankBy"
              FROM competition_participants cp
+             INNER JOIN competitions c ON c.competition_id = cp.competition_id
              INNER JOIN athletes a ON a.athlete_id = cp.athlete_id
              LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
              LEFT JOIN divisions d ON d.division_id = cp.division_id
@@ -311,6 +315,7 @@ impl<'a> CompetitionRepository<'a> {
             gender: row.gender,
             weight_class_min: row.weight_class_min,
             weight_class_max: row.weight_class_max,
+            rank_by: row.rank_by,
         });
 
         let participants = sqlx::query!(

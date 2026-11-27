@@ -11,7 +11,7 @@ city = "Basingstoke"
 region = "England"
 country = "GB"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "Bodystrong"

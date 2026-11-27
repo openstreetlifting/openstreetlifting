@@ -41,7 +41,7 @@ fn competition() -> CompetitionResponse {
         created_at: athlete_row().created_at,
         slug: "test-competition".into(),
         status: CompetitionStatus::Upcoming,
-        scoring: None,
+        rank_by: None,
         federation_id: Uuid::nil(),
         city: None,
         venue: None,
@@ -159,6 +159,7 @@ fn omits_unrequested_competition_sections() {
         division: None,
         gender: Gender::M,
         weight_class: "-80kg".into(),
+        rank_by: osl_domain::RankBy::Total,
     };
     assert_eq!(
         serde_json::to_value(category).unwrap().get("division"),

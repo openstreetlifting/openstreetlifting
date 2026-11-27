@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT competition_id, name, created_at, slug,\n                   status as \"status: CompetitionStatus\", scoring as \"scoring: osl_domain::Scoring\", federation_id,\n                   city, venue, region, country, start_date, end_date\n            FROM competitions\n            WHERE slug = $1\n            ",
+  "query": "\n            SELECT competition_id, name, created_at, slug,\n                   status as \"status: CompetitionStatus\", rank_by as \"rank_by: osl_domain::RankBy\", federation_id,\n                   city, venue, region, country, start_date, end_date\n            FROM competitions\n            WHERE competition_id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -60,12 +60,12 @@
       },
       {
         "ordinal": 5,
-        "name": "scoring: osl_domain::Scoring",
+        "name": "rank_by: osl_domain::RankBy",
         "type_info": "Text",
         "origin": {
           "Table": {
             "table": "competitions",
-            "name": "scoring"
+            "name": "rank_by"
           }
         }
       },
@@ -149,7 +149,7 @@
     ],
     "parameters": {
       "Left": [
-        "Text"
+        "Uuid"
       ]
     },
     "nullable": [
@@ -168,5 +168,5 @@
       false
     ]
   },
-  "hash": "3ec2d657d1da108cdd671033a8d44b2f609c23fcd787b43d34915581d2159604"
+  "hash": "ebc02d6e829f6b8c1ef1d165c092b9e3161ffe39e96cb51f38a870941093893e"
 }

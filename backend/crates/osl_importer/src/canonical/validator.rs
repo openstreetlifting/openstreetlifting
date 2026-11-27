@@ -222,23 +222,27 @@ impl CanonicalValidator {
     #[expect(clippy::too_many_lines)]
     fn check_athletes(canonical: &CanonicalFormat, report: &mut ValidationReport) {
         let uses_reported_ris = canonical.uses_reported_ris();
+        for division in canonical.competition.divisions.keys() {
+            if !canonical
+                .categories
+                .iter()
+                .any(|category| category.division.as_ref() == Some(division))
+            {
+                report.errors.push(format!(
+                    "competition.divisions.\"{division}\" matches no Division in the entries"
+                ));
+            }
+        }
         if canonical
             .categories
             .iter()
-            .any(|category| category.gender == osl_domain::Gender::Mx)
-            && canonical.competition.scoring.is_none()
-        {
-            report
-                .errors
-                .push("Mixed contests require competition.scoring = \"total\" or \"ris\"".into());
-        }
-        if canonical.competition.scoring == Some(osl_domain::Scoring::Ris)
+            .any(|category| canonical.rank_by_for(category) == Some(osl_domain::RankBy::Ris))
             && canonical.movements != osl_domain::Movement::ALL
             && !uses_reported_ris
         {
             report
                 .errors
-                .push("RIS scoring requires MPDS or a shorter event with no weight classes anywhere in the competition".into());
+                .push("rank_by = \"ris\" requires MPDS, or a non-MPDS event with no weight classes anywhere in the competition".into());
         }
         for category in &canonical.categories {
             for athlete in &category.athletes {
@@ -270,7 +274,7 @@ impl CanonicalValidator {
                     && athlete.reported_ris.is_none()
                 {
                     report.warnings.push(format!(
-                        "Athlete '{label}' has no published RIS; shorter events require ReportedRis for a RIS placing"
+                        "Athlete '{label}' has no published RIS; non-MPDS events require ReportedRis for a RIS placing"
                     ));
                 }
                 if athlete.status == AthleteStatus::Competed
@@ -501,7 +505,8 @@ mod tests {
                 region: None,
                 country: CountryCode::parse("FR").unwrap(),
                 status: Some(CompetitionStatus::Upcoming),
-                scoring: None,
+                rank_by: None,
+                divisions: std::collections::BTreeMap::new(),
             },
             movements: Vec::new(),
             categories: Vec::new(),

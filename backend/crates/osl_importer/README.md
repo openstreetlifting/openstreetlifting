@@ -36,7 +36,7 @@ Paths can point to individual competition directories or directory trees. The im
 
 Every competition needs at least one source reference. For one-day events,
 `end_date` may be omitted; `venue` is optional. Mixed contests require athlete
-`Sex`, `CategorySex=MX`, and an explicit `competition.scoring`. See the
+`Sex` and `CategorySex=MX`. See the
 [data reference](../../docs/src/DATA_REFERENCE.md) for accepted values.
 
 The importer saves the whole batch in one transaction, including pruning. Conflicting countries for one athlete or a failed write roll back the batch. Correct country evidence across the affected competitions and import them together.

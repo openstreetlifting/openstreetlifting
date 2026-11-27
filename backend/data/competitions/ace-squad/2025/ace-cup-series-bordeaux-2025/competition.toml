@@ -11,7 +11,7 @@ end_date = "2025-12-08"
 city = "Bordeaux"
 country = "FR"
 status = "completed"
-scoring = "ris"
+rank_by = "ris"
 
 [federation]
 name = "Ace Squad"

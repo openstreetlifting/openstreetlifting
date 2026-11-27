@@ -7,7 +7,7 @@ start_date = "2026-04-25"
 city = "Piotrków Trybunalski"
 country = "PL"
 status = "completed"
-scoring = "total"
+rank_by = "total"
 
 [federation]
 name = "StreetLifting Polska"
