@@ -32,8 +32,6 @@ export default {
   Event: 'Format',
   Best: 'Meilleur',
   Date: 'Date',
-  'One result recorded. A trend will appear after another competition.':
-    'Un seul résultat enregistré. La progression apparaîtra après une autre compétition.',
   'RIS scores are shown as recorded; formula editions and reported scores may differ.':
     'Les scores RIS sont affichés tels qu’ils ont été enregistrés ; les éditions de la formule et les scores publiés peuvent différer.',
   'Lift balance': 'Équilibre des mouvements',
@@ -57,17 +55,11 @@ export default {
     'Pour cette compétition, les scores RIS sont affichés tels que publiés.',
   'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.':
     'Représente chaque mouvement comme une proportion du meilleur total de l’athlète ({total} {unit}, {competition}), comparée à la proportion moyenne de {count} athlètes en {category}. Un écart vers l’extérieur indique une prédominance de ce mouvement.',
-  'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}).':
-    'Représente chaque mouvement comme une proportion du meilleur total de l’athlète ({total} {unit}, {competition}).',
   '{class} class': 'Catégorie {class}',
   Reference: 'Référence',
   '{movement}: {share} of total, reference {average}':
     '{movement} : {share} du total, référence {average}',
   'of total': 'du total',
-  'Too few athletes in this weight class to compare.':
-    'Trop peu d’athlètes dans cette catégorie pour comparer.',
-  'A completed MPDS competition is needed to show lift balance.':
-    'Une compétition MPDS terminée est nécessaire pour afficher l’équilibre.',
   'Match these movements exactly': 'Rechercher exactement ces mouvements',
   'Clear movements': 'Effacer les mouvements',
   'Clear selection': 'Effacer la sélection',
@@ -373,9 +365,6 @@ export default {
   'No successful {movement}': 'Aucun essai validé : {movement}',
   "{category}'s weight classes": 'Catégories de poids : {category}',
   '{label} over time': 'Évolution : {label}',
-  'No dated {movement} results available.': 'Aucun résultat daté disponible : {movement}.',
-  'No dated {movement} results available for {format}.':
-    'Aucun résultat daté disponible pour {format} : {movement}.',
   'Enter a number between {min} and {max} {unit}.':
     'Saisissez un nombre compris entre {min} et {max} {unit}.',
   '{label} slider': 'Curseur : {label}',

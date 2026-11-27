@@ -34,6 +34,7 @@
   import { goto } from '$app/navigation';
   import { athleteFilters } from '#lib/utils/athlete-filters.js';
   import {
+    chartableMetrics,
     competitionFocusQuery,
     movementMetric,
     type ProgressMetric,
@@ -44,7 +45,7 @@
   import { formatDate, formatAthleteName, countryName, countryPath } from '#lib/utils/index.js';
   import Seo from '#lib/components/seo.svelte';
   import AthleteProgress from '#lib/components/athlete-progress.svelte';
-  import AthleteBalance from '#lib/components/athlete-balance.svelte';
+  import AthleteBalance, { balanceComparable } from '#lib/components/athlete-balance.svelte';
   import AthleteNeighbors from '#lib/components/athlete-neighbors.svelte';
   import { absolute, athleteLd, athleteTitle, breadcrumbLd } from '#lib/seo/index.js';
   import {
@@ -64,8 +65,9 @@
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
   const showsDivision = $derived(athlete.competitions.some((c) => c.division));
-  const showsProgress = $derived(athlete.total_competitions > 1);
-  const showsBalance = $derived(Boolean(athlete.lift_balance));
+  const progressMetrics = $derived(chartableMetrics(athlete.competitions));
+  const showsProgress = $derived(progressMetrics.length > 0);
+  const balance = $derived(balanceComparable(athlete.lift_balance) ? athlete.lift_balance : null);
 
   const LIFTS = [
     { key: 'muscleup', code: 'M', movement: 'Muscle-up', label: 'Muscle Up' },
@@ -427,23 +429,22 @@
     />
   {/key}
 
-  {#if showsProgress || showsBalance}
-    <div>
-      <Text as="h2" variant="heading" class="mb-3 text-ink">{i18n.t('Performance')}</Text>
-      <div class="grid items-stretch gap-tile lg:auto-rows-fr lg:grid-cols-2">
-        {#if showsProgress}
-          <AthleteProgress
-            athleteSlug={athlete.slug}
-            competitions={athlete.competitions}
-            metric={filters.performance}
-            onMetricChange={(value) => updateFilter('performance', value)}
-          />
-        {/if}
+  {#if showsProgress || balance}
+    <div class="grid items-stretch gap-tile lg:auto-rows-fr lg:grid-cols-2">
+      {#if showsProgress}
+        <AthleteProgress
+          athleteSlug={athlete.slug}
+          competitions={athlete.competitions}
+          metric={progressMetrics.includes(filters.performance)
+            ? filters.performance
+            : progressMetrics[0]}
+          onMetricChange={(value) => updateFilter('performance', value)}
+        />
+      {/if}
 
-        {#if showsBalance}
-          <AthleteBalance balance={athlete.lift_balance} />
-        {/if}
-      </div>
+      {#if balance}
+        <AthleteBalance {balance} />
+      {/if}
     </div>
   {/if}
 

@@ -32,8 +32,6 @@ export default {
   Event: 'Format',
   Best: 'Bestleistung',
   Date: 'Datum',
-  'One result recorded. A trend will appear after another competition.':
-    'Ein Ergebnis erfasst. Nach einem weiteren Wettkampf wird die Entwicklung sichtbar.',
   'RIS scores are shown as recorded; formula editions and reported scores may differ.':
     'RIS-Werte werden wie erfasst angezeigt. Formelversionen und veröffentlichte Werte können variieren.',
   'Lift balance': 'Lift-Balance',
@@ -57,17 +55,11 @@ export default {
     'In diesem Wettkampf werden die RIS-Werte wie veröffentlicht angezeigt.',
   'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.':
     'Stellt jede Übung als Anteil an der besten Gesamtleistung des Athleten ({total} {unit}, {competition}) dem mittleren Anteil von {count} Athleten der Kategorie {category} gegenüber. Eine Abweichung nach außen zeigt eine Betonung dieser Übung.',
-  'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}).':
-    'Stellt jede Übung als Anteil an der besten Gesamtleistung des Athleten ({total} {unit}, {competition}) dar.',
   '{class} class': '{class}-Klasse',
   Reference: 'Referenz',
   '{movement}: {share} of total, reference {average}':
     '{movement}: {share} des Totals, Referenz {average}',
   'of total': 'des Totals',
-  'Too few athletes in this weight class to compare.':
-    'Zu wenige Personen in dieser Gewichtsklasse für einen Vergleich.',
-  'A completed MPDS competition is needed to show lift balance.':
-    'Für die Lift-Balance wird ein abgeschlossener MPDS-Wettkampf benötigt.',
   'Match these movements exactly': 'Genau diese Disziplinen',
   'Clear movements': 'Disziplinen zurücksetzen',
   'Clear selection': 'Auswahl zurücksetzen',
@@ -374,9 +366,6 @@ export default {
   'No successful {movement}': 'Kein gültiger Versuch: {movement}',
   "{category}'s weight classes": 'Gewichtsklassen: {category}',
   '{label} over time': 'Entwicklung: {label}',
-  'No dated {movement} results available.': 'Keine Ergebnisse mit Datum für {movement} verfügbar.',
-  'No dated {movement} results available for {format}.':
-    'Keine Ergebnisse mit Datum für {movement} im Format „{format}“ verfügbar.',
   'Enter a number between {min} and {max} {unit}.':
     'Gib eine Zahl zwischen {min} und {max} {unit} ein.',
   '{label} slider': 'Schieberegler: {label}',

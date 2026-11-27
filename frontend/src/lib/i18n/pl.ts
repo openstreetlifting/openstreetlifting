@@ -32,8 +32,6 @@ export default {
   Event: 'Format',
   Best: 'Najlepszy',
   Date: 'Data',
-  'One result recorded. A trend will appear after another competition.':
-    'Na razie jeden wynik. Trend pojawi się po kolejnych zawodach.',
   'RIS scores are shown as recorded; formula editions and reported scores may differ.':
     'Wyniki RIS są wyświetlane zgodnie z zapisem; wersje wzoru i opublikowane wartości mogą się różnić.',
   'Lift balance': 'Balans bojów',
@@ -57,17 +55,11 @@ export default {
     'W tych zawodach wyniki RIS są pokazane tak, jak je opublikowano.',
   'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.':
     'Przedstawia każdy bój jako udział w najlepszym wyniku łącznym zawodnika ({total} {unit}, {competition}) na tle średniego udziału {count} zawodników w kategorii {category}. Odchylenie na zewnątrz oznacza większy nacisk na ten bój.',
-  'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}).':
-    'Przedstawia każdy bój jako udział w najlepszym wyniku łącznym zawodnika ({total} {unit}, {competition}).',
   '{class} class': 'Kategoria {class}',
   Reference: 'Odniesienie',
   '{movement}: {share} of total, reference {average}':
     '{movement}: {share} totalu, odniesienie {average}',
   'of total': 'totalu',
-  'Too few athletes in this weight class to compare.':
-    'Za mało zawodników w tej kategorii wagowej, aby porównać.',
-  'A completed MPDS competition is needed to show lift balance.':
-    'Do pokazania balansu potrzebne są ukończone zawody MPDS.',
   'Match these movements exactly': 'Wybierz dokładny zestaw bojów',
   'Clear movements': 'Wyczyść wybór bojów',
   'Clear selection': 'Wyczyść wybór',
@@ -371,9 +363,6 @@ export default {
   'No successful {movement}': 'Brak zaliczonego podejścia: {movement}',
   "{category}'s weight classes": 'Kategorie wagowe: {category}',
   '{label} over time': '{label} w czasie',
-  'No dated {movement} results available.': '{movement}: brak wyników z datą.',
-  'No dated {movement} results available for {format}.':
-    '{movement}: brak wyników z datą dla formatu {format}.',
   'Enter a number between {min} and {max} {unit}.': 'Podaj liczbę od {min} do {max} {unit}.',
   '{label} slider': 'Suwak: {label}',
   'The calculated score is above the target of {target} RIS.':

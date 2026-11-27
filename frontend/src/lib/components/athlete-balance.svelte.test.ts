@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
-import AthleteBalance from './athlete-balance.svelte';
+import AthleteBalance, { balanceComparable } from './athlete-balance.svelte';
 import type { LiftBalance } from '#lib/types/athlete.js';
 
 const balance: LiftBalance = {
@@ -46,22 +46,19 @@ it('labels each axis with its difference from the class average', async () => {
 it('shows the share and class average on hover', async () => {
   render(AthleteBalance, { balance });
   await page.getByRole('button', { name: 'Squat: 50.0% of total, reference 48.5%' }).hover();
-  await expect.element(page.getByRole('tooltip')).toMatchTextContent(/Squat · 200 kg/);
+  await expect.element(page.getByRole('tooltip')).toMatchTextContent(/Squat/);
+  await expect.element(page.getByRole('tooltip')).toMatchTextContent(/200 kg/);
   await expect.element(page.getByRole('tooltip')).toMatchTextContent(/48\.5%/);
 });
 
-it('lists shares without a comparison when the class is too small', async () => {
-  render(AthleteBalance, { balance: { ...balance, field: 9 } });
-  await expect
-    .element(page.getByText('Too few athletes in this weight class to compare.'))
-    .toBeVisible();
-  expect(page.getByRole('group', { name: /Lift balance compared/ }).elements()).toHaveLength(0);
-  await expect.element(page.getByRole('definition').first()).toHaveTextContent('5.0% of total');
-});
-
-it('explains when no MPDS competition exists', async () => {
-  render(AthleteBalance, { balance: null });
-  await expect
-    .element(page.getByText('A completed MPDS competition is needed to show lift balance.'))
-    .toBeVisible();
+it('compares only a class large enough and fully spread', () => {
+  expect(balanceComparable(balance)).toBe(true);
+  expect(balanceComparable({ ...balance, field: 9 })).toBe(false);
+  expect(
+    balanceComparable({
+      ...balance,
+      lifts: balance.lifts.map((lift) => ({ ...lift, class_spread: null })),
+    })
+  ).toBe(false);
+  expect(balanceComparable(null)).toBe(false);
 });

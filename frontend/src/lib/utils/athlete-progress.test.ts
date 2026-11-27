@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
-import { progressPoints } from './athlete-progress';
+import { chartableMetrics, progressPoints } from './athlete-progress';
 
 function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteCompetitionSummary {
   return {
@@ -104,4 +104,16 @@ it('keeps individual-lift trends in the selected format', () => {
   ];
   expect(progressPoints(competitions, 'pullup').map((point) => point.value)).toEqual([10]);
   expect(progressPoints(competitions, 'pullup', 'PD').map((point) => point.value)).toEqual([20]);
+});
+
+it('charts a metric only from two dated MPDS results', () => {
+  const second = result({
+    competition_id: 'meet-2',
+    competition_date: '2026-03-01',
+    ris_score: null,
+    lifts: [{ movement_name: 'Pull-up', best_weight: '40', record: null, attempts: [] }],
+  });
+  expect(chartableMetrics([result()])).toEqual([]);
+  expect(chartableMetrics([result(), second])).toEqual(['total']);
+  expect(chartableMetrics([result(), { ...second, event: 'PD' }])).toEqual([]);
 });

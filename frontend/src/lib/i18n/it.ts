@@ -33,8 +33,6 @@ export default {
   Event: 'Formato',
   Best: 'Migliore',
   Date: 'Data',
-  'One result recorded. A trend will appear after another competition.':
-    'C’è un solo risultato registrato. Dopo un’altra gara potrai vedere l’andamento.',
   'RIS scores are shown as recorded; formula editions and reported scores may differ.':
     'I punteggi RIS sono mostrati come registrati; le edizioni della formula e i punteggi pubblicati possono differire.',
   'Lift balance': 'Equilibrio delle alzate',
@@ -58,17 +56,11 @@ export default {
     'In questa gara i punteggi RIS sono mostrati come pubblicati.',
   'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.':
     'Rappresenta ogni alzata come proporzione del miglior totale dell’atleta ({total} {unit}, {competition}) rispetto alla proporzione media di {count} atleti in {category}. Uno scostamento verso l’esterno indica un’enfasi su quell’alzata.',
-  'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}).':
-    'Rappresenta ogni alzata come proporzione del miglior totale dell’atleta ({total} {unit}, {competition}).',
   '{class} class': 'Categoria {class}',
   Reference: 'Riferimento',
   '{movement}: {share} of total, reference {average}':
     '{movement}: {share} del totale, riferimento {average}',
   'of total': 'del totale',
-  'Too few athletes in this weight class to compare.':
-    'Troppi pochi atleti in questa categoria per un confronto.',
-  'A completed MPDS competition is needed to show lift balance.':
-    'Per mostrare l’equilibrio serve una gara MPDS completata.',
   'Match these movements exactly': 'Gare con esattamente questi movimenti',
   'Clear movements': 'Cancella la selezione dei movimenti',
   'Clear selection': 'Cancella la selezione',
@@ -373,9 +365,6 @@ export default {
   'No successful {movement}': 'Nessun tentativo valido: {movement}',
   "{category}'s weight classes": 'Categorie di peso: {category}',
   '{label} over time': 'Andamento di {label}',
-  'No dated {movement} results available.': 'Nessun risultato con data registrata per {movement}.',
-  'No dated {movement} results available for {format}.':
-    'Nessun risultato con data registrata per {movement} nel formato {format}.',
   'Enter a number between {min} and {max} {unit}.': 'Inserisci un numero tra {min} e {max} {unit}.',
   '{label} slider': 'Cursore: {label}',
   'The calculated score is above the target of {target} RIS.':
