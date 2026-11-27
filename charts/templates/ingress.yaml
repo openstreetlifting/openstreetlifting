@@ -1,19 +1,25 @@
+{{- range $target := list "frontend" "backend" }}
+{{- $host := index $.Values.ingress (printf "%sHost" $target) }}
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: openstreetlifting-ingress
-  namespace: {{ .Release.Namespace }}
+  name: openstreetlifting-{{ $target }}
+  namespace: {{ $.Release.Namespace }}
   labels:
-    {{- include "openstreetlifting.labels" . | nindent 4 }}
+    {{- include "openstreetlifting.labels" $ | nindent 4 }}
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
     {{- $middlewares := list }}
-    {{- if .Values.ingress.noindex }}
-    {{- $middlewares = append $middlewares (printf "%s-openstreetlifting-noindex@kubernetescrd" .Release.Namespace) }}
+    {{- if $.Values.ingress.rateLimit.enabled }}
+    {{- $middlewares = append $middlewares (printf "%s-openstreetlifting-ratelimit-%s@kubernetescrd" $.Release.Namespace $target) }}
     {{- end }}
-    {{- if .Values.ingress.basicAuth.sealedUsers }}
-    {{- $middlewares = append $middlewares (printf "%s-openstreetlifting-basic-auth@kubernetescrd" .Release.Namespace) }}
+    {{- if $.Values.ingress.noindex }}
+    {{- $middlewares = append $middlewares (printf "%s-openstreetlifting-noindex@kubernetescrd" $.Release.Namespace) }}
+    {{- end }}
+    {{- if $.Values.ingress.basicAuth.sealedUsers }}
+    {{- $middlewares = append $middlewares (printf "%s-openstreetlifting-basic-auth@kubernetescrd" $.Release.Namespace) }}
     {{- end }}
     {{- with $middlewares }}
     traefik.ingress.kubernetes.io/router.middlewares: {{ join "," . }}
@@ -21,32 +27,20 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: {{ .Values.ingress.frontendHost | quote }}
+    - host: {{ $host | quote }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: openstreetlifting-frontend
+                name: openstreetlifting-{{ $target }}
                 port:
                   name: http
-    - host: {{ .Values.ingress.backendHost | quote }}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: openstreetlifting-backend
-                port:
-                  name: http
-  {{- if .Values.ingress.tls }}
+  {{- if $.Values.ingress.tls }}
   tls:
     - hosts:
-        - {{ .Values.ingress.frontendHost | quote }}
-      secretName: openstreetlifting-frontend-tls
-    - hosts:
-        - {{ .Values.ingress.backendHost | quote }}
-      secretName: openstreetlifting-backend-tls
+        - {{ $host | quote }}
+      secretName: openstreetlifting-{{ $target }}-tls
   {{- end }}
+{{- end }}
