@@ -90,7 +90,7 @@
       aria-hidden="true"
     ></span>
     <span class="sr-only">{label}</span>
-    <span class="ml-auto shrink-0 whitespace-nowrap">
+    <span class="shrink-0 whitespace-nowrap">
       <span class="font-mono font-medium text-ink tabular-nums">{share(value)}</span>
       <span class="text-muted">{i18n.t('of total')}</span>
     </span>
@@ -115,7 +115,7 @@
     </InfoTip>
   {/snippet}
 
-  <div class="grid items-center gap-6 @min-[36rem]:grid-cols-[minmax(0,1fr)_auto]">
+  <div class="grid gap-6">
     <div class="min-w-0">
       <ul class="{TEXT.meta} mb-2 flex flex-wrap justify-center gap-x-4 gap-y-1 text-secondary">
         <li class="flex items-center gap-2">
@@ -275,10 +275,10 @@
 
     <dl
       aria-label={i18n.t('Lift shares of best total')}
-      class="grid grid-cols-1 gap-x-6 gap-y-4 @min-[20rem]:grid-cols-2 @min-[36rem]:w-56 @min-[36rem]:grid-cols-1 @min-[36rem]:gap-0 @min-[36rem]:divide-y @min-[36rem]:divide-stroke"
+      class="grid grid-cols-1 gap-x-6 gap-y-4 @min-[20rem]:grid-cols-2"
     >
       {#each lifts as lift (lift.movement_name)}
-        <div class="min-w-0 @min-[36rem]:py-1.5 @min-[36rem]:first:pt-0 @min-[36rem]:last:pb-0">
+        <div class="min-w-0">
           <Text as="dt" variant="fieldLabel" class="mb-1 text-meta font-medium text-secondary">
             {i18n.movement(lift.movement_name)}
           </Text>
