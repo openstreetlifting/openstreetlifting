@@ -23,11 +23,10 @@ async fn placings(
     heavy: Option<&str>,
     light: Option<&str>,
 ) -> Vec<(String, i32, rust_decimal::Decimal)> {
-    let mut category = common::men_80(vec![
+    let category = common::men_80(vec![
         lifter("Heavy", "100", "320", heavy),
         lifter("Light", "60", "300", light),
     ]);
-    category.weight_class_slug = None;
     let mut canonical = common::competition("published", vec![category]);
     canonical.competition.rank_by = Some(RankBy::Ris);
     CanonicalTransformer::new(pool)
@@ -38,7 +37,7 @@ async fn placings(
         .find_by_slug_detailed("published")
         .await
         .unwrap();
-    let mut placed: Vec<_> = detail.categories[0]
+    detail.categories[0]
         .participants
         .iter()
         .map(|p| {
@@ -48,9 +47,7 @@ async fn placings(
                 p.ris_score.unwrap(),
             )
         })
-        .collect();
-    placed.sort_by_key(|(_, rank, _)| *rank);
-    placed
+        .collect()
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
