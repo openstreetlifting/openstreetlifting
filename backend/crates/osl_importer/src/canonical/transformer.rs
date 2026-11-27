@@ -109,13 +109,13 @@ impl<'a> CanonicalTransformer<'a> {
             .all(|movement| canonical.movements.contains(movement));
 
         for category in &canonical.categories {
-            let division_rank_by = category
-                .division
-                .as_ref()
-                .and_then(|division| canonical.competition.divisions.get(division))
-                .copied();
             let contest = self
-                .resolve_contest(category, federation_id, division_rank_by, tx)
+                .resolve_contest(
+                    category,
+                    federation_id,
+                    canonical.division_rank_by(category),
+                    tx,
+                )
                 .await?;
 
             for athlete in &category.athletes {

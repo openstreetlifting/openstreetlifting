@@ -30,13 +30,17 @@ impl CanonicalFormat {
     }
 
     #[must_use]
-    pub fn rank_by_for(&self, category: &CategoryData) -> Option<osl_domain::RankBy> {
+    pub fn division_rank_by(&self, category: &CategoryData) -> Option<osl_domain::RankBy> {
         category
             .division
             .as_ref()
             .and_then(|division| self.competition.divisions.get(division))
             .copied()
-            .or(self.competition.rank_by)
+    }
+
+    #[must_use]
+    pub fn rank_by_for(&self, category: &CategoryData) -> Option<osl_domain::RankBy> {
+        self.division_rank_by(category).or(self.competition.rank_by)
     }
 }
 

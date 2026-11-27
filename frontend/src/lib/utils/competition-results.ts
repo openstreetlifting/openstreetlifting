@@ -1,5 +1,5 @@
 import type { CategoryDetail, Participant } from '#lib/types/competition.js';
-import { type Gender, type Movement, type RankBy, type RankingMetric } from '#lib/types/enums.js';
+import type { Gender, Movement, RankBy, RankingMetric } from '#lib/types/enums.js';
 
 /** Class labels are shared across divisions; capped classes precede open classes. */
 export function weightClasses(categories: CategoryDetail[], gender: Gender): string[] {
@@ -39,13 +39,12 @@ export function competitionDivisions(categories: CategoryDetail[]): CompetitionD
   const divisions = new Map<string, CompetitionDivision>();
   for (const { category, participants } of categories) {
     if (!category.division) continue;
-    const division = divisions.get(category.division) ?? {
-      name: category.division,
-      rankBy: category.rank_by,
-      entries: 0,
-    };
+    let division = divisions.get(category.division);
+    if (!division) {
+      division = { name: category.division, rankBy: category.rank_by, entries: 0 };
+      divisions.set(category.division, division);
+    }
     division.entries += participants.length;
-    divisions.set(category.division, division);
   }
   return [...divisions.values()].sort(
     (a, b) => b.entries - a.entries || a.name.localeCompare(b.name)
