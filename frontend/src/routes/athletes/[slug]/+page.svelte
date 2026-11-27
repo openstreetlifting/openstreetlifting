@@ -398,7 +398,6 @@
         {#each athlete.personal_records as pr (pr.movement_name)}
           <MetricCard
             heading={i18n.movement(pr.movement_name)}
-            movement={pr.movement_name}
             meta={formatDate(pr.date, i18n.locale)}
             record={pr.record}
             href={competitionHref(pr.competition_slug, movementMetric(pr.movement_name))}
