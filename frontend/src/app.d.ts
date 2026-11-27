@@ -8,6 +8,7 @@ declare global {
     }
     interface PageData {
       locale: import('#lib/i18n/locale.js').Locale;
+      risEdition: number | null;
     }
     // interface PageState {}
     // interface Platform {}

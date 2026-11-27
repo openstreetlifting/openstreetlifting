@@ -23,7 +23,13 @@ vi.mock('$app/paths', () => ({
 }));
 vi.mock('$app/state', async () => {
   const { SvelteURL } = await import('svelte/reactivity');
-  return { page: { url: new SvelteURL('http://localhost/athletes/alex-martin'), state: {} } };
+  return {
+    page: {
+      url: new SvelteURL('http://localhost/athletes/alex-martin'),
+      state: {},
+      data: { risEdition: 2026 },
+    },
+  };
 });
 vi.mock('$app/navigation', async () => {
   const { page } = await import('$app/state');
@@ -113,7 +119,7 @@ it('converts records and class captions without changing leaderboard filter valu
     },
   ];
   render(AthletePage, {
-    props: { data: { locale: 'en', athlete: lifter } },
+    props: { data: { locale: 'en', risEdition: 2026, athlete: lifter } },
     context: new Map([[WEIGHT_UNIT_CONTEXT, new WeightPreference(() => 'lb')]]),
   });
   await expect.element(page.getByText('198.42', { exact: true })).toBeVisible();
@@ -136,7 +142,7 @@ it('marks a personal best that is a current record', async () => {
       date: '2026-05-24',
     },
   ];
-  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: lifter } });
   await expect
     .element(page.getByLabelText('Current national record in this weight class'))
     .toHaveTextContent('NR');
@@ -161,7 +167,7 @@ it('shows the best total with its record mark beside the best RIS', async () => 
     competition_slug: 'euros',
     date: '2026-01-01',
   };
-  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: lifter } });
 
   const total = page.getByRole('link', { name: /Best total/ });
   await expect
@@ -179,7 +185,7 @@ it('shows the best total with its record mark beside the best RIS', async () => 
 });
 
 it('defaults both cards to RIS with separate global and country pages', async () => {
-  render(AthletePage, { data: { locale: 'en', athlete: athlete() } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: athlete() } });
   await expect.element(page.getByRole('combobox', { name: 'Metric' })).toHaveValue('ris');
   const global = page.getByRole('link', { name: /Global.*#101/ });
   const country = page.getByRole('link', { name: /France.*#3/ });
@@ -196,7 +202,7 @@ it('defaults both cards to RIS with separate global and country pages', async ()
 });
 
 it('switches both cards and their leaderboard filters for every kilogram metric', async () => {
-  render(AthletePage, { data: { locale: 'en', athlete: athlete() } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: athlete() } });
   for (const [metric, label] of [
     ['total', 'Total'],
     ['muscleup', 'Muscle Up'],
@@ -242,7 +248,7 @@ it('shows unranked cards without links when the selected metric is missing', asy
     dips: null,
     squat: null,
   };
-  render(AthletePage, { data: { locale: 'en', athlete: partial } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: partial } });
   await expect.element(page.getByRole('combobox', { name: 'Metric' })).toHaveValue('ris');
   expect(page.getByRole('link', { name: /Global/ }).elements()).toHaveLength(0);
   const countryCards = page
@@ -258,7 +264,7 @@ it('shows unranked cards without links when the selected metric is missing', asy
 it('omits the ranking controls when the athlete has no ranked performances', async () => {
   const unranked = athlete();
   unranked.standing = null;
-  render(AthletePage, { data: { locale: 'en', athlete: unranked } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: unranked } });
   expect(page.getByRole('combobox', { name: 'Metric' }).elements()).toHaveLength(0);
   await expect.element(page.getByRole('heading', { name: 'Competition history' })).toBeVisible();
 });
@@ -306,7 +312,7 @@ it('renders multiple divisions from the same meet and distinguishes absent, bomb
     },
   ];
   lifter.total_competitions = 1;
-  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: lifter } });
   await expect.element(page.getByRole('cell', { name: 'Open', exact: true })).toBeVisible();
   await expect.element(page.getByRole('cell', { name: 'Junior', exact: true })).toBeVisible();
   expect(
@@ -323,7 +329,7 @@ it('labels athlete metadata and keeps the native name and accessible social link
   lifter.native_name = 'Алекс Мартин';
   lifter.instagram_handle = 'alex.martin';
   lifter.lift_balance = balance('Elite Men -80kg');
-  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: lifter } });
   await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
   const header = page
     .getByRole('heading', { name: /Alex Martin/, level: 1 })
@@ -338,7 +344,7 @@ it('labels athlete metadata and keeps the native name and accessible social link
 it('does not mistake a classless category name for a weight class', async () => {
   const lifter = athlete();
   lifter.lift_balance = balance('Elite Men');
-  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: lifter } });
   await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
   const header = page
     .getByRole('heading', { name: /Alex Martin/, level: 1 })
@@ -354,7 +360,7 @@ it('keeps global rankings and history when country is not recorded', async () =>
   for (const metric of Object.values(lifter.standing!)) {
     if (metric) metric.country = null;
   }
-  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: lifter } });
   await expect.element(page.getByText('Country not recorded', { exact: true })).toBeVisible();
   await expect
     .element(page.getByText('Country needed for national ranking', { exact: true }))
@@ -373,7 +379,7 @@ it('drops both chart sections when neither chart has data to show', async () => 
   const lifter = athlete();
   lifter.total_competitions = 1;
   lifter.lift_balance = { ...balance('Elite Men -80kg'), field: 9 };
-  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: lifter } });
   await expect.element(page.getByRole('heading', { name: /Alex Martin/, level: 1 })).toBeVisible();
   expect(page.getByRole('heading', { name: 'Performance over time' }).elements()).toHaveLength(0);
   expect(page.getByRole('heading', { name: 'Lift balance' }).elements()).toHaveLength(0);
@@ -383,7 +389,7 @@ it('shows lift balance as its own section after a single competition', async () 
   const lifter = athlete();
   lifter.total_competitions = 1;
   lifter.lift_balance = balance('Elite Men -80kg');
-  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: lifter } });
   await expect.element(page.getByRole('heading', { name: 'Lift balance', level: 2 })).toBeVisible();
   expect(page.getByRole('heading', { name: 'Performance', level: 2 }).elements()).toHaveLength(0);
   expect(page.getByRole('heading', { name: 'Performance over time' }).elements()).toHaveLength(0);
@@ -413,7 +419,7 @@ it('marks a lift that is a current record', async () => {
       ],
     },
   ];
-  render(AthletePage, { data: { locale: 'en', athlete: lifter } });
+  render(AthletePage, { data: { locale: 'en', risEdition: 2026, athlete: lifter } });
   await expect
     .element(page.getByLabelText('Current world record in this weight class'))
     .toHaveTextContent('WR');

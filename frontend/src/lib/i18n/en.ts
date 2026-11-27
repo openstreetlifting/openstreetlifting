@@ -183,6 +183,7 @@ export const messages = [
   'What is RIS?',
   'The Relative Index for Streetlifting (RIS) provides the definitive method for comparing Streetlifting athletes across weight classes within the same gender. Developed specifically for All-4 competitions, this scoring system normalizes strength performance using comprehensive data from elite competitors. Updated annually to reflect evolving standards, RIS offers a fair benchmark for athletes, coaches, and competition organizers worldwide.',
   'We recalculate RIS with the current formula, so scores may differ from published results.',
+  'We recalculate RIS with the {year} formula, so scores may differ from published results.',
   'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked {mark}.',
   'Learn more on the ris page of OpenStreetlifting',
   'Calculate your RIS',
