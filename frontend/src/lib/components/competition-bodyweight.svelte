@@ -35,7 +35,7 @@
     interactive = true;
   });
   let chartWidth = $state(848);
-  let chartHeight = $state(288);
+  let chartHeight = $state(480);
 
   const sexes = $derived(
     (['men', 'women'] as const).filter((sex) => points.some((p) => p.sex === sex))
@@ -130,7 +130,11 @@
     {/each}
   </ul>
 
-  <div class="h-72 w-full min-w-0" bind:clientWidth={chartWidth} bind:clientHeight={chartHeight}>
+  <div
+    class="{CHART.plot} w-full min-w-0"
+    bind:clientWidth={chartWidth}
+    bind:clientHeight={chartHeight}
+  >
     <Chart
       ssr
       width={chartWidth}

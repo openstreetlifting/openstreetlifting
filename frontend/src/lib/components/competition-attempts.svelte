@@ -22,7 +22,7 @@
     interactive = true;
   });
   let chartWidth = $state(848);
-  let chartHeight = $state(288);
+  let chartHeight = $state(480);
 
   const COLUMN_PADDING = 0.3;
   const BAR_WIDTH = 20;
@@ -82,7 +82,11 @@
     {/each}
   </ul>
 
-  <div class="h-72 w-full min-w-0" bind:clientWidth={chartWidth} bind:clientHeight={chartHeight}>
+  <div
+    class="{CHART.plot} w-full min-w-0"
+    bind:clientWidth={chartWidth}
+    bind:clientHeight={chartHeight}
+  >
     <Chart
       ssr
       width={chartWidth}

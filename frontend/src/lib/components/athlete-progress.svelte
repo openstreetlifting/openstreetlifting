@@ -26,7 +26,7 @@
 
   let chartWidth = $state<number>();
   let measuredHeight = $state<number>();
-  const chartHeight = $derived(measuredHeight || 288);
+  const chartHeight = $derived(measuredHeight || 480);
 
   let {
     competitions,
@@ -109,7 +109,7 @@
 
   {#key metric + weights.unit}
     <div
-      class="min-h-64 w-full flex-1"
+      class="{CHART.plot} w-full"
       bind:clientWidth={chartWidth}
       bind:clientHeight={measuredHeight}
       onfocusout={(event) => {
