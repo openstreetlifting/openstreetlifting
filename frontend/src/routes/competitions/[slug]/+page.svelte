@@ -502,7 +502,9 @@
       </DetailList>
     {/if}
 
-    <div class="mt-section grid gap-y-section sm:grid-cols-2 sm:gap-x-chapter">
+    <div
+      class="mt-section grid gap-y-section sm:grid-cols-[repeat(2,minmax(0,36rem))] sm:gap-x-chapter"
+    >
       <DetailList>
         {#if competition.start_date}
           <Detail label={i18n.t('Date')}>
