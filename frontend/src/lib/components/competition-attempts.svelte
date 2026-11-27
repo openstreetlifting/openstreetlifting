@@ -6,8 +6,7 @@
   import ChartPanel from '#lib/components/ui/chart-panel.svelte';
   import InfoTip from '#lib/components/ui/info-tip.svelte';
   import { useI18n } from '#lib/i18n/index.js';
-  import { Chart, Text, Tooltip } from 'layerchart/svg';
-  import type { ComponentProps } from 'svelte';
+  import { Chart, Tooltip } from 'layerchart/svg';
   import { scaleBand, scaleLinear } from 'd3-scale';
   import { onMount } from 'svelte';
   import type { AttemptRate, MovementAttempts } from '#lib/utils/competition-results.js';
@@ -39,7 +38,7 @@
   function barFill(movement: string, attempt: number): string {
     const { fill, strength } = ATTEMPTS[attempt - 1];
     const tone = liftTone(movement);
-    return tone ? `color-mix(in oklch, ${tone} ${strength}%, var(--color-surface))` : fill;
+    return tone ? `color-mix(in oklab, ${tone} ${strength}%, var(--color-surface))` : fill;
   }
 
   const percent = $derived(
@@ -61,14 +60,6 @@
       .join('; ')
   );
 </script>
-
-{#snippet liftTick({ props, index }: { props: ComponentProps<typeof Text>; index: number })}
-  <Text
-    {...props}
-    class="stroke-none font-mono text-micro"
-    fill={liftTone(rates[index]?.movement ?? '')}
-  />
-{/snippet}
 
 <ChartPanel title={i18n.t('Attempt success')}>
   {#snippet controls()}
@@ -116,7 +107,6 @@
         xAxis: {
           ...BAND_AXIS,
           format: (movement: string) => i18n.movement(movement),
-          tickLabel: liftTick,
         },
         yAxis: {
           ...AXIS,
