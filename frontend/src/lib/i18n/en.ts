@@ -34,6 +34,8 @@ export const messages = [
   'About lift balance',
   'Lift balance compared with other athletes in {category}',
   'Lift shares of best total',
+  'Share of total',
+  'Difference',
   'Total by bodyweight',
   'About total by bodyweight',
   'Each point is an athlete with a recorded bodyweight. The lines show the total needed for a RIS of 100 at each bodyweight, using the {year} edition.',

@@ -28,10 +28,15 @@ it('labels each axis with its difference from the class average', async () => {
   );
   expect(labels).toEqual(['Muscle-up | -1.0%', 'Pull-up | 0.0%', 'Squat | +1.5%', 'Dips | -0.5%']);
   await expect.element(page.getByText('-80kg class', { exact: true }).first()).toBeVisible();
-  const squat = page.getByRole('definition').nth(2);
-  expect(squat.element().textContent?.replace(/\s+/g, ' ').trim()).toBe(
-    'Athlete 50.0% of total -80kg class 48.5% of total'
-  );
+  const table = page.getByRole('table', { name: 'Lift shares of best total' });
+  await expect.element(table.getByRole('columnheader', { name: '-80kg class' })).toBeVisible();
+  const squat = table.getByRole('row', { name: /Squat/ });
+  expect([...squat.element().children].map((cell) => cell.textContent?.trim())).toEqual([
+    'Squat',
+    '50.0%',
+    '48.5%',
+    '+1.5%',
+  ]);
   await expect.element(page.getByText(/Plots each lift/)).not.toBeVisible();
   await page.getByRole('button', { name: 'About lift balance' }).click();
   await expect

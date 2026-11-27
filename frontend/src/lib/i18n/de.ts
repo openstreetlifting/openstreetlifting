@@ -39,6 +39,8 @@ export default {
   'Lift balance compared with other athletes in {category}':
     'Lift-Balance im Vergleich mit anderen in {category}',
   'Lift shares of best total': 'Anteile der Übungen am besten Total',
+  'Share of total': 'Anteil am Total',
+  Difference: 'Differenz',
   'Total by bodyweight': 'Total nach Körpergewicht',
   'About total by bodyweight': 'Über Total nach Körpergewicht',
   'Each point is an athlete with a recorded bodyweight. The lines show the total needed for a RIS of 100 at each bodyweight, using the {year} edition.':

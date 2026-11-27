@@ -23,7 +23,8 @@
   import { scalePoint } from 'd3-scale';
   import { CHART, TEXT } from '#lib/constants/typography.js';
   import { TICK_LABEL } from '#lib/utils/chart.js';
-  import Text from '#lib/components/ui/text.svelte';
+  import { TABLE_CELL, TABLE_HEAD_CELL } from '#lib/components/ui/table.svelte';
+  import { NO_VALUE } from '#lib/constants/table.js';
 
   const RANGE = 3;
   const DIRECTIONS = ['Muscle-up', 'Pull-up', 'Squat', 'Dips'];
@@ -80,22 +81,6 @@
     weightClass ? i18n.t('{class} class', { class: weightClass }) : i18n.t('Reference')
   );
 </script>
-
-{#snippet shareRow(kind: 'athlete' | 'reference', label: string, value: number)}
-  <span class="flex items-center gap-2 {TEXT.meta} leading-5">
-    <span
-      class="w-3 shrink-0 border-t-2 {kind === 'athlete'
-        ? 'border-chart-athlete'
-        : 'border-dashed border-muted'}"
-      aria-hidden="true"
-    ></span>
-    <span class="sr-only">{label}</span>
-    <span class="shrink-0 whitespace-nowrap">
-      <span class="font-mono font-medium text-ink tabular-nums">{share(value)}</span>
-      <span class="text-muted">{i18n.t('of total')}</span>
-    </span>
-  </span>
-{/snippet}
 
 <ChartPanel title={i18n.t('Lift balance')}>
   {#snippet controls()}
@@ -273,23 +258,31 @@
       </div>
     </div>
 
-    <dl
-      aria-label={i18n.t('Lift shares of best total')}
-      class="grid grid-cols-1 gap-x-6 gap-y-4 @min-[20rem]:grid-cols-2"
-    >
-      {#each lifts as lift (lift.movement_name)}
-        <div class="min-w-0">
-          <Text as="dt" variant="fieldLabel" class="mb-1 text-meta font-medium text-secondary">
-            {i18n.movement(lift.movement_name)}
-          </Text>
-          <dd>
-            {@render shareRow('athlete', i18n.t('Athlete'), lift.share)}
-            {#if lift.class_share !== null}
-              {@render shareRow('reference', reference, lift.class_share)}
-            {/if}
-          </dd>
-        </div>
-      {/each}
-    </dl>
+    <table aria-label={i18n.t('Lift shares of best total')} class="{TEXT.meta} w-full">
+      <thead class="border-b border-stroke text-secondary">
+        <tr>
+          <th scope="col" class={TABLE_HEAD_CELL}>{i18n.t('Share of total')}</th>
+          <th scope="col" class="{TABLE_HEAD_CELL} text-right">{i18n.t('Athlete')}</th>
+          <th scope="col" class="{TABLE_HEAD_CELL} text-right">{reference}</th>
+          <th scope="col" class="{TABLE_HEAD_CELL} text-right">{i18n.t('Difference')}</th>
+        </tr>
+      </thead>
+      <tbody class="font-mono tabular-nums">
+        {#each lifts as lift (lift.movement_name)}
+          <tr>
+            <th scope="row" class="{TABLE_CELL} text-left font-sans font-normal text-secondary">
+              {i18n.movement(lift.movement_name)}
+            </th>
+            <td class="{TABLE_CELL} text-right text-ink">{share(lift.share)}</td>
+            <td class="{TABLE_CELL} text-right text-ink">
+              {lift.class_share === null ? NO_VALUE : share(lift.class_share)}
+            </td>
+            <td class="{TABLE_CELL} text-right text-ink">
+              {lift.gap === null ? NO_VALUE : signedPercent.format(lift.gap / 100)}
+            </td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
   </div>
 </ChartPanel>
