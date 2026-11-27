@@ -369,7 +369,6 @@ export default {
   'Attempt success': 'Skuteczność podejść',
   'About attempt success': 'O skuteczności podejść',
   'Attempt {number}': 'Podejście {number}',
-  '{made} of {taken}': '{made} z {taken}',
   'The share of first, second and third attempts judged good, for each movement. Every recorded attempt counts.':
     'Odsetek zaliczonych pierwszych, drugich i trzecich podejść w każdym ruchu. Liczy się każde zapisane podejście.',
   'good lift': 'zaliczone',

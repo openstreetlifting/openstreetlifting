@@ -372,7 +372,6 @@ export default {
   'Attempt success': 'Erfolgsquote der Versuche',
   'About attempt success': 'Über die Erfolgsquote der Versuche',
   'Attempt {number}': 'Versuch {number}',
-  '{made} of {taken}': '{made} von {taken}',
   'The share of first, second and third attempts judged good, for each movement. Every recorded attempt counts.':
     'Der Anteil gültiger erster, zweiter und dritter Versuche je Übung. Jeder erfasste Versuch zählt.',
   'good lift': 'gültig',

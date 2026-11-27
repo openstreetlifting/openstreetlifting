@@ -371,7 +371,6 @@ export default {
   'Attempt success': 'Riuscita delle prove',
   'About attempt success': 'Informazioni sulla riuscita delle prove',
   'Attempt {number}': 'Prova {number}',
-  '{made} of {taken}': '{made} su {taken}',
   'The share of first, second and third attempts judged good, for each movement. Every recorded attempt counts.':
     'La quota di prime, seconde e terze prove valide, per ogni movimento. Conta ogni prova registrata.',
   'good lift': 'valido',

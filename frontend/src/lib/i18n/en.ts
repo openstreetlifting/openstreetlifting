@@ -293,7 +293,6 @@ export const messages = [
   'Attempt success',
   'About attempt success',
   'Attempt {number}',
-  '{made} of {taken}',
   'The share of first, second and third attempts judged good, for each movement. Every recorded attempt counts.',
   'good lift',
   'no lift',

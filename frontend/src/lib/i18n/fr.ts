@@ -371,7 +371,6 @@ export default {
   'Attempt success': 'Réussite des essais',
   'About attempt success': 'À propos de la réussite des essais',
   'Attempt {number}': 'Essai {number}',
-  '{made} of {taken}': '{made} sur {taken}',
   'The share of first, second and third attempts judged good, for each movement. Every recorded attempt counts.':
     'La part des premiers, deuxièmes et troisièmes essais validés, pour chaque mouvement. Chaque essai enregistré compte.',
   'good lift': 'validé',

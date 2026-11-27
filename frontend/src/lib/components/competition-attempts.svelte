@@ -154,15 +154,12 @@
         >
           {#snippet children({ data })}
             <p class="font-medium text-ink">{data.label}</p>
-            <dl class="mt-2 grid grid-cols-[1fr_auto_auto] gap-x-4 gap-y-1">
+            <dl class="mt-2 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1">
               {#each data.rates as rate (rate.attempt)}
                 {@const value = share(rate)}
                 <dt>{i18n.t('Attempt {number}', { number: rate.attempt })}</dt>
                 <dd class="text-right font-mono text-ink">
                   {value === null ? '—' : percent.format(value)}
-                </dd>
-                <dd class="text-right font-mono">
-                  {i18n.t('{made} of {taken}', { made: rate.made, taken: rate.taken })}
                 </dd>
               {/each}
             </dl>
