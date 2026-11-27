@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.82.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.81.0...v0.82.0) (2026-11-27)
+
+
+### Features
+
+* clean backend/data/staging directory ([#1109](https://github.com/openstreetlifting/openstreetlifting/issues/1109)) ([61bc381](https://github.com/openstreetlifting/openstreetlifting/commit/61bc381fba9cce7c330ccc7bb0fceb7635e5de67))
+* **data:** attribute Indonesian competitions to AKSI ([#1113](https://github.com/openstreetlifting/openstreetlifting/issues/1113)) ([ba80ff4](https://github.com/openstreetlifting/openstreetlifting/commit/ba80ff405bb1cdc43e80daea0a42228a641e90a6))
+* **data:** import FinalRep Worlds 2022 ([#1106](https://github.com/openstreetlifting/openstreetlifting/issues/1106)) ([0579350](https://github.com/openstreetlifting/openstreetlifting/commit/0579350112a9005d14d8771281d83bc23651eec3))
+
+
+### Bug Fixes
+
+* **tests:** fix test editions assertions ([9bde61d](https://github.com/openstreetlifting/openstreetlifting/commit/9bde61d909ee06263051318661f33f323f9dc7ae))
+
 ## [0.81.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.80.1...v0.81.0) (2026-11-23)
 
 
