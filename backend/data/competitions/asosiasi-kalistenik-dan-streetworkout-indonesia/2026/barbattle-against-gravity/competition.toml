@@ -12,5 +12,6 @@ status = "completed"
 scoring = "ris"
 
 [federation]
-name = "FinalRep"
-country = "DE"
+name = "Asosiasi Kalistenik dan Streetworkout Indonesia"
+abbreviation = "AKSI"
+country = "ID"
