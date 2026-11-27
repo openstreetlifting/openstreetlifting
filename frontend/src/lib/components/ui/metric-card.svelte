@@ -4,7 +4,7 @@
   import type { ResolvedPathname } from '$app/types';
   import Panel from './panel.svelte';
   import RecordMark from './record-mark.svelte';
-  import LiftMark from './lift-mark.svelte';
+  import { liftTone } from '#lib/constants/lift.js';
   import { TEXT } from '#lib/constants/typography.js';
   import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
 
@@ -46,7 +46,7 @@
         ? ''
         : 'col-span-2'}"
     >
-      {#if movement}<LiftMark {movement} class="mr-2" />{/if}{heading}
+      <span style:color={movement ? liftTone(movement) : undefined}>{heading}</span>
     </Text>
     {#if meta}<span
         class="{TEXT.fieldLabel} col-span-2 col-start-1 row-start-1 hidden self-center justify-self-end tabular-nums lg:inline"

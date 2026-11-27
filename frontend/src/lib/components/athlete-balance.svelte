@@ -16,7 +16,6 @@
 <script lang="ts">
   import ChartPanel from '#lib/components/ui/chart-panel.svelte';
   import InfoTip from '#lib/components/ui/info-tip.svelte';
-  import LiftMark from '#lib/components/ui/lift-mark.svelte';
   import { liftTone } from '#lib/constants/lift.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
@@ -241,9 +240,9 @@
               {#snippet children({ data: lift })}
                 <div role="tooltip">
                   <p class={CHART.tooltipTitle}>
-                    <LiftMark movement={lift.movement_name} class="mr-2" />{i18n.movement(
-                      lift.movement_name
-                    )}
+                    <span style:color={liftTone(lift.movement_name)}>
+                      {i18n.movement(lift.movement_name)}
+                    </span>
                   </p>
                   <p class={CHART.tooltipNote}>
                     {weights.format(lift.value, i18n.locale)}
@@ -278,9 +277,9 @@
         {#each lifts as lift (lift.movement_name)}
           <tr>
             <th scope="row" class="{TABLE_CELL} text-left font-sans font-normal text-secondary">
-              <LiftMark movement={lift.movement_name} class="mr-2" />{i18n.movement(
-                lift.movement_name
-              )}
+              <span style:color={liftTone(lift.movement_name)}>
+                {i18n.movement(lift.movement_name)}
+              </span>
             </th>
             <td class="{TABLE_CELL} text-right text-ink">{share(lift.share)}</td>
             <td class="{TABLE_CELL} text-right text-ink">

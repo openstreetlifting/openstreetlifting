@@ -1,6 +1,5 @@
 <script lang="ts">
   import RecordMark from '#lib/components/ui/record-mark.svelte';
-  import LiftMark from '#lib/components/ui/lift-mark.svelte';
   import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
   import CompetitionBodyweight, {
     MIN_POINTS,
@@ -744,7 +743,7 @@
                 class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}"
                 style:box-shadow="inset 0 2px 0 {lift.tone}"
               >
-                <LiftMark movement={lift.movement} class="mr-2" />{i18n.t(lift.label)}
+                <span style:color={lift.tone}>{i18n.t(lift.label)}</span>
                 {#if attempts}
                   <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
                     <span class="text-right">1</span>
@@ -868,10 +867,9 @@
                             {NO_RESULT}
                           </span>
                         {:else}
-                          {weights.format(cell.best, i18n.locale)}<RecordMark
-                            worldOnly
-                            mark={cell.record}
-                          />
+                          <span style:color={lift.tone}>
+                            {weights.format(cell.best, i18n.locale)}
+                          </span><RecordMark worldOnly mark={cell.record} />
                         {/if}
                       </span>
                     </span>
@@ -968,10 +966,9 @@
                         {:else if cell.kind === 'bombed'}
                           <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
                         {:else}
-                          {weights.format(cell.best, i18n.locale)}<RecordMark
-                            worldOnly
-                            mark={cell.record}
-                          />
+                          <span style:color={lift.tone}>
+                            {weights.format(cell.best, i18n.locale)}
+                          </span><RecordMark worldOnly mark={cell.record} />
                         {/if}
                       </span>
                     </span>

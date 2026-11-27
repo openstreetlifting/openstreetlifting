@@ -1,6 +1,5 @@
 <script lang="ts">
   import RecordMark from '#lib/components/ui/record-mark.svelte';
-  import LiftMark from '#lib/components/ui/lift-mark.svelte';
   import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
   import { LAYOUT } from '#lib/constants/layout.js';
   import { LIFTS, type Lift } from '#lib/constants/lift.js';
@@ -463,7 +462,7 @@
               class="{TABLE_HEAD_CELL} text-secondary"
               style:box-shadow="inset 0 2px 0 {lift.tone}"
             >
-              <LiftMark movement={lift.movement} class="mr-2" />{i18n.t(lift.label)}
+              <span style:color={lift.tone}>{i18n.t(lift.label)}</span>
               <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
                 <span class="text-right">1</span>
                 <span class="text-right">2</span>
@@ -557,7 +556,9 @@
                           {NO_RESULT}
                         </span>
                       {:else}
-                        {weights.format(cell.best, i18n.locale)}<RecordMark mark={cell.record} />
+                        <span style:color={lift.tone}>
+                          {weights.format(cell.best, i18n.locale)}
+                        </span><RecordMark mark={cell.record} />
                       {/if}
                     </span>
                   </span>

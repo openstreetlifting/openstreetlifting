@@ -5,7 +5,6 @@
 <script lang="ts">
   import ChartPanel from '#lib/components/ui/chart-panel.svelte';
   import InfoTip from '#lib/components/ui/info-tip.svelte';
-  import LiftMark from '#lib/components/ui/lift-mark.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { Chart, Tooltip } from 'layerchart/svg';
   import { scaleBand, scaleLinear } from 'd3-scale';
@@ -154,7 +153,7 @@
         >
           {#snippet children({ data })}
             <p class={CHART.tooltipTitle}>
-              <LiftMark movement={data.movement} class="mr-2" />{i18n.movement(data.movement)}
+              <span style:color={liftTone(data.movement)}>{i18n.movement(data.movement)}</span>
             </p>
             <dl class={CHART.tooltipRows}>
               {#each data.rates as rate (rate.attempt)}
