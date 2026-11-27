@@ -12,7 +12,7 @@ If you want to contribute data, or want to learn more about the project, please 
 
 ## Run locally
 
-If you have Docker, [rustup](https://rustup.rs), Node and pnpm 12.
+You need [rustup](https://rustup.rs), Node and pnpm 12. The script uses a Postgres already running on `localhost:5432`, or starts one with Docker.
 
 ```sh
 ./launch_local.sh
