@@ -194,9 +194,7 @@
             aria-labelledby="records-{section.movement}"
           >
             <Text as="h2" id="records-{section.movement}" variant="heading" class="mb-3 text-ink">
-              <span style:color={liftTone(section.movement)}>
-                {i18n.movement(section.movement)}
-              </span>
+              {i18n.movement(section.movement)}
             </Text>
             <div class="osl-table overflow-x-auto rounded-panel border border-stroke-strong">
               <table class="w-full text-meta leading-4 whitespace-nowrap">
