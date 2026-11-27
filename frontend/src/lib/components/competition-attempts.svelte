@@ -31,8 +31,8 @@
   const BAR_GAP = 2;
 
   const ATTEMPTS = [
-    { number: 1, fill: 'var(--color-faint)', strength: 40 },
-    { number: 2, fill: 'var(--color-secondary)', strength: 70 },
+    { number: 1, fill: 'var(--color-faint)', strength: 65 },
+    { number: 2, fill: 'var(--color-secondary)', strength: 82 },
     { number: 3, fill: 'var(--color-ink)', strength: 100 },
   ] as const;
 
