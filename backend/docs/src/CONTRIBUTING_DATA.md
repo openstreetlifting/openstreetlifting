@@ -55,9 +55,9 @@ Before submitting files, check that:
 - Mixed contests use `CategorySex=MX` and each athlete has `Sex=M` or `Sex=F`.
 - Each contest ranks the way the source did: `rank_by` is declared wherever the
   default (total with a weight class, RIS without) does not match.
-- RIS contests shorter than MPDS declare their actual event, have no
+- RIS contests in non-MPDS events declare their actual event, have no
   weight classes anywhere in the competition, and use the source's `ReportedRis`.
-  Follow [the shorter-event RIS rules](./DATA_REFERENCE.md#ris-for-events-shorter-than-mpds).
+  Follow [the non-MPDS RIS rules](./DATA_REFERENCE.md#ris-for-non-mpds-events).
 - You have explained any validation errors or warnings you need help with.
 
 ## Getting help

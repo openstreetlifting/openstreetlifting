@@ -242,7 +242,7 @@ impl CanonicalValidator {
         {
             report
                 .errors
-                .push("rank_by = \"ris\" requires MPDS or a shorter event with no weight classes anywhere in the competition".into());
+                .push("rank_by = \"ris\" requires MPDS, or a non-MPDS event with no weight classes anywhere in the competition".into());
         }
         for category in &canonical.categories {
             for athlete in &category.athletes {
@@ -274,7 +274,7 @@ impl CanonicalValidator {
                     && athlete.reported_ris.is_none()
                 {
                     report.warnings.push(format!(
-                        "Athlete '{label}' has no published RIS; shorter events require ReportedRis for a RIS placing"
+                        "Athlete '{label}' has no published RIS; non-MPDS events require ReportedRis for a RIS placing"
                     ));
                 }
                 if athlete.status == AthleteStatus::Competed

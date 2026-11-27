@@ -258,16 +258,17 @@ Leave unknown values empty. The competition year alone does not establish
 - The former `Ris` header is rejected. Rename it to `ReportedRis`, preserving
   its values.
 
-### RIS for events shorter than MPDS
+### RIS for non-MPDS events
 
-Some competitions, such as FinalRep Underground 3L, rank athletes by a published
-RIS score across pull-up, dips and squat. Record the actual event as `PDS`.
+A non-MPDS event contests one, two or three movements. Some competitions, such
+as FinalRep Underground 3L, rank athletes by a published RIS score across
+pull-up, dips and squat. Record the actual event as `PDS`.
 
-For any supported event with one, two or three movements, RIS ranking requires:
+A non-MPDS event ranks by RIS only with:
 
 - `rank_by = "ris"` under `[competition]`, supported by the organizer's rules.
-- No weight classes anywhere in the competition. Omit `WeightClassKg`; a meet
-  containing even one weight-classed contest is ineligible for shorter-event RIS.
+- No weight classes anywhere in the competition. Omit `WeightClassKg`; one
+  weight-classed contest makes the whole meet ineligible.
 - The organizer's published score in `ReportedRis` for each athlete who receives
   a RIS placing.
 
@@ -275,7 +276,7 @@ For a mixed contest, retain each athlete's `Sex` and set `CategorySex=MX`.
 
 A missing score produces a warning and leaves that athlete without a RIS
 placing, even when total and bodyweight are known. OSL does not verify a
-shorter-event score against the MPDS formula or recover bodyweight from it.
+non-MPDS score against the MPDS formula or recover bodyweight from it.
 
 ## Validation
 
