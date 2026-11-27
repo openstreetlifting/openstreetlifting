@@ -67,6 +67,10 @@ Each contest (one division, sex and weight class) is ordered by one metric:
 | `total`   | `TotalKg`                                                                |
 | `ris`     | RIS. MPDS uses each athlete's own formula when its inputs are available. |
 
+A RIS contest places athletes by `ReportedRis` where the source published one,
+so a new RIS edition never reorders past results. Athletes without one place by
+the current RIS. Results still show the current RIS wherever OSL can compute it.
+
 Without a declaration, a contest with a weight class ranks by total and a
 contest without one ranks by RIS. Declare `rank_by` only where the organizer
 ranked otherwise, under `[competition]` for the whole meet or per division. The
