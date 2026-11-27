@@ -90,3 +90,12 @@ ingress:
   noindex: false
   basicAuth:
     sealedUsers: ""
+  rateLimit:
+    enabled: false
+    ipDepth: 1
+    frontend:
+      average: 10
+      burst: 50
+    backend:
+      average: 10
+      burst: 30
