@@ -9,7 +9,7 @@
   import SegmentedControl from '#lib/components/ui/segmented-control.svelte';
   import Button from '#lib/components/ui/button.svelte';
   import { LAYOUT } from '#lib/constants/layout.js';
-  import { LIFTS, liftTone } from '#lib/constants/lift.js';
+  import { LIFTS } from '#lib/constants/lift.js';
   import Notice from '#lib/components/ui/notice.svelte';
   import SelectField from '#lib/components/ui/select-field.svelte';
   import { useI18n } from '#lib/i18n/index.js';
@@ -278,6 +278,10 @@
 
   const contested = $derived(
     event ? LIFTS.filter((lift) => event.includes(lift.code)) : [...LIFTS]
+  );
+
+  const formatLabel = $derived(
+    competition.movements.map(({ movement_name }) => i18n.movement(movement_name)).join(' · ')
   );
 
   const competitionDate = $derived(
@@ -561,13 +565,8 @@
       </DetailList>
       <DetailList>
         <Detail label={i18n.t('Format')}>
-          {#each competition.movements as { movement_name }, index (movement_name)}
-            {#if index}<span class="mx-1">·</span>{/if}<span style:color={liftTone(movement_name)}>
-              {i18n.movement(movement_name)}
-            </span>
-          {:else}
-            {competition.status === 'upcoming' ? i18n.t('Format not announced') : '—'}
-          {/each}
+          {formatLabel ||
+            (competition.status === 'upcoming' ? i18n.t('Format not announced') : '—')}
         </Detail>
         {#if !published}
           {#if competition.rank_by}

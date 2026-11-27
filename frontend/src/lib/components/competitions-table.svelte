@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { liftTone } from '#lib/constants/lift.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { slugify } from '#lib/utils/slug.js';
   import type { TablePagination } from '#lib/types/pagination.js';
@@ -78,11 +77,7 @@
             .map(({ movement_name }) => i18n.movement(movement_name))
             .join(' · ')}
         >
-          {#if competition.event_code}{#each competition.event_code as letter, index (index)}<span
-                style:color={liftTone(letter)}
-              >
-                {letter}
-              </span>{/each}{:else}—{/if}
+          {competition.event_code ?? '—'}
         </td>
 
         <td class="{TABLE_CELL} {CELL.data} whitespace-nowrap {upcoming ? '' : FIGURE}">
