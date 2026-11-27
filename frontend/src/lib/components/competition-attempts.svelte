@@ -6,7 +6,8 @@
   import ChartPanel from '#lib/components/ui/chart-panel.svelte';
   import InfoTip from '#lib/components/ui/info-tip.svelte';
   import { useI18n } from '#lib/i18n/index.js';
-  import { Chart, Tooltip } from 'layerchart/svg';
+  import { Chart, Text, Tooltip } from 'layerchart/svg';
+  import type { ComponentProps } from 'svelte';
   import { scaleBand, scaleLinear } from 'd3-scale';
   import { onMount } from 'svelte';
   import type { AttemptRate, MovementAttempts } from '#lib/utils/competition-results.js';
@@ -61,6 +62,14 @@
   );
 </script>
 
+{#snippet liftTick({ props, index }: { props: ComponentProps<typeof Text>; index: number })}
+  <Text
+    {...props}
+    class="stroke-none font-mono text-micro"
+    fill={liftTone(rates[index]?.movement ?? '')}
+  />
+{/snippet}
+
 <ChartPanel title={i18n.t('Attempt success')}>
   {#snippet controls()}
     <InfoTip label={i18n.t('About attempt success')}>
@@ -104,7 +113,11 @@
       tooltipContext={interactive ? { mode: 'manual', touchEvents: 'pan-y' } : false}
       props={{
         svg: { viewBox: `0 0 ${chartWidth} ${chartHeight}`, preserveAspectRatio: 'none' },
-        xAxis: { ...BAND_AXIS, format: (movement: string) => i18n.movement(movement) },
+        xAxis: {
+          ...BAND_AXIS,
+          format: (movement: string) => i18n.movement(movement),
+          tickLabel: liftTick,
+        },
         yAxis: {
           ...AXIS,
           ticks: [0, 0.25, 0.5, 0.75, 1],

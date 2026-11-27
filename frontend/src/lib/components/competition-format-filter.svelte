@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { liftTone } from '#lib/constants/lift.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { ChevronIcon } from '#lib/components/icons/index.js';
   import Button from '#lib/components/ui/button.svelte';
@@ -98,7 +99,7 @@
                 />
               </svg>
             {/if}
-            <span>{i18n.movement(movement.label)}</span>
+            <span style:color={liftTone(movement.label)}>{i18n.movement(movement.label)}</span>
           </label>
         {/each}
       </fieldset>

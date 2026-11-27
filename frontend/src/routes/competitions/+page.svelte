@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { liftTone } from '#lib/constants/lift.js';
   import { LAYOUT } from '#lib/constants/layout.js';
   import Notice from '#lib/components/ui/notice.svelte';
   import SelectField from '#lib/components/ui/select-field.svelte';
@@ -117,7 +118,11 @@
                       .map(({ movement_name }) => i18n.movement(movement_name))
                       .join(', ')}
                   >
-                    {competition.event_code}
+                    {#each competition.event_code as letter, index (index)}<span
+                        style:color={liftTone(letter)}
+                      >
+                        {letter}
+                      </span>{/each}
                   </dd>
                 </div>
               {/if}

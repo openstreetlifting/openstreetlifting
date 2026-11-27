@@ -2,7 +2,7 @@
   import RecordMark from '#lib/components/ui/record-mark.svelte';
   import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
   import { LAYOUT } from '#lib/constants/layout.js';
-  import { LIFTS, type Lift } from '#lib/constants/lift.js';
+  import { LIFTS, liftTone, type Lift } from '#lib/constants/lift.js';
   import Select from '#lib/components/ui/select.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
@@ -403,7 +403,9 @@
             record={pr.record}
             href={competitionHref(pr.competition_slug, movementMetric(pr.movement_name))}
           >
-            <span class={TEXT.cardFigure}>{weights.format(pr.max_weight, i18n.locale)}</span>
+            <span class={TEXT.cardFigure} style:color={liftTone(pr.movement_name)}>
+              {weights.format(pr.max_weight, i18n.locale)}
+            </span>
             <span class="font-mono text-meta text-secondary">{weights.unit}</span>
             {#snippet footer()}
               {@render competitionFooter(pr.competition_name, pr.date)}
@@ -459,7 +461,7 @@
           <th class="{TABLE_HEAD_CELL} text-secondary"><RisHeader /></th>
           {#each contested as lift (lift.key)}
             <th class="{TABLE_HEAD_CELL} text-secondary">
-              <span style:color={lift.tone}>{i18n.t(lift.label)}</span>
+              {i18n.t(lift.label)}
               <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
                 <span class="text-right">1</span>
                 <span class="text-right">2</span>

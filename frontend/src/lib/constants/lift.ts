@@ -27,6 +27,7 @@ export const LIFTS = [
 
 export type Lift = (typeof LIFTS)[number];
 
-export function liftTone(movementOrKey: string): string | undefined {
-  return LIFTS.find((lift) => lift.movement === movementOrKey || lift.key === movementOrKey)?.tone;
+export function liftTone(name: string): string | undefined {
+  return LIFTS.find((lift) => lift.movement === name || lift.key === name || lift.code === name)
+    ?.tone;
 }

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { liftTone } from '#lib/constants/lift.js';
   import { LAYOUT } from '#lib/constants/layout.js';
   import { CELL, EDGE_TO_EDGE, FIGURE } from '#lib/constants/table.js';
   import { useI18n } from '#lib/i18n/index.js';
@@ -193,7 +194,9 @@
             aria-labelledby="records-{section.movement}"
           >
             <Text as="h2" id="records-{section.movement}" variant="heading" class="mb-3 text-ink">
-              {i18n.movement(section.movement)}
+              <span style:color={liftTone(section.movement)}>
+                {i18n.movement(section.movement)}
+              </span>
             </Text>
             <div class="osl-table overflow-x-auto rounded-panel border border-stroke-strong">
               <table class="w-full text-meta leading-4 whitespace-nowrap">
@@ -259,7 +262,9 @@
                             ? CELL.counted
                             : CELL.data}"
                         >
-                          {weights.format(entry.weight, i18n.locale)}
+                          <span style:color={liftTone(section.movement)}>
+                            {weights.format(entry.weight, i18n.locale)}
+                          </span>
                         </td>
                         <td class="{TABLE_CELL} {CELL.data}">
                           <a
