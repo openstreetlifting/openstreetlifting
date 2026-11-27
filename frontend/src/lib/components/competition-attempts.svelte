@@ -66,9 +66,7 @@
     <InfoTip label={i18n.t('About attempt success')}>
       <p class="font-medium text-ink">{i18n.t('Attempt success')}</p>
       <p class="mt-3">
-        {i18n.t(
-          'The share of first, second and third attempts judged good, for each movement. Every recorded attempt counts.'
-        )}
+        {i18n.t('The share of first, second and third attempts judged good, for each movement.')}
       </p>
     </InfoTip>
   {/snippet}

@@ -97,9 +97,6 @@
           { year: formula.year }
         )}
       </p>
-      <p class="mt-3">
-        {i18n.t('Points above their line scored more than 100 RIS.')}
-      </p>
     </InfoTip>
   {/snippet}
 
