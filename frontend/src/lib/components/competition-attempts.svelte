@@ -11,6 +11,7 @@
   import { onMount } from 'svelte';
   import type { AttemptRate } from '#lib/utils/competition-results.js';
   import { CHART, TEXT } from '#lib/constants/typography.js';
+  import { AXIS, BAND_AXIS, PLOT_PADDING } from '#lib/utils/chart.js';
 
   const i18n = useI18n();
 
@@ -94,7 +95,7 @@
         .paddingOuter(COLUMN_PADDING / 2)}
       yScale={scaleLinear()}
       yDomain={[0, 1]}
-      padding={{ top: 8, right: 12, bottom: 28, left: 44 }}
+      padding={{ ...PLOT_PADDING, top: 8, bottom: 28 }}
       axis
       grid={{ x: false, y: true }}
       rule={false}
@@ -102,14 +103,13 @@
       props={{
         svg: { viewBox: `0 0 ${chartWidth} ${chartHeight}`, preserveAspectRatio: 'none' },
         xAxis: {
-          tickMarks: false,
-          tickLabelProps: { fontSize: 11, class: CHART.label },
+          ...BAND_AXIS,
+          tickLabelProps: { ...BAND_AXIS.tickLabelProps, class: CHART.label },
         },
         yAxis: {
-          tickMarks: false,
+          ...AXIS,
           ticks: [0, 0.25, 0.5, 0.75, 1],
           format: (value: number) => percent.format(value),
-          tickLabelProps: { fontSize: 11, class: CHART.tick },
         },
       }}
       role="img"
@@ -150,15 +150,15 @@
           portal={false}
           motion="none"
           fadeDuration={0}
-          class="{CHART.tooltip} text-meta text-secondary"
+          class={CHART.tooltip}
         >
           {#snippet children({ data })}
-            <p class="font-medium text-ink">{data.label}</p>
-            <dl class="mt-2 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1">
+            <p class={CHART.tooltipTitle}>{data.label}</p>
+            <dl class={CHART.tooltipRows}>
               {#each data.rates as rate (rate.attempt)}
                 {@const value = share(rate)}
                 <dt>{i18n.t('Attempt {number}', { number: rate.attempt })}</dt>
-                <dd class="text-right font-mono text-ink">
+                <dd class={CHART.tooltipValue}>
                   {value === null ? '—' : percent.format(value)}
                 </dd>
               {/each}

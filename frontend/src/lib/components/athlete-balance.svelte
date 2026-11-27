@@ -8,6 +8,7 @@
   import { Tooltip, type ChartState } from 'layerchart';
   import { scalePoint } from 'd3-scale';
   import { CHART, TEXT } from '#lib/constants/typography.js';
+  import { TICK_LABEL } from '#lib/utils/chart.js';
   import Text from '#lib/components/ui/text.svelte';
 
   const MIN_PEERS = 10;
@@ -181,7 +182,7 @@
                     format={axisLabel}
                     grid={{ class: 'stroke-stroke' }}
                     stroke="var(--color-stroke)"
-                    tickLabelProps={{ fontSize: 11, class: CHART.label }}
+                    tickLabelProps={{ ...TICK_LABEL, class: CHART.label }}
                   />
                   {#each RINGS as ring (ring)}
                     <Spline data={outline} y={() => ring} class="stroke-stroke" strokeWidth={1} />
@@ -257,21 +258,19 @@
                 >
                   {#snippet children({ data: lift })}
                     <div role="tooltip">
-                      <p class="text-body font-medium">
-                        {i18n.movement(lift.movement_name)} · {weights.format(
-                          lift.value,
-                          i18n.locale
-                        )}
-                        {weights.unit}
+                      <p class={CHART.tooltipTitle}>{i18n.movement(lift.movement_name)}</p>
+                      <p class={CHART.tooltipNote}>
+                        {weights.format(lift.value, i18n.locale)}
+                        {weights.unit} · {i18n.t('of total')}
                       </p>
-                      <p class="mt-1 font-mono text-subtitle font-bold">
-                        {share(lift.share)}
-                      </p>
-                      <p class="mt-1 text-meta text-muted">
-                        {i18n.t('of total · reference {average}', {
-                          average: share(lift.class_share ?? 0),
-                        })}
-                      </p>
+                      <dl class={CHART.tooltipRows}>
+                        <dt>{i18n.t('Athlete')}</dt>
+                        <dd class={CHART.tooltipValue}>{share(lift.share)}</dd>
+                        {#if lift.class_share !== null}
+                          <dt>{reference}</dt>
+                          <dd class={CHART.tooltipValue}>{share(lift.class_share)}</dd>
+                        {/if}
+                      </dl>
                     </div>
                   {/snippet}
                 </Tooltip.Root>

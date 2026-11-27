@@ -31,8 +31,6 @@ export default {
   Performance: 'Wynik',
   Event: 'Format',
   Best: 'Najlepszy',
-  on: 'z',
-  at: 'na zawodach',
   Date: 'Data',
   'One result recorded. A trend will appear after another competition.':
     'Na razie jeden wynik. Trend pojawi się po kolejnych zawodach.',
@@ -65,7 +63,6 @@ export default {
   Reference: 'Odniesienie',
   '{movement}: {share} of total, reference {average}':
     '{movement}: {share} totalu, odniesienie {average}',
-  'of total · reference {average}': 'totalu · odniesienie {average}',
   'of total': 'totalu',
   'Too few athletes in this weight class to compare.':
     'Za mało zawodników w tej kategorii wagowej, aby porównać.',
@@ -238,10 +235,8 @@ export default {
   'Next page': 'Następna strona',
   Next: 'Następna',
   Category: 'Kategoria',
-  'Total, {unit}': 'Suma, {unit}',
   'RIS 100 benchmark': 'Poziom odniesienia RIS 100',
   Bodyweight: 'Masa ciała',
-  'Bodyweight, {unit}': 'Masa ciała, {unit}',
   Age: 'Wiek',
   'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.':
     'Najedź kursorem lub dotknij punktu, aby sprawdzić wynik. Gdy wykres jest aktywny, przeglądaj wyniki strzałkami w lewo i w prawo. Klawisze Home i End przenoszą na początek i koniec, Enter wybiera wynik, a Escape czyści wybór.',

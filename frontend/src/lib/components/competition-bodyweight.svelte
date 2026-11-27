@@ -23,6 +23,7 @@
   import { benchmarkTotal, calculateRis } from '#lib/utils/ris.js';
   import { kilograms } from '#lib/utils/weight-unit.js';
   import { CHART, TEXT } from '#lib/constants/typography.js';
+  import { AXIS, PLOT_PADDING, expand, withUnit, xTitle, yTitle } from '#lib/utils/chart.js';
 
   const i18n = useI18n();
   const weights = useWeightUnit();
@@ -139,9 +140,9 @@
       y="total"
       xScale={scaleLinear()}
       yScale={scaleLinear()}
-      {xDomain}
-      {yDomain}
-      padding={{ top: 8, right: 12, bottom: 28, left: 44 }}
+      xDomain={expand(xDomain)}
+      yDomain={expand(yDomain)}
+      padding={PLOT_PADDING}
       axis
       grid={{ x: false, y: true }}
       rule={false}
@@ -154,22 +155,22 @@
       props={{
         svg: { viewBox: `0 0 ${chartWidth} ${chartHeight}`, preserveAspectRatio: 'none' },
         xAxis: {
-          tickMarks: false,
+          ...AXIS,
+          ...xTitle(withUnit(i18n.t('Bodyweight'), weights.unit)),
           ticks: scaleLinear()
             .domain(xDomain.map((value) => weights.value(value)))
             .ticks(Math.max(2, Math.floor(chartWidth / 90)))
             .map((value) => kilograms(value, weights.unit)),
           format: (value: number) => weights.format(value, i18n.locale),
-          tickLabelProps: { fontSize: 11, class: CHART.tick },
         },
         yAxis: {
-          tickMarks: false,
+          ...AXIS,
+          ...yTitle(withUnit(i18n.t('Total'), weights.unit)),
           ticks: scaleLinear()
             .domain(yDomain.map((value) => weights.value(value)))
             .ticks(5)
             .map((value) => kilograms(value, weights.unit)),
           format: (value: number) => weights.format(value, i18n.locale),
-          tickLabelProps: { fontSize: 11, class: CHART.tick },
         },
       }}
       role="img"
@@ -208,31 +209,31 @@
           portal={false}
           motion="none"
           fadeDuration={0}
-          class="{CHART.tooltip} text-meta text-secondary"
+          class={CHART.tooltip}
         >
           {#snippet children({ data })}
             {@const performance = athlete(data)}
             {@const point = performance ?? benchmark(data)}
             {@const digits = performance ? undefined : 2}
             {#if point}
-              <p class="max-w-56 font-medium text-ink">
+              <p class={CHART.tooltipTitle}>
                 {performance
                   ? performance.name
                   : i18n.t('RIS 100, {sex}', { sex: sexLabel(point.sex).toLowerCase() })}
               </p>
-              <dl class="mt-2 grid grid-cols-[1fr_auto] gap-x-6 gap-y-1">
+              <dl class={CHART.tooltipRows}>
                 <dt>{i18n.t('Bodyweight')}</dt>
-                <dd class="text-right font-mono">
+                <dd class={CHART.tooltipValue}>
                   {weights.format(point.bodyweight, i18n.locale, digits)}
                   {weights.unit}
                 </dd>
                 <dt>{i18n.t('Total')}</dt>
-                <dd class="text-right font-mono">
+                <dd class={CHART.tooltipValue}>
                   {weights.format(point.total, i18n.locale, digits)}
                   {weights.unit}
                 </dd>
                 <dt>RIS</dt>
-                <dd class="text-right font-mono text-ink">
+                <dd class={CHART.tooltipValue}>
                   {i18n.number(
                     calculateRis(formula.constants[point.sex], point.bodyweight, point.total),
                     2
@@ -245,8 +246,4 @@
       {/snippet}
     </Chart>
   </div>
-  <p class="{TEXT.caption} mt-1 flex justify-between gap-4">
-    <span>{i18n.t('Total, {unit}', { unit: weights.unit })}</span>
-    <span>{i18n.t('Bodyweight, {unit}', { unit: weights.unit })}</span>
-  </p>
 </ChartPanel>

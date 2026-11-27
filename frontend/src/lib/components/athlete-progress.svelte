@@ -6,6 +6,7 @@
   import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
   import { CHART } from '#lib/constants/typography.js';
+  import { AXIS, PLOT_PADDING, withUnit, yTitle } from '#lib/utils/chart.js';
   import {
     competitionFocusQuery,
     progressPoints,
@@ -50,16 +51,15 @@
 
   const best = $derived(points.length ? Math.max(...points.map((point) => point.value)) : null);
 
-  const bestPoint = $derived(points.findLast((point) => point.value === best));
   const minimum = $derived(points.length ? Math.min(...points.map((point) => point.value)) : 0);
-  const padding = $derived(Math.max(((best ?? 0) - minimum) * 0.15, (best ?? 0) * 0.03, 1));
   const yDomain = $derived(
     scaleLinear()
       .domain(
-        [Math.max(0, minimum - padding), (best ?? 0) + padding].map((value) =>
+        [Math.min(minimum, (best ?? 0) * 0.75), (best ?? 0) * 1.05].map((value) =>
           metric === 'ris' ? value : weights.value(value)
         )
       )
+      .nice(4)
       .domain()
   );
   const first = $derived(utcMonth.floor(new Date(points[0]?.timestamp ?? 0)));
@@ -68,14 +68,6 @@
   );
 
   const xDomain = $derived([points.length === 1 ? utcMonth.offset(first, -1) : first, last]);
-
-  const monthLabel = $derived(
-    new Intl.DateTimeFormat(i18n.locale, {
-      month: 'short',
-      year: 'numeric',
-      timeZone: 'UTC',
-    })
-  );
 
   function competitionLink(slug: string) {
     const query = competitionFocusQuery(metric, athleteSlug);
@@ -110,22 +102,7 @@
     </label>
   {/snippet}
 
-  {#if points.length && best !== null && bestPoint}
-    <div class="mb-4 border-b border-stroke pb-3">
-      <p class="text-meta leading-relaxed text-muted">
-        <span class="font-mono font-medium uppercase">{i18n.t('Best')}</span>
-        <span class="ml-1 font-mono font-semibold text-ink">{valueLabel(best)}</span>
-        {i18n.t('on')}
-        {formatLongDate(bestPoint.competition.competition_date, i18n.locale)}
-        {i18n.t('at')}
-        <a
-          href={competitionLink(bestPoint.competition.competition_slug)}
-          class="text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
-        >
-          {bestPoint.competition.competition_name}
-        </a>
-      </p>
-    </div>
+  {#if points.length && best !== null}
     {#key metric + weights.unit}
       <div
         class="min-h-64 w-full flex-1"
@@ -155,7 +132,7 @@
           xScale={scaleUtc()}
           {xDomain}
           {yDomain}
-          padding={{ left: 56, right: 28, top: 16, bottom: 52 }}
+          padding={{ ...PLOT_PADDING, right: 28, bottom: 36 }}
           tooltipContext={{ mode: 'manual' }}
         >
           {#snippet children({ context })}
@@ -165,35 +142,14 @@
               aria-label={i18n.t('{label} over time', { label })}
               role="group"
             >
-              <Axis
-                placement="bottom"
-                label={i18n.t('Date')}
-                labelProps={{ class: CHART.label }}
-                ticks={{
-                  interval: utcMonth.every(
-                    Math.max(
-                      1,
-                      Math.ceil(
-                        utcMonth.count(xDomain[0], xDomain[1]) /
-                          Math.max(1, Math.floor(context.width / 90))
-                      )
-                    )
-                  ),
-                }}
-                format={(date: Date) => monthLabel.format(date)}
-                tickLabelProps={{ fontSize: 11, class: CHART.tick }}
-                tickOcclusion
-                stroke="var(--color-stroke)"
-              />
+              <Axis placement="bottom" {...AXIS} tickMultiline tickOcclusion />
               <Axis
                 placement="left"
-                label={metric === 'ris' ? 'RIS' : weights.unit}
-                labelProps={{ class: CHART.label }}
+                {...AXIS}
+                {...yTitle(metric === 'ris' ? 'RIS' : withUnit(label, weights.unit))}
                 ticks={4}
                 format={(value: number) => i18n.number(value)}
-                tickLabelProps={{ fontSize: 11, class: CHART.tick }}
                 grid={{ class: 'stroke-stroke' }}
-                stroke="var(--color-stroke)"
               />
               {#if points.length > 1}<Spline class="stroke-chart-athlete" strokeWidth={2} />{/if}
               <Points>
@@ -265,26 +221,32 @@
             >
               {#snippet children({ data: point })}
                 <div role="tooltip" aria-live="polite">
-                  <p class="font-mono text-subtitle font-bold">{valueLabel(point.value)}</p>
                   <a
                     href={competitionLink(point.competition.competition_slug)}
-                    class="mt-1 inline-block text-body text-secondary underline decoration-stroke-strong underline-offset-4 hover:text-ink"
+                    class="{CHART.tooltipTitle} underline decoration-stroke-strong underline-offset-4"
                   >
                     {point.competition.competition_name}
                   </a>
-                  <p class="mt-1 text-meta text-muted">
+                  <p class={CHART.tooltipNote}>
                     {formatLongDate(point.competition.competition_date, i18n.locale)} · {weights.category(
                       point.competition.category_name,
                       i18n.locale
                     )}{point.competition.division ? ` · ${point.competition.division}` : ''}
                   </p>
-                  {#if metric === 'ris'}<p class="mt-1 text-meta text-muted">
-                      {point.competition.ris_source === 'reported'
-                        ? i18n.t('Reported')
-                        : point.competition.ris_source === 'computed'
-                          ? i18n.t('Computed')
-                          : i18n.t('Recorded')} RIS
-                    </p>{/if}
+                  <dl class={CHART.tooltipRows}>
+                    <dt>
+                      {metric === 'ris'
+                        ? `${
+                            point.competition.ris_source === 'reported'
+                              ? i18n.t('Reported')
+                              : point.competition.ris_source === 'computed'
+                                ? i18n.t('Computed')
+                                : i18n.t('Recorded')
+                          } RIS`
+                        : label}
+                    </dt>
+                    <dd class={CHART.tooltipValue}>{valueLabel(point.value)}</dd>
+                  </dl>
                 </div>
               {/snippet}
             </Tooltip.Root>

@@ -32,8 +32,6 @@ export default {
   Performance: 'Prestazione',
   Event: 'Formato',
   Best: 'Migliore',
-  on: 'il',
-  at: 'a',
   Date: 'Data',
   'One result recorded. A trend will appear after another competition.':
     'C’è un solo risultato registrato. Dopo un’altra gara potrai vedere l’andamento.',
@@ -66,7 +64,6 @@ export default {
   Reference: 'Riferimento',
   '{movement}: {share} of total, reference {average}':
     '{movement}: {share} del totale, riferimento {average}',
-  'of total · reference {average}': 'del totale · riferimento {average}',
   'of total': 'del totale',
   'Too few athletes in this weight class to compare.':
     'Troppi pochi atleti in questa categoria per un confronto.',
@@ -240,10 +237,8 @@ export default {
   'Next page': 'Pagina successiva',
   Next: 'Successiva',
   Category: 'Categoria',
-  'Total, {unit}': 'Totale, {unit}',
   'RIS 100 benchmark': 'Riferimento RIS 100',
   Bodyweight: 'Peso corporeo',
-  'Bodyweight, {unit}': 'Peso corporeo, {unit}',
   Age: 'Età',
   'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.':
     'Passa il cursore o tocca una prestazione per esaminarla. Con il grafico attivo, usa le frecce sinistra e destra per scorrere le prestazioni, Inizio o Fine per spostarti agli estremi, Invio per selezionare ed Esc per cancellare la selezione.',
