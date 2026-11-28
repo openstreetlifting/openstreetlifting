@@ -20,6 +20,6 @@ Every written value is backed by the source or by a default stated in these file
    ```
 
    Warnings about missing evidence stay and are reported. A nonempty suppression list needs the existing `OSL_PRIVACY_KEY`; without it, add `--skip-privacy-check` and report suppression checks as outstanding. Never generate a new key or bypass a suppression match.
-7. **Reconcile.** Every source row is imported, already present, or reported as unresolved. Each `TotalKg` matches the source total and any complete breakdown; report mismatches as they are. The diff touches only this competition.
+7. **Reconcile.** Every source row is imported, already present, or reported as unresolved. Each `TotalKg` matches the source total and any complete breakdown; report mismatches as they are. Each `Place` matches the source's results; report every place that contradicts the source's totals or scores. The diff touches only this competition.
 8. **Report** changed files, added categories and athletes, validation and total checks, defaulted or missing countries, declared `rank_by` rules, and unresolved evidence. Import and commit only on request.
 9. **PR, on request:** one branch and PR per competition, with the one-line body `Import [<competition>](<source URL>) (closes #<issue>).`, dropping the closing reference without an issue.

@@ -50,10 +50,20 @@ Sex,WeightClassKg,FirstName,LastName,Disambiguation,Country,BodyweightKg,Reporte
 | `BodyweightKg` | Source-measured bodyweight, or an estimate with `BodyweightSource=recovered` per [bodyweight recovery](#bodyweight-recovery) |
 | `ReportedRis` | Source score, with or without bodyweight; `ReportedRisEdition` only when the formula is established |
 | `TotalKg` | Published total; `prepare` fills it only from a complete breakdown |
+| `Place` | The place announced in the source results, for competed athletes of a completed competition; see [Place](#place) |
 | `Status` | `competed` (or empty), `disqualified`, `no_show` |
 | `StatusReason` | Source reason for a disqualification |
 
 Keep existing provenance columns; `prepare` sets column order.
+
+### Place
+
+The place is the official result, so it comes from the source and nothing else.
+
+- Copy each place as published, ties included. Never compute or reorder it.
+- Check every place against the source's totals and published RIS. When they disagree, keep the published place and report the disagreement, so the user can tell the organiser before importing.
+- The contest is the one the organiser placed. When the source places men and women apart, or by weight class, the entries must match those contests.
+- A source without places leaves `Place` empty for the whole contest; report it.
 
 ### Country
 

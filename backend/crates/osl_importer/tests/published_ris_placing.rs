@@ -67,3 +67,30 @@ async fn places_by_current_ris_without_published_scores(pool: PgPool) {
     assert_eq!(placed[0].0, "Light");
     assert_eq!(placed[1].0, "Heavy");
 }
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn places_by_the_announced_place_over_any_score(pool: PgPool) {
+    let mut heavy = lifter("Heavy", "100", "320", Some("900"));
+    heavy.place = Some(2);
+    let mut light = lifter("Light", "60", "300", Some("800"));
+    light.place = Some(1);
+    let mut canonical = common::competition("announced", vec![common::men_80(vec![heavy, light])]);
+    canonical.competition.rank_by = Some(RankBy::Ris);
+    CanonicalTransformer::new(&pool)
+        .import_to_database(canonical)
+        .await
+        .unwrap();
+    let detail = CompetitionRepository::new(&pool)
+        .find_by_slug_detailed("announced")
+        .await
+        .unwrap();
+    let placed: Vec<_> = detail.categories[0]
+        .participants
+        .iter()
+        .map(|p| (p.athlete.first_name.clone(), p.rank))
+        .collect();
+    assert_eq!(
+        placed,
+        [("Light".to_owned(), Some(1)), ("Heavy".to_owned(), Some(2))]
+    );
+}

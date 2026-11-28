@@ -314,6 +314,19 @@ fn read_entry(
         reported_ris_edition,
         total: entries::parse_decimal(columns.get(record, entries::TOTAL))
             .map_err(|e| format!("{}: {e}", entries::TOTAL))?,
+        place: optional(columns, record, entries::PLACE)
+            .map(|raw| {
+                raw.parse::<i16>()
+                    .ok()
+                    .filter(|place| *place > 0)
+                    .ok_or_else(|| {
+                        format!(
+                            "{} '{raw}' is not a place, expected 1, 2, 3...",
+                            entries::PLACE
+                        )
+                    })
+            })
+            .transpose()?,
         status,
         status_reason: optional(columns, record, entries::STATUS_REASON),
         lifts: read_lifts(columns, record, movements)?,
@@ -414,6 +427,11 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
             .iter()
             .flat_map(|c| &c.athletes)
             .any(|athlete| athlete.age.is_some()),
+        places: canonical
+            .categories
+            .iter()
+            .flat_map(|c| &c.athletes)
+            .any(|athlete| athlete.place.is_some()),
     };
 
     writer
@@ -452,6 +470,11 @@ fn render_entries(canonical: &CanonicalFormat) -> Result<String> {
                 entries::render_decimal(athlete.bodyweight),
                 entries::render_decimal(athlete.reported_ris),
                 entries::render_decimal(athlete.total),
+            ]);
+            if layout.places {
+                row.push(athlete.place.map_or_default(|place| place.to_string()));
+            }
+            row.extend([
                 athlete.status.as_str().to_string(),
                 athlete.status_reason.clone().unwrap_or_default(),
             ]);
@@ -653,6 +676,24 @@ mod tests {
         let (_, _, weight_class, _) = entry(entries::Layout::default(), &cells).unwrap();
 
         assert_eq!(weight_class, None);
+    }
+
+    #[test]
+    fn reads_places() {
+        let layout = entries::Layout {
+            places: true,
+            ..entries::Layout::default()
+        };
+        let mut cells = NAMED.to_vec();
+        cells.push((entries::PLACE, "2"));
+        let (_, _, _, athlete) = entry(layout, &cells).unwrap();
+        assert_eq!(athlete.place, Some(2));
+
+        for invalid in ["0", "-1", "first", "1.5"] {
+            let mut cells = NAMED.to_vec();
+            cells.push((entries::PLACE, invalid));
+            assert!(entry(layout, &cells).is_err(), "{invalid}");
+        }
     }
 
     #[test]

@@ -38,6 +38,7 @@ fn entry(first: &str, last: &str, native: Option<&str>) -> AthleteData {
         reported_ris_edition: None,
         total: None,
         status: AthleteStatus::Competed,
+        place: None,
         status_reason: None,
         lifts: Movement::ALL
             .into_iter()
