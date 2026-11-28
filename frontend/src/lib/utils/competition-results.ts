@@ -52,7 +52,29 @@ const unrankedOrder = (a: ResultEntry, b: ResultEntry) =>
   STATUS_ORDER.indexOf(a.participant.status) - STATUS_ORDER.indexOf(b.participant.status) ||
   a.participant.athlete.last_name.localeCompare(b.participant.athlete.last_name);
 
-export function rankResults(entries: ResultEntry[], metric: RankingMetric): ResultRow[] {
+function officialResults(entries: ResultEntry[]): ResultRow[] {
+  const ranked = entries
+    .filter((entry) => entry.participant.rank != null)
+    .sort(
+      (a, b) =>
+        a.participant.rank! - b.participant.rank! ||
+        lighterFirst(a.participant, b.participant) ||
+        a.participant.athlete.athlete_id.localeCompare(b.participant.athlete.athlete_id)
+    )
+    .map((entry) => ({ ...entry, rank: entry.participant.rank! }));
+  const unranked = entries
+    .filter((entry) => entry.participant.rank == null)
+    .sort(unrankedOrder)
+    .map((entry) => ({ ...entry, rank: null }));
+  return [...ranked, ...unranked];
+}
+
+export function rankResults(
+  entries: ResultEntry[],
+  metric: RankingMetric,
+  official = false
+): ResultRow[] {
+  if (official) return officialResults(entries);
   const value = (entry: ResultEntry) => resultValue(entry.participant, metric);
   const ranked = entries
     .filter((entry) => value(entry) != null)
@@ -73,7 +95,11 @@ export function rankResults(entries: ResultEntry[], metric: RankingMetric): Resu
 const entriesOf = ({ category, participants }: CategoryDetail): ResultEntry[] =>
   participants.map((participant) => ({ participant, category }));
 
-export function resultTables(categories: CategoryDetail[], metric: RankingMetric): ResultTable[] {
+export function resultTables(
+  categories: CategoryDetail[],
+  metric: RankingMetric,
+  official = false
+): ResultTable[] {
   const classes = new Map(FIELD_ORDER.map((gender) => [gender, weightClasses(categories, gender)]));
   const classIndex = ({ category }: CategoryDetail) =>
     classes.get(category.gender)!.indexOf(category.weight_class);
@@ -83,7 +109,10 @@ export function resultTables(categories: CategoryDetail[], metric: RankingMetric
         FIELD_ORDER.indexOf(a.category.gender) - FIELD_ORDER.indexOf(b.category.gender) ||
         classIndex(a) - classIndex(b)
     )
-    .map((detail) => ({ category: detail.category, rows: rankResults(entriesOf(detail), metric) }));
+    .map((detail) => ({
+      category: detail.category,
+      rows: rankResults(entriesOf(detail), metric, official),
+    }));
 }
 
 export function mixedResults(categories: CategoryDetail[], metric: RankingMetric): ResultRow[] {
