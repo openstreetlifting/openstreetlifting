@@ -12,6 +12,9 @@ region = "Auvergne-Rhône-Alpes"
 country = "FR"
 status = "completed"
 
+[competition.divisions."FNSL Masters"]
+rank_by = "total"
+
 [competition.divisions.Open]
 rank_by = "total"
 
