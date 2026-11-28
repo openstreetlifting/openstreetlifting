@@ -30,6 +30,7 @@
   import AthletesWithoutMpds from '#lib/components/athletes-without-mpds.svelte';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
+  import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { afterNavigate, refreshAll } from '$app/navigation';
   import { formatDate, countryName, formatAthleteName } from '#lib/utils/index.js';
   import { CELL, FIGURE, NO_VALUE, SORTED_COLUMN, TEXT_CELL } from '#lib/constants/table.js';
@@ -64,6 +65,14 @@
   const seo = $derived(listingSeo(page.url));
 
   const focused = $derived(page.url.searchParams.get('athlete'));
+
+  function countryFilterHref(code: string): string {
+    const params = new SvelteURLSearchParams(page.url.search);
+    params.set('country', code.toUpperCase());
+    params.delete('page');
+    params.delete('athlete');
+    return `/?${params}`;
+  }
 
   afterNavigate(({ type, shallow }) => {
     if (shallow) return;
@@ -260,6 +269,9 @@
                   <span class="flex min-w-0 items-center gap-2">
                     <Flag
                       link
+                      href={entry.athlete.country
+                        ? countryFilterHref(entry.athlete.country)
+                        : undefined}
                       countryCode={entry.athlete.country}
                       class="shrink-0 [--flag-height:1.25em]"
                     />

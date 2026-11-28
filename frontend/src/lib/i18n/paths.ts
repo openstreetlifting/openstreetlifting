@@ -1,4 +1,5 @@
 import { DEFAULT_LOCALE, isLocale, type Locale } from './locale.js';
+import { rankingsCountryHref } from '../utils/slug.js';
 
 export function pathLocale(pathname: string): Locale | undefined {
   const first = pathname.split('/')[1];
@@ -25,7 +26,6 @@ const PAGE_ROOTS = new Set([
   'competitions',
   'records',
   'athletes',
-  'countries',
   'federations',
   'ris',
   'contact',
@@ -33,6 +33,14 @@ const PAGE_ROOTS = new Set([
 ]);
 export function isPagePath(pathname: string): boolean {
   return PAGE_ROOTS.has(stripLocale(pathname).split('/')[1] ?? '');
+}
+
+export function countryRedirect(pathname: string): string | undefined {
+  const match = /^(?:\/([a-z]{2}))?\/countries(?:\/([^/]+))?\/?$/.exec(pathname);
+  if (!match || (match[1] && !isLocale(match[1]))) return undefined;
+  const locale = (match[1] as Locale | undefined) ?? DEFAULT_LOCALE;
+  const code = match[2] && /^[a-z]{2}$/i.test(match[2]) ? match[2] : undefined;
+  return localeHref(code ? rankingsCountryHref(code) : '/', locale);
 }
 
 export function legacyRedirect(pathname: string, search: string): string | undefined {

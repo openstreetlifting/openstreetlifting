@@ -55,9 +55,7 @@
           <td class="{TABLE_CELL} {CELL.data}">
             {#if federation.country}
               <a
-                href={i18n.href(
-                  resolve('/countries/[code]', { code: federation.country.toLowerCase() })
-                )}
+                href={i18n.href(resolve(`?country=${federation.country.toUpperCase()}`))}
                 class="flex items-center gap-2 hover:text-ink"
               >
                 <Flag countryCode={federation.country} class="shrink-0 [--flag-height:1.25em]" />

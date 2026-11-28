@@ -49,11 +49,7 @@ it('splits pages, published competitions and athletes into their own sitemaps', 
     (await (await GET(request(section))).text()).match(/<loc>[^<]+<\/loc>/g);
 
   expect(await locs('pages')).toEqual(
-    expect.arrayContaining([
-      '<loc>https://openstreetlifting.org/en/federations/finalrep</loc>',
-      '<loc>https://openstreetlifting.org/en/countries/de</loc>',
-      '<loc>https://openstreetlifting.org/en/countries/fr</loc>',
-    ])
+    expect.arrayContaining(['<loc>https://openstreetlifting.org/en/federations/finalrep</loc>'])
   );
   expect(await locs('competitions')).toEqual([
     '<loc>https://openstreetlifting.org/en/competitions/worlds-2025</loc>',

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { useI18n } from '#lib/i18n/index.js';
   import { resolve } from '$app/paths';
-  import { countryName } from '#lib/utils/index.js';
+  import { countryName, rankingsCountryHref } from '#lib/utils/index.js';
 
   const i18n = useI18n();
 
@@ -9,13 +9,25 @@
     countryCode: string | null;
     background?: boolean;
     link?: boolean;
+    href?: string;
     class?: string;
   }
 
-  let { countryCode, background = false, link = false, class: className = '' }: Props = $props();
+  let {
+    countryCode,
+    background = false,
+    link = false,
+    href,
+    class: className = '',
+  }: Props = $props();
 
   const label = $derived(
     countryCode && countryCode.length === 2 ? countryName(countryCode, i18n.locale) : null
+  );
+
+  const target = $derived(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- an href carrying a query string is not a literal route
+    i18n.href(resolve((href ?? rankingsCountryHref(countryCode ?? '')) as any))
   );
 
   const fileName = $derived(
@@ -47,7 +59,7 @@
     </svg>
   {:else if link}
     <a
-      href={i18n.href(resolve('/countries/[code]', { code: countryCode!.toLowerCase() }))}
+      href={target}
       class="inline-flex shrink-0 rounded-[3px] transition-opacity hover:opacity-75 focus:ring-2 focus:ring-focus focus:outline-none"
     >
       {@render flag()}
