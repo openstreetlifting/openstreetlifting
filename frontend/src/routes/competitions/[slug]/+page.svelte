@@ -734,7 +734,7 @@
             </th>
             {#if risColumn}
               <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
-                <RisHeader note={risNote} />
+                <RisHeader note={risNote} published={data.ris === 'reported'} />
               </th>
             {/if}
             {#each contested as lift (lift.key)}

@@ -16,7 +16,11 @@ vi.mock('$app/paths', () => ({
       : `/${path}`,
 }));
 vi.mock('$app/state', () => ({
-  page: { url: new URL('http://localhost/fr/competitions/current?page=2&gender=M'), state: {} },
+  page: {
+    url: new URL('http://localhost/fr/competitions/current?page=2&gender=M'),
+    state: {},
+    data: { risEdition: 2026 },
+  },
   navigating: {},
 }));
 vi.mock('$app/navigation', () => ({
@@ -28,6 +32,8 @@ vi.mock('$app/navigation', () => ({
 function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
   return {
     locale: 'fr',
+    risEdition: 2026,
+    formula: null,
     competition: {
       competition_id: 'meet',
       created_at: '2026-01-01T00:00:00',

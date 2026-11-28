@@ -78,7 +78,7 @@ it.each([
 it.each(LOCALES)('renders RIS attribution and the reported-score symbol in %s', (locale) => {
   const { body } = render(Ris, {
     props: {
-      data: { locale, editions: [], distribution: { men: [], women: [] } },
+      data: { locale, risEdition: 2026, editions: [], distribution: { men: [], women: [] } },
     },
     context: new Map([[I18N_CONTEXT, new I18n(() => locale)]]),
   });
