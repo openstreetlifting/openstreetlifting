@@ -155,14 +155,16 @@
 
   function resultsHref(slug: string, next: Partial<ResultsState> = {}) {
     const state: ResultsState = {
-      division: activeDivision === divisions[0]?.name ? null : activeDivision,
+      division: activeDivision,
       sort,
       q: search.applied.trim(),
       page: 1,
       ...next,
     };
     const query = new SvelteURLSearchParams();
-    if (state.division) query.set('division', state.division);
+    if (state.division && state.division !== divisions[0]?.name) {
+      query.set('division', state.division);
+    }
     if (state.sort !== defaultSort) query.set('movement', state.sort);
     if (state.q) query.set('q', state.q);
     if (state.page > 1) query.set('page', String(state.page));
@@ -524,10 +526,7 @@
           items={divisions}
           key={(division) => division.name}
           selected={(division) => division.name === activeDivision}
-          href={(division) =>
-            resultsHref(competition.slug, {
-              division: division.name === divisions[0].name ? null : division.name,
-            })}
+          href={(division) => resultsHref(competition.slug, { division: division.name })}
           attributes={(division) => ({
             title: i18n.t('{division}, ranked by {metric}', {
               division: division.name,
