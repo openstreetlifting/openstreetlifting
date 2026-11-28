@@ -41,6 +41,7 @@ const hit = (slug: string, rankings: ('total' | 'pullup')[] = []) => ({
   gender: 'M' as const,
   country: 'IT',
   rankings,
+  best_entry: null,
 });
 
 it('lists matching athletes outside the ranking when searching', async () => {
@@ -57,7 +58,7 @@ it('lists matching athletes outside the ranking when searching', async () => {
     url: new URL('http://localhost/?q=rossi'),
   } as Parameters<typeof load>[0])) as { otherAthletes: unknown };
 
-  expect(athletesService.search).toHaveBeenCalledWith('rossi', 20);
+  expect(athletesService.search).toHaveBeenCalledWith('rossi', 20, true);
   expect(result.otherAthletes).toEqual({
     hits: [hit('marco-rossi', ['pullup']), hit('luca-rossi')],
     total: 2,

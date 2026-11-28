@@ -9,6 +9,7 @@ const hit = (slug: string, rankings: AthleteSearchHit['rankings']): AthleteSearc
   gender: 'M',
   country: 'FR',
   rankings,
+  best_entry: null,
 });
 
 describe('rankingLabels', () => {

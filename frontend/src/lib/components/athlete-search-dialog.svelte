@@ -105,17 +105,17 @@
 
   <div class="max-h-[60vh] overflow-y-auto" aria-live="polite">
     {#if failed}
-      <p class="px-gutter py-4 {TEXT.caption}">{i18n.t('Couldn’t search athletes')}</p>
+      <p class="px-3 py-3 {TEXT.caption}">{i18n.t('Couldn’t search athletes')}</p>
     {:else if !searched}
-      <p class="px-gutter py-4 {TEXT.caption}">{i18n.t('Type a name to find any athlete.')}</p>
+      <p class="px-3 py-3 {TEXT.caption}">{i18n.t('Type a name to find any athlete.')}</p>
     {:else if hits.length === 0}
-      <p class="px-gutter py-4 {TEXT.caption}">
+      <p class="px-3 py-3 {TEXT.caption}">
         {i18n.t('No athlete matches “{query}”.', { query: searched })}
       </p>
     {:else}
       <AthleteSearchList {hits} {active} onpick={() => dialog.close()} />
       {#if total > hits.length}
-        <p class="px-gutter py-3 {TEXT.caption}">
+        <p class="px-3 py-2 {TEXT.caption}">
           {i18n.t('{count} more. Type more of the name to narrow the list.', {
             count: total - hits.length,
           })}

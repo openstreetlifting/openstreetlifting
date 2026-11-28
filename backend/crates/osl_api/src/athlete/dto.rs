@@ -12,7 +12,7 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::competition::dto::AttemptInfo;
-use crate::ranking::dto::RankingMetric;
+use crate::ranking::dto::{CompetitionInfo, FederationInfo, RankingMetric, decimal_to_f64};
 
 /// Optional athlete section.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
@@ -602,7 +602,7 @@ impl AthleteResponse {
 }
 
 /// An athlete whose name matches a search.
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct AthleteSearchHit {
     /// URL slug.
     pub slug: String,
@@ -617,10 +617,41 @@ pub struct AthleteSearchHit {
     pub country: Option<String>,
     /// Rankings the athlete appears in. Empty when the athlete has no valid lift.
     pub rankings: Vec<RankingMetric>,
+    /// The athlete's best result: the entry whose best lifts add up to the most, then the latest.
+    #[schema(required = true)]
+    pub best_entry: Option<AthleteSearchEntry>,
+}
+
+/// One competition entry of a searched athlete.
+#[derive(Debug, Serialize, ToSchema)]
+pub struct AthleteSearchEntry {
+    /// Competition.
+    pub competition: CompetitionInfo,
+    /// Federation.
+    pub federation: FederationInfo,
+    /// Event code, such as `PD`.
+    #[schema(required = true)]
+    pub event: Option<String>,
+    /// Gender of the category.
+    pub gender: Gender,
+    /// Weight class, such as `-80kg`. Empty without a weight class.
+    pub category: String,
+    /// Muscle-up in kilograms. `null` without a successful lift.
+    #[schema(required = true)]
+    pub muscleup: Option<f64>,
+    /// Pull-up in kilograms. `null` without a successful lift.
+    #[schema(required = true)]
+    pub pullup: Option<f64>,
+    /// Dips in kilograms. `null` without a successful lift.
+    #[schema(required = true)]
+    pub dips: Option<f64>,
+    /// Squat in kilograms. `null` without a successful lift.
+    #[schema(required = true)]
+    pub squat: Option<f64>,
 }
 
 /// Athletes whose name matches a search, ranked athletes first.
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct AthleteSearchResponse {
     /// Matching athletes, up to `limit`.
     pub data: Vec<AthleteSearchHit>,
@@ -630,7 +661,9 @@ pub struct AthleteSearchResponse {
 
 impl From<AthleteSearchRow> for AthleteSearchHit {
     fn from(row: AthleteSearchRow) -> Self {
+        let best_entry = AthleteSearchEntry::from_row(&row);
         Self {
+            best_entry,
             slug: row.slug,
             first_name: row.first_name,
             last_name: row.last_name,
@@ -643,5 +676,29 @@ impl From<AthleteSearchRow> for AthleteSearchHit {
                 .map(RankingMetric::from)
                 .collect(),
         }
+    }
+}
+
+impl AthleteSearchEntry {
+    fn from_row(row: &AthleteSearchRow) -> Option<Self> {
+        Some(Self {
+            competition: CompetitionInfo {
+                competition_id: row.competition_id?,
+                name: row.competition_name.clone()?,
+                slug: row.competition_slug.clone()?,
+                date: row.competition_date,
+            },
+            federation: FederationInfo {
+                name: row.federation_name.clone()?,
+                abbreviation: row.federation_abbreviation.clone(),
+            },
+            event: row.event_code.clone(),
+            gender: row.entry_gender.unwrap_or(row.gender),
+            category: osl_domain::WeightClass::label(row.weight_class_min, row.weight_class_max),
+            muscleup: row.muscleup.map(decimal_to_f64),
+            pullup: row.pullup.map(decimal_to_f64),
+            dips: row.dips.map(decimal_to_f64),
+            squat: row.squat.map(decimal_to_f64),
+        })
     }
 }

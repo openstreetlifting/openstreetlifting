@@ -27,7 +27,7 @@
   } from '#lib/components/ui/index.js';
   import { InstagramIcon } from '#lib/components/icons/index.js';
   import Seo from '#lib/components/seo.svelte';
-  import OtherAthletes from '#lib/components/other-athletes.svelte';
+  import AthletesWithoutMpds from '#lib/components/athletes-without-mpds.svelte';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { afterNavigate, refreshAll } from '$app/navigation';
@@ -191,10 +191,6 @@
       </SelectField>
     </FilterBar>
 
-    {#if data.otherAthletes && !busy}
-      <OtherAthletes hits={data.otherAthletes.hits} total={data.otherAthletes.total} />
-    {/if}
-
     {#if data.error}
       <ResultState
         embedded
@@ -350,4 +346,8 @@
       </Table>
     {/if}
   </section>
+
+  {#if data.otherAthletes && !busy}
+    <AthletesWithoutMpds hits={data.otherAthletes.hits} total={data.otherAthletes.total} />
+  {/if}
 </div>

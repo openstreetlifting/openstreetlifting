@@ -124,3 +124,51 @@ async fn rankings_name_filter_ignores_accents_and_order(pool: PgPool) {
     assert_eq!(entries.len(), 1);
     assert_eq!(entries[0]["athlete"]["slug"], "jose-rossi");
 }
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn keeps_only_athletes_without_a_full_result(pool: PgPool) {
+    meets(&pool).await;
+
+    let (_, body) = get(
+        &pool,
+        "/api/v1/athletes/search?q=rossi&without_full_result=true",
+    )
+    .await;
+    assert_eq!(slugs(&body), ["marco-rossi", "luca-rossi"]);
+    assert_eq!(body["total_items"], 2);
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn shows_the_best_entry_of_each_athlete(pool: PgPool) {
+    meets(&pool).await;
+    let mut weaker = common::competition(
+        "weaker",
+        vec![common::men_80(vec![common::best(
+            common::athlete("Marco", "Rossi"),
+            Movement::PullUp,
+            "60",
+        )])],
+    );
+    weaker.movements = vec![Movement::PullUp];
+    common::import(&pool, weaker).await;
+
+    let (_, body) = get(
+        &pool,
+        "/api/v1/athletes/search?q=rossi&without_full_result=true",
+    )
+    .await;
+    let marco = &body["data"][0]["best_entry"];
+    assert_eq!(marco["competition"]["slug"], "partial");
+    assert_eq!(marco["federation"]["name"], "Test Federation");
+    assert_eq!(marco["event"], "PD");
+    assert_eq!(marco["category"], "-80kg");
+    assert_eq!(marco["pullup"], 70.0);
+    assert_eq!(marco["dips"], 80.0);
+    assert_eq!(marco["squat"], serde_json::Value::Null);
+
+    let luca = &body["data"][1]["best_entry"];
+    assert_eq!(luca["competition"]["slug"], "full");
+    for lift in ["muscleup", "pullup", "dips", "squat"] {
+        assert_eq!(luca[lift], serde_json::Value::Null, "{lift}");
+    }
+}

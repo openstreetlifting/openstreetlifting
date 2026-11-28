@@ -29,11 +29,11 @@
         href={i18n.href(resolve(`athletes/${hit.slug}`))}
         onclick={onpick}
         data-active={index === active ? '' : undefined}
-        class="flex min-h-11 items-center gap-3 px-gutter py-2 text-meta transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus data-active:bg-surface"
+        class="flex items-center gap-2 px-3 py-1.5 text-meta leading-4 transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus data-active:bg-surface"
       >
-        <Flag countryCode={hit.country} />
+        <Flag countryCode={hit.country} class="shrink-0 [--flag-height:1.25em]" />
         <span class="min-w-0 flex-1 truncate text-ink">{formatAthleteName(hit)}</span>
-        <span class="shrink-0 font-mono text-micro text-muted">{where(hit)}</span>
+        <span class="shrink-0 font-mono text-micro text-secondary">{where(hit)}</span>
       </a>
     </li>
   {/each}

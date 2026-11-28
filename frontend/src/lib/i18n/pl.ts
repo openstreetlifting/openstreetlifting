@@ -391,7 +391,7 @@ export default {
   'Weight unit': 'Jednostka masy',
   'Your weight unit preference is saved in your browser.':
     'Wybrana jednostka masy jest zapisywana w przeglądarce.',
-  'Not in this ranking': 'Poza tym rankingiem',
+  'Athletes found without an MPDS result': 'Znalezieni zawodnicy bez wyniku MPDS',
   'No valid lift': 'Brak zaliczonego boju',
   '{count} more. Type more of the name to narrow the list.':
     'Jeszcze {count}. Wpisz więcej liter nazwiska, aby zawęzić listę.',

@@ -305,7 +305,19 @@ export interface components {
       standing?: components['schemas']['AthleteStanding'] | null;
       total_competitions?: number;
     };
+    AthleteSearchEntry: {
+      category: string;
+      competition: components['schemas']['CompetitionInfo'];
+      dips: number | null;
+      event: string | null;
+      federation: components['schemas']['RankingFederation'];
+      gender: components['schemas']['Gender'];
+      muscleup: number | null;
+      pullup: number | null;
+      squat: number | null;
+    };
     AthleteSearchHit: {
+      best_entry: components['schemas']['AthleteSearchEntry'] | null;
       country: string | null;
       first_name: string;
       gender: components['schemas']['Gender'];
@@ -735,6 +747,7 @@ export interface operations {
       query: {
         q: string;
         limit?: number;
+        without_full_result?: boolean;
       };
       header?: never;
       path?: never;

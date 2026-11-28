@@ -353,6 +353,6 @@ impl GlobalRankingEntry {
     }
 }
 
-fn decimal_to_f64(decimal: Decimal) -> f64 {
+pub(crate) fn decimal_to_f64(decimal: Decimal) -> f64 {
     decimal.to_string().parse().unwrap_or(0.0)
 }

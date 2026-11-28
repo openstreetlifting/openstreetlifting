@@ -108,6 +108,15 @@
               "format": "int32",
               "minimum": 0
             }
+          },
+          {
+            "name": "without_full_result",
+            "in": "query",
+            "description": "Keep only athletes without an MPDS result. Defaults to `false`.",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -1781,6 +1790,78 @@
           }
         }
       },
+      "AthleteSearchEntry": {
+        "type": "object",
+        "description": "One competition entry of a searched athlete.",
+        "required": [
+          "competition",
+          "federation",
+          "event",
+          "gender",
+          "category",
+          "muscleup",
+          "pullup",
+          "dips",
+          "squat"
+        ],
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Weight class, such as `-80kg`. Empty without a weight class."
+          },
+          "competition": {
+            "$ref": "#/components/schemas/CompetitionInfo",
+            "description": "Competition."
+          },
+          "dips": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Dips in kilograms. `null` without a successful lift."
+          },
+          "event": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Event code, such as `PD`."
+          },
+          "federation": {
+            "$ref": "#/components/schemas/RankingFederation",
+            "description": "Federation."
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender",
+            "description": "Gender of the category."
+          },
+          "muscleup": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Muscle-up in kilograms. `null` without a successful lift."
+          },
+          "pullup": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Pull-up in kilograms. `null` without a successful lift."
+          },
+          "squat": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Squat in kilograms. `null` without a successful lift."
+          }
+        }
+      },
       "AthleteSearchHit": {
         "type": "object",
         "description": "An athlete whose name matches a search.",
@@ -1790,9 +1871,21 @@
           "last_name",
           "gender",
           "country",
-          "rankings"
+          "rankings",
+          "best_entry"
         ],
         "properties": {
+          "best_entry": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AthleteSearchEntry",
+                "description": "The athlete's best result: the entry whose best lifts add up to the most, then the latest."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "country": {
             "type": [
               "string",

@@ -37,8 +37,7 @@ export const load: PageServerLoad = async ({ url }) => {
       otherAthletes: matches
         ? otherAthletes(
             matches,
-            initialData.data.map((entry) => entry.athlete.slug),
-            initialData.pagination.total_items
+            initialData.data.map((entry) => entry.athlete.slug)
           )
         : null,
     };
@@ -62,15 +61,15 @@ export const load: PageServerLoad = async ({ url }) => {
 
 async function searchAthletes(q: string): Promise<AthleteSearchResponse | null> {
   try {
-    return await athletesService.search(q, OTHER_ATHLETES_FETCHED);
+    return await athletesService.search(q, OTHER_ATHLETES_FETCHED, true);
   } catch (error) {
     logger.warn({ err: error }, 'Athlete search failed');
     return null;
   }
 }
 
-function otherAthletes(matches: AthleteSearchResponse, rankedSlugs: string[], rankedTotal: number) {
+function otherAthletes(matches: AthleteSearchResponse, rankedSlugs: string[]) {
   const hits = notInRanking(matches.data, rankedSlugs);
-  const total = Math.max(hits.length, matches.total_items - rankedTotal);
+  const total = matches.total_items - (matches.data.length - hits.length);
   return total > 0 ? { hits: hits.slice(0, OTHER_ATHLETES_SHOWN), total } : null;
 }

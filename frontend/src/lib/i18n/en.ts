@@ -315,7 +315,7 @@ export const messages = [
   'Records are grouped by the weight classes of {organiser}, which differ from the standard classes.',
   'Current world record in this weight class',
   'Current national record in this weight class',
-  'Not in this ranking',
+  'Athletes found without an MPDS result',
   'No valid lift',
   '{count} more. Type more of the name to narrow the list.',
   'Search athletes',

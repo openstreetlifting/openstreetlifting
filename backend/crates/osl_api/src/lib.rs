@@ -99,6 +99,7 @@ This is the public API to read that archive.";
             crate::athlete::dto::AthleteResponse,
             crate::athlete::dto::AthleteSearchResponse,
             crate::athlete::dto::AthleteSearchHit,
+            crate::athlete::dto::AthleteSearchEntry,
             crate::athlete::dto::AthleteCompetitionSummary,
             crate::athlete::dto::AthleteLift,
             crate::athlete::dto::PersonalRecord,

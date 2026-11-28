@@ -8,8 +8,12 @@ export const athletesService = {
     return apiData(apiClient.GET('/api/v1/athletes', { params: { query } }));
   },
 
-  search(q: string, limit: number) {
-    return apiData(apiClient.GET('/api/v1/athletes/search', { params: { query: { q, limit } } }));
+  search(q: string, limit: number, withoutFullResult = false) {
+    return apiData(
+      apiClient.GET('/api/v1/athletes/search', {
+        params: { query: { q, limit, without_full_result: withoutFullResult } },
+      })
+    );
   },
 
   async getBySlug(slug: string) {

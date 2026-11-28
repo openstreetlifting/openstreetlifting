@@ -82,6 +82,9 @@ pub struct AthleteSearchQuery {
     pub q: String,
     /// Maximum number of athletes, from 1 to 20. Defaults to 6.
     pub limit: Option<u32>,
+    /// Keep only athletes without an MPDS result. Defaults to `false`.
+    #[serde(default)]
+    pub without_full_result: bool,
 }
 
 /// Search athletes by name
@@ -115,7 +118,7 @@ pub async fn search_athletes(
     }
 
     let (rows, total_items) = AthleteRepository::new(state.db.pool())
-        .search(&query.q, i64::from(limit))
+        .search(&query.q, query.without_full_result, i64::from(limit))
         .await?;
 
     Ok(Json(AthleteSearchResponse {
