@@ -120,11 +120,6 @@
   const classed = $derived(
     competition.categories.some(({ category }) => category.weight_class !== '')
   );
-  const weighed = $derived(
-    competition.categories.some(({ participants }) =>
-      participants.some((participant) => participant.bodyweight != null)
-    )
-  );
 
   // As of 16/11/2026, only DCSV and MACHBAR have authorized me to show the age of
   // competitors for all the competitions they organize.
@@ -183,6 +178,7 @@
         .map((participant) => [participant.participant_id, participant])
     )
   );
+  const weighed = $derived([...participants.values()].some(({ bodyweight }) => bodyweight != null));
 
   type LiftCell =
     /** The movement was not contested or its result is unknown. */
