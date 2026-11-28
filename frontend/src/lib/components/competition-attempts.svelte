@@ -156,7 +156,7 @@
         >
           {#snippet children({ data })}
             <p class={CHART.tooltipTitle}>
-              <span style:color={liftTone(data.movement)}>{i18n.movement(data.movement)}</span>
+              <span>{i18n.movement(data.movement)}</span>
             </p>
             <dl class={CHART.tooltipRows}>
               {#each data.rates as rate (rate.attempt)}
