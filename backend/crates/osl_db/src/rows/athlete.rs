@@ -16,3 +16,14 @@ pub struct AthleteRow {
     #[sqlx(default)]
     pub slug_history: sqlx::types::Json<Vec<String>>,
 }
+
+#[derive(Debug, Clone, FromRow)]
+pub struct AthleteSearchRow {
+    pub first_name: String,
+    pub last_name: String,
+    pub gender: Gender,
+    pub country: Option<String>,
+    pub slug: String,
+    pub rankings: Vec<String>,
+    pub total_items: i64,
+}

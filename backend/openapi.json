@@ -80,6 +80,60 @@
         }
       }
     },
+    "/api/v1/athletes/search": {
+      "get": {
+        "tags": [
+          "athletes"
+        ],
+        "summary": "Search athletes by name",
+        "description": "Matches every athlete, ranked or not. Each word of `q` must appear in the name.",
+        "operationId": "search_athletes",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Name to search, in any order, ignoring case and accents.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of athletes, from 1 to 20. Defaults to 6.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching athletes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AthleteSearchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/athletes/{slug}": {
       "get": {
         "tags": [
@@ -1724,6 +1778,72 @@
             "type": "integer",
             "format": "int64",
             "description": "Competitions entered, each counted once. Included with `include=competitions`."
+          }
+        }
+      },
+      "AthleteSearchHit": {
+        "type": "object",
+        "description": "An athlete whose name matches a search.",
+        "required": [
+          "slug",
+          "first_name",
+          "last_name",
+          "gender",
+          "country",
+          "rankings"
+        ],
+        "properties": {
+          "country": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Two-letter country code (ISO 3166-1 alpha-2)."
+          },
+          "first_name": {
+            "type": "string",
+            "description": "First name. Empty when redacted."
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender",
+            "description": "Gender the athlete competes in."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Last name, or a placeholder when redacted."
+          },
+          "rankings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RankingMetric"
+            },
+            "description": "Rankings the athlete appears in. Empty when the athlete has no valid lift."
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL slug."
+          }
+        }
+      },
+      "AthleteSearchResponse": {
+        "type": "object",
+        "description": "Athletes whose name matches a search, ranked athletes first.",
+        "required": [
+          "data",
+          "total_items"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AthleteSearchHit"
+            },
+            "description": "Matching athletes, up to `limit`."
+          },
+          "total_items": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of matching athletes."
           }
         }
       },

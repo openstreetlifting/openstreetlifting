@@ -3,13 +3,14 @@ use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
 
+use super::name_search::push_name_terms_match;
 use crate::error::{Result, StorageError};
 use crate::params::Page;
 use crate::projections::athlete::{
     AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, AthleteRecords,
     count_competitions,
 };
-use crate::rows::athlete::AthleteRow;
+use crate::rows::athlete::{AthleteRow, AthleteSearchRow};
 
 pub struct AthleteRepository<'a> {
     pool: &'a PgPool,
@@ -44,6 +45,40 @@ impl<'a> AthleteRepository<'a> {
             .await?;
 
         Ok((athletes, total))
+    }
+
+    #[tracing::instrument(name = "repository.athlete.search", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn search(&self, name: &str, limit: i64) -> Result<(Vec<AthleteSearchRow>, i64)> {
+        let mut query = sqlx::QueryBuilder::new(
+            r"
+            SELECT a.first_name, a.last_name, a.gender, a.country, a.slug,
+                   ARRAY(
+                       SELECT s.metric::text
+                       FROM athlete_metric_standings s
+                       WHERE s.athlete_id = a.athlete_id
+                       ORDER BY array_position(
+                           ARRAY['ris', 'total', 'muscleup', 'pullup', 'dips', 'squat'],
+                           s.metric::text
+                       )
+                   ) AS rankings,
+                   COUNT(*) OVER () AS total_items
+            FROM athletes a
+            WHERE ",
+        );
+        push_name_terms_match(&mut query, "a.match_key", name);
+        query.push(
+            r"
+            ORDER BY EXISTS (
+                         SELECT 1 FROM athlete_metric_standings s WHERE s.athlete_id = a.athlete_id
+                     ) DESC,
+                     a.last_name, a.first_name, a.slug
+            LIMIT ",
+        );
+        query.push_bind(limit);
+
+        let rows: Vec<AthleteSearchRow> = query.build_query_as().fetch_all(self.pool).await?;
+        let total = rows.first().map_or(0, |row| row.total_items);
+        Ok((rows, total))
     }
 
     #[tracing::instrument(name = "repository.athlete.find_by_slug", skip_all, fields(db.system.name = "postgresql"))]

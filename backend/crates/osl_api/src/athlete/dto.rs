@@ -5,13 +5,14 @@ use osl_db::projections::athlete::{
     BestTotalRow, PersonalRecordRow, count_competitions,
 };
 use osl_db::projections::ranking::{AthleteMetricStandingRow, AthleteNeighborRow};
-use osl_db::rows::athlete::AthleteRow;
+use osl_db::rows::athlete::{AthleteRow, AthleteSearchRow};
 use osl_domain::{AthleteStatus, Gender, Movement, RecordMark, RisSource};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::competition::dto::AttemptInfo;
+use crate::ranking::dto::RankingMetric;
 
 /// Optional athlete section.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
@@ -597,5 +598,50 @@ impl AthleteResponse {
         self.personal_records = Some(section.personal_records);
         self.best_total = Some(section.best_total);
         self.best_ris = Some(section.best_ris);
+    }
+}
+
+/// An athlete whose name matches a search.
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct AthleteSearchHit {
+    /// URL slug.
+    pub slug: String,
+    /// First name. Empty when redacted.
+    pub first_name: String,
+    /// Last name, or a placeholder when redacted.
+    pub last_name: String,
+    /// Gender the athlete competes in.
+    pub gender: Gender,
+    /// Two-letter country code (ISO 3166-1 alpha-2).
+    #[schema(required = true)]
+    pub country: Option<String>,
+    /// Rankings the athlete appears in. Empty when the athlete has no valid lift.
+    pub rankings: Vec<RankingMetric>,
+}
+
+/// Athletes whose name matches a search, ranked athletes first.
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct AthleteSearchResponse {
+    /// Matching athletes, up to `limit`.
+    pub data: Vec<AthleteSearchHit>,
+    /// Number of matching athletes.
+    pub total_items: i64,
+}
+
+impl From<AthleteSearchRow> for AthleteSearchHit {
+    fn from(row: AthleteSearchRow) -> Self {
+        Self {
+            slug: row.slug,
+            first_name: row.first_name,
+            last_name: row.last_name,
+            gender: row.gender,
+            country: row.country,
+            rankings: row
+                .rankings
+                .iter()
+                .filter_map(|metric| metric.parse::<RankingMovement>().ok())
+                .map(RankingMetric::from)
+                .collect(),
+        }
     }
 }

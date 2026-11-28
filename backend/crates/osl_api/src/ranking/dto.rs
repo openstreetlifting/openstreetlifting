@@ -24,6 +24,19 @@ pub enum RankingMetric {
     Ris,
 }
 
+impl From<RankingMovement> for RankingMetric {
+    fn from(movement: RankingMovement) -> Self {
+        match movement {
+            RankingMovement::Muscleup => Self::Muscleup,
+            RankingMovement::Pullup => Self::Pullup,
+            RankingMovement::Dips => Self::Dips,
+            RankingMovement::Squat => Self::Squat,
+            RankingMovement::Total => Self::Total,
+            RankingMovement::Ris => Self::Ris,
+        }
+    }
+}
+
 impl From<RankingMetric> for RankingMovement {
     fn from(metric: RankingMetric) -> Self {
         match metric {

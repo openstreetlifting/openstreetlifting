@@ -3,15 +3,9 @@ use sqlx::{Postgres, QueryBuilder};
 use osl_domain::{Movement, WeightClass};
 use uuid::Uuid;
 
+use super::name_search::push_name_terms_match;
 use crate::filter::Predicate;
 use crate::params::{RankingBy, RankingFilter, RankingMovement};
-
-fn escape_like(pattern: &str) -> String {
-    pattern
-        .replace('\\', "\\\\")
-        .replace('%', "\\%")
-        .replace('_', "\\_")
-}
 
 impl Predicate for RankingBy {
     fn push(&self, query: &mut QueryBuilder<Postgres>) {
@@ -192,9 +186,9 @@ pub(crate) fn push_name_match(query: &mut QueryBuilder<Postgres>, filter: &Ranki
         return;
     };
 
-    query.push(" WHERE (first_name || ' ' || last_name) ILIKE '%' || ");
-    query.push_bind(escape_like(name));
-    query.push(" || '%' ");
+    query.push(" WHERE athlete_id IN ( SELECT athletes.athlete_id FROM athletes WHERE ");
+    push_name_terms_match(query, "athletes.match_key", name);
+    query.push(" ) ");
 }
 
 pub(crate) fn push_metric_candidates(query: &mut QueryBuilder<Postgres>) {
