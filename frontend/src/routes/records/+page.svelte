@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { liftTone } from '#lib/constants/lift.js';
   import { LAYOUT } from '#lib/constants/layout.js';
   import { CELL, EDGE_TO_EDGE, FIGURE } from '#lib/constants/table.js';
   import { useI18n } from '#lib/i18n/index.js';
@@ -259,7 +260,9 @@
                             ? CELL.counted
                             : CELL.data}"
                         >
-                          {weights.format(entry.weight, i18n.locale)}
+                          <span style:color={liftTone(section.movement)}>
+                            {weights.format(entry.weight, i18n.locale)}
+                          </span>
                         </td>
                         <td class="{TABLE_CELL} {CELL.data}">
                           <a

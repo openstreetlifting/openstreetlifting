@@ -1,5 +1,6 @@
 <script lang="ts">
   import RecordMark from '#lib/components/ui/record-mark.svelte';
+  import { liftTone } from '#lib/constants/lift.js';
   import { LAYOUT } from '#lib/constants/layout.js';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
@@ -294,28 +295,24 @@
                 <RisScore value={entry.ris} source={entry.ris_source} />
               </td>
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
-                {weights.format(entry.muscleup, i18n.locale)}<RecordMark
-                  worldOnly
-                  mark={recordFor(entry.records, 'Muscle-up')}
-                />
+                <span style:color={liftTone('muscleup')}>
+                  {weights.format(entry.muscleup, i18n.locale)}
+                </span><RecordMark worldOnly mark={recordFor(entry.records, 'Muscle-up')} />
               </td>
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
-                {weights.format(entry.pullup, i18n.locale)}<RecordMark
-                  worldOnly
-                  mark={recordFor(entry.records, 'Pull-up')}
-                />
+                <span style:color={liftTone('pullup')}>
+                  {weights.format(entry.pullup, i18n.locale)}
+                </span><RecordMark worldOnly mark={recordFor(entry.records, 'Pull-up')} />
               </td>
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
-                {weights.format(entry.dips, i18n.locale)}<RecordMark
-                  worldOnly
-                  mark={recordFor(entry.records, 'Dips')}
-                />
+                <span style:color={liftTone('dips')}>
+                  {weights.format(entry.dips, i18n.locale)}
+                </span><RecordMark worldOnly mark={recordFor(entry.records, 'Dips')} />
               </td>
               <td class="{TABLE_CELL} {CELL.counted} {FIGURE}">
-                {weights.format(entry.squat, i18n.locale)}<RecordMark
-                  worldOnly
-                  mark={recordFor(entry.records, 'Squat')}
-                />
+                <span style:color={liftTone('squat')}>
+                  {weights.format(entry.squat, i18n.locale)}
+                </span><RecordMark worldOnly mark={recordFor(entry.records, 'Squat')} />
               </td>
               <td class="{TABLE_CELL} {CELL.data}">
                 <a

@@ -185,12 +185,12 @@ it.each([false, true])(
 );
 
 it.each([
-  ['DCSV', true],
-  ['MACHBAR', true],
-  ['Organizer', false],
+  ['DCSV', true, '79.3'],
+  ['MACHBAR', true, null],
+  ['Organizer', false, '79.3'],
 ])(
-  'shows age for %s results: %s, and bodyweight for every federation',
-  async (federation, shown) => {
+  'shows age for %s results: %s, and the weight column only when a bodyweight is known',
+  async (federation, shown, bodyweight) => {
     const results = data('completed');
     results.competition.federation.name = federation;
     results.competition.categories[0].participants = [
@@ -205,7 +205,7 @@ it.each([
           slug: 'ada-lovelace',
         },
         age: 27,
-        bodyweight: '79.3',
+        bodyweight,
         rank: null,
         ris_score: null,
         ris_source: null,
@@ -223,9 +223,9 @@ it.each([
         element.textContent?.replace(/\s+/g, ' ').trim()
       );
     expect(text('th').includes('Age')).toBe(shown);
-    expect(text('th').includes('Bodyweight kg')).toBe(true);
+    expect(text('th').includes('Weight kg')).toBe(bodyweight !== null);
     expect(text('td').includes('27')).toBe(shown);
-    expect(text('td').includes('79.3')).toBe(true);
+    expect(text('td').includes('79.3')).toBe(bodyweight !== null);
   }
 );
 

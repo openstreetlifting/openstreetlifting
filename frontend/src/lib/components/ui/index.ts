@@ -37,4 +37,5 @@ export {
   ATHLETE_COLUMN,
   ATHLETE_COLUMN_FILL,
   ATHLETE_CONTENT,
+  ATHLETE_CONTENT_FILL,
 } from './table.svelte';

@@ -12,6 +12,7 @@
   import type { AttemptRate, MovementAttempts } from '#lib/utils/competition-results.js';
   import { CHART, TEXT } from '#lib/constants/typography.js';
   import { AXIS, BAND_AXIS, PLOT_PADDING } from '#lib/utils/chart.js';
+  import { liftTone } from '#lib/constants/lift.js';
 
   const i18n = useI18n();
 
@@ -29,10 +30,16 @@
   const BAR_GAP = 2;
 
   const ATTEMPTS = [
-    { number: 1, fill: 'var(--color-faint)' },
-    { number: 2, fill: 'var(--color-secondary)' },
-    { number: 3, fill: 'var(--color-ink)' },
+    { number: 1, fill: 'var(--color-faint)', strength: 65 },
+    { number: 2, fill: 'var(--color-secondary)', strength: 82 },
+    { number: 3, fill: 'var(--color-ink)', strength: 100 },
   ] as const;
+
+  function barFill(movement: string, attempt: number): string {
+    const { fill, strength } = ATTEMPTS[attempt - 1];
+    const tone = liftTone(movement);
+    return tone ? `color-mix(in oklab, ${tone} ${strength}%, var(--color-surface))` : fill;
+  }
 
   const percent = $derived(
     new Intl.NumberFormat(i18n.locale, { style: 'percent', maximumFractionDigits: 0 })
@@ -97,7 +104,10 @@
       tooltipContext={interactive ? { mode: 'manual', touchEvents: 'pan-y' } : false}
       props={{
         svg: { viewBox: `0 0 ${chartWidth} ${chartHeight}`, preserveAspectRatio: 'none' },
-        xAxis: { ...BAND_AXIS, format: (movement: string) => i18n.movement(movement) },
+        xAxis: {
+          ...BAND_AXIS,
+          format: (movement: string) => i18n.movement(movement),
+        },
         yAxis: {
           ...AXIS,
           ticks: [0, 0.25, 0.5, 0.75, 1],
@@ -126,7 +136,7 @@
                 width={inner.bandwidth()}
                 height={Math.max(0, context.yScale(0) - context.yScale(value))}
                 rx="2"
-                fill={ATTEMPTS[rate.attempt - 1].fill}
+                fill={barFill(column.movement, rate.attempt)}
                 role="presentation"
                 onpointermove={(event) => context.tooltip.show(event, column)}
                 onpointerleave={() => context.tooltip.hide()}
@@ -145,7 +155,9 @@
           class={CHART.tooltip}
         >
           {#snippet children({ data })}
-            <p class={CHART.tooltipTitle}>{i18n.movement(data.movement)}</p>
+            <p class={CHART.tooltipTitle}>
+              <span style:color={liftTone(data.movement)}>{i18n.movement(data.movement)}</span>
+            </p>
             <dl class={CHART.tooltipRows}>
               {#each data.rates as rate (rate.attempt)}
                 {@const value = share(rate)}

@@ -50,10 +50,6 @@ export default {
   'Total by bodyweight for {count} athletes, {above} of them above a RIS of 100.':
     'Totale per peso corporeo di {count} atleti, {above} dei quali sopra RIS 100.',
   Edition: 'Edizione',
-  'In this competition, RIS is recomputed with the current formula.':
-    'In questa gara il RIS è ricalcolato con la formula attuale.',
-  'In this competition, RIS scores are shown as published.':
-    'In questa gara i punteggi RIS sono mostrati come pubblicati.',
   'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.':
     'Rappresenta ogni alzata come proporzione del miglior totale dell’atleta ({total} {unit}, {competition}) rispetto alla proporzione media di {count} atleti in {category}. Uno scostamento verso l’esterno indica un’enfasi su quell’alzata.',
   '{class} class': 'Categoria {class}',
@@ -232,6 +228,7 @@ export default {
   'RIS 100 benchmark': 'Riferimento RIS 100',
   Bodyweight: 'Peso corporeo',
   Age: 'Età',
+  Weight: 'Peso',
   'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.':
     'Passa il cursore o tocca una prestazione per esaminarla. Con il grafico attivo, usa le frecce sinistra e destra per scorrere le prestazioni, Inizio o Fine per spostarti agli estremi, Invio per selezionare ed Esc per cancellare la selezione.',
   'Figure 1.': 'Figura 1.',
@@ -240,18 +237,6 @@ export default {
   'No recorded performances are available for this category.':
     'Nessuna prestazione registrata per questa categoria.',
   'Selected performances': 'Prestazioni selezionate',
-  'What a RIS score is and where it came from': 'Che cos’è il punteggio RIS e da dove proviene',
-  'What is RIS?': 'Che cos’è il RIS?',
-  'The Relative Index for Streetlifting (RIS) provides the definitive method for comparing Streetlifting athletes across weight classes within the same gender. Developed specifically for All-4 competitions, this scoring system normalizes strength performance using comprehensive data from elite competitors. Updated annually to reflect evolving standards, RIS offers a fair benchmark for athletes, coaches, and competition organizers worldwide.':
-    'Il Relative Index for Streetlifting (RIS) è un metodo per confrontare gli atleti di streetlifting tra categorie di peso dello stesso sesso. Sviluppato per le gare MPDS, questo sistema normalizza le prestazioni di forza usando i dati di atleti di alto livello. Aggiornato ogni anno per riflettere l’evoluzione del livello agonistico, il RIS offre un riferimento equo per atleti, allenatori e organizzatori di gare in tutto il mondo.',
-  'We recalculate RIS with the current formula, so scores may differ from published results.':
-    'Ricalcoliamo il RIS con la formula attuale, quindi i punteggi possono differire dai risultati pubblicati.',
-  'We recalculate RIS with the {year} formula, so scores may differ from published results.':
-    'Ricalcoliamo il RIS con la formula {year}, quindi i punteggi possono differire dai risultati pubblicati.',
-  'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked {mark}.':
-    'Quando il peso corporeo non è indicato, lo stimiamo sulla base dei dati RIS pubblicati, ove possibile. In caso contrario, manteniamo il punteggio riportato, contrassegnato con {mark}.',
-  'Learn more on the ris page of OpenStreetlifting':
-    'Scopri di più nella pagina RIS di OpenStreetlifting',
   'Calculate your RIS': 'Calcola il tuo RIS',
   'Choose your category and enter your bodyweight and MPDS total. Add a target score to explore the corresponding total or bodyweight.':
     'Scegli la categoria e inserisci il peso corporeo e il totale MPDS. Aggiungi un punteggio obiettivo per conoscere il totale o il peso corporeo corrispondente.',
@@ -290,10 +275,6 @@ export default {
   Recorded: 'Registrato',
   Unavailable: 'Non disponibile',
   'Why RIS is unavailable': 'Perché il RIS non è disponibile',
-  'Published RIS scores are missing from the source.':
-    'La fonte non riporta punteggi RIS pubblicati.',
-  'RIS scores are unavailable because the required bodyweight or total is missing.':
-    'I punteggi RIS non sono disponibili: manca il peso corporeo o il totale necessario per calcolarli.',
   total: 'totale',
   'Ranked by {rule}': 'Classifica per {rule}',
   'Ranked by {rule}, by weight class:': 'Classifica per {rule}, per categoria di peso:',

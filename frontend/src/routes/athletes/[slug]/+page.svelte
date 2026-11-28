@@ -2,6 +2,7 @@
   import RecordMark from '#lib/components/ui/record-mark.svelte';
   import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
   import { LAYOUT } from '#lib/constants/layout.js';
+  import { LIFTS, liftTone, type Lift } from '#lib/constants/lift.js';
   import Select from '#lib/components/ui/select.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
@@ -68,15 +69,6 @@
   const progressMetrics = $derived(chartableMetrics(athlete.competitions));
   const showsProgress = $derived(progressMetrics.length > 0);
   const balance = $derived(balanceComparable(athlete.lift_balance) ? athlete.lift_balance : null);
-
-  const LIFTS = [
-    { key: 'muscleup', code: 'M', movement: 'Muscle-up', label: 'Muscle Up' },
-    { key: 'pullup', code: 'P', movement: 'Pull-up', label: 'Pull Up' },
-    { key: 'dips', code: 'D', movement: 'Dips', label: 'Dips' },
-    { key: 'squat', code: 'S', movement: 'Squat', label: 'Squat' },
-  ] as const;
-
-  type Lift = (typeof LIFTS)[number];
 
   // Without an event code, recorded lifts are the only evidence of contested movements.
   function contestedBy(competition: AthleteCompetitionSummary, lift: Lift): boolean {
@@ -410,7 +402,9 @@
             record={pr.record}
             href={competitionHref(pr.competition_slug, movementMetric(pr.movement_name))}
           >
-            <span class={TEXT.cardFigure}>{weights.format(pr.max_weight, i18n.locale)}</span>
+            <span class={TEXT.cardFigure} style:color={liftTone(pr.movement_name)}>
+              {weights.format(pr.max_weight, i18n.locale)}
+            </span>
             <span class="font-mono text-meta text-secondary">{weights.unit}</span>
             {#snippet footer()}
               {@render competitionFooter(pr.competition_name, pr.date)}
@@ -560,7 +554,9 @@
                           {NO_RESULT}
                         </span>
                       {:else}
-                        {weights.format(cell.best, i18n.locale)}<RecordMark mark={cell.record} />
+                        <span style:color={lift.tone}>
+                          {weights.format(cell.best, i18n.locale)}
+                        </span><RecordMark mark={cell.record} />
                       {/if}
                     </span>
                   </span>

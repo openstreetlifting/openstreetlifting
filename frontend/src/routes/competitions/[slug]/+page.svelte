@@ -9,6 +9,7 @@
   import SegmentedControl from '#lib/components/ui/segmented-control.svelte';
   import Button from '#lib/components/ui/button.svelte';
   import { LAYOUT } from '#lib/constants/layout.js';
+  import { LIFTS } from '#lib/constants/lift.js';
   import Notice from '#lib/components/ui/notice.svelte';
   import SelectField from '#lib/components/ui/select-field.svelte';
   import { useI18n } from '#lib/i18n/index.js';
@@ -29,7 +30,7 @@
     FROZEN_RANK,
     FROZEN_ATHLETE,
     ATHLETE_COLUMN_FILL,
-    ATHLETE_CONTENT,
+    ATHLETE_CONTENT_FILL,
     Text,
     RankHeader,
     DetailList,
@@ -167,12 +168,6 @@
 
   // The event code names the movements a competition contested, so a column with no
   // weight can be read as bombed rather than never lifted.
-  const LIFTS = [
-    { key: 'muscleup', code: 'M', movement: 'Muscle-up', label: 'Muscle Up' },
-    { key: 'pullup', code: 'P', movement: 'Pull-up', label: 'Pull Up' },
-    { key: 'dips', code: 'D', movement: 'Dips', label: 'Dips' },
-    { key: 'squat', code: 'S', movement: 'Squat', label: 'Squat' },
-  ] as const;
 
   // The rankings response carries a best per movement; the attempts behind it
   // arrive with the competition itself, keyed by entry.
@@ -183,6 +178,7 @@
         .map((participant) => [participant.participant_id, participant])
     )
   );
+  const weighed = $derived([...participants.values()].some(({ bodyweight }) => bodyweight != null));
 
   type LiftCell =
     /** The movement was not contested or its result is unknown. */
@@ -318,19 +314,6 @@
   });
 
   const location = $derived(formatLocation(competition.city, competition.region));
-  const risNote = $derived(
-    data.ris === 'recomputed'
-      ? i18n.t('In this competition, RIS is recomputed with the current formula.')
-      : data.ris === 'reported'
-        ? i18n.t('In this competition, RIS scores are shown as published.')
-        : data.ris === 'not-published'
-          ? competition.movements.length < 4
-            ? i18n.t('Published RIS scores are missing from the source.')
-            : i18n.t(
-                'RIS scores are unavailable because the required bodyweight or total is missing.'
-              )
-          : undefined
-  );
   const place = $derived([competition.venue, location].filter(Boolean).join(', '));
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
@@ -739,7 +722,7 @@
             </th>
             {#if risColumn}
               <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
-                <RisHeader note={risNote} published={data.ris === 'reported'} />
+                <RisHeader published={data.ris === 'reported'} />
               </th>
             {/if}
             {#each contested as lift (lift.key)}
@@ -765,10 +748,12 @@
             {#if showAge}
               <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Age')}</th>
             {/if}
-            <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary">
-              {i18n.t('Bodyweight')}
-              <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
-            </th>
+            {#if weighed}
+              <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary">
+                {i18n.t('Weight')}
+                <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
+              </th>
+            {/if}
           {/snippet}
 
           {#snippet body(rows)}
@@ -784,7 +769,7 @@
                 <td
                   class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} {CELL.identity}"
                 >
-                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
+                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT_FILL}">
                     <span class="flex min-w-0 items-center gap-2">
                       <Flag
                         link
@@ -869,10 +854,9 @@
                             {NO_RESULT}
                           </span>
                         {:else}
-                          {weights.format(cell.best, i18n.locale)}<RecordMark
-                            worldOnly
-                            mark={cell.record}
-                          />
+                          <span style:color={lift.tone}>
+                            {weights.format(cell.best, i18n.locale)}
+                          </span><RecordMark worldOnly mark={cell.record} />
                         {/if}
                       </span>
                     </span>
@@ -885,7 +869,7 @@
                   </td>
                 {/if}
                 {#if showAge}{@render ageCell(participant)}{/if}
-                {@render bodyweightCell(participant)}
+                {#if weighed}{@render bodyweightCell(participant)}{/if}
               </tr>
             {/each}
 
@@ -896,7 +880,7 @@
                 <td
                   class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} {CELL.identity}"
                 >
-                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
+                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT_FILL}">
                     <span class="flex min-w-0 items-center gap-2">
                       <Flag
                         link
@@ -969,10 +953,9 @@
                         {:else if cell.kind === 'bombed'}
                           <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
                         {:else}
-                          {weights.format(cell.best, i18n.locale)}<RecordMark
-                            worldOnly
-                            mark={cell.record}
-                          />
+                          <span style:color={lift.tone}>
+                            {weights.format(cell.best, i18n.locale)}
+                          </span><RecordMark worldOnly mark={cell.record} />
                         {/if}
                       </span>
                     </span>
@@ -985,7 +968,7 @@
                   </td>
                 {/if}
                 {#if showAge}{@render ageCell(participant)}{/if}
-                {@render bodyweightCell(participant)}
+                {#if weighed}{@render bodyweightCell(participant)}{/if}
               </tr>
             {/each}
           {/snippet}
