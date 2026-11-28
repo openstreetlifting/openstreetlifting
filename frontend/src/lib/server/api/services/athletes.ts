@@ -8,6 +8,10 @@ export const athletesService = {
     return apiData(apiClient.GET('/api/v1/athletes', { params: { query } }));
   },
 
+  search(q: string, limit: number) {
+    return apiData(apiClient.GET('/api/v1/athletes/search', { params: { query: { q, limit } } }));
+  },
+
   async getBySlug(slug: string) {
     const athlete = await apiData(
       apiClient.GET('/api/v1/athletes/{slug}', {

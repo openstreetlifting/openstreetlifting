@@ -2,6 +2,7 @@
   import { useI18n } from '#lib/i18n/index.js';
   import LanguagePicker from '#lib/components/language-picker.svelte';
   import WeightUnitPicker from '#lib/components/weight-unit-picker.svelte';
+  import AthleteSearchDialog from '#lib/components/athlete-search-dialog.svelte';
   import { page } from '$app/state';
   import { afterNavigate } from '$app/navigation';
   import { resolve } from '$app/paths';
@@ -32,6 +33,8 @@
     { path: 'ris', label: 'RIS', active: isActive('/ris') },
     { path: 'contact', label: i18n.t('Contact'), active: isActive('/contact') },
   ] as const);
+
+  const onRankings = $derived(isActive('/'));
 
   const MENU_ITEM = 'border-b border-stroke sm:border-r sm:nth-[3n]:border-r-0';
   const MENU_LINK = `${CONTROL} flex h-control items-center justify-between gap-2 px-gutter transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus`;
@@ -136,17 +139,20 @@
       />
     </a>
 
-    <button
-      bind:this={menuButton}
-      type="button"
-      onclick={() => (menuOpen = !menuOpen)}
-      aria-expanded={menuOpen}
-      aria-controls="primary-nav"
-      aria-label={menuOpen ? i18n.t('Close menu') : i18n.t('Open menu')}
-      class="flex size-11 items-center justify-center rounded-control text-secondary transition-colors hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
-    >
-      {#if menuOpen}<CloseIcon />{:else}<MenuIcon />{/if}
-    </button>
+    <div class="flex items-center gap-1 justify-self-end lg:order-last">
+      {#if !onRankings}<AthleteSearchDialog />{/if}
+      <button
+        bind:this={menuButton}
+        type="button"
+        onclick={() => (menuOpen = !menuOpen)}
+        aria-expanded={menuOpen}
+        aria-controls="primary-nav"
+        aria-label={menuOpen ? i18n.t('Close menu') : i18n.t('Open menu')}
+        class="flex size-11 items-center justify-center rounded-control text-secondary transition-colors hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
+      >
+        {#if menuOpen}<CloseIcon />{:else}<MenuIcon />{/if}
+      </button>
+    </div>
 
     <ul class="hidden items-center gap-6 lg:ml-auto lg:flex">
       {@render primaryLinks()}
