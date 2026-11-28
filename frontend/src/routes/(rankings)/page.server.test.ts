@@ -11,11 +11,11 @@ beforeEach(() => {
   vi.resetAllMocks();
   vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
     data: [],
-    pagination: { page: 2, page_size: 100, total_items: 201, total_pages: 3 },
+    pagination: { page: 2, page_size: 50, total_items: 101, total_pages: 3 },
   });
 });
 
-it('requests 100 athletes on the main ranking table while retaining filters', async () => {
+it('requests 50 athletes on the main ranking table while retaining filters', async () => {
   const result = await load({
     url: new URL(
       'http://localhost/?page=2&gender=F&country=FR&series=dcsv-sueddeutsche-meisterschaft'
@@ -24,13 +24,13 @@ it('requests 100 athletes on the main ranking table while retaining filters', as
   expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
     expect.objectContaining({
       page: 2,
-      page_size: 100,
+      page_size: 50,
       gender: 'F',
       country: 'FR',
       series: 'dcsv-sueddeutsche-meisterschaft',
     })
   );
-  expect(result).toMatchObject({ pagination: { page_size: 100, total_pages: 3 } });
+  expect(result).toMatchObject({ pagination: { page_size: 50, total_pages: 3 } });
   expect(rankingsService.getFacets).not.toHaveBeenCalled();
 });
 

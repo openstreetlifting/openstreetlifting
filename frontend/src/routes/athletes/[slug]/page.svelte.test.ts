@@ -192,7 +192,7 @@ it('defaults both cards to RIS with separate global and country pages', async ()
   await expect.element(global).toBeVisible();
   await expect.element(country).toBeVisible();
   expect(Object.fromEntries(query(global.element()))).toEqual({
-    page: '2',
+    page: '3',
     athlete: 'alex-martin',
   });
   expect(Object.fromEntries(query(country.element()))).toEqual({
@@ -220,7 +220,7 @@ it('switches both cards and their leaderboard filters for every kilogram metric'
       movement: metric,
       gender: 'M',
       category: '-80',
-      page: '2',
+      page: '3',
       athlete: 'alex-martin',
     });
     expect(Object.fromEntries(query(country.element()))).toEqual({
