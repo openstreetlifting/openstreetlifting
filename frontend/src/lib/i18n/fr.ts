@@ -49,10 +49,6 @@ export default {
   'Total by bodyweight for {count} athletes, {above} of them above a RIS of 100.':
     'Total selon le poids de corps pour {count} athlètes, dont {above} au-dessus de 100 de RIS.',
   Edition: 'Édition',
-  'In this competition, RIS is recomputed with the current formula.':
-    'Pour cette compétition, le RIS est recalculé avec la formule actuelle.',
-  'In this competition, RIS scores are shown as published.':
-    'Pour cette compétition, les scores RIS sont affichés tels que publiés.',
   'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.':
     'Représente chaque mouvement comme une proportion du meilleur total de l’athlète ({total} {unit}, {competition}), comparée à la proportion moyenne de {count} athlètes en {category}. Un écart vers l’extérieur indique une prédominance de ce mouvement.',
   '{class} class': 'Catégorie {class}',
@@ -240,18 +236,6 @@ export default {
   'No recorded performances are available for this category.':
     'Aucune performance enregistrée n’est disponible pour cette catégorie.',
   'Selected performances': 'Performances sélectionnées',
-  'What a RIS score is and where it came from': 'Le score RIS et son origine',
-  'What is RIS?': 'Qu’est-ce que le RIS ?',
-  'The Relative Index for Streetlifting (RIS) provides the definitive method for comparing Streetlifting athletes across weight classes within the same gender. Developed specifically for All-4 competitions, this scoring system normalizes strength performance using comprehensive data from elite competitors. Updated annually to reflect evolving standards, RIS offers a fair benchmark for athletes, coaches, and competition organizers worldwide.':
-    'Le Relative Index for Streetlifting (RIS) est une méthode de comparaison des athlètes de streetlifting entre catégories de poids, au sein d’un même sexe. Conçu pour les compétitions MPDS, ce système normalise les performances de force à partir des résultats d’athlètes de haut niveau. Mis à jour chaque année pour suivre l’évolution du niveau, le RIS offre une référence commune aux athlètes, aux entraîneurs et aux organisateurs du monde entier.',
-  'We recalculate RIS with the current formula, so scores may differ from published results.':
-    'Nous recalculons le RIS avec la formule actuelle ; les scores peuvent donc différer des résultats publiés.',
-  'We recalculate RIS with the {year} formula, so scores may differ from published results.':
-    'Nous recalculons le RIS avec la formule {year} ; les scores peuvent donc différer des résultats publiés.',
-  'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked {mark}.':
-    'Lorsque le poids de corps manque, nous l’estimons à partir du RIS publié, dans la mesure du possible. Sinon, nous conservons le score publié, signalé par le symbole {mark}.',
-  'Learn more on the ris page of OpenStreetlifting':
-    'En savoir plus sur la page RIS d’OpenStreetlifting',
   'Calculate your RIS': 'Calculer votre RIS',
   'Choose your category and enter your bodyweight and MPDS total. Add a target score to explore the corresponding total or bodyweight.':
     'Choisissez votre catégorie, puis saisissez votre poids de corps et votre total MPDS. Ajoutez un score cible pour connaître le total ou le poids de corps correspondant.',
@@ -290,10 +274,6 @@ export default {
   Recorded: 'Enregistré',
   Unavailable: 'Indisponible',
   'Why RIS is unavailable': 'Pourquoi le RIS est indisponible',
-  'Published RIS scores are missing from the source.':
-    'Les scores RIS publiés sont absents de la source.',
-  'RIS scores are unavailable because the required bodyweight or total is missing.':
-    'Les scores RIS sont indisponibles car le poids de corps ou le total nécessaire manque.',
   total: 'total',
   'Ranked by {rule}': 'Classement au {rule}',
   'Ranked by {rule}, by weight class:': 'Classement au {rule}, par catégorie de poids :',

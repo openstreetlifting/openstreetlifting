@@ -49,10 +49,6 @@ export default {
   'Total by bodyweight for {count} athletes, {above} of them above a RIS of 100.':
     'Total nach Körpergewicht für {count} Personen, davon {above} über RIS 100.',
   Edition: 'Ausgabe',
-  'In this competition, RIS is recomputed with the current formula.':
-    'In diesem Wettkampf wird RIS mit der aktuellen Formel neu berechnet.',
-  'In this competition, RIS scores are shown as published.':
-    'In diesem Wettkampf werden die RIS-Werte wie veröffentlicht angezeigt.',
   'Plots each lift as a proportion of the athlete’s best total ({total} {unit}, {competition}) against the mean proportion of {count} {category} athletes. Outward deviation indicates emphasis on that lift.':
     'Stellt jede Übung als Anteil an der besten Gesamtleistung des Athleten ({total} {unit}, {competition}) dem mittleren Anteil von {count} Athleten der Kategorie {category} gegenüber. Eine Abweichung nach außen zeigt eine Betonung dieser Übung.',
   '{class} class': '{class}-Klasse',
@@ -240,18 +236,6 @@ export default {
   'No recorded performances are available for this category.':
     'Für diese Kategorie sind keine Leistungen erfasst.',
   'Selected performances': 'Ausgewählte Leistungen',
-  'What a RIS score is and where it came from': 'Was der RIS-Wert bedeutet und woher er stammt',
-  'What is RIS?': 'Was ist RIS?',
-  'The Relative Index for Streetlifting (RIS) provides the definitive method for comparing Streetlifting athletes across weight classes within the same gender. Developed specifically for All-4 competitions, this scoring system normalizes strength performance using comprehensive data from elite competitors. Updated annually to reflect evolving standards, RIS offers a fair benchmark for athletes, coaches, and competition organizers worldwide.':
-    'Der Relative Index for Streetlifting (RIS) bietet eine maßgebliche Methode zum Vergleich von Streetlifting-Athleten desselben Geschlechts über Gewichtsklassen hinweg. Das speziell für MPDS-Wettkämpfe entwickelte Wertungssystem normiert Kraftleistungen anhand umfangreicher Daten von Spitzenathleten. Es wird jährlich an das Leistungsniveau angepasst und bietet Athleten, Trainern und Veranstaltern weltweit einen fairen Vergleichsmaßstab.',
-  'We recalculate RIS with the current formula, so scores may differ from published results.':
-    'Wir berechnen RIS mit der aktuellen Formel neu. Daher können die Werte von veröffentlichten Ergebnissen abweichen.',
-  'We recalculate RIS with the {year} formula, so scores may differ from published results.':
-    'Wir berechnen RIS mit der Formel von {year} neu. Daher können die Werte von veröffentlichten Ergebnissen abweichen.',
-  'When bodyweight is missing, we estimate it from the published RIS where possible. Otherwise, we keep the reported score, marked {mark}.':
-    'Wenn das Körpergewicht fehlt, schätzen wir es nach Möglichkeit anhand des veröffentlichten RIS-Werts. Andernfalls behalten wir den veröffentlichten Wert bei und kennzeichnen ihn mit {mark}.',
-  'Learn more on the ris page of OpenStreetlifting':
-    'Mehr auf der RIS-Seite von OpenStreetlifting erfahren',
   'Calculate your RIS': 'Deinen RIS berechnen',
   'Choose your category and enter your bodyweight and MPDS total. Add a target score to explore the corresponding total or bodyweight.':
     'Wähle deine Kategorie und gib dein Körpergewicht und MPDS-Total ein. Mit einem Zielwert kannst du das passende Total oder Körpergewicht berechnen.',
@@ -290,10 +274,6 @@ export default {
   Recorded: 'Erfasst',
   Unavailable: 'Nicht verfügbar',
   'Why RIS is unavailable': 'Warum RIS nicht verfügbar ist',
-  'Published RIS scores are missing from the source.':
-    'Die veröffentlichten RIS-Werte fehlen in der Quelle.',
-  'RIS scores are unavailable because the required bodyweight or total is missing.':
-    'RIS-Werte sind nicht verfügbar, weil das benötigte Körpergewicht oder Total fehlt.',
   total: 'Total',
   'Ranked by {rule}': 'Wertung nach {rule}',
   'Ranked by {rule}, by weight class:': 'Wertung nach {rule}, nach Gewichtsklasse:',

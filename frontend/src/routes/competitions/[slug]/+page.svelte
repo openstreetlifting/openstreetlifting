@@ -313,19 +313,6 @@
   });
 
   const location = $derived(formatLocation(competition.city, competition.region));
-  const risNote = $derived(
-    data.ris === 'recomputed'
-      ? i18n.t('In this competition, RIS is recomputed with the current formula.')
-      : data.ris === 'reported'
-        ? i18n.t('In this competition, RIS scores are shown as published.')
-        : data.ris === 'not-published'
-          ? competition.movements.length < 4
-            ? i18n.t('Published RIS scores are missing from the source.')
-            : i18n.t(
-                'RIS scores are unavailable because the required bodyweight or total is missing.'
-              )
-          : undefined
-  );
   const place = $derived([competition.venue, location].filter(Boolean).join(', '));
   // Use the complete results, not the filtered ranking facets. A class can
   // appear in several divisions but only needs to be listed once per sex.
@@ -734,7 +721,7 @@
             </th>
             {#if risColumn}
               <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
-                <RisHeader note={risNote} published={data.ris === 'reported'} />
+                <RisHeader published={data.ris === 'reported'} />
               </th>
             {/if}
             {#each contested as lift (lift.key)}
