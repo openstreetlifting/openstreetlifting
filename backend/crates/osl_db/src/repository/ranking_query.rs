@@ -11,9 +11,6 @@ impl Predicate for RankingBy {
     fn push(&self, query: &mut QueryBuilder<Postgres>) {
         match self {
             Self::Sex(gender) => query.push("a.gender = ").push_bind(gender.as_str()),
-            Self::CategoryGender(gender) => query
-                .push("COALESCE(cp.category_gender, wc.gender, a.gender) = ")
-                .push_bind(gender.as_str()),
             Self::Country(country) => query.push("a.country = ").push_bind(country.clone()),
             Self::Federation(federation) => query.push("f.name = ").push_bind(federation.clone()),
             Self::Series(series) => query.push("c.series = ").push_bind(series.clone()),
@@ -24,11 +21,6 @@ impl Predicate for RankingBy {
             Self::Year(year) => query
                 .push("EXTRACT(YEAR FROM c.start_date)::int = ")
                 .push_bind(*year),
-            Self::Competition(id) => query.push("c.competition_id = ").push_bind(*id),
-            Self::Division(name) => query
-                .push("cp.division_id IN (SELECT division_id FROM divisions WHERE name = ")
-                .push_bind(name.clone())
-                .push(")"),
         };
     }
 }
@@ -60,8 +52,7 @@ fn push_ranked_on_metric(query: &mut QueryBuilder<Postgres>, filter: &RankingFil
     if matches!(
         filter.movement,
         RankingMovement::Total | RankingMovement::Ris
-    ) && !filter.in_competition()
-    {
+    ) {
         query.push(" AND c.event_code = ");
         query.push_bind(filter.event.clone());
     }
@@ -80,13 +71,10 @@ pub(crate) fn ranked_results(
             INNER JOIN competitions c ON cp.competition_id = c.competition_id
             INNER JOIN federations f ON c.federation_id = f.federation_id
             LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
-            WHERE TRUE
+            WHERE cp.status = 'competed'
         ",
     );
-    if !filter.in_competition() {
-        query.push(" AND cp.status = 'competed' ");
-        push_ranked_on_metric(&mut query, filter);
-    }
+    push_ranked_on_metric(&mut query, filter);
     filter.by.without(own).push_and(&mut query);
     query
 }
@@ -167,11 +155,6 @@ pub(crate) fn movement_weights(filter: Option<&RankingFilter>) -> QueryBuilder<P
 }
 
 pub(crate) fn push_ranking_pool(query: &mut QueryBuilder<Postgres>, filter: &RankingFilter) {
-    if filter.in_competition() {
-        query.push(" ranking_pool AS ( SELECT * FROM movement_weights ) ");
-        return;
-    }
-
     query.push(" ranking_pool AS ( SELECT DISTINCT ON (athlete_id) * FROM movement_weights ORDER BY athlete_id, ");
     query.push(filter.movement.as_column());
     query.push(" DESC NULLS LAST");

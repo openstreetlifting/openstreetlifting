@@ -3,7 +3,6 @@ use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
 use sqlx::PgPool;
-use uuid::Uuid;
 
 mod common;
 
@@ -130,11 +129,11 @@ async fn counts_matching_athletes(pool: PgPool) {
 async fn combines_search_with_ranking_filters(pool: PgPool) {
     seed(&pool).await;
 
-    let unknown_competition = RankingFilter {
-        by: [RankingBy::Competition(Uuid::nil())].into(),
+    let unknown_country = RankingFilter {
+        by: [RankingBy::Country("ZZ".into())].into(),
         ..filter(Some("dupont"))
     };
-    let (_, total) = search(&pool, &unknown_competition).await;
+    let (_, total) = search(&pool, &unknown_country).await;
 
     assert_eq!(total, 0);
 }

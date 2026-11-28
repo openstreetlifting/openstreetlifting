@@ -1,5 +1,4 @@
 use osl_domain::{CompetitionStatus, Gender, RecordLift, WeightClass};
-use uuid::Uuid;
 
 use crate::filter::Filters;
 
@@ -88,14 +87,11 @@ impl SortDirection {
 #[derive(Debug, Clone)]
 pub enum RankingBy {
     Sex(Gender),
-    CategoryGender(Gender),
     Country(String),
     Federation(String),
     Series(String),
     Class(WeightClass),
     Year(i32),
-    Competition(Uuid),
-    Division(String),
 }
 
 #[derive(Debug, Clone)]
@@ -107,13 +103,6 @@ pub struct RankingFilter {
     pub event: String,
     pub offset: i64,
     pub limit: i64,
-}
-
-impl RankingFilter {
-    #[must_use]
-    pub fn in_competition(&self) -> bool {
-        self.by.any(|by| matches!(by, RankingBy::Competition(_)))
-    }
 }
 
 #[derive(Debug, Clone)]

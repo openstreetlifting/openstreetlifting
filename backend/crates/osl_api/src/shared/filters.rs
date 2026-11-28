@@ -2,13 +2,12 @@ use osl_domain::Gender;
 use serde::{Deserialize, Deserializer, Serialize};
 use utoipa::ToSchema;
 
-/// `M`, `F` or `MX`. `MX` requires `competition_id`.
+/// Athlete sex, `M` or `F`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum RankedGender {
     M,
     F,
-    Mx,
 }
 
 impl From<RankedGender> for Gender {
@@ -16,7 +15,6 @@ impl From<RankedGender> for Gender {
         match gender {
             RankedGender::M => Self::M,
             RankedGender::F => Self::F,
-            RankedGender::Mx => Self::Mx,
         }
     }
 }
@@ -26,7 +24,7 @@ impl<'de> Deserialize<'de> for RankedGender {
         match crate::shared::dto::from_str::<D, Gender>(deserializer)? {
             Gender::M => Ok(Self::M),
             Gender::F => Ok(Self::F),
-            Gender::Mx => Ok(Self::Mx),
+            Gender::Mx => Err(serde::de::Error::custom("rankings use athlete sex, M or F")),
         }
     }
 }

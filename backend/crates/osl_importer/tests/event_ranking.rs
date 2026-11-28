@@ -1,5 +1,5 @@
 use osl_db::filter::Filters;
-use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
+use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use osl_domain::Movement;
 use osl_importer::canonical::models::{AthleteData, CanonicalFormat};
@@ -40,35 +40,27 @@ async fn breaks_total_ties_by_lower_bodyweight(pool: PgPool) {
     )
     .await;
 
-    let competition_id = sqlx::query_scalar("SELECT competition_id FROM competitions")
-        .fetch_one(&pool)
-        .await
-        .unwrap();
-
-    for scope in [None, Some(competition_id)] {
-        for (direction, expected) in [
-            (SortDirection::Desc, vec!["Highest", "Lighter", "Heavier"]),
-            (SortDirection::Asc, vec!["Lighter", "Heavier", "Highest"]),
-        ] {
-            let mut scoped = filter(RankingMovement::Total);
-            scoped.by = scope.map(RankingBy::Competition).into_iter().collect();
-            scoped.direction = direction;
-            let (rows, total) = RankingRepository::new(&pool)
-                .get_global_ranking(&scoped)
-                .await
-                .unwrap();
-            assert_eq!(total, 3);
-            assert_eq!(
-                rows.iter()
-                    .map(|row| row.last_name.as_str())
-                    .collect::<Vec<_>>(),
-                expected
-            );
-            assert_eq!(
-                rows.iter().map(|row| row.rank).collect::<Vec<_>>(),
-                vec![1, 2, 3]
-            );
-        }
+    for (direction, expected) in [
+        (SortDirection::Desc, vec!["Highest", "Lighter", "Heavier"]),
+        (SortDirection::Asc, vec!["Lighter", "Heavier", "Highest"]),
+    ] {
+        let mut sorted = filter(RankingMovement::Total);
+        sorted.direction = direction;
+        let (rows, total) = RankingRepository::new(&pool)
+            .get_global_ranking(&sorted)
+            .await
+            .unwrap();
+        assert_eq!(total, 3);
+        assert_eq!(
+            rows.iter()
+                .map(|row| row.last_name.as_str())
+                .collect::<Vec<_>>(),
+            expected
+        );
+        assert_eq!(
+            rows.iter().map(|row| row.rank).collect::<Vec<_>>(),
+            vec![1, 2, 3]
+        );
     }
 }
 
@@ -313,46 +305,6 @@ async fn updates_event_when_movements_are_removed(pool: PgPool) {
 
     let (names, _) = rank(&pool, RankingMovement::Total).await;
     assert!(names.is_empty(), "and it leaves the MPDS board");
-}
-
-#[sqlx::test(migrations = "../osl_db/migrations")]
-async fn ignores_event_filter_within_competition(pool: PgPool) {
-    let classic = &[Movement::PullUp, Movement::Dips];
-    import(
-        &pool,
-        competition(
-            "classic-meet",
-            classic,
-            vec![athlete(
-                "Ana",
-                "Classic",
-                vec![(Movement::PullUp, "60"), (Movement::Dips, "80")],
-            )],
-        ),
-    )
-    .await;
-
-    let competition_id: uuid::Uuid =
-        sqlx::query_scalar("SELECT competition_id FROM competitions WHERE slug = 'classic-meet'")
-            .fetch_one(&pool)
-            .await
-            .unwrap();
-
-    let mut scoped = filter(RankingMovement::Total);
-    scoped.by = [RankingBy::Competition(competition_id)].into();
-
-    let (rows, total) = RankingRepository::new(&pool)
-        .get_global_ranking(&scoped)
-        .await
-        .expect("ranking should succeed");
-
-    assert_eq!(total, 1, "the meet's own lifters are its leaderboard");
-    assert_eq!(
-        rows.into_iter()
-            .map(|row| row.last_name)
-            .collect::<Vec<_>>(),
-        vec!["Classic".to_string()]
-    );
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

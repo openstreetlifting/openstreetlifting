@@ -611,7 +611,7 @@ export interface components {
       record: components['schemas']['RecordMark'] | null;
     };
     RankBy: 'total' | 'ris';
-    RankedGender: 'M' | 'F' | 'MX';
+    RankedGender: 'M' | 'F';
     RankingAthlete: {
       athlete_id: string;
       bodyweight: number | null;
@@ -939,8 +939,6 @@ export interface operations {
         event?: string | null;
         category?: string | null;
         year?: number | null;
-        competition_id?: string | null;
-        division?: string | null;
       };
       header?: never;
       path?: never;
@@ -998,8 +996,6 @@ export interface operations {
         event?: string | null;
         category?: string | null;
         year?: number | null;
-        competition_id?: string | null;
-        division?: string | null;
       };
       header?: never;
       path?: never;
@@ -1236,7 +1232,7 @@ export const rankByValues: ReadonlyArray<FlattenedDeepRequired<components>['sche
 ];
 export const rankedGenderValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RankedGender']
-> = ['M', 'F', 'MX'];
+> = ['M', 'F'];
 export const rankingMetricValues: ReadonlyArray<
   FlattenedDeepRequired<components>['schemas']['RankingMetric']
 > = ['muscleup', 'pullup', 'dips', 'squat', 'total', 'ris'];

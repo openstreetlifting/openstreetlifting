@@ -48,12 +48,9 @@ const lighterFirst = (a: Participant, b: Participant) =>
   (a.bodyweight == null ? Infinity : Number(a.bodyweight)) -
   (b.bodyweight == null ? Infinity : Number(b.bodyweight));
 
-function unrankedOrder(metric: RankingMetric) {
-  return (a: ResultEntry, b: ResultEntry) =>
-    descending(resultValue(a.participant, metric), resultValue(b.participant, metric)) ||
-    STATUS_ORDER.indexOf(a.participant.status) - STATUS_ORDER.indexOf(b.participant.status) ||
-    a.participant.athlete.last_name.localeCompare(b.participant.athlete.last_name);
-}
+const unrankedOrder = (a: ResultEntry, b: ResultEntry) =>
+  STATUS_ORDER.indexOf(a.participant.status) - STATUS_ORDER.indexOf(b.participant.status) ||
+  a.participant.athlete.last_name.localeCompare(b.participant.athlete.last_name);
 
 export function rankResults(entries: ResultEntry[], metric: RankingMetric): ResultRow[] {
   const value = (entry: ResultEntry) => resultValue(entry.participant, metric);
@@ -68,7 +65,7 @@ export function rankResults(entries: ResultEntry[], metric: RankingMetric): Resu
     .map((entry, index) => ({ ...entry, rank: index + 1 }));
   const unranked = entries
     .filter((entry) => value(entry) == null)
-    .sort(unrankedOrder(metric))
+    .sort(unrankedOrder)
     .map((entry) => ({ ...entry, rank: null }));
   return [...ranked, ...unranked];
 }
@@ -77,16 +74,15 @@ const entriesOf = ({ category, participants }: CategoryDetail): ResultEntry[] =>
   participants.map((participant) => ({ participant, category }));
 
 export function resultTables(categories: CategoryDetail[], metric: RankingMetric): ResultTable[] {
-  const order = (detail: CategoryDetail) => {
-    const { gender, weight_class } = detail.category;
-    return [FIELD_ORDER.indexOf(gender), weightClasses(categories, gender).indexOf(weight_class)];
-  };
+  const classes = new Map(FIELD_ORDER.map((gender) => [gender, weightClasses(categories, gender)]));
+  const classIndex = ({ category }: CategoryDetail) =>
+    classes.get(category.gender)!.indexOf(category.weight_class);
   return [...categories]
-    .sort((a, b) => {
-      const [genderA, classA] = order(a);
-      const [genderB, classB] = order(b);
-      return genderA - genderB || classA - classB;
-    })
+    .sort(
+      (a, b) =>
+        FIELD_ORDER.indexOf(a.category.gender) - FIELD_ORDER.indexOf(b.category.gender) ||
+        classIndex(a) - classIndex(b)
+    )
     .map((detail) => ({ category: detail.category, rows: rankResults(entriesOf(detail), metric) }));
 }
 

@@ -91,17 +91,8 @@ async fn ignores_search_sort_and_paging(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn scopes_options_to_one_competition(pool: PgPool) {
+async fn ignores_invalid_values(pool: PgPool) {
     two_meets(&pool).await;
-    let competition_id: uuid::Uuid =
-        sqlx::query_scalar("SELECT competition_id FROM competitions WHERE slug = 'rome-open'")
-            .fetch_one(&pool)
-            .await
-            .unwrap();
-
-    let (_, rome) = facets(&pool, &format!("?competition_id={competition_id}")).await;
-    assert_eq!(rome["countries"], json!(["IT"]));
-    assert_eq!(rome["classes"], json!(["-80kg"]));
 
     let (status, lenient) = facets(&pool, "?category=nonsense&page=0").await;
     assert_eq!(status, StatusCode::OK);
