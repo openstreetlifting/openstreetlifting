@@ -136,6 +136,29 @@ it('ranks by the chosen metric, lighter first on equal totals, and leaves the re
   ]);
 });
 
+it('keeps the announced places in the official view, ties included, over any metric', () => {
+  const category = {
+    name: '',
+    division: null,
+    gender: 'M',
+    weight_class: '-80kg',
+    rank_by: 'total',
+  } as const;
+  const entries = [
+    lifter('third', { rank: 3, total: '320' }),
+    lifter('dq', { rank: null, status: 'disqualified', total: null }),
+    lifter('first', { rank: 1, total: '300' }),
+    lifter('tied', { rank: 1, total: '300' }),
+  ].map((participant) => ({ participant, category }));
+
+  expect(ids(rankResults(entries, 'total', true))).toEqual([
+    ['first', 1],
+    ['tied', 1],
+    ['third', 3],
+    ['dq', null],
+  ]);
+});
+
 it('ranks unplaced lifters by RIS too, with a missing score at the bottom', () => {
   const category = {
     name: '',

@@ -187,7 +187,7 @@
   const tables = $derived(
     sort === 'ris'
       ? []
-      : resultTables(board, sort)
+      : resultTables(board, sort, sort === defaultSort)
           .map((table) => ({
             ...table,
             rows: table.rows.filter((row) => matches(row.participant)),
