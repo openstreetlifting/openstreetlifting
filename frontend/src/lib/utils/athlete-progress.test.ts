@@ -1,119 +1,90 @@
-import { describe, expect, it } from 'vitest';
+import { expect, it } from 'vitest';
 import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
-import { chartableMetrics, progressPoints } from './athlete-progress';
+import { liftProgress, showsProgress } from './athlete-progress';
 
-function result(overrides: Partial<AthleteCompetitionSummary> = {}): AthleteCompetitionSummary {
+type Lifts = Record<string, string | null>;
+
+function result(
+  id: string,
+  date: string,
+  lifts: Lifts,
+  overrides: Partial<AthleteCompetitionSummary> = {}
+): AthleteCompetitionSummary {
   return {
-    competition_id: 'meet-1',
+    competition_id: id,
     division: null,
-    competition_name: 'Worlds',
-    competition_slug: 'worlds',
-    competition_date: '2025-10-04',
-    category_name: 'Women -63 kg',
+    competition_name: id,
+    competition_slug: id,
+    competition_date: date,
+    category_name: 'Men -80kg',
     rank: 1,
-    total: '300',
+    total: null,
     total_record: null,
-    ris_score: '100',
-    ris_source: 'computed',
+    ris_score: null,
+    ris_source: null,
     status: 'competed',
     event: 'MPDS',
-    lifts: [{ movement_name: 'Muscle-up', best_weight: '0', record: null, attempts: [] }],
+    lifts: Object.entries(lifts).map(([movement_name, best_weight]) => ({
+      movement_name: movement_name as AthleteCompetitionSummary['lifts'][number]['movement_name'],
+      best_weight,
+      record: null,
+      attempts: [],
+    })),
     ...overrides,
   };
 }
 
-describe('athlete progress', () => {
-  it('keeps published shorter-event RIS separate from MPDS progress', () => {
-    const competitions = [
-      result(),
-      result({
-        competition_id: 'underground',
-        event: 'PDS',
-        ris_score: '88.84',
-        ris_source: 'reported',
-      }),
-      result({
-        competition_id: 'score-only',
-        event: 'PD',
-        total: null,
-        ris_score: '70',
-        ris_source: 'reported',
-      }),
-    ];
-    expect(progressPoints(competitions, 'ris').map((p) => p.value)).toEqual([100]);
-    expect(progressPoints(competitions, 'ris', 'PDS').map((p) => p.value)).toEqual([88.84]);
-  });
-  it('separates total event formats and excludes unknown formats', () => {
-    const competitions = [
-      result(),
-      result({ competition_id: 'meet-2', event: 'PD', total: '200' }),
-      result({ competition_id: 'meet-3', event: null, total: '400' }),
-    ];
-    expect(progressPoints(competitions, 'total').map((p) => p.value)).toEqual([300]);
-    expect(progressPoints(competitions, 'total', 'PD').map((p) => p.value)).toEqual([200]);
-  });
+const values = (competitions: AthleteCompetitionSummary[]) =>
+  Object.fromEntries(
+    liftProgress(competitions).map(({ lift, points }) => [
+      lift.key,
+      points.map((point) => [point.competition.competition_id, point.value]),
+    ])
+  );
 
-  it('keeps real zeroes while rejecting absent and invalid values', () => {
-    const competitions = [
-      result(),
-      result({ competition_id: 'meet-2', lifts: [] }),
-      result({
-        competition_id: 'meet-3',
-        lifts: [{ movement_name: 'Muscle-up', best_weight: null, record: null, attempts: [] }],
-      }),
-      result({ competition_id: 'meet-4', total: 'NaN' }),
-    ];
-    expect(progressPoints(competitions.slice(0, 3), 'muscleup').map((p) => p.value)).toEqual([0]);
-    expect(progressPoints(competitions.slice(3), 'total')).toEqual([]);
-  });
-
-  it('excludes disqualified, no-show and unparseable results', () => {
-    const competitions = [
-      result({ status: 'disqualified' }),
-      result({ status: 'no_show' }),
-      result({ competition_date: 'invalid' }),
-    ];
-    expect(progressPoints(competitions, 'ris')).toEqual([]);
-  });
-
-  it('takes the best per meet across divisions and sorts without mutating history', () => {
-    const competitions = [
-      result({ division: 'Open', total: '300' }),
-      result({ division: 'Junior', total: '310' }),
-      result({ competition_id: 'older', competition_date: '2024-01-01', total: '250' }),
-    ];
-    const points = progressPoints(competitions, 'total');
-    expect(points.map((p) => p.value)).toEqual([250, 310]);
-    expect(points[1].competition.division).toBe('Junior');
-    expect(competitions[0].total).toBe('300');
-  });
-});
-
-it('keeps individual-lift trends in the selected format', () => {
+it('draws each lift from every format, skipping meets where it has no result', () => {
   const competitions = [
-    result({
-      lifts: [{ movement_name: 'Pull-up', best_weight: '10', record: null, attempts: [] }],
-    }),
-    result({
-      competition_id: 'shorter',
-      event: 'PD',
-      total: null,
-      ris_score: null,
-      lifts: [{ movement_name: 'Pull-up', best_weight: '20', record: null, attempts: [] }],
-    }),
+    result('pd-meet', '2025-06-01', { 'Pull-up': '40', Dips: '60' }, { event: 'PD' }),
+    result('mpds-meet', '2024-01-01', { 'Muscle-up': '20', 'Pull-up': '30', Dips: null }),
+    result('bombed', '2025-01-01', { 'Pull-up': null, Dips: '50' }),
   ];
-  expect(progressPoints(competitions, 'pullup').map((point) => point.value)).toEqual([10]);
-  expect(progressPoints(competitions, 'pullup', 'PD').map((point) => point.value)).toEqual([20]);
+
+  expect(values(competitions)).toEqual({
+    muscleup: [['mpds-meet', 20]],
+    pullup: [
+      ['mpds-meet', 30],
+      ['pd-meet', 40],
+    ],
+    dips: [
+      ['bombed', 50],
+      ['pd-meet', 60],
+    ],
+  });
 });
 
-it('charts a metric only from two dated MPDS results', () => {
-  const second = result({
-    competition_id: 'meet-2',
-    competition_date: '2026-03-01',
-    ris_score: null,
-    lifts: [{ movement_name: 'Pull-up', best_weight: '40', record: null, attempts: [] }],
+it('keeps zero, the best entry per meet, and only results the athlete competed in', () => {
+  const competitions = [
+    result('meet', '2025-01-01', { 'Pull-up': '30' }, { division: 'Open' }),
+    result('meet', '2025-01-01', { 'Pull-up': '35' }, { division: 'Masters' }),
+    result('zero', '2025-02-01', { 'Pull-up': '0' }),
+    result('dq', '2025-03-01', { 'Pull-up': '50' }, { status: 'disqualified' }),
+    result('undated', 'invalid', { 'Pull-up': '50' }),
+  ];
+
+  expect(values(competitions)).toEqual({
+    pullup: [
+      ['meet', 35],
+      ['zero', 0],
+    ],
   });
-  expect(chartableMetrics([result()])).toEqual([]);
-  expect(chartableMetrics([result(), second])).toEqual(['total']);
-  expect(chartableMetrics([result(), { ...second, event: 'PD' }])).toEqual([]);
+});
+
+it('shows the chart only when two lifts each have two meets', () => {
+  const first = result('first', '2024-01-01', { 'Pull-up': '30', Dips: '50' });
+  const pullOnly = result('second', '2025-01-01', { 'Pull-up': '35' });
+  const both = result('second', '2025-01-01', { 'Pull-up': '35', Dips: '55' });
+
+  expect(showsProgress(liftProgress([first]))).toBe(false);
+  expect(showsProgress(liftProgress([first, pullOnly]))).toBe(false);
+  expect(showsProgress(liftProgress([first, both]))).toBe(true);
 });

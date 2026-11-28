@@ -27,12 +27,9 @@ export default {
   'Open menu': 'Ouvrir le menu',
   'Close menu': 'Fermer le menu',
   'Performance over time': 'Évolution des performances',
-  Performance: 'Performance',
   Event: 'Format',
   Best: 'Meilleur',
   Date: 'Date',
-  'RIS scores are shown as recorded; formula editions and reported scores may differ.':
-    'Les scores RIS sont affichés tels qu’ils ont été enregistrés ; les éditions de la formule et les scores publiés peuvent différer.',
   'Lift balance': 'Équilibre des mouvements',
   'About lift balance': 'À propos de l’équilibre des mouvements',
   'Lift balance compared with other athletes in {category}':
@@ -266,9 +263,6 @@ export default {
   Divisions: 'Divisions',
   '{division}, ranked by {metric}': '{division}, classement : {metric}',
   Recomputed: 'Recalculé',
-  Reported: 'Publié',
-  Computed: 'Calculé',
-  Recorded: 'Enregistré',
   Unavailable: 'Indisponible',
   'Why RIS is unavailable': 'Pourquoi le RIS est indisponible',
   total: 'total',
@@ -339,7 +333,6 @@ export default {
   'no lift': 'non validé',
   'No successful {movement}': 'Aucun essai validé : {movement}',
   "{category}'s weight classes": 'Catégories de poids : {category}',
-  '{label} over time': 'Évolution : {label}',
   'Enter a number between {min} and {max} {unit}.':
     'Saisissez un nombre compris entre {min} et {max} {unit}.',
   '{label} slider': 'Curseur : {label}',
