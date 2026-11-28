@@ -231,6 +231,7 @@ export default {
   'RIS 100 benchmark': 'RIS-100-Referenz',
   Bodyweight: 'Körpergewicht',
   Age: 'Alter',
+  Weight: 'Gewicht',
   'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.':
     'Fahre mit dem Mauszeiger über eine Leistung oder tippe sie an, um Details zu sehen. Bei fokussiertem Diagramm wechselst du mit den Pfeiltasten links und rechts zwischen Leistungen. Pos1 und Ende springen an die Ränder, Eingabe wählt aus und Escape löscht die Auswahl.',
   'Figure 1.': 'Abbildung 1.',

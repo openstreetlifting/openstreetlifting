@@ -174,6 +174,7 @@ export const messages = [
   'RIS 100 benchmark',
   'Bodyweight',
   'Age',
+  'Weight',
   'Hover or touch to inspect a performance. With the chart focused, use the left and right arrow keys to browse performances, Home or End to jump, Enter to select, and Escape to clear the selection.',
   'Figure 1.',
   'Competition total by bodyweight for the selected gender category. Each point represents a recorded performance; an athlete may contribute more than one. The solid line denotes the RIS 100 benchmark. Performances above and below it have scores greater and less than 100, respectively.',

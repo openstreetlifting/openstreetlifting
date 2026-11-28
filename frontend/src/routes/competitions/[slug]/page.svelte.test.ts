@@ -223,7 +223,7 @@ it.each([
         element.textContent?.replace(/\s+/g, ' ').trim()
       );
     expect(text('th').includes('Age')).toBe(shown);
-    expect(text('th').includes('Bodyweight kg')).toBe(true);
+    expect(text('th').includes('Weight kg')).toBe(true);
     expect(text('td').includes('27')).toBe(shown);
     expect(text('td').includes('79.3')).toBe(true);
   }

@@ -761,7 +761,7 @@
               <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Age')}</th>
             {/if}
             <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary">
-              {i18n.t('Bodyweight')}
+              {i18n.t('Weight')}
               <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
             </th>
           {/snippet}
