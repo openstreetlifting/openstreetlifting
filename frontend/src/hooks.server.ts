@@ -2,12 +2,14 @@ import { SpanStatusCode, isSpanContextValid } from '@opentelemetry/api';
 import type { Handle, HandleServerError } from '@sveltejs/kit/hooks';
 import { DEFAULT_LOCALE, negotiateLocale } from '#lib/i18n/locale.js';
 import { redirect } from '@sveltejs/kit';
-import { legacyRedirect, localeHref, pathLocale } from '#lib/i18n/paths.js';
+import { countryRedirect, legacyRedirect, localeHref, pathLocale } from '#lib/i18n/paths.js';
 import { logger } from '#lib/server/logger.js';
 import { emitPostHogLog } from '#lib/server/posthog-logger.js';
 
 export const handle: Handle = async ({ event, resolve }) => {
   const started = performance.now();
+  const country = countryRedirect(event.url.pathname);
+  if (country) redirect(308, country);
   const legacy = legacyRedirect(event.url.pathname, event.url.search);
   if (legacy) {
     if (event.url.pathname === '/') {

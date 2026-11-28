@@ -43,7 +43,12 @@
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
   import { RANKING_SORTS } from '#lib/constants/ranking.js';
-  import { formatDate, formatAthleteName, countryName, countryPath } from '#lib/utils/index.js';
+  import {
+    formatDate,
+    formatAthleteName,
+    countryName,
+    rankingsCountryHref,
+  } from '#lib/utils/index.js';
   import Seo from '#lib/components/seo.svelte';
   import AthleteProgress from '#lib/components/athlete-progress.svelte';
   import AthleteBalance, { balanceComparable } from '#lib/components/athlete-balance.svelte';
@@ -201,7 +206,7 @@
         ? [
             {
               name: countryName(athlete.country, 'en'),
-              path: countryPath(athlete.country),
+              path: rankingsCountryHref(athlete.country),
             },
           ]
         : []),
@@ -218,7 +223,7 @@
         ? [
             {
               label: countryName(athlete.country, i18n.locale),
-              href: countryPath(athlete.country),
+              href: rankingsCountryHref(athlete.country),
             },
           ]
         : []),

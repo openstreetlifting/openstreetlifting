@@ -5,7 +5,7 @@ import { page } from '$app/state';
 import Table from './table.svelte';
 
 vi.mock('$app/state', () => ({
-  page: { url: new URL('https://openstreetlifting.org/countries/fr') },
+  page: { url: new URL('https://openstreetlifting.org/federations/fpcf') },
 }));
 
 const rows = Array.from({ length: 101 }, (_, i) => i + 1);
@@ -18,7 +18,7 @@ const body = createRawSnippet<[number[]]>((getRows) => ({
 }));
 
 beforeEach(() => {
-  (page.url as URL).href = 'https://openstreetlifting.org/countries/fr';
+  (page.url as URL).href = 'https://openstreetlifting.org/federations/fpcf';
 });
 
 it('renders 50 rows and identical top and bottom navigation before hydration', () => {
@@ -31,7 +31,7 @@ it('renders 50 rows and identical top and bottom navigation before hydration', (
   expect(html).toContain('aria-label="Entries pagination (top)"');
   expect(html).toContain('aria-label="Entries pagination (bottom)"');
   expect(html.match(/Page 1 of 3/g)).toHaveLength(3);
-  expect(html.match(/href="\/countries\/fr\?competitions_page=2"/g)).toHaveLength(4);
+  expect(html.match(/href="\/federations\/fpcf\?competitions_page=2"/g)).toHaveLength(4);
 });
 
 it('pages a complete list independently and preserves the other tables and filters', () => {
@@ -43,7 +43,7 @@ it('pages a complete list independently and preserves the other tables and filte
   expect(html).toContain('Result 51</td>');
   expect(html).toContain('Result 100</td>');
   expect(html).not.toContain('Result 101</td>');
-  expect(html).toContain('href="/countries/fr?page=2&amp;upcoming_page=3&amp;q=Open"');
+  expect(html).toContain('href="/federations/fpcf?page=2&amp;upcoming_page=3&amp;q=Open"');
 });
 
 it.each(['-2', 'bad', '1.5', '999'])(
@@ -86,7 +86,7 @@ it('shows one page and a singular label for a one-row table', () => {
 
 it('uses the shared navigation for server pages and preserves the base path, filters and hash', () => {
   (page.url as URL).href =
-    'https://openstreetlifting.org/base/countries/fr?page=2&competitions_page=3#athletes';
+    'https://openstreetlifting.org/base/federations/fpcf?page=2&competitions_page=3#athletes';
   const { body: html } = render(Table<number>, {
     props: {
       rows: rows.slice(50, 100),
@@ -98,6 +98,6 @@ it('uses the shared navigation for server pages and preserves the base path, fil
   });
   expect(html.match(/<td>/g)).toHaveLength(50);
   expect(html).toContain('Result 51</td>');
-  expect(html).toContain('href="/base/countries/fr?competitions_page=3#athletes"');
-  expect(html).toContain('href="/base/countries/fr?page=3&amp;competitions_page=3#athletes"');
+  expect(html).toContain('href="/base/federations/fpcf?competitions_page=3#athletes"');
+  expect(html).toContain('href="/base/federations/fpcf?page=3&amp;competitions_page=3#athletes"');
 });

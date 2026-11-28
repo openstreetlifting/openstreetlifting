@@ -24,7 +24,6 @@ Results cover the muscle-up, pull-up, dips and squat attempts contested at each 
 - [Rankings](${absolute('/', 'en')}): athletes ranked by RIS, total or a single lift, filterable by country, federation, year, sex and class
 - [Competitions](${absolute('/competitions', 'en')}): every competition in the archive with full results, plus upcoming meets
 - [Federations](${absolute('/federations', 'en')}): each federation's competitions and athletes, at /federations/<slug>
-- [Countries](${absolute('/countries', 'en')}): competitions held in a country and its athletes, at /countries/<iso code>
 - [RIS](${absolute('/ris', 'en')}): how the Relative Index for Streetlifting compares totals across bodyweights, with a calculator
 
 Pages use /en, /fr, /de, /it, or /pl prefixes. Athlete pages live at /en/athletes/<slug> and competition pages at /en/competitions/<slug>.

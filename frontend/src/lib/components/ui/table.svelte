@@ -39,7 +39,7 @@
     head: Snippet;
     body: Snippet<[Row[]]>;
     rows: Row[];
-    itemName?: 'athlete' | 'competition' | 'country' | 'federation' | 'entry';
+    itemName?: 'athlete' | 'competition' | 'federation' | 'entry';
     pagination?: TablePagination;
     pageParam?: string;
     busy?: boolean;
@@ -69,7 +69,6 @@
           {
             athlete: 'Athletes',
             competition: 'Competitions',
-            country: 'Countries',
             federation: 'Federations',
             entry: 'Entries',
           } as const

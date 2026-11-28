@@ -17,7 +17,6 @@ export default {
   Rankings: 'Ranglisten',
   Competitions: 'Wettkämpfe',
   Federations: 'Verbände',
-  Countries: 'Länder',
   Documentation: 'Dokumentation',
   Contact: 'Kontakt',
   Privacy: 'Datenschutz',
@@ -91,7 +90,6 @@ export default {
     'Wenn du Fragen zu deinen personenbezogenen Daten hast oder die Entfernung deines Namens beantragen möchtest, schreibe an {email}. Bitte behandle diese Anfragen vertraulich. Weitere Informationen findest du in der {privacyNotice}.',
   'privacy notice': 'Datenschutzerklärung',
   'Join the server': 'Dem Server beitreten',
-  'Streetlifting by country': 'Streetlifting nach Land',
   Country: 'Land',
   Athletes: 'Athleten',
   Upcoming: 'Demnächst',
@@ -328,8 +326,6 @@ export default {
   athletes: 'Athleten',
   competition: 'Wettkampf',
   competitions: 'Wettkämpfe',
-  country: 'Land',
-  countries: 'Länder',
   federation: 'Verband',
   federations: 'Verbände',
   entry: 'Teilnahme',
@@ -406,10 +402,6 @@ export const counts = {
   competition: {
     one: 'Wettkampf',
     other: 'Wettkämpfe',
-  },
-  country: {
-    one: 'Land',
-    other: 'Länder',
   },
   federation: {
     one: 'Verband',

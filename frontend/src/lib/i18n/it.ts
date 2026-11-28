@@ -17,7 +17,6 @@ export default {
   Rankings: 'Classifiche',
   Competitions: 'Gare',
   Federations: 'Federazioni',
-  Countries: 'Paesi',
   Documentation: 'Documentazione',
   Contact: 'Contatti',
   Privacy: 'Privacy',
@@ -92,7 +91,6 @@ export default {
     'Per domande relative ai tuoi dati personali o per richiedere la cancellazione del tuo nome, invia un’e-mail all’indirizzo {email}. Ti preghiamo di mantenere riservate tali richieste. Per ulteriori informazioni, consulta l’{privacyNotice}.',
   'privacy notice': 'informativa sulla privacy',
   'Join the server': 'Unisciti al server',
-  'Streetlifting by country': 'Streetlifting per Paese',
   Country: 'Paese',
   Athletes: 'Atleti',
   Upcoming: 'In programma',
@@ -327,8 +325,6 @@ export default {
   athletes: 'atleti',
   competition: 'gara',
   competitions: 'gare',
-  country: 'Paese',
-  countries: 'Paesi',
   federation: 'federazione',
   federations: 'federazioni',
   entry: 'partecipazione',
@@ -405,10 +401,6 @@ export const counts = {
   competition: {
     one: 'gara',
     other: 'gare',
-  },
-  country: {
-    one: 'Paese',
-    other: 'Paesi',
   },
   federation: {
     one: 'federazione',

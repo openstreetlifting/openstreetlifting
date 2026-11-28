@@ -2,7 +2,7 @@ import { rankingsService } from '#lib/server/api/index.js';
 import { allAthletes, countryCodes } from '#lib/server/countries.js';
 import { publishedCompetitions, summarizeFederations } from '#lib/server/federations.js';
 import { STATIC_ROUTES } from '#lib/constants/routes.js';
-import { countryPath, federationPath } from '#lib/utils/index.js';
+import { federationPath } from '#lib/utils/index.js';
 
 const CACHE_TTL = 3_600_000;
 
@@ -30,7 +30,6 @@ async function build(): Promise<ArchiveIndex> {
       pages: [
         ...STATIC_ROUTES.map((route) => route.path),
         ...federations.map((federation) => federationPath(federation.name)),
-        ...countries.map(countryPath),
       ],
       competitions: competitions.map((competition) => `/competitions/${competition.slug}`),
       athletes: athletes.map((athlete) => `/athletes/${athlete.slug}`),

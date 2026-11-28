@@ -22,7 +22,6 @@
         <a href={i18n.href(resolve(''))} class={NAV_LINK}>{i18n.t('Rankings')}</a>
         <a href={i18n.href(resolve('competitions'))} class={NAV_LINK}>{i18n.t('Competitions')}</a>
         <a href={i18n.href(resolve('federations'))} class={NAV_LINK}>{i18n.t('Federations')}</a>
-        <a href={i18n.href(resolve('countries'))} class={NAV_LINK}>{i18n.t('Countries')}</a>
         <a
           href="https://docs.openstreetlifting.org/"
           target="_blank"

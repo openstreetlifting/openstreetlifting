@@ -14,7 +14,6 @@ export const messages = [
   'Rankings',
   'Competitions',
   'Federations',
-  'Countries',
   'Documentation',
   'Contact',
   'Privacy',
@@ -80,7 +79,6 @@ export const messages = [
   'To ask about your personal data or request name removal, email {email}. Keep these requests private. You can read more in the {privacyNotice}.',
   'privacy notice',
   'Join the server',
-  'Streetlifting by country',
   'Country',
   'Athletes',
   'Upcoming',
@@ -262,8 +260,6 @@ export const messages = [
   'athletes',
   'competition',
   'competitions',
-  'country',
-  'countries',
   'federation',
   'federations',
   'entry',
@@ -327,10 +323,6 @@ export const counts = {
   competition: {
     one: 'competition',
     other: 'competitions',
-  },
-  country: {
-    one: 'country',
-    other: 'countries',
   },
   federation: {
     one: 'federation',

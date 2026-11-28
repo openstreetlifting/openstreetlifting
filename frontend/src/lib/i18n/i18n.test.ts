@@ -72,12 +72,12 @@ it.each(Object.entries({ fr: french, de: german, it: italian, pl: polish }))(
 
 it('uses Polish number forms for one, few and many', () => {
   const pl = new I18n(() => 'pl');
-  expect(pl.count('country', 1)).toBe('kraj');
-  expect(pl.count('country', 2)).toBe('kraje');
-  expect(pl.count('country', 5)).toBe('krajów');
-  expect(pl.count('country', 22)).toBe('kraje');
-  expect(pl.count('country', 12)).toBe('krajów');
-  expect(pl.count('country', 1.5)).toBe('kraju');
+  expect(pl.count('entry', 1)).toBe('start');
+  expect(pl.count('entry', 2)).toBe('starty');
+  expect(pl.count('entry', 5)).toBe('startów');
+  expect(pl.count('entry', 22)).toBe('starty');
+  expect(pl.count('entry', 12)).toBe('startów');
+  expect(pl.count('entry', 1.5)).toBe('startu');
   expect(pl.count('athlete', 1)).toBe('zawodnik');
   expect(pl.count('athlete', 2)).toBe('zawodników');
   expect(pl.count('athlete', 5)).toBe('zawodników');
