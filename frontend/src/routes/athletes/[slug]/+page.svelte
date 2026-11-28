@@ -10,7 +10,7 @@
   import type { PageData } from './$types';
   import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
   import type { Attempt } from '#lib/types/competition.js';
-  import type { Gender, RankingMetric } from '#lib/types/enums.js';
+  import { asRankingMetric, type Gender, type RankingMetric } from '#lib/types/enums.js';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
   import {
     MetricCard,
@@ -33,7 +33,6 @@
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
-  import { athleteRanking } from '#lib/utils/athlete-filters.js';
   import {
     competitionFocusQuery,
     liftProgress,
@@ -141,7 +140,7 @@
     athlete.best_total && athlete.best_ris ? 'md:col-span-2' : 'col-span-2 md:col-span-4'
   );
 
-  const selectedMetric = $derived(athleteRanking(page.url.searchParams));
+  const selectedMetric = $derived(asRankingMetric(page.url.searchParams.get('ranking')) ?? 'ris');
 
   function updateRanking(value: string) {
     const params = new SvelteURLSearchParams(page.url.search);

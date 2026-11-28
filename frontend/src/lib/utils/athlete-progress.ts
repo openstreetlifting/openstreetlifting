@@ -2,15 +2,8 @@ import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
 import type { Movement, RankingMetric } from '#lib/types/enums.js';
 import { LIFTS, type Lift } from '#lib/constants/lift.js';
 
-const MOVEMENT_METRICS = {
-  'Muscle-up': 'muscleup',
-  'Pull-up': 'pullup',
-  Dips: 'dips',
-  Squat: 'squat',
-} as const satisfies Record<Movement, RankingMetric>;
-
 export function movementMetric(movement: Movement): RankingMetric {
-  return MOVEMENT_METRICS[movement];
+  return LIFTS.find((lift) => lift.movement === movement)!.key;
 }
 
 export function competitionFocusQuery(metric: RankingMetric, athleteSlug?: string): string {
@@ -36,7 +29,7 @@ function liftPoints(competitions: AthleteCompetitionSummary[], movement: Movemen
     if (competition.status !== 'competed') continue;
     const timestamp = Date.parse(competition.competition_date);
     const raw = competition.lifts.find((lift) => lift.movement_name === movement)?.best_weight;
-    const value = raw == null || raw.trim() === '' ? NaN : Number(raw);
+    const value = raw == null ? NaN : Number(raw);
     if (!Number.isFinite(timestamp) || !Number.isFinite(value)) continue;
     const existing = byCompetition.get(competition.competition_id);
     if (!existing || value > existing.value) {
