@@ -315,6 +315,14 @@ export const messages = [
   'Records are grouped by the weight classes of {organiser}, which differ from the standard classes.',
   'Current world record in this weight class',
   'Current national record in this weight class',
+  'Non-MPDS results',
+  'No valid lift',
+  '{count} more. Type more of the name to narrow the list.',
+  'Search athletes',
+  'Close search',
+  'Couldn’t search athletes',
+  'Type a name to find any athlete.',
+  'No athlete matches “{query}”.',
 ] as const;
 
 export type Message = (typeof messages)[number];

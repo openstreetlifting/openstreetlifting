@@ -395,6 +395,15 @@ export default {
   'Weight unit': 'Unità di peso',
   'Your weight unit preference is saved in your browser.':
     'L’unità di peso scelta viene salvata nel browser.',
+  'Non-MPDS results': 'Risultati non MPDS',
+  'No valid lift': 'Nessuna alzata valida',
+  '{count} more. Type more of the name to narrow the list.':
+    'Altri {count}. Scrivi più lettere del nome per restringere la lista.',
+  'Search athletes': 'Cerca atleti',
+  'Close search': 'Chiudi ricerca',
+  'Couldn’t search athletes': 'Impossibile cercare gli atleti',
+  'Type a name to find any athlete.': 'Scrivi un nome per trovare qualsiasi atleta.',
+  'No athlete matches “{query}”.': 'Nessun atleta corrisponde a «{query}».',
 } satisfies Record<Message, string>;
 
 export const counts = {

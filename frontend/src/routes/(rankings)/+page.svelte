@@ -27,6 +27,7 @@
   } from '#lib/components/ui/index.js';
   import { InstagramIcon } from '#lib/components/icons/index.js';
   import Seo from '#lib/components/seo.svelte';
+  import AthletesWithoutMpds from '#lib/components/athletes-without-mpds.svelte';
   import { resolve } from '$app/paths';
   import { page, navigating } from '$app/state';
   import { afterNavigate, refreshAll } from '$app/navigation';
@@ -198,11 +199,11 @@
         retry={refreshAll}
       />
     {:else if rankings.length === 0 && !busy}
-      <RankingsEmpty
-        embedded
-        canReset={table.narrowed || pagination.page > 1}
-        resetHref={i18n.href(resolve(''))}
-      />
+      {#if !data.otherAthletes}<RankingsEmpty
+          embedded
+          canReset={table.narrowed || pagination.page > 1}
+          resetHref={i18n.href(resolve(''))}
+        />{/if}
     {:else}
       <Table
         embedded
@@ -345,4 +346,8 @@
       </Table>
     {/if}
   </section>
+
+  {#if data.otherAthletes && !busy}
+    <AthletesWithoutMpds hits={data.otherAthletes.hits} total={data.otherAthletes.total} />
+  {/if}
 </div>

@@ -11,7 +11,8 @@ use serde::Deserialize;
 use std::collections::HashMap;
 
 use super::dto::{
-    AthleteInclude, AthleteNeighborhood, AthleteResponse, AthleteStanding, LiftBalance,
+    AthleteInclude, AthleteNeighborhood, AthleteResponse, AthleteSearchHit, AthleteSearchResponse,
+    AthleteStanding, LiftBalance,
 };
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::{Include, load_if};
@@ -68,6 +69,54 @@ pub async fn list_athletes(
         pagination.page_size,
         total_items,
     )))
+}
+
+const DEFAULT_SEARCH_LIMIT: u32 = 6;
+const MAX_SEARCH_LIMIT: u32 = 20;
+
+#[derive(Debug, Deserialize, utoipa::IntoParams)]
+#[into_params(parameter_in = Query)]
+pub struct AthleteSearchQuery {
+    /// Name to search, in any order, ignoring case and accents.
+    pub q: String,
+    /// Maximum number of athletes, from 1 to 20. Defaults to 6.
+    pub limit: Option<u32>,
+    /// Keep only athletes without an MPDS result. Defaults to `false`.
+    #[serde(default)]
+    pub without_full_result: bool,
+}
+
+/// Search athletes by name
+///
+/// Matches every athlete, ranked or not. Each word of `q` must appear in the name.
+#[utoipa::path(
+    get,
+    path = "/api/v1/athletes/search",
+    params(AthleteSearchQuery),
+    responses(
+        (status = 200, description = "Matching athletes", body = AthleteSearchResponse),
+        (status = 400, description = "Invalid limit", body = crate::error::ErrorResponse)
+    ),
+    tag = "athletes"
+)]
+pub async fn search_athletes(
+    State(state): State<AppState>,
+    Query(query): Query<AthleteSearchQuery>,
+) -> WebResult<Json<AthleteSearchResponse>> {
+    let limit = query.limit.unwrap_or(DEFAULT_SEARCH_LIMIT);
+    if !(1..=MAX_SEARCH_LIMIT).contains(&limit) {
+        return Err(WebError::BadRequest(format!(
+            "limit must be between 1 and {MAX_SEARCH_LIMIT}"
+        )));
+    }
+    let (rows, total_items) = AthleteRepository::new(state.db.pool())
+        .search(&query.q, query.without_full_result, i64::from(limit))
+        .await?;
+
+    Ok(Json(AthleteSearchResponse {
+        data: rows.into_iter().map(AthleteSearchHit::from).collect(),
+        total_items,
+    }))
 }
 
 /// Retrieve an athlete

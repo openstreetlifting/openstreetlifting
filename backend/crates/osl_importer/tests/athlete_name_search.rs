@@ -140,13 +140,21 @@ async fn combines_search_with_ranking_filters(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]
-async fn matches_wildcards_literally(pool: PgPool) {
+async fn matches_nobody_without_letters(pool: PgPool) {
     seed(&pool).await;
 
-    for wildcard in ["%", "_", "%dupont%"] {
+    for wildcard in ["%", "_", " - "] {
         let (_, total) = search(&pool, &filter(Some(wildcard))).await;
         assert_eq!(total, 0, "{wildcard} should match nobody");
     }
+}
+
+#[sqlx::test(migrations = "../osl_db/migrations")]
+async fn ignores_punctuation_around_names(pool: PgPool) {
+    seed(&pool).await;
+
+    let (names, _) = search(&pool, &filter(Some("%dupont%"))).await;
+    assert_eq!(names, ["Jean Dupont", "Marie Dupont"]);
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

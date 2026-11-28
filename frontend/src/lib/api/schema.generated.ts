@@ -15,6 +15,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/athletes/search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['search_athletes'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/athletes/{slug}': {
     parameters: {
       query?: never;
@@ -288,6 +304,32 @@ export interface components {
       slug: string;
       standing?: components['schemas']['AthleteStanding'] | null;
       total_competitions?: number;
+    };
+    AthleteSearchEntry: {
+      category: string;
+      competition: components['schemas']['CompetitionInfo'];
+      dips: number | null;
+      event: string | null;
+      federation: components['schemas']['RankingFederation'];
+      gender: components['schemas']['Gender'];
+      muscleup: number | null;
+      pullup: number | null;
+      squat: number | null;
+      status: components['schemas']['AthleteStatus'];
+      status_reason: string | null;
+    };
+    AthleteSearchHit: {
+      best_entry: components['schemas']['AthleteSearchEntry'] | null;
+      country: string | null;
+      first_name: string;
+      gender: components['schemas']['Gender'];
+      last_name: string;
+      rankings: components['schemas']['RankingMetric'][];
+      slug: string;
+    };
+    AthleteSearchResponse: {
+      data: components['schemas']['AthleteSearchHit'][];
+      total_items: number;
     };
     AthleteStanding: {
       dips: components['schemas']['MetricStanding'] | null;
@@ -690,6 +732,37 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['PaginatedResponse_AthleteResponse'];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  search_athletes: {
+    parameters: {
+      query: {
+        q: string;
+        limit?: number;
+        without_full_result?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AthleteSearchResponse'];
         };
       };
       400: {

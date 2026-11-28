@@ -3,13 +3,14 @@ use rust_decimal::Decimal;
 use sqlx::PgPool;
 use uuid::Uuid;
 
+use super::name_search::push_name_terms_match;
 use crate::error::{Result, StorageError};
 use crate::params::Page;
 use crate::projections::athlete::{
     AthleteBalanceRow, AthleteCompetitionRow, AthleteDetail, AthleteLiftRow, AthleteRecords,
     count_competitions,
 };
-use crate::rows::athlete::AthleteRow;
+use crate::rows::athlete::{AthleteRow, AthleteSearchRow};
 
 pub struct AthleteRepository<'a> {
     pool: &'a PgPool,
@@ -44,6 +45,97 @@ impl<'a> AthleteRepository<'a> {
             .await?;
 
         Ok((athletes, total))
+    }
+
+    #[tracing::instrument(name = "repository.athlete.search", skip_all, fields(db.system.name = "postgresql"))]
+    pub async fn search(
+        &self,
+        name: &str,
+        without_full_result: bool,
+        limit: i64,
+    ) -> Result<(Vec<AthleteSearchRow>, i64)> {
+        let mut query = sqlx::QueryBuilder::new(
+            r"
+            WITH hits AS (
+                SELECT a.athlete_id, a.first_name, a.last_name, a.gender, a.country, a.slug,
+                       r.rankings,
+                       cardinality(r.rankings) > 0 AS ranked,
+                       COUNT(*) OVER () AS total_items
+                FROM athletes a
+                CROSS JOIN LATERAL (
+                    SELECT ARRAY(
+                        SELECT s.metric::text
+                        FROM athlete_metric_standings s
+                        WHERE s.athlete_id = a.athlete_id
+                        ORDER BY array_position(
+                            ARRAY['ris', 'total', 'muscleup', 'pullup', 'dips', 'squat'],
+                            s.metric::text
+                        )
+                    ) AS rankings
+                ) r
+                WHERE ",
+        );
+        push_name_terms_match(&mut query, "a.match_key", name);
+        if without_full_result {
+            query.push(" AND NOT ('total' = ANY (r.rankings)) ");
+        }
+        query.push(
+            r"
+                ORDER BY ranked DESC, a.last_name, a.first_name, a.slug
+                LIMIT ",
+        );
+        query.push_bind(limit);
+        query.push(
+            r"
+            )
+            SELECT hits.first_name, hits.last_name, hits.gender, hits.country, hits.slug,
+                   hits.rankings, hits.total_items,
+                   best.competition_id, best.competition_name, best.competition_slug,
+                   best.competition_date, best.federation_name, best.federation_abbreviation,
+                   best.event_code, best.entry_status, best.entry_status_reason, best.entry_gender, best.weight_class_min, best.weight_class_max,
+                   best.muscleup, best.pullup, best.dips, best.squat
+            FROM hits
+            LEFT JOIN LATERAL (
+                SELECT c.competition_id,
+                       c.name AS competition_name,
+                       c.slug AS competition_slug,
+                       c.start_date AS competition_date,
+                       f.name AS federation_name,
+                       f.abbreviation AS federation_abbreviation,
+                       c.event_code,
+                       cp.status AS entry_status,
+                       cp.status_reason AS entry_status_reason,
+                       COALESCE(cp.category_gender, wc.gender, hits.gender) AS entry_gender,
+                       wc.min_kg AS weight_class_min,
+                       wc.max_kg AS weight_class_max,
+                       bests.muscleup, bests.pullup, bests.dips, bests.squat
+                FROM competition_participants cp
+                JOIN competitions c ON c.competition_id = cp.competition_id
+                JOIN federations f ON f.federation_id = c.federation_id
+                LEFT JOIN weight_classes wc ON wc.weight_class_id = cp.weight_class_id
+                CROSS JOIN LATERAL (
+                    SELECT MAX(l.max_weight) FILTER (WHERE l.movement_name = 'Muscle-up') AS muscleup,
+                           MAX(l.max_weight) FILTER (WHERE l.movement_name = 'Pull-up') AS pullup,
+                           MAX(l.max_weight) FILTER (WHERE l.movement_name = 'Dips') AS dips,
+                           MAX(l.max_weight) FILTER (WHERE l.movement_name = 'Squat') AS squat
+                    FROM lifts l
+                    WHERE l.participant_id = cp.participant_id
+                      AND cp.status::text = 'competed'
+                      AND l.max_weight > 0
+                ) bests
+                WHERE cp.athlete_id = hits.athlete_id
+                ORDER BY COALESCE(bests.muscleup, 0) + COALESCE(bests.pullup, 0)
+                         + COALESCE(bests.dips, 0) + COALESCE(bests.squat, 0) DESC,
+                         c.start_date DESC NULLS LAST, cp.participant_id
+                LIMIT 1
+            ) best ON TRUE
+            ORDER BY hits.ranked DESC, hits.last_name, hits.first_name, hits.slug
+            ",
+        );
+
+        let rows: Vec<AthleteSearchRow> = query.build_query_as().fetch_all(self.pool).await?;
+        let total = rows.first().map_or(0, |row| row.total_items);
+        Ok((rows, total))
     }
 
     #[tracing::instrument(name = "repository.athlete.find_by_slug", skip_all, fields(db.system.name = "postgresql"))]

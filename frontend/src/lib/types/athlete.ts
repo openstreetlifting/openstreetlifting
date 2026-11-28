@@ -18,6 +18,8 @@ export type AthleteDetail = AthleteSummary &
     >
   >;
 export type AthleteStanding = Schemas['AthleteStanding'];
+export type AthleteSearchHit = Schemas['AthleteSearchHit'];
+export type AthleteSearchResponse = Schemas['AthleteSearchResponse'];
 export type MetricStanding = Schemas['MetricStanding'];
 export type LiftBalance = Schemas['LiftBalance'];
 export type AthleteCompetitionSummary = Schemas['AthleteCompetitionSummary'];
