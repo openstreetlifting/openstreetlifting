@@ -127,7 +127,7 @@
         >
           {#each sorts as sort (sort.value)}
             <option value={sort.value}>
-              {i18n.t('Sort by {sort}', { sort: i18n.t(sort.label) })}
+              {i18n.t('By {sort}', { sort: i18n.t(sort.label) })}
             </option>
           {/each}
         </SelectField>

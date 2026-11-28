@@ -30,6 +30,7 @@
     rows,
     itemName = 'entry',
     pagination,
+    paged = true,
     pageParam = 'table_page',
     busy = false,
     embedded = false,
@@ -41,6 +42,7 @@
     rows: Row[];
     itemName?: 'athlete' | 'competition' | 'federation' | 'entry';
     pagination?: TablePagination;
+    paged?: boolean;
     pageParam?: string;
     busy?: boolean;
     /** A parent results frame supplies the outer border and page gutters. */
@@ -59,7 +61,7 @@
       Math.min(totalPages, Math.max(1, Number.isInteger(requestedPage) ? requestedPage : 1))
   );
   const visibleRows = $derived(
-    pagination ? rows : rows.slice((page - 1) * TABLE_PAGE_SIZE, page * TABLE_PAGE_SIZE)
+    pagination || !paged ? rows : rows.slice((page - 1) * TABLE_PAGE_SIZE, page * TABLE_PAGE_SIZE)
   );
   const countLabel = $derived(i18n.count(itemName, totalItems));
   const tableLabel = $derived(
@@ -139,7 +141,9 @@
 <div
   class={embedded ? 'min-w-0' : `min-w-0 rounded-panel border border-stroke-strong ${EDGE_TO_EDGE}`}
 >
-  <div class="border-b border-stroke">{@render paginationBar('top')}</div>
+  {#if paged}
+    <div class="border-b border-stroke">{@render paginationBar('top')}</div>
+  {/if}
 
   <div
     onfocusin={revealFocus}
@@ -163,7 +167,9 @@
     </table>
   </div>
 
-  <div class="border-t border-stroke">{@render paginationBar('bottom')}</div>
+  {#if paged}
+    <div class="border-t border-stroke">{@render paginationBar('bottom')}</div>
+  {/if}
 </div>
 
 <style>

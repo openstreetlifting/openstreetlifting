@@ -4,13 +4,12 @@
 
 <script lang="ts">
   import ChartPanel from '#lib/components/ui/chart-panel.svelte';
-  import InfoTip from '#lib/components/ui/info-tip.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { Chart, Tooltip } from 'layerchart/svg';
   import { scaleBand, scaleLinear } from 'd3-scale';
   import { onMount } from 'svelte';
   import type { AttemptRate, MovementAttempts } from '#lib/utils/competition-results.js';
-  import { CHART, TEXT } from '#lib/constants/typography.js';
+  import { CHART } from '#lib/constants/typography.js';
   import { AXIS, BAND_AXIS, PLOT_PADDING } from '#lib/utils/chart.js';
   import { liftTone } from '#lib/constants/lift.js';
 
@@ -28,6 +27,7 @@
   const COLUMN_PADDING = 0.3;
   const BAR_WIDTH = 20;
   const BAR_GAP = 2;
+  const LABEL_ROOM = 16;
 
   const ATTEMPTS = [
     { number: 1, fill: 'var(--color-faint)', strength: 65 },
@@ -62,24 +62,6 @@
 </script>
 
 <ChartPanel title={i18n.t('Attempt success')}>
-  {#snippet controls()}
-    <InfoTip label={i18n.t('About attempt success')}>
-      <p class="font-medium text-ink">{i18n.t('Attempt success')}</p>
-      <p class="mt-3">
-        {i18n.t('The share of first, second and third attempts judged good, for each movement.')}
-      </p>
-    </InfoTip>
-  {/snippet}
-
-  <ul class="{TEXT.meta} mb-2 flex flex-wrap gap-x-4 gap-y-1 text-secondary">
-    {#each ATTEMPTS as attempt (attempt.number)}
-      <li class="flex items-center gap-2">
-        <span class="size-2 rounded-sm" style:background={attempt.fill} aria-hidden="true"></span>
-        {i18n.t('Attempt {number}', { number: attempt.number })}
-      </li>
-    {/each}
-  </ul>
-
   <div
     class="{CHART.plot} w-full min-w-0"
     bind:clientWidth={chartWidth}
@@ -130,17 +112,31 @@
           {#each column.rates as rate (rate.attempt)}
             {@const value = share(rate)}
             {#if value !== null}
+              {@const x = start + (inner(rate.attempt) ?? 0)}
+              {@const height = Math.max(0, context.yScale(0) - context.yScale(value))}
+              {@const inside = height >= LABEL_ROOM}
               <rect
-                x={start + (inner(rate.attempt) ?? 0)}
+                {x}
                 y={context.yScale(value)}
                 width={inner.bandwidth()}
-                height={Math.max(0, context.yScale(0) - context.yScale(value))}
+                {height}
                 rx="2"
                 fill={barFill(column.movement, rate.attempt)}
                 role="presentation"
                 onpointermove={(event) => context.tooltip.show(event, column)}
                 onpointerleave={() => context.tooltip.hide()}
               />
+              <text
+                x={x + inner.bandwidth() / 2}
+                y={inside ? context.yScale(0) - 5 : context.yScale(value) - 4}
+                text-anchor="middle"
+                class="pointer-events-none font-mono text-micro {inside
+                  ? 'fill-canvas'
+                  : 'fill-muted'}"
+                aria-hidden="true"
+              >
+                {rate.attempt}
+              </text>
             {/if}
           {/each}
         {/each}

@@ -42,9 +42,6 @@ export default {
   'Share of total': 'Quota del totale',
   Difference: 'Differenza',
   'Total by bodyweight': 'Totale per peso corporeo',
-  'About total by bodyweight': 'Informazioni sul totale per peso corporeo',
-  'Each point is an athlete with a recorded bodyweight. The lines show the total needed for a RIS of 100 at each bodyweight, using the {year} edition.':
-    'Ogni punto è un atleta con peso corporeo registrato. Le linee mostrano il totale necessario per un RIS di 100 a ogni peso corporeo, secondo l’edizione {year}.',
   'RIS 100, {sex}': 'RIS 100, {sex}',
   'Total by bodyweight for {count} athletes, {above} of them above a RIS of 100.':
     'Totale per peso corporeo di {count} atleti, {above} dei quali sopra RIS 100.',
@@ -79,7 +76,9 @@ export default {
   Year: 'Anno',
   'All Classes': 'Tutte le categorie',
   'Sort by': 'Ordina per',
-  'Sort by {sort}': 'Ordina per {sort}',
+  'By {sort}': 'Per {sort}',
+  'By class': 'Per categoria',
+  'By index': 'Per indice',
   'Streetlifting competition results': 'Risultati delle gare di streetlifting',
   'Streetlifting competitions': 'Gare di streetlifting',
   'Hey! Those competitions are currently running': 'Ehi! Queste gare sono in corso',
@@ -335,10 +334,7 @@ export default {
   'Attempt {slot}: {weight} {unit}, {result}': 'Tentativo {slot}: {weight} {unit}, {result}',
   'Attempt {slot} not recorded': 'Tentativo {slot} non registrato',
   'Attempt success': 'Riuscita delle prove',
-  'About attempt success': 'Informazioni sulla riuscita delle prove',
   'Attempt {number}': 'Prova {number}',
-  'The share of first, second and third attempts judged good, for each movement.':
-    'La quota di prime, seconde e terze prove valide, per ogni movimento.',
   'good lift': 'valido',
   'no lift': 'nullo',
   'No successful {movement}': 'Nessun tentativo valido: {movement}',

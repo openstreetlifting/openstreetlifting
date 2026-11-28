@@ -41,9 +41,6 @@ export default {
   'Share of total': 'Part du total',
   Difference: 'Écart',
   'Total by bodyweight': 'Total selon le poids de corps',
-  'About total by bodyweight': 'À propos du total selon le poids de corps',
-  'Each point is an athlete with a recorded bodyweight. The lines show the total needed for a RIS of 100 at each bodyweight, using the {year} edition.':
-    'Chaque point est un athlète dont le poids de corps est connu. Les lignes indiquent le total nécessaire pour un RIS de 100 à chaque poids de corps, selon l’édition {year}.',
   'RIS 100, {sex}': 'RIS 100, {sex}',
   'Total by bodyweight for {count} athletes, {above} of them above a RIS of 100.':
     'Total selon le poids de corps pour {count} athlètes, dont {above} au-dessus de 100 de RIS.',
@@ -78,7 +75,9 @@ export default {
   Year: 'Année',
   'All Classes': 'Toutes les catégories',
   'Sort by': 'Trier par',
-  'Sort by {sort}': 'Trier par {sort}',
+  'By {sort}': 'Par {sort}',
+  'By class': 'Par catégorie',
+  'By index': 'Par indice',
   'Streetlifting competition results': 'Résultats des compétitions de streetlifting',
   'Streetlifting competitions': 'Compétitions de streetlifting',
   'Hey! Those competitions are currently running': 'Ces compétitions sont en cours',
@@ -335,10 +334,7 @@ export default {
   'Attempt {slot}: {weight} {unit}, {result}': 'Essai {slot} : {weight} {unit}, {result}',
   'Attempt {slot} not recorded': 'Essai {slot} non renseigné',
   'Attempt success': 'Réussite des essais',
-  'About attempt success': 'À propos de la réussite des essais',
   'Attempt {number}': 'Essai {number}',
-  'The share of first, second and third attempts judged good, for each movement.':
-    'La part des premiers, deuxièmes et troisièmes essais validés, pour chaque mouvement.',
   'good lift': 'validé',
   'no lift': 'non validé',
   'No successful {movement}': 'Aucun essai validé : {movement}',

@@ -1,23 +1,11 @@
 import { logger } from '#lib/server/logger.js';
-import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
-import { competitionsService, rankingsService } from '#lib/server/api/index.js';
+import { competitionsService } from '#lib/server/api/index.js';
 import { currentRisFormula } from '#lib/server/ris-formula.js';
 import { ApiError } from '#lib/server/api/client.js';
-import { defaultRankingSort, risProvenance } from '#lib/constants/ranking.js';
-import { formatAthleteName } from '#lib/utils/format.js';
 import type { PageServerLoad } from './$types';
-import { error, redirect } from '@sveltejs/kit';
-import { asRankingMetric } from '#lib/types/enums.js';
-import { LEADERBOARD_FILTERS } from '#lib/constants/filters.js';
-import { keepSelected, readFilters } from '#lib/utils/filters.js';
-import { competitionDivisions } from '#lib/utils/competition-results.js';
+import { error } from '@sveltejs/kit';
 
-const noRankings = () => ({
-  data: [],
-  pagination: { page: 1, page_size: TABLE_PAGE_SIZE, total_items: 0, total_pages: 0 },
-});
-
-export const load: PageServerLoad = async ({ params, url }) => {
+export const load: PageServerLoad = async ({ params }) => {
   let competition;
   try {
     competition = await competitionsService.getById(params.slug);
@@ -29,111 +17,6 @@ export const load: PageServerLoad = async ({ params, url }) => {
     error(503, 'Competition details are unavailable right now');
   }
 
-  const ris = risProvenance(competition);
-  const divisions = competitionDivisions(competition.categories);
-  const focused = url.searchParams.get('athlete');
-  const requested =
-    url.searchParams.get('division') ??
-    competition.categories.find(({ participants }) =>
-      participants.some((participant) => participant.athlete.slug === focused)
-    )?.category.division;
-  const active =
-    divisions.length > 1
-      ? (divisions.find((division) => division.name === requested) ?? divisions[0])
-      : null;
-  const division = active && active !== divisions[0] ? active.name : null;
-  const rankBy = active?.rankBy ?? competition.rank_by ?? defaultRankingSort(ris);
-
-  if (competition.categories.length === 0) {
-    const empty = noRankings();
-    return {
-      competition,
-      ris,
-      divisions,
-      division,
-      activeDivision: null,
-      rankBy,
-      classes: [],
-      countries: [],
-      initialRankings: empty.data,
-      pagination: empty.pagination,
-    };
-  }
-
-  const movement = asRankingMetric(url.searchParams.get('movement')) ?? rankBy;
-  const scope = active ? { division: active.name } : {};
-  const direction = url.searchParams.get('direction') === 'asc' ? 'asc' : 'desc';
-  const filters = readFilters(url.searchParams, LEADERBOARD_FILTERS);
-  const q = url.searchParams.get('q') || null;
-  const page = Number(url.searchParams.get('page') ?? 1) || 1;
-
-  if (focused && !url.searchParams.has('page') && !q) {
-    const participant = competition.categories
-      .filter(({ category }) => !active || category.division === active.name)
-      .flatMap((category) => category.participants)
-      .find((participant) => participant.athlete.slug === focused);
-    if (participant) {
-      // Name search preserves the unfiltered rank, so the link opens the page containing the athlete.
-      const match = await rankingsService
-        .getGlobalRankings({
-          page: 1,
-          page_size: TABLE_PAGE_SIZE,
-          movement,
-          direction,
-          ...filters,
-          ...scope,
-          q: formatAthleteName(participant.athlete),
-          competition_id: competition.competition_id,
-        })
-        .catch(() => noRankings());
-      const entry = match.data.find((entry) => entry.athlete.slug === focused);
-      if (entry) {
-        const targetPage = Math.ceil(entry.rank / match.pagination.page_size);
-        if (targetPage > 1) {
-          const target = new URL(url);
-          target.searchParams.set('page', String(targetPage));
-          if (division) target.searchParams.set('division', division);
-          redirect(307, `${target.pathname}${target.search}`);
-        }
-      }
-    }
-  }
-
-  const [formula, facets, rankings] = await Promise.all([
-    currentRisFormula(),
-    rankingsService
-      .getFacets({ ...filters, ...scope, competition_id: competition.competition_id })
-      .catch(() => ({ classes: [], countries: [] })),
-    rankingsService
-      .getGlobalRankings({
-        page,
-        page_size: TABLE_PAGE_SIZE,
-        movement,
-        direction,
-        ...filters,
-        ...scope,
-        q,
-        competition_id: competition.competition_id,
-      })
-      .catch((err) => {
-        logger.error({ err }, 'Competition rankings load failed');
-        error(502, 'Competition results are temporarily unavailable');
-      }),
-  ]);
-
-  return {
-    competition,
-    ris,
-    divisions,
-    division,
-    activeDivision: active?.name ?? null,
-    rankBy,
-    ...keepSelected(
-      { classes: facets.classes, countries: facets.countries },
-      { classes: filters.category, countries: filters.country }
-    ),
-    initialRankings: rankings.data,
-    pagination: rankings.pagination,
-    formula,
-  };
+  const formula = competition.categories.length > 0 ? await currentRisFormula() : null;
+  return { competition, formula };
 };

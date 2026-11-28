@@ -1,5 +1,6 @@
-import { expect, it, vi } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
+import { page as appPage } from '$app/state';
 import { render } from 'vitest-browser-svelte';
 import CompetitionPage from './+page.svelte';
 import type { PageData } from './$types';
@@ -78,17 +79,16 @@ function data(status: 'upcoming' | 'completed' = 'upcoming'): PageData {
         { slug: 'current', name: 'Current edition', start_date: '2026-11-01' },
       ],
     },
-    ris: 'not-contested',
-    divisions: [],
-    division: null,
-    activeDivision: null,
-    rankBy: 'total',
-    classes: [],
-    countries: [],
-    initialRankings: [],
-    pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
   };
 }
+
+const startUrl = appPage.url;
+const visit = (query: string) => {
+  appPage.url = new URL(`http://localhost/en/competitions/current${query}`);
+};
+afterEach(() => {
+  appPage.url = startUrl;
+});
 
 it.each(['upcoming', 'completed'] as const)(
   'links previous editions on a %s page with compact years and clean URLs',
@@ -240,7 +240,7 @@ it('switches between division boards and lists how each division is ranked', asy
         division: 'Open',
         rank_by: 'total',
       },
-      participants: [],
+      participants: [lifter('Open')],
     },
     {
       category: {
@@ -253,13 +253,7 @@ it('switches between division boards and lists how each division is ranked', asy
       participants: [],
     },
   ];
-  results.divisions = [
-    { name: 'Open', rankBy: 'total', entries: 30 },
-    { name: 'FNSL Elite', rankBy: 'ris', entries: 8 },
-  ];
-  results.division = 'FNSL Elite';
-  results.activeDivision = 'FNSL Elite';
-  results.rankBy = 'ris';
+  visit('?division=FNSL+Elite');
   results.formula = { year: 2026, is_current: true } as PageData['formula'];
   render(CompetitionPage, { data: results });
 
@@ -333,4 +327,143 @@ it('says open weight when an open field is ranked by total', async () => {
 
   await expect.element(page.getByText('Ranked by total, open weight')).toBeVisible();
   expect(fieldRows()).toEqual([['Women', 'Ranked by total, open weight']]);
+});
+
+type Entry = PageData['competition']['categories'][number]['participants'][number];
+const lifter = (name: string, overrides: Partial<Entry> = {}): Entry => ({
+  participant_id: name,
+  athlete: {
+    athlete_id: name,
+    first_name: name,
+    last_name: 'Lifter',
+    gender: 'M',
+    country: 'FR',
+    slug: name.toLowerCase(),
+  },
+  age: null,
+  bodyweight: null,
+  rank: null,
+  ris_score: null,
+  ris_source: null,
+  status: 'competed',
+  status_reason: null,
+  lifts: [],
+  total: null,
+  total_record: null,
+  ...overrides,
+});
+
+function meet() {
+  const results = data('completed');
+  results.competition.event_code = 'MPDS';
+  results.competition.categories = [
+    {
+      category: {
+        name: 'Men -80kg',
+        gender: 'M',
+        weight_class: '-80kg',
+        division: null,
+        rank_by: 'total',
+      },
+      participants: [
+        lifter('Bombed', { status: 'disqualified' }),
+        lifter('Second', { rank: 2, total: '250', ris_score: '90', ris_source: 'computed' }),
+        lifter('First', { rank: 1, total: '260', ris_score: '85', ris_source: 'computed' }),
+      ],
+    },
+    {
+      category: {
+        name: 'Women -63kg',
+        gender: 'F',
+        weight_class: '-63kg',
+        division: null,
+        rank_by: 'total',
+      },
+      participants: [
+        lifter('Heavy', {
+          rank: 1,
+          total: '150',
+          ris_score: '95',
+          ris_source: 'computed',
+          athlete: { ...lifter('Heavy').athlete, gender: 'F' },
+        }),
+      ],
+    },
+    {
+      category: {
+        name: 'Women -57kg',
+        gender: 'F',
+        weight_class: '-57kg',
+        division: null,
+        rank_by: 'total',
+      },
+      participants: [
+        lifter('Light', {
+          rank: 1,
+          total: '140',
+          athlete: { ...lifter('Light').athlete, gender: 'F' },
+        }),
+      ],
+    },
+  ];
+  return results;
+}
+
+const tableRows = () =>
+  [...document.querySelectorAll('tbody tr')].map((row) =>
+    [...row.querySelectorAll('td')]
+      .slice(0, 2)
+      .map((cell) => cell.textContent?.replace(/\s+/g, ' ').trim())
+  );
+
+it('opens on one table per contest, women light to heavy, ranked by the meet rule', async () => {
+  render(CompetitionPage, { data: meet() });
+
+  await expect.element(page.getByRole('heading', { name: 'Women -57kg' })).toBeVisible();
+  const headings = [...document.querySelectorAll('h3')].map((h) =>
+    h.textContent?.replace(/\s+/g, ' ').trim()
+  );
+  expect(headings).toEqual(['Women -57kg', 'Women -63kg', 'Men -80kg']);
+  expect(tableRows().slice(2)).toEqual([
+    ['1', 'First Lifter'],
+    ['2', 'Second Lifter'],
+    ['-', 'Bombed Lifter DQ'],
+  ]);
+  expect([...document.querySelectorAll('th')].map((th) => th.textContent?.trim())).not.toContain(
+    'Sex'
+  );
+});
+
+it('ranks every lifter on one board with their sex when sorted by RIS', async () => {
+  visit('?movement=ris');
+  render(CompetitionPage, { data: meet() });
+
+  await expect.element(page.getByRole('cell', { name: 'Sex', exact: true })).toBeVisible();
+  expect(document.querySelectorAll('table')).toHaveLength(1);
+  expect(tableRows()).toEqual([
+    ['1', 'Heavy Lifter'],
+    ['2', 'Second Lifter'],
+    ['3', 'First Lifter'],
+    ['-', 'Light Lifter'],
+    ['-', 'Bombed Lifter DQ'],
+  ]);
+});
+
+it('hides the contests a search leaves empty', async () => {
+  visit('?q=first');
+  render(CompetitionPage, { data: meet() });
+
+  await expect.element(page.getByRole('heading', { name: 'Men -80kg' })).toBeVisible();
+  expect(document.querySelectorAll('h3')).toHaveLength(1);
+  expect(tableRows()).toEqual([['1', 'First Lifter']]);
+});
+
+it('keeps the sort and search when switching edition, but not the page or athlete', async () => {
+  visit('?movement=squat&q=first&page=2&athlete=first');
+  render(CompetitionPage, { data: meet() });
+
+  const nav = page.getByRole('navigation', { name: 'Edition' });
+  await expect
+    .element(nav.getByRole('link').first())
+    .toHaveAttribute('href', '/en/competitions/original-2023?movement=squat&q=first');
 });

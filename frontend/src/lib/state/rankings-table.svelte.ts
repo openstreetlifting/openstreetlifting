@@ -9,31 +9,17 @@ import { ListingSearch } from './listing-search.svelte';
 import { UrlFilters } from './url-filters.svelte';
 
 interface RankingsTableConfig<S extends FilterSpec> {
-  /**
-   * Route to push filter changes onto, e.g. `/` or `/competitions/some-slug`.
-   * Pass a getter when it is read off page data: the class outlives a navigation
-   * between two competitions, and a captured value would keep linking to the first.
-   */
-  basePath: string | (() => string);
+  basePath: string;
   filters: S;
   initialUrl: typeof page.url;
-  /** Column sorted before anyone picks one. Not every competition has a RIS to sort on. */
-  defaultSort?: string | (() => string);
-  /** Query parameters that select which board this is, kept through every filter change and clear. */
-  scope?: () => Record<string, string | null>;
 }
 
-function reader<T>(value: T | (() => T)): () => T {
-  return typeof value === 'function' ? (value as () => T) : () => value;
-}
+const DEFAULT_SORT = 'ris';
 
 /**
- * Shared filter and sort state for a rankings table. Both the global rankings
- * page and a per-competition leaderboard read from the same `/api/v1/rankings` shape,
- * so they share this instead of each carrying its own near-identical copy.
- *
- * The URL describes the applied results; the search input keeps its own draft
- * while requests are in flight. Rows and pagination come from the page's load.
+ * Filter and sort state for the rankings table. The URL describes the applied
+ * results; the search input keeps its own draft while requests are in flight.
+ * Rows and pagination come from the page's load.
  */
 export class RankingsTable<S extends FilterSpec> {
   readonly filters: UrlFilters<S>;
@@ -48,7 +34,7 @@ export class RankingsTable<S extends FilterSpec> {
     this.search.value = value;
   }
 
-  movementFilter = $state('ris');
+  movementFilter = $state(DEFAULT_SORT);
   sortDirection = $state<'asc' | 'desc'>('desc');
   /**
    * The athlete a link asked the board to scroll to and highlight. Not a filter,
@@ -57,22 +43,10 @@ export class RankingsTable<S extends FilterSpec> {
    */
   focusedAthlete = $state<string | null>(null);
 
-  private readonly readBasePath: () => string;
-  private readonly readDefaultSort: () => string;
-  private readonly readScope: () => Record<string, string | null>;
-
-  get defaultSort(): string {
-    return this.readDefaultSort();
-  }
-
-  private get basePath(): string {
-    return this.readBasePath();
-  }
+  private readonly basePath: string;
 
   constructor(config: RankingsTableConfig<S>) {
-    this.readBasePath = reader(config.basePath);
-    this.readDefaultSort = reader(config.defaultSort ?? 'ris');
-    this.readScope = config.scope ?? (() => ({}));
+    this.basePath = config.basePath;
     this.filters = new UrlFilters(
       config.filters,
       readFilters(config.initialUrl.searchParams, config.filters)
@@ -92,7 +66,7 @@ export class RankingsTable<S extends FilterSpec> {
     const params = url.searchParams;
     this.filters.sync(readFilters(params, this.filters.spec));
     this.search.sync(url, type);
-    this.movementFilter = params.get('movement') || this.defaultSort;
+    this.movementFilter = params.get('movement') || DEFAULT_SORT;
     this.sortDirection = params.get('direction') === 'asc' ? 'asc' : 'desc';
     this.focusedAthlete = params.get('athlete') || null;
   }
@@ -103,7 +77,7 @@ export class RankingsTable<S extends FilterSpec> {
       this.filters.activeCount ||
       this.searchQuery ||
       this.focusedAthlete ||
-      this.movementFilter !== this.defaultSort ||
+      this.movementFilter !== DEFAULT_SORT ||
       this.sortDirection !== 'desc'
     );
   }
@@ -115,10 +89,7 @@ export class RankingsTable<S extends FilterSpec> {
   /** Defaults stay out of the query string so a shared link carries only what was chosen. */
   pageHref(targetPage: number, query = this.search.applied) {
     const params = new SvelteURLSearchParams();
-    for (const [name, value] of Object.entries(this.readScope())) {
-      if (value) params.set(name, value);
-    }
-    if (this.movementFilter !== this.defaultSort) params.set('movement', this.movementFilter);
+    if (this.movementFilter !== DEFAULT_SORT) params.set('movement', this.movementFilter);
     if (this.sortDirection !== 'desc') params.set('direction', this.sortDirection);
     this.filters.writeTo(params);
     if (query.trim()) params.set('q', query.trim());
@@ -143,7 +114,7 @@ export class RankingsTable<S extends FilterSpec> {
     this.filters.clear();
     this.searchFilter = '';
     this.focusedAthlete = null;
-    this.movementFilter = this.defaultSort;
+    this.movementFilter = DEFAULT_SORT;
     this.sortDirection = 'desc';
     await this.navigate(1);
   }
