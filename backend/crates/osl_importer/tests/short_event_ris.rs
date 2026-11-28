@@ -1,5 +1,5 @@
 use osl_db::filter::Filters;
-use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
+use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::{competition::CompetitionRepository, ranking::RankingRepository};
 use osl_domain::{AthleteStatus, Gender, Movement, RankBy};
 use osl_importer::canonical::{models::CanonicalFormat, validator::CanonicalValidator};
@@ -168,9 +168,6 @@ async fn excludes_short_events_from_full_event_standings(pool: PgPool) {
             .unwrap()
             .is_empty()
     );
-    filter.event = osl_domain::FULL_EVENT.into();
-    filter.by = [RankingBy::Competition(shorter[0].competition_id)].into();
-    assert_eq!(repository.get_global_ranking(&filter).await.unwrap().1, 2);
 }
 
 #[sqlx::test(migrations = "../osl_db/migrations")]

@@ -55,7 +55,7 @@ pub struct GlobalRankingFilter {
     #[serde(flatten)]
     #[param(ignore)]
     pub pagination: crate::shared::dto::PaginationParams,
-    /// Gender. `MX` requires `competition_id`.
+    /// Athlete sex.
     pub gender: Option<RankedGender>,
     /// Athlete country (ISO 3166-1 alpha-2).
     #[param(example = "FR")]
@@ -78,25 +78,13 @@ pub struct GlobalRankingFilter {
     /// Weight class, such as `-80kg` or `+101kg`.
     #[param(example = "-80kg")]
     pub category: Option<String>,
-
     /// Competition year.
     pub year: Option<i32>,
-    /// Rank one competition. Otherwise each athlete appears once.
-    pub competition_id: Option<Uuid>,
-    /// Division name. Requires `competition_id`.
-    pub division: Option<String>,
 }
 
 impl GlobalRankingFilter {
     pub fn validate(&self) -> Result<(), String> {
         self.pagination.validate()?;
-        if self.gender == Some(RankedGender::Mx) && self.competition_id.is_none() {
-            return Err("MX requires competition_id; global rankings use athlete sex".into());
-        }
-        if self.division.is_some() && self.competition_id.is_none() {
-            return Err("division requires competition_id; division names are not shared between federations".into());
-        }
-
         if let Some(ref category) = self.category {
             WeightClass::from_str(category)?;
         }
@@ -105,13 +93,7 @@ impl GlobalRankingFilter {
     }
 
     pub fn filters(&self) -> Filters<RankingBy> {
-        let gender = self.gender.map(Gender::from).map(|gender| {
-            if self.competition_id.is_some() {
-                RankingBy::CategoryGender(gender)
-            } else {
-                RankingBy::Sex(gender)
-            }
-        });
+        let gender = self.gender.map(|gender| RankingBy::Sex(gender.into()));
         let class = self
             .category
             .as_deref()
@@ -124,8 +106,6 @@ impl GlobalRankingFilter {
             self.series.clone().map(RankingBy::Series),
             class.map(RankingBy::Class),
             self.year.map(RankingBy::Year),
-            self.competition_id.map(RankingBy::Competition),
-            self.division.clone().map(RankingBy::Division),
         ]
         .into_iter()
         .flatten()

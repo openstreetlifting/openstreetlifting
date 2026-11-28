@@ -31,7 +31,7 @@ it('routes localized pages while keeping assets, API and machine-readable endpoi
   expect(route('/de/athletes/alex-martin')).toBe('/athletes/alex-martin');
   expect(route('/pl')).toBe('/');
   expect(route('/it/manifest.webmanifest')).toBe('/manifest.webmanifest');
-  expect(route('/fr/api/rankings')).toBeUndefined();
+  expect(route('/fr/api/athletes/search')).toBeUndefined();
   expect(route('/sitemap.xml')).toBeUndefined();
   expect(route('/flags/fr.svg')).toBeUndefined();
 });

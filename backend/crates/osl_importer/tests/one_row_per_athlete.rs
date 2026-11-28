@@ -1,18 +1,15 @@
-use osl_db::params::{RankingBy, RankingFilter, RankingMovement, SortDirection};
+use osl_db::filter::Filters;
+use osl_db::params::{RankingFilter, RankingMovement, SortDirection};
 use osl_db::repository::ranking::RankingRepository;
 use sqlx::PgPool;
-use uuid::Uuid;
 
 mod common;
 
 use common::{athlete, competition, import, lifting, men_80};
 
-fn filter(movement: RankingMovement, competition_id: Option<Uuid>) -> RankingFilter {
+fn filter(movement: RankingMovement) -> RankingFilter {
     RankingFilter {
-        by: competition_id
-            .map(RankingBy::Competition)
-            .into_iter()
-            .collect(),
+        by: Filters::default(),
         name: None,
         movement,
         direction: SortDirection::Desc,
@@ -52,7 +49,7 @@ async fn ranks_each_athlete_once(pool: PgPool) {
     two_years(&pool).await;
 
     let (rows, total) = RankingRepository::new(&pool)
-        .get_global_ranking(&filter(RankingMovement::Total, None))
+        .get_global_ranking(&filter(RankingMovement::Total))
         .await
         .unwrap();
 
@@ -66,38 +63,17 @@ async fn ranks_athletes_by_best_result(pool: PgPool) {
     let repo = RankingRepository::new(&pool);
 
     let (by_total, _) = repo
-        .get_global_ranking(&filter(RankingMovement::Total, None))
+        .get_global_ranking(&filter(RankingMovement::Total))
         .await
         .unwrap();
     assert_eq!(by_total[0].competition_slug, "second-year");
 
     let (by_muscleup, _) = repo
-        .get_global_ranking(&filter(RankingMovement::Muscleup, None))
+        .get_global_ranking(&filter(RankingMovement::Muscleup))
         .await
         .unwrap();
     assert_eq!(
         by_muscleup[0].competition_slug, "first-year",
         "their bigger muscle-up came from the year with the smaller total"
-    );
-}
-
-#[sqlx::test(migrations = "../osl_db/migrations")]
-async fn preserves_all_competition_entries(pool: PgPool) {
-    two_years(&pool).await;
-
-    let id: Uuid = sqlx::query_scalar("SELECT competition_id FROM competitions WHERE slug = $1")
-        .bind("first-year")
-        .fetch_one(&pool)
-        .await
-        .unwrap();
-
-    let (_, total) = RankingRepository::new(&pool)
-        .get_global_ranking(&filter(RankingMovement::Total, Some(id)))
-        .await
-        .unwrap();
-
-    assert_eq!(
-        total, 1,
-        "scoped to one competition, nothing is deduplicated"
     );
 }

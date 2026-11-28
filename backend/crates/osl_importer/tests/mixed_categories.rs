@@ -1,3 +1,4 @@
+use osl_db::filter::Filters;
 use osl_db::params::{RankingBy, RankingFilter};
 use osl_db::repository::{athlete::AthleteRepository, competition::CompetitionRepository};
 use osl_domain::{Gender, RankBy};
@@ -193,11 +194,7 @@ async fn shares_identity_across_contest_types(pool: PgPool) {
     );
 
     let mut filter = RankingFilter {
-        by: [
-            RankingBy::CategoryGender(Gender::Mx),
-            RankingBy::Competition(detail.competition.competition_id),
-        ]
-        .into(),
+        by: Filters::default(),
         name: None,
         movement: osl_db::params::RankingMovement::Total,
         direction: osl_db::params::SortDirection::Desc,
@@ -206,25 +203,6 @@ async fn shares_identity_across_contest_types(pool: PgPool) {
         limit: 20,
     };
     let rankings = osl_db::repository::ranking::RankingRepository::new(&pool);
-    let (rows, count) = rankings.get_global_ranking(&filter).await.unwrap();
-    assert_eq!(count, 2);
-    let mixed = detail
-        .categories
-        .iter()
-        .find(|c| c.category.gender == Gender::Mx)
-        .unwrap();
-    assert!(rows.iter().all(|row| {
-        mixed
-            .participants
-            .iter()
-            .any(|p| p.participant_id == row.participant_id)
-    }));
-    filter.by = [
-        RankingBy::CategoryGender(Gender::M),
-        RankingBy::Competition(detail.competition.competition_id),
-    ]
-    .into();
-    assert_eq!(rankings.get_global_ranking(&filter).await.unwrap().1, 1);
     for gender in [Gender::M, Gender::F] {
         filter.by = [RankingBy::Sex(gender)].into();
         let (rows, count) = rankings.get_global_ranking(&filter).await.unwrap();

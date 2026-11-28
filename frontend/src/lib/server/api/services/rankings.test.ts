@@ -29,7 +29,6 @@ it('sends event and ranking filters through the API client without unset values'
       category: '-63kg',
       year: 2026,
       q: 'Anne & Léa',
-      competition_id: undefined,
     })
   ).toEqual(response);
 

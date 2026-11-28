@@ -192,9 +192,7 @@ async fn returns_empty_list_when_classes_are_absent(pool: PgPool) {
 
     assert_eq!(
         RankingRepository::new(&pool)
-            .facets(&totals([RankingBy::Competition(
-                competition.competition_id
-            )]))
+            .facets(&totals(Filters::default()))
             .await
             .unwrap()
             .classes,
@@ -203,34 +201,7 @@ async fn returns_empty_list_when_classes_are_absent(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "./migrations")]
-async fn filters_classes_by_competition(pool: PgPool) {
-    let competition = competition(&pool).await;
-    enter(&pool, &competition, "M", Some(73), Some(80), None).await;
-
-    let repository = RankingRepository::new(&pool);
-
-    assert_eq!(
-        repository
-            .facets(&totals([RankingBy::Competition(
-                competition.competition_id
-            )]))
-            .await
-            .unwrap()
-            .classes,
-        vec!["-80kg"]
-    );
-    assert_eq!(
-        repository
-            .facets(&totals([RankingBy::Competition(Uuid::new_v4())]))
-            .await
-            .unwrap()
-            .classes,
-        [] as [String; 0]
-    );
-}
-
-#[sqlx::test(migrations = "./migrations")]
-async fn lists_unranked_entrants_only_inside_their_competition(pool: PgPool) {
+async fn leaves_unranked_entrants_out_of_the_classes(pool: PgPool) {
     let competition = competition(&pool).await;
     enter(&pool, &competition, "M", Some(73), Some(80), None).await;
     sqlx::query("UPDATE competition_participants SET status = 'disqualified', total = NULL")
@@ -240,16 +211,6 @@ async fn lists_unranked_entrants_only_inside_their_competition(pool: PgPool) {
 
     let repository = RankingRepository::new(&pool);
 
-    assert_eq!(
-        repository
-            .facets(&totals([RankingBy::Competition(
-                competition.competition_id
-            )]))
-            .await
-            .unwrap()
-            .classes,
-        vec!["-80kg"]
-    );
     assert_eq!(
         repository
             .facets(&totals(Filters::default()))

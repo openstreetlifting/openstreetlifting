@@ -263,12 +263,8 @@ mod tests {
     }
 
     #[test]
-    fn requires_competition_when_gender_is_mixed() {
-        for (raw, expected) in [
-            ("%20m%20", RankedGender::M),
-            ("f", RankedGender::F),
-            ("mx", RankedGender::Mx),
-        ] {
+    fn ranks_by_athlete_sex_only() {
+        for (raw, expected) in [("%20m%20", RankedGender::M), ("f", RankedGender::F)] {
             let query = Query::<GlobalRankingFilter>::try_from_uri(
                 &format!("/rankings?gender={raw}").parse().unwrap(),
             )
@@ -281,14 +277,7 @@ mod tests {
                     .any(|by| matches!(by, RankingBy::Sex(sex) if *sex == gender))
             );
         }
-        let mut mixed =
-            Query::<GlobalRankingFilter>::try_from_uri(&"/rankings?gender=MX".parse().unwrap())
-                .unwrap()
-                .0;
-        assert!(mixed.validate().is_err());
-        mixed.competition_id = Some(uuid::Uuid::new_v4());
-        assert!(mixed.validate().is_ok());
-        for raw in ["nonsense", ""] {
+        for raw in ["MX", "nonsense", ""] {
             assert!(
                 Query::<GlobalRankingFilter>::try_from_uri(
                     &format!("/rankings?gender={raw}").parse().unwrap(),

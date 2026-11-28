@@ -572,7 +572,7 @@
           {
             "name": "gender",
             "in": "query",
-            "description": "Gender. `MX` requires `competition_id`.",
+            "description": "Athlete sex.",
             "required": false,
             "schema": {
               "oneOf": [
@@ -689,31 +689,6 @@
                 "null"
               ],
               "format": "int32"
-            }
-          },
-          {
-            "name": "competition_id",
-            "in": "query",
-            "description": "Rank one competition. Otherwise each athlete appears once.",
-            "required": false,
-            "schema": {
-              "type": [
-                "string",
-                "null"
-              ],
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "division",
-            "in": "query",
-            "description": "Division name. Requires `competition_id`.",
-            "required": false,
-            "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
             }
           }
         ],
@@ -778,7 +753,7 @@
           {
             "name": "gender",
             "in": "query",
-            "description": "Gender. `MX` requires `competition_id`.",
+            "description": "Athlete sex.",
             "required": false,
             "schema": {
               "oneOf": [
@@ -895,31 +870,6 @@
                 "null"
               ],
               "format": "int32"
-            }
-          },
-          {
-            "name": "competition_id",
-            "in": "query",
-            "description": "Rank one competition. Otherwise each athlete appears once.",
-            "required": false,
-            "schema": {
-              "type": [
-                "string",
-                "null"
-              ],
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "division",
-            "in": "query",
-            "description": "Division name. Requires `competition_id`.",
-            "required": false,
-            "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
             }
           }
         ],
@@ -3763,11 +3713,10 @@
       },
       "RankedGender": {
         "type": "string",
-        "description": "`M`, `F` or `MX`. `MX` requires `competition_id`.",
+        "description": "Athlete sex, `M` or `F`.",
         "enum": [
           "M",
-          "F",
-          "MX"
+          "F"
         ]
       },
       "RankingAthlete": {
