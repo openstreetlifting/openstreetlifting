@@ -18,12 +18,13 @@ pub const REPORTED_RIS: &str = "ReportedRis";
 pub const BODYWEIGHT_SOURCE: &str = "BodyweightSource";
 pub const REPORTED_RIS_EDITION: &str = "ReportedRisEdition";
 pub const TOTAL: &str = "TotalKg";
+pub const PLACE: &str = "Place";
 pub const STATUS: &str = "Status";
 pub const STATUS_REASON: &str = "StatusReason";
 pub const NATIVE_NAME: &str = "NativeName";
 pub const AGE: &str = "Age";
 
-pub const OPTIONAL_COLUMNS: [&str; 10] = [
+pub const OPTIONAL_COLUMNS: [&str; 11] = [
     CATEGORY_SEX,
     FIRST_NAME,
     DISAMBIGUATION,
@@ -34,6 +35,7 @@ pub const OPTIONAL_COLUMNS: [&str; 10] = [
     BODYWEIGHT_SOURCE,
     REPORTED_RIS_EDITION,
     AGE,
+    PLACE,
 ];
 
 pub const IDENTITY_COLUMNS: [&str; 10] = [
@@ -71,6 +73,7 @@ pub struct Layout {
     pub bodyweight_sources: bool,
     pub reported_ris_editions: bool,
     pub ages: bool,
+    pub places: bool,
 }
 
 #[must_use]
@@ -88,6 +91,9 @@ pub fn headers(layout: Layout) -> Vec<String> {
         }
         if column == SEX && layout.classed {
             headers.push(WEIGHT_CLASS.to_string());
+        }
+        if column == TOTAL && layout.places {
+            headers.push(PLACE.to_string());
         }
     }
 
@@ -214,6 +220,7 @@ impl Columns {
             bodyweight_sources: true,
             reported_ris_editions: true,
             ages: true,
+            places: true,
         });
 
         let missing: Vec<&String> = expected
@@ -343,6 +350,16 @@ mod tests {
         assert_eq!(headers.len(), 11 + 4 * 4);
         assert_eq!(headers[0], SEX);
         assert_eq!(headers[1], WEIGHT_CLASS);
+    }
+
+    #[test]
+    fn places_place_after_total() {
+        let headers = headers(Layout {
+            places: true,
+            ..Layout::default()
+        });
+        let total = headers.iter().position(|h| h == TOTAL).unwrap();
+        assert_eq!(headers[total + 1], PLACE);
     }
 
     #[test]

@@ -67,9 +67,12 @@ Each contest (one division, sex and weight class) is ordered by one metric:
 | `total`   | `TotalKg`                                                                |
 | `ris`     | RIS. MPDS uses each athlete's own formula when its inputs are available. |
 
-A RIS contest places athletes by `ReportedRis` where the source published one,
-so a new RIS edition never reorders past results. Athletes without one place by
-the current RIS. Results still show the current RIS wherever OSL can compute it.
+`Place` holds the place the organiser announced, and it always wins: a new RIS
+edition or a fix to OSL's scoring never moves it. See [Place](#place).
+
+A contest without `Place` is placed by OSL. A RIS contest then uses
+`ReportedRis` where the source published one and the current RIS otherwise.
+Results still show the current RIS wherever OSL can compute it.
 
 Without a declaration, a contest with a weight class ranks by total and a
 contest without one ranks by RIS. Declare `rank_by` only where the organizer
@@ -143,6 +146,7 @@ Sex,FirstName,LastName,Disambiguation,Country,BodyweightKg,ReportedRis,TotalKg,S
 | `WeightClassKg`                                                       | Optional; after `Sex`, for competitions with weight classes. |
 | `FirstName`, `Disambiguation`, `StatusReason`                         | Optional; `prepare` restores them, keeping existing values. |
 | `NativeName`, `CategorySex`, `BodyweightSource`, `ReportedRisEdition` | Optional.                                                 |
+| `Place`                                                               | Optional; after `TotalKg`. See [Place](#place).           |
 | All other base headers, including `TotalKg`                           | Required, even when their cells are empty.                |
 
 Keep the columns for every MPDS movement, leaving cells empty for movements
@@ -167,8 +171,30 @@ outside the event. Unknown or misspelled headers are rejected.
 | `ReportedRisEdition` | The source's formula year, when established.                                     |
 | `Age`                | Optional. The athlete's age at the competition, if known.                        |
 | `TotalKg`            | Overall total from the source, or filled by `prepare` from a complete breakdown. |
+| `Place`              | The place the organiser announced in the contest. See [Place](#place).           |
 | `Status`             | `competed`, `disqualified` or `no_show`. Empty means `competed`.                 |
 | `StatusReason`       | A short explanation for `disqualified` or `no_show`. Leave empty for `competed`. |
+
+### Place
+
+Copy the place from the source's results, even when it looks wrong. If it
+contradicts the source's own totals or scores, tell the organiser before
+importing.
+
+- A whole number from `1`, within the contest (division, sex and weight class).
+- Ties share a place and skip the next ones: `1, 2, 2, 4`.
+- Only `competed` athletes have a place. Leave it empty for `disqualified` and
+  `no_show`.
+- A contest is placed for every competed athlete or for none.
+- Leave it empty while the competition is `live`, and fill it when it moves to
+  `completed`.
+
+| Check                                                  | Result  |
+| ------------------------------------------------------ | ------- |
+| A gap, or a tie that does not skip                     | Error   |
+| A better place with a lower `TotalKg`, total contest   | Error   |
+| A tie between different totals, total contest          | Error   |
+| A better place with a lower `ReportedRis`, RIS contest | Warning |
 
 ### Names
 

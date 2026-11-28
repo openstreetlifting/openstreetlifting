@@ -120,6 +120,7 @@ impl CanonicalValidator {
         Self::check_athletes(canonical, &mut report);
         Self::check_athlete_names(canonical, &mut report);
         Self::check_athlete_identities(canonical, &mut report);
+        Self::check_places(canonical, &mut report);
 
         if report.errors.is_empty() {
             Ok(report)
@@ -408,6 +409,95 @@ impl CanonicalValidator {
         }
     }
 
+    fn check_places(canonical: &CanonicalFormat, report: &mut ValidationReport) {
+        let live = canonical.competition.status == Some(CompetitionStatus::Live);
+
+        for category in &canonical.categories {
+            let label = category.label();
+            let mut placed = Vec::new();
+            let mut unplaced = 0;
+
+            for athlete in &category.athletes {
+                match (athlete.place, athlete.status) {
+                    (Some(_), AthleteStatus::Competed) if live => {
+                        report.errors.push(format!(
+                            "Athlete '{}' has a Place while the competition is live. \
+                             Fill places when the status moves to completed",
+                            athlete.display_name()
+                        ));
+                    }
+                    (Some(place), AthleteStatus::Competed) => placed.push((place, athlete)),
+                    (Some(_), status) => report.errors.push(format!(
+                        "Athlete '{}' is {} and cannot have a Place",
+                        athlete.display_name(),
+                        status.as_str()
+                    )),
+                    (None, AthleteStatus::Competed) => unplaced += 1,
+                    (None, _) => {}
+                }
+            }
+
+            if placed.is_empty() {
+                continue;
+            }
+            if unplaced > 0 {
+                report.errors.push(format!(
+                    "Category '{label}': {unplaced} competed athlete(s) have no Place. \
+                     A contest is placed for everyone or for no one"
+                ));
+            }
+
+            placed.sort_by_key(|(place, _)| *place);
+            for (index, (place, _)) in placed.iter().enumerate() {
+                let previous = index.checked_sub(1).map(|i| placed[i].0);
+                if usize::try_from(*place).ok() != Some(index + 1) && previous != Some(*place) {
+                    report.errors.push(format!(
+                        "Category '{label}': places must run 1, 2, 3 and skip after a tie \
+                         (1, 2, 2, 4), but place {place} comes after {}",
+                        previous.map_or_else(|| "nothing".into(), |p| p.to_string())
+                    ));
+                    break;
+                }
+            }
+
+            let rule = canonical.placing_rule(category);
+            for pair in placed.windows(2) {
+                let [(above_place, above), (below_place, below)] = pair else {
+                    continue;
+                };
+                let (above_value, below_value, metric) = match rule {
+                    osl_domain::RankBy::Total => (above.total, below.total, "TotalKg"),
+                    osl_domain::RankBy::Ris => {
+                        (above.reported_ris, below.reported_ris, "ReportedRis")
+                    }
+                };
+                let (Some(above_value), Some(below_value)) = (above_value, below_value) else {
+                    continue;
+                };
+                let broken = if above_place == below_place {
+                    above_value != below_value
+                } else {
+                    above_value < below_value
+                };
+                if !broken {
+                    continue;
+                }
+                let problem = format!(
+                    "Category '{label}': Place contradicts {metric}. '{}' is placed {above_place} \
+                     with {above_value}, '{}' is placed {below_place} with {below_value}",
+                    above.display_name(),
+                    below.display_name()
+                );
+                match rule {
+                    osl_domain::RankBy::Total => report.errors.push(problem),
+                    osl_domain::RankBy::Ris => report.warnings.push(format!(
+                        "{problem}. Keep it if the organiser announced it, and tell them"
+                    )),
+                }
+            }
+        }
+    }
+
     /// Two entries that fold to one identity are either the same person, which
     /// is fine when they entered two categories, or two people who need a
     /// disambiguation number. Within a single category they can only be a
@@ -528,6 +618,7 @@ mod tests {
             total: Some(Decimal::from(100)),
             reported_ris: None,
             status: AthleteStatus::Competed,
+            place: None,
             status_reason: None,
             lifts: vec![LiftData {
                 movement: Movement::Squat,
@@ -758,6 +849,115 @@ mod tests {
         canonical.categories.push(open);
 
         assert!(CanonicalValidator::validate(&canonical).is_ok());
+    }
+
+    fn placed(entries: &[(&str, i64, Option<i16>)]) -> CanonicalFormat {
+        let mut canonical = completed();
+        canonical.categories[0].athletes = entries
+            .iter()
+            .map(|(name, total, place)| {
+                let mut entry = athlete(name, "Lifter");
+                entry.total = Some(Decimal::from(*total));
+                entry.lifts[0].attempts.as_mut().unwrap()[0].weight = Decimal::from(*total);
+                entry.place = *place;
+                entry
+            })
+            .collect();
+        canonical
+    }
+
+    fn errors(canonical: &CanonicalFormat) -> String {
+        CanonicalValidator::validate(canonical)
+            .unwrap_err()
+            .to_string()
+    }
+
+    #[test]
+    fn accepts_places_that_follow_totals() {
+        let canonical = placed(&[("Ann", 120, Some(1)), ("Bea", 110, Some(2))]);
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
+    }
+
+    #[test]
+    fn accepts_tied_places_that_skip_the_next() {
+        let canonical = placed(&[
+            ("Ann", 120, Some(1)),
+            ("Bea", 110, Some(2)),
+            ("Cid", 110, Some(2)),
+            ("Dan", 100, Some(4)),
+        ]);
+        assert!(CanonicalValidator::validate(&canonical).is_ok());
+    }
+
+    #[test]
+    fn rejects_places_with_gaps() {
+        let canonical = placed(&[("Ann", 120, Some(1)), ("Bea", 110, Some(3))]);
+        assert!(errors(&canonical).contains("places must run 1, 2, 3"));
+    }
+
+    #[test]
+    fn rejects_dense_ties() {
+        let canonical = placed(&[
+            ("Ann", 120, Some(1)),
+            ("Bea", 110, Some(1)),
+            ("Cid", 100, Some(2)),
+        ]);
+        assert!(errors(&canonical).contains("places must run 1, 2, 3"));
+    }
+
+    #[test]
+    fn rejects_places_against_totals() {
+        let canonical = placed(&[("Ann", 110, Some(1)), ("Bea", 120, Some(2))]);
+        assert!(errors(&canonical).contains("Place contradicts TotalKg"));
+    }
+
+    #[test]
+    fn rejects_ties_between_different_totals() {
+        let canonical = placed(&[("Ann", 120, Some(1)), ("Bea", 110, Some(1))]);
+        assert!(errors(&canonical).contains("Place contradicts TotalKg"));
+    }
+
+    #[test]
+    fn rejects_partly_placed_contests() {
+        let canonical = placed(&[("Ann", 120, Some(1)), ("Bea", 110, None)]);
+        assert!(errors(&canonical).contains("have no Place"));
+    }
+
+    #[test]
+    fn rejects_places_on_disqualified_athletes() {
+        let mut canonical = placed(&[("Ann", 120, Some(1)), ("Bea", 110, Some(2))]);
+        let bea = &mut canonical.categories[0].athletes[1];
+        bea.status = AthleteStatus::Disqualified;
+        bea.total = None;
+        assert!(errors(&canonical).contains("is disqualified and cannot have a Place"));
+    }
+
+    #[test]
+    fn rejects_places_while_live() {
+        let mut canonical = placed(&[("Ann", 120, Some(1))]);
+        canonical.competition.status = Some(CompetitionStatus::Live);
+        assert!(errors(&canonical).contains("while the competition is live"));
+    }
+
+    #[test]
+    fn warns_when_places_contradict_published_ris() {
+        let mut canonical = placed(&[("Ann", 120, Some(1)), ("Bea", 110, Some(2))]);
+        canonical.competition.rank_by = Some(osl_domain::RankBy::Ris);
+        canonical.movements = Movement::ALL.to_vec();
+        canonical.categories[0].athletes[0].reported_ris = Some(Decimal::from(70));
+        canonical.categories[0].athletes[1].reported_ris = Some(Decimal::from(98));
+        for athlete in &mut canonical.categories[0].athletes {
+            athlete.total = None;
+        }
+        let report = CanonicalValidator::validate(&canonical).unwrap();
+        assert!(
+            report
+                .warnings
+                .iter()
+                .any(|warning| warning.contains("Place contradicts ReportedRis")),
+            "{:?}",
+            report.warnings
+        );
     }
 
     #[test]

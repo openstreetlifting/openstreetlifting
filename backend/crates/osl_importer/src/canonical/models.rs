@@ -42,6 +42,17 @@ impl CanonicalFormat {
     pub fn rank_by_for(&self, category: &CategoryData) -> Option<osl_domain::RankBy> {
         self.division_rank_by(category).or(self.competition.rank_by)
     }
+
+    #[must_use]
+    pub fn placing_rule(&self, category: &CategoryData) -> osl_domain::RankBy {
+        self.rank_by_for(category).unwrap_or_else(|| {
+            if category.bounds() == (None, None) {
+                osl_domain::RankBy::Ris
+            } else {
+                osl_domain::RankBy::Total
+            }
+        })
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -113,6 +124,7 @@ pub struct AthleteData {
     pub reported_ris: Option<Decimal>,
     pub reported_ris_edition: Option<Edition>,
     pub total: Option<Decimal>,
+    pub place: Option<i16>,
     pub status: AthleteStatus,
     pub status_reason: Option<String>,
     pub lifts: Vec<LiftData>,

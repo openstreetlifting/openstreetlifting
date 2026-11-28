@@ -103,6 +103,7 @@ pub fn athlete(first: &str, last: &str) -> AthleteData {
         total: None,
         reported_ris: None,
         status: AthleteStatus::Competed,
+        place: None,
         status_reason: None,
         lifts: Vec::new(),
     }
