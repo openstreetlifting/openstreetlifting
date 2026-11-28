@@ -212,7 +212,7 @@
                   {point.competition.competition_name}
                 </a>
                 <dl class={CHART.tooltipRows}>
-                  <dt style:color={point.lift.tone}>{i18n.t(point.lift.label)}</dt>
+                  <dt>{i18n.t(point.lift.label)}</dt>
                   <dd class={CHART.tooltipValue}>
                     {weights.format(point.value, i18n.locale)}
                     {weights.unit}
