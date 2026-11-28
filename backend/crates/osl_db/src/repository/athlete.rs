@@ -94,7 +94,7 @@ impl<'a> AthleteRepository<'a> {
                    hits.rankings, hits.total_items,
                    best.competition_id, best.competition_name, best.competition_slug,
                    best.competition_date, best.federation_name, best.federation_abbreviation,
-                   best.event_code, best.entry_gender, best.weight_class_min, best.weight_class_max,
+                   best.event_code, best.entry_status, best.entry_status_reason, best.entry_gender, best.weight_class_min, best.weight_class_max,
                    best.muscleup, best.pullup, best.dips, best.squat
             FROM hits
             LEFT JOIN LATERAL (
@@ -105,6 +105,8 @@ impl<'a> AthleteRepository<'a> {
                        f.name AS federation_name,
                        f.abbreviation AS federation_abbreviation,
                        c.event_code,
+                       cp.status AS entry_status,
+                       cp.status_reason AS entry_status_reason,
                        COALESCE(cp.category_gender, wc.gender, hits.gender) AS entry_gender,
                        wc.min_kg AS weight_class_min,
                        wc.max_kg AS weight_class_max,

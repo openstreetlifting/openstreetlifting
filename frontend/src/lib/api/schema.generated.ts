@@ -315,6 +315,8 @@ export interface components {
       muscleup: number | null;
       pullup: number | null;
       squat: number | null;
+      status: components['schemas']['AthleteStatus'];
+      status_reason: string | null;
     };
     AthleteSearchHit: {
       best_entry: components['schemas']['AthleteSearchEntry'] | null;

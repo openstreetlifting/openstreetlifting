@@ -5,7 +5,8 @@
   import { LAYOUT } from '#lib/constants/layout.js';
   import { RANKING_LIFTS } from '#lib/constants/ranking.js';
   import { liftTone } from '#lib/constants/lift.js';
-  import { CELL, FIGURE, NO_VALUE, TEXT_CELL } from '#lib/constants/table.js';
+  import { CELL, FIGURE, NO_VALUE, STATUS_FLAG, TEXT_CELL } from '#lib/constants/table.js';
+  import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
   import { TEXT } from '#lib/constants/typography.js';
   import { formatAthleteName, formatDate } from '#lib/utils/index.js';
   import { slugify } from '#lib/utils/slug.js';
@@ -28,7 +29,7 @@
   let { hits, total }: { hits: AthleteSearchHit[]; total: number } = $props();
 
   const hidden = $derived(Math.max(0, total - hits.length));
-  const title = $derived(i18n.t('Without MPDS result'));
+  const title = $derived(i18n.t('Non-MPDS results'));
 </script>
 
 <section class={LAYOUT.section} aria-labelledby="athletes-without-mpds">
@@ -67,6 +68,14 @@
                     {formatAthleteName(hit)}
                   </a>
                 </span>
+                {#if entry && entry.status !== 'competed'}
+                  <span
+                    class="shrink-0 text-micro font-medium tracking-wide uppercase {STATUS_FLAG}"
+                    title={athleteStatusTitle(entry.status, entry.status_reason, i18n.locale)}
+                  >
+                    {ATHLETE_STATUS_LABEL[entry.status]}
+                  </span>
+                {/if}
               </span>
             </td>
             {#each RANKING_LIFTS as lift (lift.value)}

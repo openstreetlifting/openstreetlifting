@@ -632,6 +632,11 @@ pub struct AthleteSearchEntry {
     /// Event code, such as `PD`.
     #[schema(required = true)]
     pub event: Option<String>,
+    /// Participation status.
+    pub status: AthleteStatus,
+    /// Published reason for the status.
+    #[schema(required = true)]
+    pub status_reason: Option<String>,
     /// Gender of the category.
     pub gender: Gender,
     /// Weight class, such as `-80kg`. Empty without a weight class.
@@ -693,6 +698,8 @@ impl AthleteSearchEntry {
                 abbreviation: row.federation_abbreviation.clone(),
             },
             event: row.event_code.clone(),
+            status: row.entry_status?,
+            status_reason: row.entry_status_reason.clone(),
             gender: row.entry_gender.unwrap_or(row.gender),
             category: osl_domain::WeightClass::label(row.weight_class_min, row.weight_class_max),
             muscleup: row.muscleup.map(decimal_to_f64),

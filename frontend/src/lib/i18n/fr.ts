@@ -394,7 +394,7 @@ export default {
   'Weight unit': 'Unité de poids',
   'Your weight unit preference is saved in your browser.':
     'Votre préférence d’unité de poids est enregistrée dans votre navigateur.',
-  'Without MPDS result': 'Sans résultat MPDS',
+  'Non-MPDS results': 'Résultats hors MPDS',
   'No valid lift': 'Aucune barre valide',
   '{count} more. Type more of the name to narrow the list.':
     '{count} de plus. Tapez plus de lettres du nom pour affiner.',

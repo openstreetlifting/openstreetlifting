@@ -165,9 +165,11 @@ async fn shows_the_best_entry_of_each_athlete(pool: PgPool) {
     assert_eq!(marco["pullup"], 70.0);
     assert_eq!(marco["dips"], 80.0);
     assert_eq!(marco["squat"], serde_json::Value::Null);
+    assert_eq!(marco["status"], "competed");
 
     let luca = &body["data"][1]["best_entry"];
     assert_eq!(luca["competition"]["slug"], "full");
+    assert_eq!(luca["status"], "disqualified");
     for lift in ["muscleup", "pullup", "dips", "squat"] {
         assert_eq!(luca[lift], serde_json::Value::Null, "{lift}");
     }

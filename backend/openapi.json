@@ -1797,6 +1797,8 @@
           "competition",
           "federation",
           "event",
+          "status",
+          "status_reason",
           "gender",
           "category",
           "muscleup",
@@ -1859,6 +1861,17 @@
             ],
             "format": "double",
             "description": "Squat in kilograms. `null` without a successful lift."
+          },
+          "status": {
+            "$ref": "#/components/schemas/AthleteStatus",
+            "description": "Participation status."
+          },
+          "status_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Published reason for the status."
           }
         }
       },

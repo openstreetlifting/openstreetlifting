@@ -1,4 +1,4 @@
-use osl_domain::Gender;
+use osl_domain::{AthleteStatus, Gender};
 use sqlx::FromRow;
 use uuid::Uuid;
 
@@ -33,6 +33,8 @@ pub struct AthleteSearchRow {
     pub federation_name: Option<String>,
     pub federation_abbreviation: Option<String>,
     pub event_code: Option<String>,
+    pub entry_status: Option<AthleteStatus>,
+    pub entry_status_reason: Option<String>,
     pub entry_gender: Option<Gender>,
     pub weight_class_min: Option<rust_decimal::Decimal>,
     pub weight_class_max: Option<rust_decimal::Decimal>,
