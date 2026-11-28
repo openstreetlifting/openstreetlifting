@@ -120,6 +120,11 @@
   const classed = $derived(
     competition.categories.some(({ category }) => category.weight_class !== '')
   );
+  const weighed = $derived(
+    competition.categories.some(({ participants }) =>
+      participants.some((participant) => participant.bodyweight != null)
+    )
+  );
 
   // As of 16/11/2026, only DCSV and MACHBAR have authorized me to show the age of
   // competitors for all the competitions they organize.
@@ -747,10 +752,12 @@
             {#if showAge}
               <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Age')}</th>
             {/if}
-            <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary">
-              {i18n.t('Weight')}
-              <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
-            </th>
+            {#if weighed}
+              <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary">
+                {i18n.t('Weight')}
+                <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
+              </th>
+            {/if}
           {/snippet}
 
           {#snippet body(rows)}
@@ -866,7 +873,7 @@
                   </td>
                 {/if}
                 {#if showAge}{@render ageCell(participant)}{/if}
-                {@render bodyweightCell(participant)}
+                {#if weighed}{@render bodyweightCell(participant)}{/if}
               </tr>
             {/each}
 
@@ -965,7 +972,7 @@
                   </td>
                 {/if}
                 {#if showAge}{@render ageCell(participant)}{/if}
-                {@render bodyweightCell(participant)}
+                {#if weighed}{@render bodyweightCell(participant)}{/if}
               </tr>
             {/each}
           {/snippet}
