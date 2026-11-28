@@ -1,5 +1,7 @@
 import type { CategoryDetail, Participant } from '#lib/types/competition.js';
-import type { Gender, Movement, RankBy, RankingMetric } from '#lib/types/enums.js';
+import type { AthleteStatus, Gender, Movement, RankBy, RankingMetric } from '#lib/types/enums.js';
+import { formatAthleteName } from './format.js';
+import { slugify } from './slug.js';
 
 /** Class labels are shared across divisions; capped classes precede open classes. */
 export function weightClasses(categories: CategoryDetail[], gender: Gender): string[] {
@@ -15,6 +17,8 @@ export function weightClasses(categories: CategoryDetail[], gender: Gender): str
   ].sort((a, b) => max(a) - max(b) || min(a) - min(b));
 }
 
+const FIELD_ORDER: Gender[] = ['F', 'M', 'MX'];
+
 const movements: Record<Exclude<RankingMetric, 'total' | 'ris'>, Movement> = {
   muscleup: 'Muscle-up',
   pullup: 'Pull-up',
@@ -22,14 +26,79 @@ const movements: Record<Exclude<RankingMetric, 'total' | 'ris'>, Movement> = {
   squat: 'Squat',
 };
 
-/** The leaderboard omits missing scores; the competition page still lists those entries. */
-export function hasRankingResult(participant: Participant, metric: RankingMetric): boolean {
-  if (participant.status !== 'competed') return false;
-  if (metric === 'ris') return participant.ris_score != null;
-  if (metric === 'total') return participant.total != null;
-  return participant.lifts.some(
-    (lift) => lift.movement_name === movements[metric] && lift.best_weight != null
-  );
+export function resultValue(participant: Participant, metric: RankingMetric): number | null {
+  if (participant.status !== 'competed') return null;
+  const value =
+    metric === 'ris'
+      ? participant.ris_score
+      : metric === 'total'
+        ? participant.total
+        : participant.lifts.find((lift) => lift.movement_name === movements[metric])?.best_weight;
+  return value == null ? null : Number(value);
+}
+
+export type ResultEntry = { participant: Participant; category: CategoryDetail['category'] };
+export type ResultRow = ResultEntry & { rank: number | null };
+export type ResultTable = { category: CategoryDetail['category']; rows: ResultRow[] };
+
+const STATUS_ORDER: AthleteStatus[] = ['competed', 'disqualified', 'no_show'];
+
+const descending = (a: number | null, b: number | null) => (b ?? -Infinity) - (a ?? -Infinity);
+const lighterFirst = (a: Participant, b: Participant) =>
+  (a.bodyweight == null ? Infinity : Number(a.bodyweight)) -
+  (b.bodyweight == null ? Infinity : Number(b.bodyweight));
+
+function unrankedOrder(metric: RankingMetric) {
+  return (a: ResultEntry, b: ResultEntry) =>
+    descending(resultValue(a.participant, metric), resultValue(b.participant, metric)) ||
+    STATUS_ORDER.indexOf(a.participant.status) - STATUS_ORDER.indexOf(b.participant.status) ||
+    a.participant.athlete.last_name.localeCompare(b.participant.athlete.last_name);
+}
+
+export function rankResults(entries: ResultEntry[], metric: RankingMetric): ResultRow[] {
+  const value = (entry: ResultEntry) => resultValue(entry.participant, metric);
+  const ranked = entries
+    .filter((entry) => value(entry) != null)
+    .sort(
+      (a, b) =>
+        descending(value(a), value(b)) ||
+        (metric === 'total' ? lighterFirst(a.participant, b.participant) : 0) ||
+        a.participant.athlete.athlete_id.localeCompare(b.participant.athlete.athlete_id)
+    )
+    .map((entry, index) => ({ ...entry, rank: index + 1 }));
+  const unranked = entries
+    .filter((entry) => value(entry) == null)
+    .sort(unrankedOrder(metric))
+    .map((entry) => ({ ...entry, rank: null }));
+  return [...ranked, ...unranked];
+}
+
+const entriesOf = ({ category, participants }: CategoryDetail): ResultEntry[] =>
+  participants.map((participant) => ({ participant, category }));
+
+export function resultTables(categories: CategoryDetail[], metric: RankingMetric): ResultTable[] {
+  const order = (detail: CategoryDetail) => {
+    const { gender, weight_class } = detail.category;
+    return [FIELD_ORDER.indexOf(gender), weightClasses(categories, gender).indexOf(weight_class)];
+  };
+  return [...categories]
+    .sort((a, b) => {
+      const [genderA, classA] = order(a);
+      const [genderB, classB] = order(b);
+      return genderA - genderB || classA - classB;
+    })
+    .map((detail) => ({ category: detail.category, rows: rankResults(entriesOf(detail), metric) }));
+}
+
+export function mixedResults(categories: CategoryDetail[], metric: RankingMetric): ResultRow[] {
+  return rankResults(categories.flatMap(entriesOf), metric);
+}
+
+export function matchesAthlete(participant: Participant, query: string): boolean {
+  const name = slugify(formatAthleteName(participant.athlete));
+  return slugify(query)
+    .split('-')
+    .every((token) => name.includes(token));
 }
 
 export type CompetitionDivision = { name: string; rankBy: RankBy; entries: number };
@@ -62,8 +131,6 @@ export type DivisionSummary = {
   name: string | null;
   groups: ContestGroup[];
 };
-
-const FIELD_ORDER: Gender[] = ['F', 'M', 'MX'];
 
 const shared = <T>(values: T[]): T | null =>
   values.length > 0 && values.every((value) => value === values[0]) ? values[0] : null;

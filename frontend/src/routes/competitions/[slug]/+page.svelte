@@ -1,11 +1,12 @@
 <script lang="ts">
-  import RecordMark from '#lib/components/ui/record-mark.svelte';
-  import type { RecordMark as RecordMarkValue } from '#lib/types/records.js';
   import CompetitionBodyweight, {
     MIN_POINTS,
     type BodyweightPoint,
   } from '#lib/components/competition-bodyweight.svelte';
   import CompetitionAttempts, { MIN_ATTEMPTS } from '#lib/components/competition-attempts.svelte';
+  import CompetitionResultsTable, {
+    type ResultColumns,
+  } from '#lib/components/competition-results-table.svelte';
   import SegmentedControl from '#lib/components/ui/segmented-control.svelte';
   import Button from '#lib/components/ui/button.svelte';
   import { LAYOUT } from '#lib/constants/layout.js';
@@ -20,27 +21,15 @@
     Breadcrumb,
     Flag,
     FilterBar,
-    Table,
-    RisHeader,
-    RisScore,
-    TABLE_CELL,
-    TABLE_HEAD_CELL,
-    FROZEN_CELL,
-    FROZEN_HEAD_CELL,
-    FROZEN_RANK,
-    FROZEN_ATHLETE,
-    ATHLETE_COLUMN_FILL,
-    ATHLETE_CONTENT_FILL,
     Text,
-    RankHeader,
     DetailList,
     Detail,
   } from '#lib/components/ui/index.js';
   import { resolve } from '$app/paths';
   import type { ResolvedPathname } from '$app/types';
-  import { slowNavigation } from '#lib/state/slow-navigation.svelte.js';
-  import { page, navigating } from '$app/state';
+  import { page } from '$app/state';
   import { afterNavigate } from '$app/navigation';
+  import { SvelteURLSearchParams } from 'svelte/reactivity';
   import {
     formatLongDate,
     formatLocation,
@@ -49,31 +38,22 @@
     federationPath,
     formatAthleteName,
   } from '#lib/utils/index.js';
-  import {
-    ATTEMPT_ROW,
-    BEST_ROW,
-    CELL,
-    STATUS_FLAG,
-    SORTED_COLUMN,
-    NO_VALUE,
-    NO_RESULT,
-    EDGE_TO_EDGE,
-  } from '#lib/constants/table.js';
+  import { EDGE_TO_EDGE } from '#lib/constants/table.js';
+  import { TABLE_PAGE_SIZE } from '#lib/constants/pagination.js';
   import { GitHubIcon } from '#lib/components/icons/index.js';
-  import { RANKING_SORTS, RANKING_SORTS_NO_RIS, RANKING_GENDERS } from '#lib/constants/ranking.js';
-  import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
-  import { LEADERBOARD_FILTERS } from '#lib/constants/filters.js';
-  import type { RankingEntry } from '#lib/types/ranking.js';
-  import type { Attempt, Participant, CategoryDetail } from '#lib/types/competition.js';
-  import { asRankingMetric, type AthleteStatus, type RankBy } from '#lib/types/enums.js';
+  import { risProvenance } from '#lib/constants/ranking.js';
+  import { ListingSearch } from '#lib/state/listing-search.svelte.js';
+  import type { RankBy, RankingMetric } from '#lib/types/enums.js';
   import {
     attemptSuccess,
+    competitionDivisions,
     contestSummary,
-    hasRankingResult,
+    matchesAthlete,
+    mixedResults,
+    resultTables,
     type ContestGroup,
     type DivisionSummary,
   } from '#lib/utils/competition-results.js';
-  import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
   import Seo from '#lib/components/seo.svelte';
   import {
     breadcrumbLd,
@@ -114,8 +94,8 @@
 
   // The column follows the format the meet contested, the sort follows the data
   // we hold, so an MPDS meet with no published bodyweight keeps an empty column.
-  const risColumn = $derived(data.ris !== 'not-contested');
-  const risSortable = $derived(data.ris === 'recomputed' || data.ris === 'reported');
+  const ris = $derived(risProvenance(competition));
+  const risSortable = $derived(ris === 'recomputed' || ris === 'reported');
 
   const classed = $derived(
     competition.categories.some(({ category }) => category.weight_class !== '')
@@ -124,103 +104,130 @@
   // As of 16/11/2026, only DCSV and MACHBAR have authorized me to show the age of
   // competitors for all the competitions they organize.
   const AGE_FEDERATIONS = new Set(['DCSV', 'MACHBAR']);
-  const showAge = $derived(AGE_FEDERATIONS.has(competition.federation.name));
 
-  const table = new RankingsTable({
-    basePath: () => `/competitions/${data.competition.slug}`,
-    filters: LEADERBOARD_FILTERS,
-    initialUrl: page.url,
-    defaultSort: () => data.rankBy,
-    scope: () => ({ division: data.division }),
+  const event = $derived(competition.event_code ?? null);
+  const contested = $derived(
+    event ? LIFTS.filter((lift) => event.includes(lift.code)) : [...LIFTS]
+  );
+
+  const params = $derived(page.url.searchParams);
+  const focused = $derived(params.get('athlete'));
+
+  const divisions = $derived(competitionDivisions(competition.categories));
+  const activeDivision = $derived.by(() => {
+    if (divisions.length < 2) return null;
+    const requested =
+      params.get('division') ??
+      competition.categories.find(({ participants }) =>
+        participants.some((participant) => participant.athlete.slug === focused)
+      )?.category.division;
+    return (divisions.find((division) => division.name === requested) ?? divisions[0]).name;
+  });
+  const board = $derived(
+    activeDivision
+      ? competition.categories.filter(({ category }) => category.division === activeDivision)
+      : competition.categories
+  );
+
+  const classSorts = $derived([
+    { value: 'total' as const, label: 'Total' as const },
+    ...contested.map((lift) => ({ value: lift.key, label: lift.label })),
+  ]);
+  const defaultSort = $derived.by((): RankingMetric => {
+    const rankBy =
+      divisions.find((division) => division.name === activeDivision)?.rankBy ??
+      competition.rank_by ??
+      board[0]?.category.rank_by;
+    return rankBy === 'ris' && risSortable ? 'ris' : 'total';
+  });
+  const sort = $derived.by((): RankingMetric => {
+    const requested = params.get('movement');
+    if (requested === 'ris') return risSortable ? 'ris' : defaultSort;
+    return classSorts.find(({ value }) => value === requested)?.value ?? defaultSort;
   });
 
-  const divisionHref = (name: string) => {
-    const base = i18n.href(resolve('/competitions/[slug]', { slug: competition.slug }));
-    return (
-      name === data.divisions[0]?.name ? base : `${base}?division=${encodeURIComponent(name)}`
-    ) as ResolvedPathname;
-  };
+  const search = new ListingSearch(page.url);
+  const query = $derived(search.value.trim());
+  const matches = (participant: Parameters<typeof matchesAthlete>[0]) =>
+    !query || matchesAthlete(participant, query);
+
+  type ResultsState = { division: string | null; sort: RankingMetric; q: string; page: number };
+
+  function resultsHref(slug: string, next: Partial<ResultsState> = {}) {
+    const state: ResultsState = {
+      division: activeDivision === divisions[0]?.name ? null : activeDivision,
+      sort,
+      q: search.applied.trim(),
+      page: 1,
+      ...next,
+    };
+    const query = new SvelteURLSearchParams();
+    if (state.division) query.set('division', state.division);
+    if (state.sort !== defaultSort) query.set('movement', state.sort);
+    if (state.q) query.set('q', state.q);
+    if (state.page > 1) query.set('page', String(state.page));
+    const suffix = query.size ? `?${query}` : '';
+    return i18n.href(resolve(`competitions/${slug}${suffix}`)) as ResolvedPathname;
+  }
+
+  const go = (next: Partial<ResultsState>) => search.navigate(resultsHref(competition.slug, next));
 
   afterNavigate(({ type, shallow }) => {
     if (shallow) return;
-
-    table.syncFromUrl(page.url, type);
-    if (table.focusedAthlete) {
+    search.sync(page.url, type);
+    if (focused) {
       requestAnimationFrame(() => {
         document.querySelector('[data-focused]')?.scrollIntoView({ block: 'center' });
       });
     }
   });
 
-  const rankings = $derived(data.initialRankings);
-  const pagination = $derived(data.pagination);
-  const loading = slowNavigation(() => navigating.to?.url.pathname === page.url.pathname);
-  const busy = $derived(loading.current);
-
-  const sorts = $derived(risSortable ? RANKING_SORTS : RANKING_SORTS_NO_RIS);
-  const genders = $derived(
-    competition.categories.some(({ category }) => category.gender === 'MX')
-      ? [...RANKING_GENDERS, { value: 'MX', label: 'Mixed' } as const]
-      : RANKING_GENDERS
+  const tables = $derived(
+    sort === 'ris'
+      ? []
+      : resultTables(board, sort)
+          .map((table) => ({
+            ...table,
+            rows: table.rows.filter((row) => matches(row.participant)),
+          }))
+          .filter((table) => table.rows.length > 0)
   );
 
-  const sorted = (column: string) => (table.movementFilter === column ? SORTED_COLUMN : '');
-
-  // The event code names the movements a competition contested, so a column with no
-  // weight can be read as bombed rather than never lifted.
-
-  // The rankings response carries a best per movement; the attempts behind it
-  // arrive with the competition itself, keyed by entry.
-  const participants = $derived(
-    new Map(
-      competition.categories
-        .flatMap((category) => category.participants)
-        .map((participant) => [participant.participant_id, participant])
-    )
+  const mixed = $derived(
+    sort === 'ris' ? mixedResults(board, 'ris').filter((row) => matches(row.participant)) : []
   );
-  const weighed = $derived([...participants.values()].some(({ bodyweight }) => bodyweight != null));
+  const mixedPages = $derived(Math.max(1, Math.ceil(mixed.length / TABLE_PAGE_SIZE)));
+  const mixedPage = $derived.by(() => {
+    const requested = Number(params.get('page'));
+    if (Number.isInteger(requested) && requested > 0) return Math.min(requested, mixedPages);
+    const index = mixed.findIndex((row) => row.participant.athlete.slug === focused);
+    return index < 0 ? 1 : Math.floor(index / TABLE_PAGE_SIZE) + 1;
+  });
 
-  type LiftCell =
-    /** The movement was not contested or its result is unknown. */
-    | { kind: 'absent' }
-    /** Contested, and every attempt failed. */
-    | { kind: 'bombed' }
-    /** The source published a best with no attempt breakdown behind it. */
-    | { kind: 'best'; best: number; record: RecordMarkValue | null }
-    | {
-        kind: 'attempts';
-        attempts: Attempt[];
-        best: number | null;
-        record: RecordMarkValue | null;
-      };
+  const columns = $derived<ResultColumns>({
+    event,
+    ris: ris !== 'not-contested',
+    risPublished: ris === 'reported',
+    lifts: contested,
+    withAttempts: new Set(
+      competition.categories.flatMap((category) =>
+        category.participants.flatMap((participant) =>
+          participant.lifts.filter((lift) => lift.attempts.length).map((lift) => lift.movement_name)
+        )
+      )
+    ),
+    field: sort === 'ris',
+    classed,
+    age: AGE_FEDERATIONS.has(competition.federation.name),
+    weight: competition.categories.some(({ participants }) =>
+      participants.some(({ bodyweight }) => bodyweight != null)
+    ),
+  });
 
-  function liftCell(
-    participant: Participant | undefined,
-    best: number | null,
-    code: string,
-    movement: string
-  ): LiftCell {
-    if (!event?.includes(code)) return { kind: 'absent' };
-
-    const lift = participant?.lifts.find((candidate) => candidate.movement_name === movement);
-    if (!lift && best === null) return { kind: 'absent' };
-
-    const record = lift?.record ?? null;
-    if (lift?.attempts.length) {
-      return { kind: 'attempts', attempts: lift.attempts, best, record };
-    }
-
-    return best === null ? { kind: 'bombed' } : { kind: 'best', best, record };
-  }
-
-  const charted = $derived(
-    data.activeDivision
-      ? competition.categories.filter(({ category }) => category.division === data.activeDivision)
-      : competition.categories
-  );
+  const narrowed = $derived(Boolean(query || sort !== defaultSort || focused));
 
   const bodyweightPoints = $derived(
-    charted.flatMap((category) =>
+    board.flatMap((category) =>
       category.category.gender === 'MX'
         ? []
         : category.participants.flatMap((participant): BodyweightPoint[] => {
@@ -244,41 +251,12 @@
   const bodyweightCharted = $derived(data.formula != null && bodyweightPoints.length >= MIN_POINTS);
   const attemptRates = $derived(
     attemptSuccess(
-      charted,
+      board,
       competition.movements.map(({ movement_name }) => movement_name)
     )
   );
   const attemptsCharted = $derived(
     attemptRates.some(({ rates }) => rates[0].taken >= MIN_ATTEMPTS)
-  );
-
-  const withAttempts = $derived(
-    new Set(
-      competition.categories.flatMap((category) =>
-        category.participants.flatMap((participant) =>
-          participant.lifts.filter((lift) => lift.attempts.length).map((lift) => lift.movement_name)
-        )
-      )
-    )
-  );
-
-  function rankedCell(entry: RankingEntry, key: string, code: string, movement: string): LiftCell {
-    const best = entry[key as 'muscleup' | 'pullup' | 'dips' | 'squat'];
-    return liftCell(participants.get(entry.participant_id), best, code, movement);
-  }
-
-  function participantCell(participant: Participant, code: string, movement: string): LiftCell {
-    const lift = participant.lifts.find((candidate) => candidate.movement_name === movement);
-    const best = lift?.best_weight == null ? null : Number(lift.best_weight);
-    return liftCell(participant, best, code, movement);
-  }
-
-  // Which movements the competition ran. Every row shares it, and a lifter with
-  // no lifts at all has nothing of their own to read it from.
-  const event = $derived(competition.event_code ?? null);
-
-  const contested = $derived(
-    event ? LIFTS.filter((lift) => event.includes(lift.code)) : [...LIFTS]
   );
 
   const formatLabel = $derived(
@@ -315,60 +293,18 @@
 
   const location = $derived(formatLocation(competition.city, competition.region));
   const place = $derived([competition.venue, location].filter(Boolean).join(', '));
-  // Use the complete results, not the filtered ranking facets. A class can
-  // appear in several divisions but only needs to be listed once per sex.
+  // A class can appear in several divisions but only needs to be listed once per sex.
   const summary = $derived(contestSummary(competition.categories));
   const divisioned = $derived(summary.length > 1);
   const activeSummary = $derived(
-    divisioned ? summary.find((division) => division.name === data.activeDivision) : undefined
+    divisioned ? summary.find((division) => division.name === activeDivision) : undefined
   );
   const rule = (rankBy: RankBy) => (rankBy === 'ris' ? 'RIS' : i18n.t('Total'));
   const ruleInline = (rankBy: RankBy) => (rankBy === 'ris' ? 'RIS' : i18n.t('total'));
-  const who = (group: ContestGroup) =>
-    i18n.t(({ M: 'Men', F: 'Women', MX: 'Men and women' } as const)[group.gender]);
-
-  // Missing scores have no rank, but their entries still belong in the results.
-  const NOT_PLACED_ORDER: AthleteStatus[] = ['competed', 'disqualified', 'no_show'];
-
-  const selectedMetric = $derived(asRankingMetric(table.movementFilter) ?? data.rankBy);
-
-  const notPlaced = $derived(
-    competition.categories
-      .flatMap((category: CategoryDetail) =>
-        category.participants
-          .filter((participant) => !hasRankingResult(participant, selectedMetric))
-          .map((participant) => ({ category, participant }))
-      ) // The ranked half is filtered by the server, so these have to answer the
-      // same filters or the table would contradict itself.
-      .filter(({ category, participant }) => {
-        const { athlete } = participant;
-        const search = table.searchFilter.trim().toLowerCase();
-
-        return (
-          (!data.activeDivision || category.category.division === data.activeDivision) &&
-          (!table.filters.values.gender || athlete.gender === table.filters.values.gender) &&
-          (!table.filters.values.country || athlete.country === table.filters.values.country) &&
-          (!classed ||
-            !table.filters.values.category ||
-            category.category.weight_class === table.filters.values.category) &&
-          (!search || formatAthleteName(athlete).toLowerCase().includes(search))
-        );
-      })
-      .sort(
-        (a, b) =>
-          NOT_PLACED_ORDER.indexOf(a.participant.status) -
-            NOT_PLACED_ORDER.indexOf(b.participant.status) ||
-          a.participant.athlete.last_name.localeCompare(b.participant.athlete.last_name)
-      )
-  );
-
-  const fieldSize = $derived(pagination.total_items + notPlaced.length);
-  const fieldPages = $derived(Math.max(1, Math.ceil(fieldSize / pagination.page_size)));
-  const unplacedOnPage = $derived(
-    notPlaced.slice(
-      Math.max(0, (pagination.page - 1) * pagination.page_size - pagination.total_items),
-      Math.max(0, pagination.page * pagination.page_size - pagination.total_items)
-    )
+  const who = (gender: ContestGroup['gender']) =>
+    i18n.t(({ M: 'Men', F: 'Women', MX: 'Men and women' } as const)[gender]);
+  const risLabel = $derived(
+    ris === 'reported' || !page.data.risEdition ? 'RIS' : `RIS ${page.data.risEdition}`
   );
 
   const seo = $derived(listingSeo(page.url));
@@ -397,36 +333,16 @@
   ]}
 />
 
-{#snippet ageCell(participant: Participant | undefined)}
-  <td class="{TABLE_CELL} {CELL.data}">
-    {#if participant?.age == null}
-      <span class={CELL.absent}>{NO_VALUE}</span>
-    {:else}
-      {i18n.number(participant.age, 0)}
-    {/if}
-  </td>
-{/snippet}
-
-{#snippet bodyweightCell(participant: Participant | undefined)}
-  <td class="{TABLE_CELL} {CELL.data}">
-    {#if participant?.bodyweight == null}
-      <span class={CELL.absent}>{NO_VALUE}</span>
-    {:else}
-      {weights.format(participant.bodyweight, i18n.locale)}
-    {/if}
-  </td>
-{/snippet}
-
 {#snippet rules(division: DivisionSummary)}
   {#each division.groups as group (group.gender)}
     {@const rankedBy = group.rankBy ? ruleInline(group.rankBy) : '—'}
-    <Detail label={who(group)} class="flex flex-wrap gap-x-3 gap-y-1">
+    <Detail label={who(group.gender)} class="flex flex-wrap gap-x-3 gap-y-1">
       {#if group.classes.length > 0}
         <span>{i18n.t('Ranked by {rule}, by weight class:', { rule: rankedBy })}</span>
         <span
           class="contents"
           role="list"
-          aria-label={i18n.t("{category}'s weight classes", { category: who(group) })}
+          aria-label={i18n.t("{category}'s weight classes", { category: who(group.gender) })}
         >
           {#each group.classes as weightClass (weightClass)}
             <span role="listitem" class="whitespace-nowrap tabular-nums">
@@ -487,7 +403,7 @@
               items={editions}
               key={(edition) => edition.slug}
               selected={(edition) => edition.slug === competition.slug}
-              href={(edition) => i18n.href(resolve('/competitions/[slug]', { slug: edition.slug }))}
+              href={(edition) => resultsHref(edition.slug)}
               attributes={(edition) => ({
                 'aria-label': `${edition.label} · ${edition.name}`,
                 title: `${edition.name} · ${formatLongDate(edition.start_date, i18n.locale)}`,
@@ -562,7 +478,7 @@
           {/if}
         {:else if divisioned}
           <Detail label={i18n.t('Divisions')}>
-            {data.divisions.map((division) => division.name).join(', ')}
+            {divisions.map((division) => division.name).join(', ')}
           </Detail>
         {:else}
           {@render rules(summary[0])}
@@ -602,13 +518,16 @@
       </Text>
       {@render editLink()}
     </div>
-    {#if data.divisions.length > 1}
+    {#if divisions.length > 1}
       <nav class="mb-shell-dense" aria-label={i18n.t('Divisions')}>
         <SegmentedControl
-          items={data.divisions}
+          items={divisions}
           key={(division) => division.name}
-          selected={(division) => division.name === data.activeDivision}
-          href={(division) => divisionHref(division.name)}
+          selected={(division) => division.name === activeDivision}
+          href={(division) =>
+            resultsHref(competition.slug, {
+              division: division.name === divisions[0].name ? null : division.name,
+            })}
           attributes={(division) => ({
             title: i18n.t('{division}, ranked by {metric}', {
               division: division.name,
@@ -631,348 +550,78 @@
     >
       <FilterBar
         embedded
-        bind:search={table.searchFilter}
+        bind:search={search.value}
         placeholder={i18n.t('Search an athlete')}
-        onSearch={() => table.handleFilterChange()}
-        activeCount={table.filters.activeCount}
-        onClear={() => table.clearFilters()}
-        clearable={table.narrowed}
+        onSearch={() => go({ q: query })}
+        activeCount={sort === defaultSort ? 0 : 1}
+        onClear={() => {
+          search.value = '';
+          go({ q: '', sort: defaultSort });
+        }}
+        clearable={narrowed}
       >
-        <SelectField
-          label={i18n.t('Country')}
-          bind:value={table.filters.values.country}
-          onchange={() => table.handleFilterChange()}
-        >
-          <option value={null}>{i18n.t('All Countries')}</option>
-          {#each data.countries as countryOption (countryOption)}
-            <option value={countryOption}>{countryName(countryOption, i18n.locale)}</option>
-          {/each}
-        </SelectField>
-        <SelectField
-          label={i18n.t('Sex')}
-          bind:value={table.filters.values.gender}
-          onchange={() => {
-            table.filters.values.category = null;
-            table.handleFilterChange();
-          }}
-        >
-          {#each genders as gender (gender.label)}
-            <option value={gender.value}>{i18n.t(gender.label)}</option>
-          {/each}
-        </SelectField>
-        {#if classed}
-          <SelectField
-            label={i18n.t('Class')}
-            bind:value={table.filters.values.category}
-            onchange={() => table.handleFilterChange()}
-          >
-            <option value={null}>{i18n.t('All Classes')}</option>
-            {#each data.classes as classOption (classOption)}
-              <option value={classOption}>{weights.category(classOption, i18n.locale)}</option>
-            {/each}
-          </SelectField>
-        {/if}
-
         <SelectField
           id="sort-by"
           label={i18n.t('Sort by')}
-          bind:value={table.movementFilter}
-          onchange={() => table.handleFilterChange()}
+          value={sort}
+          onchange={(event) => go({ sort: event.currentTarget.value as RankingMetric })}
         >
-          {#each sorts as sort (sort.value)}
-            <option value={sort.value}>
-              {i18n.t('Sort by {sort}', { sort: i18n.t(sort.label) })}
-            </option>
-          {/each}
+          <optgroup label={i18n.t('By class')}>
+            {#each classSorts as option (option.value)}
+              <option value={option.value}>
+                {i18n.t('Sort by {sort}', { sort: i18n.t(option.label) })}
+              </option>
+            {/each}
+          </optgroup>
+          {#if risSortable}
+            <optgroup label={i18n.t('By index')}>
+              <option value="ris">{i18n.t('Sort by {sort}', { sort: risLabel })}</option>
+            </optgroup>
+          {/if}
         </SelectField>
       </FilterBar>
-      {#if rankings.length === 0 && unplacedOnPage.length === 0 && !busy}
+      {#if sort === 'ris' ? mixed.length === 0 : tables.length === 0}
         <RankingsEmpty
           embedded
-          canReset={table.narrowed || pagination.page > 1}
-          resetHref={i18n.href(resolve(`competitions/${competition.slug}`))}
+          canReset={narrowed}
+          resetHref={resultsHref(competition.slug, { q: '', sort: defaultSort })}
         />
-      {:else}
-        <Table
-          embedded
-          rows={rankings}
-          frozenColumns="athlete"
-          itemName="athlete"
-          {busy}
+      {:else if sort === 'ris'}
+        <CompetitionResultsTable
+          rows={mixed.slice((mixedPage - 1) * TABLE_PAGE_SIZE, mixedPage * TABLE_PAGE_SIZE)}
+          {columns}
+          sorted="ris"
+          {focused}
+          label={i18n.t('Results')}
           pagination={{
-            ...pagination,
-            total_items: fieldSize,
-            total_pages: fieldPages,
-            pageHref: (target) => table.pageHref(target),
+            page: mixedPage,
+            total_items: mixed.length,
+            total_pages: mixedPages,
+            pageHref: (target) => resultsHref(competition.slug, { page: target }),
             replaceState: true,
           }}
-        >
-          {#snippet head()}
-            <th class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_RANK} text-secondary">
-              <RankHeader />
-            </th>
-            <th
-              class="{TABLE_HEAD_CELL} {FROZEN_HEAD_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} text-secondary"
-            >
-              {i18n.t('Athlete')}
-            </th>
-            <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary {sorted('total')}">
-              {i18n.t('Total')}
-              <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
-            </th>
-            {#if risColumn}
-              <th class="{TABLE_HEAD_CELL} text-secondary {sorted('ris')}">
-                <RisHeader published={data.ris === 'reported'} />
-              </th>
-            {/if}
-            {#each contested as lift (lift.key)}
-              {@const attempts = withAttempts.has(lift.movement)}
-              <th class="{TABLE_HEAD_CELL} text-secondary {sorted(lift.key)}">
-                {i18n.t(lift.label)}
-                {#if attempts}
-                  <span class="{ATTEMPT_ROW} mt-0.5 text-micro font-normal text-muted">
-                    <span class="text-right">1</span>
-                    <span class="text-right">2</span>
-                    <span class="text-right">3</span>
-                    <span class="text-right">{i18n.t('Best')}</span>
-                  </span>
-                {/if}
-              </th>
-            {/each}
-            <th class="{TABLE_HEAD_CELL} text-secondary">
-              {i18n.t('Sex')}
-            </th>
-            {#if classed}
-              <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Class')}</th>
-            {/if}
-            {#if showAge}
-              <th class="{TABLE_HEAD_CELL} text-secondary">{i18n.t('Age')}</th>
-            {/if}
-            {#if weighed}
-              <th class="{TABLE_HEAD_CELL} whitespace-normal text-secondary">
-                {i18n.t('Weight')}
-                <span class="mt-0.5 block text-micro font-normal text-muted">{weights.unit}</span>
-              </th>
-            {/if}
-          {/snippet}
-
-          {#snippet body(rows)}
-            {#each rows as entry (entry.participant_id)}
-              {@const participant = participants.get(entry.participant_id)}
-              <tr
-                class="transition-colors"
-                data-focused={entry.athlete.slug === table.focusedAthlete ? '' : undefined}
-              >
-                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.identity}">
-                  {entry.rank}
-                </td>
-                <td
-                  class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} {CELL.identity}"
-                >
-                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT_FILL}">
-                    <span class="flex min-w-0 items-center gap-2">
-                      <Flag
-                        link
-                        countryCode={entry.athlete.country}
-                        class="shrink-0 [--flag-height:1.25em]"
-                      />
-                      <a
-                        href={i18n.href(resolve(`athletes/${entry.athlete.slug}`))}
-                        class="truncate underline hover:text-secondary"
-                      >
-                        {formatAthleteName(entry.athlete)}
-                      </a>
-                    </span>
-                    {#if participant && participant.status !== 'competed'}
-                      <span
-                        class="shrink-0 text-micro font-medium tracking-wide uppercase {STATUS_FLAG}"
-                        title={athleteStatusTitle(
-                          participant.status,
-                          participant.status_reason,
-                          i18n.locale
-                        )}
-                      >
-                        {ATHLETE_STATUS_LABEL[participant.status]}
-                      </span>
-                    {/if}
-                  </span>
-                </td>
-                <td class="{TABLE_CELL} {CELL.counted}">
-                  {weights.format(entry.total, i18n.locale)}<RecordMark
-                    worldOnly
-                    mark={participant?.total_record}
-                  />
-                </td>
-                {#if risColumn}
-                  <td class="{TABLE_CELL} {CELL.counted}">
-                    <RisScore value={entry.ris} source={entry.ris_source} />
-                  </td>
-                {/if}
-                {#each contested as lift (lift.key)}
-                  {@const cell = rankedCell(entry, lift.key, lift.code, lift.movement)}
-                  <td class="{TABLE_CELL} whitespace-nowrap">
-                    <span class={withAttempts.has(lift.movement) ? ATTEMPT_ROW : BEST_ROW}>
-                      {#if cell.kind === 'attempts'}
-                        {#each [1, 2, 3] as slot (slot)}
-                          {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
-                          <span
-                            class="text-right {attempt && !attempt.is_successful
-                              ? CELL.discounted
-                              : CELL.data}"
-                            title={attempt
-                              ? i18n.t('Attempt {slot}: {weight} {unit}, {result}', {
-                                  unit: weights.unit,
-                                  slot,
-                                  weight: weights.format(attempt.weight, i18n.locale),
-                                  result: attempt.is_successful
-                                    ? i18n.t('good lift')
-                                    : i18n.t('no lift'),
-                                })
-                              : i18n.t('Attempt {slot} not recorded', { slot })}
-                          >
-                            {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
-                          </span>
-                        {/each}
-                      {:else if withAttempts.has(lift.movement)}
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                      {/if}
-
-                      <!-- The best sits in its own slot at a fixed offset, so the
-                       column can be read straight down to compare athletes. -->
-                      <span class="text-right {CELL.counted}">
-                        {#if cell.kind === 'absent'}
-                          <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
-                        {:else if cell.kind === 'bombed'}
-                          <span
-                            class="font-normal {CELL.nothing}"
-                            title={i18n.t('No successful {movement}', {
-                              movement: i18n.t(lift.label).toLowerCase(),
-                            })}
-                          >
-                            {NO_RESULT}
-                          </span>
-                        {:else}
-                          <span style:color={lift.tone}>
-                            {weights.format(cell.best, i18n.locale)}
-                          </span><RecordMark worldOnly mark={cell.record} />
-                        {/if}
-                      </span>
-                    </span>
-                  </td>
-                {/each}
-                <td class="{TABLE_CELL} {CELL.data}">{entry.athlete.gender}</td>
-                {#if classed}
-                  <td class="{TABLE_CELL} {CELL.data}">
-                    {weights.category(entry.category, i18n.locale)}
-                  </td>
-                {/if}
-                {#if showAge}{@render ageCell(participant)}{/if}
-                {#if weighed}{@render bodyweightCell(participant)}{/if}
-              </tr>
-            {/each}
-
-            {#each unplacedOnPage as { category, participant } (participant.athlete.athlete_id)}
-              <tr class="transition-colors">
-                <td class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_RANK} {CELL.absent}">{NO_VALUE}</td>
-
-                <td
-                  class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} {CELL.identity}"
-                >
-                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT_FILL}">
-                    <span class="flex min-w-0 items-center gap-2">
-                      <Flag
-                        link
-                        countryCode={participant.athlete.country}
-                        class="shrink-0 [--flag-height:1.25em]"
-                      />
-                      <a
-                        href={i18n.href(resolve(`athletes/${participant.athlete.slug}`))}
-                        class="truncate underline hover:text-secondary"
-                      >
-                        {formatAthleteName(participant.athlete)}
-                      </a>
-                    </span>
-                    {#if participant.status !== 'competed'}
-                      <span
-                        class="shrink-0 text-micro font-medium tracking-wide uppercase {STATUS_FLAG}"
-                        title={athleteStatusTitle(
-                          participant.status,
-                          participant.status_reason,
-                          i18n.locale
-                        )}
-                      >
-                        {ATHLETE_STATUS_LABEL[participant.status]}
-                      </span>
-                    {/if}
-                  </span>
-                </td>
-                <td class="{TABLE_CELL} {CELL.counted}">
-                  {#if participant.status === 'competed'}
-                    {weights.format(participant.total, i18n.locale)}<RecordMark
-                      worldOnly
-                      mark={participant.total_record}
-                    />
-                  {:else}
-                    {NO_RESULT}
-                  {/if}
-                </td>
-                {#if risColumn}
-                  <td class="{TABLE_CELL} {CELL.counted}">
-                    {#if participant.status === 'competed'}
-                      <RisScore value={participant.ris_score} source={participant.ris_source} />
-                    {:else}
-                      {NO_RESULT}
-                    {/if}
-                  </td>
-                {/if}
-                {#each contested as lift (lift.key)}
-                  {@const cell = participantCell(participant, lift.code, lift.movement)}
-                  <td class="{TABLE_CELL} whitespace-nowrap">
-                    <span class={withAttempts.has(lift.movement) ? ATTEMPT_ROW : BEST_ROW}>
-                      {#if cell.kind === 'attempts'}
-                        {#each [1, 2, 3] as slot (slot)}
-                          {@const attempt = cell.attempts.find((a) => a.attempt_number === slot)}
-                          <span
-                            class="text-right {attempt && !attempt.is_successful
-                              ? CELL.discounted
-                              : CELL.data}"
-                          >
-                            {attempt ? weights.format(attempt.weight, i18n.locale) : ''}
-                          </span>
-                        {/each}
-                      {:else if withAttempts.has(lift.movement)}
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                      {/if}
-                      <span class="text-right {CELL.counted}">
-                        {#if cell.kind === 'absent'}
-                          <span class="font-normal {CELL.absent}">{NO_VALUE}</span>
-                        {:else if cell.kind === 'bombed'}
-                          <span class="font-normal {CELL.nothing}">{NO_RESULT}</span>
-                        {:else}
-                          <span style:color={lift.tone}>
-                            {weights.format(cell.best, i18n.locale)}
-                          </span><RecordMark worldOnly mark={cell.record} />
-                        {/if}
-                      </span>
-                    </span>
-                  </td>
-                {/each}
-                <td class="{TABLE_CELL} {CELL.data}">{category.category.gender}</td>
-                {#if classed}
-                  <td class="{TABLE_CELL} {CELL.data}">
-                    {weights.category(category.category.weight_class, i18n.locale)}
-                  </td>
-                {/if}
-                {#if showAge}{@render ageCell(participant)}{/if}
-                {#if weighed}{@render bodyweightCell(participant)}{/if}
-              </tr>
-            {/each}
-          {/snippet}
-        </Table>
+        />
+      {:else}
+        {#each tables as table (table.category.name)}
+          {@const heading = [
+            who(table.category.gender),
+            weights.category(table.category.weight_class, i18n.locale),
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          <div class="border-b border-stroke last:border-b-0">
+            <Text as="h3" variant="panelTitle" class="bg-surface-subtle px-3 py-1.5">
+              {heading}
+            </Text>
+            <CompetitionResultsTable
+              rows={table.rows}
+              {columns}
+              sorted={sort}
+              {focused}
+              label={heading}
+            />
+          </div>
+        {/each}
       {/if}
     </section>
     {#if bodyweightCharted || attemptsCharted}

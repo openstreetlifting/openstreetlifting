@@ -4,7 +4,11 @@ import {
   competitionDivisions,
   attemptSuccess,
   contestSummary,
-  hasRankingResult,
+  matchesAthlete,
+  mixedResults,
+  rankResults,
+  resultTables,
+  resultValue,
   weightClasses,
 } from './competition-results';
 
@@ -74,18 +78,7 @@ const result = (overrides: Partial<Participant> = {}): Participant => ({
   ...overrides,
 });
 
-it('keeps total-only athletes without RIS among the unranked competition entries', () => {
-  const athlete = result();
-  expect(hasRankingResult(athlete, 'ris')).toBe(false);
-  expect(hasRankingResult(athlete, 'total')).toBe(true);
-  expect(hasRankingResult(athlete, 'squat')).toBe(false);
-});
-
-it('does not duplicate total-only athletes who already have a ranked score', () => {
-  expect(hasRankingResult(result({ ris_score: '80', ris_source: 'computed' }), 'ris')).toBe(true);
-});
-
-it('treats zero as a recorded result and distinguishes it from an unknown or failed lift', () => {
+it('reads only scores the athlete actually lifted, keeping zero apart from a missing lift', () => {
   const athlete = result({
     total: '0',
     ris_score: '0',
@@ -94,26 +87,122 @@ it('treats zero as a recorded result and distinguishes it from an unknown or fai
       { movement_name: 'Pull-up', best_weight: null, record: null, attempts: [] },
     ],
   });
-  expect(hasRankingResult(athlete, 'muscleup')).toBe(true);
-  expect(hasRankingResult(athlete, 'ris')).toBe(true);
-  expect(hasRankingResult(athlete, 'total')).toBe(true);
-  expect(hasRankingResult(athlete, 'pullup')).toBe(false);
-  expect(hasRankingResult(athlete, 'dips')).toBe(false);
-});
-
-it('keeps disqualifications, no-shows and missing scores out of the ranked rows', () => {
-  expect(hasRankingResult(result({ status: 'disqualified' }), 'total')).toBe(false);
-  expect(hasRankingResult(result({ status: 'no_show', total: null }), 'total')).toBe(false);
-  expect(hasRankingResult(result({ total: null, ris_score: null }), 'ris')).toBe(false);
-});
-
-it('keeps a published RIS without lifts or total in one ranked row', () => {
+  expect(resultValue(athlete, 'muscleup')).toBe(0);
+  expect(resultValue(athlete, 'ris')).toBe(0);
+  expect(resultValue(athlete, 'total')).toBe(0);
+  expect(resultValue(athlete, 'pullup')).toBeNull();
+  expect(resultValue(athlete, 'dips')).toBeNull();
+  expect(resultValue(result({ status: 'disqualified' }), 'total')).toBeNull();
+  expect(resultValue(result({ status: 'no_show', total: null }), 'total')).toBeNull();
   expect(
-    hasRankingResult(
-      result({ total: null, lifts: [], ris_score: '72.3', ris_source: 'reported' }),
-      'ris'
-    )
-  ).toBe(true);
+    resultValue(result({ total: null, ris_score: '72.3', ris_source: 'reported' }), 'ris')
+  ).toBe(72.3);
+});
+
+const lifter = (id: string, overrides: Partial<Participant> = {}) =>
+  result({
+    participant_id: id,
+    athlete: { ...result().athlete, athlete_id: id, last_name: id, slug: id },
+    ...overrides,
+  });
+
+const ids = (rows: { participant: Participant; rank: number | null }[]) =>
+  rows.map(({ participant, rank }) => [participant.athlete.athlete_id, rank]);
+
+it('ranks by the chosen metric, lighter first on equal totals, and leaves the rest unranked', () => {
+  const category = {
+    name: '',
+    division: null,
+    gender: 'M',
+    weight_class: '-80kg',
+    rank_by: 'total',
+  } as const;
+  const entries = [
+    lifter('dq', { status: 'disqualified', total: null }),
+    lifter('heavy', { total: '300', bodyweight: '79.5' }),
+    lifter('ns', { status: 'no_show', total: null }),
+    lifter('bombed', { total: null }),
+    lifter('light', { total: '300', bodyweight: '72' }),
+    lifter('top', { total: '320' }),
+  ].map((participant) => ({ participant, category }));
+
+  expect(ids(rankResults(entries, 'total'))).toEqual([
+    ['top', 1],
+    ['light', 2],
+    ['heavy', 3],
+    ['bombed', null],
+    ['dq', null],
+    ['ns', null],
+  ]);
+});
+
+it('ranks unplaced lifters by RIS too, with a missing score at the bottom', () => {
+  const category = {
+    name: '',
+    division: null,
+    gender: 'F',
+    weight_class: '',
+    rank_by: 'ris',
+  } as const;
+  const entries = [
+    lifter('low', { ris_score: '40' }),
+    lifter('none', { ris_score: null }),
+    lifter('high', { ris_score: '90' }),
+  ].map((participant) => ({ participant, category }));
+
+  expect(ids(rankResults(entries, 'ris'))).toEqual([
+    ['high', 1],
+    ['low', 2],
+    ['none', null],
+  ]);
+});
+
+it('lists one table per contest, women light to heavy before men, each ranked from 1', () => {
+  const field = (gender: 'M' | 'F', weight_class: string, ...totals: string[]): CategoryDetail => ({
+    category: { name: '', division: null, gender, weight_class, rank_by: 'total' },
+    participants: totals.map((total) => lifter(`${gender}${weight_class}${total}`, { total })),
+  });
+  const tables = resultTables(
+    [
+      field('M', '+80kg', '300'),
+      field('F', '-63kg', '150'),
+      field('M', '-80kg', '280', '290'),
+      field('F', '-57kg', '140'),
+    ],
+    'total'
+  );
+
+  expect(tables.map(({ category }) => `${category.gender}${category.weight_class}`)).toEqual([
+    'F-57kg',
+    'F-63kg',
+    'M-80kg',
+    'M+80kg',
+  ]);
+  expect(ids(tables[2].rows)).toEqual([
+    ['M-80kg290', 1],
+    ['M-80kg280', 2],
+  ]);
+});
+
+it('ranks every contest together on one RIS board', () => {
+  const field = (gender: 'M' | 'F', ris: string): CategoryDetail => ({
+    category: { name: '', division: null, gender, weight_class: '', rank_by: 'ris' },
+    participants: [lifter(gender, { ris_score: ris })],
+  });
+
+  expect(ids(mixedResults([field('M', '80'), field('F', '95')], 'ris'))).toEqual([
+    ['F', 1],
+    ['M', 2],
+  ]);
+});
+
+it('finds an athlete by any part of the name, in any order and without accents', () => {
+  const athlete = result({
+    athlete: { ...result().athlete, first_name: 'Zoé', last_name: 'Lévêque' },
+  });
+  expect(matchesAthlete(athlete, 'leveque zoe')).toBe(true);
+  expect(matchesAthlete(athlete, 'Lév')).toBe(true);
+  expect(matchesAthlete(athlete, 'martin')).toBe(false);
 });
 
 const contest = (

@@ -1,44 +1,28 @@
 import { beforeEach, expect, it, vi } from 'vitest';
-import { competitionsService, rankingsService } from '#lib/server/api/index.js';
+import { competitionsService } from '#lib/server/api/index.js';
+import { currentRisFormula } from '#lib/server/ris-formula.js';
 import { load } from './+page.server';
 import { ApiError } from '#lib/server/api/client.js';
 
 vi.mock('#lib/server/api/index.js', () => ({
   competitionsService: { getById: vi.fn() },
-  rankingsService: {
-    getGlobalRankings: vi.fn(),
-    getFacets: vi.fn(),
-  },
 }));
+vi.mock('#lib/server/ris-formula.js', () => ({ currentRisFormula: vi.fn() }));
 
-const athlete = { slug: 'alex-martin', first_name: 'Alex', last_name: 'Martin' };
-const request = (query: string) =>
-  ({
-    params: { slug: 'euros' },
-    url: new URL(`http://localhost/competitions/euros?${query}`),
-  }) as Parameters<typeof load>[0];
+const request = () => ({ params: { slug: 'euros' } }) as Parameters<typeof load>[0];
+type Competition = Awaited<ReturnType<typeof competitionsService.getById>>;
+const formula = { year: 2026 } as Awaited<ReturnType<typeof currentRisFormula>>;
 
 beforeEach(() => {
   vi.resetAllMocks();
-  vi.mocked(competitionsService.getById).mockResolvedValue({
-    competition_id: 'meet-id',
-    movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
-    categories: [{ category: { division: null }, participants: [{ athlete }] }],
-  } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
-  vi.mocked(rankingsService.getFacets).mockResolvedValue({
-    classes: [],
-    countries: [],
-    federations: [],
-    series: [],
-    years: [],
-  });
+  vi.mocked(currentRisFormula).mockResolvedValue(formula);
 });
 
 it('keeps a confirmed missing competition as a 404', async () => {
   vi.mocked(competitionsService.getById).mockRejectedValue(
     new ApiError(404, 'Not Found', 'Missing')
   );
-  await expect(load(request(''))).rejects.toMatchObject({ status: 404 });
+  await expect(load(request())).rejects.toMatchObject({ status: 404 });
 });
 
 it.each([
@@ -46,144 +30,16 @@ it.each([
   new ApiError(500, 'Internal Server Error', 'Unavailable'),
 ])('reports temporary lookup failures as unavailable rather than missing', async (failure) => {
   vi.mocked(competitionsService.getById).mockRejectedValue(failure);
-  await expect(load(request(''))).rejects.toMatchObject({ status: 503 });
+  await expect(load(request())).rejects.toMatchObject({ status: 503 });
 });
 
-it('opens the page containing the requested athlete while retaining the chosen metric', async () => {
-  vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
-    data: [{ athlete, rank: 76 }],
-    pagination: { page: 1, page_size: 50, total_items: 1, total_pages: 1 },
-  } as Awaited<ReturnType<typeof rankingsService.getGlobalRankings>>);
-  await expect(load(request('athlete=alex-martin&movement=squat'))).rejects.toMatchObject({
-    status: 307,
-    location: '/competitions/euros?athlete=alex-martin&movement=squat&page=2',
-  });
-  expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
-    expect.objectContaining({ q: 'Alex Martin', movement: 'squat', competition_id: 'meet-id' })
-  );
-});
+it('loads the RIS formula only for a competition with published results', async () => {
+  const published = { categories: [{ participants: [] }] } as unknown as Competition;
+  vi.mocked(competitionsService.getById).mockResolvedValue(published);
+  expect(await load(request())).toEqual({ competition: published, formula });
 
-it('respects an explicit page without repeating the athlete lookup', async () => {
-  vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
-    data: [],
-    pagination: { page: 2, page_size: 50, total_items: 100, total_pages: 2 },
-  });
-  const result = await load(request('athlete=alex-martin&movement=squat&page=2'));
-  expect(result).toMatchObject({ pagination: { page: 2 } });
-  expect(rankingsService.getGlobalRankings).toHaveBeenCalledTimes(1);
-  expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
-    expect.objectContaining({ page: 2, q: null })
-  );
-});
-
-it('ranks an MPDS meet on total when its source published no bodyweight', async () => {
-  vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
-    data: [],
-    pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
-  });
-  const result = await load(request(''));
-  expect(result).toMatchObject({ ris: 'not-published' });
-  expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
-    expect.objectContaining({ movement: 'total' })
-  );
-});
-
-it('keeps RIS as the default once an athlete carries a recomputed score', async () => {
-  vi.mocked(competitionsService.getById).mockResolvedValue({
-    competition_id: 'meet-id',
-    movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
-    categories: [
-      {
-        category: { division: null },
-        participants: [{ athlete, ris_score: '312.45', ris_source: 'computed' }],
-      },
-    ],
-  } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
-  vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
-    data: [],
-    pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
-  });
-  const result = await load(request(''));
-  expect(result).toMatchObject({ ris: 'recomputed' });
-  expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
-    expect.objectContaining({ movement: 'ris' })
-  );
-});
-
-it('reports a failed ranking request instead of showing only unranked participants', async () => {
-  vi.mocked(rankingsService.getGlobalRankings).mockRejectedValue(new Error('API unavailable'));
-  const log = vi.spyOn(console, 'error').mockImplementation(() => {});
-  try {
-    await expect(load(request(''))).rejects.toMatchObject({
-      status: 502,
-      body: { message: 'Competition results are temporarily unavailable' },
-    });
-  } finally {
-    log.mockRestore();
-  }
-});
-
-it('uses the declared ranking rule for mixed contests and keeps the mixed filter', async () => {
-  vi.mocked(competitionsService.getById).mockResolvedValue({
-    competition_id: 'meet-id',
-    rank_by: 'total',
-    movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
-    categories: [
-      {
-        category: { gender: 'MX' },
-        participants: [{ athlete, ris_score: '80', ris_source: 'computed' }],
-      },
-    ],
-  } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
-  vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
-    data: [],
-    pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
-  });
-  await load(request('gender=MX'));
-  expect(rankingsService.getGlobalRankings).toHaveBeenCalledWith(
-    expect.objectContaining({ movement: 'total', gender: 'MX' })
-  );
-});
-
-it('ranks each division on its own board and opens the largest one first', async () => {
-  const contest = (division: string, rankBy: string, slug: string) => ({
-    category: { division, rank_by: rankBy },
-    participants: [{ athlete: { ...athlete, slug }, ris_score: null, ris_source: null }],
-  });
-  vi.mocked(competitionsService.getById).mockResolvedValue({
-    competition_id: 'meet-id',
-    movements: ['Muscle-up', 'Pull-up', 'Dips', 'Squat'],
-    rank_by: null,
-    categories: [
-      contest('FNSL Elite', 'ris', 'elite-lifter'),
-      contest('Open', 'total', 'open-lifter'),
-      contest('Open', 'total', 'other-open-lifter'),
-    ],
-  } as unknown as Awaited<ReturnType<typeof competitionsService.getById>>);
-  vi.mocked(rankingsService.getGlobalRankings).mockResolvedValue({
-    data: [],
-    pagination: { page: 1, page_size: 50, total_items: 0, total_pages: 0 },
-  });
-
-  expect(await load(request(''))).toMatchObject({
-    division: null,
-    activeDivision: 'Open',
-    rankBy: 'total',
-  });
-  expect(rankingsService.getGlobalRankings).toHaveBeenLastCalledWith(
-    expect.objectContaining({ division: 'Open', movement: 'total' })
-  );
-
-  expect(await load(request('division=FNSL+Elite'))).toMatchObject({
-    division: 'FNSL Elite',
-    activeDivision: 'FNSL Elite',
-    rankBy: 'ris',
-  });
-  expect(rankingsService.getGlobalRankings).toHaveBeenLastCalledWith(
-    expect.objectContaining({ division: 'FNSL Elite', movement: 'ris' })
-  );
-
-  expect(await load(request('athlete=elite-lifter&page=1'))).toMatchObject({
-    activeDivision: 'FNSL Elite',
-  });
+  const upcoming = { categories: [] } as unknown as Competition;
+  vi.mocked(competitionsService.getById).mockResolvedValue(upcoming);
+  expect(await load(request())).toEqual({ competition: upcoming, formula: null });
+  expect(currentRisFormula).toHaveBeenCalledTimes(1);
 });

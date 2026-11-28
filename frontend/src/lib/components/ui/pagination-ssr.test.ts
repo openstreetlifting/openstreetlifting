@@ -1,7 +1,7 @@
 import { expect, it, vi } from 'vitest';
 import { render } from 'svelte/server';
 import Pagination from './pagination.svelte';
-import { LEADERBOARD_FILTERS, RANKING_FILTERS } from '#lib/constants/filters.js';
+import { RANKING_FILTERS } from '#lib/constants/filters.js';
 import { RankingsTable } from '#lib/state/rankings-table.svelte.js';
 
 vi.mock('$app/paths', () => ({
@@ -63,20 +63,19 @@ it('preserves ranking filters in crawlable links and drops the focused athlete',
   }
 });
 
-it('links within the competition and omits a next link on the last page', () => {
+it('keeps the filters on every page link and omits a next link on the last page', () => {
   const table = new RankingsTable({
-    basePath: '/competitions/worlds',
-    filters: LEADERBOARD_FILTERS,
-    defaultSort: 'total',
-    initialUrl: new URL('https://openstreetlifting.org/competitions/worlds?page=3&gender=M'),
+    basePath: '/',
+    filters: RANKING_FILTERS,
+    initialUrl: new URL('https://openstreetlifting.org/?page=3&gender=M'),
   });
   const { body } = render(Pagination, {
     props: { page: 3, totalPages: 3, pageHref: (target) => table.pageHref(target) },
   });
   expect(links(body).map((url) => url.pathname + url.search)).toEqual([
-    '/competitions/worlds?gender=M&page=2',
-    '/competitions/worlds?gender=M',
-    '/competitions/worlds?gender=M&page=2',
+    '/?gender=M&page=2',
+    '/?gender=M',
+    '/?gender=M&page=2',
   ]);
 });
 
@@ -90,11 +89,11 @@ it('removes navigation targets while pagination is disabled', () => {
 
 it('keeps the URL locale when changing a ranking page or its filters', () => {
   const table = new RankingsTable({
-    basePath: '/competitions/worlds',
-    filters: LEADERBOARD_FILTERS,
-    initialUrl: new URL('https://openstreetlifting.org/pl/competitions/worlds?country=DE'),
+    basePath: '/',
+    filters: RANKING_FILTERS,
+    initialUrl: new URL('https://openstreetlifting.org/pl?country=DE'),
   });
-  expect(table.pageHref(2)).toBe('/pl/competitions/worlds?country=DE&page=2');
-  table.syncFromUrl(new URL('https://openstreetlifting.org/it/competitions/worlds?gender=F'));
-  expect(table.pageHref(1)).toBe('/it/competitions/worlds?gender=F');
+  expect(table.pageHref(2)).toBe('/pl?country=DE&page=2');
+  table.syncFromUrl(new URL('https://openstreetlifting.org/it?gender=F'));
+  expect(table.pageHref(1)).toBe('/it?gender=F');
 });

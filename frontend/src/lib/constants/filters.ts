@@ -4,8 +4,6 @@ import { text, year } from '#lib/utils/filters.js';
 
 const country = (raw: string | null) => text(raw)?.toUpperCase() ?? null;
 
-export const LEADERBOARD_FILTERS = { gender: asRankedGender, category: text, country };
-
 export const RANKING_FILTERS = {
   gender: asRankedGender,
   category: text,

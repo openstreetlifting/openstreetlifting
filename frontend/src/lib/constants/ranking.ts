@@ -1,5 +1,3 @@
-import type { RankingMetric } from '#lib/types/enums.js';
-
 export const RANKING_LIFTS = [
   { value: 'muscleup', label: 'Muscle Up' },
   { value: 'pullup', label: 'Pull Up' },
@@ -12,8 +10,6 @@ export const RANKING_SORTS = [
   { value: 'ris', label: 'RIS' },
   ...RANKING_LIFTS,
 ] as const;
-
-export const RANKING_SORTS_NO_RIS = RANKING_SORTS.filter((sort) => sort.value !== 'ris');
 
 export const RANKING_GENDERS = [
   { value: null, label: 'All Sex' },
@@ -54,12 +50,4 @@ export function risProvenance(competition: RisShape): RisProvenance {
   return competition.movements.length === MPDS_MOVEMENTS || competition.rank_by === 'ris'
     ? 'not-published'
     : 'not-contested';
-}
-
-/**
- * Sorting by a score no one has drops every row, so the table falls back to the
- * total the meet was actually decided on.
- */
-export function defaultRankingSort(provenance: RisProvenance): RankingMetric {
-  return provenance === 'recomputed' || provenance === 'reported' ? 'ris' : 'total';
 }

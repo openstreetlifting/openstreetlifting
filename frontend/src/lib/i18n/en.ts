@@ -70,6 +70,8 @@ export const messages = [
   'All Classes',
   'Sort by',
   'Sort by {sort}',
+  'By class',
+  'By index',
   'Streetlifting competition results',
   'Streetlifting competitions',
   'Hey! Those competitions are currently running',

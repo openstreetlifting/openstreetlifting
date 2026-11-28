@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { defaultRankingSort, risProvenance } from './ranking';
+import { risProvenance } from './ranking';
 
 const mpds = ['M', 'P', 'D', 'S'];
 
@@ -36,21 +36,12 @@ it('separates a shorter event from an MPDS meet with no published score', () => 
   expect(risProvenance(meet(mpds, [{}, {}]))).toBe('not-published');
 });
 
-it('shows published RIS for a shorter event and makes RIS the default sort', () => {
-  const provenance = risProvenance(
-    meet(['P', 'D', 'S'], [{ ris_score: '88.84', ris_source: 'reported' }])
-  );
-  expect(provenance).toBe('reported');
-  expect(defaultRankingSort(provenance)).toBe('ris');
+it('shows published RIS for a shorter event', () => {
+  expect(
+    risProvenance(meet(['P', 'D', 'S'], [{ ris_score: '88.84', ris_source: 'reported' }]))
+  ).toBe('reported');
 });
 
 it('marks a declared shorter RIS event as unavailable when no scores were published', () => {
   expect(risProvenance({ ...meet(['P', 'D', 'S'], [{}]), rank_by: 'ris' })).toBe('not-published');
-});
-
-it('sorts on total whenever no athlete has a RIS to sort on', () => {
-  expect(defaultRankingSort('recomputed')).toBe('ris');
-  expect(defaultRankingSort('reported')).toBe('ris');
-  expect(defaultRankingSort('not-published')).toBe('total');
-  expect(defaultRankingSort('not-contested')).toBe('total');
 });
