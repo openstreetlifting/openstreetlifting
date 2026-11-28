@@ -30,7 +30,7 @@
     FROZEN_RANK,
     FROZEN_ATHLETE,
     ATHLETE_COLUMN_FILL,
-    ATHLETE_CONTENT,
+    ATHLETE_CONTENT_FILL,
     Text,
     RankHeader,
     DetailList,
@@ -779,7 +779,7 @@
                 <td
                   class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} {CELL.identity}"
                 >
-                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
+                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT_FILL}">
                     <span class="flex min-w-0 items-center gap-2">
                       <Flag
                         link
@@ -890,7 +890,7 @@
                 <td
                   class="{TABLE_CELL} {FROZEN_CELL} {FROZEN_ATHLETE} {ATHLETE_COLUMN_FILL} {CELL.identity}"
                 >
-                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT}">
+                  <span class="flex items-center gap-1.5 {ATHLETE_CONTENT_FILL}">
                     <span class="flex min-w-0 items-center gap-2">
                       <Flag
                         link
