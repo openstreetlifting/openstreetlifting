@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.84.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.83.0...v0.84.0) (2026-11-28)
+
+
+### Features
+
+* **athletes:** plot every lift over time on one chart ([#1129](https://github.com/openstreetlifting/openstreetlifting/issues/1129)) ([c44d54f](https://github.com/openstreetlifting/openstreetlifting/commit/c44d54fe7834e34f60448f79e8c60c6e5755ef2d))
+* **competitions:** chart attempt success and match the bodyweight chart hover to RIS ([#1112](https://github.com/openstreetlifting/openstreetlifting/issues/1112)) ([3752206](https://github.com/openstreetlifting/openstreetlifting/commit/3752206e7f0a864800cce9c706f26b3e4d640989))
+* **competitions:** place RIS contests by the published score ([#1116](https://github.com/openstreetlifting/openstreetlifting/issues/1116)) ([971a65d](https://github.com/openstreetlifting/openstreetlifting/commit/971a65d9b318d02c1ccd574c7fa75ae49b43b074))
+* **competitions:** rank divisions by their own scoring ([#1105](https://github.com/openstreetlifting/openstreetlifting/issues/1105)) ([a6cf817](https://github.com/openstreetlifting/openstreetlifting/commit/a6cf817be263fb741eda3323a39b5156cf990edf))
+* **competitions:** show results as one table per weight class ([#1127](https://github.com/openstreetlifting/openstreetlifting/issues/1127)) ([03f829b](https://github.com/openstreetlifting/openstreetlifting/commit/03f829bb4da7e1524a869b85d78a47a363f50e1e))
+* **countries:** replace country pages with the rankings country filter ([#1126](https://github.com/openstreetlifting/openstreetlifting/issues/1126)) ([3926878](https://github.com/openstreetlifting/openstreetlifting/commit/3926878d8e986a765b23e22fbd918725776f1f2b))
+* **lifts:** give each lift a colour on the competition and athlete pages ([#1121](https://github.com/openstreetlifting/openstreetlifting/issues/1121)) ([2f3036b](https://github.com/openstreetlifting/openstreetlifting/commit/2f3036b7c534297d968fb5ff6d144a16706c5fdf))
+* **rankings:** name the RIS edition in the column header ([#1119](https://github.com/openstreetlifting/openstreetlifting/issues/1119)) ([a4c5cd6](https://github.com/openstreetlifting/openstreetlifting/commit/a4c5cd68c6cafc35436179cdf89f06651206d5ff))
+* **rankings:** show 50 athletes per page by default ([#1125](https://github.com/openstreetlifting/openstreetlifting/issues/1125)) ([3e47033](https://github.com/openstreetlifting/openstreetlifting/commit/3e47033090135fe360e29e23b18c836099601a9c))
+* **search:** find every athlete by name ([#1124](https://github.com/openstreetlifting/openstreetlifting/issues/1124)) ([995c135](https://github.com/openstreetlifting/openstreetlifting/commit/995c1356d0eda10f65e74844ee43697d7574c602))
+
+
+### Bug Fixes
+
+* **data:** name FinalRep EUROS in capitals ([#1122](https://github.com/openstreetlifting/openstreetlifting/issues/1122)) ([26fc15a](https://github.com/openstreetlifting/openstreetlifting/commit/26fc15aa5b7e4037a395b4816ee8ce9ddaebfce3))
+* **lifts:** keep the format filter and attempt tooltip labels plain ([#1123](https://github.com/openstreetlifting/openstreetlifting/issues/1123)) ([897a56d](https://github.com/openstreetlifting/openstreetlifting/commit/897a56da54099192c56dbfb7d410ce3e7a49e70a))
+
+
+### Refactoring
+
+* **rankings:** drop the competition scope from the rankings API ([#1128](https://github.com/openstreetlifting/openstreetlifting/issues/1128)) ([05775d2](https://github.com/openstreetlifting/openstreetlifting/commit/05775d2d8cda2be0c654c2193b700f298bf28234))
+
 ## [0.83.0](https://github.com/openstreetlifting/openstreetlifting/compare/v0.82.0...v0.83.0) (2026-11-27)
 
 
