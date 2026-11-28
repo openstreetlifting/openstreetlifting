@@ -58,12 +58,12 @@ it('names every plotted lift in the legend, with no metric selector', async () =
   expect(page.getByRole('combobox').elements()).toHaveLength(0);
 });
 
-it('shows only the meet name, linked to the meet sorted by the hovered lift', async () => {
+it('shows the meet name and the hovered lift value, linked to the meet sorted by that lift', async () => {
   render(AthleteProgress, { progress, athleteSlug: 'alex-martin' });
   await expect.element(page.getByRole('tooltip')).not.toBeInTheDocument();
   await page.getByRole('button', { name: /Second meet.*Pull Up 45 kg/ }).hover();
   const tooltip = page.getByRole('tooltip');
-  await expect.element(tooltip).toHaveTextContent('Second meet');
+  await expect.element(tooltip).toHaveTextContent('Second meet Pull Up 45 kg');
   await expect
     .element(tooltip.getByRole('link', { name: 'Second meet' }))
     .toHaveAttribute('href', '/en/competitions/Second meet?movement=pullup&athlete=alex-martin');
