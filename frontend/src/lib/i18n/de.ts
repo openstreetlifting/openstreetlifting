@@ -78,7 +78,7 @@ export default {
   Year: 'Jahr',
   'All Classes': 'Alle Klassen',
   'Sort by': 'Sortieren nach',
-  'Sort by {sort}': 'Sortieren nach {sort}',
+  'By {sort}': 'Nach {sort}',
   'By class': 'Nach Klasse',
   'By index': 'Nach Index',
   'Streetlifting competition results': 'Ergebnisse von Streetlifting-Wettkämpfen',

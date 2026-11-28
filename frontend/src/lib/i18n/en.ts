@@ -69,7 +69,7 @@ export const messages = [
   'Year',
   'All Classes',
   'Sort by',
-  'Sort by {sort}',
+  'By {sort}',
   'By class',
   'By index',
   'Streetlifting competition results',

@@ -569,13 +569,13 @@
           <optgroup label={i18n.t('By class')}>
             {#each classSorts as option (option.value)}
               <option value={option.value}>
-                {i18n.t('Sort by {sort}', { sort: i18n.t(option.label) })}
+                {i18n.t('By {sort}', { sort: i18n.t(option.label) })}
               </option>
             {/each}
           </optgroup>
           {#if risSortable}
             <optgroup label={i18n.t('By index')}>
-              <option value="ris">{i18n.t('Sort by {sort}', { sort: risLabel })}</option>
+              <option value="ris">{i18n.t('By {sort}', { sort: risLabel })}</option>
             </optgroup>
           {/if}
         </SelectField>

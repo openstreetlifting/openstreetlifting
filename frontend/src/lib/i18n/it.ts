@@ -79,7 +79,7 @@ export default {
   Year: 'Anno',
   'All Classes': 'Tutte le categorie',
   'Sort by': 'Ordina per',
-  'Sort by {sort}': 'Ordina per {sort}',
+  'By {sort}': 'Per {sort}',
   'By class': 'Per categoria',
   'By index': 'Per indice',
   'Streetlifting competition results': 'Risultati delle gare di streetlifting',
