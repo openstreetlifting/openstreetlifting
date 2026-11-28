@@ -6,7 +6,7 @@ sources = [
 ]
 
 [competition]
-name = "Euros"
+name = "EUROS"
 series = "finalrep-euros"
 start_date = "2026-10-02"
 end_date = "2026-10-04"
