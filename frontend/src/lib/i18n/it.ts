@@ -395,7 +395,7 @@ export default {
   'Weight unit': 'Unità di peso',
   'Your weight unit preference is saved in your browser.':
     'L’unità di peso scelta viene salvata nel browser.',
-  'Athletes found without an MPDS result': 'Atleti trovati senza risultato MPDS',
+  'Without MPDS result': 'Senza risultato MPDS',
   'No valid lift': 'Nessuna alzata valida',
   '{count} more. Type more of the name to narrow the list.':
     'Altri {count}. Scrivi più lettere del nome per restringere la lista.',

@@ -28,12 +28,12 @@
   let { hits, total }: { hits: AthleteSearchHit[]; total: number } = $props();
 
   const hidden = $derived(Math.max(0, total - hits.length));
-  const title = $derived(i18n.t('Athletes found without an MPDS result'));
+  const title = $derived(i18n.t('Without MPDS result'));
 </script>
 
 <section class={LAYOUT.section} aria-labelledby="athletes-without-mpds">
   <Text as="h2" id="athletes-without-mpds" variant="heading" class="mb-3 text-ink">
-    {title} ({total})
+    {title}
   </Text>
   <div class="min-w-0 rounded-panel border border-stroke-strong">
     <Table embedded frozenColumns="rank" rows={hits} itemName="athlete" label={title}>
