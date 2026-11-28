@@ -6,9 +6,9 @@
   export const FROZEN_HEAD_CELL = 'sticky z-10 bg-table-head';
   export const FROZEN_RANK = 'w-10 min-w-10 max-w-10 left-0';
   export const ATHLETE_COLUMN = 'w-36 min-w-36 pl-1 sm:w-64 sm:min-w-64 sm:pl-3';
-  export const ATHLETE_COLUMN_FILL = 'w-36 min-w-36 pl-1 sm:w-full sm:min-w-56 sm:pl-3';
+  export const ATHLETE_COLUMN_FILL = 'w-36 min-w-36 pl-1 sm:w-full sm:min-w-48 sm:pl-3';
   export const ATHLETE_CONTENT = 'max-w-[8.25rem] sm:max-w-[14.5rem]';
-  export const ATHLETE_CONTENT_FILL = 'max-w-[8.25rem] sm:max-w-[12.5rem]';
+  export const ATHLETE_CONTENT_FILL = 'max-w-[8.25rem] sm:max-w-[10.5rem]';
   export const FROZEN_ATHLETE = 'left-10';
 </script>
 
