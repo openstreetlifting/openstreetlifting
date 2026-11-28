@@ -240,14 +240,20 @@
                   <p class={CHART.tooltipTitle}>{i18n.movement(lift.movement_name)}</p>
                   <p class={CHART.tooltipNote}>
                     {weights.format(lift.value, i18n.locale)}
-                    {weights.unit} · {i18n.t('of total')}
+                    {weights.unit}
                   </p>
                   <dl class={CHART.tooltipRows}>
                     <dt>{i18n.t('Athlete')}</dt>
-                    <dd class={CHART.tooltipValue}>{share(lift.share)}</dd>
+                    <dd class={CHART.tooltipValue}>
+                      {share(lift.share)}
+                      {i18n.t('of total')}
+                    </dd>
                     {#if lift.class_share !== null}
                       <dt>{reference}</dt>
-                      <dd class={CHART.tooltipValue}>{share(lift.class_share)}</dd>
+                      <dd class={CHART.tooltipValue}>
+                        {share(lift.class_share)}
+                        {i18n.t('of total')}
+                      </dd>
                     {/if}
                   </dl>
                 </div>
