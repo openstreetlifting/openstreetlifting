@@ -41,9 +41,6 @@ export default {
   'Share of total': 'Udział w sumie',
   Difference: 'Różnica',
   'Total by bodyweight': 'Suma według masy ciała',
-  'About total by bodyweight': 'O sumie według masy ciała',
-  'Each point is an athlete with a recorded bodyweight. The lines show the total needed for a RIS of 100 at each bodyweight, using the {year} edition.':
-    'Każdy punkt to zawodnik z zapisaną masą ciała. Linie pokazują sumę potrzebną do RIS 100 przy każdej masie ciała, według edycji {year}.',
   'RIS 100, {sex}': 'RIS 100, {sex}',
   'Total by bodyweight for {count} athletes, {above} of them above a RIS of 100.':
     'Suma według masy ciała dla {count} zawodników, z czego {above} powyżej RIS 100.',
@@ -335,10 +332,7 @@ export default {
   'Attempt {slot}: {weight} {unit}, {result}': 'Podejście {slot}: {weight} {unit}, {result}',
   'Attempt {slot} not recorded': 'Nie zapisano podejścia {slot}',
   'Attempt success': 'Skuteczność podejść',
-  'About attempt success': 'O skuteczności podejść',
   'Attempt {number}': 'Podejście {number}',
-  'The share of first, second and third attempts judged good, for each movement.':
-    'Odsetek zaliczonych pierwszych, drugich i trzecich podejść w każdym ruchu.',
   'good lift': 'zaliczone',
   'no lift': 'niezaliczone',
   'No successful {movement}': 'Brak zaliczonego podejścia: {movement}',

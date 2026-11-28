@@ -12,7 +12,6 @@
 
 <script lang="ts">
   import ChartPanel from '#lib/components/ui/chart-panel.svelte';
-  import InfoTip from '#lib/components/ui/info-tip.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { useWeightUnit } from '#lib/state/weight-unit.svelte.js';
   import { Chart, Spline, Tooltip } from 'layerchart/svg';
@@ -88,18 +87,6 @@
 </script>
 
 <ChartPanel title={i18n.t('Total by bodyweight')}>
-  {#snippet controls()}
-    <InfoTip label={i18n.t('About total by bodyweight')}>
-      <p class="font-medium text-ink">{i18n.t('Total by bodyweight')}</p>
-      <p class="mt-3">
-        {i18n.t(
-          'Each point is an athlete with a recorded bodyweight. The lines show the total needed for a RIS of 100 at each bodyweight, using the {year} edition.',
-          { year: formula.year }
-        )}
-      </p>
-    </InfoTip>
-  {/snippet}
-
   <ul class="{TEXT.meta} mb-2 flex flex-wrap gap-x-4 gap-y-1 text-secondary">
     {#each sexes as sex (sex)}
       <li class="flex items-center gap-2">

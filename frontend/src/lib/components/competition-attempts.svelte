@@ -4,7 +4,6 @@
 
 <script lang="ts">
   import ChartPanel from '#lib/components/ui/chart-panel.svelte';
-  import InfoTip from '#lib/components/ui/info-tip.svelte';
   import { useI18n } from '#lib/i18n/index.js';
   import { Chart, Tooltip } from 'layerchart/svg';
   import { scaleBand, scaleLinear } from 'd3-scale';
@@ -41,6 +40,13 @@
     return tone ? `color-mix(in oklab, ${tone} ${strength}%, var(--color-surface))` : fill;
   }
 
+  function legendFill(attempt: number): string {
+    const fills = rates.map(({ movement }) => barFill(movement, attempt));
+    const width = 100 / fills.length;
+    const stops = fills.map((fill, index) => `${fill} ${index * width}% ${(index + 1) * width}%`);
+    return `linear-gradient(90deg, ${stops.join(', ')})`;
+  }
+
   const percent = $derived(
     new Intl.NumberFormat(i18n.locale, { style: 'percent', maximumFractionDigits: 0 })
   );
@@ -62,19 +68,14 @@
 </script>
 
 <ChartPanel title={i18n.t('Attempt success')}>
-  {#snippet controls()}
-    <InfoTip label={i18n.t('About attempt success')}>
-      <p class="font-medium text-ink">{i18n.t('Attempt success')}</p>
-      <p class="mt-3">
-        {i18n.t('The share of first, second and third attempts judged good, for each movement.')}
-      </p>
-    </InfoTip>
-  {/snippet}
-
   <ul class="{TEXT.meta} mb-2 flex flex-wrap gap-x-4 gap-y-1 text-secondary">
     {#each ATTEMPTS as attempt (attempt.number)}
       <li class="flex items-center gap-2">
-        <span class="size-2 rounded-sm" style:background={attempt.fill} aria-hidden="true"></span>
+        <span
+          class="h-2.5 w-8 rounded-sm"
+          style:background={legendFill(attempt.number)}
+          aria-hidden="true"
+        ></span>
         {i18n.t('Attempt {number}', { number: attempt.number })}
       </li>
     {/each}
