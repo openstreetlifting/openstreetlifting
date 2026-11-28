@@ -1,27 +1,19 @@
 import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
-import type { Movement } from '#lib/types/enums.js';
-import { RANKING_SORTS } from '#lib/constants/ranking.js';
-
-export type ProgressMetric = (typeof RANKING_SORTS)[number]['value'];
-const MOVEMENTS = {
-  muscleup: 'Muscle-up',
-  pullup: 'Pull-up',
-  dips: 'Dips',
-  squat: 'Squat',
-} as const;
+import type { Movement, RankingMetric } from '#lib/types/enums.js';
+import { LIFTS, type Lift } from '#lib/constants/lift.js';
 
 const MOVEMENT_METRICS = {
   'Muscle-up': 'muscleup',
   'Pull-up': 'pullup',
   Dips: 'dips',
   Squat: 'squat',
-} as const satisfies Record<Movement, ProgressMetric>;
+} as const satisfies Record<Movement, RankingMetric>;
 
-export function movementMetric(movement: Movement): ProgressMetric {
+export function movementMetric(movement: Movement): RankingMetric {
   return MOVEMENT_METRICS[movement];
 }
 
-export function competitionFocusQuery(metric: ProgressMetric, athleteSlug?: string): string {
+export function competitionFocusQuery(metric: RankingMetric, athleteSlug?: string): string {
   const query = new URLSearchParams({ movement: metric });
   if (athleteSlug) query.set('athlete', athleteSlug);
   return query.toString();
@@ -33,36 +25,23 @@ export interface ProgressPoint {
   value: number;
 }
 
-function numeric(value: string | null | undefined): number | null {
-  if (value == null || value.trim() === '') return null;
-  const number = Number(value);
-  return Number.isFinite(number) ? number : null;
+export interface LiftProgress {
+  lift: Lift;
+  points: ProgressPoint[];
 }
 
-export function progressPoints(
-  competitions: AthleteCompetitionSummary[],
-  metric: ProgressMetric,
-  event = 'MPDS'
-): ProgressPoint[] {
+function liftPoints(competitions: AthleteCompetitionSummary[], movement: Movement) {
   const byCompetition = new Map<string, ProgressPoint>();
   for (const competition of competitions) {
     if (competition.status !== 'competed') continue;
     const timestamp = Date.parse(competition.competition_date);
-    if (!Number.isFinite(timestamp)) continue;
-    // Keep totals, scores and individual lifts within the selected event format.
-    if (competition.event !== event) continue;
-    const value = numeric(
-      metric === 'total'
-        ? competition.total
-        : metric === 'ris'
-          ? competition.ris_score
-          : competition.lifts.find((lift) => lift.movement_name === MOVEMENTS[metric])?.best_weight
-    );
-    if (value === null) continue;
-    // A meet can list one athlete in multiple divisions; plot their best result once.
+    const raw = competition.lifts.find((lift) => lift.movement_name === movement)?.best_weight;
+    const value = raw == null || raw.trim() === '' ? NaN : Number(raw);
+    if (!Number.isFinite(timestamp) || !Number.isFinite(value)) continue;
     const existing = byCompetition.get(competition.competition_id);
-    if (!existing || value > existing.value)
+    if (!existing || value > existing.value) {
       byCompetition.set(competition.competition_id, { competition, timestamp, value });
+    }
   }
   return [...byCompetition.values()].sort(
     (a, b) =>
@@ -71,11 +50,12 @@ export function progressPoints(
   );
 }
 
-export function chartableMetrics(
-  competitions: AthleteCompetitionSummary[],
-  event = 'MPDS'
-): ProgressMetric[] {
-  return RANKING_SORTS.map((sort) => sort.value).filter(
-    (metric) => progressPoints(competitions, metric, event).length >= 2
+export function liftProgress(competitions: AthleteCompetitionSummary[]): LiftProgress[] {
+  return LIFTS.map((lift) => ({ lift, points: liftPoints(competitions, lift.movement) })).filter(
+    ({ points }) => points.length > 0
   );
+}
+
+export function showsProgress(progress: LiftProgress[]): boolean {
+  return progress.filter(({ points }) => points.length >= 2).length >= 2;
 }

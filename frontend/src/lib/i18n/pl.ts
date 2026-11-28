@@ -27,12 +27,9 @@ export default {
   'Open menu': 'Otwórz menu',
   'Close menu': 'Zamknij menu',
   'Performance over time': 'Wyniki w czasie',
-  Performance: 'Wynik',
   Event: 'Format',
   Best: 'Najlepszy',
   Date: 'Data',
-  'RIS scores are shown as recorded; formula editions and reported scores may differ.':
-    'Wyniki RIS są wyświetlane zgodnie z zapisem; wersje wzoru i opublikowane wartości mogą się różnić.',
   'Lift balance': 'Balans bojów',
   'About lift balance': 'O balansie bojów',
   'Lift balance compared with other athletes in {category}':
@@ -265,9 +262,6 @@ export default {
   Divisions: 'Dywizje',
   '{division}, ranked by {metric}': '{division}, klasyfikacja: {metric}',
   Recomputed: 'Przeliczony',
-  Reported: 'Opublikowany',
-  Computed: 'Obliczony',
-  Recorded: 'Zapisany',
   Unavailable: 'Niedostępny',
   'Why RIS is unavailable': 'Dlaczego RIS jest niedostępny',
   total: 'sumy',
@@ -337,7 +331,6 @@ export default {
   'no lift': 'niezaliczone',
   'No successful {movement}': 'Brak zaliczonego podejścia: {movement}',
   "{category}'s weight classes": 'Kategorie wagowe: {category}',
-  '{label} over time': '{label} w czasie',
   'Enter a number between {min} and {max} {unit}.': 'Podaj liczbę od {min} do {max} {unit}.',
   '{label} slider': 'Suwak: {label}',
   'The calculated score is above the target of {target} RIS.':

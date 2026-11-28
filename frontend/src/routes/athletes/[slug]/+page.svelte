@@ -10,7 +10,7 @@
   import type { PageData } from './$types';
   import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
   import type { Attempt } from '#lib/types/competition.js';
-  import type { Gender } from '#lib/types/enums.js';
+  import type { Gender, RankingMetric } from '#lib/types/enums.js';
   import { ATHLETE_STATUS_LABEL, athleteStatusTitle } from '#lib/constants/athlete-status.js';
   import {
     MetricCard,
@@ -33,12 +33,12 @@
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
-  import { athleteFilters } from '#lib/utils/athlete-filters.js';
+  import { athleteRanking } from '#lib/utils/athlete-filters.js';
   import {
-    chartableMetrics,
     competitionFocusQuery,
+    liftProgress,
     movementMetric,
-    type ProgressMetric,
+    showsProgress,
   } from '#lib/utils/athlete-progress.js';
   import { rankingsHref } from '#lib/state/rankings-return.svelte.js';
   import { SvelteURLSearchParams } from 'svelte/reactivity';
@@ -71,8 +71,8 @@
   let { data }: { data: PageData } = $props();
   const { athlete } = $derived(data);
   const showsDivision = $derived(athlete.competitions.some((c) => c.division));
-  const progressMetrics = $derived(chartableMetrics(athlete.competitions));
-  const showsProgress = $derived(progressMetrics.length > 0);
+  const progress = $derived(liftProgress(athlete.competitions));
+  const charted = $derived(showsProgress(progress));
   const balance = $derived(balanceComparable(athlete.lift_balance) ? athlete.lift_balance : null);
 
   // Without an event code, recorded lifts are the only evidence of contested movements.
@@ -141,18 +141,12 @@
     athlete.best_total && athlete.best_ris ? 'md:col-span-2' : 'col-span-2 md:col-span-4'
   );
 
-  const filters = $derived(athleteFilters(page.url.searchParams));
-  const selectedMetric = $derived(filters.ranking);
+  const selectedMetric = $derived(athleteRanking(page.url.searchParams));
 
-  function updateFilter(key: 'ranking' | 'performance', value: string) {
+  function updateRanking(value: string) {
     const params = new SvelteURLSearchParams(page.url.search);
-    const defaults = {
-      ranking: 'ris',
-      performance: 'total',
-    };
-    params.delete('event');
-    if (value === defaults[key]) params.delete(key);
-    else params.set(key, value);
+    if (value === 'ris') params.delete('ranking');
+    else params.set('ranking', value);
     const query = params.toString();
 
     return goto(
@@ -176,7 +170,7 @@
         }
   );
 
-  function competitionHref(slug: string, metric: ProgressMetric) {
+  function competitionHref(slug: string, metric: RankingMetric) {
     const query = competitionFocusQuery(metric, athlete.slug);
     return i18n.href(resolve(`competitions/${slug}?${query}`));
   }
@@ -316,7 +310,7 @@
           <Select
             name="ranking"
             value={selectedMetric}
-            onchange={(event) => updateFilter('ranking', event.currentTarget.value)}
+            onchange={(event) => updateRanking(event.currentTarget.value)}
             class="px-3 py-1.5"
           >
             {#each RANKING_SORTS as metric (metric.value)}
@@ -428,17 +422,10 @@
     />
   {/key}
 
-  {#if showsProgress || balance}
+  {#if charted || balance}
     <div class="grid items-stretch gap-tile lg:auto-rows-fr lg:grid-cols-2">
-      {#if showsProgress}
-        <AthleteProgress
-          athleteSlug={athlete.slug}
-          competitions={athlete.competitions}
-          metric={progressMetrics.includes(filters.performance)
-            ? filters.performance
-            : progressMetrics[0]}
-          onMetricChange={(value) => updateFilter('performance', value)}
-        />
+      {#if charted}
+        <AthleteProgress athleteSlug={athlete.slug} {progress} />
       {/if}
 
       {#if balance}

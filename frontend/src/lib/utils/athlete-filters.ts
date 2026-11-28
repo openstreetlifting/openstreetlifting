@@ -1,13 +1,6 @@
 import { RANKING_SORTS } from '#lib/constants/ranking.js';
-import type { ProgressMetric } from './athlete-progress';
+import type { RankingMetric } from '#lib/types/enums.js';
 
-export function rankingMetric(value: string | null, fallback: ProgressMetric): ProgressMetric {
-  return RANKING_SORTS.find((metric) => metric.value === value)?.value ?? fallback;
-}
-
-export function athleteFilters(params: Pick<URLSearchParams, 'get'>) {
-  return {
-    ranking: rankingMetric(params.get('ranking'), 'ris'),
-    performance: rankingMetric(params.get('performance'), 'total'),
-  };
+export function athleteRanking(params: Pick<URLSearchParams, 'get'>): RankingMetric {
+  return RANKING_SORTS.find((metric) => metric.value === params.get('ranking'))?.value ?? 'ris';
 }

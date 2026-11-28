@@ -3,6 +3,7 @@ import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 import AthleteProgress from './athlete-progress.svelte';
 import type { AthleteCompetitionSummary } from '#lib/types/athlete.js';
+import { liftProgress } from '#lib/utils/athlete-progress.js';
 import { WEIGHT_UNIT_CONTEXT, WeightPreference } from '#lib/state/weight-unit.svelte.js';
 
 vi.mock('$app/paths', () => ({
@@ -12,120 +13,76 @@ vi.mock('$app/paths', () => ({
       : `/${path}`,
 }));
 
-const competitions: AthleteCompetitionSummary[] = [
-  {
-    competition_id: 'first',
-    competition_name: 'First meet',
-    competition_slug: 'first',
-    competition_date: '2024-01-01',
-    category_name: 'Men -80 kg',
-    division: null,
-    rank: 2,
-    total: '400',
-    total_record: null,
-    ris_score: '95',
-    ris_source: 'computed',
-    status: 'competed',
-    event: 'MPDS',
-    lifts: [{ movement_name: 'Muscle-up', best_weight: '0', record: null, attempts: [] }],
-  },
-  {
-    competition_id: 'second',
-    competition_name: 'Second meet',
-    competition_slug: 'second',
-    competition_date: '2025-01-01',
-    category_name: 'Men -87 kg',
-    division: null,
-    rank: 1,
-    total: '450',
-    total_record: null,
-    ris_score: '98',
-    ris_source: 'reported',
-    status: 'competed',
-    event: 'MPDS',
-    lifts: [{ movement_name: 'Muscle-up', best_weight: '10', record: null, attempts: [] }],
-  },
-];
-
-it('converts the performance chart and tooltips while keeping RIS and source results unchanged', async () => {
-  const weights = new WeightPreference(() => 'lb');
-  const original = structuredClone(competitions);
-  render(AthleteProgress, {
-    props: { competitions },
-    context: new Map([[WEIGHT_UNIT_CONTEXT, weights]]),
-  });
-  await expect
-    .element(page.getByRole('button', { name: /Second meet.*992.08 lb/ }))
-    .toBeInTheDocument();
-  await page.getByRole('button', { name: /First meet.*881.85 lb/ }).click();
-  await expect.element(page.getByRole('tooltip')).toMatchTextContent('881.85 lb');
-  await expect.element(page.getByRole('tooltip')).toMatchTextContent('Men -176.37 lb');
-  await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('ris');
-  await page.getByRole('button', { name: /Second meet/ }).click();
-  await expect.element(page.getByRole('tooltip')).toMatchTextContent('98.00');
-  expect(competitions).toEqual(original);
+const meet = (
+  id: string,
+  date: string,
+  lifts: Record<string, string | null>,
+  event = 'MPDS'
+): AthleteCompetitionSummary => ({
+  competition_id: id,
+  competition_name: id,
+  competition_slug: id,
+  competition_date: date,
+  category_name: 'Men -80 kg',
+  division: null,
+  rank: 1,
+  total: null,
+  total_record: null,
+  ris_score: null,
+  ris_source: null,
+  status: 'competed',
+  event,
+  lifts: Object.entries(lifts).map(([movement_name, best_weight]) => ({
+    movement_name: movement_name as AthleteCompetitionSummary['lifts'][number]['movement_name'],
+    best_weight,
+    record: null,
+    attempts: [],
+  })),
 });
 
-it('selects competition points and switches metrics without losing a real zero result', async () => {
-  render(AthleteProgress, { competitions, athleteSlug: 'alex-martin' });
+const progress = liftProgress([
+  meet('First meet', '2024-01-01', { 'Muscle-up': '0', 'Pull-up': '40' }),
+  meet('Second meet', '2025-01-01', { 'Muscle-up': '10', 'Pull-up': '45', Dips: '90' }, 'PD'),
+]);
+
+it('names every plotted lift in the legend, with no metric selector', async () => {
+  render(AthleteProgress, { progress });
+  const legend = page.getByRole('list');
+  await expect.element(legend).toBeVisible();
+  expect(
+    legend
+      .getByRole('listitem')
+      .elements()
+      .map((item) => item.textContent?.trim())
+  ).toEqual(['Muscle Up', 'Pull Up', 'Dips']);
+  expect(page.getByRole('combobox').elements()).toHaveLength(0);
+});
+
+it('shows only the meet name, linked to the meet sorted by the hovered lift', async () => {
+  render(AthleteProgress, { progress, athleteSlug: 'alex-martin' });
   await expect.element(page.getByRole('tooltip')).not.toBeInTheDocument();
-  await page.getByRole('button', { name: /First meet/ }).hover();
+  await page.getByRole('button', { name: /Second meet.*Pull Up 45 kg/ }).hover();
+  const tooltip = page.getByRole('tooltip');
+  await expect.element(tooltip).toHaveTextContent('Second meet');
   await expect
-    .element(page.getByRole('link', { name: 'First meet' }))
-    .toHaveAttribute('href', '/en/competitions/first?movement=total&athlete=alex-martin');
-  await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('muscleup');
-  await page.getByRole('button', { name: /First meet.*0 kg/ }).click();
-  await expect
-    .element(page.getByRole('button', { name: /First meet.*0 kg/ }))
-    .toHaveAttribute('aria-pressed', 'true');
-  await expect
-    .element(page.getByRole('tooltip').getByRole('link', { name: 'First meet' }))
-    .toHaveAttribute('href', '/en/competitions/first?movement=muscleup&athlete=alex-martin');
-  await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('ris');
-  await page.getByRole('button', { name: /Second meet/ }).click();
-  await expect.element(page.getByText(/Reported RIS/)).toBeVisible();
+    .element(tooltip.getByRole('link', { name: 'Second meet' }))
+    .toHaveAttribute('href', '/en/competitions/Second meet?movement=pullup&athlete=alex-martin');
   await page
-    .getByRole('button', { name: /Second meet/ })
+    .getByRole('button', { name: /Second meet.*Pull Up/ })
     .element()
     .dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-  await expect.element(page.getByRole('tooltip')).not.toBeInTheDocument();
+  await expect.element(tooltip).not.toBeInTheDocument();
 });
 
-it('offers only metrics with at least two dated results', async () => {
-  render(AthleteProgress, { competitions });
-  const options = page.getByRole('combobox', { name: 'Performance', exact: true }).element();
-  expect([...(options as HTMLSelectElement).options].map((option) => option.value)).toEqual([
-    'total',
-    'ris',
-    'muscleup',
-  ]);
-});
-
-it('keeps one metric selector and always plots MPDS results', async () => {
-  const mpds: AthleteCompetitionSummary[] = competitions.map((competition, index) => ({
-    ...competition,
-    lifts: [
-      {
-        movement_name: 'Pull-up',
-        best_weight: String((index + 1) * 10),
-        record: null,
-        attempts: [],
-      },
-    ],
-  }));
-  const shorter: AthleteCompetitionSummary = {
-    ...competitions[1],
-    competition_id: 'shorter',
-    event: 'PD',
-    lifts: [{ movement_name: 'Pull-up', best_weight: '30', record: null, attempts: [] }],
-  };
-  render(AthleteProgress, { competitions: [...mpds, shorter] });
-  expect(page.getByRole('combobox').elements()).toHaveLength(1);
-  await page.getByRole('combobox', { name: 'Performance', exact: true }).selectOptions('pullup');
-  expect(page.getByRole('combobox').elements()).toHaveLength(1);
+it('converts plotted weights to pounds and keeps a real zero', async () => {
+  render(AthleteProgress, {
+    props: { progress },
+    context: new Map([[WEIGHT_UNIT_CONTEXT, new WeightPreference(() => 'lb')]]),
+  });
   await expect
-    .element(page.getByRole('combobox', { name: 'Format', exact: true }))
-    .not.toBeInTheDocument();
-  await expect.element(page.getByRole('button', { name: /20 kg/ })).toBeInTheDocument();
-  expect(page.getByRole('button', { name: /30 kg/ }).elements()).toHaveLength(0);
+    .element(page.getByRole('button', { name: /Second meet.*Dips 198.42 lb/ }))
+    .toBeInTheDocument();
+  await expect
+    .element(page.getByRole('button', { name: /First meet.*Muscle Up 0 lb/ }))
+    .toBeInTheDocument();
 });
