@@ -700,7 +700,7 @@ impl AthleteSearchEntry {
             event: row.event_code.clone(),
             status: row.entry_status?,
             status_reason: row.entry_status_reason.clone(),
-            gender: row.entry_gender.unwrap_or(row.gender),
+            gender: row.entry_gender?,
             category: osl_domain::WeightClass::label(row.weight_class_min, row.weight_class_max),
             muscleup: row.muscleup.map(decimal_to_f64),
             pullup: row.pullup.map(decimal_to_f64),

@@ -28,7 +28,7 @@
 
   let { hits, total }: { hits: AthleteSearchHit[]; total: number } = $props();
 
-  const hidden = $derived(Math.max(0, total - hits.length));
+  const hidden = $derived(total - hits.length);
   const title = $derived(i18n.t('Non-MPDS results'));
 </script>
 

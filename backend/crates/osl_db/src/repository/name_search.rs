@@ -5,7 +5,7 @@ pub(crate) fn push_name_terms_match(
     match_key: &str,
     name: &str,
 ) {
-    if !has_name_terms(name) {
+    if !name.chars().any(char::is_alphanumeric) {
         query.push(" FALSE ");
         return;
     }
@@ -17,9 +17,4 @@ pub(crate) fn push_name_terms_match(
         ")), '[''’]', '', 'g'), '[^[:alnum:]]+', ' ', 'g')), ' ')) AS term \
          WHERE term <> '' AND strpos({match_key}, term) = 0 ) "
     ));
-}
-
-#[must_use]
-pub fn has_name_terms(name: &str) -> bool {
-    name.chars().any(char::is_alphanumeric)
 }

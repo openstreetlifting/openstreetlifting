@@ -16,7 +16,6 @@ use super::dto::{
 };
 use crate::shared::dto::{PaginatedResponse, PaginationParams};
 use crate::shared::query::{Include, load_if};
-use osl_db::repository::name_search::has_name_terms;
 
 #[derive(Debug, Deserialize, utoipa::IntoParams)]
 pub struct AthleteQuery {
@@ -110,13 +109,6 @@ pub async fn search_athletes(
             "limit must be between 1 and {MAX_SEARCH_LIMIT}"
         )));
     }
-    if !has_name_terms(&query.q) {
-        return Ok(Json(AthleteSearchResponse {
-            data: Vec::new(),
-            total_items: 0,
-        }));
-    }
-
     let (rows, total_items) = AthleteRepository::new(state.db.pool())
         .search(&query.q, query.without_full_result, i64::from(limit))
         .await?;

@@ -58,28 +58,26 @@ impl<'a> AthleteRepository<'a> {
             r"
             WITH hits AS (
                 SELECT a.athlete_id, a.first_name, a.last_name, a.gender, a.country, a.slug,
-                       ARRAY(
-                           SELECT s.metric::text
-                           FROM athlete_metric_standings s
-                           WHERE s.athlete_id = a.athlete_id
-                           ORDER BY array_position(
-                               ARRAY['ris', 'total', 'muscleup', 'pullup', 'dips', 'squat'],
-                               s.metric::text
-                           )
-                       ) AS rankings,
-                       EXISTS (
-                           SELECT 1 FROM athlete_metric_standings s WHERE s.athlete_id = a.athlete_id
-                       ) AS ranked,
+                       r.rankings,
+                       cardinality(r.rankings) > 0 AS ranked,
                        COUNT(*) OVER () AS total_items
                 FROM athletes a
+                CROSS JOIN LATERAL (
+                    SELECT ARRAY(
+                        SELECT s.metric::text
+                        FROM athlete_metric_standings s
+                        WHERE s.athlete_id = a.athlete_id
+                        ORDER BY array_position(
+                            ARRAY['ris', 'total', 'muscleup', 'pullup', 'dips', 'squat'],
+                            s.metric::text
+                        )
+                    ) AS rankings
+                ) r
                 WHERE ",
         );
         push_name_terms_match(&mut query, "a.match_key", name);
         if without_full_result {
-            query.push(
-                " AND NOT EXISTS ( SELECT 1 FROM athlete_metric_standings s \
-                   WHERE s.athlete_id = a.athlete_id AND s.metric = 'total' ) ",
-            );
+            query.push(" AND NOT ('total' = ANY (r.rankings)) ");
         }
         query.push(
             r"
